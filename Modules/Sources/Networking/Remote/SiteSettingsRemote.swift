@@ -52,6 +52,26 @@ public class SiteSettingsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves all of the point of sale `SiteSetting`s for a given site.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the point of sale settings.
+    /// - Returns: An array of SiteSettings, specific to point of sale.
+    /// - Throws: Error if the request fails.
+    ///
+    public func loadPointOfSaleSettings(for siteID: Int64) async throws -> [SiteSetting] {
+        let path = Constants.siteSettingsPath + Constants.pointOfSaleSettingsGroup
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.pointOfSale)
+
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Retrieve detail for a single setting for a given site
     ///
     /// - Parameters:
@@ -179,6 +199,7 @@ private extension SiteSettingsRemote {
         static let generalSettingsGroup: String   = "general"
         static let productSettingsGroup: String   = "products"
         static let advancedSettingsGroup: String   = "advanced"
+        static let pointOfSaleSettingsGroup: String = "point-of-sale"
         static let valueParameter: String = "value"
         static let featureEnabledValue: String = "yes"
         static let featureDisabledValue: String = "no"

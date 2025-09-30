@@ -6,6 +6,7 @@ import MessageUI
 import Combine
 import Experiments
 import WooFoundation
+import WooFoundationCore
 import SwiftUI
 import enum Networking.DotcomError
 import protocol Storage.StorageManagerType
@@ -63,14 +64,14 @@ final class OrderDetailsViewModel {
 
     /// Products from an Order
     ///
-    var products: [Product] {
+    var products: [OrderDetailsProduct] {
         return dataSource.products
     }
 
     /// If the products for all order items have been loaded, checks if all products are virtual to skip shipping related syncs.
     private var orderContainsOnlyVirtualProducts: Bool {
         let productIDs = order.items.map { $0.productID }
-        let orderProducts = productIDs.compactMap { productID -> Product? in
+        let orderProducts = productIDs.compactMap { productID -> OrderDetailsProduct? in
             products.first(where: { $0.productID == productID })
         }
         // Early returns `false` when the products haven't been fully loaded for all order items.
@@ -123,7 +124,7 @@ final class OrderDetailsViewModel {
     /// The eligibility check for Woo Shipping can be updated late due to being async
     /// So the additional check for shipments determines if the new form should be displayed.
     var shouldNavigateToNewShippingLabelFlow: Bool {
-        dataSource.isEligibleForWooShipping || dataSource.shipments.isNotEmpty
+        dataSource.isEligibleForWooShipping
     }
 
     private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
@@ -218,7 +219,7 @@ final class OrderDetailsViewModel {
         return dataSource.lookUpOrderStatus(for: order)
     }
 
-    func lookUpProduct(by productID: Int64) -> Product? {
+    func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
         return dataSource.lookUpProduct(by: productID)
     }
 
@@ -514,10 +515,6 @@ extension OrderDetailsViewModel {
                                                                    forceReadOnly: false)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
-        case .shippingLabelCreationInfo:
-            let infoViewController = ShippingLabelCreationInfoViewController()
-            let navigationController = WooNavigationController(rootViewController: infoViewController)
-            viewController.present(navigationController, animated: true, completion: nil)
         case .shippingLabelDetail:
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return

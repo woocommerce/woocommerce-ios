@@ -3,8 +3,13 @@ import SwiftUI
 import WooFoundation
 
 final class CollectCashViewHelper {
-    private let currencyFormatter: CurrencyFormatter = WooFoundation.CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-    private let currencySettings: CurrencySettings = ServiceLocator.currencySettings
+    private let currencyFormatter: CurrencyFormatter
+    private let currencySettings: CurrencySettings
+
+    init(currencySettings: CurrencySettings) {
+        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+    }
 
     // Configures the formatter as close as possible to use the Store's settings
     private lazy var numberFormatter: NumberFormatter = {
@@ -54,25 +59,22 @@ final class CollectCashViewHelper {
         }
     }
 
-    func validateAmountOnSubmit(orderTotal: String,
+    func isPaymentButtonEnabled(orderTotal: String,
                                 textFieldAmountInput: String,
-                                onError: (String) -> Void) -> Bool {
-        let userInput = textFieldAmountInput.isNotEmpty ? textFieldAmountInput : "0"
+                                isLoading: Bool) -> Bool {
+        guard !isLoading else {
+            return false
+        }
 
+        let inputAmount = textFieldAmountInput.isNotEmpty ? textFieldAmountInput : "0"
         guard let orderDecimal = parseCurrency(orderTotal),
-              let inputDecimal = parseCurrency(userInput) else {
-            onError(Localization.failedToCollectCashPayment)
+              let inputDecimal = parseCurrency(inputAmount) else {
             return false
         }
-
-        if inputDecimal < orderDecimal {
-            onError(Localization.cashPaymentAmountNotEnough)
-            return false
-        }
-        return true
+        return inputDecimal >= orderDecimal
     }
 
-    private func parseCurrency(_ amountString: String) -> Decimal? {
+    func parseCurrency(_ amountString: String) -> Decimal? {
         // Removes all leading/trailing whitespace, if any
         let sanitized = amountString.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -100,16 +102,6 @@ private extension CollectCashViewHelper {
             value: "Change due: %1$@",
             comment: "Change due when the cash amount entered exceeds the order total." +
             "Reads as 'Change due: $1.23'"
-        )
-        static let failedToCollectCashPayment = NSLocalizedString(
-            "collectcashviewhelper.failedtocollectcashpayment.errormessage",
-            value: "Error trying to process payment. Try again.",
-            comment: "Error message when the system fails to collect a cash payment."
-        )
-        static let cashPaymentAmountNotEnough = NSLocalizedString(
-            "collectcashviewhelper.cashpaymentamountnotenough.errormessage",
-            value: "Amount must be more or equal to total.",
-            comment: "Error message when the cash amount entered is less than the order total."
         )
     }
 }

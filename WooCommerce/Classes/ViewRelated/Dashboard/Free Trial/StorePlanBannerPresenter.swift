@@ -3,6 +3,7 @@ import Yosemite
 import Combine
 import UIKit
 import protocol Experiments.FeatureFlagService
+import protocol WooFoundation.ConnectivityObserver
 
 /// Presents or hides the store plan info banner at the bottom of the screen.
 /// Internally uses the `storePlanSynchronizer` to know when to present or hide the banner.

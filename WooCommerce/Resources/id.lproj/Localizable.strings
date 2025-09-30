@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-29 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-09-11 09:54:09+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "Kartu %1$@ dengan 4 digit terakhir %2$@";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ tersedia";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -1758,8 +1757,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "Buat Kupon";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "Buat Label Pengiriman";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1927,9 +1925,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "Formulir bea-cukai harus dicetak dan disertakan pada pengiriman internasional ini";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Tak perlu antre saat di kantor pos dengan mencetak label pengiriman di rumah dari perangkat seluler dengan harga diskon!";
 
 /* Country option for a site address. */
 "Cyprus" = "Siprus";
@@ -3211,8 +3206,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Sedang berlangsung";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "Tersedia";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -3580,8 +3574,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Pelajari cara mengemas, melabeli, dan mengirim HAZMAT secara aman dengan USPS® di %1$@.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3602,9 +3595,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "Baca selengkapnya tentang pembaca kartu";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "Pelajari selengkapnya tentang membuat label menggunakan perangkat seluler";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -4957,6 +4947,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "Plugin";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Dokumentasi";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Dapatkan Dukungan";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Pelajari tentang produk yang didukung di POS";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Di mana produk saya?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Batalkan";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "Bantuan";
+
 /* Country option for a site address. */
 "Poland" = "Polandia";
 
@@ -5692,9 +5702,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "Hemat waktu dan uang";
-
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Hemat waktu dan biaya dengan memproses pesanan menggunakan WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Menyimpan produk Anda...";
@@ -6498,9 +6505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Ketuk untuk mengubah jumlah pengembalian item";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Ketuk untuk menampilkan informasi tentang membuat label pengiriman";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Ketuk untuk menampilkan instruksi cara mencetak label pengiriman di perangkat seluler";
@@ -7960,9 +7964,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "Penyiapan WooCommerce";
 
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "Pengiriman WooCommerce";
-
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping saat ini tidak menyediakan pengiriman HAZMAT melalui %1$@.";
 
@@ -8271,6 +8272,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Sambungkan toko yang sudah ada";
+
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "Tutup";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "Gunakan Alamat Ini";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "Coba cari tanpa nomor apartemen, kamar, atau lantai. Anda dapat menambahkan rincian tersebut ke Baris Alamat 2 nanti.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "Hasil Tidak Ditemukan";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "Cari alamat";
 
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "Kasual";
@@ -9429,14 +9445,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Total pesanan telah berubah sejak awal pembayaran. Silakan kembali dan periksa apakah pesanan sudah benar, lalu coba pembayaran lagi.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Jumlah harus lebih dari atau sama dengan jumlah total.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "Kembalian terutang: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Pilih produk untuk kampanye Blaze.";
@@ -9903,6 +9913,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media di perangkat";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "Temukan di Peta";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "Alamat Penagihan";
 
@@ -10002,6 +10015,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "Tampilkan detail";
+
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "Aktifkan %@ untuk mengizinkan aplikasi mengambil data langsung dari situs WooCommerce Anda, bukan melalui koneksi Jetpack";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "Kata Sandi Aplikasi";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "Kata Sandi Aplikasi";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "OK";
@@ -10708,12 +10730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d barang";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "Cetak formulir bea cukai";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "Cetak Label Pengiriman (%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "Anda telah berhasil mengajukan permintaan pengembalian dana. Anda dapat membeli label baru.";
 
@@ -10891,8 +10907,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "Barcode terlalu pendek";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "Pemindaian barcode sebagian";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "Pemindai tidak mengirimkan karakter akhir baris";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Permintaan jaringan gagal";
@@ -11257,8 +11273,8 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Kupon tidak digunakan";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Pemindaian barcode";
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Penyiapan awal pemindai barcode";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Harap tunggu";
@@ -11272,6 +11288,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Dapatkan Dukungan";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Pesanan";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Di mana produk saya?";
 
@@ -11283,6 +11302,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Memutuskan sambungan";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Pengaturan";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Dokumentasi";
@@ -11339,7 +11361,115 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Batal";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "Selesai";
+"pointOfSaleDashboard.support.cancel" = "Batal";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Tidak diketahui";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Pelajari selengkapnya tentang menerima pembayaran dengan perangkat seluler";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Dokumentasi";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Perangkat pembaca kartu tidak terhubung";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Pembaca kartu";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Konfigurasi pengaturan pemindai barcode";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Pemindai barcode";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Kelola koneksi pembaca kartu";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Pembaca kartu";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Perangkat keras";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Baterai";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "Model";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Pelajari selengkapnya tentang pemindaian barcode pada POS";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Dokumentasi";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Konfigurasi dan uji pemindai barcode Anda";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Pengaturan Pemindai";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Pemindai barcode";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "Belum ditentukan";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "Alamat";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "Email";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "Tidak ditentukan";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Nomor telepon";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Alamat fisik";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Informasi Tanda Terima";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Nama toko";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Kebijakan Pengembalian Dana dan Barang";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeInformation" = "Informasi Toko";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "Nama toko";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "Toko";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "Pengaturan";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Kelola koneksi perangkat keras";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Perangkat keras";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Dapatkan bantuan dan dukungan";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Bantuan";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Konfigurasi dan pengaturan toko";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Toko";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Pemindaian barcode";
@@ -11413,14 +11543,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "Kembali";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Gambar kode yang harus dipindai oleh pemindai barcode.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Anda siap untuk mulai memindai produk. Lain kali Anda perlu menghubungkan pemindai, cukup nyalakan dan pemindai akan terhubung kembali secara otomatis.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "Pemindai sudah siap!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "Selesai";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "Kembali";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Silahkan periksa manual pemindai dan atur ulang ke pengaturan pabrik, lalu coba lagi alur penyiapan.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "Coba lagi";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Masalah pemindaian ditemukan";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Gunakan pemindai barcode untuk memindai kode di bawah ini dan mengaktifkan mode HID Bluetooth.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11431,17 +11579,77 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "Lainnya";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Gunakan pemindai barcode untuk memindai kode di bawah ini dan masuk ke mode pemasangan.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Aktifkan Bluetooth dan pilih pemindai %1$@ Anda di pengaturan Bluetooth iOS. Pemindai akan berbunyi bip dan lampu LED-nya akan menyala terus saat dipasangkan.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Buka pengaturan perangkat Anda";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Pasangkan pemindai Anda";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Cara menyiapkan barcode produk";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Cara menyiapkan barcode produk";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Penyiapan pemindai";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Penyiapan pemindai";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Pemindai lainnya";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Menyiapkan pemindai barcode";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Pilih model dari daftar berikut:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Pindai barcode untuk menguji pemindai.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Pindai barcode untuk menguji pemindai. Jika kendala terus berlanjut, silakan periksa pengaturan Bluetooth dan coba lagi.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Data pemindaian belum ditemukan";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Uji pemindai Anda";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Ketuk produk ke \n tambahkan ke keranjang";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Ketuk produk untuk \n menambahkannya ke keranjang, atau ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "Keranjang";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Pindai barcode";
 
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "Keluar";
@@ -11574,6 +11782,60 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Abaikan";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "Produk";
+
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "Pesanan";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Total";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Total diskon";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Pembayaran Bersih";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "Pesanan #%1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel" = "Dibayar";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "Produk";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "Produk";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Alasan: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "Dana dikembalikan";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "Pajak";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "Total";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "Jumlah";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "Tidak dapat memuat lebih banyak pesanan";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "Tidak dapat memuat pesanan";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "Pesanan";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
@@ -11995,6 +12257,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld produk dipilih";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "Produk langganan tidak didukung untuk pembuatan pesanan";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Batal";
 
@@ -12349,6 +12614,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Tidak dapat mengambil statistik hari ini";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ tersedia";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "Tersedia";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "Selesai";

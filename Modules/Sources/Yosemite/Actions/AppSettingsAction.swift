@@ -356,4 +356,14 @@ public enum AppSettingsAction: Action {
     /// Loads the favorite products.
     ///
     case loadFavoriteProductIDs(siteID: Int64, onCompletion: ([Int64]) -> Void)
+
+    // MARK: - Application passwords Experiment feature
+
+    /// Sets the state of the App Passwords Experiment feature
+    ///
+    case setAppPasswordsExperimentSettingState(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads Loads the state of the App Passwords Experiment feature
+    ///
+    case getAppPasswordsExperimentSettingState(onCompletion: (Bool) -> Void)
 }

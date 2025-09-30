@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     let message: String
     let retryHandler: () -> Void
@@ -8,6 +7,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
         GeometryReader { geometry in
@@ -34,12 +34,10 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                         Button(retryActionTitle, action: {
-                            ServiceLocator.analytics.track(
-                                event: .PointOfSale.itemRemovedFromCart(
+                            analytics.track(event: .PointOfSale.itemRemovedFromCart(
                                     sourceView: .error,
                                     itemType: .coupon
-                                )
-                            )
+                                ))
                             posModel.removeAllItemsFromCart(types: [.coupon])
                             retryHandler()
                         })
@@ -71,7 +69,6 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Constants {
         static let headerSpacing: CGFloat = POSSpacing.large
@@ -81,7 +78,6 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Localization {
         static let title = NSLocalizedString(

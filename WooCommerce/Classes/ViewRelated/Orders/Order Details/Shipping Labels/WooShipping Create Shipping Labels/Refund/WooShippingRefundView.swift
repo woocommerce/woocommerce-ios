@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ScrollableVStack
 
 /// View for requesting refund for a shipping label.
 ///
@@ -200,7 +201,8 @@ private extension WooShippingRefundView {
             productNames: [],
             commercialInvoiceURL: nil,
             usedDate: nil,
-            expiryDate: nil
+            expiryDate: nil,
+            hazmatCategory: nil,
         )
     ), onRefundRequested: { _ in })
 }

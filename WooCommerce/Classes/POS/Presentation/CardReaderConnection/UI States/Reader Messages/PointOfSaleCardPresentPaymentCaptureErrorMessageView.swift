@@ -63,7 +63,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentCaptureErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
             tryAgainButtonAction: {},

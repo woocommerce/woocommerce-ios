@@ -6,14 +6,12 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
 
-@available(iOS 17.0, *)
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled
     func enableCoupons() async
 }
 
-@available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
@@ -23,13 +21,16 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
     private let couponProvider: PointOfSaleCouponServiceProtocol
     private let fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory
     private var fetchStrategy: PointOfSaleCouponFetchStrategy
+    private let analyticsProvider: POSAnalyticsProviding
 
     init(itemProvider: PointOfSaleCouponServiceProtocol,
-         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory) {
+         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory,
+         analyticsProvider: POSAnalyticsProviding) {
         self.couponProvider = itemProvider
         self.fetchStrategyFactory = fetchStrategyFactory
         self.fetchStrategy = fetchStrategyFactory.defaultStrategy
         self.paginationTracker = .init()
+        self.analyticsProvider = analyticsProvider
     }
 
     @MainActor
@@ -44,7 +45,8 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
-        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm, analytics: POSItemFetchAnalytics(itemType: .coupon))
+        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
+                                                            analytics: POSItemFetchAnalytics(itemType: .coupon, analytics: analyticsProvider))
         setSearchingState()
         await loadFirstPage()
     }
@@ -94,7 +96,6 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
     /// Loads the first page by attempting to load the first page from local storage
     /// then syncs from the remote regardless the result
@@ -140,7 +141,6 @@ private extension PointOfSaleCouponsController {
 
 // MARK: - View state helpers
 //
-@available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
     func setSearchingState() {
         itemsViewState.itemsStack.root = .loading([])

@@ -80,12 +80,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
 
-    var splitShipmentsAvailable: Bool {
-        itemsDataSource.items.map(\.quantity).reduce(0, +) > 1 &&
-        shipments.count == 1 &&
-        canViewLabel == false
-    }
-
     private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []
 
     var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel {
@@ -241,6 +235,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         )
     }()
 
+    /// Provides checks for CIAB
+    /// Used to determine "Split Shipments" feature availability
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          preselection: WooShippingCreateLabelSelection? = nil,
@@ -249,10 +247,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
-        self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
+        self.itemsDataSource = DefaultWooShippingItemsDataSource(
+            order: order,
+            storageManager: storageManager,
+            stores: stores
+        )
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
         self.currencySettings = currencySettings
@@ -261,6 +264,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.shippingSettingsService = shippingSettingsService
         self.weightUnit = shippingSettingsService.weightUnit ?? ""
         self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
@@ -419,13 +423,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                         isVerified: destinationAddressStatus == .verified,
                                                         originCountryCode: selectedOriginAddress?.country,
                                                         originStateCode: selectedOriginAddress?.state,
-                                                        onAddressEdited: { [weak self] editedAddress, editedEmail in
+                                                        onAddressEdited: { [weak self] result, editedEmail in
             guard let self else {
                 return
             }
-            destinationAddress = editedAddress
+            destinationAddress = result.address.toWooShippingAddress()
             destinationEmail = editedEmail
-            destinationAddressStatus = .verified
+            destinationAddressStatus = result.isVerified ? .verified : .unverified
             addressToEdit = nil // Dismisses address edit screen
         })
     }
@@ -501,6 +505,33 @@ private extension WooShippingCreateLabelsViewModel {
     /// This is useful for checking countries in the customs form and listing countries in the edit address form.
     func syncCountries() {
         stores.dispatch(DataAction.synchronizeCountries(siteID: order.siteID) { _ in })
+    }
+}
+
+// MARK: Split Shipments
+// Accessors describing Split Shipments elements availability
+extension WooShippingCreateLabelsViewModel {
+    private var hasMultipleProducts: Bool {
+        return itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
+    }
+
+    private var splitShipmentsFeatureAvailable: Bool {
+        return siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.splitShipments)
+    }
+
+    /// Determines if the "Edit split shipments" (pencil icon) is visible in top shipments bar.
+    var editSplitShipmentsOptionVisible: Bool {
+        splitShipmentsFeatureAvailable &&
+        hasMultipleProducts &&
+        hasUnfulfilledShipments
+    }
+
+    /// Determines if the "Split Shipments" row is visible above the "Products" section
+    var splitShipmentsRowVisible: Bool {
+        splitShipmentsFeatureAvailable &&
+        hasMultipleProducts &&
+        shipments.count == 1 &&
+        canViewLabel == false
     }
 }
 

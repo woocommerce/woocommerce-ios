@@ -1,6 +1,6 @@
 import SwiftUI
+import WooFoundation
 
-@available(iOS 17.0, *)
 struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = TotalsViewHelper()
@@ -79,7 +79,9 @@ struct TotalsView: View {
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
         }
-        .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .onChange(of: shouldShowTotalsFields) {
+            hideTotalsFieldsWithDelay(shouldShowTotalsFields)
+        }
         .geometryGroup()
     }
 
@@ -103,7 +105,6 @@ struct TotalsView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension TotalsView {
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
         guard !isShowing && posModel.paymentState.card == .processingPayment else {
@@ -118,7 +119,6 @@ private extension TotalsView {
 }
 
 
-@available(iOS 17.0, *)
 private extension TotalsView {
     struct PaymentViewLayout {
         let backgroundColor: Color
@@ -212,7 +212,6 @@ private extension TotalsView {
     }
 }
 
-@available(iOS 17.0, *)
 extension TotalsView {
     fileprivate struct PaymentViewPaddingModifier: ViewModifier {
         @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -229,14 +228,12 @@ extension TotalsView {
     }
 }
 
-@available(iOS 17.0, *)
 fileprivate extension View {
     func paymentViewPadding(layout: TotalsView.PaymentViewLayout) -> some View {
         modifier(TotalsView.PaymentViewPaddingModifier(layout: layout))
     }
 }
 
-@available(iOS 17.0, *)
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
@@ -290,7 +287,6 @@ private extension TotalsView {
     }
 }
 
-@available(iOS 17.0, *)
 private struct TotalsFieldsContent: View {
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
@@ -360,7 +356,6 @@ private struct TotalsFieldsContent: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct SubtotalFieldView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -395,7 +390,6 @@ private struct SubtotalFieldView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct TotalFieldView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -431,7 +425,6 @@ private struct TotalFieldView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct ShimmeringLineView: View {
     let width: CGFloat
     let height: CGFloat
@@ -445,7 +438,6 @@ private struct ShimmeringLineView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct PaymentViewContent: View {
     let paymentState: PointOfSalePaymentState
     let cardReaderViewLayout: TotalsView.PaymentViewLayout
@@ -490,16 +482,16 @@ private struct PaymentViewContent: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CashPaymentView: View {
     let cashPaymentState: PointOfSaleCashPaymentState
     let orderState: PointOfSaleOrderState
+    @Environment(\.posCurrencyProvider) private var currencyProvider
 
     var body: some View {
         switch cashPaymentState {
         case .collectingCash:
             if case .loaded(let total) = orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal, currencySettings: currencyProvider.currencySettings)
                     .transition(.move(edge: .trailing))
             }
         case .paymentSuccess:
@@ -515,7 +507,6 @@ private struct CashPaymentView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CardPaymentView: View {
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
     let paymentState: PointOfSalePaymentState
@@ -545,7 +536,6 @@ private struct CardPaymentView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CashPaymentButton: View {
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
@@ -577,7 +567,6 @@ private struct CashPaymentButton: View {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     TotalsView()
         .environment(POSPreviewHelpers.makePreviewAggregateModel())

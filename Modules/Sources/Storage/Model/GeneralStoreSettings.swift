@@ -86,6 +86,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isPOSTabVisible: Bool?
 
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,

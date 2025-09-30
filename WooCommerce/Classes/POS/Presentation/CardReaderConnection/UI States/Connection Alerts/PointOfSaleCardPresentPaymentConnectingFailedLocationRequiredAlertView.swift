@@ -24,13 +24,13 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
                 }
             }
             .frame(maxWidth: .infinity)
-            .scrollVerticallyIfNeeded()
 
             Button(viewModel.primaryButtonViewModel.title,
                    action: viewModel.primaryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
@@ -39,7 +39,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(cancelSearchAction: {}),
         animation: .init(namespace: namespace)

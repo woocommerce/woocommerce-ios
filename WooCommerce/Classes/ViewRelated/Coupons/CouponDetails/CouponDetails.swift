@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 /// Hosting controller wrapper for `CouponDetails`
 ///

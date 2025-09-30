@@ -2,19 +2,25 @@ import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
-@available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
+    @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posFeatureFlags) private var featureFlags
     @EnvironmentObject var modalManager: POSModalManager
+    @EnvironmentObject var sheetManager: POSSheetManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
-        PointOfSaleItemListAnalyticsTracker(selectedItemListType: selectedItemListType, searchTerm: searchTerm)
+        PointOfSaleItemListAnalyticsTracker(
+            selectedItemListType: selectedItemListType,
+            searchTerm: searchTerm,
+            analytics: analytics
+        )
     }
 
     private var _isSearching: Binding<Bool> {
@@ -42,21 +48,13 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented },
+            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented && !coverManager.isPresented },
             set: { _ in }
         )
     }
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
-
-    private var isBarcodeScani1FeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
-    }
-
-    private var isBarcodeScanSimulatorEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.showPointOfSaleBarcodeSimulator)
-    }
 
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
@@ -69,9 +67,6 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
-
-    @State private var barcodeScanSimulatorIsPresented: Bool = false
-    @State private var barcodeScanSimulatorText: String = ""
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -138,6 +133,7 @@ struct ItemListView: View {
                     searchable: POSProductSearchable(itemListType: selectedItemListType,
                                                      itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
+                    itemListType: selectedItemListType,
                     searchTerm: $searchTerm
                 ) { _ in
                     itemListContent(selectedItemListType)
@@ -184,7 +180,8 @@ struct ItemListView: View {
         POSItemActionHandlerFactory.itemActionHandler(
             itemListType: itemListType,
             searchTerm: searchTerm,
-            posModel: posModel
+            posModel: posModel,
+            analytics: analytics
         )
     }
 
@@ -192,7 +189,8 @@ struct ItemListView: View {
         POSItemActionHandlerFactory.variationActionHandler(
             itemListType: itemListType,
             searchTerm: searchTerm,
-            posModel: posModel
+            posModel: posModel,
+            analytics: analytics
         )
     }
 
@@ -208,7 +206,8 @@ struct ItemListView: View {
                 itemActionHandler: variationActionHandler(selectedItemListType),
                 analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                     sourceView: .variation,
-                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
+                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm),
+                    analytics: analytics
                 )
             )
             .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
@@ -222,7 +221,6 @@ struct ItemListView: View {
 
 /// Header view
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
@@ -243,9 +241,6 @@ private extension ItemListView {
                     } else {
                         createCouponButton
 
-                        simulatedScanButton
-                            .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
-
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
@@ -255,9 +250,6 @@ private extension ItemListView {
 
                 }
             })
-
-            barcodeScanSimulator
-                .renderedIf(barcodeScanSimulatorIsPresented)
         }
         .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
@@ -294,12 +286,11 @@ private extension ItemListView {
 
 /// View Helpers
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {
-            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+            analytics.track(.pointOfSaleCouponsCreateTapped)
             showCouponCreationModal = true
         }
         .renderedIf(isAddingCouponAllowed)
@@ -307,36 +298,11 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    private var simulatedScanButton: some View {
-        POSPageHeaderActionButton(systemName: "barcode") {
-            barcodeScanSimulatorIsPresented.toggle()
-        }
-        .transition(.opacity.combined(with: .scale))
-    }
-
-    @ViewBuilder
-    private var barcodeScanSimulator: some View {
-        HStack {
-            TextField(text: $barcodeScanSimulatorText) {
-                Text("Barcode value")
-            }
-
-            Button {
-                posModel.barcodeScanned(.success(barcodeScanSimulatorText))
-            } label: {
-                Text("Scan!")
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-        }
-        .padding([.bottom, .horizontal], 16)
-    }
-
-    @ViewBuilder
     var emptyView: some View {
         switch selectedItemListType {
         case .products:
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+            POSListEmptyView(
+                viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
                 Task {
@@ -344,8 +310,8 @@ private extension ItemListView {
                 }
             }
         case .coupons:
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+            POSListEmptyView(
+                viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true
@@ -357,14 +323,14 @@ private extension ItemListView {
     func errorView(_ errorState: PointOfSaleErrorState) -> some View {
         switch errorState.errorType {
         case .couponsDisabled:
-            PointOfSaleItemListErrorView(error: errorState, onAction: {
+            POSListErrorView(error: errorState, onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()
-                    ServiceLocator.analytics.track(.couponSettingEnabled)
+                    analytics.track(.couponSettingEnabled)
                 }
             })
         default:
-            PointOfSaleItemListErrorView(error: errorState, onAction: {
+            POSListErrorView(error: errorState, onAction: {
                 Task {
                     await itemsController(selectedItemListType).loadItems(base: .root)
                 }
@@ -373,7 +339,6 @@ private extension ItemListView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
         // Clear search term when switching tabs
@@ -389,7 +354,6 @@ private extension ItemListView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListView {
     func itemsController(_ itemType: ItemListType) -> PointOfSaleItemsControllerProtocol {
         switch itemType {
@@ -420,7 +384,6 @@ private extension ItemListView {
 
 /// Constants
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
         static let animationDuration: CGFloat = 0.2
@@ -447,7 +410,6 @@ private extension ItemListView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
@@ -457,13 +419,16 @@ private extension ItemListView {
     return ItemListView(selectedItemListType: .constant(.products(search: false)),
                         searchTerm: .constant(""))
         .environment(posModel)
+        .environmentObject(POSModalManager())
+        .environmentObject(POSSheetManager())
 }
 
-@available(iOS 17.0, *)
 #Preview("Loading") {
     ItemListView(selectedItemListType: .constant(.products(search: false)),
                  searchTerm: .constant(""))
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
+        .environmentObject(POSModalManager())
+        .environmentObject(POSSheetManager())
 }
 
 #endif

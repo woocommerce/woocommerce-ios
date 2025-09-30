@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-29 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-09-11 09:54:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ la tarjeta termina en %2$@";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ disponibles";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -1758,8 +1757,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "Crear cupón";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "Crear etiqueta de envío";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1927,9 +1925,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "El formulario de aduanas se debe imprimir y adjuntar a estos envíos internacionales";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Acorta la espera en la oficina de correos imprimiendo las etiquetas de envío en casa con tu dispositivo móvil por un precio más bajo.";
 
 /* Country option for a site address. */
 "Cyprus" = "Chipre";
@@ -3211,8 +3206,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "En curso";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "Hay existencias";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -3580,8 +3574,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Descubre cómo empaquetar, etiquetar y enviar materiales peligrosos de forma segura a través de USPS® en %1$@.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3602,9 +3595,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "Más información sobre lectores de tarjetas";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "Obtén más información sobre la creación de etiquetas con tu dispositivo móvil";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -4957,6 +4947,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "Plugins";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Documentación";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Obtener ayuda";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Descubre qué productos son compatibles con el punto de venta";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "¿Dónde están mis productos?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Cancelar";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "Ayuda";
+
 /* Country option for a site address. */
 "Poland" = "Polonia";
 
@@ -5692,9 +5702,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "Ahorra tiempo y dinero";
-
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Ahorra tiempo y dinero con los envíos de WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Guardando tu producto…";
@@ -6498,9 +6505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Toca para cambiar la cantidad del rembolso por el artículo";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Toca aquí para obtener información sobre cómo crear una etiqueta de envío";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Toca para mostrar las instrucciones sobre cómo imprimir una etiqueta de envío desde un dispositivo móvil";
@@ -7960,9 +7964,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "Configuración de WooCommerce";
 
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
-
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping no admite actualmente envíos de materiales peligrosos a través de %1$@.";
 
@@ -8271,6 +8272,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Conectar una tienda existente";
+
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "Cerrar";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "Usar esta dirección";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "Prueba a buscar sin números de piso, apartamento o planta. Puedes añadir esos datos a la línea de dirección 2 más adelante.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "No se han encontrado resultados";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "Buscar una dirección";
 
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "Casual";
@@ -9432,14 +9448,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "El total del pedido ha cambiado desde el inicio del pago. Vuelve y comprueba que el pedido sea correcto; después, vuelve a intentar el pago.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "El importe debe ser superior o igual al total.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "El cambio vence el %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Se ha producido un error al procesar el pago. Inténtalo de nuevo.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Selecciona el producto para la campaña Blaze.";
@@ -9906,6 +9916,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Medios en el dispositivo";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "Buscar en el mapa";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "Dirección de facturación";
 
@@ -10005,6 +10018,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "Mostrar detalles";
+
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "Habilita %@ para permitir que la aplicación obtenga datos directamente desde tu sitio WooCommerce en lugar de hacerlo a través de conexiones Jetpack";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "Contraseñas de aplicación";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "Contraseñas de aplicación";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "Aceptar";
@@ -10711,12 +10733,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d artículo";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "Imprimir formulario de aduanas";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "Imprimir etiqueta de envío (%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "Has enviado correctamente una solicitud de reembolso. Puedes comprar una nueva etiqueta.";
 
@@ -10894,8 +10910,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "Código de barras demasiado corto";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "Escaneo parcial del código de barras";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "El escáner no ha enviado ningún carácter de fin de línea";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Solicitud de red fallida";
@@ -11260,8 +11276,8 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Cupón no aplicado";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Escaneado de códigos de barras";
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Configuración inicial del escáner de códigos de barras";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Espera";
@@ -11275,6 +11291,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Conseguir ayuda";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Pedidos";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "¿Dónde están mis productos?";
 
@@ -11286,6 +11305,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Desconectando";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Ajustes";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Documentación";
@@ -11342,7 +11364,115 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancelar";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "Hecho";
+"pointOfSaleDashboard.support.cancel" = "Cancelar";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Desconocido";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Obtén más información sobre aceptar pagos a través de móviles";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Documentación";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Lector no conectado";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Lectores de tarjetas";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Configura los ajustes del escáner de códigos de barras";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Escáneres de códigos de barras";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Gestiona las conexiones del lector de tarjetas";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Lectores de tarjetas";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Hardware";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Batería";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "Modelo";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Obtén más información sobre el escaneo de códigos de barras en el punto de venta";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Documentación";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Configura y prueba tu escáner de códigos de barras";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Configuración del escáner";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Escáneres de códigos de barras";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "Sin definir";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "Dirección";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "Correo electrónico";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "Sin definir";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Número de teléfono";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Dirección física";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Información del recibo";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Nombre de la tienda";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Política de devoluciones y reembolsos";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeInformation" = "Información de la tienda";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "Nombre de la tienda";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "Tienda";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "Ajustes";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Gestiona las conexiones de hardware";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Hardware";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Obtén ayuda y soporte";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Ayuda";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Configuración y ajustes de la tienda";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Tienda";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Escaneado de códigos de barras";
@@ -11416,14 +11546,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "Volver";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Imagen de un código que se va a escanear con un escáner de código de barras.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Ya tienes todo listo para empezar a escanear productos. La próxima vez que necesites conectar el escáner, solo tienes que encenderlo y se volverá a conectar automáticamente.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "¡Escáner configurado!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "Hecho";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "Volver";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Consulta el manual del escáner y restablece los ajustes de fábrica. A continuación, vuelve a intentar el proceso de configuración.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "Reintentar";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Se ha encontrado un problema en el escaneo";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Utiliza el escáner de códigos de barras para escanear el código siguiente y activar el modo Bluetooth HID.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11434,17 +11582,77 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "Otros";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Utiliza tu escáner de códigos de barras para escanear el código de abajo y que entre en modo emparejamiento.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Habilita el Bluetooth y elige el escáner %1$@ en los ajustes de Bluetooth de iOS. El escáner emitirá un pitido y mostrará una luz LED fija cuando se empareje.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Ir a los ajustes de tu dispositivo";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Emparejar el escáner";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Cómo configurar códigos de barras en los productos";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Cómo configurar códigos de barras en los productos";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Configuración del escáner";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Configuración del escáner";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Otro escáner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Configura un escáner de códigos de barras";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Elige un modelo de la lista:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Escanea el código de barras para probar tu escáner.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Escanea el código de barras para probar tu escáner. Si el problema persiste, comprueba los ajustes de Bluetooth e inténtalo de nuevo.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Aún no se han encontrado datos de escaneo";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Prueba tu escáner";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Toca un producto para \n añadirlo al carrito";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Toca un producto para \n añadirlo al carrito, o bien ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "Carrito";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Escanear código de barras";
 
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "Finalizar compra";
@@ -11577,6 +11785,60 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Cerrar";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "Productos";
+
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "Pedido";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Totales";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Descuento total";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Pago neto";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "Pedido n.º %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel" = "De pago";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "Productos";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "Productos";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Motivo: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "Reembolsado";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "Impuestos";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "Total";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "Totales";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "No se pueden cargar más pedidos";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "No se pueden cargar los pedidos";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "Pedidos";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Opciones disponibles";
@@ -11998,6 +12260,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld producto elegido";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "Los productos de suscripción no son compatibles con la creación de pedidos";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Cancelar";
 
@@ -12352,6 +12617,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "No se han podido recuperar las estadísticas de hoy.";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ disponibles";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "Hay existencias";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "Hecho";

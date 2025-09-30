@@ -26,6 +26,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .padding(POSPadding.medium)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+                .accessibilityLabel(Localization.barcodeImageAccesibilityLabel)
         }
     }
 }
@@ -34,9 +35,18 @@ extension PointOfSaleBarcodeScannerBarcodeView {
     enum Constants {
         static let maxBarcodeSize: CGFloat = 168
     }
+
+    enum Localization {
+        static let barcodeImageAccesibilityLabel = NSLocalizedString(
+            "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel",
+            value: "Image of a code to be scanned by a barcode scanner.",
+            comment: "Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner."
+        )
+    }
 }
 
 struct PointOfSaleBarcodeScannerPairingView: View {
+    @Environment(\.posAnalytics) private var analytics
     let scanner: PointOfSaleBarcodeScannerType
 
     var body: some View {
@@ -58,7 +68,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
             }
 
             Button {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupOpenSystemSettingsTapped(scanner: scanner))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupOpenSystemSettingsTapped(scanner: scanner))
 
                 guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
                     return
@@ -103,7 +113,6 @@ private extension PointOfSaleBarcodeScannerPairingView {
     }
 }
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerTestBarcodeView: View {
     let scanTester: PointOfSaleBarcodeScannerSetupScanTester
     let timerCompleted: Bool
@@ -127,7 +136,6 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
 
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerTestBarcodeView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -239,7 +247,6 @@ struct PointOfSaleBarcodeScannerErrorView: View {
 
 // MARK: - Previews
 
-@available(iOS 17.0, *)
 #Preview("Barcode View - HID Setup") {
     PointOfSaleBarcodeScannerBarcodeView(
         title: "Star BSH-20B setup",
@@ -248,7 +255,6 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Barcode View - Barcode Setup") {
     PointOfSaleBarcodeScannerBarcodeView(
         title: "Scanner setup",
@@ -257,12 +263,10 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Pairing View - Netum 1228BC") {
     PointOfSaleBarcodeScannerPairingView(scanner: .netum1228BC)
 }
 
-@available(iOS 17.0, *)
 #Preview("Test View - Normal") {
     PointOfSaleBarcodeScannerTestBarcodeView(
         scanTester: PointOfSaleBarcodeScannerSetupScanTester(
@@ -275,7 +279,6 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Test View - Timeout") {
     PointOfSaleBarcodeScannerTestBarcodeView(
         scanTester: PointOfSaleBarcodeScannerSetupScanTester(
@@ -288,12 +291,10 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Setup Complete View") {
     PointOfSaleBarcodeScannerSetupCompleteView()
 }
 
-@available(iOS 17.0, *)
 #Preview("Error View") {
     PointOfSaleBarcodeScannerErrorView()
 }

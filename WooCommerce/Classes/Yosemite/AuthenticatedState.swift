@@ -2,10 +2,16 @@ import Foundation
 import Yosemite
 import Networking
 import Storage
+import Combine
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        network.authenticationMode
+    }
 
     /// Dispatcher: Glues all of the Stores!
     ///
@@ -23,11 +29,33 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
+    private let network: AlamofireNetwork
+
+    private var cancellables: Set<AnyCancellable> = []
+
+    /// POS Catalog Sync Coordinator (session-scoped)
+    ///
+    private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
+
+    // periphery:ignore - keep strong reference to keep the state publisher alive
+    private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
+    private var appPasswordSupportState: PassthroughSubject<Bool, Never>
+
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+
+        let site = sessionManager.defaultSitePublisher
+            .map { $0?.toJetpackSite() }
+            .eraseToAnyPublisher()
+
+        self.appPasswordSupportState = .init()
+        self.network = AlamofireNetwork(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        )
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -98,7 +126,8 @@ class AuthenticatedState: StoresManagerState {
             StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             GoogleAdsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            BookingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 
@@ -126,9 +155,34 @@ class AuthenticatedState: StoresManagerState {
 
         self.services = services
 
+        // Initialize POS catalog sync coordinator if feature flag is enabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+           let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
+                                                           selectedSite: site,
+                                                           appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                                                           grdbManager: ServiceLocator.grdbManager),
+           let incrementalSyncService = POSCatalogIncrementalSyncService(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+            grdbManager: ServiceLocator.grdbManager
+           ) {
+            let syncRemote = POSCatalogSyncRemote(network: network)
+            let catalogSizeChecker = POSCatalogSizeChecker(syncRemote: syncRemote)
+            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                fullSyncService: fullSyncService,
+                incrementalSyncService: incrementalSyncService,
+                grdbManager: ServiceLocator.grdbManager,
+                catalogSizeChecker: catalogSizeChecker
+            )
+        } else {
+            posCatalogSyncCoordinator = nil
+        }
+
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
+        observeAppPasswordSupportState()
     }
 
     /// Convenience Initializer
@@ -137,8 +191,7 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-
-        self.init(credentials: credentials)
+        self.init(credentials: credentials, sessionManager: sessionManager)
     }
 
     /// Executed before the current state is deactivated.
@@ -196,5 +249,23 @@ private extension AuthenticatedState {
                                         resetOrdersSettings,
                                         resetProductsSettings,
                                         resetGeneralStoreSettings])
+    }
+}
+
+private extension AuthenticatedState {
+    func observeAppPasswordSupportState() {
+        DispatchQueue.main.async { [self] in
+            /// The state needs to be created on the main thread to avoid creating a new ServiceLocator.stores in a different thread.
+            /// Without this, race condition can happen.
+            let appPasswordSupportStateHandler = ApplicationPasswordsExperimentState()
+            self.appPasswordSupportStateHandler = appPasswordSupportStateHandler // strong ref to keep the stream alive
+            appPasswordSupportStateHandler
+                .$isAvailableAndEnabled
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] enabled in
+                    self?.appPasswordSupportState.send(enabled)
+                }
+                .store(in: &cancellables)
+        }
     }
 }

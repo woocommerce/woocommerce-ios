@@ -46,7 +46,11 @@ private extension TrackEventRequestNotificationHandler {
             self?.trackJSONParsingFailed(note: note)
         }
 
-        trackingObservers = [newPasswordCreatedObserver, passwordGenerationFailedObserver, jsonParsingFailedObserver]
+        trackingObservers = [
+            newPasswordCreatedObserver,
+            passwordGenerationFailedObserver,
+            jsonParsingFailedObserver
+        ]
     }
 
     /// Tracks an event when an application password is created

@@ -19,7 +19,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
                 )
                 .animation(.easeOut(duration: 0.2), value: progress)
 
-            Image(uiImage: isComplete ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow)
+            Image(uiImage: isComplete ? .posCardReaderUpdateProgressCheckmark : .posCardReaderUpdateProgressArrow)
                 .renderingMode(.template)
                 .foregroundColor(Color(.posOnPrimary))
         }
@@ -32,7 +32,6 @@ private enum Constants {
     static let borderInset: CGFloat = POSSpacing.xSmall
 }
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @State var progress: CGFloat = 0.5
 

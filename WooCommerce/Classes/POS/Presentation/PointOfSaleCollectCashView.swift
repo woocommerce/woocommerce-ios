@@ -2,21 +2,21 @@ import SwiftUI
 import Combine
 import WooFoundation
 
-@available(iOS 17.0, *)
 struct PointOfSaleCollectCashView: View {
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posExternalViews) private var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
-    private let viewHelper = CollectCashViewHelper()
+    private let viewHelper: CollectCashViewHelper
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var changeDueMessage: String?
 
-    let orderTotal: String
+    private let orderTotal: String
 
     @State private var buttonFrame: CGRect = .zero
     @State private var keyboardFrame: CGRect = .zero
@@ -26,10 +26,16 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
-    @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
-                                                                                      locale: Locale.autoupdatingCurrent,
-                                                                                      storeCurrencySettings: ServiceLocator.currencySettings,
-                                                                                      allowNegativeNumber: false)
+    private var isButtonEnabled: Bool {
+        viewHelper.isPaymentButtonEnabled(orderTotal: orderTotal,
+                                          textFieldAmountInput: textFieldAmountInput,
+                                          isLoading: isLoading)
+    }
+
+    init(orderTotal: String, currencySettings: CurrencySettings) {
+        self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
+        self.orderTotal = orderTotal
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -49,18 +55,19 @@ struct PointOfSaleCollectCashView: View {
                         Spacer()
 
                         VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
-                            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                                .focused($isTextFieldFocused)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                                .onSubmit {
+                            externalViews.createFormattableAmountTextField(
+                                preset: viewHelper.parseCurrency(orderTotal),
+                                onSubmit: {
                                     Task { @MainActor in
                                         await submitCashAmount()
                                     }
-                                }
-                                .onChange(of: textFieldViewModel.amount) { newValue in
+                                },
+                                onChange: { newValue in
                                     textFieldAmountInput = newValue
                                     updateChangeDueMessage()
                                 }
+                            )
+                            .focused($isTextFieldFocused)
 
                             if let changeDue = changeDueMessage {
                                 Text(changeDue)
@@ -90,7 +97,7 @@ struct PointOfSaleCollectCashView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                         .frame(maxWidth: .infinity)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                        .disabled(isLoading)
+                        .disabled(!isButtonEnabled)
                     }
                     .padding([.horizontal])
                     .padding(.bottom, max(keyboardFrame.height - geometry.safeAreaInsets.bottom,
@@ -100,7 +107,7 @@ struct PointOfSaleCollectCashView: View {
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)
                 .animation(.easeInOut, value: changeDueMessage != nil)
-                .onChange(of: textFieldAmountInput) { _ in
+                .onChange(of: textFieldAmountInput) {
                     errorMessage = nil
                 }
                 .onReceive(Publishers.keyboardFrame) {
@@ -111,6 +118,9 @@ struct PointOfSaleCollectCashView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            isTextFieldFocused = true
+        }
     }
 
     private func markComplete() async throws {
@@ -120,12 +130,9 @@ struct PointOfSaleCollectCashView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     private func submitCashAmount() async {
-        guard validateAmountOnSubmit() else {
-            return
-        }
+        analytics.track(.pointOfSaleCashPaymentTapped)
         isLoading = true
         do {
             try await markComplete()
@@ -141,18 +148,8 @@ private extension PointOfSaleCollectCashView {
             orderTotal: orderTotal,
             textFieldAmountInput: textFieldAmountInput)
     }
-
-    private func validateAmountOnSubmit() -> Bool {
-        viewHelper.validateAmountOnSubmit(
-            orderTotal: orderTotal,
-            textFieldAmountInput: textFieldAmountInput,
-            onError: { error in
-                errorMessage = error
-            })
-        }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
         static let minimumPadding: CGFloat = POSSpacing.xSmall
@@ -197,9 +194,8 @@ private extension PointOfSaleCollectCashView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
-    PointOfSaleCollectCashView(orderTotal: "$1.23")
+    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings())
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

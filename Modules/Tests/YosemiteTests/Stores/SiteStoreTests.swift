@@ -364,6 +364,7 @@ final class SiteStoreTests: XCTestCase {
        let error = try XCTUnwrap(result.failure)
        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
    }
+
 }
 
 private extension SiteStoreTests {

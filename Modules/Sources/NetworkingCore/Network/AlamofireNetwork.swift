@@ -2,6 +2,25 @@ import Combine
 import Foundation
 import Alamofire
 
+/// Helper type to observe selected site info
+public struct JetpackSite: Equatable {
+    let siteID: Int64
+    let siteAddress: String
+    let applicationPasswordAvailable: Bool
+
+    public init(siteID: Int64, siteAddress: String, applicationPasswordAvailable: Bool) {
+        self.siteID = siteID
+        self.siteAddress = siteAddress
+        self.applicationPasswordAvailable = applicationPasswordAvailable
+    }
+}
+
+public enum RequestAuthenticationMode: String {
+    case appPasswords = "app_passwords"
+    case appPasswordsWithJetpack = "app_passwords_with_jetpack" // switching to app password for Jetpack sites
+    case jetpackTunnel = "jetpack_tunnel"
+}
+
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)
@@ -11,15 +30,26 @@ extension Alamofire.MultipartFormData: MultipartFormData {
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
+
+    /// authentication mode for requests
+    public private(set) var authenticationMode: RequestAuthenticationMode?
+
+    /// Lazy-initialized session manager. Use ensuresSessionManagerIsInitialized=true to avoid race conditions with concurrent requests.
     private lazy var alamofireSession: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
         let sessionManager = makeSession(configuration: sessionConfiguration)
         return sessionManager
     }()
 
+    private let credentials: Credentials?
+
+    private let selectedSite: AnyPublisher<JetpackSite?, Never>?
+
+    private let userDefaults: UserDefaults
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
-    private let requestConverter: RequestConverter
+    private var requestConverter: RequestConverter
 
     /// Authenticator to update requests authorization header if possible.
     ///
@@ -27,14 +57,65 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
+    private var siteSubscription: AnyCancellable?
+
+    /// Thread-safe error handler for failure tracking and retry logic
+    private let errorHandler: AlamofireNetworkErrorHandler
+
+    private var appPasswordSupportSubscription: AnyCancellable?
+
     /// Public Initializer
     ///
-    ///
-    public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
-        self.requestConverter = RequestConverter(credentials: credentials)
+    /// - Parameters:
+    ///   - credentials: Authentication credentials for requests.
+    ///   - selectedSite: Publisher for site selection changes.
+    ///   This is necessary if you wish to enable network switching to direct requests while authenticated with WPCOM for better performance.
+    ///   - sessionManager: Optional pre-configured session manager.
+    ///   - ensuresSessionManagerIsInitialized: If true, the session is always set during initialization immediately to avoid lazy initialization race conditions.
+    ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
+    public required init(credentials: Credentials?,
+                         selectedSite: AnyPublisher<JetpackSite?, Never>?,
+                         appPasswordSupportState: AnyPublisher<Bool, Never>?,
+                         userDefaults: UserDefaults = .standard,
+                         sessionManager: Alamofire.Session? = nil,
+                         ensuresSessionManagerIsInitialized: Bool = false) {
+        self.credentials = credentials
+        self.selectedSite = selectedSite
+        self.userDefaults = userDefaults
+        self.errorHandler = AlamofireNetworkErrorHandler(credentials: credentials, userDefaults: userDefaults)
+        self.requestConverter = {
+            let siteAddress: String? = {
+                switch credentials {
+                case let .wporg(_, _, siteAddress):
+                    return siteAddress
+                case let .applicationPassword(_, _, siteAddress):
+                    return siteAddress
+                default:
+                    return nil
+                }
+            }()
+            return RequestConverter(siteAddress: siteAddress)
+        }()
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {
             self.alamofireSession = sessionManager
+        } else if ensuresSessionManagerIsInitialized {
+            self.alamofireSession = makeSession(configuration: URLSessionConfiguration.default)
+        }
+
+        let authenticationMode: RequestAuthenticationMode? = {
+            switch credentials {
+            case .wporg, .applicationPassword:
+                return .appPasswords
+            case .wpcom:
+                return .jetpackTunnel
+            case .none:
+                return nil
+            }
+        }()
+        updateAuthenticationMode(authenticationMode)
+        if let appPasswordSupportState {
+            observeAppPasswordSupportState(appPasswordSupportState)
         }
     }
 
@@ -54,11 +135,21 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let request = requestConverter.convert(request)
-        alamofireSession.request(request)
-            .validateIfRestRequest(for: request)
-            .responseData { response in
-                completion(response.value, response.networkingError)
+        let convertedRequest = convertRequestIfNeeded(request)
+        alamofireSession.request(convertedRequest)
+            .validateIfRestRequest(for: convertedRequest)
+            .responseData { [weak self] response in
+                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                    originalRequest: request,
+                    convertedRequest: convertedRequest,
+                    failure: response.networkingError,
+                    onRetry: {
+                        self?.responseData(for: request, completion: completion)
+                    },
+                    onCompletion: {
+                        completion(response.value, response.networkingError)
+                    }
+                )
             }
     }
 
@@ -72,23 +163,45 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let request = requestConverter.convert(request)
-        alamofireSession.request(request)
-            .validateIfRestRequest(for: request)
-            .responseData { response in
-                if let error = response.networkingError {
-                    completion(.failure(error))
-                } else {
-                    completion(response.result.mapError { $0 })
-                }
+        let convertedRequest = convertRequestIfNeeded(request)
+        alamofireSession.request(convertedRequest)
+            .validateIfRestRequest(for: convertedRequest)
+            .responseData { [weak self] response in
+                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                    originalRequest: request,
+                    convertedRequest: convertedRequest,
+                    failure: response.networkingError,
+                    onRetry: {
+                        self?.responseData(for: request, completion: completion)
+                    },
+                    onCompletion: {
+                        if let error = response.networkingError {
+                            completion(.failure(error))
+                        } else {
+                            completion(response.result.mapError { $0 })
+                        }
+                    }
+                )
             }
     }
 
     public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
-        let request = requestConverter.convert(request)
-        let sessionRequest = alamofireSession.request(request)
-            .validateIfRestRequest(for: request)
+        let convertedRequest = convertRequestIfNeeded(request)
+        let sessionRequest = alamofireSession.request(convertedRequest)
+            .validateIfRestRequest(for: convertedRequest)
         let response = await sessionRequest.serializingData().response
+        let failure = response.networkingError
+
+        if errorHandler.shouldRetryJetpackRequest(
+            originalRequest: request,
+            convertedRequest: convertedRequest,
+            failure: failure
+        ) {
+            return try await responseDataAndHeaders(for: request)
+        }
+
+        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
+
         if let error = response.networkingError {
             throw error
         }
@@ -110,16 +223,28 @@ public class AlamofireNetwork: Network {
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { promise in
-            let request = self.requestConverter.convert(request)
+            let convertedRequest = self.convertRequestIfNeeded(request)
             self.alamofireSession
-                .request(request)
-                .validateIfRestRequest(for: request)
-                .responseData { response in
-                    if let error = response.networkingError {
-                        promise(.success(.failure(error)))
-                    } else {
-                        promise(.success(response.result.mapError { $0 }))
-                    }
+                .request(convertedRequest)
+                .validateIfRestRequest(for: convertedRequest)
+                .responseData { [weak self] response in
+                    self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                        originalRequest: request,
+                        convertedRequest: convertedRequest,
+                        failure: response.networkingError,
+                        onRetry: {
+                            self?.responseData(for: request) { result in
+                                promise(.success(result))
+                            }
+                        },
+                        onCompletion: {
+                            if let error = response.networkingError {
+                                promise(.success(.failure(error)))
+                            } else {
+                                promise(.success(response.result.mapError { $0 }))
+                            }
+                        }
+                    )
                 }
         }.eraseToAnyPublisher()
     }
@@ -127,22 +252,117 @@ public class AlamofireNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        let request = requestConverter.convert(request)
+        let convertedRequest = self.convertRequestIfNeeded(request)
         alamofireSession
-            .upload(multipartFormData: multipartFormData, with: request)
-            .responseData { response in
-                completion(response.value, response.error)
+            .upload(multipartFormData: multipartFormData, with: convertedRequest)
+            .responseData { [weak self] response in
+                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                    originalRequest: request,
+                    convertedRequest: convertedRequest,
+                    failure: response.networkingError,
+                    onRetry: {
+                        self?.uploadMultipartFormData(multipartFormData: multipartFormData, to: request, completion: completion)
+                    },
+                    onCompletion: {
+                        completion(response.value, response.error)
+                    }
+                )
             }
     }
 }
 
 private extension AlamofireNetwork {
+
+    func observeAppPasswordSupportState(_ appPasswordSupportState: AnyPublisher<Bool, Never>) {
+        appPasswordSupportSubscription = appPasswordSupportState
+            .removeDuplicates()
+            .sink { [weak self] enabled in
+                self?.updateAppPasswordSwitching(enabled: enabled)
+            }
+    }
+
+    func updateAppPasswordSwitching(enabled: Bool) {
+        guard let credentials, case .wpcom = credentials else { return }
+        if enabled, let selectedSite {
+            observeSelectedSite(selectedSite)
+        } else {
+            requestConverter = RequestConverter(siteAddress: nil)
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+            requestAuthenticator.delegate = nil
+            updateAuthenticationMode(.jetpackTunnel)
+            siteSubscription = nil
+        }
+    }
+
     /// Creates a session manager with request retrier and adapter
     ///
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
     }
+
+    /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
+    ///
+    func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
+        siteSubscription = selectedSite
+            .removeDuplicates()
+            .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
+            .sink { [weak self] site, unsupportedList in
+                guard let self else { return }
+                guard let site, site.applicationPasswordAvailable,
+                      errorHandler.siteFlaggedAsUnsupported(
+                        siteID: site.siteID,
+                        unsupportedList: unsupportedList
+                      ) == false else {
+                    requestConverter = RequestConverter(siteAddress: nil)
+                    requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    requestAuthenticator.delegate = nil
+                    updateAuthenticationMode(.jetpackTunnel)
+                    return
+                }
+                requestConverter = RequestConverter(siteAddress: site.siteAddress)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
+                    credentials: credentials,
+                    selectedSite: site,
+                    network: self
+                ))
+                requestAuthenticator.delegate = self
+                errorHandler.prepareAppPasswordSupport(for: site.siteID) // reset failure count
+                updateAuthenticationMode(.appPasswordsWithJetpack)
+            }
+    }
+
+    func updateAuthenticationMode(_ mode: RequestAuthenticationMode?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.authenticationMode = mode
+        }
+    }
 }
+
+// MARK: Helper methods for error handling
+//
+private extension AlamofireNetwork {
+    func convertRequestIfNeeded(_ request: URLRequestConvertible) -> URLRequestConvertible {
+        if errorHandler.isRequestRetried(request) {
+            return request // do not convert
+        }
+        return requestConverter.convert(request)
+    }
+
+}
+
+// MARK: `RequestProcessorDelegate` conformance
+//
+extension AlamofireNetwork: RequestProcessorDelegate {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error) {
+        errorHandler.flagSiteAsUnsupported(
+            for: siteID,
+            flow: .appPasswordGeneration,
+            cause: .majorError,
+            error: error
+        )
+    }
+}
+
 
 private extension DataRequest {
     /// Validates only for `RESTRequest`
@@ -179,9 +399,26 @@ extension Alamofire.DataResponse {
             return error
         }
 
+        if case .some(AFError.requestRetryFailed) = error?.asAFError {
+            return error?.asAFError
+        }
+
         return response.flatMap { response in
             NetworkError(responseData: data,
                          statusCode: response.statusCode)
         }
+    }
+}
+
+// MARK: - Helper extension to save internal flag for app password availability
+//
+extension UserDefaults {
+    @objc dynamic var applicationPasswordUnsupportedList: [String: Date] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [String: Date] ?? [:] }
+        set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
+    }
+
+    enum Key: String {
+        case applicationPasswordUnsupportedList
     }
 }

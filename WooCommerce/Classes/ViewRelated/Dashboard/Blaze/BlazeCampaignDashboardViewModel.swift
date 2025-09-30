@@ -14,7 +14,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows info about the latest Blaze campaign
         case showCampaign(campaign: BlazeCampaignListItem)
         /// Shows info about the latest published Product
-        case showProduct(product: Product)
+        case showProduct(product: BlazeCampaignProduct)
         /// When there is no campaign or published product
         case empty
     }
@@ -73,7 +73,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
 
-    private var isSiteEligibleForBlaze = false
+    @Published private var isSiteEligibleForBlaze = false
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
@@ -90,24 +90,26 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }()
 
     /// Product ResultsController.
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
+    private lazy var productResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@",
                                     siteID,
                                     ProductStatus.published.rawValue)
-        return ResultsController<StorageProduct>(storageManager: storageManager,
-                                                 matching: predicate,
-                                                 fetchLimit: 1,
-                                                 sortOrder: .dateDescending)
+        return GenericResultsController<StorageProduct, BlazeCampaignProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            fetchLimit: 1,
+            sortedBy: [NSSortDescriptor(key: "date", ascending: false)],
+            transformer: { BlazeCampaignProduct(storageProduct: $0) }
+        )
     }()
 
-    var latestPublishedProduct: Product? {
-        productResultsController.fetchedObjects.first
-    }
+    @Published private(set) var latestPublishedProduct: BlazeCampaignProduct?
 
     private var subscriptions: Set<AnyCancellable> = []
 
     @Published private var syncingError: Error?
 
+    private var cancellables = Set<AnyCancellable>()
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -121,15 +123,42 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
 
+        observeIsSiteEligibleForBlaze()
         observeSectionVisibility()
         configureResultsController()
     }
 
+    func observeIsSiteEligibleForBlaze() {
+        stores.site
+            .removeDuplicates()
+            .sink { site in
+                Task { [weak self] in
+                    guard
+                        let self,
+                        let site
+                    else {
+                        return
+                    }
+
+                    await updateIsSiteEligibleForBlaze(site)
+                    updateAvailability()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    func updateIsSiteEligibleForBlaze() async {
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+
+        await updateIsSiteEligibleForBlaze(site)
+    }
+
     @MainActor
     func checkAvailability() async {
-        isSiteEligibleForBlaze = await checkSiteEligibility()
+        await updateIsSiteEligibleForBlaze()
         try? await synchronizePublishedProducts()
-        updateAvailability()
     }
 
     @MainActor
@@ -139,7 +168,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
 
-        isSiteEligibleForBlaze = await checkSiteEligibility()
+        await updateIsSiteEligibleForBlaze()
 
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
@@ -220,11 +249,12 @@ private extension BlazeCampaignDashboardViewModel {
         })
     }
 
-    func checkSiteEligibility() async -> Bool {
-        guard let site = stores.sessionManager.defaultSite else {
-            return false
-        }
+    func checkSiteEligibility(_ site: Site) async -> Bool {
         return await blazeEligibilityChecker.isSiteEligible(site)
+    }
+
+    func updateIsSiteEligibleForBlaze(_ site: Site) async {
+        isSiteEligibleForBlaze = await checkSiteEligibility(site)
     }
 
     @MainActor
@@ -315,8 +345,10 @@ private extension BlazeCampaignDashboardViewModel {
         }
 
         productResultsController.onDidChangeContent = { [weak self] in
-            self?.updateAvailability()
-            self?.updateResults()
+            guard let self else { return }
+            latestPublishedProduct = productResultsController.fetchedObjects.first
+            updateAvailability()
+            updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
             self?.updateAvailability()
@@ -326,6 +358,7 @@ private extension BlazeCampaignDashboardViewModel {
         do {
             try blazeCampaignResultsController.performFetch()
             try productResultsController.performFetch()
+            latestPublishedProduct = productResultsController.fetchedObjects.first
             updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)

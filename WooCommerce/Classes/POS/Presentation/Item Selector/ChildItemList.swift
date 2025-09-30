@@ -2,7 +2,6 @@ import SwiftUI
 import Yosemite
 
 /// Displays a scrollable list of child items in POS.
-@available(iOS 17.0, *)
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
@@ -56,7 +55,6 @@ struct ChildItemList: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ChildItemList {
     @ViewBuilder var headerView: some View {
         POSPageHeaderView(title: title,
@@ -89,8 +87,8 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+            POSListEmptyView(
+                viewModel: POSListEmptyViewModel(
                     itemListType: .products(search: false),
                     baseItem: node)) {
                 Task {
@@ -108,7 +106,7 @@ private extension ChildItemList {
                 Spacer()
             }
 
-            PointOfSaleItemListErrorView(error: error, onAction: {
+            POSListErrorView(error: error, onAction: {
                 Task {
                     await itemsController.loadItems(base: node)
                 }
@@ -118,7 +116,6 @@ private extension ChildItemList {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ChildItemList {
     enum Localization {
         static let back = NSLocalizedString(
@@ -131,7 +128,6 @@ private extension ChildItemList {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Variable product child items") {
     let parentProduct = POSVariableParentProduct(
         id: .init(),
@@ -177,11 +173,11 @@ private extension ChildItemList {
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
                          analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                             sourceView: .variation,
-                            sourceViewType: .list
+                            sourceViewType: .list,
+                            analytics: EmptyPOSAnalytics()
                          ))
 }
 
-@available(iOS 17.0, *)
 #Preview("Variable items load error") {
     let parentProduct = POSVariableParentProduct(
         id: .init(),
@@ -203,7 +199,8 @@ private extension ChildItemList {
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
                          analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                             sourceView: .variation,
-                            sourceViewType: .list
+                            sourceViewType: .list,
+                            analytics: EmptyPOSAnalytics()
                          ))
 }
 

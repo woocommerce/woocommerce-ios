@@ -3,6 +3,7 @@ import Yosemite
 import AutomatticTracks
 import WordPressShared
 import protocol WooFoundation.AnalyticsProvider
+import WooFoundationCore
 
 public class TracksProvider: NSObject, AnalyticsProvider {
     private static let contextManager: TracksContextManager = TracksContextManager()
@@ -139,6 +140,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleCheckoutCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentFailed,
             WooAnalyticsStat.pointOfSaleItemsHeaderTapped,
@@ -205,6 +207,14 @@ private extension TracksProvider {
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
             WooAnalyticsStat.couponCreationSuccess,
+
+            // Settings
+            WooAnalyticsStat.pointOfSaleSettingsMenuItemTapped,
+            WooAnalyticsStat.pointOfSaleSettingsCloseButtonTapped,
+            WooAnalyticsStat.pointOfSaleSettingsStoreDetailsTapped,
+            WooAnalyticsStat.pointOfSaleSettingsHardwareTapped,
+            WooAnalyticsStat.pointOfSaleSettingsHelpTapped,
+            WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

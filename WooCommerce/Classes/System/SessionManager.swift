@@ -7,6 +7,7 @@ import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import class Kingfisher.ImageCache
+import class Networking.AlamofireNetwork
 
 // MARK: - SessionManager Notifications
 //
@@ -175,6 +176,10 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Keeps strong reference of the use case to keep the password deletion request alive
+    /// periphery: ignore
+    var applicationPasswordUseCase: ApplicationPasswordUseCase?
+
     /// Designated Initializer.
     ///
     init(defaults: UserDefaults,
@@ -200,7 +205,6 @@ final class SessionManager: SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset() {
-        deleteApplicationPassword()
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
@@ -221,24 +225,32 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.blazeSelectedCampaignObjective] = nil
         defaults[.wpcomSiteSuspended] = nil
         defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
+        defaults[.applicationPasswordUnsupportedList] = nil
+        defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
+        defaults[.ciabBookingsTabAvailable] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using credentials: Credentials?) {
+    func deleteApplicationPassword(using creds: Credentials?, locally: Bool) {
         let useCase: ApplicationPasswordUseCase? = {
-            switch credentials ?? loadCredentials() {
+            let credentials = creds ?? loadCredentials()
+            switch credentials {
             case let .wporg(username, password, siteAddress):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
-                                                              siteAddress: siteAddress,
-                                                              deviceModelIdentifierInfo: UIDevice.current.deviceModelIdentifierInfo,
-                                                              keychain: keychain)
+                                                              siteAddress: siteAddress)
             case let .applicationPassword(_, _, siteAddress):
-                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
-            default:
+                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
+            case .wpcom:
+                guard let siteID = defaultStoreID else {
+                    return nil
+                }
+                let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+                return DefaultApplicationPasswordUseCase(type: .wpcom(siteID: siteID), network: network)
+            case .none:
                 return nil
             }
         }()
@@ -246,8 +258,10 @@ final class SessionManager: SessionManagerProtocol {
             return
         }
 
-        Task {
-            try await useCase.deletePassword()
+        applicationPasswordUseCase = useCase
+        Task { @MainActor in
+            try await useCase.deletePassword(locally: locally)
+            applicationPasswordUseCase = nil
         }
     }
 }

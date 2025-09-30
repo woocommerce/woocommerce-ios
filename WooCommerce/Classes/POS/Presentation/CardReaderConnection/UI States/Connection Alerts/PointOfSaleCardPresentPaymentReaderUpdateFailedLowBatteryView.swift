@@ -50,7 +50,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView(
         viewModel: .init(batteryLevel: nil, retrySearchAction: {}, cancelUpdateAction: {}),
         animation: .init(namespace: namespace)

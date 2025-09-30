@@ -1,13 +1,15 @@
 import SwiftUI
+import WooFoundation
 
-@available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posExternalViews) private var externalViews
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
+    @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -90,7 +92,8 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation)
+                                   showDocumentation: $showDocumentation,
+                                   showSettings: $showSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -106,10 +109,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
-        }) { viewModel in
-            paymentsOnboardingView(from: viewModel)
+        }) { factory in
+            paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
@@ -123,12 +126,15 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $showSupport) {
+        .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .sheet(isPresented: $showDocumentation) {
+        .posSheet(isPresented: $showDocumentation) {
             documentationView
+        }
+        .posFullScreenCover(isPresented: $showSettings) {
+            PointOfSaleSettingsView(settingsController: posModel.settingsController)
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -182,34 +188,32 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
-                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.supportDone) {
-                        showSupport = false
+            externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.supportCancel) {
+                            showSupport = false
+                        }
                     }
                 }
-            }
+                .navigationViewStyle(.stack)
         }
-        .navigationViewStyle(.stack)
     }
 
     var documentationView: some View {
-        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+        SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
-    func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = { [weak posModel] in
+    func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewContainer) -> some View {
+        factory.configuration.showSupport = { [weak posModel] in
             posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
-        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
+
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewContainer: factory,
                                                                             onDismissTap: {
             posModel.cancelCardPaymentsOnboarding()
         }))
@@ -219,7 +223,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     func trackTimeForInitialLoadingState() {
         waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
@@ -244,7 +247,6 @@ extension EnvironmentValues {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
@@ -258,9 +260,9 @@ private extension PointOfSaleDashboardView {
     }
 
     enum Localization {
-        static let supportDone = NSLocalizedString(
-            "pointOfSaleDashboard.support.done",
-            value: "Done",
+        static let supportCancel = NSLocalizedString(
+            "pointOfSaleDashboard.support.cancel",
+            value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
     }
@@ -268,7 +270,6 @@ private extension PointOfSaleDashboardView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Container loading state") {
     return NavigationStack {
         PointOfSaleDashboardView()
@@ -277,7 +278,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Content loading state") {
     let itemsController = PointOfSalePreviewItemsController()
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))

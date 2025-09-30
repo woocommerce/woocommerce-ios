@@ -36,7 +36,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentScanningForReadersView(
         viewModel: PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel(
             endSearchAction: {}),

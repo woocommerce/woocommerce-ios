@@ -48,6 +48,7 @@ public protocol ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         productStatus: ProductStatus?,
+                        productType: ProductType?,
                         completion: @escaping (Result<[Int64], Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
@@ -286,18 +287,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ListMapper<POSProduct>(siteID: siteID)
 
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
-
-        // Extracts the total number of pages from the response headers.
-        // Response header names are case insensitive.
-        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
-            .flatMap { Int($0.value) }
-        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
-
-        // Extract total count from X-WP-Total header
-        let totalItems = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalCount.lowercased() })
-            .flatMap { Int($0.value) }
-
-        return .init(items: products, hasMorePages: hasMorePages, totalItems: totalItems)
+        return createPagedItems(items: products, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
     /// Remote search of products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
@@ -604,12 +594,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
                                productStatus: ProductStatus? = nil,
+                               productType: ProductType? = nil,
                                completion: @escaping (Result<[Int64], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.fields: ParameterKey.id,
-            ParameterKey.productStatus: productStatus?.rawValue ?? ""
+            ParameterKey.productStatus: productStatus?.rawValue ?? "",
+            ParameterKey.productType: productType?.rawValue ?? ""
         ].filter({ $0.value.isEmpty == false })
 
         let path = Path.products

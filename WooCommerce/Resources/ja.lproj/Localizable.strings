@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-29 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-09-10 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "最後の4桁が%2$@の %1$@ カード";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ の在庫あり";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -1758,8 +1757,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "クーポンを作成";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "配送ラベルを作成";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1927,9 +1925,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "この国外配送では税関申告書を印刷して添付する必要があります";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "自宅でモバイルデバイスを使い、割引料金で配送ラベルを印刷して、郵便局での待ち時間をカット !";
 
 /* Country option for a site address. */
 "Cyprus" = "キプロス";
@@ -3211,8 +3206,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "進行中";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "在庫あり";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -3580,8 +3574,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "USPS® (%1$@) で危険物を安全に梱包、ラベル付け、発送する方法についてご確認ください。";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3602,9 +3595,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "カードリーダーについて詳しくはこちら";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "モバイルデバイスでのラベル作成に関する詳細はこちら";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -4957,6 +4947,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "プラグイン";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "ドキュメント";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "サポートを受ける";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "POS 対象の商品についてさらに詳しく";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "商品はどこにありますか ?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "キャンセル";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "ヘルプ";
+
 /* Country option for a site address. */
 "Poland" = "ポーランド";
 
@@ -5692,9 +5702,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "時間とお金を節約";
-
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce Shipping を利用して、時間とお金を節約";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "商品を保存しています...";
@@ -6498,9 +6505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "タップしてアイテムの返金数量を変更";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "タップして配送ラベルの作成に関する情報を表示";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "タップして、モバイル端末で配送ラベルを印刷する方法の説明を表示";
@@ -7960,9 +7964,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "WooCommerce › 設定ウィザード";
 
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce の送料";
-
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping は現在、%1$@ による危険物の発送には対応していません。";
 
@@ -8271,6 +8272,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "既存のストアを連携";
+
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "閉じる";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "この住所を使用";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "アパート、階数、部屋番号を指定せずに検索してみてください。 これらの詳細は、後で「住所2行目」に追加できます。";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "結果が見つかりませんでした";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "住所を検索";
 
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "カジュアル";
@@ -9432,14 +9448,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "支払い開始以降に注文合計額が変更されました。 戻って注文が正しいことを確認してから、もう一度お支払いをお試しください。";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "金額は合計以上でなければなりません。";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "変更期限: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "支払いを処理しようとしたところ、エラーが発生しました。 もう一度お試しください。";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Blaze キャンペーンの製品を選択します。";
@@ -9906,6 +9916,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "端末上のメディア";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "地図で検索";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "請求先住所";
 
@@ -10005,6 +10018,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "詳細を表示";
+
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "%@ を有効にすると、アプリは Jetpack 接続経由ではなく、WooCommerce サイトから直接データを取得できるようになります";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "アプリケーションパスワード";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "アプリケーションパスワード";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "OK";
@@ -10711,12 +10733,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d個のアイテム";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "税関申告書を印刷";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "配送ラベル (%1$@) を印刷";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "返金のリクエストが正常に送信されました。 新しいラベルを購入できます。";
 
@@ -10894,8 +10910,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "バーコードが短すぎます";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "バーコードスキャンが部分的です";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "スキャナーから改行コードが送信されませんでした";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "ネットワークリクエストに失敗しました";
@@ -11260,8 +11276,8 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "クーポンが適用されませんでした";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "バーコードスキャン";
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "バーコードスキャナーの初期設定";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "しばらくお待ちください";
@@ -11275,6 +11291,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "サポートを受ける";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "注文";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "商品はどこにありますか ?";
 
@@ -11286,6 +11305,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "接続を切断中";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "設定";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "ドキュメント";
@@ -11342,7 +11364,115 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "キャンセル";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "完了";
+"pointOfSaleDashboard.support.cancel" = "キャンセル";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "不明";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "モバイルでの支払いの承認についてさらに詳しく";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "ドキュメント";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "リーダーが接続されていません";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "カードリーダー";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "バーコードスキャナー設定を構成";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "バーコードスキャナー";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "カードリーダーの接続を管理";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "カードリーダー";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "ハードウェア";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "バッテリー";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "モデル";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "POS のバーコードスキャンについてさらに詳しく";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "ドキュメント";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "バーコードスキャナーの設定とテスト";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "スキャナー設定";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "バーコードスキャナー";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "未設定";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "住所";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "メールアドレス";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "未設定";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "電話番号";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "住所";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "領収書情報";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "ストア名";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "返金および返品ポリシー";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeInformation" = "情報を保存";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "ストア名";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "ストア";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "設定";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "ハードウェアの接続を管理";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "ハードウェア";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "ヘルプとサポートを利用";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "ヘルプ";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "ストアの構成と設定";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "ストア";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "バーコードスキャン";
@@ -11416,14 +11546,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "戻る";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "バーコードスキャナーでスキャンするコードの画像。";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "商品のスキャンを開始する準備ができました。 次回スキャナーを接続する場合は、電源を入れるだけで自動的に再接続されます。";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "スキャナーが設定されました !";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "完了";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "戻る";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "スキャナーのマニュアルを確認し、工場出荷時の設定にリセットしてから、設定フローを再試行してください。";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "再試行";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "スキャンの問題が見つかりました";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "バーコードスキャナーを使用して下のコードをスキャンし、Bluetooth HID モードを有効化します。";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11434,17 +11582,77 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "その他";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "バーコードスキャナーを使用して下のコードをスキャンし、ペアリングモードに入ります。";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Bluetooth を有効にし、iOS の Bluetooth 設定で %1$@ スキャナーを選択します。 スキャナーがペアリングされると、ビープ音が鳴り、LED が点灯状態になります。";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "端末設定に移動";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "スキャナーをペアリング";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "商品にバーコードを設定する方法";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "商品にバーコードを設定する方法";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "スキャナーの設定";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "スキャナーの設定";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "その他のスキャナー";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "バーコードスキャナーを設定";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "リストからモデルを選択します:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "スター精密 BSH-20";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "バーコードをスキャンしてスキャナーをテストします。";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "バーコードをスキャンしてスキャナーをテストします。 問題が解決しない場合は、Bluetooth 設定を確認してもう一度お試しください。";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "スキャンデータが見つかりません";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "スキャナーをテスト";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "商品をタップして\n お買い物カゴに追加します";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "商品をタップして\n お買い物カゴに追加するか ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "お買い物カゴ";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "バーコードをスキャンする";
 
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "購入手続き";
@@ -11577,6 +11785,60 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "閉じる";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "商品";
+
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "注文 ";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "合計";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "割引合計";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "支払額 (正味)";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "注文番号 %1$@ を注文";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel" = "有料";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "商品";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "商品";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "理由: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "返金済み";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "税";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "合計";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "合計";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "追加の注文を読み込めません";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "注文を読み込めません";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "注文";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "オプションを使用可能";
@@ -11998,6 +12260,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld件の商品を選択済み";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "定期購入商品は注文の作成に対応していません";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "キャンセル";
 
@@ -12352,6 +12617,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "今日の統計情報を取得できません";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "在庫%1$@個";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "在庫あり";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "完了";

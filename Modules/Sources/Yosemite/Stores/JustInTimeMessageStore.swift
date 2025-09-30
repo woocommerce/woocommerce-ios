@@ -104,10 +104,10 @@ private extension JustInTimeMessageStore {
     }
 
     func localeLanguageRegionIdentifier() -> String? {
-        guard let languageCode = Locale.current.languageCode else {
+        guard let languageCode = Locale.current.language.languageCode?.identifier else {
             return nil
         }
-        guard let regionCode = Locale.current.regionCode else {
+        guard let regionCode = Locale.current.region?.identifier else {
             return languageCode
         }
         return "\(languageCode)_\(regionCode)"

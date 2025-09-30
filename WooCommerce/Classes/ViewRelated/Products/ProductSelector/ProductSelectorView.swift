@@ -169,9 +169,9 @@ struct ProductSelectorView: View {
             viewModel.onLoadTrigger.send()
             updateSyncApproach(for: horizontalSizeClass)
         }
-        .onChange(of: horizontalSizeClass, perform: { newSizeClass in
+        .onChange(of: horizontalSizeClass) { _, newSizeClass in
             updateSyncApproach(for: newSizeClass)
-        })
+        }
         // On the order form, this is not connected; the OrderForm displays the notices.
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
@@ -319,7 +319,7 @@ private extension ProductSelectorView {
             .onAppear(perform: {
                 adjustViewWidthIfNeeded(using: geometry.size.width)
             })
-            .onChange(of: geometry.size.width) { newViewWidth in
+            .onChange(of: geometry.size.width) { _, newViewWidth in
                 adjustViewWidthIfNeeded(using: newViewWidth)
             }
         }

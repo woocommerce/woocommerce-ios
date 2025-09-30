@@ -1,6 +1,18 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.3
+Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.
+
+## 23.2
+This update smooths your WooCommerce experience with improved cash payments, easier access to POS settings, and accurate HAZMAT details on shipping labels. Plus, we fixed a Blaze flow issue so campaigns behave as expected. Faster, clearer, and more reliable — just how you need it!
+
+## 23.1
+Managing your store just got smoother with a more reliable shipping label workflow! Jetpack setup has also been improved for a faster, easier connection. Update now and enjoy the improvements!
+
+## 23.0
+Faster performance and smoother experience! This update brings improved product loading, better tax calculations, and enhanced address lookup with map support. We've added guided barcode scanning for POS users and strengthened shipping requirements for EU destinations. Plus, we've fixed stability issues for a more reliable experience.
+
 ## 22.9
 This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We’ve also made the dedicated Point of Sale tab more widely available for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app’s size.
 

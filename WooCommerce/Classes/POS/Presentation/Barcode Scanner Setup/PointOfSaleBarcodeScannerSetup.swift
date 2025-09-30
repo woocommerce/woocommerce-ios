@@ -1,14 +1,14 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetup: View {
     @Binding var isPresented: Bool
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
     @Environment(\.posModalParentSize) var parentSize
+    @Environment(\.posAnalytics) private var analytics
 
-    init(isPresented: Binding<Bool>) {
+    init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
-        self.flowManager = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: isPresented)
+        self.flowManager = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: isPresented, analytics: analytics)
     }
 
     var body: some View {
@@ -39,7 +39,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             .background(Color.posSurfaceBright)
         }
         .onAppear {
-            ServiceLocator.analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
+            analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
         }
         .onDisappear {
             flowManager.onDisappear()
@@ -91,7 +91,6 @@ private enum Constants {
 }
 
 // MARK: - Private Localization Extension
-@available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetup {
     enum Localization {
         static let starBSH20BTitle = NSLocalizedString(
@@ -119,10 +118,11 @@ private extension PointOfSaleBarcodeScannerSetup {
 
 // MARK: - Previews
 
-@available(iOS 17.0, *)
+#if DEBUG
 #Preview {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
+    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true), analytics: EmptyPOSAnalytics())
 }
+#endif
 
 /// A container view that animates changes in its child content with a fade-out and fade-in transition,
 /// while also smoothly animating changes in height.
@@ -131,7 +131,6 @@ private extension PointOfSaleBarcodeScannerSetup {
 /// - On content change: fades out old content, replaces it, then fades in new content.
 /// - Handles height changes with a spring animation.
 ///
-@available(iOS 17.0, *)
 private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
     let maxWidth: CGFloat
     let maxHeight: CGFloat
@@ -174,7 +173,7 @@ private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
                         .onAppear {
                             updateSize(to: proxy.size.height)
                         }
-                        .onChange(of: proxy.size) { newSize in
+                        .onChange(of: proxy.size) { _, newSize in
                             updateSize(to: newSize.height)
                         }
                 }
@@ -186,7 +185,7 @@ private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
             .onAppear {
                 hasAppeared = true
             }
-            .onChange(of: contentID) { newID in
+            .onChange(of: contentID) { _, newID in
                 guard newID != previousID else { return }
 
                 if hasAppeared {

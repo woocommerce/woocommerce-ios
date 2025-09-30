@@ -49,7 +49,7 @@ struct ProductStepper: View {
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: true, vertical: false)
             .focused($textFieldFocused)
-            .onChange(of: textFieldFocused) { newValue in
+            .onChange(of: textFieldFocused) { _, newValue in
                 // We may have unsaved changes in the text field, if switching focus to another text field.
                 if newValue == false {
                     viewModel.resetEnteredQuantity()

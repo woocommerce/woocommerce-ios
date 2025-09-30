@@ -5,10 +5,9 @@ import GameController
 
 struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_tracks_scanner_selected_when_selectScanner_called() {
         // Given a flow manager
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics
@@ -23,10 +22,9 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.starBSH20B.analyticsName)
     }
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_tracks_dismissal_when_onDisappear_called_on_non_completion_step() {
         // Given a flow manager with a setup flow in progress
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics
@@ -46,10 +44,9 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         #expect(event?.properties["step"] as? String == "setup_barcode_hid")
     }
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_tracks_dismissal_when_onDisappear_called_on_scanner_selection() {
         // Given a flow manager on scanner selection screen
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics
@@ -65,10 +62,9 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         #expect(event?.properties["step"] == nil)
     }
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_tracks_keyboard_connected_when_in_setup_flow() {
         // Given a flow manager with a setup flow
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics
@@ -87,10 +83,9 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.netum1228BC.analyticsName)
     }
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_does_not_track_keyboard_connected_when_on_scanner_selection() {
         // Given a flow manager on scanner selection
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics
@@ -103,10 +98,9 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         #expect(mockAnalytics.events.isEmpty)
     }
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_returns_correct_state_after_scanner_selection() {
         // Given a flow manager
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics
@@ -129,10 +123,9 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func test_flowManager_returns_to_scanner_selection_when_goBackToSelection_called() {
         // Given a flow manager in setup flow
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let sut = PointOfSaleBarcodeScannerSetupFlowManager(
             isPresented: .constant(true),
             analytics: mockAnalytics

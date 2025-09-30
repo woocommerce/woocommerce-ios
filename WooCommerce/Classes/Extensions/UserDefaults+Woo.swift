@@ -6,6 +6,7 @@ import Foundation
 //
 extension UserDefaults {
     enum Key: String {
+        case applicationPasswordUnsupportedList
         case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
@@ -50,6 +51,7 @@ extension UserDefaults {
 
         // Background Task Refresh
         case latestBackgroundOrderSyncDate
+        case lastBackgroundRefreshCompletionTime
 
         // Blaze Local notification
         case blazeNoCampaignReminderOpened
@@ -68,6 +70,12 @@ extension UserDefaults {
 
         // Hide stores from store picker
         case hiddenStoreIDs
+
+        // Application passwords experiment remote FF cached value
+        case applicationPasswordsExperimentRemoteFFValue
+
+        // CIAB Bookings tab availability
+        case ciabBookingsTabAvailable
     }
 }
 

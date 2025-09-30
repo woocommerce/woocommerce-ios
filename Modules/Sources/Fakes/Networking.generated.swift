@@ -317,6 +317,31 @@ extension Networking.BlazeTargetTopic {
         )
     }
 }
+extension Networking.Booking {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Booking {
+        .init(
+            siteID: .fake(),
+            bookingID: .fake(),
+            allDay: .fake(),
+            cost: .fake(),
+            customerID: .fake(),
+            dateCreated: .fake(),
+            dateModified: .fake(),
+            endDate: .fake(),
+            googleCalendarEventID: .fake(),
+            orderID: .fake(),
+            orderItemID: .fake(),
+            parentID: .fake(),
+            productID: .fake(),
+            resourceID: .fake(),
+            startDate: .fake(),
+            statusKey: .fake(),
+            localTimezone: .fake()
+        )
+    }
+}
 extension Networking.CompositeComponentOptionType {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -631,6 +656,18 @@ extension Networking.InboxNote {
         )
     }
 }
+extension Networking.JetpackConnectionData {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.JetpackConnectionData {
+        .init(
+            currentUser: .fake(),
+            isRegistered: .fake(),
+            connectionOwner: .fake(),
+            blogID: .fake()
+        )
+    }
+}
 extension Networking.JetpackUser {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -640,7 +677,8 @@ extension Networking.JetpackUser {
             isPrimary: .fake(),
             username: .fake(),
             wpcomUser: .fake(),
-            gravatar: .fake()
+            gravatar: .fake(),
+            blogID: .fake()
         )
     }
 }
@@ -740,12 +778,11 @@ extension Networking.POSProduct {
             productID: .fake(),
             name: .fake(),
             productTypeKey: .fake(),
+            fullDescription: .fake(),
+            shortDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
             price: .fake(),
-            regularPrice: .fake(),
-            salePrice: .fake(),
-            onSale: .fake(),
             downloadable: .fake(),
             parentID: .fake(),
             images: .fake(),
@@ -766,12 +803,10 @@ extension Networking.POSProductVariation {
             productVariationID: .fake(),
             attributes: .fake(),
             image: .fake(),
+            fullDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
             price: .fake(),
-            regularPrice: .fake(),
-            salePrice: .fake(),
-            onSale: .fake(),
             downloadable: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),
@@ -1763,7 +1798,11 @@ extension Networking.Site {
             canBlaze: .fake(),
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
-            hasSSOEnabled: .fake()
+            hasSSOEnabled: .fake(),
+            applicationPasswordAvailable: .fake(),
+            isGarden: .fake(),
+            gardenName: .fake(),
+            gardenPartner: .fake()
         )
     }
 }
@@ -1773,7 +1812,8 @@ extension Networking.SiteAPI {
     public static func fake() -> Networking.SiteAPI {
         .init(
             siteID: .fake(),
-            namespaces: .fake()
+            namespaces: .fake(),
+            applicationPasswordAvailable: .fake()
         )
     }
 }
@@ -1998,22 +2038,6 @@ extension Networking.UploadableMedia {
             filename: .fake(),
             mimeType: .fake(),
             altText: .fake()
-        )
-    }
-}
-extension Networking.User {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.User {
-        .init(
-            localID: .fake(),
-            siteID: .fake(),
-            email: .fake(),
-            username: .fake(),
-            firstName: .fake(),
-            lastName: .fake(),
-            nickname: .fake(),
-            roles: .fake()
         )
     }
 }

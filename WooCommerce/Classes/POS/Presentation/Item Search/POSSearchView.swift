@@ -3,11 +3,8 @@ import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 
 /// Protocol defining search capabilities for POS items
-@available(iOS 17.0, *)
 protocol POSSearchable {
-    /// The type of item lists being searched
-    var itemListType: ItemListType { get }
-
+    var searchFieldPlaceholder: String { get }
     /// Recent search history for the current item type
     var searchHistory: [String] { get }
 
@@ -19,9 +16,9 @@ protocol POSSearchable {
 }
 
 /// A reusable search field view for POS items
-@available(iOS 17.0, *)
 struct POSSearchField: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAnalytics) private var analytics
 
     @Binding private var searchTerm: String
     @FocusState private var isSearchFieldFocused: Bool
@@ -49,7 +46,7 @@ struct POSSearchField: View {
             }))
 
             TextField(text: $searchTerm) {
-                Text(searchable.itemListType.itemType.searchFieldLabel)
+                Text(searchable.searchFieldPlaceholder)
             }
             .textFieldStyle(POSSearchTextFieldStyle(focused: isSearchFieldFocused,
                                                     searchTerm: $searchTerm))
@@ -96,7 +93,7 @@ struct POSSearchField: View {
         }
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
             guard isVisible == false else { return }
-            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
+            analytics.track(.pointOfSaleKeyboardDismissedInSearch)
         }
         .onAppear {
             isSearchFieldFocused = true
@@ -105,18 +102,21 @@ struct POSSearchField: View {
 }
 
 /// A reusable search content view for POS items
-@available(iOS 17.0, *)
 struct POSSearchContentView<Content: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
 
     private let searchable: any POSSearchable
+    private let itemListType: ItemListType
     @Binding private var searchTerm: String
     private let content: (Bool) -> Content
 
     init(searchable: any POSSearchable,
+         itemListType: ItemListType,
          searchTerm: Binding<String>,
          @ViewBuilder content: @escaping (Bool) -> Content) {
         self.searchable = searchable
+        self.itemListType = itemListType
         self._searchTerm = searchTerm
         self.content = content
     }
@@ -136,16 +136,15 @@ struct POSSearchContentView<Content: View>: View {
         POSPreSearchView(savedSearches: searchable.searchHistory,
                          onSearchSelected: { selectedSearchTerm in
             searchTerm = selectedSearchTerm
-            ServiceLocator.analytics.track(
-                event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
+            analytics.track(event: .PointOfSale.preSearchRecentTermTapped(itemListType: itemListType))
         },
-                         itemListType: searchable.itemListType
+                         itemListType: itemListType
         )
     }
 }
 
 // MARK: - Localization
-private extension POSItemType {
+extension POSItemType {
     var searchFieldLabel: String {
         switch self {
         case .product:

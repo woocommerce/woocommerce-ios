@@ -1,6 +1,5 @@
 @testable import WooCommerce
 
-@available(iOS 17.0, *)
 final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var loadItemsCalled = false
     var loadItemsBase: ItemListBaseItem?

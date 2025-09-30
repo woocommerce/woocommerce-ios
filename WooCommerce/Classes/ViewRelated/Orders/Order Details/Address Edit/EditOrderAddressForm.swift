@@ -96,8 +96,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
 
-    @State private var showingMapPicker = false
-
     var body: some View {
         Group {
             ScrollView {
@@ -574,7 +572,6 @@ struct EditAddressForm_Previews: PreviewProvider {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Single address form") {
     @Previewable @State var viewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
     ScrollView {

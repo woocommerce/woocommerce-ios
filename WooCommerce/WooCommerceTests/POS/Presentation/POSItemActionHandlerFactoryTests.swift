@@ -12,11 +12,10 @@ private enum AnalyticsKeys {
 }
 
 struct POSItemActionHandlerFactoryTests {
-    @available(iOS 17.0, *)
     @Test func products_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .products(search: false),
             searchTerm: "",
@@ -37,11 +36,10 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] as? String == "simple")
     }
 
-    @available(iOS 17.0, *)
     @Test func coupons_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .coupons(search: false),
             searchTerm: "",
@@ -62,11 +60,10 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] == nil)
     }
 
-    @available(iOS 17.0, *)
     @Test func products_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .products(search: true),
             searchTerm: "shoes",
@@ -87,11 +84,10 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] as? String == "simple")
     }
 
-    @available(iOS 17.0, *)
     @Test func coupons_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .coupons(search: true),
             searchTerm: "discount",
@@ -112,11 +108,10 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] == nil)
     }
 
-    @available(iOS 17.0, *)
     @Test func variation_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.variationActionHandler(
             itemListType: .products(search: false),
             searchTerm: "",
@@ -137,11 +132,10 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] as? String == "variation")
     }
 
-    @available(iOS 17.0, *)
     @Test func variation_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.variationActionHandler(
             itemListType: .products(search: true),
             searchTerm: "blue shirt",

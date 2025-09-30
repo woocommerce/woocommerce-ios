@@ -31,13 +31,13 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity)
-            .scrollVerticallyIfNeeded()
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
@@ -46,7 +46,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectingFailedView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel(
             error: NSError(domain: "preview.error", code: 1),

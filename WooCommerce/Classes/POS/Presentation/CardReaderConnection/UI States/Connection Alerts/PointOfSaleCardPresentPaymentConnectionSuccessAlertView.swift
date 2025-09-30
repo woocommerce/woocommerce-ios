@@ -28,7 +28,7 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectionSuccessAlertView(
         viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {}),
         animation: .init(namespace: namespace)

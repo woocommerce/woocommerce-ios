@@ -31,5 +31,6 @@ extension ShippingLabel {
     @NSManaged public var commercialInvoiceURL: String?
     @NSManaged public var usedDate: Date?
     @NSManaged public var expiryDate: Date?
+    @NSManaged public var hazmatCategory: String?
 
 }

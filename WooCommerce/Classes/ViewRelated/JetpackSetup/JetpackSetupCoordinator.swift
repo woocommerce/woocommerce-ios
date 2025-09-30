@@ -146,7 +146,7 @@ private extension JetpackSetupCoordinator {
     ///
     func checkJetpackConnectionState() async throws {
         do {
-            let user = try await fetchJetpackUser()
+            let user = try await fetchJetpackConnectionData().currentUser
             jetpackConnectedEmail = user.wpcomUser?.email
         } catch NetworkError.notFound {
             /// 404 error means Jetpack is not installed or activated yet.
@@ -222,7 +222,7 @@ private extension JetpackSetupCoordinator {
         }
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
                                                     connectionOnly: requiresConnectionOnly,
-                                                    connectionWebViewCredentials: credentials,
+                                                    wpcomCredentials: credentials,
                                                     onStoreNavigation: { [weak self] _ in
             DDLogInfo("🎉 Jetpack setup completes!")
             self?.rootViewController.topmostPresentedViewController.dismiss(animated: true, completion: {
@@ -255,7 +255,7 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             switch result {
             case .success(let site):
-                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials)
+                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
                 self.stores.updateDefaultStore(storeID: site.siteID)
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)
@@ -310,7 +310,7 @@ private extension JetpackSetupCoordinator {
     @MainActor
     func loadWPComAccountUsername(authToken: String) async -> String? {
         await withCheckedContinuation { continuation in
-            let network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
+            let network = AlamofireNetwork(credentials: Credentials(authToken: authToken), selectedSite: nil, appPasswordSupportState: nil)
             let accountAction = JetpackConnectionAction.loadWPComAccount(network: network) { account in
                 continuation.resume(returning: account?.username)
             }
@@ -319,14 +319,9 @@ private extension JetpackSetupCoordinator {
     }
 
     @MainActor
-    func fetchJetpackUser() async throws -> JetpackUser {
-        /// Jetpack setup will fail anyway without admin role, so check that first.
-        let roles = stores.sessionManager.defaultRoles
-        guard roles.contains(.administrator) else {
-            throw JetpackCheckError.missingPermission
-        }
-        return try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.fetchJetpackUser { result in
+    func fetchJetpackConnectionData() async throws -> JetpackConnectionData {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)
@@ -339,7 +334,7 @@ private extension JetpackSetupCoordinator {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
                 case let .success(systemInformation):
-                    if let plugin = systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) {
+                    if systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) != nil {
                         continuation.resume(returning: true)
                     } else {
                         continuation.resume(returning: false)
@@ -489,11 +484,13 @@ private extension JetpackSetupCoordinator {
 }
 
 // MARK: - Subtypes
-private extension JetpackSetupCoordinator {
+extension JetpackSetupCoordinator {
     enum JetpackCheckError: Int, Error {
         case missingPermission = 403
     }
+}
 
+private extension JetpackSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
     }

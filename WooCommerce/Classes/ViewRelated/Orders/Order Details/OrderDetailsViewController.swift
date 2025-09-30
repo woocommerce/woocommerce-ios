@@ -411,8 +411,6 @@ private extension OrderDetailsViewController {
             showShipmentItems(shipment: shipment)
         case .refundShippingLabel(let shippingLabel):
             refundShippingLabel(shippingLabel)
-        case .printCustomsForm(let url):
-            printCustomsForm(url: url)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):

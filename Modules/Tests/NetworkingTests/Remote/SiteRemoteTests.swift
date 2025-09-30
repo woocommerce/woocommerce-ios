@@ -323,4 +323,39 @@ final class SiteRemoteTests: XCTestCase {
             message: "The Jetpack site is inaccessible or returned an error: parse error (local). not well formed [-32710]"
         )})
     }
+
+    // MARK: - `finalizeJetpackConnection`
+
+    func test_finalizeJetpackConnection_successfully_completes() async {
+        // Given
+        let siteID: Int64 = 12345
+        let siteURL = "http://test.com"
+        let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+        let urlSuffix = "sites/\(siteID)/jetpack-remote-connect-user"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-success")
+
+        // When & Then
+        do {
+            try await remote.finalizeJetpackConnection(siteID: siteID, siteURL: siteURL, provisionResponse: provisionResponse)
+        } catch {
+            XCTFail("Unexpected failure: \(error)")
+        }
+    }
+
+    func test_finalizeJetpackConnection_properly_relays_errors() async {
+        // Given
+        let siteID: Int64 = 12345
+        let siteURL = "http://test.com"
+        let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+        let urlSuffix = "sites/\(siteID)/jetpack-remote-connect-user"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-error")
+
+        do {
+            // When
+            try await remote.finalizeJetpackConnection(siteID: siteID, siteURL: siteURL, provisionResponse: provisionResponse)
+        } catch {
+            // Then
+            XCTAssertEqual(error as? JetpackConnectionError, .alreadyConnected)
+        }
+    }
 }

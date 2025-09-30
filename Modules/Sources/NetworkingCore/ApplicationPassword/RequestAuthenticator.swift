@@ -10,6 +10,8 @@ protocol RequestAuthenticator {
     ///
     var credentials: Credentials? { get }
 
+    var jetpackSiteID: Int64? { get }
+
     /// Authenticates the provided urlRequest using the `credentials`
     ///
     /// - Parameter urlRequest: `URLRequest` to authenticate
@@ -20,6 +22,10 @@ protocol RequestAuthenticator {
     /// Generates application password
     ///
     func generateApplicationPassword() async throws
+
+    /// Delete existing application password remotely
+    ///
+    func deleteApplicationPassword() async throws
 
     /// Checks whether the given URLRequest is eligible for retyring
     ///
@@ -33,30 +39,61 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     let credentials: Credentials?
 
+    /// ID of current site if Jetpack site
+    ///
+    let jetpackSiteID: Int64?
+
     /// The use case to handle authentication with application passwords.
     ///
     private let applicationPasswordUseCase: ApplicationPasswordUseCase?
 
+    private let siteAddress: String?
+
     /// Sets up the authenticator with optional credentials and application password use case.
     /// `applicationPasswordUseCase` can be injected for unit tests.
     ///
-    init(credentials: Credentials?, applicationPasswordUseCase: ApplicationPasswordUseCase? = nil) {
+    init(credentials: Credentials?,
+         selectedSite: JetpackSite? = nil,
+         applicationPasswordUseCase: ApplicationPasswordUseCase? = nil,
+         network: Network? = nil) {
         self.credentials = credentials
-        let useCase: ApplicationPasswordUseCase? = {
+
+        self.applicationPasswordUseCase  = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
-            } else if case let .wporg(username, password, siteAddress) = credentials {
+            }
+            switch credentials {
+            case let .some(.wporg(username, password, siteAddress)):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress)
-            } else if let credentials,
-                      case .applicationPassword(_, _, let siteAddress) = credentials {
+            case .some(.applicationPassword(_, _, let siteAddress)):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
-            } else {
+            case .some(.wpcom):
+                guard let network, let selectedSite else {
+                    return nil
+                }
+                return DefaultApplicationPasswordUseCase(
+                    type: .wpcom(siteID: selectedSite.siteID),
+                    network: network
+                )
+            default:
                 return nil
             }
         }()
-        self.applicationPasswordUseCase = useCase
+
+        self.siteAddress = {
+            switch credentials {
+            case let .some(.wporg(_, _, siteAddress)):
+                return siteAddress
+            case let .some(.applicationPassword(_, _, siteAddress)):
+                return siteAddress
+            default:
+                return selectedSite?.siteAddress
+            }
+        }()
+
+        jetpackSiteID = selectedSite?.siteID
     }
 
     /// Authenticates the provided urlRequest using the `credentials`
@@ -82,6 +119,13 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         return
     }
 
+    func deleteApplicationPassword() async throws {
+        guard let applicationPasswordUseCase else {
+            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
+        }
+        try await applicationPasswordUseCase.deletePassword(locally: false)
+    }
+
     /// Checks whether the given URLRequest is eligible for retyring
     ///
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
@@ -93,16 +137,6 @@ private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     ///
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
-        let siteAddress: String? = {
-            switch credentials {
-            case let .wporg(_, _, siteAddress):
-                return siteAddress
-            case let .applicationPassword(_, _, siteAddress):
-                return siteAddress
-            default:
-                return nil
-            }
-        }()
         guard let siteAddress,
               let url = urlRequest.url,
               url.absoluteString.hasPrefix(siteAddress.trimSlashes() + "/" + RESTRequest.Settings.basePath) else {

@@ -61,15 +61,6 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Whether the button to create shipping labels should be visible.
-    ///
-    var shouldShowShippingLabelCreation: Bool {
-        if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
-            return isEligibleForShippingLabelCreation && !isEligibleForPayment && shipments.isEmpty
-        }
-        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty && !isEligibleForPayment
-    }
-
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
@@ -149,7 +140,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Products from an Order
     ///
-    var products: [Product] = []
+    var products: [OrderDetailsProduct] = []
 
     /// Product variations from an order
     ///
@@ -456,11 +447,6 @@ private extension OrderDetailsDataSource {
             configureShippingLabelDetail(cell: cell)
         case let cell as WCShipInstallTableViewCell where row == .installWCShip:
             configureInstallWCShip(cell: cell)
-        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
-             let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: false):
-            if case .shippingLabelCreationInfo(let showsSeparator) = row {
-                configureShippingLabelCreationInfo(cell: cell, showsSeparator: showsSeparator)
-            }
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LargeHeightLeftImageTableViewCell where row == .addOrderNote:
@@ -489,8 +475,6 @@ private extension OrderDetailsDataSource {
             configureCustomAmount(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
             configureCollectPaymentButton(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
-            configureCreateShippingLabelButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: true),
              let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: false),
              let cell as ButtonTableViewCell where row == .markCompleteButton(style: .secondary, showsBottomSpacing: true),
@@ -664,7 +648,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
-        cell.rightText = order.paymentTotal
+        cell.rightText = order.paymentTotal(currencyFormatter: currencyFormatter)
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
@@ -708,7 +692,7 @@ private extension OrderDetailsDataSource {
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         cell.leftText = Titles.netAmount
-        cell.rightText = order.netAmount
+        cell.rightText = order.netAmount(currencyFormatter: currencyFormatter)
         cell.hideFootnote()
     }
 
@@ -719,33 +703,6 @@ private extension OrderDetailsDataSource {
             self?.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
-    }
-
-    private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
-        cell.configure(style: .primary,
-                       title: Titles.createShippingLabel,
-                       bottomSpacing: 0) {
-            self.onCellAction?(.createShippingLabel(shipmentIndex: nil), nil)
-        }
-        cell.hideSeparator()
-    }
-
-    private func configureShippingLabelCreationInfo(cell: ImageAndTitleAndTextTableViewCell, showsSeparator: Bool) {
-        cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
-                    data: .init(title: Title.shippingLabelCreationInfoAction,
-                                image: .infoOutlineFootnoteImage,
-                                imageTintColor: .systemColor(.secondaryLabel),
-                                numberOfLinesForTitle: 0,
-                                isActionable: false,
-                                showsSeparator: showsSeparator))
-
-        cell.selectionStyle = .default
-
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = Title.shippingLabelCreationInfoAction
-        cell.accessibilityHint =
-            NSLocalizedString("Tap to show information about creating a shipping label",
-                              comment: "VoiceOver accessibility hint for the row that shows information about creating a shipping label")
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
@@ -891,13 +848,14 @@ private extension OrderDetailsDataSource {
         }
 
         let imageURL: URL? = {
-            guard let imageURLString = aggregateItem.variationID != 0 ?
-                    lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
-                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src,
-                  let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-                return nil
+            if aggregateItem.variationID != 0 {
+                guard let imageURLString = lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src,
+                      let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                    return nil
+                }
+                return URL(string: encodedImageURLString)
             }
-            return URL(string: encodedImageURLString)
+            return lookUpProduct(by: aggregateItem.productID)?.imageURL
         }()
 
         let addOns: [OrderItemProductAddOn] = {
@@ -1119,12 +1077,6 @@ private extension OrderDetailsDataSource {
             onViewLabel: { [weak self] label in
                 self?.onCellAction?(.openShippingLabelForm(shippingLabel: label), indexPath)
             },
-            onPrintLabel: { [weak self] label in
-                self?.onCellAction?(.reprintShippingLabel(shippingLabel: label), indexPath)
-            },
-            onPrintCustomsForm: { [weak self] url in
-                self?.onCellAction?(.printCustomsForm(url: url), indexPath)
-            },
             onRefund: { [weak self] label in
                 self?.onCellAction?(.refundShippingLabel(shippingLabel: label), indexPath)
             }
@@ -1234,7 +1186,7 @@ extension OrderDetailsDataSource {
         return currentSiteStatuses.filter({$0.status == order.status}).first
     }
 
-    func lookUpProduct(by productID: Int64) -> Product? {
+    func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
         return products.filter({ $0.productID == productID }).first
     }
 
@@ -1271,7 +1223,39 @@ extension OrderDetailsDataSource {
         siteShippingMethods = resultsControllers.siteShippingMethods
         productVariations = resultsControllers.productVariations
         shippingLabels = resultsControllers.shippingLabels
-        shipments = resultsControllers.shipments
+        shipments = {
+            let cachedShipments = resultsControllers.shipments
+            if cachedShipments.isNotEmpty {
+                return cachedShipments
+            }
+
+            if !isEligibleForShippingLabelCreation || shippingLabels.isNotEmpty {
+                /// Skips creating shipments if order is not eligible for creating labels
+                /// If there are labels but not shipments, the labels were created with legacy plugin,
+                /// so skip creating shipments to display them the old way instead.
+                return []
+            }
+
+            /// returns a placeholder shipment with all the order items
+            return [WooShippingShipment(
+                siteID: order.siteID,
+                orderID: order.orderID,
+                index: "0",
+                items: order.items
+                    .filter { item in
+                        let matchingProduct = products.first(where: { $0.productID == item.productOrVariationID })
+                        return matchingProduct?.virtual == false
+                    }
+                    .map { item in
+                        var subItems: [String] = []
+                        for index in 0..<item.quantity.intValue {
+                            subItems.append("\(item.itemID)-sub-\(index)")
+                        }
+                        return WooShippingShipmentItem(id: item.itemID, subItems: subItems)
+                    },
+                shippingLabel: nil
+            )]
+        }()
         shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
             shippingLabels: shippingLabels,
             orderItems: items,
@@ -1309,18 +1293,9 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
-            case (true, false, false, false):
-                // Order completed and eligible for shipping label creation:
-                rows.append(.shippingLabelCreateButton)
-                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (true, true, false, false):
-                // Order processing shippable:
-                rows.append(.shippingLabelCreateButton)
-                rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
-                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (false, true, false, false):
-                // Order processing digital:
+            switch (isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
+            case (true, false, false):
+                // Order processing:
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
             default:
                 break
@@ -1821,7 +1796,6 @@ extension OrderDetailsDataSource {
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
-        static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString(
             "OrderDetailsDataSource.configureSeeReceipt.button.title",
@@ -1854,9 +1828,6 @@ extension OrderDetailsDataSource {
         static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
-        static let shippingLabelCreationInfoAction =
-            NSLocalizedString("Learn more about creating labels with your mobile device",
-                              comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
                               comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
@@ -2021,8 +1992,6 @@ extension OrderDetailsDataSource {
         case trackingAdd
         case collectCardPaymentButton
         case installWCShip
-        case shippingLabelCreateButton
-        case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
         case shippingLabelPrintingInfo
         case shippingLabelProducts
@@ -2084,10 +2053,6 @@ extension OrderDetailsDataSource {
                 return ButtonTableViewCell.reuseIdentifier
             case .installWCShip:
                 return WCShipInstallTableViewCell.reuseIdentifier
-            case .shippingLabelCreateButton:
-                return ButtonTableViewCell.reuseIdentifier
-            case .shippingLabelCreationInfo:
-                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:
@@ -2138,7 +2103,6 @@ extension OrderDetailsDataSource {
         case createShippingLabel(shipmentIndex: Int?)
         case openShippingLabelForm(shippingLabel: ShippingLabel)
         case refundShippingLabel(shippingLabel: ShippingLabel)
-        case printCustomsForm(url: String)
         case viewShipmentItems(shipment: WooShippingShipment)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])

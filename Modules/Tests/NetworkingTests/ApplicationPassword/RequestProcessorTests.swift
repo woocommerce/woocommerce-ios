@@ -144,6 +144,23 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertTrue(shouldRetry.retryRequired)
     }
 
+    func test_request_is_scheduled_for_retry_when_requestAdaptationFailed_error_occurs() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldRetry.retryRequired)
+    }
+
     func test_request_is_scheduled_for_retry_when_401_error_occurs() throws {
         // Given
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
@@ -276,6 +293,158 @@ final class RequestProcessorTests: XCTestCase {
             (self.mockNotificationCenter.notificationObject as? ApplicationPasswordUseCaseError) == applicationPasswordGenerationError
         }
     }
+
+    // MARK: Error handling when isAuthenticatedWithWPCom is true
+
+    func test_delegate_called_when_404_error_occurs_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let notFound404Error = NetworkError.notFound(response: nil)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notFound404Error
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+        }
+    }
+
+    func test_delegate_called_when_application_password_disabled() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let response = ["error": "application_passwords_disabled"]
+        let data = try JSONEncoder().encode(response)
+        let notSupportedError = NetworkError.unacceptableStatusCode(statusCode: 501, response: data)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notSupportedError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+        }
+    }
+
+    func test_delegate_called_when_application_password_disabled_for_user() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let response = ["error": "application_passwords_disabled_for_user"]
+        let data = try JSONEncoder().encode(response)
+        let notSupportedError = NetworkError.unacceptableStatusCode(statusCode: 501, response: data)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notSupportedError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+        }
+    }
+
+    func test_request_not_retried_when_other_error_occurs_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let genericError = NSError(domain: "TestError", code: 500, userInfo: nil)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = genericError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        XCTAssertFalse(mockRequestAuthenticator.deleteApplicationPasswordCalled)
+    }
+
+    func test_request_not_retried_when_password_deletion_fails_after_409_error_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+
+        let conflict409Error = NetworkError.unacceptableStatusCode(statusCode: 409, response: nil)
+        let deletionError = NSError(domain: "TestError", code: 500, userInfo: nil)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = conflict409Error
+        mockRequestAuthenticator.mockErrorWhileDeletingPassword = deletionError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(mockRequestAuthenticator.deleteApplicationPasswordCalled)
+        XCTAssertFalse(shouldRetry.retryRequired)
+    }
 }
 
 // MARK: Helpers
@@ -299,10 +468,13 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     private(set) var authenticateCalled = false
     private(set) var generateApplicationPasswordCalled = false
+    private(set) var deleteApplicationPasswordCalled = false
 
     var credentials: Networking.Credentials? = nil
+    var jetpackSiteID: Int64?
 
     var mockErrorWhileGeneratingPassword: Error?
+    var mockErrorWhileDeletingPassword: Error?
 
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         authenticateCalled = true
@@ -316,12 +488,19 @@ private class MockRequestAuthenticator: RequestAuthenticator {
         }
     }
 
+    func deleteApplicationPassword() async throws {
+        deleteApplicationPasswordCalled = true
+        if let mockErrorWhileDeletingPassword {
+            throw mockErrorWhileDeletingPassword
+        }
+    }
+
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
         mockedShouldRetryValue ?? true
     }
 }
 
-private class MockNotificationCenter: NotificationCenter {
+private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     private(set) var notificationName: NSNotification.Name?
     private(set) var notificationObject: Any?
 
@@ -331,7 +510,7 @@ private class MockNotificationCenter: NotificationCenter {
     }
 }
 
-private class MockRequest: Alamofire.DataRequest {
+private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
     var fakeRetryCount: Int = 0
 
     override var retryCount: Int {
@@ -340,5 +519,13 @@ private class MockRequest: Alamofire.DataRequest {
 
     override var request: URLRequest? {
         return self.convertible.urlRequest
+    }
+}
+
+private class MockRequestProcessorDelegate: RequestProcessorDelegate {
+    private(set) var didFailToAuthenticateRequestForSiteID: Int64?
+
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error) {
+        didFailToAuthenticateRequestForSiteID = siteID
     }
 }

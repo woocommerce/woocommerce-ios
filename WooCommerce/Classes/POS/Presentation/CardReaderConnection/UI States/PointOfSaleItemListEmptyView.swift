@@ -1,10 +1,18 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
-@available(iOS 17.0, *)
-struct PointOfSaleItemListEmptyView: View {
+protocol POSEmptyViewModelProtocol {
+    var title: String { get }
+    var subtitle: String { get }
+    var hint: String? { get }
+    var buttonTitle: String? { get }
+    var iconName: String { get }
+}
+
+struct POSListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let viewModel: PointOfSaleItemListEmptyViewModel
+    private let viewModel: any POSEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
 
@@ -12,7 +20,7 @@ struct PointOfSaleItemListEmptyView: View {
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {
+    init(viewModel: any POSEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onAction = onAction
     }
@@ -85,8 +93,7 @@ struct PointOfSaleItemListEmptyView: View {
     }
 }
 
-@available(iOS 17.0, *)
-private extension PointOfSaleItemListEmptyView {
+private extension POSListEmptyView {
     enum Constants {
         static let iconSize: CGFloat = 88
     }
@@ -244,9 +251,8 @@ struct PointOfSaleItemListEmptyViewModel {
 
 // MARK: - Preview
 
-@available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListEmptyView(
+    POSListEmptyView(
         viewModel: PointOfSaleItemListEmptyViewModel(
             itemListType: .coupons(search: false),
             baseItem: .root
@@ -254,12 +260,15 @@ struct PointOfSaleItemListEmptyViewModel {
     ) {}
 }
 
-@available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListEmptyView(
+    POSListEmptyView(
         viewModel: PointOfSaleItemListEmptyViewModel(
             itemListType: .products(search: true),
             baseItem: .root
         )
     ) {}
 }
+
+// MARK: - Protocol Conformance
+
+extension PointOfSaleItemListEmptyViewModel: POSEmptyViewModelProtocol {}

@@ -25,6 +25,7 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
         usedDate = shippingLabel.usedDate
         expiryDate = shippingLabel.expiryDate
         shipmentID = shippingLabel.shipmentID
+        hazmatCategory = shippingLabel.hazmatCategory
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -50,7 +51,8 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               productNames: productNames,
               commercialInvoiceURL: commercialInvoiceURL,
               usedDate: usedDate,
-              expiryDate: expiryDate)
+              expiryDate: expiryDate,
+              hazmatCategory: hazmatCategory)
     }
 }
 

@@ -271,6 +271,20 @@ public extension StorageType {
         return allObjects(ofType: Product.self, matching: predicate, sortedBy: [descriptor])
     }
 
+    /// Has stored Products for the provided siteID and optional requirements.
+    ///
+    func hasProducts(siteID: Int64, status: String?, type: String?) -> Bool {
+        var predicates: [NSPredicate] = [\Product.siteID == siteID]
+        if let status {
+            predicates.append(\Product.statusKey == status)
+        }
+        if let type {
+            predicates.append(\Product.productTypeKey == type)
+        }
+        let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+        return firstObject(ofType: Product.self, matching: combinedPredicate) != nil
+    }
+
     /// Retrieves all of the stored Products matching the provided array products ids from the provided SiteID
     ///
     func loadProducts(siteID: Int64, productsIDs: [Int64]) -> [Product] {
@@ -925,5 +939,31 @@ public extension StorageType {
     func loadProductMetaData(siteID: Int64, productID: Int64) -> [MetaData] {
         let predicate = \MetaData.product?.siteID == siteID && \MetaData.product?.productID == productID
         return allObjects(ofType: MetaData.self, matching: predicate, sortedBy: nil)
+    }
+
+    // MARK: - Bookings
+
+    /// Retrieves the Stored Bookings given the IDs.
+    ///
+    func loadBookings(siteID: Int64, bookingIDs: [Int64]) -> [Booking] {
+        let predicate = NSPredicate(format: "siteID == %lld && bookingID in %@", siteID, bookingIDs)
+        let descriptor = NSSortDescriptor(keyPath: \Booking.bookingID, ascending: false)
+        return allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    // periphery: ignore
+    /// Retrieves the Stored Booking.
+    func loadBooking(siteID: Int64, bookingID: Int64) -> Booking? {
+        let predicate = \Booking.bookingID == bookingID && \Booking.siteID == siteID
+        return firstObject(ofType: Booking.self, matching: predicate)
+    }
+
+    /// Retrieves all stored bookings for a site.
+    ///
+    func loadBookings(siteID: Int64) -> [Booking]? {
+        let predicate = \Booking.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \Booking.bookingID, ascending: false)
+        let objects = allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
+        return objects.isEmpty ? nil : objects
     }
 }

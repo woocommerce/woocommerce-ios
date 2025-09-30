@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-28 13:54:05+0000 */
+/* Translation-Revision-Date: 2025-09-17 16:36:59+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "بطاقة %1$@ تنتهي بـ %2$@";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ متوفر في المخزون";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -1758,8 +1757,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "إنشاء قسيمة";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "إنشاء ملصق الشحن";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1927,9 +1925,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "تجب طباعة الاستمارات الجمركية وتضمينها في عمليات الشحن الدولية هذه";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "توقف عن الذهاب إلى مكتب البريد عن طريق طباعة ملصقات الشحن في المنزل باستخدام جهازك المحمول بأسعار مخفضة!";
 
 /* Country option for a site address. */
 "Cyprus" = "قبرص";
@@ -3211,8 +3206,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "قيد التقدم";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "متوفِّر";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -3580,8 +3574,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "تعرّف على كيفية تعبئة الموارد الخطيرة وتغليفها ووضع الملصقات عليها وشحنها من خلال USPS® في %1$@.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3602,9 +3595,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "معرفة المزيد حول قراء البطاقات";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "معرفة المزيد حول إنشاء ملصقات باستخدام جهازك المحمول";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -4957,6 +4947,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "الإضافات";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "الوثائق";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "الحصول على الدعم";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "تعرف على المنتجات المدعومة في نقطة البيع (POS)";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "أين منتجاتي؟";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "إلغاء";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "المساعدة";
+
 /* Country option for a site address. */
 "Poland" = "بولندا";
 
@@ -5692,9 +5702,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "توفير الوقت والمال";
-
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "ادخر الوقت والمال عن طريق الالتزام بالشحن عبر WooCommerce";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "جارٍ حفظ منتجك...";
@@ -6498,9 +6505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "اضغط لتعديل كمية استرداد العنصر";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "اضغط لعرض معلومات حول إنشاء ملصق الشحن";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "اضغط لعرض الإرشادات حول كيفية طباعة تسمية الشحن على جهازك المحمول";
@@ -7960,9 +7964,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "إعداد WooCommerce";
 
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "الشحن عبر WooCommerce";
-
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "لا يدعم WooCommerce Shipping حاليًا عمليات شحن الموارد الخطيرة من خلال %1$@.";
 
@@ -8271,6 +8272,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "الربط بمتجر موجود";
+
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "إغلاق";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "استخدام هذا العنوان";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "حاول البحث دون أرقام الشقق أو الأجنحة أو الطوابق. يمكنك إضافة هذه التفاصيل إلى سطر العنوان 2 لاحقًا.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "لم يتم العثور على نتائج";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "البحث عن عنوان";
 
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "عادي";
@@ -8777,11 +8793,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "في كل مكان";
 
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "أنا أوافق على فرض رسوم متكررة تصل إلى **$%1$.0f أسبوعيًا** بداية من **%2$@**. قد تُفرض الرسوم في أوقات مختلفة خلال الحملة.";
+
 /* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
 "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "أوافق على دفع رسوم تصل إلى **$%1$.0f** بداية من **%2$@**. قد تُفرض رسوم في عملية دفع واحدة أو أكثر عندما تكون الحملة نشطة.";
 
 /* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
 "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "أوافق على فرض رسوم متكررة **رسوم أسبوعية تصل إلى $%1$.0f** بداية من **%2$@**. قد تُفرض الرسوم في أوقات مختلفة خلال الحملة.";
+
+/* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@؛ سأدفع فقط مقابل الإعلانات المُسلمة حتى الإلغاء.";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f من الدولارات الأمريكية";
@@ -9152,6 +9174,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for the start date picker on the Blaze campaign duration setting screen */
 "blazeScheduleSettingView.startDateAccessibilityHint" = "انقر نقرة مزدوجة لتحرير تاريخ بدء الحملة";
 
+/* Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date. */
+"blazeScheduleSettingView.startDateAccessibilityLabel" = "تاريخ بدء الحملة هو %@";
+
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "كل الأجهزة";
 
@@ -9423,14 +9448,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "شهد إجمالي الطلبات تغييرًا منذ بداية الدفع. يرجى الرجوع والتحقق من أن الطلب صحيح، ثم محاولة الدفع مجددًا.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "يجب أن يكون المبلغ أكبر من الإجمالي أو يساويه.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "التغيير المستحق: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "خطأ في أثناء محاولة معالجة المدفوعات. حاول مرة أخرى.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "يُحدِّد المنتج لحملة Blaze.";
@@ -9897,6 +9916,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "الوسائط على الجهاز";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "بحث على الخريطة";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "عنوان الفوترة";
 
@@ -9996,6 +10018,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "عرض التفاصيل";
+
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "قم بتمكين %@ للسماح للتطبيق بجلب البيانات مباشرة من موقع WooCommerce الخاص بك بدلاً من خلال اتصالات Jetpack";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "كلمات مرور التطبيقات";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "كلمات مرور التطبيقات";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "موافق";
@@ -10702,12 +10733,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "⁦%1$d⁩ من العناصر";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "طباعة نموذج الجمارك";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "طباعة ملصق الشحن (%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "أرسلتَ طلب استرداد الأموال بنجاح. يمكنك شراء ملصق جديد.";
 
@@ -10885,8 +10910,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "الرمز الشريطي قصير جدًا";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "فحص الرمز الشريطي الجزئي";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "لم يرسل الماسح الضوئي حرف نهاية السطر";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "فشل طلب الشبكة";
@@ -11251,8 +11276,8 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "لم يتم تطبيق القسيمة";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "مسح الرمز الشريطي";
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "إعداد الماسح الضوئي للرمز الشريطي";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "يرجى الانتظار";
@@ -11266,6 +11291,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "الحصول على الدعم";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "الطلبات";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "أين منتجاتي؟";
 
@@ -11277,6 +11305,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "فصل الربط";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "الإعدادات";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "الوثائق";
@@ -11333,7 +11364,115 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "إلغاء";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "تم";
+"pointOfSaleDashboard.support.cancel" = "إلغاء";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "غير معروف";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "تعرف على المزيد حول قبول المدفوعات باستخدام الهاتف المحمول";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "الوثائق";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "القارئ غير متصل";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "قارئات البطاقات";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "تكوين إعدادات الماسح الضوئي للرمز الشريطي";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "الماسحات الضوئية للرمز الشريطي";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "إدارة عمليات ربط قارئ البطاقات";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "قارئات البطاقات";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "الأجهزة";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "البطارية";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "النموذج";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "تعرف على المزيد حول المسح الضوئي للرمز الشريطي في نقطة البيع (POS)";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "الوثائق";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "قم بتكوين الماسح الضوئي للرمز الشريطي الخاص بك واختباره";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "إعداد الماسح الضوئي";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "الماسحات الضوئية للرمز الشريطي";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "لم يتم التعيين";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "العنوان";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "البريد الإلكتروني";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "لم يتم التعيين";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "رقم الهاتف";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "العنوان الفعلي";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "معلومات الإيصال";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "اسم المتجر";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "سياسة الاسترداد والإرجاع";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeInformation" = "معلومات المتجر";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "اسم المتجر";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "المتجر";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "الإعدادات";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "إدارة عمليات ربط الأجهزة";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "الأجهزة";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "احصل على المساعدة والدعم";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "المساعدة";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "تكوين المتجر والإعدادات";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "المتجر";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "مسح الرمز الشريطي";
@@ -11377,6 +11516,9 @@ which should be translated separately and considered part of this sentence. */
 /* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
 "pos.barcodeInfoModal.productSetup.linkText" = "تفضَّل بزيارة الوثائق.";
 
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "يمكنك إعداد الرموز الشريطية في حقول \"GTIN، UPC، EAN، ISBN\" من خلال علامة تبويب مخزون المنتج. للحصول على مزيد من التفاصيل %1$@.";
+
 /* Accessible version of product setup message, announcing link for screen readers */
 "pos.barcodeInfoModal.productSetup.message.accessible" = "يمكنك إعداد الرموز الشريطية في حقول G-T-I-N, U-P-C, E-A-N, I-S-B-N من خلال علامة تبويب مخزون المنتج. للحصول على مزيد من التفاصيل، تفضَّل بزيارة الوثائق، الرابط.";
 
@@ -11404,14 +11546,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "رجوع";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "صورة كود مطلوب مسحه ضوئيًا بواسطة ماسح الرمز الشريطي.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "أنت مستعد لبدء المسح الضوئي للمنتجات. في المرة القادمة التي تحتاج فيها إلى توصيل الماسح الضوئي، ما عليك سوى تشغيله وسيتم إعادة توصيله تلقائيًا.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "انتهى إعداد الماسح الضوئي!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "تم";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "الرجوع";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "يُرجى التحقق من دليل الماسح الضوئي وإعادة ضبطه إلى إعدادات المصنع، ثم إعادة محاولة ضبط إعدادات التدفق.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "إعادة المحاولة";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "تم العثور على مشكلة في المسح الضوئي";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "أستخدم ماسحك الضوئي للرمز الشريطي لمسح الرمز أدناه لتمكين وضع بلوتوث HID.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11422,17 +11582,77 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "أخرى";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "أستخدم ماسحك الضوئي للرمز الشريطي لمسح الكود أدناه لدخول وضع الاقتران.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "مكّن تقنية بلوتوث وحدد ماسحك الضوئي %1$@ في إعدادات تقنية بلوتوث في نظام التشغيل iOS. سيصدر الماسح الضوئي صوت صفير ويعرض مؤشر LED إضاءة ثابتة عند الاقتران.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "انتقل إلى إعدادات جهازك";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "إقران ماسحك الضوئي";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "كيفية إعداد الرمز الشريطي للمنتجات";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "كيفية إعداد الرمز الشريطي للمنتجات";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "إعداد الماسح الضوئي";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "إعداد الماسح الضوئي";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "ماسح ضوئي آخر";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "قم بإعداد ماسح الرمز الشريطي";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "حدد نموذجًا من القائمة:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "ستار بي إس إتش-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "امسح الرمز الشريطي ضوئيًا لاختبار ماسحك الضوئي.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "امسح الرمز الشريطي ضوئيا لاختبار ماسحك الضوئي. إذا استمرت المشكلة، فيُرجى التحقق من إعدادات البلوتوث وإعادة المحاولة.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "لم نعثر على بيانات الفحص حتى الآن";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "اختبر ماسحك الضوئي";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "النقر على منتج إلى \n إضافته إلى عربة التسوق";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "النقر على منتج من أجل \n إضافته إلى عربة التسوق، أو ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "عربة التسوق";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "مسح الكود الشريطي ضوئيًا";
 
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "السداد";
@@ -11566,6 +11786,60 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "تجاهل";
 
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "المنتجات";
+
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "الطلب";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "الإجماليات";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "إجمالي الخصم";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "المبلغ الصافي للمدفوعات";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "الطلب رقم %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel" = "المبلغ المدفوع";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "المنتجات";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "المنتجات";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "السبب: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "المبلغ المسترد";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "الضرائب";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "الإجمالي";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "الإجماليات";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "يتعذر تحميل طلبات إضافية";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "يتعذر تحميل الطلبات";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "الطلبات";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "خيارات متوفرة";
 
@@ -11640,6 +11914,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "غير متوفر في المخزون";
+
+/* Title for the Point of Sale tab. */
+"pos.tab.title" = "POS";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "طلب جديد";
@@ -11983,6 +12260,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "تم تحديد %ld من المنتجات";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "منتجات الاشتراك غير مدعومة لإنشاء الطلب";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "إلغاء";
 
@@ -12191,6 +12471,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value for a shipping item row. The %1$@ is details text. The %2$@ is weight. The %3$@ is a total price */
 "shipping_item_row.accessibility_value.format" = "%1$@، الوزن: %2$@، السعر الإجمالي: %3$@";
 
+/* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
+"shipping_item_row.quantity.format" = "⁦%1$d⁩ من العناصر من %2$@";
+
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "إلغاء";
 
@@ -12334,6 +12617,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "يتعذر إحضار إحصاءات اليوم";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ متوفر في المخزون";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "متوفر في المخزون";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "تم";
@@ -12639,8 +12928,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
 "upsTermsView.cancel" = "إلغاء";
 
+/* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
+"upsTermsView.checkbox1" = "أوافق على %1$@.";
+
 /* The second checkbox on the UPS Terms and Conditions view. The placeholder is a link to the list of prohibited items. Reads as: 'I will not ship any Prohibited Items that UPS® disallows, nor any regulated items without the necessary permissions.' */
 "upsTermsView.checkbox2" = "لن أشحن أي%1$@ لا تسمح بها UPS®، ولا أي عناصر منظَّمة من دون الحصول على الصلاحيات الضرورية.";
+
+/* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
+"upsTermsView.checkbox3" = "أوافق أيضا على %1$@.";
 
 /* Button to confirm all agreements on the UPS Terms and Conditions view */
 "upsTermsView.confirmButton" = "التأكيد والاستمرار";

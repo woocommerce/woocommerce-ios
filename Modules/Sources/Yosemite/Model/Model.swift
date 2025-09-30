@@ -25,6 +25,7 @@ public typealias BlazeTargetLanguage = Networking.BlazeTargetLanguage
 public typealias BlazeTargetOptions = Networking.BlazeTargetOptions
 public typealias BlazeTargetLocation = Networking.BlazeTargetLocation
 public typealias BlazeTargetTopic = Networking.BlazeTargetTopic
+public typealias Booking = Networking.Booking
 public typealias CreateBlazeCampaign = Networking.CreateBlazeCampaign
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
@@ -50,7 +51,8 @@ public typealias GoogleAdsCampaignStatsTotals = Networking.GoogleAdsCampaignStat
 public typealias GoogleAdsCampaignStatsItem = Networking.GoogleAdsCampaignStatsItem
 public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
-public typealias JetpackUser = Networking.JetpackUser
+public typealias JetpackConnectionData = Networking.JetpackConnectionData
+public typealias JetpackConnectionProvisionResponse = Networking.JetpackConnectionProvisionResponse
 public typealias JustInTimeMessageHook = Networking.JustInTimeMessagesRemote.MessagePath.Hook
 public typealias Media = Networking.Media
 public typealias MetaContainer = Networking.MetaContainer
@@ -264,6 +266,8 @@ public typealias StorageBlazeCampaignListItem = Storage.BlazeCampaignListItem
 public typealias StorageBlazeTargetDevice = Storage.BlazeTargetDevice
 public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
 public typealias StorageBlazeTargetTopic = Storage.BlazeTargetTopic
+// periphery: ignore
+public typealias StorageBooking = Storage.Booking
 public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer
@@ -347,6 +351,22 @@ public typealias StorageWooShippingCustomPackage = Storage.WooShippingCustomPack
 public typealias StorageWooShippingSavedPredefinedPackage = Storage.WooShippingSavedPredefinedPackage
 public typealias StorageWooShippingShipment = Storage.WooShippingShipment
 public typealias StorageWooShippingOriginAddress = Storage.WooShippingOriginAddress
+
+// MARK: - GRDB Persisted Models
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedSite = Storage.PersistedSite
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProduct = Storage.PersistedProduct
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductAttribute = Storage.PersistedProductAttribute
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductImage = Storage.PersistedProductImage
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductVariation = Storage.PersistedProductVariation
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductVariationAttribute = Storage.PersistedProductVariationAttribute
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductVariationImage = Storage.PersistedProductVariationImage
 
 // MARK: - Internal ReadOnly Models
 

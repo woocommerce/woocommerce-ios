@@ -50,6 +50,10 @@ public enum WooAPIVersion: String {
     ///
     case wooShipping = "wcshipping/v1"
 
+    /// WooCommerce Bookings Plugin V1.
+    ///
+    case wcBookings = "wc-bookings/v2"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

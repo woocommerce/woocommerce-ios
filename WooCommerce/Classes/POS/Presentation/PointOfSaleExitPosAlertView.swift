@@ -1,8 +1,8 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleExitPosAlertView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.posAnalytics) private var analytics
     @Binding private var isPresented: Bool
 
     init(isPresented: Binding<Bool>) {
@@ -28,7 +28,7 @@ struct PointOfSaleExitPosAlertView: View {
                 .font(.posBodyLargeRegular())
                 .foregroundColor(Color.posOnSurface)
             Button {
-                ServiceLocator.analytics.track(.pointOfSaleExitConfirmed)
+                analytics.track(.pointOfSaleExitConfirmed)
                 dismiss()
             } label: {
                 Text(Localization.exitButton)
@@ -39,7 +39,6 @@ struct PointOfSaleExitPosAlertView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleExitPosAlertView {
     enum Constants {
         static let verticalSpacing: CGFloat = POSSpacing.xLarge
@@ -66,7 +65,6 @@ private extension PointOfSaleExitPosAlertView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleExitPosAlertView(isPresented: .constant(true))
 }

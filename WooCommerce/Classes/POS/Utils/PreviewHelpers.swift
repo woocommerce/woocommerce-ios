@@ -22,6 +22,13 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
+import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
+import typealias Yosemite.OrderItemAttribute
+import class Yosemite.POSOrderListService
+import class Yosemite.POSOrderListFetchStrategyFactory
+import struct Yosemite.Site
 
 // MARK: - PreviewProvider helpers
 //
@@ -82,7 +89,6 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
     }
 }
 
-@available(iOS 17.0, *)
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
@@ -95,7 +101,6 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func clearSearchItems(baseItem: ItemListBaseItem) { }
 }
 
-@available(iOS 17.0, *)
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
@@ -130,7 +135,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     }
 }
 
-@available(iOS 17.0, *)
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem) { }
 }
@@ -204,7 +208,6 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
     func stopObserving() {}
 }
 
-@available(iOS 17.0, *)
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -213,25 +216,183 @@ struct POSPreviewHelpers {
         couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
+        settingsController: PointOfSaleSettingsControllerProtocol = PointOfSaleSettingsPreviewController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService()
+        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
+        featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0)),
+            entryPointController: POSEntryPointController(
+                eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock()),
+                featureFlagService: featureFlags),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
             couponsSearchController: couponsSearchController,
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
+            settingsController: settingsController,
+            analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
             barcodeScanService: barcodeScanService
         )
     }
+
+    static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
+        return POSOrderListModel(
+            ordersController: POSConfigurablePreviewOrderListController(state: state),
+            receiptSender: POSReceiptSenderPreview())
+    }
+
+    static func makePreviewOrder() -> POSOrder {
+        return POSOrder(
+            id: 1,
+            number: "1001",
+            dateCreated: Date(),
+            status: .completed,
+            formattedTotal: "$45.75",
+            formattedSubtotal: "$41.99",
+            customerEmail: "customer@example.com",
+            paymentMethodID: "cod",
+            paymentMethodTitle: "Cash on Delivery",
+            lineItems: [
+                POSOrderItem(itemID: 1,
+                             name: "Premium Coffee Beans",
+                             quantity: 2.0,
+                             formattedPrice: "$12.50",
+                             formattedTotal: "$25.00",
+                             imageSrc: nil,
+                             attributes: []),
+                POSOrderItem(
+                    itemID: 2,
+                    name: "Organic Tea - Earl Grey",
+                    quantity: 1.0,
+                    formattedPrice: "$15.99",
+                    formattedTotal: "$15.99",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
+                        OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
+                    ]
+                )
+            ],
+            refunds: [],
+            formattedDiscountTotal: "$0.00",
+            formattedTotalTax: "$3.76",
+            formattedPaymentTotal: "$45.75",
+            formattedNetAmount: nil
+        )
+    }
+}
+
+// MARK: - Preview Orders Controller
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
+    let ordersViewState: POSOrderListState
+
+    init(state: POSOrderListState? = nil) {
+        let orders = [
+            POSOrder(
+                id: 1,
+                number: "1001",
+                dateCreated: Date(),
+                status: .completed,
+                formattedTotal: "$45.75",
+                formattedSubtotal: "$40.99",
+                customerEmail: "customer@example.com",
+                paymentMethodID: "cod",
+                paymentMethodTitle: "Cash on Delivery",
+                lineItems: [
+                    POSOrderItem(itemID: 1,
+                                 name: "Premium Coffee Beans",
+                                 quantity: 2.0,
+                                 formattedPrice: "$12.50",
+                                 formattedTotal: "$25.00",
+                                 imageSrc: nil,
+                                 attributes: []),
+                    POSOrderItem(
+                        itemID: 2,
+                        name: "Organic Tea - Earl Grey",
+                        quantity: 1.0,
+                        formattedPrice: "$15.99",
+                        formattedTotal: "$15.99",
+                        imageSrc: nil,
+                        attributes: [
+                            OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
+                            OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
+                        ]
+                    )
+                ],
+                refunds: [],
+                formattedDiscountTotal: "-$5.24",
+                formattedTotalTax: "$4.75",
+                formattedPaymentTotal: "$45.75",
+                formattedNetAmount: nil
+            ),
+            POSOrder(
+                id: 2,
+                number: "1002",
+                dateCreated: Date().addingTimeInterval(-3600),
+                status: .processing,
+                formattedTotal: "$89.50",
+                formattedSubtotal: "$89.96",
+                customerEmail: "very.long.customer.email@withverylongdomainname.com",
+                paymentMethodID: "woocommerce_payments",
+                paymentMethodTitle: "WooCommerce Payments",
+                lineItems: [
+                    POSOrderItem(
+                        itemID: 3,
+                        name: "Artisan Chocolate Box",
+                        quantity: 3.0,
+                        formattedPrice: "$19.99",
+                        formattedTotal: "$59.97",
+                        imageSrc: nil,
+                        attributes: []
+                    ),
+                    POSOrderItem(
+                        itemID: 4,
+                        name: "Gourmet Cookie Set - Mixed",
+                        quantity: 1.0,
+                        formattedPrice: "$29.99",
+                        formattedTotal: "$29.99",
+                        imageSrc: nil,
+                        attributes: [
+                            OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
+                            OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")
+                        ]
+                    )
+                ],
+                refunds: [
+                    POSOrderRefund(
+                        refundID: 1,
+                        formattedTotal: "-$19.99",
+                        reason: "Customer requested partial refund"
+                    )
+                ],
+                formattedDiscountTotal: "-$15.00",
+                formattedTotalTax: "$8.95",
+                formattedPaymentTotal: "$89.50",
+                formattedNetAmount: "$69.51"
+            )
+        ]
+        self.ordersViewState = state ?? .loaded(orders, hasMoreItems: false)
+    }
+
+    var selectedOrder: POSOrder? {
+        ordersViewState.orders.first
+    }
+
+    func loadOrders() async {}
+    func loadNextOrders() async {}
+    func refreshOrders() async {}
+    func selectOrder(_ order: POSOrder?) {}
+    func updateOrder(orderID: Int64) async throws {}
+    func searchOrders(searchTerm: String) async {}
+    func clearSearchOrders() {}
 }
 
 // MARK: - Barcode Scan Service
@@ -239,6 +400,10 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         return mockSimpleProductItem(id: 5, price: "35.50")
     }
+}
+
+final class POSReceiptSenderPreview: POSReceiptSending {
+    func sendReceipt(orderID: Int64, recipientEmail: String) async throws {}
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
@@ -277,6 +442,15 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackReceiptPrintCanceled() {}
 
     func trackReceiptPrintFailed(error: any Error) {}
+}
+
+final class POSPreviewServices: POSDependencyProviding {
+    var analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
+    var currency: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
+    var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+    var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
+    var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
+    var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
 }
 
 #endif

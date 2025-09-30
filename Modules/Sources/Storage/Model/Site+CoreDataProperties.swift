@@ -29,6 +29,9 @@ extension Site {
     @NSManaged public var canBlaze: Bool
     @NSManaged public var wasEcommerceTrial: Bool
     @NSManaged public var hasSSOEnabled: Bool
+    @NSManaged public var isGarden: Bool
+    @NSManaged public var gardenName: String?
+    @NSManaged public var gardenPartner: String?
 
 }
 

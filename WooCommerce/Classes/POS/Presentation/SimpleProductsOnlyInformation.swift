@@ -1,14 +1,11 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
-    let deepLinkNavigator: DeepLinkNavigator?
+    @Environment(\.posExternalNavigation) private var navigation
 
-    init(isPresented: Binding<Bool>,
-         deepLinkNavigator: DeepLinkNavigator? = AppDelegate.shared.tabBarController) {
+    init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
-        self.deepLinkNavigator = deepLinkNavigator
     }
 
     var body: some View {
@@ -24,7 +21,7 @@ struct SimpleProductsOnlyInformation: View {
                 Spacer().frame(height: POSSpacing.small)
 
                 Button {
-                    deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
+                    navigation.navigateToCreateOrder()
                 } label: {
                     Label(Localization.modalAction, systemImage: "plus")
                         .font(.posBodySmallRegular())
@@ -48,7 +45,6 @@ struct SimpleProductsOnlyInformation: View {
 }
 
 // Constants and Localization enums
-@available(iOS 17.0, *)
 private extension SimpleProductsOnlyInformation {
     enum Localization {
         static let modalTitle = NSLocalizedString(
@@ -85,8 +81,6 @@ private extension SimpleProductsOnlyInformation {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
-    SimpleProductsOnlyInformation(isPresented: .constant(true),
-                                  deepLinkNavigator: nil)
+    SimpleProductsOnlyInformation(isPresented: .constant(true))
 }

@@ -14,7 +14,6 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 
-@available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
 
@@ -24,7 +23,6 @@ protocol PointOfSaleAggregateModelProtocol {
     var paymentState: PointOfSalePaymentState { get }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
-    var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel? { get set }
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
@@ -50,7 +48,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func pointOfSaleClosed()
 }
 
-@available(iOS 17.0, *)
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
@@ -58,7 +55,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
+    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     private var onOnboardingCancellation: (() -> Void)?
 
     private(set) var cart: Cart = .init()
@@ -72,10 +69,11 @@ protocol PointOfSaleAggregateModelProtocol {
     let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
     let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    let settingsController: PointOfSaleSettingsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
@@ -107,7 +105,8 @@ protocol PointOfSaleAggregateModelProtocol {
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         analytics: Analytics = ServiceLocator.analytics,
+         settingsController: PointOfSaleSettingsControllerProtocol,
+         analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
@@ -121,6 +120,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
+        self.settingsController = settingsController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
@@ -136,7 +136,6 @@ protocol PointOfSaleAggregateModelProtocol {
 }
 
 // MARK: - Cart
-@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
@@ -188,7 +187,6 @@ extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Barcode Scanning
-@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) {
         Task { @MainActor [weak self] in
@@ -265,7 +263,6 @@ extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Search
-@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func saveSearchTerm(_ term: String, for itemType: POSItemType) {
         searchHistoryService.saveSuccessfulSearch(term: term, for: itemType)
@@ -277,7 +274,6 @@ extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Track events
-@available(iOS 17.0, *)
 private extension PointOfSaleAggregateModel {
     func trackCustomerInteractionStarted() {
         // At the moment we're assumming that an interaction starts simply when the cart is zero
@@ -305,7 +301,6 @@ private extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Card payments
-@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     private func publishCardReaderConnectionStatus() {
         cardPresentPaymentService.readerConnectionStatusPublisher
@@ -373,7 +368,7 @@ extension PointOfSaleAggregateModel {
     // Once we get the callback from the card service, we switch to cash collection state
     @MainActor
     func startCashPayment() async {
-        analytics.track(.pointOfSaleCashPaymentTapped)
+        analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
         paymentState.cash = .collectingCash
     }
@@ -460,15 +455,15 @@ extension PointOfSaleAggregateModel {
 
     /// Called when the onboarding UI is dismissed.
     /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
-    /// by setting `cardPresentPaymentOnboardingViewModel` to nil, the second time triggered by internal dismissal.
+    /// by setting `cardPresentPaymentOnboardingViewContainer` to nil, the second time triggered by internal dismissal.
     /// For internal dismissal (tapping outside the modal), this method is called once.
     /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
     func cancelCardPaymentsOnboarding() {
-        guard let onboardingViewModel = cardPresentPaymentOnboardingViewModel else {
+        guard let onboardingViewContainer = cardPresentPaymentOnboardingViewContainer else {
             return
         }
-        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
-        cardPresentPaymentOnboardingViewModel = nil
+        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewContainer.configuration.state))
+        cardPresentPaymentOnboardingViewContainer = nil
         onOnboardingCancellation?()
     }
 
@@ -478,7 +473,6 @@ extension PointOfSaleAggregateModel {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleAggregateModel {
     func publishPaymentMessages() {
         cardPresentPaymentService.paymentEventPublisher
@@ -535,16 +529,16 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
 
         cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> CardPresentPaymentsOnboardingViewModel? in
+            .map { [weak self] event -> CardPresentPaymentOnboardingViewContainer? in
                 guard let self else { return nil }
-                guard case let .showOnboarding(viewModel, onCancel) = event else {
+                guard case let .showOnboarding(factory, onCancel) = event else {
                     return nil
                 }
                 onOnboardingCancellation = onCancel
-                return viewModel
+                return factory
             }
-            .sink(receiveValue: { [weak self] onboardingViewModel in
-                self?.cardPresentPaymentOnboardingViewModel = onboardingViewModel
+            .sink(receiveValue: { [weak self] factory in
+                self?.cardPresentPaymentOnboardingViewContainer = factory
             })
             .store(in: &cancellables)
     }
@@ -596,7 +590,6 @@ private extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Order syncing
-@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
@@ -611,7 +604,6 @@ extension PointOfSaleAggregateModel {
 }
 
 // MARK: - Lifecycle
-@available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func pointOfSaleClosed() {
         // We cancel any payment to prevent the reader from remaining live and awaiting a card tap. Otherwise, it would
@@ -634,7 +626,6 @@ extension PointOfSaleAggregateModel {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1

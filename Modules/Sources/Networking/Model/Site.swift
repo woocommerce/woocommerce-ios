@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///
@@ -92,6 +93,22 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     ///
     public let hasSSOEnabled: Bool
 
+    /// Whether application password authentication is available
+    ///
+    public let applicationPasswordAvailable: Bool
+
+    /// Whether the site is running on Garden architecture
+    ///
+    public let isGarden: Bool
+
+    /// The site Garden name is present
+    ///
+    public let gardenName: String?
+
+    /// The site Garden partner if present
+    ///
+    public let gardenPartner: String?
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -135,6 +152,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
             return jetpackModules.contains(OptionKeys.sso.rawValue) == true
         }()
 
+        let isGarden = try siteContainer.decodeIfPresent(Bool.self, forKey: .isGarden) ?? false
+        let gardenName = try siteContainer.decodeIfPresent(String.self, forKey: .gardenName)
+        let gardenPartner = try siteContainer.decodeIfPresent(String.self, forKey: .gardenPartner)
+
         self.init(siteID: siteID,
                   name: name,
                   description: description,
@@ -156,7 +177,11 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   canBlaze: canBlaze,
                   isAdmin: isAdmin,
                   wasEcommerceTrial: wasEcommerceTrial,
-                  hasSSOEnabled: hasSSOEnabled)
+                  hasSSOEnabled: hasSSOEnabled,
+                  applicationPasswordAvailable: false, // to be updated by fetching SiteAPI
+                  isGarden: isGarden,
+                  gardenName: gardenName,
+                  gardenPartner: gardenPartner)
     }
 
     /// Designated Initializer.
@@ -182,7 +207,11 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                 canBlaze: Bool,
                 isAdmin: Bool,
                 wasEcommerceTrial: Bool,
-                hasSSOEnabled: Bool) {
+                hasSSOEnabled: Bool,
+                applicationPasswordAvailable: Bool,
+                isGarden: Bool,
+                gardenName: String?,
+                gardenPartner: String?) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -205,6 +234,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         self.isAdmin = isAdmin
         self.wasEcommerceTrial = wasEcommerceTrial
         self.hasSSOEnabled = hasSSOEnabled
+        self.applicationPasswordAvailable = applicationPasswordAvailable
+        self.isGarden = isGarden
+        self.gardenName = gardenName
+        self.gardenPartner = gardenPartner
     }
 }
 
@@ -256,6 +289,9 @@ private extension Site {
         case isJetpackConnected          = "jetpack_connection"
         case wasEcommerceTrial           = "was_ecommerce_trial"
         case jetpackModules = "jetpack_modules"
+        case isGarden = "is_garden"
+        case gardenName = "garden_name"
+        case gardenPartner = "garden_partner"
     }
 
     enum PlanInfo: String, CodingKey {
@@ -314,6 +350,10 @@ public extension Site {
     ///
     var isPrivateWPCOMSite: Bool {
         return isWordPressComStore && (visibility == .privateSite)
+    }
+
+    func toJetpackSite() -> JetpackSite {
+        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

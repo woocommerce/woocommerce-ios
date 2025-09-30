@@ -44,8 +44,7 @@ which should be translated separately and considered part of this sentence. */
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ Copy";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ in stock";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -567,6 +566,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shipping Label Suggested address entered placeholder */
 "Address Suggested" = "Address Suggested";
+
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "Close";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "Use This Address";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "Try searching without apartment, suite, or floor numbers. You can add those details to Address Line 2 later.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "No Results Found";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "Search for an address";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "Adds product to order." = "Adds product to order.";
@@ -2650,14 +2664,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Collect payments, setup Tap to Pay, order card readers and more.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Amount must be more or equal to total.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "Change due: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Error trying to process payment. Try again.";
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Order total has changed since the beginning of payment. Please go back and check the order is correct, then try the payment again.";
@@ -3099,8 +3107,7 @@ which should be translated separately and considered part of this sentence. */
 "Create order" = "Create order";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "Create Shipping Label";
 
 /* Title on the variations list screen when there are no variations */
@@ -3484,9 +3491,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "Customs forms must be printed and included on these international shipments";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!";
 
 /* Country option for a site address. */
 "Cyprus" = "Cyprus";
@@ -3982,6 +3986,9 @@ which should be translated separately and considered part of this sentence. */
 /* The string to show on order taxes when they are calculated based on the shop base address */
 "editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "Calculated on shop base address.";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "Find on Map";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "Billing Address";
 
@@ -4430,6 +4437,15 @@ which should be translated separately and considered part of this sentence. */
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Experimental Features";
+
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "Enable %@ to let the app fetch data directly from your WooCommerce site rather than via Jetpack connections";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "Application Passwords";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "Application Passwords";
 
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "Expire after: %@";
@@ -5126,11 +5142,7 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit.";
 
-/* Accessibility label for an indeterminate loading indicator */
-"In progress" = "In progress";
-
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "In stock";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -5563,8 +5575,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -5580,9 +5591,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "Learn more about card readers";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "Learn more about creating labels with your mobile device";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
 "Learn more about HS Tariff Number" = "Learn more about HS Tariff Number";
@@ -6982,12 +6990,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d item";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "Print customs form";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "Print Shipping Label (%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "You have successfully submitted a request for refund. You can purchase a new label.";
 
@@ -7592,8 +7594,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "Barcode too short";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "Partial barcode scan";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "The scanner did not send an end-of-line character";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Network request failed";
@@ -7958,8 +7960,8 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon not applied";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Barcode scanning";
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Initial barcode scanner setup";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Please wait";
@@ -7973,6 +7975,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Get Support";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Orders";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Where are my products?";
 
@@ -7984,6 +7989,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Disconnecting";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Settings";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Documentation";
@@ -8040,7 +8048,141 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancel";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "Done";
+"pointOfSaleDashboard.support.cancel" = "Cancel";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Unknown";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Learn more about accepting mobile payments";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Documentation";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Reader not connected";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Card readers";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Configure barcode scanner settings";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Barcode scanners";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Manage card reader connections";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Card readers";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Hardware";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Battery";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "Model";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Learn more about barcode scanning in POS";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Documentation";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Configure and test your barcode scanner";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Scanner Setup";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Barcode scanners";
+
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Documentation";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Get Support";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Learn about which products are supported in POS";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Where are my products?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Cancel";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "Help";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "Not set";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "Address";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "Email";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "Not set";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Phone number";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Physical address";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Receipt Information";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Store name";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Refund & Returns Policy";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeInformation" = "Store Information";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "Store name";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "Store";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "Settings";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Manage hardware connections";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Hardware";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Get help and support";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Help";
+
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Manage catalog settings";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Catalog";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Store configuration and settings";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Store";
 
 /* Country option for a site address. */
 "Poland" = "Poland";
@@ -8124,14 +8266,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "Back";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Image of a code to be scanned by a barcode scanner.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "You are ready to start scanning products. Next time you need to connect your scanner, just turn it on and it will reconnect automatically.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "Scanner set up!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "Done";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "Back";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Please check the scanner's manual and reset it to factory settings, then retry the setup flow.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "Retry";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Scanning issue found";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -8142,17 +8302,77 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "Other";
 
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Enable Bluetooth and select your %1$@ scanner in the iOS Bluetooth settings. The scanner will beep and show a solid LED when paired.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Go to your device settings";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Pair your scanner";
+
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Use your barcode scanner to scan the code below to enter pairing mode.";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "How to set up barcodes on products";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "How to set up barcodes on products";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Scanner setup";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Scanner setup";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Other scanner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Set up a barcode scanner";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Select a model from the list:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Scan the barcode to test your scanner.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Scan the barcode to test your scanner. If the issue continues, please check Bluetooth settings and try again.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "No scan data found yet";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Test your scanner";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Tap on a product to \n add it to the cart";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Tap on a product to \n add it to the cart, or ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "Cart";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Scan barcode";
 
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "Check out";
@@ -8286,6 +8506,90 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Dismiss";
 
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "No order to display";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Order";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "Products";
+
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "Order";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Totals";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Discount total";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "Email receipt";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Net Payment";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "Order #%1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel" = "Paid";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "Products";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "Products";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Reason: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "Refunded";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "Taxes";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "Total";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "Totals";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "Unable to load more orders";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "Unable to load orders";
+
+/* Button text for refreshing orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle" = "Refresh";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Try adjusting your search term.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "We couldn't find any orders matching your search.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "No orders found";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle" = "Orders will appear here once you start processing sales on the POS.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "No orders yet";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "Orders";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Search orders";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Options available";
 
@@ -8376,9 +8680,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Discount total";
 
-/* Text for the banner requiring specific WooCommerce version. */
-"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Please update WooCommerce to version 9.5.0";
-
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
 
@@ -8393,6 +8694,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Point of Sale is not supported in this screen width.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "Allow full sync on cellular data";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "Catalog size";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "Catalog Status";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync" = "Last full sync";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "Last incremental update";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage" = "Managing data usage";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Manual Catalog Update";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Use this refresh only when something seems off - POS keeps data current automatically.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "Refresh catalog";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "Catalog Settings";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -8951,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld product selected";
+
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "Subscription products are not supported for order creation";
 
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Cancel";
@@ -9542,9 +9876,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "Save time and money";
-
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Saving your product...";
@@ -10438,6 +10769,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Strike Through";
 
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ in stock";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "In stock";
+
 /* Subject title on the support form */
 "Subject" = "Subject";
 
@@ -10665,9 +11002,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Tap to Pay on iPhone is ready";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
@@ -12471,9 +12805,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "WooCommerce Setup";
-
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@.";

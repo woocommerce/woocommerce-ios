@@ -30,7 +30,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel(
             error: NSError(domain: "payments error", code: 1),

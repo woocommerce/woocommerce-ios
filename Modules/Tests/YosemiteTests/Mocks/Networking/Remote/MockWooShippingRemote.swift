@@ -443,6 +443,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func updateDestinationAddress(siteID: Int64,
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
+                                  isVerified: Bool,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }

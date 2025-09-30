@@ -6,7 +6,7 @@ let package = Package(
     name: "Modules",
     platforms: [
         // Keep in sync with Common.xcconfig
-        .iOS(.v16),
+        .iOS(.v17),
         .macOS(.v10_14),
         .watchOS(.v9),
     ],
@@ -83,6 +83,7 @@ let package = Package(
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
         // FIXME: This should be available via Tracks, but Tracks does not compile for watchOS
         .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.46.0"),
+        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
         .package(url: "https://github.com/jonreid/ViewControllerPresentationSpy", from: "7.0.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
@@ -159,7 +160,8 @@ let package = Package(
             name: "Storage",
             dependencies: [
                 "Codegen",
-                "WooFoundation"
+                "WooFoundation",
+                .product(name: "GRDB", package: "GRDB.swift")
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")]
@@ -177,7 +179,10 @@ let package = Package(
         ),
         .target(
             name: "WooFoundation",
-            dependencies: ["WooFoundationCore"]
+            dependencies: [
+                "WooFoundationCore",
+                .product(name: "Kingfisher", package: "Kingfisher")
+            ]
         ),
         .target(
             name: "WooFoundationCore",

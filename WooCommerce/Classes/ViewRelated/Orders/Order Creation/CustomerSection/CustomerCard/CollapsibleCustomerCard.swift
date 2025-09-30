@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooRoundedBorderTextFieldStyle
 
 /// Displays a collapsible customer card that shows customer details in the collapsed and expanded states.
 struct CollapsibleCustomerCard: View {

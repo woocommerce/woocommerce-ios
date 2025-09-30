@@ -105,8 +105,8 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackUser(completion):
-                completion(.success(JetpackUser.fake()))
+            case let .fetchJetpackConnectionData(completion):
+                completion(.failure(JetpackSetupCoordinator.JetpackCheckError.missingPermission))
             default:
                 break
             }
@@ -136,8 +136,8 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackUser(completion):
-                completion(.success(JetpackUser.fake()))
+            case let .fetchJetpackConnectionData(completion):
+                completion(.success(JetpackConnectionData.fake()))
             default:
                 break
             }
@@ -167,9 +167,9 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackUser(completion):
+            case let .fetchJetpackConnectionData(completion):
                 let dotcomUser = DotcomUser.fake().copy(id: expectedAccount.userID, username: expectedAccount.username, email: expectedAccount.email)
-                completion(.success(JetpackUser.fake().copy(wpcomUser: dotcomUser)))
+                completion(.success(JetpackConnectionData.fake().copy(currentUser: .fake().copy(wpcomUser: dotcomUser))))
             default:
                 break
             }

@@ -179,22 +179,6 @@ public enum FeatureFlag: Int {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables sending POS specific email receipts for eligible stores
-    ///
-    case pointOfSaleReceipts
-
-    /// Enables barcode scanning with an external scanner in POS
-    ///
-    case pointOfSaleBarcodeScanningi1
-
-    /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
-    ///
-    case showPointOfSaleBarcodeSimulator
-
-    /// Enables displaying POS as a tab in the tab bar with the same eligibility as the previous entry point
-    ///
-    case pointOfSaleAsATabi1
-
     /// Enables displaying POS as a tab in the tab bar for stores in eligible countries
     ///
     case pointOfSaleAsATabi2
@@ -207,11 +191,24 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleOrdersi2
 
-    /// Enables the Point of Sale Barcode Scanner set up flows, as part of i2
+    /// Enables the entry point for Point of Sale Settings
     ///
-    case pointOfSaleBarcodeScanningi2
+    case pointOfSaleSettingsi1
 
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
+
+    /// Enables the entry point for Point of Sale Orders
+    ///
+    case pointOfSaleHistoricalOrdersi1
+
+    /// Enables Local Catalog i1 in Point of Sale.
+    /// It syncs products and variations to local storage and display them in POS for quick access.
+    ///
+    case pointOfSaleLocalCatalogi1
+
+    /// Enables a new Bookings tab for CIAB sites
+    ///
+    case ciabBookings
 }

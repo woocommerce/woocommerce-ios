@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v22.9-whats-new"
+msgctxt "v23.3-whats-new"
 msgid ""
-"This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We've also added a dedicated Point of Sale tab for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app's size!\n"
+"Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

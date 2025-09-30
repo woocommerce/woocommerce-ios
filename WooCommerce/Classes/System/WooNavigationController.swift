@@ -1,5 +1,7 @@
 import Combine
 import UIKit
+import protocol WooFoundation.ConnectivityObserver
+import enum WooFoundation.ConnectivityStatus
 
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
 ///

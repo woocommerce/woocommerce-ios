@@ -4,7 +4,6 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItemType
 
-@available(iOS 17.0, *)
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
 
@@ -18,7 +17,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var cardPresentPaymentInlineMessage: WooCommerce.PointOfSaleCardPresentPaymentMessageType?
 
-    var cardPresentPaymentOnboardingViewModel: WooCommerce.CardPresentPaymentsOnboardingViewModel?
+    var cardPresentPaymentOnboardingViewContainer: WooCommerce.CardPresentPaymentOnboardingViewContainer?
 
     func cancelCardPaymentsOnboarding() { }
 

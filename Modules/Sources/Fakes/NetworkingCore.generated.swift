@@ -270,6 +270,7 @@ extension NetworkingCore.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
+            image: .fake(),
             parent: .fake(),
             bundleConfiguration: .fake()
         )
@@ -455,7 +456,8 @@ extension NetworkingCore.ShippingLabel {
             productNames: .fake(),
             commercialInvoiceURL: .fake(),
             usedDate: .fake(),
-            expiryDate: .fake()
+            expiryDate: .fake(),
+            hazmatCategory: .fake()
         )
     }
 }
@@ -573,5 +575,21 @@ extension NetworkingCore.StatsGranularityV4 {
     ///
     public static func fake() -> NetworkingCore.StatsGranularityV4 {
         .hourly
+    }
+}
+extension NetworkingCore.User {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.User {
+        .init(
+            localID: .fake(),
+            siteID: .fake(),
+            email: .fake(),
+            username: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            nickname: .fake(),
+            roles: .fake()
+        )
     }
 }

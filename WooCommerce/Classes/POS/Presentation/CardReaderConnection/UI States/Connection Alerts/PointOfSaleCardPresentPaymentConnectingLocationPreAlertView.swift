@@ -43,7 +43,7 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     PointOfSaleCardPresentPaymentConnectingLocationPreAlertView(
         viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel(requestPermissionAction: {}),
         animation: .init(namespace: namespace)

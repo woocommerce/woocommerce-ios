@@ -33,36 +33,13 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         gravatarUrl: nil
     )
 
-    let defaultSite = Site(
-        siteID: 1,
-        name: Defaults.Site.name,
-        description: "",
-        url: Defaults.Site.url,
-        adminURL: Defaults.Site.adminURL,
-        loginURL: Defaults.Site.loginURL,
-        isSiteOwner: false,
-        frameNonce: "",
-        plan: "",
-        isAIAssistantFeatureActive: false,
-        isJetpackThePluginInstalled: true,
-        isJetpackConnected: true,
-        isWooCommerceActive: true,
-        isWordPressComStore: false,
-        jetpackConnectionActivePlugins: [],
-        timezone: "UTC",
-        gmtOffset: 0,
-        visibility: .publicSite,
-        canBlaze: false,
-        isAdmin: false,
-        wasEcommerceTrial: false,
-        hasSSOEnabled: false
-    )
+    let defaultSite = Site.defaultMock()
 
     /// May not be needed anymore if we're not mocking the API
     let defaultSiteAPI = SiteAPI(siteID: 1, namespaces: [
         WooAPIVersion.mark3.rawValue,
         WooAPIVersion.mark4.rawValue,
-    ])
+    ], applicationPasswordAvailable: false)
 
     var sites: [Site] {
         return [defaultSite]

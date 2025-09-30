@@ -3,6 +3,6 @@
 
 // The deployment targets are currently duplicated in Modules/Package.swift.
 // If you change them here, make sure to update them there, too.
-IPHONEOS_DEPLOYMENT_TARGET = 16.0
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
 MACOSX_DEPLOYMENT_TARGET = 14.0
 WATCHOS_DEPLOYMENT_TARGET = 9.0

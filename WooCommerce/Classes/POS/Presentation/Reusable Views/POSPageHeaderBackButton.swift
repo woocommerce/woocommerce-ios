@@ -2,14 +2,19 @@ import SwiftUI
 
 struct POSPageHeaderBackButton: View {
     private let configuration: POSPageHeaderBackButtonConfiguration
+    @Environment(\.posHeaderBackButtonIcon) private var environmentIcon
 
     init(configuration: POSPageHeaderBackButtonConfiguration) {
         self.configuration = configuration
     }
 
+    private var buttonIcon: String {
+        environmentIcon ?? configuration.buttonIcon ?? Constants.defaultBackButtonIcon
+    }
+
     var body: some View {
         Button(action: configuration.action) {
-            Text(Image(systemName: Constants.backButtonIcon))
+            Text(Image(systemName: buttonIcon))
                 .font(.posButtonSymbolLarge)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
@@ -24,7 +29,7 @@ struct POSPageHeaderBackButton: View {
 
 private extension POSPageHeaderBackButton {
     enum Constants {
-        static let backButtonIcon = "chevron.backward"
+        static let defaultBackButtonIcon = "chevron.backward"
         /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
         static let backButtonHorizontalPadding: CGFloat = 12
     }

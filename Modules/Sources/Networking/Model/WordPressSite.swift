@@ -109,7 +109,11 @@ public extension WordPressSite {
               canBlaze: false,
               isAdmin: false,
               wasEcommerceTrial: false,
-              hasSSOEnabled: false)
+              hasSSOEnabled: false,
+              applicationPasswordAvailable: false,
+              isGarden: false,
+              gardenName: nil,
+              gardenPartner: nil)
     }
 
     struct Authentication: Decodable {

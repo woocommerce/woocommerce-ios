@@ -13,7 +13,6 @@ import Combine
 
 struct PointOfSaleAggregateModelTests {
     struct OrderStageTests {
-        @available(iOS 17.0, *)
         @Test func inits_with_building_order_stage() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel()
@@ -21,7 +20,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.orderStage == .building)
         }
 
-        @available(iOS 17.0, *)
         @Test func startNewCart_removes_all_items_from_cart_and_moves_back_to_building() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel()
@@ -38,7 +36,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
-        @available(iOS 17.0, *)
         @Test func checkOut_moves_to_finalizing_order_stage() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel()
@@ -51,7 +48,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.orderStage == .finalizing)
         }
 
-        @available(iOS 17.0, *)
         @Test func addMoreToCart_moves_to_building_order_stage() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel()
@@ -68,15 +64,12 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct CartTests {
-        private let analytics: WooAnalytics!
-        private let analyticsProvider: MockAnalyticsProvider!
+        private let analytics: MockPOSAnalytics
 
         init() {
-            analyticsProvider = MockAnalyticsProvider()
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics = MockPOSAnalytics()
         }
 
-        @available(iOS 17.0, *)
         @Test func addLoadingItem_adds_loading_item_to_cart() async throws {
             // Given
             var cart = Cart()
@@ -94,7 +87,6 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
-        @available(iOS 17.0, *)
         @Test func updateLoadingItem_updates_loading_item_with_simple_product() async throws {
             // Given
             var cart = Cart()
@@ -113,7 +105,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(loadedItem.name == "Test Product")
         }
 
-        @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -127,7 +118,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(!sut.cart.isEmpty)
         }
 
-        @available(iOS 17.0, *)
         @Test func addItem_puts_new_items_first_in_the_cart() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -146,7 +136,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(cartItemIDs == items.reversed().map(\.id))
         }
 
-        @available(iOS 17.0, *)
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -166,7 +155,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.purchasableItems.first?.title == "Item 1")
         }
 
-        @available(iOS 17.0, *)
         @Test func removeAllItemsFromCart_removes_everything() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -184,7 +172,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
-        @available(iOS 17.0, *)
         @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -218,7 +205,6 @@ struct PointOfSaleAggregateModelTests {
             orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
         }
 
-        @available(iOS 17.0, *)
         @Test func startNewCart_calls_clearOrder() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -237,7 +223,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(orderController.clearOrderWasCalled == true)
         }
 
-        @available(iOS 17.0, *)
         @Test func checkout_with_items_calls_sync_order() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -259,7 +244,6 @@ struct PointOfSaleAggregateModelTests {
         }
 
         // The UI prevents no-item checkouts, but it's the controller's responsibility to handle this.
-        @available(iOS 17.0, *)
         @Test func checkOut_without_items_calls_sync_order() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -280,7 +264,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(orderController.spyCartProducts?.isEmpty == true)
         }
 
-        @available(iOS 17.0, *)
         @Test func when_collectPayment_is_called_channel_is_set_to_pos() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -301,7 +284,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
 
-        @available(iOS 17.0, *)
         @Test func sendReceipt_when_invoked_then_calls_controller() async throws {
             // Given
             let orderController = MockPointOfSaleOrderController()
@@ -314,12 +296,11 @@ struct PointOfSaleAggregateModelTests {
             #expect(orderController.sendReceiptWasCalled == true)
         }
 
-        @available(iOS 17.0, *)
         @Test func sendReceipt_when_invoked_with_error_then_returns_error() async throws {
             // Given
             let orderController = MockPointOfSaleOrderController()
-            orderController.shouldThrowReceiptError = true
             let expectedError = NSError(domain: "some error", code: -1)
+            orderController.sendReceiptErrorToThrow = expectedError
 
             let sut = makePointOfSaleAggregateModel(orderController: orderController)
 
@@ -334,7 +315,6 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
-        @available(iOS 17.0, *)
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -358,7 +338,6 @@ struct PointOfSaleAggregateModelTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
 
-        @available(iOS 17.0, *)
         @Test func init_sets_card_paymentState_to_idle() async throws {
             // Given that we don't specify a payment state
             // When we init
@@ -373,7 +352,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState.activePaymentMethod == .card)
         }
 
-        @available(iOS 17.0, *)
         @Test func activePaymentMethod_returns_card_when_cash_is_idle() async throws {
             // Given
             let paymentState = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
@@ -382,7 +360,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(paymentState.activePaymentMethod == .card)
         }
 
-        @available(iOS 17.0, *)
         @Test func activePaymentMethod_returns_cash_when_cash_is_not_idle() async throws {
             // Given
             let paymentState = PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash)
@@ -391,7 +368,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(paymentState.activePaymentMethod == .cash)
         }
 
-        @available(iOS 17.0, *)
         @Test func activePaymentMethod_returns_cash_when_cash_is_paymentSuccess() async throws {
             // Given
             let paymentState = PointOfSalePaymentState(card: .idle, cash: .paymentSuccess)
@@ -400,7 +376,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(paymentState.activePaymentMethod == .cash)
         }
 
-        @available(iOS 17.0, *)
         @Test func startNewCart_sets_card_payment_state_to_idle() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -417,7 +392,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
-        @available(iOS 17.0, *)
         @Test func startNewCart_sets_payment_message_to_nil() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -436,7 +410,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cardPresentPaymentInlineMessage == nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func addMoreToCart_sets_card_payment_state_to_idle() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -453,7 +426,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
-        @available(iOS 17.0, *)
         @Test func addMoreToCart_sets_payment_message_to_nil() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -476,7 +448,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cardPresentPaymentInlineMessage == nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func startCashPayment_calls_for_ongoing_card_payment_cancellation() async {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -493,7 +464,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
         }
 
-        @available(iOS 17.0, *)
         @Test func startCashPayment_sets_payment_state_to_collectingCash() async {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -509,7 +479,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
         }
 
-        @available(iOS 17.0, *)
         @Test func cancelCashPayment_resets_payment_state_to_idle() async {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -527,7 +496,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
-        @available(iOS 17.0, *)
         @Test func cancelCashPayment_maintains_order_stage_as_finalizing() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -550,7 +518,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.orderStage == .finalizing)
         }
 
-        @available(iOS 17.0, *)
         @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
             // Given order totals:
             // Note that orderTotal is used, but the Order values are given for test robustness.
@@ -575,7 +542,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(viewModel.message == "A card payment of $52.30 was successfully made.")
         }
 
-        @available(iOS 17.0, *)
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_tryAgain_cancels_payment() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -601,7 +567,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.cancelPaymentCalled == true)
         }
 
-        @available(iOS 17.0, *)
         @Test func paymentIntentCreationErrorMessage_when_paymentIntentCreationError_editOrder_moves_back_to_building() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -630,7 +595,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.orderStage == .building)
         }
 
-        @available(iOS 17.0, *)
         @Test func checkOut_when_reader_connects_collectPayment_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -658,7 +622,6 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
-        @available(iOS 17.0, *)
         @Test func checkOut_when_reader_is_already_connected_and_order_more_than_zero_collectPayment_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -676,7 +639,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled)
         }
 
-        @available(iOS 17.0, *)
         @Test func checkOut_when_reader_is_already_connected_and_order_is_free_collectPayment_is_not_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -694,7 +656,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(!cardPresentPaymentService.collectPaymentWasCalled)
         }
 
-        @available(iOS 17.0, *)
         @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -723,7 +684,6 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
-        @available(iOS 17.0, *)
         @Test(.disabled()) func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -747,29 +707,26 @@ struct PointOfSaleAggregateModelTests {
         }
 
         // MARK: Onboarding
-        @available(iOS 17.0, *)
-        @Test func cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() async throws {
+        @Test func cardPresentPaymentOnboardingViewContainer_is_non_nil_when_onboarding_is_required() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
-                fixedState: .pluginNotActivated(plugin: .stripe),
-                useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotActivated(plugin: .stripe))
-            )
+            let configuration = MockOnboardingViewContainerConfiguration()
+            configuration.state = .pluginNotActivated(plugin: .stripe)
+            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
-            try #require(sut.cardPresentPaymentOnboardingViewModel == nil)
+            try #require(sut.cardPresentPaymentOnboardingViewContainer == nil)
 
             // When
-            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+            cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // Then
-            #expect(sut.cardPresentPaymentOnboardingViewModel?.state == .pluginNotActivated(plugin: .stripe))
+            #expect(sut.cardPresentPaymentOnboardingViewContainer?.configuration.state == .pluginNotActivated(plugin: .stripe))
         }
 
-        @available(iOS 17.0, *)
         @Test func connectionSuccessAlert_is_filtered_when_waiting_to_start_payment_on_card_reader_connection() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -795,7 +752,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cardPresentPaymentAlertViewModel == nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func connectionSuccessAlert_is_shown_when_not_waiting_to_start_payment() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -822,17 +778,15 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct AnalyticsTests {
-        private let analyticsProvider = MockAnalyticsProvider()
-        private let analytics: WooAnalytics
+        private let analytics: MockPOSAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
 
         init() {
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics = MockPOSAnalytics()
             orderController.orderState = makeLoadedOrderState()
         }
 
-        @available(iOS 17.0, *)
         @Test func paymentsOnboardingDismissed_event_is_tracked_with_state_when_cancelOnboarding_is_invoked() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -844,23 +798,22 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(makePurchasableItem())
 
-            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
-                fixedState: .noConnectionError,
-                useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .noConnectionError)
-            )
-            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+            let configuration = MockOnboardingViewContainerConfiguration()
+            configuration.state = .noConnectionError
+            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+
+            cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // When
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_dismissed" }) != nil)
-            let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
+            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
         }
 
-        @available(iOS 17.0, *)
         @Test func pointOfSalePaymentsOnboardingShown_event_is_tracked_when_trackOnboardingShown_is_invoked() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -876,10 +829,9 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func connectCardReader_when_tapped_then_tracks_event() {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -893,10 +845,9 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -910,10 +861,9 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
             // Given
             let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
@@ -929,7 +879,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(analyticsTracker.didCallTrackCheckoutTapped == true)
         }
 
-        @available(iOS 17.0, *)
         @Test func cancelCashPayment_when_invoked_then_tracks_expected_event() async throws {
             // Given
             let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
@@ -940,26 +889,35 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func startCashPayment_when_invoked_tracks_expected_event() async throws {
             // Given
-            let mockAnalyticsProvider = MockAnalyticsProvider()
-            let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-            let sut = makePointOfSaleAggregateModel(analytics: mockAnalytics)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
 
             // When
             await sut.startCashPayment()
 
             // Then
-            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "checkout_cash_payment_tapped" }) != nil)
+        }
+
+        @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {
+            // Given
+            let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+            let sut = makePointOfSaleAggregateModel(orderController: orderController,
+                                                    collectOrderPaymentAnalyticsTracker: analyticsTracker)
+
+            // When
+            try await sut.collectCashPayment(changeDueAmount: "0.00")
+
+            // Then
+            #expect(analyticsTracker.didCallTrackSuccessfulCashPayment == true)
         }
     }
 
     struct BarcodeTests {
-        @available(iOS 17.0, *)
         @Test func barcodeScanned_when_fails_then_plays_sound() async {
             // Given
             let soundPlayer = MockPointOfSaleSoundPlayer()
@@ -1010,14 +968,16 @@ private func makeLoadedOrderState(cartTotal: String = "",
 
 @available(iOS 17.0, *)
 private func makePointOfSaleAggregateModel(
-    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker(),
+                                                                            featureFlagService: MockFeatureFlagService()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
     couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
-    analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+    settingsController: PointOfSaleSettingsControllerProtocol = MockPointOfSaleSettingsController(),
+    analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
@@ -1033,6 +993,7 @@ private func makePointOfSaleAggregateModel(
         couponsSearchController: couponsSearchController,
         cardPresentPaymentService: cardPresentPaymentService,
         orderController: orderController,
+        settingsController: settingsController,
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,

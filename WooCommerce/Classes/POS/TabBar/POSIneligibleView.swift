@@ -1,13 +1,14 @@
 import SwiftUI
+import Yosemite
 
 /// A view that displays when the Point of Sale (POS) feature is not available for the current store.
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
-@available(iOS 17.0, *)
 struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.posAnalytics) private var analytics
     @State private var isLoading: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
@@ -60,7 +61,7 @@ struct POSIneligibleView: View {
                             Task { @MainActor in
                                 do {
                                     isLoading = true
-                                    ServiceLocator.analytics.track(
+                                    analytics.track(
                                         event: .PointOfSaleIneligibleUI.ineligibleUIRetryTapped(reason: reason)
                                     )
                                     try await onRefresh()
@@ -96,10 +97,10 @@ struct POSIneligibleView: View {
                 contentHeight = height
             }
             .onAppear {
-                ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
+                analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
             }
-            .onChange(of: reason) { newReason in
-                ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
+            .onChange(of: reason) { _, newReason in
+                analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
             }
         }
         .scrollDisabled(shouldDisableScrolling)
@@ -154,11 +155,16 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
                                      value: "Try relaunching the app to resolve this issue.",
                                      comment: "Suggestion for self deallocated: relaunch")
+        case .unsupportedInCIABSites:
+            return NSLocalizedString(
+                "pos.ineligible.suggestion.notSupportedForCIAB",
+                value: "The POS system is not supported for your store.",
+                comment: "Suggestion for CIAB sites: feature is not supported"
+            )
         }
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSIneligibleView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -175,11 +181,11 @@ private extension POSIneligibleView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSIneligibleReason {
     var shouldShowRetryButton: Bool {
         switch self {
-        case .unsupportedIOSVersion:
+        case .unsupportedIOSVersion,
+                .unsupportedInCIABSites:
             return false
         case .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
@@ -210,6 +216,9 @@ private extension POSIneligibleReason {
                 value: "Retry",
                 comment: "Button title to refresh POS eligibility check"
             )
+        case .unsupportedInCIABSites:
+            assertionFailure("Retry button should not be shown for `unsupportedInCIABSites`")
+            return String()
         }
     }
 }

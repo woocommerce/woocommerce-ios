@@ -3,11 +3,11 @@ import enum Yosemite.POSItem
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
-@available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAnalytics) private var analytics
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     // Navigation only uses this on iOS 17
@@ -88,7 +88,9 @@ struct ItemList<HeaderView: View>: View {
                                                 sourceViewType: .init(
                                                     isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
                                                     searchTerm: posModel.viewStateCoordinatorForView.searchTerm
-                                                )))
+                                                ),
+                                                analytics: analytics
+                                               ))
                     .barcodeScanning { scannedCode in
                         posModel.barcodeScanned(scannedCode)
                     },
@@ -114,7 +116,7 @@ struct ItemList<HeaderView: View>: View {
                 GhostItemCardView()
             }
         case .inlineError(_, let errorState, .pagination):
-            ItemListErrorCardView(errorState: errorState,
+            POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadNextItems(base: node)
@@ -128,7 +130,7 @@ struct ItemList<HeaderView: View>: View {
     @ViewBuilder var headerRows: some View {
         switch state {
         case .inlineError(_, let errorState, .refresh):
-            ItemListErrorCardView(errorState: errorState,
+            POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadItems(base: .root)
@@ -145,7 +147,6 @@ private enum Constants {
     static let itemSpacing: CGFloat = POSSpacing.medium
 }
 
-@available(iOS 17.0, *)
 struct ItemListRow: View {
     let item: POSItem
     let itemActionHandler: POSItemActionHandler
@@ -203,7 +204,6 @@ struct ItemListRow: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListRow {
     enum Localization {
         static let variationsAvailable = NSLocalizedString(
@@ -215,7 +215,6 @@ private extension ItemListRow {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview("Loaded with items") {
     let itemList: ItemListState = .loaded(
         [
@@ -249,7 +248,6 @@ private extension ItemListRow {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Loading") {
     ItemList(itemsController: PointOfSalePreviewItemsController(),
              node: .root,

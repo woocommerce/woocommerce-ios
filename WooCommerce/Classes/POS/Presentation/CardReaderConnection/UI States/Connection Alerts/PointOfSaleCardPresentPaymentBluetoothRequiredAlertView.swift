@@ -29,13 +29,13 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity)
-            .scrollVerticallyIfNeeded()
 
             Button(viewModel.openSettingsButtonViewModel.title,
                    action: viewModel.openSettingsButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.dismissButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.dismissButtonViewModel.title)
         .multilineTextAlignment(.center)
@@ -44,7 +44,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentBluetoothRequiredAlertView(
         viewModel: .init(error: NSError(domain: "", code: 1),
                          endSearch: {}),

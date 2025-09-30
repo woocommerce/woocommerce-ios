@@ -3,9 +3,8 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItem
 
-@available(iOS 17.0, *)
 final class POSProductSearchable: POSSearchable {
-    let itemListType: ItemListType
+    private let itemListType: ItemListType
     private let itemsController: PointOfSaleSearchingItemsControllerProtocol
     private let searchHistoryProvider: POSSearchHistoryProviding
 
@@ -19,6 +18,10 @@ final class POSProductSearchable: POSSearchable {
 
     var searchHistory: [String] {
         searchHistoryProvider.searchHistory(for: itemListType.itemType)
+    }
+
+    var searchFieldPlaceholder: String {
+        itemListType.itemType.searchFieldLabel
     }
 
     func performSearch(term: String) async {

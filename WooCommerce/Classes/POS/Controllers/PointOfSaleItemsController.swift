@@ -10,8 +10,6 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 
-
-@available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
     ///
     var itemsViewState: ItemsViewState { get }
@@ -23,7 +21,6 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadNextItems(base: ItemListBaseItem) async
 }
 
-@available(iOS 17.0, *)
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
@@ -31,7 +28,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 }
 
 
-@available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState
     private let paginationTracker: AsyncPaginationTracker
@@ -39,17 +35,21 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     private var itemProvider: PointOfSaleItemServiceProtocol
     private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol
     private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
+    private let analyticsProvider: POSAnalyticsProviding
 
     init(itemProvider: PointOfSaleItemServiceProtocol,
          itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
          initialState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                        itemsStack: ItemsStackState(root: .loading([]),
-                                                                                   itemStates: [:]))) {
+                                                                                   itemStates: [:])),
+         analyticsProvider: POSAnalyticsProviding) {
         self.itemProvider = itemProvider
         self.itemFetchStrategyFactory = itemFetchStrategyFactory
         self.itemsViewState = initialState
         self.paginationTracker = .init()
-        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy(analytics: POSItemFetchAnalytics(itemType: .product))
+        self.analyticsProvider = analyticsProvider
+        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy(analytics: POSItemFetchAnalytics(itemType: .product,
+                                                                                                       analytics: analyticsProvider))
     }
 
     @MainActor
@@ -66,7 +66,8 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
-                                                                analytics: POSItemFetchAnalytics(itemType: .product))
+                                                                analytics: POSItemFetchAnalytics(itemType: .product,
+                                                                                                 analytics: analyticsProvider))
         setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }
@@ -198,7 +199,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func setLoadingState(base: ItemListBaseItem) {
         switch base {
@@ -241,7 +241,6 @@ private extension PointOfSaleItemsController {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     /// Fetches items given a page number and appends new unique items to the `allItems` array.
     /// - Parameter pageNumber: Page number to fetch items from.
@@ -309,7 +308,6 @@ private extension PointOfSaleItemsController {
 }
 
 // MARK: - ItemsViewState Updates
-@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func updateState(for parent: POSItem, to state: ItemListState) {
         let viewState = itemsViewState

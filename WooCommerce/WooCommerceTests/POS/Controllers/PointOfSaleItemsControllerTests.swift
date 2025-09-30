@@ -9,13 +9,13 @@ import class Yosemite.PointOfSaleItemFetchStrategyFactory
 import Observation
 
 final class PointOfSaleItemsControllerTests {
-    @available(iOS 17.0, *)
     @Test func loadItems_requests_first_page_after_loading_two_pages() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         try #require(sut.itemsViewState.containerState == .loading)
@@ -32,13 +32,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 1)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_results_in_loaded_state() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
@@ -54,13 +54,13 @@ final class PointOfSaleItemsControllerTests {
                                                                                  itemStates: [:])))
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_with_more_pages_sets_hasMoreItems() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
@@ -76,13 +76,13 @@ final class PointOfSaleItemsControllerTests {
                                                                                  itemStates: [:])))
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_called_multiple_times_then_items_are_not_duplicated() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         try #require(sut.itemsViewState.containerState == .loading)
@@ -102,26 +102,26 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == expectedItems.count)
     }
 
-    @available(iOS 17.0, *)
     @Test func container_state_starts_as_loading() {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         // When/Then
         #expect(sut.itemsViewState.containerState == .loading)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_initial_items_empty_then_container_state_is_content_and_root_state_is_empty() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         itemProvider.shouldReturnZeroItems = true
@@ -136,13 +136,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_initial_items_has_items_but_no_more_pages_then_state_is_loaded_with_initial_items() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
@@ -159,13 +159,13 @@ final class PointOfSaleItemsControllerTests {
                                                                                  itemStates: [:])))
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_simulateFetchNextPage_then_state_is_loaded_with_expected_items() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         itemProvider.shouldSimulateTwoPages = true
@@ -182,13 +182,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == 4)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_requests_second_page() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         try #require(sut.itemsViewState.containerState == .loading)
@@ -202,13 +202,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_simulateFetchNextPage_then_state_is_loaded_with_hasMoreItems() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         itemProvider.shouldSimulateTwoPages = true
@@ -227,13 +227,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == 4)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_child_when_simulateFetchNextPage_then_state_is_loaded_with_hasMoreItems() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
@@ -259,13 +259,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(items.count == 4)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_child_when_service_throws_then_state_is_inlineError() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
@@ -293,13 +293,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(context == .pagination)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_no_items_then_container_state_is_content_and_root_state_is_empty() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         itemProvider.shouldReturnZeroItems = true
@@ -314,13 +314,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_itemProvider_throws_error_then_state_is_error() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         itemProvider.errorToThrow = MockError.requestFailed
@@ -334,13 +334,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.root == .error(.errorOnLoadingProducts()))
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_itemProvider_throws_error_then_state_is_inlineError() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         try #require(sut.itemsViewState.containerState == .loading)
@@ -365,13 +365,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(context == .pagination)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_after_itemProvider_throws_error_then_the_same_page_is_requested_next() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         itemProvider.shouldSimulateTwoPages = true
@@ -389,13 +389,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_results_in_state_loaded_with_expected_items() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         try #require(sut.itemsViewState.containerState == .loading)
@@ -411,13 +411,13 @@ final class PointOfSaleItemsControllerTests {
                                                                                  itemStates: [:])))
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_next_page_is_empty_then_state_is_loaded() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
@@ -436,13 +436,13 @@ final class PointOfSaleItemsControllerTests {
                                                                                  itemStates: [:])))
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_next_page_is_empty_then_the_same_page_is_requested_next() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         await sut.loadItems(base: .root)
@@ -456,13 +456,13 @@ final class PointOfSaleItemsControllerTests {
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_sets_root_items_to_loading_state_while_preserving_existing_items() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
@@ -487,19 +487,19 @@ final class PointOfSaleItemsControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_preserves_itemStates() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
-                                                                              name: "Parent product",
-                                                                              productImageSource: nil,
-                                                                              productID: 125))
+                                                                                name: "Parent product",
+                                                                                productImageSource: nil,
+                                                                                productID: 125))
         itemProvider.itemPages = [[parentItem]]
         await sut.loadItems(base: .root)
         await sut.loadItems(base: .parent(parentItem))
@@ -513,19 +513,19 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.itemsStack.itemStates == itemStates)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_sets_child_items_to_loading_state_while_preserving_existing_items() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
-                                                                              name: "Parent product",
-                                                                              productImageSource: nil,
-                                                                              productID: 125))
+                                                                                name: "Parent product",
+                                                                                productImageSource: nil,
+                                                                                productID: 125))
         let baseItem = ItemListBaseItem.parent(parentItem)
         itemProvider.itemPages = [[parentItem]]
 
@@ -552,13 +552,13 @@ final class PointOfSaleItemsControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func search_sets_a_fetch_strategy_with_search_term_on_the_service() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         // When
@@ -569,13 +569,13 @@ final class PointOfSaleItemsControllerTests {
         #expect(fetchStrategy.searchTerm == "green mug")
     }
 
-    @available(iOS 17.0, *)
     @Test func setRootLoadingState_when_not_initial_state_then_sets_loading_state() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            analyticsProvider: MockPOSAnalytics()
         )
 
         let initialItems = MockPointOfSaleItemService.makeInitialItems()

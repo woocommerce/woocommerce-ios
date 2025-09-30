@@ -6,6 +6,7 @@ import WordPressAuthenticator
 
 final class JetpackSetupViewModelTests: XCTestCase {
     private let testURL = "https://example.com"
+    private let credentials = Credentials.wpcom(username: "test", authToken: "secret", siteAddress: "https://example.com")
 
     override func setUp() {
         super.setUp()
@@ -16,7 +17,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
     func test_title_is_correct_if_jetpack_installation_is_required() {
         // Given
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, delayBeforeRetry: 0)
 
         // Then
         XCTAssertEqual(viewModel.title, JetpackSetupViewModel.Localization.installingJetpack)
@@ -24,7 +25,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
     func test_title_is_correct_if_only_jetpack_connection_is_missing() {
         // Given
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, delayBeforeRetry: 0)
 
         // Then
         XCTAssertEqual(viewModel.title, JetpackSetupViewModel.Localization.connectingJetpack)
@@ -32,7 +33,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
     func test_description_string_is_correct() {
         // Given
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, delayBeforeRetry: 0)
         let description = String(format: JetpackSetupViewModel.Localization.description, testURL.trimHTTPScheme())
 
         // Then
@@ -42,7 +43,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_isSetupStepFailed_is_correct_when_the_current_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -68,7 +69,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_title_is_correct_when_retrieveJetpackPluginDetails_fails_with_permission_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -89,7 +90,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_title_and_tryAgainButtonTitle_are_correct_when_installation_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -113,7 +114,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_title_and_tryAgainButtonTitle_are_correct_when_activation_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -138,14 +139,15 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_title_and_tryAgainButtonTitle_are_correct_when_connection_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.success(plugin))
-            case .fetchJetpackConnectionURL(let completion):
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(JetpackConnectionData.fake().copy(isRegistered: nil)))
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -163,7 +165,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_shouldShowInitialLoadingIndicator_turns_on_correctly_when_startSetup_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         // When
         viewModel.startSetup()
@@ -176,7 +178,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_shouldShowInitialLoadingIndicator_turns_off_correctly_when_retrieveJetpackPluginDetails_is_success_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
         // When
@@ -198,7 +200,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_shouldShowSetupSteps_when_startSetup_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         // When
         viewModel.startSetup()
@@ -211,7 +213,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_shouldShowSetupSteps_when_retrieveJetpackPluginDetails_is_success_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
         // When
@@ -232,13 +234,15 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_shouldShowGoToStoreButton_is_correct() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        let data = JetpackConnectionData.fake().copy(
+            currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -261,12 +265,13 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_startSetup_triggers_connection_step_if_connectionOnly_is_true() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
 
         var triggeredRetrieveJetpackPluginDetails = false
         var triggeredInstallation = false
         var triggeredActivation = false
+        var triggeredConnectionURL = false
         var triggeredConnection = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -279,8 +284,11 @@ final class JetpackSetupViewModelTests: XCTestCase {
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
                 triggeredActivation = true
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
+                triggeredConnectionURL = true
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: false)))
                 triggeredConnection = true
             default:
                 break
@@ -294,14 +302,14 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(triggeredRetrieveJetpackPluginDetails)
         XCTAssertFalse(triggeredInstallation)
         XCTAssertFalse(triggeredActivation)
+        XCTAssertFalse(triggeredConnectionURL)
         XCTAssertTrue(triggeredConnection)
     }
 
     func test_startSetup_triggers_installation_steps_if_connectionOnly_is_false() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         var triggeredRetrieveJetpackPluginDetails = false
         var triggeredInstallation = false
@@ -319,8 +327,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
                 triggeredActivation = true
-            case .fetchJetpackConnectionURL(let completion):
-                completion(.success(testConnectionURL))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: false)))
                 triggeredConnection = true
             default:
                 break
@@ -340,7 +348,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_startSetup_triggers_jetpack_installation_if_retrieving_details_fails_with_404() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         var triggeredJetpackInstallation = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -368,7 +376,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_startSetup_triggers_jetpack_activation_if_retrieving_details_returns_inactive_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
         var triggeredInstallation = false
@@ -404,7 +412,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_startSetup_triggers_jetpack_connection_if_retrieving_details_returns_active_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
 
         var triggeredInstallation = false
@@ -418,7 +426,9 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 triggeredInstallation = true
             case .activateJetpackPlugin:
                 triggeredActivation = true
-            case .fetchJetpackConnectionURL:
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
+            case .provisionConnection:
                 triggeredConnection = true
             default:
                 break
@@ -441,7 +451,11 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_installation_triggers_activation_when_completing_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              delayBeforeRetry: 0)
 
         var triggeredActivation = false
         var triggeredConnection = false
@@ -469,12 +483,16 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(triggeredConnection)
     }
 
-    func test_activation_triggers_fetching_connection_url_when_completing_successfully() {
+    func test_activation_success_triggers_all_connection_apis_if_isRegistered_is_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
-        var triggeredConnection = false
+        var fetchedConnectionData = false
+        var triggeredConnectionURL = false
+        var triggeredRegisterSite = false
+        var triggeredProvisionConnection = false
+        var triggeredFinalizeConnection = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
@@ -484,8 +502,20 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(()))
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
+            case .fetchJetpackConnectionData(let completion):
+                fetchedConnectionData = true
+                completion(.success(.fake().copy(isRegistered: false)))
+            case .registerSite(let completion):
+                triggeredRegisterSite = true
+                completion(.success(124))
+            case .provisionConnection(let completion):
+                triggeredProvisionConnection = true
+                completion(.success(JetpackConnectionProvisionResponse(userId: 131, scope: "test", secret: "secret")))
+            case let .finalizeConnection(_, _, _, _, completion):
+                triggeredFinalizeConnection = true
+                completion(.success(()))
             case .fetchJetpackConnectionURL:
-                triggeredConnection = true
+                triggeredConnectionURL = true
             default:
                 break
             }
@@ -495,15 +525,23 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertTrue(triggeredConnection)
+        XCTAssertTrue(fetchedConnectionData)
+        XCTAssertFalse(triggeredConnectionURL)
+        XCTAssertTrue(triggeredRegisterSite)
+        XCTAssertTrue(triggeredProvisionConnection)
+        XCTAssertTrue(triggeredFinalizeConnection)
     }
 
-    func test_shouldPresentWebView_is_true_when_fetching_connection_url_returns_account_connection_url() throws {
+    func test_activation_success_triggers_all_connection_apis_except_register_if_isRegistered_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
+        var fetchedConnectionData = false
+        var triggeredConnectionURL = false
+        var triggeredRegisterSite = false
+        var triggeredProvisionConnection = false
+        var triggeredFinalizeConnection = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
@@ -513,7 +551,82 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(()))
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionData(let completion):
+                fetchedConnectionData = true
+                completion(.success(.fake().copy(isRegistered: true, blogID: 124)))
+            case .registerSite:
+                triggeredRegisterSite = true
+            case .provisionConnection(let completion):
+                triggeredProvisionConnection = true
+                completion(.success(JetpackConnectionProvisionResponse(userId: 131, scope: "test", secret: "secret")))
+            case let .finalizeConnection(_, _, _, _, completion):
+                triggeredFinalizeConnection = true
+                completion(.success(()))
+            case .fetchJetpackConnectionURL:
+                triggeredConnectionURL = true
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(fetchedConnectionData)
+        XCTAssertFalse(triggeredConnectionURL)
+        XCTAssertFalse(triggeredRegisterSite)
+        XCTAssertTrue(triggeredProvisionConnection)
+        XCTAssertTrue(triggeredFinalizeConnection)
+    }
+
+    func test_activation_triggers_fetching_connection_url_when_site_has_outdated_jetpack() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
+
+        var fetchedConnectionData = false
+        var triggeredConnectionURL = false
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                let error = NetworkError.notFound(response: nil)
+                completion(.failure(error))
+            case .installJetpackPlugin(let completion):
+                completion(.success(()))
+            case .activateJetpackPlugin(let completion):
+                completion(.success(()))
+            case .fetchJetpackConnectionData(let completion):
+                fetchedConnectionData = true
+                completion(.success(.fake().copy(isRegistered: nil)))
+            case .fetchJetpackConnectionURL:
+                triggeredConnectionURL = true
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(fetchedConnectionData)
+        XCTAssertTrue(triggeredConnectionURL)
+    }
+
+    func test_shouldPresentWebView_is_true_when_fetching_connection_url_returns_account_connection_url() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
+        let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: nil)))
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
             default:
                 break
@@ -531,19 +644,16 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_shouldPresentWebView_is_true_when_fetching_connection_url_returns_site_connection_url() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let testConnectionURL = try XCTUnwrap(URL(string: "\(testURL)/plugins/jetpack"))
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = NetworkError.notFound(response: nil)
-                completion(.failure(error))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
-            case .activateJetpackPlugin(let completion):
-                completion(.success(()))
-            case .fetchJetpackConnectionURL(let completion):
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: nil)))
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
             default:
                 break
@@ -555,21 +665,20 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldPresentWebView)
-        let mobileRedirectURL = "woocommerce://jetpack-connected"
-        let expectedURL = "https://wordpress.com/jetpack/connect?url=\(testURL)&mobile_redirect=\(mobileRedirectURL)&from=mobile"
+        let expectedURL = "\(testURL)/wp-admin/admin.php?page=jetpack"
         XCTAssertEqual(viewModel.jetpackConnectionURL, URL(string: expectedURL))
     }
 
-    func test_authorizeJetpackConnection_sets_connection_status_to_in_progress_and_triggers_fetching_jetpack_user() {
+    func test_authorizeJetpackConnection_sets_connection_status_to_in_progress_and_triggers_fetching_jetpack_connection() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
-        var triggeredFetchingJetpackUser = false
+        var triggeredFetchingJetpackConnection = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser:
-                triggeredFetchingJetpackUser = true
+            case .fetchJetpackConnectionData:
+                triggeredFetchingJetpackConnection = true
             default:
                 break
             }
@@ -579,20 +688,22 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        XCTAssertTrue(triggeredFetchingJetpackUser)
+        XCTAssertTrue(triggeredFetchingJetpackConnection)
         XCTAssertEqual(viewModel.currentConnectionStep, .inProgress)
     }
 
-    func test_authorizeJetpackConnection_updates_connection_status_and_setup_step_correctly_when_fetching_jetpack_user_successfully() {
+    func test_authorizeJetpackConnection_updates_connection_status_and_setup_step_correctly_when_fetching_jetpack_connection_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        let data = JetpackConnectionData.fake().copy(
+            currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -609,7 +720,11 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_navigateToStore_triggers_storeNavigationHandler() {
         // Given
         var storeNavigationTriggered = false
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, delayBeforeRetry: 0, onStoreNavigation: { _ in
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              delayBeforeRetry: 0,
+                                              onStoreNavigation: { _ in
             storeNavigationTriggered = true
         })
 
@@ -624,7 +739,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_setupFailed_is_true_when_retrieveJetpackPluginDetails_encounters_permission_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         XCTAssertFalse(viewModel.setupFailed)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -650,7 +765,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_retrieveJetpackPluginDetails_triggers_installJetpack_when_encountering_non_permission_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         var installJetpackTriggered = false
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -674,7 +789,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_installJetpack_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -700,7 +815,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_activateJetpack_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .inactive)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -724,17 +839,16 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
-    func test_fetchJetpackConnectionURL_relays_error_when_failed() {
+    func test_register_connection_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                completion(.success(plugin))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: false)))
+            case .registerSite(let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -751,16 +865,98 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
-    func test_checkJetpackConnection_hits_fetchJetpackUser_3_times_when_encountering_error_consistently_and_relays_error() {
+    func test_provision_connection_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        var fetchJetpackUserTriggerCount = 0
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                fetchJetpackUserTriggerCount += 1
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
+            case .provisionConnection(let completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(viewModel.setupFailed)
+        XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
+                                                         setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
+                                                         errorCode: -1001))
+    }
+
+    func test_finalize_connection_relays_error_when_failed() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
+            case .provisionConnection(let completion):
+                completion(.success(JetpackConnectionProvisionResponse(userId: 124, scope: "admin", secret: "secret")))
+            case let .finalizeConnection(_, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(viewModel.setupFailed)
+        XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
+                                                         setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
+                                                         errorCode: -1001))
+    }
+
+    func test_fetchJetpackConnectionURL_relays_error_when_failed() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: nil)))
+            case .fetchJetpackConnectionURL(_, let completion):
+                completion(.failure(NSError(domain: "Test", code: -1001)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(viewModel.setupFailed)
+        XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
+                                                         setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
+                                                         errorCode: -1001))
+    }
+
+    func test_checkJetpackConnection_hits_fetchJetpackConnection_3_times_when_encountering_error_consistently_and_relays_error() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
+        var fetchJetpackConnectionTriggerCount = 0
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .fetchJetpackConnectionData(let completion):
+                fetchJetpackConnectionTriggerCount += 1
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -774,23 +970,23 @@ final class JetpackSetupViewModelTests: XCTestCase {
         waitUntil {
             viewModel.setupFailed
         }
-        XCTAssertEqual(fetchJetpackUserTriggerCount, 3)
+        XCTAssertEqual(fetchJetpackConnectionTriggerCount, 3)
         XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
                                                          setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
                                                          errorCode: -1001))
     }
 
-    func test_checkJetpackConnection_hits_fetchJetpackUser_3_times_when_failing_to_fetch_connected_wpcom_user() {
+    func test_checkJetpackConnection_hits_fetchJetpackConnectionData_3_times_when_failing_to_fetch_connected_wpcom_user() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        var fetchJetpackUserTriggerCount = 0
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, delayBeforeRetry: 0)
+        var fetchJetpackConnectionTriggerCount = 0
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                fetchJetpackUserTriggerCount += 1
-                completion(.success(JetpackUser.fake().copy(wpcomUser: nil)))
+            case .fetchJetpackConnectionData(let completion):
+                fetchJetpackConnectionTriggerCount += 1
+                completion(.success(JetpackConnectionData.fake().copy(currentUser: .fake().copy(wpcomUser: nil))))
             default:
                 break
             }
@@ -803,69 +999,50 @@ final class JetpackSetupViewModelTests: XCTestCase {
         waitUntil {
             viewModel.setupFailed
         }
-        XCTAssertEqual(fetchJetpackUserTriggerCount, 3)
+        XCTAssertEqual(fetchJetpackConnectionTriggerCount, 3)
         XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
                                                          setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
                                                          errorCode: 99))
     }
 
     // MARK: - Analytics
-    func test_it_tracks_login_jetpack_setup_go_to_store_button_tapped_when_tapping_go_to_store_button() {
+    func test_it_tracks_when_tapping_go_to_store_button() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
         // When
         // Tapping "Go to Store" button
         viewModel.navigateToStore()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_go_to_store_button_tapped" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["tap"] as? String, "go_to_store")
     }
 
-    func test_it_tracks_correct_event_when_jetpack_installation_is_successful() {
+    func test_it_tracks_correct_event_when_jetpack_installation_starts() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
         let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(error))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.startSetup()
-
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_install_successful" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
-    }
-
-    func test_it_tracks_correct_event_when_jetpack_installation_fails() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
-        let error = NetworkError.notFound(response: nil)
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(error))
-            case .installJetpackPlugin(let completion):
                 completion(.failure(error))
             default:
                 break
@@ -876,16 +1053,54 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_install_failed" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "installation")
+        XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
     }
 
-    func test_it_tracks_correct_event_when_jetpack_activation_is_successful() {
+    func test_it_tracks_correct_event_when_jetpack_installation_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.failure(NetworkError.notFound(response: nil)))
+            case .installJetpackPlugin(let completion):
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "installation")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "403")
+    }
+
+    func test_it_tracks_correct_event_when_jetpack_activation_starts() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
         let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -905,26 +1120,29 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_activation_successful" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "activation")
+        XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
     }
 
-    func test_it_tracks_correct_event_when_jetpack_activation_fails() {
+    func test_it_tracks_correct_event_when_jetpack_activation_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
-        let error = NetworkError.notFound(response: nil)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(error))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
+                completion(.success(.fake().copy(status: .inactive)))
             case .activateJetpackPlugin(let completion):
-                completion(.failure(error))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil)))
             default:
                 break
             }
@@ -933,29 +1151,29 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_activation_failed" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "activation")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "403")
     }
 
-    func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_is_successful() throws {
+    func test_it_tracks_correct_event_when_connection_step_starts() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
-        let error = NetworkError.notFound(response: nil)
-        let testConnectionURL = try XCTUnwrap(URL(string: "https://test-connection.com"))
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: true,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(error))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
-            case .activateJetpackPlugin(let completion):
-                completion(.success(()))
-            case .fetchJetpackConnectionURL(let completion):
-                completion(.success((testConnectionURL)))
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
             default:
                 break
             }
@@ -965,39 +1183,81 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_fetch_jetpack_connection_url_successful" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "connection")
+        XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
     }
 
-    func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_fails() {
+    func test_it_tracks_correct_event_when_connection_step_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
-        let error = NetworkError.notFound(response: nil)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: true,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
+            case .provisionConnection(let completion):
+                let error = NSError(domain: "Test", code: 1)
                 completion(.failure(error))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
-            case .activateJetpackPlugin(let completion):
-                completion(.success(()))
-            case .fetchJetpackConnectionURL(let completion):
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "connection")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "1")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "native")
+    }
+
+    func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_fails() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: true,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: nil)))
+            case .fetchJetpackConnectionURL(_, let completion):
                 let fetchError = NSError(domain: "Test", code: 1)
                 completion(.failure(fetchError))
             default:
                 break
             }
         }
+
         // When
         viewModel.startSetup()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_fetch_jetpack_connection_url_failed" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "connection")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "1")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "web")
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful() throws {
@@ -1005,13 +1265,20 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: true,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        let data = JetpackConnectionData.fake().copy(
+            currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -1021,8 +1288,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_all_steps_marked_done" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "all_done")
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful_but_no_wpCom_user_present() throws {
@@ -1030,67 +1297,64 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: true,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                let data = JetpackConnectionData.fake().copy(
+                    currentUser: .fake().copy(isConnected: true, wpcomUser: nil),
+                    isRegistered: true,
+                    blogID: 123
+                )
+                completion(.success(data))
+            case .provisionConnection(let completion):
+                completion(.success(JetpackConnectionProvisionResponse(userId: 124, scope: "admin", secret: "secret")))
+            case let .finalizeConnection(_, _, _, _, completion):
+                completion(.success(()))
             default:
                 break
             }
         }
 
         // When
-        viewModel.didAuthorizeJetpackConnection()
-
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_cannot_find_WPCOM_user" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
-    }
-
-    func test_it_tracks_correct_event_when_checking_jetpack_connection_fails() throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
-
-        let error = NSError(domain: "Test", code: 1)
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.didAuthorizeJetpackConnection()
-
+        viewModel.startSetup()
         waitUntil {
-            analyticsProvider.receivedEvents.isNotEmpty
+            viewModel.setupFailed
         }
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_error_checking_jetpack_connection" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "connection")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "99")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "native")
     }
 
-    func test_it_tracks_correct_event_when_retrying_setup() {
+    func test_it_tracks_correct_event_when_retrying_setup() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              analytics: analytics,
+                                              delayBeforeRetry: 0)
 
         // When
         viewModel.retryAllSteps()
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_try_again_button_tapped" }))
-        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "installation")
+        XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "native")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["tap"] as? String, "retry")
     }
 }

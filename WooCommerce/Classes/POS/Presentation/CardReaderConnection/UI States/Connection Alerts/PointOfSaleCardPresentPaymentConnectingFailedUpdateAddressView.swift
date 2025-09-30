@@ -28,7 +28,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
-        .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
+        .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
                               completion: viewModel.settingsWebViewWasDismissed)
         }
@@ -36,7 +36,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "http://example.com")!,

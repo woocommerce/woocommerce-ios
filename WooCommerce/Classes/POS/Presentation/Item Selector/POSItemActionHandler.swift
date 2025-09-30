@@ -4,14 +4,12 @@ import enum Yosemite.POSItemType
 import protocol WooFoundation.Analytics
 
 /// Protocol for handling actions on POS items
-@available(iOS 17.0, *)
 protocol POSItemActionHandler {
     /// Handles a tap on an item
     /// - Parameter item: The item that was tapped
     func handleTap(_ item: POSItem)
 }
 
-@available(iOS 17.0, *)
 extension POSItemActionHandler {
     /// Default implementation for analytics tracking
     /// - Parameter item: The item that was tapped
@@ -22,7 +20,7 @@ extension POSItemActionHandler {
         for item: POSItem,
         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
-        using analytics: Analytics
+        using analytics: POSAnalyticsProviding
     ) {
         switch item {
         case .simpleProduct:
@@ -67,17 +65,16 @@ extension POSItemActionHandler {
 }
 
 /// Standard handler for handling item taps without any special context
-@available(iOS 17.0, *)
 final class StandardPOSItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
     private let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     init(posModel: PointOfSaleAggregateModelProtocol,
          sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
          sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
-         analytics: Analytics = ServiceLocator.analytics
+         analytics: POSAnalyticsProviding
     ) {
         self.posModel = posModel
         self.sourceView = sourceView
@@ -101,19 +98,18 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
 }
 
 /// Handler for handling taps on search result items, saving the search term
-@available(iOS 17.0, *)
 final class SearchResultItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let searchTerm: String
     private let itemType: POSItemType
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     init(posModel: PointOfSaleAggregateModelProtocol,
          searchTerm: String,
          itemType: POSItemType,
          sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: POSAnalyticsProviding) {
         self.posModel = posModel
         self.searchTerm = searchTerm
         self.itemType = itemType
@@ -141,13 +137,12 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     }
 }
 
-@available(iOS 17.0, *)
 struct POSItemActionHandlerFactory {
     static func itemActionHandler(
         itemListType: ItemListType,
         searchTerm: String,
         posModel: PointOfSaleAggregateModelProtocol,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: POSAnalyticsProviding
     ) -> POSItemActionHandler {
         switch itemListType {
         case .products(search: false):
@@ -165,7 +160,7 @@ struct POSItemActionHandlerFactory {
         itemListType: ItemListType,
         searchTerm: String,
         posModel: PointOfSaleAggregateModelProtocol,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: POSAnalyticsProviding
     ) -> POSItemActionHandler {
         if itemListType.isSearching {
             SearchResultItemActionHandler(

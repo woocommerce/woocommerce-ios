@@ -18,7 +18,9 @@ struct FormattableAmountTextField: View {
         ZStack(alignment: .center) {
             // Hidden input text field
             TextField("", text: $viewModel.textFieldAmountText)
-                .onChange(of: viewModel.textFieldAmountText, perform: viewModel.updateAmount)
+                .onChange(of: viewModel.textFieldAmountText) { _, newValue in
+                    viewModel.updateAmount(newValue)
+                }
                 .focused()
                 .focused($focusAmountInput)
                 .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)

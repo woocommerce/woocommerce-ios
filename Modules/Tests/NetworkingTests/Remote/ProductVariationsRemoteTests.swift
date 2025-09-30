@@ -172,14 +172,12 @@ final class ProductVariationsRemoteTests: XCTestCase {
         }
         XCTAssertEqual(firstVariation.productVariationID, 1275)
         XCTAssertEqual(firstVariation.productID, 10275)
+        XCTAssertEqual(firstVariation.fullDescription, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
         XCTAssertEqual(firstVariation.sku, "99%-nuts-marble")
         XCTAssertEqual(firstVariation.globalUniqueID, "12345")
 
         let expectedPrice = 12
         XCTAssertEqual(firstVariation.price, "\(expectedPrice)")
-        XCTAssertEqual(firstVariation.regularPrice, "\(expectedPrice)")
-        XCTAssertEqual(firstVariation.salePrice, "8")
-        XCTAssertFalse(firstVariation.onSale)
 
         let expectedAttributes: [ProductVariationAttribute] = [
             ProductVariationAttribute(id: 0, name: "Darkness", option: "99%"),

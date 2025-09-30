@@ -45,7 +45,7 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
 }
 
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(
         viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel(tryPaymentAgainButtonAction: {}),
         animation: .init(namespace: namespace)

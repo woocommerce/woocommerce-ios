@@ -823,6 +823,85 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(allSettings?.count, 2)
     }
 
+    // MARK: - SettingAction.retrievePointOfSaleSettings
+
+    func test_retrievePointOfSaleSettings_returns_expected_settings() throws {
+        // Given
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/point-of-sale", filename: "settings-point-of-sale")
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            settingStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let settings = try result.get()
+        XCTAssertEqual(settings.count, 5)
+
+        let storeNameSetting = settings.first { $0.settingID == "woocommerce_pos_store_name" }
+        XCTAssertEqual(storeNameSetting?.value, "Best store")
+        XCTAssertEqual(storeNameSetting?.label, "Store name")
+        XCTAssertEqual(storeNameSetting?.settingGroupKey, "point-of-sale")
+
+        let storeAddressSetting = settings.first { $0.settingID == "woocommerce_pos_store_address" }
+        XCTAssertEqual(storeAddressSetting?.value, "60 29th Street #343\r\nCalifornia, CA 94110")
+        XCTAssertEqual(storeAddressSetting?.label, "Physical address")
+        XCTAssertEqual(storeAddressSetting?.settingGroupKey, "point-of-sale")
+
+        let storePhoneSetting = settings.first { $0.settingID == "woocommerce_pos_store_phone" }
+        XCTAssertEqual(storePhoneSetting?.value, "650-000-0000")
+        XCTAssertEqual(storePhoneSetting?.label, "Phone number")
+        XCTAssertEqual(storePhoneSetting?.settingGroupKey, "point-of-sale")
+
+        let storeEmailSetting = settings.first { $0.settingID == "woocommerce_pos_store_email" }
+        XCTAssertEqual(storeEmailSetting?.value, "some@email.com")
+        XCTAssertEqual(storeEmailSetting?.label, "Email")
+        XCTAssertEqual(storeEmailSetting?.settingGroupKey, "point-of-sale")
+
+        let refundPolicySetting = settings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }
+        XCTAssertEqual(refundPolicySetting?.value, "This is a brief refunds and return policy")
+        XCTAssertEqual(refundPolicySetting?.label, "Refund & Returns Policy")
+        XCTAssertEqual(refundPolicySetting?.settingGroupKey, "point-of-sale")
+    }
+
+    func test_retrievePointOfSaleSettings_returns_error_upon_response_error() {
+        // Given
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/point-of-sale", filename: "generic_error")
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            settingStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_retrievePointOfSaleSettings_returns_error_upon_empty_response() {
+        // Given
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            settingStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
     // MARK: - SettingAction.isFeatureEnabled
 
     func test_isFeatureEnabled_returns_true_when_feature_is_enabled() {
@@ -949,11 +1028,13 @@ private extension SettingStoreTests {
 
     func sampleSiteAPIWithWoo() -> Networking.SiteAPI {
         return SiteAPI(siteID: sampleSiteID,
-                       namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wc-pb/v3", "wp/v2"])
+                       namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wc-pb/v3", "wp/v2"],
+                       applicationPasswordAvailable: false)
     }
 
     func sampleSiteAPINoWoo() -> Networking.SiteAPI {
         return SiteAPI(siteID: sampleSiteID,
-                       namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc-pb/v3", "wp/v2"])
+                       namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc-pb/v3", "wp/v2"],
+                       applicationPasswordAvailable: false)
     }
 }

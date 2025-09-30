@@ -239,6 +239,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
+            isApplicationPasswordsSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],

@@ -138,6 +138,7 @@
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
 		01E62EC82DFADF56003A6D9E /* Cart+BarcodeScanError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */; };
 		01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F067EC2D0C5D56001C5805 /* MockLocationService.swift */; };
+		01F3D1302E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F3D12F2E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift */; };
 		01F42C162CE34AB8003D0A5A /* CardPresentModalTapToPaySuccessEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F42C152CE34AB3003D0A5A /* CardPresentModalTapToPaySuccessEmailSent.swift */; };
 		01F42C182CE34AD2003D0A5A /* CardPresentModalSuccessEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F42C172CE34AD1003D0A5A /* CardPresentModalSuccessEmailSent.swift */; };
 		01F579952C7DE709008BCA28 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F579942C7DE709008BCA28 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift */; };
@@ -1246,12 +1247,19 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
+		2D05D19F2E82D1A8004111FD /* BookingDetailsViewModel+Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */; };
+		2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A12E82D233004111FD /* HeaderContent.swift */; };
+		2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */; };
+		2D05D1A52E82D3F6004111FD /* BookingDetailsViewModel+SectionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */; };
+		2D05D1A72E82D49F004111FD /* BookingDetailsViewModel+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */; };
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
 		2DA63E042E69B6D400B0CB28 /* ApplicationPasswordsExperimentAvailabilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA63E032E69B6D200B0CB28 /* ApplicationPasswordsExperimentAvailabilityCheckerTests.swift */; };
+		2DAC25202E82A02C008521AF /* BookingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */; };
+		2DAC2C992E82A185008521AF /* BookingDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC2C972E82A185008521AF /* BookingDetailsView.swift */; };
 		2DB877522E25466C0001B175 /* ShippingItemRowAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB877512E25466B0001B175 /* ShippingItemRowAccessibility.swift */; };
 		2DB88DA42E27DD8D0001B175 /* MarkOrderAsReadUseCase+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */; };
 		2DB891662E27F0830001B175 /* Address+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB891652E27F07E0001B175 /* Address+Shared.swift */; };
@@ -3352,6 +3360,7 @@
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
 		01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cart+BarcodeScanError.swift"; sourceTree = "<group>"; };
 		01F067EC2D0C5D56001C5805 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
+		01F3D12F2E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCardPresentPaymentMessageViewImage.swift; sourceTree = "<group>"; };
 		01F42C152CE34AB3003D0A5A /* CardPresentModalTapToPaySuccessEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapToPaySuccessEmailSent.swift; sourceTree = "<group>"; };
 		01F42C172CE34AD1003D0A5A /* CardPresentModalSuccessEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessEmailSent.swift; sourceTree = "<group>"; };
 		01F579942C7DE709008BCA28 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests.swift; sourceTree = "<group>"; };
@@ -4438,12 +4447,19 @@
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
+		2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Section.swift"; sourceTree = "<group>"; };
+		2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+SectionContent.swift"; sourceTree = "<group>"; };
+		2D05D1A12E82D233004111FD /* HeaderContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContent.swift; sourceTree = "<group>"; };
+		2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentDetailsContent.swift; sourceTree = "<group>"; };
+		2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Status.swift"; sourceTree = "<group>"; };
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
 		2DA63E032E69B6D200B0CB28 /* ApplicationPasswordsExperimentAvailabilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentAvailabilityCheckerTests.swift; sourceTree = "<group>"; };
+		2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsViewModel.swift; sourceTree = "<group>"; };
+		2DAC2C972E82A185008521AF /* BookingDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsView.swift; sourceTree = "<group>"; };
 		2DB877512E25466B0001B175 /* ShippingItemRowAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingItemRowAccessibility.swift; sourceTree = "<group>"; };
 		2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarkOrderAsReadUseCase+Woo.swift"; sourceTree = "<group>"; };
 		2DB891652E27F07E0001B175 /* Address+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Shared.swift"; sourceTree = "<group>"; };
@@ -8398,6 +8414,7 @@
 				01BD77452C58D0D000147191 /* PointOfSalePaymentSuccessView.swift */,
 				01BD77472C58D19C00147191 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift */,
 				01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */,
+				01F3D12F2E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift */,
 			);
 			path = "Reader Messages";
 			sourceTree = "<group>";
@@ -9108,6 +9125,35 @@
 				2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */,
 			);
 			path = CIAB;
+			sourceTree = "<group>";
+		};
+		2DAC251E2E829FF9008521AF /* Booking Details */ = {
+			isa = PBXGroup;
+			children = (
+				2D05D1A12E82D233004111FD /* HeaderContent.swift */,
+				2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */,
+				2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */,
+				2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */,
+				2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */,
+				2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */,
+			);
+			path = "Booking Details";
+			sourceTree = "<group>";
+		};
+		2DAC2C952E82A15C008521AF /* Bookings */ = {
+			isa = PBXGroup;
+			children = (
+				2DAC2C962E82A169008521AF /* Booking Details */,
+			);
+			path = Bookings;
+			sourceTree = "<group>";
+		};
+		2DAC2C962E82A169008521AF /* Booking Details */ = {
+			isa = PBXGroup;
+			children = (
+				2DAC2C972E82A185008521AF /* BookingDetailsView.swift */,
+			);
+			path = "Booking Details";
 			sourceTree = "<group>";
 		};
 		2DCB54F82E6AE8C900621F90 /* CIAB */ = {
@@ -10884,6 +10930,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				2DAC2C952E82A15C008521AF /* Bookings */,
 				68B3BA242D91473D0000B2F2 /* AI Settings */,
 				B626C7192876599B0083820C /* Custom Fields */,
 				86023FA82B15CA8D00A28F07 /* Themes */,
@@ -12532,6 +12579,7 @@
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				2DAC251E2E829FF9008521AF /* Booking Details */,
 				68709D3E2A2EE2C000A7FA6C /* InAppPurchases */,
 				02E3B62B290631A5007E0F13 /* Authentication */,
 				D41C9F2A26D9A04A00993558 /* WhatsNew */,
@@ -15479,6 +15527,7 @@
 				03E471CA293E0A30001A58AD /* CardPresentModalTapToPayConfigurationProgress.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
+				01F3D1302E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift in Sources */,
 				208C0F0A2E1FAC1900FE619E /* PointOfSaleBarcodeScannerSetupStepViews.swift in Sources */,
 				02ED3D272C23315400ED6F3E /* PointOfSaleCardPresentPaymentReaderUpdateFailedView.swift in Sources */,
 				01BD77482C58D19C00147191 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift in Sources */,
@@ -15724,6 +15773,7 @@
 				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,
 				02B2829227C4808D004A332A /* InfiniteScrollIndicator.swift in Sources */,
 				03E471DC29424EC9001A58AD /* CardPresentModalTapToPaySuccessWithoutEmail.swift in Sources */,
+				2DAC25202E82A02C008521AF /* BookingDetailsViewModel.swift in Sources */,
 				45C91CFE25E55A1200FD8812 /* ShippingLabelAddressTopBannerFactory.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */,
@@ -15855,6 +15905,8 @@
 				CC254F3226C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift in Sources */,
 				0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */,
 				CE29FEF22C009867007679C2 /* OrderShippingSection.swift in Sources */,
+				2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */,
+				2D05D19F2E82D1A8004111FD /* BookingDetailsViewModel+Section.swift in Sources */,
 				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				02619858256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift in Sources */,
 				260520F22B83B1B7005D5D59 /* ConnectivityToolViewModel.swift in Sources */,
@@ -16382,6 +16434,7 @@
 				010F7D8D2E7A8447002B02EA /* ProductImageThumbnail+Extensions.swift in Sources */,
 				26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
+				2D05D1A72E82D49F004111FD /* BookingDetailsViewModel+Status.swift in Sources */,
 				DEE215342D1297CD004A11F3 /* UserDefaults+EditStoreList.swift in Sources */,
 				CE63024E2BAC664900E3325C /* EmailView.swift in Sources */,
 				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,
@@ -16665,6 +16718,7 @@
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */,
 				02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */,
+				2D05D1A52E82D3F6004111FD /* BookingDetailsViewModel+SectionContent.swift in Sources */,
 				260C31602524ECA900157BC2 /* IssueRefundViewController.swift in Sources */,
 				4521397027FF53E400964ED3 /* CouponExpiryDateView.swift in Sources */,
 				EE4C45812C36E769001A3D94 /* ViewPackagePhoto.swift in Sources */,
@@ -17014,6 +17068,7 @@
 				74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */,
 				CE8CCD43239AC06E009DBD22 /* RefundDetailsViewController.swift in Sources */,
 				869C2AA42C91791B00DDEE13 /* AztecEditorView.swift in Sources */,
+				2DAC2C992E82A185008521AF /* BookingDetailsView.swift in Sources */,
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
 				DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */,
 				451C77712404518600413F73 /* ProductSettingsRows.swift in Sources */,
@@ -17031,6 +17086,7 @@
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				0250192B2BDF3757009493A5 /* PriceFieldFormatter.swift in Sources */,
 				0279F0DF252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift in Sources */,
+				2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */,
 				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				CE6302482BAB60AE00E3325C /* CustomerDetailViewModel.swift in Sources */,
 				DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */,

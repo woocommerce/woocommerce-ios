@@ -60,8 +60,8 @@ struct POSSettingsLocalCatalogViewModelTests {
 
         // Then
         #expect(sut.catalogSize == "Catalog size unavailable")
-        #expect(sut.lastFullSyncDate == "Sync date unavailable")
-        #expect(sut.lastIncrementalSyncDate == "Sync date unavailable")
+        #expect(sut.lastFullSyncDate == "Update date unavailable")
+        #expect(sut.lastIncrementalSyncDate == "Update date unavailable")
     }
 
     @Test func loadCatalogData_sets_sync_dates_to_placeholder_when_sync_dates_are_nil() async throws {
@@ -78,8 +78,8 @@ struct POSSettingsLocalCatalogViewModelTests {
 
         // Then
         #expect(sut.catalogSize == "100 products, 50 variations")
-        #expect(sut.lastFullSyncDate == "Not synced")
-        #expect(sut.lastIncrementalSyncDate == "Not synced")
+        #expect(sut.lastFullSyncDate == "Not updated")
+        #expect(sut.lastIncrementalSyncDate == "Not updated")
     }
 
 

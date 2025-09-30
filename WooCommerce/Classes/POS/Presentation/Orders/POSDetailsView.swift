@@ -59,7 +59,7 @@ struct POSOrderDetailsView: View {
                 .padding(.bottom, POSPadding.medium)
             }
         }
-        .background(Color.posSurfaceBright)
+        .background(Color.posSurface)
         .navigationBarHidden(true)
         .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
             POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in

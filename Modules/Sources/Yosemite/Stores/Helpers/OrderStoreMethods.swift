@@ -5,6 +5,7 @@ import Storage
 /// OrderStoreMethods extracts functionality of OrderStore that needs be reused within Yosemite
 /// OrderStoreMethods is intentionally internal not to be exposed outside the module
 ///
+/// periphery: ignore
 internal protocol OrderStoreMethodsProtocol {
     func deleteOrder(siteID: Int64,
                      order: Order,

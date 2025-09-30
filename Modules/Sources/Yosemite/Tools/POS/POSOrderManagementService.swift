@@ -13,7 +13,7 @@ public protocol POSOrderManagementServiceProtocol {
     ///   - onCompletion: Completion handler with the result
     func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void)
 }
-
+/// periphery: ignore
 public final class POSOrderManagementService: POSOrderManagementServiceProtocol {
     private let orderStoreMethods: OrderStoreMethodsProtocol
 

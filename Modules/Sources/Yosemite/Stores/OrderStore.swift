@@ -6,6 +6,7 @@ import Storage
 
 // MARK: - OrderStore
 //
+/// periphery: ignore
 public class OrderStore: Store {
     private let remote: OrdersRemote
     private let methods: OrderStoreMethods
@@ -108,6 +109,7 @@ public class OrderStore: Store {
 
 // MARK: - Services!
 //
+/// periphery: ignore
 private extension OrderStore {
 
     /// Nukes all of the Stored Orders.

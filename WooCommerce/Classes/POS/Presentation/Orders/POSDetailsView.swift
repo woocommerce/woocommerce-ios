@@ -430,4 +430,12 @@ private enum Localization {
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
+
+#Preview("Order Details with Refund") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrderWithRefund(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
 #endif

@@ -108,7 +108,6 @@ extension View {
 private class MultiShadowView: UIView {
     var cornerRadius: CGFloat = 0
     var shadowLayers: [POSShadowLayer] = []
-    var fillColor: UIColor = .clear
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -141,14 +140,12 @@ private struct RasterizedShadowBackground: UIViewRepresentable {
         let view = MultiShadowView()
         view.cornerRadius = cornerRadius
         view.shadowLayers = shadowLayers
-        view.fillColor = backgroundColor
         return view
     }
 
     func updateUIView(_ uiView: MultiShadowView, context: Context) {
         uiView.cornerRadius = cornerRadius
         uiView.shadowLayers = shadowLayers
-        uiView.fillColor = backgroundColor
         uiView.setNeedsLayout()
     }
 }

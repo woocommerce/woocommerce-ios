@@ -107,7 +107,6 @@ private extension BookingListContainerView {
 }
 private extension BookingListContainerView {
     enum Layout {
-        static let viewPadding: CGFloat = 16
         static let topTabBarHeight: CGFloat = 44
         static let selectedTabIndicatorHeight: CGFloat = 3.0
     }

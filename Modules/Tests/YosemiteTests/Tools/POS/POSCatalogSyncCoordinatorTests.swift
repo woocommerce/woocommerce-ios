@@ -10,6 +10,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let mockCatalogSizeChecker: MockPOSCatalogSizeChecker
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
+    private let sampleMaxAge: TimeInterval = 60 * 60
 
     init() throws {
         self.mockSyncService = MockPOSCatalogFullSyncService()
@@ -36,7 +37,7 @@ struct POSCatalogSyncCoordinatorTests {
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When
-        try await sut.performFullSync(for: sampleSiteID)
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .infinity)
 
         // Then
         #expect(mockSyncService.startFullSyncCallCount == 1)
@@ -50,21 +51,21 @@ struct POSCatalogSyncCoordinatorTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            try await sut.performFullSync(for: sampleSiteID)
+            try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .infinity)
         }
     }
 
     // MARK: - Should Sync Decision Tests
 
-    @Test func shouldPerformFullSync_returns_true_when_site_is_not_in_database_with_no_sync_history() async {
+    @Test func shouldPerformFullSync_returns_true_when_site_is_not_in_database_with_no_sync_history() async throws {
         // Given - site does not exist in database
         // Note: not creating site in database so it won't exist
 
         // When
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then - should sync because site doesn't exist in database
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func shouldPerformFullSync_returns_true_when_site_has_no_previous_sync() async throws {
@@ -72,22 +73,22 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 3600)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func shouldPerformFullSync_returns_true_when_sync_is_stale() async throws {
         // Given - previous sync was 2 hours ago
-        let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
+        let twoHoursAgo = Date().addingTimeInterval(-2 * sampleMaxAge)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo)
 
         // When - max age is 1 hour
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func shouldPerformFullSync_returns_false_when_sync_is_fresh() async throws {
@@ -96,10 +97,10 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: thirtyMinutesAgo)
 
         // When - max age is 1 hour
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == false)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
     }
 
     @Test func shouldPerformFullSync_handles_different_sites_independently() async throws {
@@ -113,12 +114,12 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: siteB, lastFullSyncDate: nil)
 
         // When
-        let shouldSyncA = await sut.shouldPerformFullSync(for: siteA, maxAge: 2 * 60 * 60) // 2 hours
-        let shouldSyncB = await sut.shouldPerformFullSync(for: siteB, maxAge: 2 * 60 * 60) // 2 hours
+        let _ = try await sut.performFullSyncIfApplicable(for: siteA, maxAge: 2 * sampleMaxAge)
+        let _ = try await sut.performFullSyncIfApplicable(for: siteB, maxAge: 2 * sampleMaxAge)
 
         // Then
-        #expect(shouldSyncA == false) // Recent sync exists
-        #expect(shouldSyncB == true)  // No previous sync
+        #expect(mockSyncService.startFullSyncCallCount == 1)
+        #expect(mockSyncService.lastSyncSiteID == siteB)
     }
 
     @Test func shouldPerformFullSync_with_zero_maxAge_always_returns_true() async throws {
@@ -127,10 +128,10 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justNow)
 
         // When - max age is 0 (always sync)
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 0)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: 0)
 
         // Then
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     // MARK: - Catalog Size Check Tests
@@ -141,10 +142,10 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == false)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
@@ -155,10 +156,10 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
@@ -169,10 +170,10 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
@@ -184,10 +185,10 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then
-        #expect(shouldSync == false)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
@@ -199,24 +200,24 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: thirtyMinutesAgo)
 
         // When - max age is 1 hour
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then - should not sync because time hasn't passed yet
-        #expect(shouldSync == false)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
     }
 
     // MARK: - Database Check Tests
 
-    @Test func shouldPerformFullSync_returns_true_when_site_not_in_database() async {
+    @Test func shouldPerformFullSync_returns_true_when_site_not_in_database() async throws {
         // Given - site does not exist in database, but has recent sync date
         // Note: not creating site in database so it won't exist
 
         // When - max age is 1 hour (normally wouldn't sync)
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then - should sync because site doesn't exist in database
-        #expect(shouldSync == true)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func shouldPerformFullSync_respects_time_when_site_exists_in_database() async throws {
@@ -225,15 +226,15 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: recentSyncDate)
 
         // When - max age is 1 hour
-        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then - should not sync because site exists and time hasn't passed
-        #expect(shouldSync == false)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
     }
 
     // MARK: - Sync Tracking Tests
 
-    @Test func performFullSync_throws_error_when_sync_already_in_progress() async throws {
+    @Test func performFullSyncIfApplicable_throws_error_when_sync_already_in_progress() async throws {
         // Given - block the sync service so first sync will wait
         let expectedCatalog = POSCatalog(products: [], variations: [], syncDate: .now)
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
@@ -241,7 +242,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         // Start first sync in a task (it will block waiting for continuation)
         let firstSyncTask = Task {
-            try await sut.performFullSync(for: sampleSiteID)
+            try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
         }
 
         // Give first sync a moment to start and get blocked
@@ -249,7 +250,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         // When - try to start second sync while first is blocked
         do {
-            _ = try await sut.performFullSync(for: sampleSiteID)
+            _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
             #expect(Bool(false), "Should have thrown syncAlreadyInProgress error")
         } catch let error as POSCatalogSyncError {
             // Then
@@ -261,7 +262,7 @@ struct POSCatalogSyncCoordinatorTests {
         _ = try await firstSyncTask.value
     }
 
-    @Test func performFullSync_allows_concurrent_syncs_for_different_sites() async throws {
+    @Test func performFullSyncIfApplicable_allows_concurrent_syncs_for_different_sites() async throws {
         // Given
         let siteA: Int64 = 123
         let siteB: Int64 = 456
@@ -269,8 +270,8 @@ struct POSCatalogSyncCoordinatorTests {
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When - start syncs for different sites concurrently
-        async let syncA: () = sut.performFullSync(for: siteA)
-        async let syncB: () = sut.performFullSync(for: siteB)
+        async let syncA: () = sut.performFullSyncIfApplicable(for: siteA, maxAge: .zero)
+        async let syncB: () = sut.performFullSyncIfApplicable(for: siteB, maxAge: .zero)
 
         // Then - both should complete successfully
         try await syncA
@@ -285,7 +286,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         // When - sync fails
         do {
-            _ = try await sut.performFullSync(for: sampleSiteID)
+            _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
             #expect(Bool(false), "Should have thrown error")
         } catch {
             // Expected error
@@ -294,7 +295,7 @@ struct POSCatalogSyncCoordinatorTests {
         // Then - subsequent sync should be allowed
         mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
-        try await sut.performFullSync(for: sampleSiteID)
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
     }
 
     // MARK: - Incremental Sync Tests

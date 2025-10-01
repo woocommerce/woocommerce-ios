@@ -52,7 +52,7 @@ final class POSSettingsLocalCatalogViewModel {
         defer { isRefreshingCatalog = false }
 
         do {
-            try await catalogSyncCoordinator.performFullSync(for: siteID)
+            try await catalogSyncCoordinator.performFullSyncIfApplicable(for: siteID, maxAge: .zero)
             await loadCatalogData()
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")

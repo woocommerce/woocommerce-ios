@@ -556,13 +556,9 @@ final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol 
 }
 
 final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
-    func performFullSync(for siteID: Int64) async throws {
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         // Simulates a full sync operation with a 1 second delay.
         try await Task.sleep(nanoseconds: 1_000_000_000)
-    }
-
-    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
-        true
     }
 
     func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {

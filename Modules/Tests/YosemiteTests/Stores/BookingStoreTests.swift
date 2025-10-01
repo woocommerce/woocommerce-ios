@@ -207,6 +207,77 @@ struct BookingStoreTests {
         #expect(storedBookingCount == 2)
     }
 
+    @Test func synchronizeBookings_clears_existing_bookings_when_shouldClearCache_is_true() async throws {
+        // Given
+        let existingBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 999)
+        storeBooking(existingBooking)
+        #expect(storedBookingCount == 1)
+
+        let newBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        remote.whenLoadingAllBookings(thenReturn: .success([newBooking]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             shouldClearCache: true,
+                                                             onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingCount == 1)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 123))
+        #expect(storedBooking.bookingID == 123)
+
+        // Verify the existing booking was cleared
+        let existingStoredBooking = viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 999)
+        #expect(existingStoredBooking == nil)
+    }
+
+    @Test func synchronizeBookings_preserves_existing_bookings_when_shouldClearCache_is_false() async throws {
+        // Given
+        let existingBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 999)
+        storeBooking(existingBooking)
+        #expect(storedBookingCount == 1)
+
+        let newBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        remote.whenLoadingAllBookings(thenReturn: .success([newBooking]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             shouldClearCache: false,
+                                                             onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingCount == 2)
+
+        // Verify both bookings exist
+        let newStoredBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 123))
+        #expect(newStoredBooking.bookingID == 123)
+
+        let existingStoredBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 999))
+        #expect(existingStoredBooking.bookingID == 999)
+    }
+
     // MARK: - checkIfStoreHasBookings
 
     @Test func checkIfStoreHasBookings_returns_true_when_bookings_exist_locally() async throws {

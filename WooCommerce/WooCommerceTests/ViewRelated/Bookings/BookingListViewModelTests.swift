@@ -92,7 +92,7 @@ struct BookingListViewModelTests {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let booking = Booking.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             self.insertBookings([booking])
@@ -130,7 +130,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -170,7 +170,7 @@ struct BookingListViewModelTests {
         let firstPageItems = [Booking](repeating: .fake().copy(siteID: sampleSiteID), count: 2)
         let secondPageItems = [Booking](repeating: .fake().copy(siteID: sampleSiteID), count: 1)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, pageNumber, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, pageNumber, _, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadBookings += 1
@@ -218,7 +218,7 @@ struct BookingListViewModelTests {
         let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 9)
         let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 10)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             self.insertBookings([booking1, booking2])
@@ -243,7 +243,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -266,7 +266,7 @@ struct BookingListViewModelTests {
         let olderBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, dateCreated: Date(timeIntervalSince1970: 1000))
         let newerBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 3, dateCreated: Date(timeIntervalSince1970: 2000))
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             let items = [olderBooking, newerBooking]
@@ -295,7 +295,7 @@ struct BookingListViewModelTests {
         var invocationCountOfLoadBookings = 0
         var skip: Int?
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, pageNumber, pageSize, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, pageNumber, pageSize, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadBookings += 1

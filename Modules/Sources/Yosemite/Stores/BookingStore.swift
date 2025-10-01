@@ -35,12 +35,13 @@ public class BookingStore: Store {
         }
 
         switch action {
-        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, onCompletion):
+        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, shouldClearCache, onCompletion):
             synchronizeBookings(siteID: siteID,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize,
                                 startDateBefore: startDateBefore,
                                 startDateAfter: startDateAfter,
+                                shouldClearCache: shouldClearCache,
                                 onCompletion: onCompletion)
         case let .checkIfStoreHasBookings(siteID, onCompletion):
             checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
@@ -60,6 +61,7 @@ private extension BookingStore {
                              pageSize: Int,
                              startDateBefore: String?,
                              startDateAfter: String?,
+                             shouldClearCache: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -68,11 +70,10 @@ private extension BookingStore {
                                                                 pageSize: pageSize,
                                                                 startDateBefore: startDateBefore,
                                                                 startDateAfter: startDateAfter)
-                let shouldDeleteExistingBookings = pageNumber == Default.firstPageNumber
                 await upsertStoredBookingsInBackground(
                     readOnlyBookings: bookings,
                     siteID: siteID,
-                    shouldDeleteExistingBookings: shouldDeleteExistingBookings
+                    shouldDeleteExistingBookings: shouldClearCache
                 )
                 let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))

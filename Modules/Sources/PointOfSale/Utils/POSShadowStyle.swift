@@ -31,8 +31,7 @@ struct POSShadowStyleModifier: ViewModifier {
                     let shadowLayers = shadowLayers(for: style)
                     RasterizedShadowBackground(
                         cornerRadius: cornerRadius,
-                        shadowLayers: shadowLayers,
-                        backgroundColor: UIColor.clear
+                        shadowLayers: shadowLayers
                     )
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 }
@@ -134,7 +133,6 @@ private class MultiShadowView: UIView {
 private struct RasterizedShadowBackground: UIViewRepresentable {
     let cornerRadius: CGFloat
     let shadowLayers: [POSShadowLayer]
-    let backgroundColor: UIColor
 
     func makeUIView(context: Context) -> MultiShadowView {
         let view = MultiShadowView()

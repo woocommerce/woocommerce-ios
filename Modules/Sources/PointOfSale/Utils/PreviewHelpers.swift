@@ -122,6 +122,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
         case .parent:
+            // Set `itemsViewState` instead.
             break
         }
     }

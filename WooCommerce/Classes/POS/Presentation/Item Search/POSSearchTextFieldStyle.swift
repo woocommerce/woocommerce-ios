@@ -3,6 +3,8 @@ import WooFoundation
 
 /// Text field style for search fields that includes a magnifier icon and clear button
 struct POSSearchTextFieldStyle: TextFieldStyle {
+    @Environment(\.posSearchTextFieldUnfocusedBorderColor) private var unfocusedBorderColor
+
     private let focused: Bool
     @Binding private var searchTerm: String
     @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
@@ -17,7 +19,7 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
         .textFieldStyle(WooRoundedBorderTextFieldStyle(
             focused: focused,
             focusedBorderColor: .posPrimary,
-            unfocusedBorderColor: .posSurfaceBright,
+            unfocusedBorderColor: unfocusedBorderColor,
             backgroundColor: .posSurfaceBright,
             cornerRadius: POSCornerRadiusStyle.medium.value,
             insets: EdgeInsets(top: POSPadding.small, leading: POSPadding.medium, bottom: POSPadding.small, trailing: POSPadding.medium),

@@ -56,6 +56,7 @@ struct POSOrderListView: View {
                                 setSearch(false)
                             }
                         )
+                        .posSearchTextFieldUnfocusedBorderColor(.posOutlineVariant)
                         .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
                         .transition(.opacity.combined(with: .move(edge: .leading)))
                         .onChange(of: searchTerm) { _, newValue in

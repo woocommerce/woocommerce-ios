@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Booking Entity.
 ///
-public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable {
+public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let siteID: Int64
     public let bookingID: Int64
     public let allDay: Bool

@@ -41,6 +41,10 @@ struct BookingListView: View {
                     }
                 }
             }
+            .navigationDestination(for: Booking.self) { booking in
+                let viewModel = BookingDetailsViewModel(booking: booking)
+                BookingDetailsView(viewModel)
+            }
             .task {
                 viewModel.loadBookings()
             }
@@ -113,7 +117,10 @@ private extension BookingListView {
                 LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
                     Section {
                         ForEach(viewModel.bookings) { item in
-                            bookingItem(item)
+                            NavigationLink(value: item) {
+                                bookingItem(item)
+                            }
+                            .buttonStyle(.plain)
                         }
                     } header: {
                         headerView

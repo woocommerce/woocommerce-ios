@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
@@ -12,6 +13,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(\.posAnalytics) private var analytics
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
@@ -54,6 +56,14 @@ struct POSOrderDetailsView: View {
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .onAppear {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
+                orderID: order.id,
+                orderStatus: order.status.rawValue,
+                orderCreatedDate: order.dateCreated,
+                siteTimezone: siteTimezone
+            ))
         }
     }
 }
@@ -331,6 +341,7 @@ private extension POSOrderDetailsView {
                 Button(action: {
                     switch action {
                     case .emailReceipt:
+                        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
                         isShowingEmailReceiptView = true
                     }
                 }) {

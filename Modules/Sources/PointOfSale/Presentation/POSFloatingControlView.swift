@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
@@ -99,6 +100,7 @@ private extension POSFloatingControlView {
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
             Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 showOrders = true
             } label: {
                 Label(
@@ -168,6 +170,7 @@ private extension POSFloatingControlView {
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
             Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 showOrders = true
             } label: {
                 Label(

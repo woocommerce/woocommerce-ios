@@ -7,7 +7,7 @@ extension BookingDetailsViewModel {
         case attendance(AttendanceContent)
         case payment(PaymentContent)
         case customer(CustomerContent)
-        case teamMember(TeamMemberContent)
+        case bookingNotes
     }
 }
 
@@ -24,8 +24,8 @@ extension BookingDetailsViewModel.SectionContent: Identifiable {
             return "payment"
         case .customer:
             return "customer"
-        case .teamMember:
-            return "teamMember"
+        case .bookingNotes:
+            return "bookingNotes"
         }
     }
 }

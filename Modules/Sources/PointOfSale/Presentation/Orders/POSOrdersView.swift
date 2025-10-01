@@ -1,10 +1,12 @@
 import SwiftUI
 import UIKit
+import struct WooFoundation.WooAnalyticsEvent
 
 struct POSOrdersView: View {
     @Binding var isPresented: Bool
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
         switch orderListModel.ordersController.ordersViewState {
@@ -25,6 +27,7 @@ struct POSOrdersView: View {
                         orderListModel.ordersController.selectOrder(nil)
                     }
                 )
+                .id(selection.id)
             } detailPlaceholderView: {
                 if orderListModel.ordersController.ordersViewState.isLoading {
                     POSOrderDetailsLoadingView()
@@ -51,6 +54,9 @@ struct POSOrdersView: View {
                 orderListModel.ordersController.selectOrder(firstOrder)
             }
             .animation(.default, value: orderListModel.ordersController.ordersViewState.orders.isEmpty)
+            .onAppear {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListLoaded())
+            }
         }
     }
 

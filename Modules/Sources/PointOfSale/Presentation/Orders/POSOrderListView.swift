@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
 
@@ -7,6 +8,8 @@ struct POSOrderListView: View {
 
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAnalytics) private var analytics
+    @Environment(\.siteTimezone) private var siteTimezone
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     @State private var isSearching: Bool = false
@@ -39,6 +42,7 @@ struct POSOrderListView: View {
                             backgroundColor: .posSurface,
                             imageColor: .posOnSurface
                         ) {
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListSearchButtonTapped())
                             setSearch(true)
                         }
                         .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
@@ -90,6 +94,7 @@ struct POSOrderListView: View {
         .background(Color.posSurfaceBright)
         .navigationBarHidden(true)
         .refreshable {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListPullToRefresh())
             await orderListModel.ordersController.refreshOrders()
         }
         .task {
@@ -124,8 +129,15 @@ struct POSOrderListView: View {
                     headerRows
 
                     let orders = ordersViewState.orders
-                    ForEach(orders, id: \.id) { order in
+                    ForEach(Array(orders.enumerated()), id: \.element.id) { index, order in
                         Button(action: {
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListRowTapped(
+                                orderID: order.id,
+                                orderStatus: order.status.rawValue,
+                                listPosition: index,
+                                orderCreatedDate: order.dateCreated,
+                                siteTimezone: siteTimezone
+                            ))
                             orderListModel.ordersController.selectOrder(order)
                         }) {
                             OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)

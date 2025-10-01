@@ -66,7 +66,7 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
             return
         }
         let currentOrders = ordersViewState.orders
-        ordersViewState = fetchStrategy.showsLoadingWithItems ? .loading(currentOrders) : .loading([])
+        ordersViewState = .loading(currentOrders)
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
@@ -113,8 +113,11 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
 
     @MainActor
     private func fetchOrders(pageNumber: Int, appendToExistingOrders: Bool = true) async throws -> Bool {
+        let startTime = Date()
         do {
             let pagedOrders = try await fetchStrategy.fetchOrders(pageNumber: pageNumber)
+            let endTime = Date()
+            let millisecondsSinceRequestSent = Int(endTime.timeIntervalSince(startTime) * 1000)
 
             let existingOrders = appendToExistingOrders ? ordersViewState.orders : []
             let uniqueNewOrders = pagedOrders.items.filter { newOrder in
@@ -131,6 +134,12 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
 
             if fetchStrategy.supportsCaching {
                 cachedOrders = allOrders
+            }
+
+            if pageNumber > 1 {
+                fetchStrategy.trackNextPageLoaded(pageNumber: pageNumber)
+            } else {
+                fetchStrategy.trackFetched(millisecondsSinceRequestSent: millisecondsSinceRequestSent)
             }
 
             return pagedOrders.hasMorePages

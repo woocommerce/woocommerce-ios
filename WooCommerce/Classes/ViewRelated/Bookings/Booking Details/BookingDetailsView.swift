@@ -3,6 +3,7 @@ import Networking
 
 struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
@@ -37,7 +38,18 @@ struct BookingDetailsView: View {
             print("Refresh triggered")
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(viewModel.navigationTitle)
         .background(Color(uiColor: .systemGroupedBackground))
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                }
+            }
+        }
     }
 }
 

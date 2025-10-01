@@ -29,8 +29,7 @@ struct POSOrderDetailsView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: "#\(order.number)",
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack, buttonIcon: "xmark") : nil,
-                alignment: .firstTextBaseline,
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     if actions.isNotEmpty {
                         actionsSection(actions)
@@ -40,6 +39,8 @@ struct POSOrderDetailsView: View {
                     headerBottomContent(for: order)
                 }
             )
+            .posHeaderBackButtonPadding(POSPadding.none)
+            .fixedSize(horizontal: false, vertical: true)
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
@@ -149,6 +150,7 @@ private extension POSOrderDetailsView {
             Spacer().frame(height: POSSpacing.xSmall)
             POSOrderBadgeView(order: order)
         }
+        .padding(.top, POSSpacing.xSmall)
         .multilineTextAlignment(.leading)
     }
 
@@ -350,23 +352,25 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
-        HStack {
-            ForEach(actions) { action in
-                Button(action: {
-                    switch action {
-                    case .emailReceipt:
-                        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-                        isShowingEmailReceiptView = true
+        VStack {
+            HStack {
+                ForEach(actions) { action in
+                    Button(action: {
+                        switch action {
+                        case .emailReceipt:
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                            isShowingEmailReceiptView = true
+                        }
+                    }) {
+                        Text(Localization.emailReceiptActionTitle)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                     }
-                }) {
-                    Text(Localization.emailReceiptActionTitle)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
+                    .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
             }
+            Spacer()
         }
-        .padding(.vertical)
     }
 }
 

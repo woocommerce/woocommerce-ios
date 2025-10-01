@@ -50,7 +50,9 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         environmentBackButtonConfiguration ?? backButtonConfiguration
     }
 
-    private var hStackAlignment: VerticalAlignment
+    private var hStackAlignment: VerticalAlignment {
+        items.first?.subtitle == nil ? .center: .firstTextBaseline
+    }
 
     private var showsBackButton: Bool {
         effectiveBackButtonConfiguration != nil
@@ -61,7 +63,6 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        alignment: VerticalAlignment? = nil,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
@@ -71,17 +72,11 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
-        if let alignment {
-            hStackAlignment = alignment
-        } else {
-            hStackAlignment = subtitle == nil ? .center: .firstTextBaseline
-        }
     }
 
     init(
         items: [POSPageHeaderItem],
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        alignment: VerticalAlignment? = nil,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
@@ -91,24 +86,18 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
-        if let alignment {
-            hStackAlignment = alignment
-        } else {
-            hStackAlignment = items.first?.subtitle == nil ? .center: .firstTextBaseline
-        }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+        VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 leadingContent
 
-                if showsBackButton {
-                    backButton
-                }
-
                 VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                    HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
+                    HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+                        if showsBackButton {
+                            backButton
+                        }
                         ForEach(0..<items.count, id: \.self) { index in
                             VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
                                 HStack(spacing: POSSpacing.small) {
@@ -191,6 +180,10 @@ struct POSHeaderBackButtonIconKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
+struct POSHeaderBackButtonPaddingKey: EnvironmentKey {
+    static let defaultValue: CGFloat = POSPadding.large / 2
+}
+
 extension EnvironmentValues {
     var posHeaderBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         get { self[POSHeaderBackButtonConfigurationKey.self] }
@@ -200,6 +193,11 @@ extension EnvironmentValues {
     var posHeaderBackButtonIcon: String? {
         get { self[POSHeaderBackButtonIconKey.self] }
         set { self[POSHeaderBackButtonIconKey.self] = newValue }
+    }
+
+    var posHeaderBackButtonPadding: CGFloat {
+        get { self[POSHeaderBackButtonPaddingKey.self] }
+        set { self[POSHeaderBackButtonPaddingKey.self] = newValue }
     }
 }
 
@@ -211,6 +209,13 @@ extension View {
     /// - Returns: A view with the icon environment value set
     func posHeaderBackButtonIcon(systemName: String) -> some View {
         environment(\.posHeaderBackButtonIcon, systemName)
+    }
+
+    /// Sets the back button horizontal padding for all POSPageHeaderView instances in the view hierarchy.
+    /// - Parameter padding: The horizontal padding value
+    /// - Returns: A view with the padding environment value set
+    func posHeaderBackButtonPadding(_ padding: CGFloat) -> some View {
+        environment(\.posHeaderBackButtonPadding, padding)
     }
 }
 

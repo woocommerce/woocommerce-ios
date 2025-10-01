@@ -6,7 +6,6 @@ struct POSOrderDetailsLoadingView: View {
             POSPageHeaderView(
                 title: Localization.orderDetailsTitle,
                 backButtonConfiguration: nil,
-                alignment: .firstTextBaseline,
                 trailingContent: { shimmeringHeaderTrailingContent },
                 bottomContent: { shimmeringHeaderBottomContent }
             )

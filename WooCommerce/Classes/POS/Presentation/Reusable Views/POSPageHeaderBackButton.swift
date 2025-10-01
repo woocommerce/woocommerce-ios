@@ -3,6 +3,7 @@ import SwiftUI
 struct POSPageHeaderBackButton: View {
     private let configuration: POSPageHeaderBackButtonConfiguration
     @Environment(\.posHeaderBackButtonIcon) private var environmentIcon
+    @Environment(\.posHeaderBackButtonPadding) private var backButtonPadding
 
     init(configuration: POSPageHeaderBackButtonConfiguration) {
         self.configuration = configuration
@@ -18,7 +19,7 @@ struct POSPageHeaderBackButton: View {
                 .font(.posButtonSymbolLarge)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
-                .padding(.horizontal, Constants.backButtonHorizontalPadding)
+                .padding(.horizontal, backButtonPadding)
         }
         .disabled(configuration.state == .disabled || configuration.state == .shimmering)
         .if(configuration.state == .shimmering) { view in

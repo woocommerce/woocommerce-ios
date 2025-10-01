@@ -13,6 +13,8 @@ public enum BookingAction: Action {
     case synchronizeBookings(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
+                             startDateBefore: String? = nil,
+                             startDateAfter: String? = nil,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Checks if the store already has any bookings.

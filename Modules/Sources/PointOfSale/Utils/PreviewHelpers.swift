@@ -82,17 +82,11 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
-    func providePointOfSaleItems() -> [POSItem] {
-        return mockItems
-    }
-
     func providePointOfSaleItem() -> POSOrderableItem {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
-
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
 }
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
@@ -121,15 +115,14 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent):
-            await loadInitialChildItems(for: parent)
+        case .parent:
+            break
         }
     }
 
@@ -144,10 +137,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     func loadNextItems(base: ItemListBaseItem) async {
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
                                                                                               itemStates: [:]))
-    }
-
-    private func loadInitialChildItems(for parent: POSItem) async {
-        // Set `itemsViewState` instead.
     }
 }
 
@@ -214,13 +203,6 @@ private var mockVariationItems: [POSItem] {
     ]
 }
 
-final class POSConnectivityObserverPreview: ConnectivityObserver {
-    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
-        $currentStatus.eraseToAnyPublisher()
-    }
-}
-
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -234,8 +216,7 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
-        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
-        featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -414,8 +395,6 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
 }
 
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkInitialVisibility() -> Bool { true }
-    func checkVisibility() async -> Bool { true }
     func checkEligibility() async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
@@ -478,10 +457,6 @@ final class PointOfSaleItemFetchStrategyFactoryPreview: PointOfSaleItemFetchStra
     func searchStrategy(searchTerm: String, analytics: any POSItemFetchAnalyticsTracking) -> any PointOfSalePurchasableItemFetchStrategy {
         PointOfSalePreviewPurchasableItemFetchStrategy()
     }
-
-    func popularStrategy(pageSize: Int) -> any PointOfSalePurchasableItemFetchStrategy {
-        PointOfSalePreviewPurchasableItemFetchStrategy()
-    }
 }
 
 final class POSOrderListFetchStrategyFactoryPreview: POSOrderListFetchStrategyFactoryProtocol {
@@ -510,10 +485,6 @@ final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
     var id: String = ""
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
-        PagedItems(items: [], hasMorePages: false, totalItems: nil)
-    }
-
-    func fetchOrders(searchTerm: String, pageNumber: Int) async throws -> PagedItems<POSOrder> {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 }

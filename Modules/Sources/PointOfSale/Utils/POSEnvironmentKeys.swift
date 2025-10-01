@@ -11,10 +11,6 @@ struct SiteTimezoneKey: EnvironmentKey {
     static let defaultValue: TimeZone = .current
 }
 
-struct POSDependenciesKey: EnvironmentKey {
-    static let defaultValue: POSDependencyProviding? = nil
-}
-
 extension EnvironmentValues {
     var siteTimezone: TimeZone {
         get { self[SiteTimezoneKey.self] }

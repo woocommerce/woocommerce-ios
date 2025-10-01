@@ -471,7 +471,7 @@ private enum Localization {
 }
 
 #if DEBUG
-#Preview("Order Details") {
+#Preview("Order Details - Completed") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrder(),
         onBack: {}
@@ -479,9 +479,33 @@ private enum Localization {
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
 
-#Preview("Order Details with Refund") {
+#Preview("Order Details - Refunded") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithRefund(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - Failed") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewFailedOrder(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - Without Email") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrderWithoutEmail(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - With Net Payment") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrderWithNetPayment(),
         onBack: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))

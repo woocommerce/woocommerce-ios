@@ -384,7 +384,7 @@ private enum Localization {
     NavigationSplitView(columnVisibility: .constant(.all)) {
         POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
-            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loaded([POSPreviewHelpers.makePreviewOrder()], hasMoreItems: false)))
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
     } detail: {
         Text("Detail View")
     }
@@ -426,7 +426,7 @@ private enum Localization {
         POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(
-                state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
+                state: .inlineError(POSPreviewHelpers.makePreviewOrders(),
                                    error: .errorOnLoadingOrders(),
                                    context: .refresh)
             ))
@@ -440,7 +440,7 @@ private enum Localization {
         POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(
-                state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
+                state: .inlineError(POSPreviewHelpers.makePreviewOrders(),
                                    error: .errorOnLoadingOrdersNextPage(),
                                    context: .pagination)
             ))

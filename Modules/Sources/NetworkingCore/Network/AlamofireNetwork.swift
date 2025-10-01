@@ -34,12 +34,8 @@ public class AlamofireNetwork: Network {
     /// authentication mode for requests
     public private(set) var authenticationMode: RequestAuthenticationMode?
 
-    /// Lazy-initialized session manager. Use ensuresSessionManagerIsInitialized=true to avoid race conditions with concurrent requests.
-    private lazy var alamofireSession: Alamofire.Session = {
-        let sessionConfiguration = URLSessionConfiguration.default
-        let sessionManager = makeSession(configuration: sessionConfiguration)
-        return sessionManager
-    }()
+    /// Session manager used for Alamofire requests.
+    private let alamofireSession: Alamofire.Session
 
     private let credentials: Credentials?
 
@@ -71,14 +67,11 @@ public class AlamofireNetwork: Network {
     ///   - selectedSite: Publisher for site selection changes.
     ///   This is necessary if you wish to enable network switching to direct requests while authenticated with WPCOM for better performance.
     ///   - sessionManager: Optional pre-configured session manager.
-    ///   - ensuresSessionManagerIsInitialized: If true, the session is always set during initialization immediately to avoid lazy initialization race conditions.
-    ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>?,
                          appPasswordSupportState: AnyPublisher<Bool, Never>?,
                          userDefaults: UserDefaults = .standard,
-                         sessionManager: Alamofire.Session? = nil,
-                         ensuresSessionManagerIsInitialized: Bool = false) {
+                         sessionManager: Alamofire.Session? = nil) {
         self.credentials = credentials
         self.selectedSite = selectedSite
         self.userDefaults = userDefaults
@@ -96,11 +89,12 @@ public class AlamofireNetwork: Network {
             }()
             return RequestConverter(siteAddress: siteAddress)
         }()
-        self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        let requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        self.requestAuthenticator = requestAuthenticator
         if let sessionManager {
             self.alamofireSession = sessionManager
-        } else if ensuresSessionManagerIsInitialized {
-            self.alamofireSession = makeSession(configuration: URLSessionConfiguration.default)
+        } else {
+            self.alamofireSession = Alamofire.Session(configuration: .default, interceptor: requestAuthenticator)
         }
 
         let authenticationMode: RequestAuthenticationMode? = {
@@ -292,12 +286,6 @@ private extension AlamofireNetwork {
             updateAuthenticationMode(.jetpackTunnel)
             siteSubscription = nil
         }
-    }
-
-    /// Creates a session manager with request retrier and adapter
-    ///
-    func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
-        Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
     }
 
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-10 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-09-25 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -3202,9 +3202,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "ב-%1$@, מותר להשתמש בכרטיסים עם Tap To Pay רק עבור עסקאות עד למגבלת ללא מגע.";
-
-/* Accessibility label for an indeterminate loading indicator */
-"In progress" = "בתהליך";
 
 /* Display label for the bundle item's inventory stock status */
 "In stock" = "במלאי";
@@ -11468,6 +11465,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Help section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "עזרה";
 
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "לנהל את הגדרות הקטלוג";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "קטלוג";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "תצורה והגדרות של החנות";
 
@@ -11786,6 +11789,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "לבטל";
 
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "אין הזמנות להצגה";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "הזמנה";
+
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "מוצרים";
 
@@ -11797,6 +11806,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "סך כל ההנחה";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "לשלוח קבלה באימייל";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "תשלום נטו";
@@ -11837,8 +11849,29 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "לא ניתן לטעון את ההזמנות";
 
+/* Button text for refreshing orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle" = "לריענון";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "כדאי לשנות את מונח החיפוש.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "לא הצלחנו למצוא הזמנות שתואמות לחיפוש שלך.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "לא נמצאו הזמנות";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle" = "הזמנות יופיעו כאן לאחר שתתחילו לעבד מכירות ב-POS.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "עדיין לא התקבלו הזמנות";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "הזמנות";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "חיפוש הזמנות";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
@@ -11930,9 +11963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "סך כל ההנחה";
 
-/* Text for the banner requiring specific WooCommerce version. */
-"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "יש לעדכן את WooCommerce לגרסה 9.5.0";
-
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "סכום ביניים";
 
@@ -11947,6 +11977,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "התצוגה של 'נקודת מכירה' לא נתמכת ברוחב המסך הזה.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "לאפשר סנכרון מלא באמצעות נתונים סלולריים";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "גודל הקטלוג";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "מצב הקטלוג";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync" = "סנכרון מלא אחרון";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "עדכון חלקי אחרון";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage" = "ניהול נתוני השימוש";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "עדכון ידני לקטלוג";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "ניתן להשתמש ברענון הזה רק כאשר משהו נראה לא כשורה – האפשרות של POS שומרת שהנתונים יהיו מעודכנים באופן אוטומטי.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "לרענן את הקטלוג";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "הגדרות קטלוג";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "לסגור";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-11 09:54:10+0000 */
+/* Translation-Revision-Date: 2025-09-25 15:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -3202,9 +3202,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "В %1$@ для карт с функцией Tap to Pay установлен платёжный лимит бесконтактных транзакций.";
-
-/* Accessibility label for an indeterminate loading indicator */
-"In progress" = "Выполняется";
 
 /* Display label for the bundle item's inventory stock status */
 "In stock" = "Есть в наличии";
@@ -11468,6 +11465,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Help section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Справка";
 
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Управление настройками каталога";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Каталог";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Конфигурация и настройки магазина";
 
@@ -11786,6 +11789,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Закрыть";
 
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "Нет заказов для отображения";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Заказ";
+
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "Товары";
 
@@ -11797,6 +11806,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "Итоговая скидка";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "Отправить чек по эл. почте";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "Платёж нетто";
@@ -11837,8 +11849,29 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Не удалось загрузить заказы";
 
+/* Button text for refreshing orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle" = "Обновить";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Уточните поисковый запрос.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "По этому запросу заказов не найдено.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "Заказов не обнаружено";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle" = "Заказы появятся здесь, как только вы начнёте обрабатывать продажи в POS.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "Нет заказов";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "Заказы";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Поиск по заказам";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Доступные опции";
@@ -11927,9 +11960,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Итоговая скидка";
 
-/* Text for the banner requiring specific WooCommerce version. */
-"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Обновите WooCommerce до версии 9.5.0";
-
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Подытог";
 
@@ -11944,6 +11974,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Режим «Пункт продажи» не поддерживается при данной ширине экрана.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "Разрешить полную синхронизацию по сотовым данным";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "Размер каталога";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "Статус каталога";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync" = "Последняя полная синхронизация";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "Последнее добавочное обновление";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage" = "Управление использованием данных";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Обновление каталога вручную";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Пользуйтесь функцией обновления, только когда замечаете, что что-то не так: POS автоматически поддерживает актуальность данных.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "Обновить каталог";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "Настройки каталога";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Закрыть";

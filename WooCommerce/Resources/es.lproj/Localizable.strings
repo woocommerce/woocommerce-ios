@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-11 09:54:10+0000 */
+/* Translation-Revision-Date: 2025-09-26 10:46:01+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -1154,7 +1154,7 @@ which should be translated separately and considered part of this sentence. */
 "Cannot Update Category" = "No se puede actualizar la categoría";
 
 /* Error message shown when the input URL does not point to an existing site. */
-"Cannot access the site at this address. Please double-check and try again." = "No se puede acceder al sitio en esta dirección. Por favor, vuelve a comprobarlo e inténtalo de nuevo.";
+"Cannot access the site at this address. Please double-check and try again." = "No se puede acceder al sitio en esta dirección. Compruébala bien e inténtalo de nuevo.";
 
 /* Generic error when a product can't be added to an order after being scanned. */
 "Cannot add Product to Order." = "No se puede añadir el producto al pedido.";
@@ -3203,9 +3203,6 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "En %1$@, las tarjetas solo pueden utilizarse con Tap to Pay para transacciones hasta el límite sin contacto.";
 
-/* Accessibility label for an indeterminate loading indicator */
-"In progress" = "En curso";
-
 /* Display label for the bundle item's inventory stock status */
 "In stock" = "Hay existencias";
 
@@ -3345,7 +3342,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid URL, please check if you wrote a valid site address." = "URL no válida, por favor comprueba si has escrito una dirección de sitio válida.";
 
 /* Error message shown when the input URL is invalid. */
-"Invalid URL. Please double-check and try again." = "URL no válida. Por favor, vuelve a comprobarla e inténtalo de nuevo.";
+"Invalid URL. Please double-check and try again." = "URL no válida. Compruébala bien e inténtalo de nuevo.";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Nombre de usuario inválido";
@@ -11468,6 +11465,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Help section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Ayuda";
 
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Gestionar los ajustes del catálogo";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Catálogo";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Configuración y ajustes de la tienda";
 
@@ -11786,6 +11789,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Cerrar";
 
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "No hay ningún pedido que mostrar";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Pedido";
+
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "Productos";
 
@@ -11797,6 +11806,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "Descuento total";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "Enviar recibo por correo electrónico";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "Pago neto";
@@ -11837,8 +11849,29 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "No se pueden cargar los pedidos";
 
+/* Button text for refreshing orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle" = "Actualizar";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Prueba a modificar tu término de búsqueda.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "No se ha podido encontrar nada que coincida con tu búsqueda.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "No se han encontrado pedidos";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle" = "Los pedidos aparecerán aquí cuando empieces a procesar las ventas en el TPV.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "No hay ningún pedido aún";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "Pedidos";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Buscar pedidos";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Opciones disponibles";
@@ -11930,9 +11963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Descuento total";
 
-/* Text for the banner requiring specific WooCommerce version. */
-"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Actualiza WooCommerce a la versión 9.5.0";
-
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
 
@@ -11947,6 +11977,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "El punto de venta no se puede visualizar con este ancho de pantalla.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "Permitir la sincronización completa de los datos móviles";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "Tamaño del catálogo";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "Estado del catálogo";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync" = "Última sincronización completa";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "Última actualización progresiva";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage" = "Gestionar el uso de datos";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Actualización manual del catálogo";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Utiliza esta actualización solo cuando algo parezca no funcionar bien: los datos del TPV se mantienen actualizados automáticamente.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "Actualizar catálogo";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "Ajustes del catálogo";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Cerrar";

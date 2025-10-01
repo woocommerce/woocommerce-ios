@@ -72,10 +72,12 @@ struct BookingDetailsView: View {
             }
         }
         .sheet(isPresented: $showingStatusSheet) {
-            UpdateAttendanceStatusView()
-                .padding(.top)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
+            UpdateAttendanceStatusView { selectedStatus in
+                print("Selected status: \(selectedStatus)")
+            }
+            .padding(.top)
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
     }
 }

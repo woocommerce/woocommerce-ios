@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct UpdateAttendanceStatusView: View {
+    @Environment(\.dismiss) private var dismiss
     private let statuses = AttendanceStatus.allCases
+    private let onStatusSelected: (AttendanceStatus) -> Void
+
+    init(onStatusSelected: @escaping (AttendanceStatus) -> Void) {
+        self.onStatusSelected = onStatusSelected
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
@@ -24,10 +30,60 @@ struct UpdateAttendanceStatusView: View {
                     }
                 }
                 .padding(.horizontal)
+                .contentShape(Rectangle())
+                .tappable {
+                    onStatusSelected(status)
+                    dismiss()
+                }
             }
             Spacer()
         }
         .padding(.top)
+    }
+}
+
+extension UpdateAttendanceStatusView {
+    enum AttendanceStatus: CaseIterable, Identifiable {
+        case booked
+        case checkedIn
+        case noShow
+
+        var id: Self { self }
+    }
+}
+
+private extension UpdateAttendanceStatusView.AttendanceStatus {
+    var title: String {
+        switch self {
+        case .booked:
+            return UpdateAttendanceStatusView.Localization.bookedTitle
+        case .checkedIn:
+            return UpdateAttendanceStatusView.Localization.checkedInTitle
+        case .noShow:
+            return UpdateAttendanceStatusView.Localization.noShowTitle
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .booked:
+            return UpdateAttendanceStatusView.Localization.bookedDescription
+        case .checkedIn:
+            return UpdateAttendanceStatusView.Localization.checkedInDescription
+        case .noShow:
+            return UpdateAttendanceStatusView.Localization.noShowDescription
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .booked:
+            return "calendar.badge.checkmark"
+        case .checkedIn:
+            return "calendar.and.person"
+        case .noShow:
+            return "calendar.badge.exclamationmark"
+        }
     }
 }
 
@@ -74,51 +130,12 @@ private extension UpdateAttendanceStatusView {
     }
 }
 
-private enum AttendanceStatus: CaseIterable, Identifiable {
-    case booked
-    case checkedIn
-    case noShow
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .booked:
-            return UpdateAttendanceStatusView.Localization.bookedTitle
-        case .checkedIn:
-            return UpdateAttendanceStatusView.Localization.checkedInTitle
-        case .noShow:
-            return UpdateAttendanceStatusView.Localization.noShowTitle
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .booked:
-            return UpdateAttendanceStatusView.Localization.bookedDescription
-        case .checkedIn:
-            return UpdateAttendanceStatusView.Localization.checkedInDescription
-        case .noShow:
-            return UpdateAttendanceStatusView.Localization.noShowDescription
-        }
-    }
-
-    var iconName: String {
-        switch self {
-        case .booked:
-            return "calendar.badge.checkmark"
-        case .checkedIn:
-            return "calendar.and.person"
-        case .noShow:
-            return "calendar.badge.exclamationmark"
-        }
-    }
-}
-
 #if DEBUG
 struct UpdateAttendanceStatusView_Previews: PreviewProvider {
     static var previews: some View {
-        UpdateAttendanceStatusView()
+        UpdateAttendanceStatusView { selectedStatus in
+            print("Selected status: \(selectedStatus)")
+        }
     }
 }
 #endif

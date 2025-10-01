@@ -201,8 +201,14 @@ private struct POSOrderRowView: View {
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
-        .background(isSelected ? Color.posSurfaceDim : Color.posSurfaceContainerLowest)
+        .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+        .overlay {
+            if isSelected {
+                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
+                    .stroke(Color.posOnSurface, lineWidth: 2)
+            }
+        }
     }
 
     @ViewBuilder

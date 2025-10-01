@@ -31,7 +31,5 @@ struct POSPageHeaderBackButton: View {
 private extension POSPageHeaderBackButton {
     enum Constants {
         static let defaultBackButtonIcon = "chevron.backward"
-        /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
-        static let backButtonHorizontalPadding: CGFloat = 12
     }
 }

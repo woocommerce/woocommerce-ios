@@ -53,7 +53,6 @@ struct BookingDetailsView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    //TODO: - present an action sheet
                     showingOptions = true
                 } label: {
                     Image(systemName: "ellipsis")

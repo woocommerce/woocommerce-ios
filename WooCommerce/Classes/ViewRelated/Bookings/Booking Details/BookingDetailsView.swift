@@ -49,6 +49,14 @@ struct BookingDetailsView: View {
                     Image(systemName: "chevron.backward")
                 }
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    //TODO: - present an action sheet 
+                    print("On ellipsis item tap")
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
         }
     }
 }

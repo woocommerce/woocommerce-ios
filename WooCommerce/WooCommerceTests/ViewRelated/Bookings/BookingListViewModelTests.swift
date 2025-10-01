@@ -35,7 +35,7 @@ struct BookingListViewModelTests {
             }
             invocationCountOfLoadBookings += 1
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
 
         // Then
         #expect(viewModel.syncState == .empty)
@@ -52,7 +52,7 @@ struct BookingListViewModelTests {
             }
             invocationCountOfLoadBookings += 1
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
 
         // When
         viewModel.loadBookings()
@@ -63,7 +63,7 @@ struct BookingListViewModelTests {
 
     @Test func state_is_syncing_first_page_upon_load_bookings_if_no_existing_booking_in_storage() {
         // Given
-        let viewModel = BookingListViewModel(siteID: sampleSiteID)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all)
 
         // When
         viewModel.loadBookings()
@@ -75,7 +75,10 @@ struct BookingListViewModelTests {
     @Test func state_is_results_upon_load_bookings_if_existing_bookings_in_storage() {
         let existingBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
         insertBookings([existingBooking])
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: MockStoresManager(sessionManager: .testingInstance), storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: MockStoresManager(sessionManager: .testingInstance),
+                                             storage: storageManager)
 
         // When
         viewModel.loadBookings()
@@ -95,7 +98,10 @@ struct BookingListViewModelTests {
             self.insertBookings([booking])
             onCompletion(.success(true))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores, storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
 
         var states = [BookingListViewModel.SyncState]()
         await confirmation("State transitions") { confirmation in
@@ -129,7 +135,10 @@ struct BookingListViewModelTests {
             }
             onCompletion(.success(false))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores, storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
 
         var states = [BookingListViewModel.SyncState]()
         await confirmation("State transitions") { confirmation in
@@ -170,7 +179,10 @@ struct BookingListViewModelTests {
             onCompletion(.success(pageNumber == 1 ? true : false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores, storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
 
         var states = [BookingListViewModel.SyncState]()
         await confirmation("State transitions") { confirmation in
@@ -212,7 +224,10 @@ struct BookingListViewModelTests {
             self.insertBookings([booking1, booking2])
             onCompletion(.success(true))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores, storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
 
         // When
         viewModel.loadBookings()
@@ -233,7 +248,10 @@ struct BookingListViewModelTests {
             }
             onCompletion(.success(false))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores, storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
 
         // When
         viewModel.loadBookings()
@@ -255,7 +273,10 @@ struct BookingListViewModelTests {
             self.insertBookings(items)
             onCompletion(.success(false))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores, storage: storageManager)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
 
         // When
         viewModel.loadBookings()
@@ -282,7 +303,7 @@ struct BookingListViewModelTests {
 
             onCompletion(.success(false))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
 
         // When
         await viewModel.onRefreshAction()

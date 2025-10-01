@@ -215,7 +215,7 @@ private struct POSOrderRowView: View {
     @ViewBuilder
     private var orderHeaderRow: some View {
         HStack(alignment: .center) {
-            Text("#\(order.number)")
+            Text(POSOrderListView.Localization.orderTitle(order.number))
                 .font(.posBodySmallBold)
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
@@ -369,6 +369,15 @@ extension POSOrderListView {
             "pos.orderListView.ordersTitle",
             value: "Orders",
             comment: "Title at the header for the Orders view.")
+
+        static func orderTitle(_ orderNumber: String) -> String {
+            let format = NSLocalizedString(
+                "pos.orderListView.orderTitle",
+                value: "#%1$@",
+                comment: "%1$@ is the order number. # symbol is shown as a prefix to a number."
+            )
+            return String(format: format, orderNumber)
+        }
     }
 }
 

@@ -28,7 +28,7 @@ struct POSOrderDetailsView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: "#\(order.number)",
+                title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     if actions.isNotEmpty {
@@ -390,15 +390,6 @@ private extension POSOrderDetailsView {
 // MARK: - Localization
 
 private enum Localization {
-    static func orderTitle(_ orderNumber: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.orderTitle",
-            value: "Order #%1$@",
-            comment: "Order title with order number. %1$@ is the order number."
-        )
-        return String(format: format, orderNumber)
-    }
-
     static let productsTitle = NSLocalizedString(
         "pos.orderDetailsView.productsTitle",
         value: "Products",

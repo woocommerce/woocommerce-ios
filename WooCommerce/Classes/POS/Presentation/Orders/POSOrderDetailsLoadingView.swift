@@ -4,8 +4,9 @@ struct POSOrderDetailsLoadingView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: Localization.orderDetailsTitle,
+                title: "",
                 backButtonConfiguration: nil,
+                leadingContent: { shimmeringHeaderLeadingContent },
                 trailingContent: { shimmeringHeaderTrailingContent },
                 bottomContent: { shimmeringHeaderBottomContent }
             )
@@ -26,6 +27,18 @@ struct POSOrderDetailsLoadingView: View {
     }
 
     // MARK: - Shimmer Components
+
+    @ViewBuilder
+    private var shimmeringHeaderLeadingContent: some View {
+        HStack {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.longRowWidth, height: POSPadding.xxLarge)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+            Spacer()
+        }
+    }
 
     @ViewBuilder
     private var shimmeringHeaderTrailingContent: some View {
@@ -56,6 +69,7 @@ struct POSOrderDetailsLoadingView: View {
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering()
         }
+        .padding(.top, POSPadding.medium)
         .multilineTextAlignment(.leading)
     }
 
@@ -172,12 +186,6 @@ private enum Constants {
 }
 
 private enum Localization {
-    static let orderDetailsTitle = NSLocalizedString(
-        "pos.orderDetailsLoadingView.title",
-        value: "Order",
-        comment: "Title for the order details screen when no specific order is selected"
-    )
-
     static let productsTitle = NSLocalizedString(
         "pos.orderDetailsLoadingView.productsTitle",
         value: "Products",

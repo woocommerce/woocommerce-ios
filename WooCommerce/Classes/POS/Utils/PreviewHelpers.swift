@@ -150,10 +150,6 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
     func searchHistory(for itemType: POSItemType) -> [String] {
         return []
     }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {

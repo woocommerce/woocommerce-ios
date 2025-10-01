@@ -220,6 +220,7 @@ struct PointOfSaleAggregateModelTests {
             sut.startNewCart()
 
             // Then
+            await orderController.waitForClearOrder()
             #expect(orderController.clearOrderWasCalled == true)
         }
 
@@ -329,6 +330,7 @@ struct PointOfSaleAggregateModelTests {
             sut.pointOfSaleClosed()
 
             // Then
+            await orderController.waitForClearOrder()
             #expect(orderController.clearOrderWasCalled == true)
             #expect(cardPresentPaymentService.cancelPaymentCalled == true)
         }

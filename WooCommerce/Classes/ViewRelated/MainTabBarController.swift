@@ -862,7 +862,7 @@ private extension MainTabBarController {
         // Perform background sync
         Task.detached {
             do {
-                _ = try await coordinator.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
+                _ = try await coordinator.performFullSyncIfApplicable(for: siteID, maxAge: maxAge, forceSync: false)
             } catch POSCatalogSyncError.syncAlreadyInProgress {
                 DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
             } catch {

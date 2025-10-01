@@ -17,6 +17,7 @@ struct POSOrderBadgeView: View {
             .padding(.vertical, POSPadding.xSmall)
             .background(statusBackgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .accessibilityLabel(Localization.badgeAccessibilityLabel(status: order.status.localizedName))
     }
 
     private var statusBackgroundColor: Color {
@@ -31,6 +32,19 @@ struct POSOrderBadgeView: View {
             return Color(uiColor: .withColorStudio(.orange, shade: .shade5))
         default:
             return Color(uiColor: .gray(.shade5))
+        }
+    }
+}
+
+private extension POSOrderBadgeView {
+    enum Localization {
+        static func badgeAccessibilityLabel(status: String) -> String {
+            let format = NSLocalizedString(
+                "pos.orderBadgeView.accessibilityLabel",
+                value: "Order status: %1$@",
+                comment: "Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing)."
+            )
+            return String(format: format, status)
         }
     }
 }

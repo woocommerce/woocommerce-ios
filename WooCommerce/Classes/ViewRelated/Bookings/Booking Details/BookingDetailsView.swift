@@ -5,6 +5,7 @@ struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @Environment(\.dismiss) private var dismiss
     @State private var showingOptions = false
+    @State private var showingStatusSheet = false
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
@@ -69,6 +70,12 @@ struct BookingDetailsView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showingStatusSheet) {
+            UpdateAttendanceStatusView()
+                .padding(.top)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
     }
 }
@@ -157,7 +164,9 @@ private extension BookingDetailsView {
             value: .placeholder(content.value),
             selectionStyle: .disclosure,
             horizontalPadding: 0
-        )
+        ) {
+            showingStatusSheet = true
+        }
     }
 
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {

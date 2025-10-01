@@ -3,7 +3,7 @@ import SwiftUI
 
 extension BookingDetailsViewModel {
     enum Status {
-        case booked, paid
+        case booked, paid, payAtLocation
     }
 }
 
@@ -14,6 +14,8 @@ extension BookingDetailsViewModel.Status {
             return Localization.bookingStatusBooked
         case .paid:
             return Localization.bookingStatusPaid
+        case .payAtLocation:
+            return Localization.bookingStatusPayAtLocation
         }
     }
 
@@ -23,6 +25,8 @@ extension BookingDetailsViewModel.Status {
             return Color(UIColor.systemGray6)
         case .paid:
             return Color(UIColor.systemGray6)
+        case .payAtLocation:
+            return Color(UIColor(hexString: "FFE365"))
         }
     }
 }
@@ -30,15 +34,21 @@ extension BookingDetailsViewModel.Status {
 private extension BookingDetailsViewModel.Status {
     enum Localization {
         static let bookingStatusBooked = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.statusLabel.booked",
+            "BookingDetailsView.statusLabel.booked",
             value: "Booked",
-            comment: "Title for the 'Booked' status label in the appointment details view."
+            comment: "Title for the 'Booked' status label in the header view."
         )
 
         static let bookingStatusPaid = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.statusLabel.paid",
+            "BookingDetailsView.statusLabel.paid",
             value: "Paid",
-            comment: "Title for the 'Paid' status label in the appointment details view."
+            comment: "Title for the 'Paid' status label in the header view."
+        )
+
+        static let bookingStatusPayAtLocation = NSLocalizedString(
+            "BookingDetailsView.statusLabel.payAtLocation",
+            value: "Pay at location",
+            comment: "Title for the 'Pay at location' status label in the header view."
         )
     }
 }

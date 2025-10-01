@@ -12,6 +12,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(\.posAnalytics) private var analytics
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
@@ -31,15 +32,8 @@ struct POSOrderDetailsView: View {
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack, buttonIcon: "xmark") : nil,
                 alignment: .firstTextBaseline,
                 trailingContent: {
-                    if order.status == .completed {
-                        Button(action: {
-                            isShowingEmailReceiptView = true
-                        }) {
-                            Text(Localization.emailReceiptActionTitle)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                        }
-                        .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                    if actions.isNotEmpty {
+                        actionsSection(actions)
                     }
                 },
                 bottomContent: {
@@ -67,6 +61,14 @@ struct POSOrderDetailsView: View {
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .onAppear {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
+                orderID: order.id,
+                orderStatus: order.status.rawValue,
+                orderCreatedDate: order.dateCreated,
+                siteTimezone: siteTimezone
+            ))
         }
     }
 }
@@ -317,6 +319,54 @@ private extension POSOrderDetailsView {
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
+    }
+}
+
+// MARK: - Actions
+private extension POSOrderDetailsView {
+    enum POSOrderDetailsAction: Identifiable, CaseIterable {
+        case emailReceipt
+
+        var id: String { title }
+
+        var title: String {
+            switch self {
+            case .emailReceipt:
+                Localization.emailReceiptActionTitle
+            }
+        }
+
+        func available(for order: POSOrder) -> Bool {
+            switch self {
+            case .emailReceipt:
+                order.status == .completed
+            }
+        }
+    }
+
+    var actions: [POSOrderDetailsAction] {
+        POSOrderDetailsAction.allCases.filter { $0.available(for: order) }
+    }
+
+    @ViewBuilder
+    func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
+        HStack {
+            ForEach(actions) { action in
+                Button(action: {
+                    switch action {
+                    case .emailReceipt:
+                        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                        isShowingEmailReceiptView = true
+                    }
+                }) {
+                    Text(Localization.emailReceiptActionTitle)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
+                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+            }
+        }
+        .padding(.vertical)
     }
 }
 

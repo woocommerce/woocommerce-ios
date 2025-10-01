@@ -541,6 +541,10 @@ final class POSOrderListFetchStrategyFactoryPreview: POSOrderListFetchStrategyFa
 }
 
 final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
+    func trackFetched(millisecondsSinceRequestSent: Int) {}
+
+    func trackNextPageLoaded(pageNumber: Int) {}
+
     func loadOrder(orderID: Int64) async throws -> POSOrder {
         POSPreviewHelpers.makePreviewOrder()
     }

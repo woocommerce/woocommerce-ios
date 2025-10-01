@@ -285,11 +285,7 @@ struct BookingListViewModelTests {
         let viewModel = BookingListViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        await confirmation("Refresh completion") { confirmation in
-            viewModel.onRefreshAction {
-                confirmation()
-            }
-        }
+        await viewModel.onRefreshAction()
 
         // Then
         #expect(skip == 0)

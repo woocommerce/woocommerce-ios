@@ -118,17 +118,19 @@ struct POSOrderListView: View {
 
     @ViewBuilder
     private var listView: some View {
-        InfiniteScrollView(
-            triggerDeterminer: infiniteScrollTriggerDeterminer,
-            loadMore: {
-                guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
-                await orderListModel.ordersController.loadNextOrders()
-            },
-            content: {
-                LazyVStack(spacing: POSSpacing.small) {
-                    headerRows
+        ScrollViewReader { proxy in
+            InfiniteScrollView(
+                triggerDeterminer: infiniteScrollTriggerDeterminer,
+                loadMore: {
+                    guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
+                    await orderListModel.ordersController.loadNextOrders()
+                },
+                content: {
+                    LazyVStack(spacing: POSSpacing.small) {
+                        headerRows
+                            .id(Constants.scrollTopID)
 
-                    let orders = ordersViewState.orders
+                        let orders = ordersViewState.orders
                     ForEach(Array(orders.enumerated()), id: \.element.id) { index, order in
                         Button(action: {
                             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListRowTapped(
@@ -152,8 +154,14 @@ struct POSOrderListView: View {
                 .padding(.top, POSPadding.xSmall)
                 .padding(.bottom, POSPadding.medium)
             }
-        )
-        .scrollDismissesKeyboard(.immediately)
+            )
+            .scrollDismissesKeyboard(.immediately)
+            .onChange(of: searchTerm) { _, _ in
+                withAnimation {
+                    proxy.scrollTo(Constants.scrollTopID, anchor: .top)
+                }
+            }
+        }
     }
 
     @ViewBuilder
@@ -361,6 +369,7 @@ private enum Constants {
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     static let animationDuration: CGFloat = 0.2
     static let searchControlID = "searchControl"
+    static let scrollTopID = "orderListViewTopID"
 }
 
 extension POSOrderListView {

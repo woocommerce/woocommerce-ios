@@ -51,7 +51,7 @@ struct BookingDetailsView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    //TODO: - present an action sheet 
+                    //TODO: - present an action sheet
                     print("On ellipsis item tap")
                 } label: {
                     Image(systemName: "ellipsis")

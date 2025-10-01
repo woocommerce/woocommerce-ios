@@ -1,5 +1,6 @@
 import Foundation
 import struct Networking.Booking
+import class WooFoundationCore.CurrencyFormatter
 
 extension BookingDetailsViewModel {
     struct AppointmentDetailsContent {
@@ -33,7 +34,7 @@ extension BookingDetailsViewModel {
                         to: booking.endDate
                     )
                 ),
-                Row(title: Localization.appointmentDetailsPriceTitle, value: booking.cost)
+                Row(title: Localization.appointmentDetailsPriceTitle, value: Self.formatPrice(booking.cost))
             ]
         }
     }
@@ -49,6 +50,15 @@ private extension BookingDetailsViewModel.AppointmentDetailsContent {
 
     static func formatDuration(from startDate: Date, to endDate: Date) -> String {
         durationFormatter.string(from: startDate, to: endDate) ?? ""
+    }
+
+    static func formatPrice(_ price: String) -> String {
+        guard let decimalPrice = Decimal(string: price) else {
+            return price
+        }
+        return CurrencyFormatter(
+            currencySettings: ServiceLocator.currencySettings
+        ).formatAmount(decimalPrice) ?? price
     }
 }
 

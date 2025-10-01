@@ -47,8 +47,8 @@ struct POSSearchField: View {
             TextField(text: $searchTerm) {
                 Text(searchable.searchFieldPlaceholder)
             }
-            .textFieldStyle(POSSearchTextFieldStyle(focused: isSearchFieldFocused,
-                                                    searchTerm: $searchTerm))
+            .posSearchTextFieldStyle(focused: isSearchFieldFocused,
+                                     searchTerm: $searchTerm)
             .font(.posBodyLargeBold)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)

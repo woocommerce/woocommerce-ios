@@ -185,6 +185,10 @@ private extension POSOrderDetailsView {
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 
+            if !item.attributes.isEmpty {
+                productAttributesView(item.attributes)
+            }
+
             Text(Localization.quantityLabel(item.quantity.intValue,
                                             item.formattedPrice))
                 .font(.posBodySmallRegular())

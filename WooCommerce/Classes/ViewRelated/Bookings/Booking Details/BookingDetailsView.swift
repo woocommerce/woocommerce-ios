@@ -75,7 +75,7 @@ struct BookingDetailsView: View {
                 print("Selected status: \(selectedStatus)")
             }
             .padding(.top)
-            .presentationDetents([.medium])
+            .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
     }

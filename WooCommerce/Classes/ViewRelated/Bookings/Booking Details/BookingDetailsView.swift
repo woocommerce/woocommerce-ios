@@ -3,7 +3,6 @@ import Networking
 
 struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-    @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
@@ -40,15 +39,7 @@ struct BookingDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.navigationTitle)
         .background(Color(uiColor: .systemGroupedBackground))
-        .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                }
-            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     //TODO: - present an action sheet
@@ -57,6 +48,11 @@ struct BookingDetailsView: View {
                     Image(systemName: "ellipsis")
                 }
             }
+        }
+        .if(UIDevice.current.userInterfaceIdiom == .phone) {
+            /// Removes back button title for iPhone layout
+            /// Applied only for phones because it affects navigation title positioning on tablets
+            $0.toolbarRole(.editor)
         }
     }
 }

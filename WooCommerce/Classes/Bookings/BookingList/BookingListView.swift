@@ -38,10 +38,8 @@ private extension BookingListView {
     var bookingList: some View {
         List(selection: $selectedBooking) {
             ForEach(viewModel.bookings) { item in
-                NavigationLink(value: item) {
-                    bookingItem(item)
-                }
-                .buttonStyle(.plain)
+                bookingItem(item)
+                    .tag(item)
             }
 
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -79,11 +77,7 @@ private extension BookingListView {
                 }
             }
             .padding(Layout.viewPadding)
-
-            Divider()
-                .padding(.leading, Layout.viewPadding)
         }
-        .background(Color(.listForeground(modal: false))) // TODO: update selected background color as part of selection handling
     }
 
     func statusBadge(text: String, color: Color) -> some View {

@@ -10,13 +10,15 @@ struct BookingListContainerView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
-                    BookingListView(viewModel: viewModel.listViewModel(for: tab)) {
-                        headerView
+            VStack {
+                headerView
+                TabView(selection: $viewModel.selectedTab) {
+                    ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
+                        BookingListView(viewModel: viewModel.listViewModel(for: tab))
+                            .tag(tab)
                     }
-                    .opacity(viewModel.selectedTab == tab ? 1 : 0)
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
             }
             .navigationTitle(Localization.viewTitle)
             .toolbar {

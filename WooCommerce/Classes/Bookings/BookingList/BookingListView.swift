@@ -1,32 +1,21 @@
 import SwiftUI
 import struct Yosemite.Booking
 
-struct BookingListView<Header: View>: View {
+struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
 
-    @Namespace var topID
-
-    private let headerView: Header
-
-    private let viewPadding: CGFloat = 16
-    private let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
-
-    init(viewModel: BookingListViewModel,
-         @ViewBuilder header: () -> Header) {
+    init(viewModel: BookingListViewModel) {
         self.viewModel = viewModel
-        self.headerView = header()
     }
 
     var body: some View {
         VStack {
             switch viewModel.syncState {
             case .empty:
-                headerView
                 Spacer()
                 Text("No bookings found") // TODO: update this in WOOMOB-1394
                 Spacer()
             case .syncingFirstPage:
-                headerView
                 Spacer()
                 ProgressView().progressViewStyle(.circular)
                 Spacer()
@@ -35,37 +24,31 @@ struct BookingListView<Header: View>: View {
             }
         }
         .task {
-            viewModel.loadBookings()
+            // Only load first page if no content is available.
+            if viewModel.bookings.isEmpty {
+                viewModel.loadBookings()
+            }
         }
     }
 }
 
 private extension BookingListView {
     var bookingList: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
-                    Section {
-                        ForEach(viewModel.bookings) { item in
-                            bookingItem(item)
-                        }
-                    } header: {
-                        headerView
-                    }
-                    .id(topID)
-
-                    InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                        .padding(.top, viewPadding)
-                        .onAppear {
-                            viewModel.onLoadNextPageAction()
-                        }
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(viewModel.bookings) { item in
+                    bookingItem(item)
                 }
+
+                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                    .padding(.top, Layout.viewPadding)
+                    .onAppear {
+                        viewModel.onLoadNextPageAction()
+                    }
             }
-            .refreshable {
-                await viewModel.onRefreshAction()
-                // workaround as navigation bar is not snapped back after refreshing
-                proxy.scrollTo(topID, anchor: .top)
-            }
+        }
+        .refreshable {
+            await viewModel.onRefreshAction()
         }
     }
 
@@ -86,15 +69,15 @@ private extension BookingListView {
                 HStack {
                     // TODO: update this when attendance status is available
                     // Update badge colors if design changes as statuses are not clarified now.
-                    statusBadge(text: "Booked", color: defaultBadgeColor)
-                    statusBadge(text: booking.bookingStatus.localizedTitle, color: defaultBadgeColor)
+                    statusBadge(text: "Booked", color: Layout.defaultBadgeColor)
+                    statusBadge(text: booking.bookingStatus.localizedTitle, color: Layout.defaultBadgeColor)
                     Spacer()
                 }
             }
-            .padding(viewPadding)
+            .padding(Layout.viewPadding)
 
             Divider()
-                .padding(.leading, viewPadding)
+                .padding(.leading, Layout.viewPadding)
         }
         .background(Color(.listForeground(modal: false))) // TODO: update selected background color as part of selection handling
     }
@@ -105,5 +88,12 @@ private extension BookingListView {
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
+    }
+}
+
+private extension BookingListView {
+    enum Layout {
+        static let viewPadding: CGFloat = 16
+        static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
     }
 }

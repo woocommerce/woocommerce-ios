@@ -24,18 +24,10 @@ struct POSFloatingControlView: View {
         self._showSettings = showSettings
     }
 
-    private var isPOSSettingsEnabled: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
-    }
-
     var body: some View {
         HStack {
             Menu {
-                if isPOSSettingsEnabled {
-                    compactOptions()
-                } else {
-                    completeOptions()
-                }
+                compactOptions()
             } label: {
                 VStack {
                     Spacer()
@@ -85,86 +77,14 @@ private extension POSFloatingControlView {
                 icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
             )
         }
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
-            Button {
-                analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.settings) },
-                    icon: { Image(systemName: "gearshape") }
-                )
-            }
-        }
-
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
-            Button {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                showOrders = true
-            } label: {
-                Label(
-                    title: { Text(Localization.orders) },
-                    icon: { Image(systemName: "text.document") }
-                )
-            }
-        }
-    }
-
-    @ViewBuilder private func completeOptions() -> some View {
         Button {
-            analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
+            analytics.track(.pointOfSaleSettingsMenuItemTapped)
+            showSettings = true
         } label: {
             Label(
-                title: { Text(Localization.exitPointOfSale) },
-                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+                title: { Text(Localization.settings) },
+                icon: { Image(systemName: "gearshape") }
             )
-        }
-        Button {
-            analytics.track(.pointOfSaleGetSupportTapped)
-            showSupport = true
-        } label: {
-            Label(
-                title: { Text(Localization.getSupport) },
-                icon: { Image(systemName: "questionmark.circle") }
-            )
-        }
-        Button {
-            showDocumentation = true
-            analytics.track(.pointOfSaleViewDocsTapped)
-        } label: {
-            Label(
-                title: { Text(Localization.viewDocumentation) },
-                icon: { Image(systemName: "info.circle") }
-            )
-        }
-        Button {
-            showProductRestrictionsModal = true
-            analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-        } label: {
-            Label(
-                title: { Text(Localization.productRestrictionsInfo) },
-                icon: { Image(systemName: "magnifyingglass") })
-        }
-        Button {
-            showBarcodeScanningModal = true
-            analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
-        } label: {
-            Label(
-                title: {
-                    Text(Localization.barcodeScanningSetup)
-                },
-                icon: { Image(systemName: "barcode.viewfinder") })
-        }
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
-            Button {
-                showSettings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.settings) },
-                    icon: { Image(systemName: "gearshape") }
-                )
-            }
         }
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {

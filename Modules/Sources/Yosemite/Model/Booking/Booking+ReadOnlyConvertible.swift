@@ -47,6 +47,7 @@ extension Storage.Booking: ReadOnlyConvertible {
                 resourceID: resourceID,
                 startDate: startDate ?? Date(),
                 statusKey: statusKey ?? "",
-                localTimezone: localTimezone ?? "")
+                localTimezone: localTimezone ?? "",
+                currency: "")
     }
 }

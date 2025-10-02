@@ -24,6 +24,7 @@ struct BookingsRemoteTests {
         #expect(firstBooking.productID == 23)
         #expect(firstBooking.customerID == 0)
         #expect(firstBooking.siteID == sampleSiteID)
+        #expect(firstBooking.currency == "USD")
     }
 
     @Test func test_loadAllBookings_properly_relays_netwoking_errors() async {

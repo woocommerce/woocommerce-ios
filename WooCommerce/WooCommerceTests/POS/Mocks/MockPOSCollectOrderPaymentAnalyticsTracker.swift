@@ -24,10 +24,6 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         didCallTrackCheckoutTapped = true
     }
 
-    func resetCheckoutTapCountTracker() {
-        // no-op
-    }
-
     var didCallTrackSuccessfulCashPayment = false
     func trackSuccessfulCashPayment() {
         didCallTrackSuccessfulCashPayment = true

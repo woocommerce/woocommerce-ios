@@ -18,10 +18,6 @@ private struct POSShadowLayer {
     let offset: CGSize
 }
 
-private struct POSShadowStyleDefinition {
-    let shadowLayers: [POSShadowLayer]
-}
-
 // MARK: - Main SwiftUI Modifier
 
 struct POSShadowStyleModifier: ViewModifier {
@@ -35,8 +31,7 @@ struct POSShadowStyleModifier: ViewModifier {
                     let shadowLayers = shadowLayers(for: style)
                     RasterizedShadowBackground(
                         cornerRadius: cornerRadius,
-                        shadowLayers: shadowLayers,
-                        backgroundColor: UIColor.clear
+                        shadowLayers: shadowLayers
                     )
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 }
@@ -112,7 +107,6 @@ extension View {
 private class MultiShadowView: UIView {
     var cornerRadius: CGFloat = 0
     var shadowLayers: [POSShadowLayer] = []
-    var fillColor: UIColor = .clear
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -139,20 +133,17 @@ private class MultiShadowView: UIView {
 private struct RasterizedShadowBackground: UIViewRepresentable {
     let cornerRadius: CGFloat
     let shadowLayers: [POSShadowLayer]
-    let backgroundColor: UIColor
 
     func makeUIView(context: Context) -> MultiShadowView {
         let view = MultiShadowView()
         view.cornerRadius = cornerRadius
         view.shadowLayers = shadowLayers
-        view.fillColor = backgroundColor
         return view
     }
 
     func updateUIView(_ uiView: MultiShadowView, context: Context) {
         uiView.cornerRadius = cornerRadius
         uiView.shadowLayers = shadowLayers
-        uiView.fillColor = backgroundColor
         uiView.setNeedsLayout()
     }
 }

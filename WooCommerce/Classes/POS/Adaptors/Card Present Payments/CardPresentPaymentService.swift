@@ -65,7 +65,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         let connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
         self.connectedReaderPublisher = connectedReaderPublisher
 
-        readerConnectionStatusPublisher = connectedReaderPublisher
+        readerConnectionStatusPublisher = self.connectedReaderPublisher
             .map({ reader -> CardPresentPaymentReaderConnectionStatus in
                 guard let reader else {
                     return .disconnected
@@ -146,7 +146,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             using: connectionMethod,
             siteID: siteID,
             preflightController: preflightController,
-            onboardingPresenter: onboardingAdaptor,
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: paymentAlertsPresenterAdaptor,
             paymentEventSubject: paymentEventSubject,
@@ -157,7 +156,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         switch try await paymentTask.value {
         case .success:
             // TODO: fetch the receipt URL to return an accurate value.
-            let transaction = CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.com")!)
+            let transaction = CardPresentPaymentTransaction()
             return .success(transaction)
         case .cancellation:
             return .cancellation

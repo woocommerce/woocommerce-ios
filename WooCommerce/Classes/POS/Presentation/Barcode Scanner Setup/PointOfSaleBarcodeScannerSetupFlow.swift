@@ -38,10 +38,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
         }
     }
 
-    func restartFlow() {
-        currentStepKey = .setupBarcodeHID
-    }
-
     // MARK: - Generic Transition Methods
 
     func transition(to transitionType: PointOfSaleBarcodeScannerTransitionType) {

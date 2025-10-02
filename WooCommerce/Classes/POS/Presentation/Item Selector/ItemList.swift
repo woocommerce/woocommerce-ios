@@ -151,7 +151,6 @@ struct ItemListRow: View {
     let item: POSItem
     let itemActionHandler: POSItemActionHandler
     @Binding var activeNavigationItem: POSItem?
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     var body: some View {
         switch item {

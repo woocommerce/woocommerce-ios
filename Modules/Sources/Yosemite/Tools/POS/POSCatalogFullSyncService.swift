@@ -49,15 +49,11 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)
     }
 
-    init(syncRemote: POSCatalogSyncRemoteProtocol,
-         batchSize: Int,
-         persistenceService: POSCatalogPersistenceServiceProtocol,
-         maxRetries: Int = 3,
-         retryDelay: TimeInterval = 1.0) {
+    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int, persistenceService: POSCatalogPersistenceServiceProtocol) {
         self.syncRemote = syncRemote
         self.batchSize = batchSize
         self.persistenceService = persistenceService
-        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize, maxRetries: maxRetries, retryDelay: retryDelay)
+        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize)
     }
 
     // MARK: - Protocol Conformance

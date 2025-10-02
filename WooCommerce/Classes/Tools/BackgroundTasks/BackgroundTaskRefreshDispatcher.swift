@@ -175,8 +175,11 @@ private struct BackgroundTaskSystemInfo {
     private static func getNetworkInfo() async -> NetworkInfo {
         return await withCheckedContinuation { continuation in
             let monitor = NWPathMonitor()
+            var hasResumed = false
 
             monitor.pathUpdateHandler = { path in
+                guard !hasResumed else { return }
+                hasResumed = true
                 monitor.cancel()
                 continuation.resume(returning: NetworkInfo(path: path))
             }

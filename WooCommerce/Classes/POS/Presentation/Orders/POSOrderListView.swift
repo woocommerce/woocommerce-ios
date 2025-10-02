@@ -44,6 +44,7 @@ struct POSOrderListView: View {
                             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListSearchButtonTapped())
                             setSearch(true)
                         }
+                        .accessibilityLabel(Localization.searchButtonAccessibilityLabel)
                         .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
                         .transition(.opacity.combined(with: .scale))
                     }
@@ -218,6 +219,19 @@ private struct POSOrderRowView: View {
                     .stroke(Color.posOnSurface, lineWidth: 2)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(POSOrderListView.Localization.orderRowAccessibilityHint)
+    }
+
+    private var accessibilityLabel: String {
+        POSOrderListView.Localization.orderRowAccessibilityLabel(
+            orderNumber: order.number,
+            total: order.formattedTotal,
+            date: DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated),
+            email: order.customerEmail,
+            status: order.status.localizedName
+        )
     }
 
     @ViewBuilder
@@ -281,6 +295,7 @@ private struct POSGhostOrderRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder
@@ -387,6 +402,39 @@ extension POSOrderListView {
             )
             return String(format: format, orderNumber)
         }
+
+        static func orderRowAccessibilityLabel(orderNumber: String, total: String, date: String, email: String?, status: String) -> String {
+            let baseFormat = NSLocalizedString(
+                "pos.orderListView.orderRow.accessibilityLabel",
+                value: "Order #%1$@, Total %2$@, %3$@, Status: %4$@",
+                comment: "Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, "
+                + "%4$@ is order status."
+            )
+            var label = String(format: baseFormat, orderNumber, total, date, status)
+
+            if let email = email, email.isNotEmpty {
+                let emailFormat = NSLocalizedString(
+                    "pos.orderListView.orderRow.accessibilityLabel.email",
+                    value: "Email: %1$@",
+                    comment: "Email portion of order row accessibility label. %1$@ is customer email address."
+                )
+                label += ", " + String(format: emailFormat, email)
+            }
+
+            return label
+        }
+
+        static let orderRowAccessibilityHint = NSLocalizedString(
+            "pos.orderListView.orderRow.accessibilityHint",
+            value: "Tap to view order details",
+            comment: "Accessibility hint for order row indicating the action when tapped."
+        )
+
+        static let searchButtonAccessibilityLabel = NSLocalizedString(
+            "pos.orderListView.searchButton.accessibilityLabel",
+            value: "Search orders",
+            comment: "Accessibility label for the search button in orders list."
+        )
     }
 }
 

@@ -31,6 +31,10 @@ struct BookingListContainerView: View {
                 }
             }
         }
+        .navigationDestination(for: Booking.self) { booking in
+            let viewModel = BookingDetailsViewModel(booking: booking)
+            BookingDetailsView(viewModel)
+        }
     }
 }
 

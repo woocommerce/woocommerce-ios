@@ -37,7 +37,10 @@ private extension BookingListView {
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(viewModel.bookings) { item in
-                    bookingItem(item)
+                    NavigationLink(value: item) {
+                        bookingItem(item)
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)

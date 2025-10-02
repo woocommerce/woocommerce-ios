@@ -49,6 +49,7 @@ private extension BookingListView {
                 }
         }
         .listStyle(.plain)
+        .accentColor(Color(.listSelectedBackground))
         .refreshable {
             await viewModel.onRefreshAction()
         }
@@ -61,6 +62,7 @@ private extension BookingListView {
                     .font(.body)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(Color.primary)
 
                 // TODO: fetch bookable products & customer to get names or wait for API update
                 Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
@@ -76,13 +78,13 @@ private extension BookingListView {
                     Spacer()
                 }
             }
-            .padding(Layout.viewPadding)
         }
     }
 
     func statusBadge(text: String, color: Color) -> some View {
         Text(text)
             .font(.caption2)
+            .foregroundStyle(Color.primary)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))

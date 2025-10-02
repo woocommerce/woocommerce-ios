@@ -166,30 +166,67 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that OrderItem decoding is robust for various image field scenarios from WooCommerce API
     ///
+    /// Tests all possible image field formats:
+    /// 1. String URL - should parse successfully with image object
+    /// 2. Object with src field - should parse successfully with image object
+    /// 3. Object without src field - should be nil
+    /// 4. Invalid types should fail gracefully with nil image
+    /// 5. Nested objects - should be nil
+    /// 6. Empty values - should be nil
+    /// 7. Missing field - should be nil
+    ///
     func test_order_item_image_decoding_robustness() {
         let orders = mapOrders(from: "order-item-image")
         XCTAssertEqual(orders.count, 1)
 
         let order = orders[0]
-        XCTAssertEqual(order.items.count, 4)
+        XCTAssertEqual(order.items.count, 11)
 
-        // Item 1: Product with valid image src
+        // Item 1: Product with valid image object with src field (standard WooCommerce format)
         let item1 = order.items[0]
-        XCTAssertNotNil(item1.image)
+        XCTAssertNotNil(item1.image, "Image object should exist for object with valid src field")
         XCTAssertEqual(item1.image?.src, "https://example.com/image.jpg")
 
-        // Item 2: Product with no image field
+        // Item 2: Product with no image field - should be nil
         let item2 = order.items[1]
-        XCTAssertNil(item2.image)
+        XCTAssertNil(item2.image, "Image should be nil when field is missing")
 
-        // Item 3: Product with image but no src field
+        // Item 3: Product with image object but no src field - should be nil
         let item3 = order.items[2]
-        XCTAssertNotNil(item3.image)
-        XCTAssertNil(item3.image?.src)
+        XCTAssertNil(item3.image, "Image should be nil when object has no src field")
 
-        // Item 4: Product with wrong src type
+        // Item 4: Product with image object with wrong src type (number instead of string) - should be nil
         let item4 = order.items[3]
-        XCTAssertNil(item4.image?.src)
+        XCTAssertNil(item4.image, "Image should be nil when src is not a string")
+
+        // Item 5: Product with direct string URL image (WordPress format) - should parse successfully
+        let item5 = order.items[4]
+        XCTAssertNotNil(item5.image, "Image object should exist for valid string URL")
+        XCTAssertEqual(item5.image?.src, "https://wordpress.example/wp-content/uploads/product-image-150x150.jpeg")
+
+        // Item 6: Product with unexpected image type (array) - should fail gracefully with nil
+        let item6 = order.items[5]
+        XCTAssertNil(item6.image, "Image should be nil for array type")
+
+        // Item 7: Product with nested object in image.src - should be nil
+        let item7 = order.items[6]
+        XCTAssertNil(item7.image, "Image should be nil when src is a nested object instead of string")
+
+        // Item 8: Product with image as number - should be parsed to string if possible
+        let item8 = order.items[7]
+        XCTAssertNotNil(item8.image?.src, "Image src should be not nil for number type")
+
+        // Item 9: Product with image as boolean - should fail gracefully with nil
+        let item9 = order.items[8]
+        XCTAssertNil(item9.image, "Image should be nil for boolean type")
+
+        // Item 10: Product with empty string image - should be nil
+        let item10 = order.items[9]
+        XCTAssertNil(item10.image, "Image should be nil for empty string")
+
+        // Item 11: Product with empty object image - should be nil
+        let item11 = order.items[10]
+        XCTAssertNil(item11.image, "Image should be nil for empty object")
     }
 }
 

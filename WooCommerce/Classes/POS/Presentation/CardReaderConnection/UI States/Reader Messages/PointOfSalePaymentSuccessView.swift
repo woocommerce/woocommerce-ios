@@ -103,12 +103,8 @@ struct PointOfSalePaymentSuccessView: View {
 
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
-        static let imageName: String = "checkmark"
         static let imageSize: CGSize = .init(width: 165, height: 165)
         static let checkmarkSize: CGFloat = 52
-        static let shadowOpacity: CGFloat = 0.16
-        static let shadowRadius: CGFloat = 16
-        static let shadowSize: CGSize = .init(width: 0, height: 8)
         static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }

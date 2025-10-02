@@ -42,7 +42,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_include_pos_tab_when_pos_tab_is_visible() throws {
         // Given
-        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = true
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -51,7 +51,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }
@@ -84,7 +84,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_exclude_pos_tab_when_pos_tab_is_not_visible() throws {
         // Given
-        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = false
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -93,7 +93,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }
@@ -124,7 +124,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_do_not_change_when_pos_visibility_changes() throws {
         // Given
-        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = false
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -133,7 +133,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }

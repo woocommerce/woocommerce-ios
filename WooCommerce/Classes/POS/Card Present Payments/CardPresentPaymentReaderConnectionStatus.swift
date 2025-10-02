@@ -1,6 +1,6 @@
 import Foundation
 
-enum CardPresentPaymentReaderConnectionStatus: Equatable {
+public enum CardPresentPaymentReaderConnectionStatus: Equatable {
     case disconnected
     case connected(CardPresentPaymentCardReader)
     case cancellingConnection

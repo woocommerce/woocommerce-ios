@@ -28,7 +28,23 @@ import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSCatalogSettingsServiceProtocol
+import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
+import struct Yosemite.Order
+import struct Yosemite.POSCart
+import struct Yosemite.POSReceiptInformation
+import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSReceiptServiceProtocol
+import protocol Yosemite.PointOfSaleCouponServiceProtocol
+import protocol Yosemite.PointOfSaleCouponFetchStrategy
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
+import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
+import protocol Yosemite.POSItemFetchAnalyticsTracking
+import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSOrderListFetchStrategy
+import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 
 // MARK: - PreviewProvider helpers
 //
@@ -66,17 +82,11 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
-    func providePointOfSaleItems() -> [POSItem] {
-        return mockItems
-    }
-
     func providePointOfSaleItem() -> POSOrderableItem {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
-
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
 }
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
@@ -105,15 +115,15 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent):
-            await loadInitialChildItems(for: parent)
+        case .parent:
+            // Set `itemsViewState` instead.
+            break
         }
     }
 
@@ -129,10 +139,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
                                                                                               itemStates: [:]))
     }
-
-    private func loadInitialChildItems(for parent: POSItem) async {
-        // Set `itemsViewState` instead.
-    }
 }
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
@@ -145,10 +151,6 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
     func searchHistory(for itemType: POSItemType) -> [String] {
         return []
     }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {
@@ -198,16 +200,6 @@ private var mockVariationItems: [POSItem] {
     ]
 }
 
-final class POSConnectivityObserverPreview: ConnectivityObserver {
-    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
-        $currentStatus.eraseToAnyPublisher()
-    }
-    func startObserving() {}
-
-    func stopObserving() {}
-}
-
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -221,13 +213,10 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
-        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
-        featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(
-                eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock()),
-                featureFlagService: featureFlags),
+            entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -402,6 +391,11 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     }
 }
 
+final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
+}
+
 final class POSReceiptSenderPreview: POSReceiptSending {
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws {}
 }
@@ -417,31 +411,97 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCheckoutTapped() {}
 
-    func resetCheckoutTapCountTracker() {}
-
     func trackSuccessfulCashPayment() {}
+}
 
-    var connectedReaderModel: String?
+final class POSOrderServicePreview: POSOrderServiceProtocol {
+    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+        .empty
+    }
 
-    func preflightResultReceived(_ result: CardReaderPreflightResult?) {}
+    func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
-    func trackProcessingCompletion(intent: PaymentIntent) {}
+    func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+}
 
-    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {}
+final class POSReceiptServicePreview: POSReceiptServiceProtocol {
+    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {}
+}
 
-    func trackPaymentFailure(with error: any Error) {}
+final class PointOfSaleCouponServicePreview: PointOfSaleCouponServiceProtocol {
+    func provideLocalPointOfSaleCoupons(fetchStrategy: any PointOfSaleCouponFetchStrategy) async throws -> [POSItem] {
+        []
+    }
 
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {}
+    func providePointOfSaleCoupons(pageNumber: Int, fetchStrategy: any Yosemite.PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: false, totalItems: 0)
+    }
 
-    func trackEmailTapped() {}
+    func enableCoupons() async throws {}
+}
 
-    func trackReceiptPrintTapped() {}
+final class PointOfSaleSettingsServicePreview: PointOfSaleSettingsServiceProtocol {
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        .empty
+    }
+}
 
-    func trackReceiptPrintSuccess() {}
+final class PointOfSaleItemFetchStrategyFactoryPreview: PointOfSaleItemFetchStrategyFactoryProtocol {
+    func defaultStrategy(analytics: any POSItemFetchAnalyticsTracking) -> any PointOfSalePurchasableItemFetchStrategy {
+        PointOfSalePreviewPurchasableItemFetchStrategy()
+    }
 
-    func trackReceiptPrintCanceled() {}
+    func searchStrategy(searchTerm: String, analytics: any POSItemFetchAnalyticsTracking) -> any PointOfSalePurchasableItemFetchStrategy {
+        PointOfSalePreviewPurchasableItemFetchStrategy()
+    }
+}
 
-    func trackReceiptPrintFailed(error: any Error) {}
+final class POSOrderListFetchStrategyFactoryPreview: POSOrderListFetchStrategyFactoryProtocol {
+    func defaultStrategy() -> any POSOrderListFetchStrategy {
+        POSOrderListFetchStrategyPreview()
+    }
+
+    func searchStrategy(searchTerm: String) -> any Yosemite.POSOrderListFetchStrategy {
+        POSOrderListFetchStrategyPreview()
+    }
+}
+
+final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
+    func trackFetched(millisecondsSinceRequestSent: Int) {}
+
+    func trackNextPageLoaded(pageNumber: Int) {}
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        POSPreviewHelpers.makePreviewOrder()
+    }
+
+    var supportsCaching: Bool = true
+
+    var showsLoadingWithItems: Bool = false
+
+    var id: String = ""
+
+    func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+}
+
+final class PointOfSaleCouponFetchStrategyPreview: PointOfSaleCouponFetchStrategy {
+    func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: false, totalItems: nil)
+    }
+
+    func fetchLocalCoupons() async throws -> [POSItem] {
+        []
+    }
+}
+
+final class PointOfSaleCouponFetchStrategyFactoryPreview: PointOfSaleCouponFetchStrategyFactoryProtocol {
+    let defaultStrategy: PointOfSaleCouponFetchStrategy = PointOfSaleCouponFetchStrategyPreview()
+
+    func searchStrategy(searchTerm: String, analytics: POSItemFetchAnalyticsTracking) -> PointOfSaleCouponFetchStrategy {
+        PointOfSaleCouponFetchStrategyPreview()
+    }
 }
 
 final class POSPreviewServices: POSDependencyProviding {
@@ -451,6 +511,38 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+}
+
+// MARK: - Preview Catalog Services
+
+final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol {
+    func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {
+        let now = Date()
+        let lastFullSync = now.addingTimeInterval(-2 * 60 * 60) // 2 hours ago
+        let lastIncrementalSync = now.addingTimeInterval(-15 * 60) // 15 minutes ago
+        return POSCatalogInfo(
+            productCount: 247,
+            variationCount: 89,
+            lastFullSyncDate: lastFullSync,
+            lastIncrementalSyncDate: lastIncrementalSync
+        )
+    }
+}
+
+final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
+    func performFullSync(for siteID: Int64) async throws {
+        // Simulates a full sync operation with a 1 second delay.
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+
+    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+        true
+    }
+
+    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
+        // Simulates an incremental sync operation with a 0.5 second delay.
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
 }
 
 #endif

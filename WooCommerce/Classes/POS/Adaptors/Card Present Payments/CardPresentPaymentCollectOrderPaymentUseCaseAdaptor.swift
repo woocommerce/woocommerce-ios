@@ -30,7 +30,6 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
                             CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
-                            onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,

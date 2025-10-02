@@ -39,6 +39,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
         .measureWidth({ containerWidth in
             width = containerWidth
         })

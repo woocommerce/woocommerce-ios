@@ -6,7 +6,12 @@ import class Networking.AlamofireNetwork
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-public struct PointOfSaleCouponFetchStrategyFactory {
+public protocol PointOfSaleCouponFetchStrategyFactoryProtocol {
+    var defaultStrategy: PointOfSaleCouponFetchStrategy { get }
+    func searchStrategy(searchTerm: String, analytics: POSItemFetchAnalyticsTracking) -> PointOfSaleCouponFetchStrategy
+}
+
+public struct PointOfSaleCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol {
     private let siteID: Int64
     private let currencySettings: CurrencySettings
     private let storage: StorageManagerType
@@ -28,14 +33,14 @@ public struct PointOfSaleCouponFetchStrategyFactory {
         self.couponStoreMethods = CouponStoreMethods(storageManager: storage, remote: remote)
     }
 
-    public var defaultStrategy: PointOfSaleDefaultCouponFetchStrategy {
+    public var defaultStrategy: PointOfSaleCouponFetchStrategy {
         PointOfSaleDefaultCouponFetchStrategy(siteID: siteID,
                                               currencySettings: currencySettings,
                                               storage: storage,
                                               couponStoreMethods: couponStoreMethods)
     }
 
-    public func searchStrategy(searchTerm: String, analytics: POSItemFetchAnalyticsTracking) -> PointOfSaleSearchCouponFetchStrategy {
+    public func searchStrategy(searchTerm: String, analytics: POSItemFetchAnalyticsTracking) -> PointOfSaleCouponFetchStrategy {
         PointOfSaleSearchCouponFetchStrategy(siteID: siteID,
                                              currencySettings: currencySettings,
                                              storage: storage,

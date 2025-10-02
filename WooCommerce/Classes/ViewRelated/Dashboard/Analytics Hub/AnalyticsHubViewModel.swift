@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import class UIKit.UIColor
+import class WooFoundation.WaitingTimeTracker
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
@@ -278,9 +279,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     func updateData(for cards: [AnalyticsCard.CardType]? = nil) async {
         let cardsNeedingData = cards ?? enabledCards
         do {
-            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub, analyticsService: analytics)
+            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub)
             try await retrieveData(for: cardsNeedingData)
-            tracker.end()
+            analytics.track(event: tracker.end())
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
             ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeSelectionFailed(for: timeRangeSelectionType))

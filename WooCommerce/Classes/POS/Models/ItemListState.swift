@@ -12,36 +12,9 @@ enum ItemListState {
         case pagination
     }
 
-    var isLoading: Bool {
-        switch self {
-        case .loading:
-            return true
-        default:
-            return false
-        }
-    }
-
     var isLoaded: Bool {
         switch self {
         case .loaded:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isInlineError: Bool {
-        switch self {
-        case .inlineError:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isError: Bool {
-        switch self {
-        case .error:
             return true
         default:
             return false

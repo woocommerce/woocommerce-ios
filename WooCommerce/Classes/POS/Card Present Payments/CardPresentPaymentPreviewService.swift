@@ -14,6 +14,10 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
         $readerConnectionStatus.eraseToAnyPublisher()
     }
 
+    init(connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected) {
+        self.readerConnectionStatus = connectionStatus
+    }
+
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))
     }
@@ -25,7 +29,7 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
     func collectPayment(for order: Yosemite.Order,
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult {
-        .success(CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.net/receipts/123")!))
+        .success(CardPresentPaymentTransaction())
     }
 
     func cancelPayment() {

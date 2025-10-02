@@ -19,8 +19,6 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
 
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
-
     var body: some View {
         HStack {
             switch posModel.orderState {
@@ -65,6 +63,7 @@ struct TotalsView: View {
                     )
                 }
                 .animation(.default, value: isShowingPaymentView)
+                .scrollVerticallyIfNeeded()
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -121,26 +120,22 @@ private extension TotalsView {
 
 private extension TotalsView {
     struct PaymentViewLayout {
-        let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat
 
-        init(backgroundColor: Color, topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
-            self.backgroundColor = backgroundColor
+        init(topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
             self.topPadding = topPadding
             self.bottomPadding = bottomPadding
             self.sidePadding = sidePadding
         }
 
         static let primary = PaymentViewLayout(
-            backgroundColor: .clear,
             topPadding: nil,
             bottomPadding: POSPadding.small
         )
 
         static let outlined = PaymentViewLayout(
-            backgroundColor: Color(.quaternarySystemFill),
             topPadding: POSPadding.xxLarge,
             bottomPadding: POSPadding.xxLarge
         )
@@ -176,8 +171,7 @@ private extension TotalsView {
 
         switch posModel.paymentState.activePaymentMethod {
         case .cash:
-            return PaymentViewLayout(backgroundColor: backgroundColor,
-                                     topPadding: POSPadding.none,
+            return PaymentViewLayout(topPadding: POSPadding.none,
                                      bottomPadding: posModel.paymentState.cash == .collectingCash ? nil : POSPadding.none,
                                      sidePadding: POSPadding.none)
         case .card:
@@ -186,13 +180,11 @@ private extension TotalsView {
                     .paymentIntentCreationError:
                 return .outlined
             case .paymentError:
-                return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: POSPadding.none,
+                return PaymentViewLayout(topPadding: POSPadding.none,
                                          bottomPadding: POSPadding.none,
                                          sidePadding: POSPadding.none)
             case .cardPaymentSuccessful:
-                return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: POSPadding.none,
+                return PaymentViewLayout(topPadding: POSPadding.none,
                                          bottomPadding: POSPadding.none,
                                          sidePadding: POSPadding.none)
             case .idle,
@@ -357,8 +349,6 @@ private struct TotalsFieldsContent: View {
 }
 
 private struct SubtotalFieldView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     let title: String
     let formattedPrice: String?
     let shimmeringActive: Bool
@@ -391,8 +381,6 @@ private struct SubtotalFieldView: View {
 }
 
 private struct TotalFieldView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     let formattedPrice: String?
     let shimmeringActive: Bool
 
@@ -567,8 +555,120 @@ private struct CashPaymentButton: View {
 }
 
 #if DEBUG
-#Preview {
+#Preview("Card Reader Not Connected") {
     TotalsView()
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+        .environment(POSPreviewHelpers.makePreviewAggregateModel(
+            cardPresentPaymentService: CardPresentPaymentPreviewService(connectionStatus: .disconnected)
+        ))
 }
+
+#Preview("Card Reader Connected") {
+    TotalsView()
+        .environment(POSPreviewHelpers.makePreviewAggregateModel(
+            cardPresentPaymentService: CardPresentPaymentPreviewService(
+                connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+            )
+        ))
+}
+
+#Preview("Validating Order") {
+    let aggregateModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: CardPresentPaymentPreviewService(
+            connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+        )
+    )
+    Task { @MainActor in
+        aggregateModel.setPreviewState(
+            paymentState: PointOfSalePaymentState(card: .validatingOrder, cash: .idle),
+            inlineMessage: .validatingOrder(viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel())
+        )
+    }
+    return TotalsView()
+        .environment(aggregateModel)
+}
+
+#Preview("Accepting Card") {
+    let aggregateModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: CardPresentPaymentPreviewService(
+            connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+        )
+    )
+    Task { @MainActor in
+        aggregateModel.setPreviewState(
+            paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle),
+            inlineMessage: .tapSwipeOrInsertCard(viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(inputMethods: []))
+        )
+    }
+    return TotalsView()
+        .environment(aggregateModel)
+}
+
+#Preview("Processing Payment") {
+    let aggregateModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: CardPresentPaymentPreviewService(
+            connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+        )
+    )
+    Task { @MainActor in
+        aggregateModel.setPreviewState(
+            paymentState: PointOfSalePaymentState(card: .processingPayment, cash: .idle),
+            inlineMessage: .processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel())
+        )
+    }
+    return TotalsView()
+        .environment(aggregateModel)
+}
+
+#Preview("Card Payment Successful") {
+    let aggregateModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: CardPresentPaymentPreviewService(
+            connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+        )
+    )
+    Task { @MainActor in
+        aggregateModel.setPreviewState(
+            paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle),
+            inlineMessage: .paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$12.00", paymentMethod: .card))
+        )
+    }
+    return TotalsView()
+        .environment(aggregateModel)
+}
+
+#Preview("Display Reader Message") {
+    let aggregateModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: CardPresentPaymentPreviewService(
+            connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+        )
+    )
+    Task { @MainActor in
+        aggregateModel.setPreviewState(
+            paymentState: PointOfSalePaymentState(card: .processingPayment, cash: .idle),
+            inlineMessage: .displayReaderMessage(viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel(message: "Remove card"))
+        )
+    }
+    return TotalsView()
+        .environment(aggregateModel)
+}
+
+#Preview("Payment Error") {
+    let aggregateModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: CardPresentPaymentPreviewService(
+            connectionStatus: .connected(CardPresentPaymentCardReader(name: "Reader", batteryLevel: 0.85))
+        )
+    )
+    Task { @MainActor in
+        aggregateModel.setPreviewState(
+            paymentState: PointOfSalePaymentState(card: .paymentError, cash: .idle),
+            inlineMessage: .paymentError(viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+                error: NSError(domain: "CardPaymentError", code: 1001, userInfo: [NSLocalizedDescriptionKey: "Card declined"]),
+                tryPaymentAgainButtonAction: {},
+                backToCheckoutButtonAction: {}
+            ))
+        )
+    }
+    return TotalsView()
+        .environment(aggregateModel)
+}
+
 #endif

@@ -57,12 +57,6 @@ struct POSItemImageView: View {
     }
 }
 
-private extension POSItemImageView {
-    enum Constants {
-        static let placeholderIconDimension: CGFloat = 38
-    }
-}
-
 #Preview("Placeholder") {
     POSItemImageView(imageSource: nil,
                      imageSize: 112,

@@ -59,7 +59,12 @@ private extension BookingStore {
                 let bookings = try await remote.loadAllBookings(for: siteID,
                                                                 pageNumber: pageNumber,
                                                                 pageSize: pageSize)
-                await upsertStoredBookingsInBackground(readOnlyBookings: bookings, siteID: siteID)
+                let shouldDeleteExistingBookings = pageNumber == Default.firstPageNumber
+                await upsertStoredBookingsInBackground(
+                    readOnlyBookings: bookings,
+                    siteID: siteID,
+                    shouldDeleteExistingBookings: shouldDeleteExistingBookings
+                )
                 let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
             } catch {

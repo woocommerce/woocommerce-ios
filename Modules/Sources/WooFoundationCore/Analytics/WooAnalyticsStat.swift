@@ -1295,6 +1295,15 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleSettingsHardwareTapped = "settings_hardware_tapped"
     case pointOfSaleSettingsHelpTapped = "settings_help_tapped"
     case pointOfSaleEmptyCartSetupScannerTapped = "empty_cart_set_up_scanner_tapped"
+    case pointOfSaleOrdersMenuItemTapped = "orders_menu_item_tapped"
+    case pointOfSaleOrdersListPullToRefresh = "orders_list_pull_to_refresh"
+    case pointOfSaleOrdersListFetched = "orders_list_fetched"
+    case pointOfSaleOrdersListNextPageLoaded = "orders_list_next_page_loaded"
+    case pointOfSaleOrdersListRowTapped = "orders_list_row_tapped"
+    case pointOfSaleOrdersListSearchButtonTapped = "orders_list_search_button_tapped"
+    case pointOfSaleOrdersListSearchResultsFetched = "orders_list_search_results_fetched"
+    case pointOfSaleOrderDetailsLoaded = "order_details_loaded"
+    case pointOfSaleOrderDetailsEmailReceiptTapped = "order_details_email_receipt_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -11,10 +11,6 @@ struct SiteTimezoneKey: EnvironmentKey {
     static let defaultValue: TimeZone = .current
 }
 
-struct POSDependenciesKey: EnvironmentKey {
-    static let defaultValue: POSDependencyProviding? = nil
-}
-
 extension EnvironmentValues {
     var siteTimezone: TimeZone {
         get { self[SiteTimezoneKey.self] }
@@ -109,8 +105,6 @@ class EmptyPOSConnectivityProvider: POSConnectivityProviding {
 class EmptyPOSConnectivity: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
-    func startObserving() {}
-    func stopObserving() {}
     init() {}
 }
 
@@ -125,6 +119,7 @@ struct EmptyPOSAnalytics: POSAnalyticsProviding {
 struct EmptyPOSExternalView: POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
     func createFormattableAmountTextField(preset: Decimal?,
+                                          font: Font,
                                           onSubmit: @escaping () -> Void,
                                           onChange: @escaping (String) -> Void) -> AnyView {
         AnyView(EmptyView())

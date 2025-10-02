@@ -4,8 +4,6 @@ import Storage
 public protocol POSSearchHistoryProviding {
     func saveSuccessfulSearch(term: String, for itemType: POSItemType)
     func searchHistory(for itemType: POSItemType) -> [String]
-    func clearSearchHistory(for itemType: POSItemType)
-    func clearAllSearchHistory()
 }
 
 /// Service for managing search history in the Point of Sale
@@ -59,19 +57,5 @@ public final class POSSearchHistoryService: POSSearchHistoryProviding {
     /// - Returns: An array of search terms, ordered from most recent to oldest
     public func searchHistory(for itemType: POSItemType) -> [String] {
         return siteSpecificAppSettingsStoreMethods.getSearchTerms(for: itemType, siteID: siteID)
-    }
-
-    /// Clears the search history for a specific item type
-    /// - Parameter itemType: The type of item to clear search history for
-    public func clearSearchHistory(for itemType: POSItemType) {
-        siteSpecificAppSettingsStoreMethods.setSearchTerms([], for: itemType, siteID: siteID)
-    }
-
-    /// Clears all search history
-    public func clearAllSearchHistory() {
-        // Clear search history for all item types
-        POSItemType.allCases.forEach { itemType in
-            clearSearchHistory(for: itemType)
-        }
     }
 }

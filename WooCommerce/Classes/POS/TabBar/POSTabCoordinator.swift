@@ -3,10 +3,18 @@ import UIKit
 import SwiftUI
 import Yosemite
 import class WooFoundation.CurrencySettings
+import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
 import struct Combine.AnyPublisher
+
+protocol POSTabVisibilityCheckerProtocol {
+    /// Checks the initial visibility of the POS tab.
+    func checkInitialVisibility() -> Bool
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool
+}
 
 /// View controller that provides the tab bar item for the Point of Sale tab.
 /// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
@@ -23,7 +31,7 @@ final class POSTabViewController: UIViewController {
 /// Coordinator for the Point of Sale tab.
 ///
 final class POSTabCoordinator {
-    private(set) var siteID: Int64
+    private let siteID: Int64
     private let tabContainerController: TabContainerController
     private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
@@ -109,49 +117,6 @@ final class POSTabCoordinator {
     func onTabSelected() {
         presentPOSView(siteID: siteID)
     }
-
-    func didSwitchStore(id: Int64) {
-        self.siteID = id
-
-        // Resets lazy properties so they get recreated with new siteID
-        posItemFetchStrategyFactory = PointOfSaleItemFetchStrategyFactory(
-            siteID: siteID,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported
-        )
-
-        posPopularItemFetchStrategyFactory =
-        PointOfSaleFixedItemFetchStrategyFactory(
-            fixedStrategy: posItemFetchStrategyFactory.popularStrategy()
-        )
-
-        posCouponFetchStrategyFactory = PointOfSaleCouponFetchStrategyFactory(
-            siteID: siteID,
-            currencySettings: currencySettings,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported,
-            storage: storageManager
-        )
-
-        posCouponProvider = PointOfSaleCouponService(
-            siteID: siteID,
-            currencySettings: currencySettings,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported,
-            storage: storageManager
-        )
-
-        barcodeScanService = PointOfSaleBarcodeScanService(
-            siteID: siteID,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported,
-            currencySettings: currencySettings
-        )
-    }
 }
 
 private extension POSTabCoordinator {
@@ -171,6 +136,8 @@ private extension POSTabCoordinator {
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
+            let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -181,66 +148,37 @@ private extension POSTabCoordinator {
                                                   selectedSite: defaultSitePublisher,
                                                   appPasswordSupportState: isAppPasswordSupported),
                #available(iOS 17.0, *) {
-                let receiptSender = POSReceiptSender(siteID: siteID,
-                                                     orderService: orderService,
-                                                     receiptService: receiptService,
-                                                     analytics: serviceAdaptor.analytics,
-                                                     pluginsService: pluginsService
-                )
                 let posView = PointOfSaleEntryPointView(
-                    itemsController: PointOfSaleItemsController(
-                        itemProvider: PointOfSaleItemService(
-                            currencySettings: currencySettings),
-                        itemFetchStrategyFactory: posItemFetchStrategyFactory,
-                        analyticsProvider: serviceAdaptor.analytics),
-                    purchasableItemsSearchController: PointOfSaleItemsController(
-                        itemProvider: PointOfSaleItemService(
-                            currencySettings: currencySettings),
-                        itemFetchStrategyFactory: posItemFetchStrategyFactory,
-                        initialState: .init(containerState: .content,
-                                            itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:])),
-                        analyticsProvider: serviceAdaptor.analytics),
-                    couponsController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
-                                                                    fetchStrategyFactory: posCouponFetchStrategyFactory,
-                                                                    analyticsProvider: serviceAdaptor.analytics),
-                    couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
-                                                                          fetchStrategyFactory: posCouponFetchStrategyFactory,
-                                                                          analyticsProvider: serviceAdaptor.analytics),
-                    ordersController: POSOrderListController(
-                        orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
-                            siteID: siteID,
-                            credentials: credentials,
-                            selectedSite: defaultSitePublisher,
-                            appPasswordSupportState: isAppPasswordSupported,
-                            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
-                        )
+                    siteID: siteID,
+                    itemFetchStrategyFactory: posItemFetchStrategyFactory,
+                    popularItemFetchStrategyFactory: posPopularItemFetchStrategyFactory,
+                    couponProvider: posCouponProvider,
+                    couponFetchStrategyFactory: posCouponFetchStrategyFactory,
+                    orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
+                        siteID: siteID,
+                        credentials: credentials,
+                        selectedSite: defaultSitePublisher,
+                        appPasswordSupportState: isAppPasswordSupported,
+                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                        analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
-
+                    orderService: orderService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },
                     cardPresentPaymentService: cardPresentPaymentService,
-                    orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                receiptSender: receiptSender,
-                                                                currencySettingsProvider: serviceAdaptor.currency,
-                                                                analytics: serviceAdaptor.analytics),
-                    receiptSender: receiptSender,
-                    settingsController: PointOfSaleSettingsController(siteID: siteID,
-                                                                      settingsService: settingsService,
-                                                                      cardPresentPaymentService: cardPresentPaymentService,
-                                                                      pluginsService: pluginsService,
-                                                                      defaultSiteName: storesManager.sessionManager.defaultSite?.name,
-                                                                      siteSettings: ServiceLocator.selectedSiteSettings.siteSettings),
+                    receiptService: receiptService,
+                    pluginsService: pluginsService,
+                    settingsService: settingsService,
                     collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
-                    popularPurchasableItemsController: PointOfSaleItemsController(
-                        itemProvider: PointOfSaleItemService(currencySettings: currencySettings),
-                        itemFetchStrategyFactory: posPopularItemFetchStrategyFactory,
-                        analyticsProvider: serviceAdaptor.analytics
-                    ),
                     barcodeScanService: barcodeScanService,
                     posEligibilityChecker: eligibilityChecker,
                     siteTimezone: siteTimezone,
+                    defaultSiteName: storesManager.sessionManager.defaultSite?.name,
+                    siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                    grdbManager: grdbManager,
+                    catalogSyncCoordinator: catalogSyncCoordinator,
                     services: serviceAdaptor
                 )
 

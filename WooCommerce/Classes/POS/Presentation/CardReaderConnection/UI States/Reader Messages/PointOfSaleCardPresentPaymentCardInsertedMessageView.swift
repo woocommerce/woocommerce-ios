@@ -7,11 +7,7 @@ struct PointOfSaleCardPresentPaymentCardInsertedMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
-            Image(decorative: viewModel.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
-                       height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+            POSCardPresentPaymentMessageViewImage(imageName: viewModel.imageName)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {

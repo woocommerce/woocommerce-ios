@@ -2565,45 +2565,6 @@ extension WooAnalyticsEvent {
     }
 }
 
-
-// MARK: - Waiting Time measurement
-//
-extension WooAnalyticsEvent {
-    enum WaitingTime {
-        /// Possible Waiting time scenarios
-        enum Scenario {
-            case orderDetails
-            case dashboardTopPerformers
-            case dashboardMainStats
-            case analyticsHub
-            case appStartup
-            case pointOfSaleLoaded
-        }
-
-        private enum Keys {
-            static let waitingTime = "waiting_time"
-            static let millisecondsTimeElapsedInSplashScreen = "milliseconds_time_elapsed_in_splash_screen"
-        }
-
-        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
-            switch scenario {
-            case .orderDetails:
-                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .dashboardTopPerformers:
-                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .dashboardMainStats:
-                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .analyticsHub:
-                return WooAnalyticsEvent(statName: .analyticsHubWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .appStartup:
-                return WooAnalyticsEvent(statName: .applicationOpenedWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
-            case .pointOfSaleLoaded:
-                return WooAnalyticsEvent(statName: .pointOfSaleLoaded, properties: [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime])
-            }
-        }
-    }
-}
-
 // MARK: - Site picker
 //
 extension WooAnalyticsEvent {

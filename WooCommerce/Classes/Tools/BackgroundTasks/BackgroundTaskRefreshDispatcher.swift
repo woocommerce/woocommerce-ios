@@ -173,19 +173,27 @@ private struct BackgroundTaskSystemInfo {
     }
 
     private static func getNetworkInfo() async -> NetworkInfo {
-        return await withCheckedContinuation { continuation in
-            let monitor = NWPathMonitor()
-            var hasResumed = false
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "network.monitor.queue")
 
-            monitor.pathUpdateHandler = { path in
-                guard !hasResumed else { return }
-                hasResumed = true
-                monitor.cancel()
-                continuation.resume(returning: NetworkInfo(path: path))
-            }
+        let (stream, continuation) = AsyncStream.makeStream(of: NWPath.self)
 
-            let queue = DispatchQueue(label: "network.monitor.queue")
-            monitor.start(queue: queue)
+        monitor.pathUpdateHandler = { path in
+            continuation.yield(path)
+        }
+
+        monitor.start(queue: queue)
+
+        defer {
+            continuation.finish()
+            monitor.cancel()
+        }
+
+        if let path = await stream.first(where: { _ in true }) {
+            return NetworkInfo(path: path)
+        } else {
+            // Fallback in case no path is received.
+            return NetworkInfo(type: "unknown", isExpensive: false, isLowDataMode: false)
         }
     }
 }

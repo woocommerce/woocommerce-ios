@@ -82,17 +82,11 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
-    func providePointOfSaleItems() -> [POSItem] {
-        return mockItems
-    }
-
     func providePointOfSaleItem() -> POSOrderableItem {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
-
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
 }
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
@@ -121,15 +115,15 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent):
-            await loadInitialChildItems(for: parent)
+        case .parent:
+            // Set `itemsViewState` instead.
+            break
         }
     }
 
@@ -145,10 +139,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
                                                                                               itemStates: [:]))
     }
-
-    private func loadInitialChildItems(for parent: POSItem) async {
-        // Set `itemsViewState` instead.
-    }
 }
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
@@ -161,10 +151,6 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
     func searchHistory(for itemType: POSItemType) -> [String] {
         return []
     }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {
@@ -212,16 +198,6 @@ private var mockVariationItems: [POSItem] {
                          variationID: 256,
                          parentProductName: "Variable product")),
     ]
-}
-
-final class POSConnectivityObserverPreview: ConnectivityObserver {
-    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
-        $currentStatus.eraseToAnyPublisher()
-    }
-    func startObserving() {}
-
-    func stopObserving() {}
 }
 
 struct POSPreviewHelpers {
@@ -513,8 +489,6 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackCardReaderTapped() {}
 
     func trackCheckoutTapped() {}
-
-    func resetCheckoutTapCountTracker() {}
 
     func trackSuccessfulCashPayment() {}
 }

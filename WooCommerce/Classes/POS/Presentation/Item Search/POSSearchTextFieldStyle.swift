@@ -1,22 +1,20 @@
 import SwiftUI
 import WooFoundation
 
-/// Text field style for search fields that includes a magnifier icon and clear button
-struct POSSearchTextFieldStyle: TextFieldStyle {
-    /// periphery: ignore - used in the body
-    @Environment(\.posSearchTextFieldUnfocusedBorderColor) private var unfocusedBorderColor
-
+/// View modifier for search fields that includes a magnifier icon and clear button
+struct POSSearchTextFieldModifier: ViewModifier {
     private let focused: Bool
     @Binding private var searchTerm: String
     @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
+    @Environment(\.posSearchTextFieldUnfocusedBorderColor) private var unfocusedBorderColor
 
     init(focused: Bool, searchTerm: Binding<String>) {
         self.focused = focused
         self._searchTerm = searchTerm
     }
 
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
+    func body(content: Content) -> some View {
+        content
         .textFieldStyle(WooRoundedBorderTextFieldStyle(
             focused: focused,
             focusedBorderColor: .posPrimary,
@@ -52,7 +50,13 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
     }
 }
 
-private extension POSSearchTextFieldStyle {
+extension View {
+    func posSearchTextFieldStyle(focused: Bool, searchTerm: Binding<String>) -> some View {
+        modifier(POSSearchTextFieldModifier(focused: focused, searchTerm: searchTerm))
+    }
+}
+
+private extension POSSearchTextFieldModifier {
     enum Localization {
         static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
             "pos.searchview.searchField.clearButton.accessibilityLabel",

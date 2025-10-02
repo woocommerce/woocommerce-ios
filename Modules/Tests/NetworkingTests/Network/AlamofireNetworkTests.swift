@@ -207,10 +207,11 @@ final class AlamofireNetworkTests: XCTestCase {
 
     // MARK: - Session Initialization Tests
 
-    func test_concurrent_requests_do_not_fail_with_sessionDeinitialized_error_when_ensuresSessionManagerIsInitialized_is_true() async throws {
+    func test_concurrent_requests_do_not_fail_with_sessionDeinitialized_error() async throws {
         // Given
-        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: -1, path: "test")
-        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, ensuresSessionManagerIsInitialized: true)
+        let url = try XCTUnwrap(URL(string: "http://localhost:991929281"))
+        let request = URLRequest(url: url, timeoutInterval: 0.001)
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
 
         // When
         async let request1 = network.responseDataAndHeaders(for: request)
@@ -225,27 +226,6 @@ final class AlamofireNetworkTests: XCTestCase {
         } catch {
             // Then
             XCTAssertTrue(true)
-        }
-    }
-
-    func test_concurrent_requests_fail_with_sessionDeinitialized_error_when_ensuresSessionManagerIsInitialized_is_false() async throws {
-        // Given
-        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 1, path: "test")
-        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, ensuresSessionManagerIsInitialized: false)
-
-        // When
-        async let request1 = network.responseDataAndHeaders(for: request)
-        async let request2 = network.responseDataAndHeaders(for: request)
-        async let request3 = network.responseDataAndHeaders(for: request)
-
-        do {
-            _ = try await [request1, request2, request3]
-            XCTFail("Requests should fail with sessionDeinitialized error")
-        } catch Alamofire.AFError.sessionDeinitialized {
-            // Then
-            XCTAssertTrue(true)
-        } catch {
-            XCTFail("Requests should fail with sessionDeinitialized error, got \(error) instead")
         }
     }
 

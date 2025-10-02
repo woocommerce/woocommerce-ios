@@ -46,7 +46,7 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
         collectPaymentChannel = channel
         onCollectPaymentCalled?()
         paymentEvent = .show(eventDetails: CardPresentPaymentEventDetails.paymentSuccess(done: {}))
-        return .success(CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.net/receipts/123")!))
+        return .success(CardPresentPaymentTransaction())
     }
 
     func cancelPayment() {

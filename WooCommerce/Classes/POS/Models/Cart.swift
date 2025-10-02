@@ -34,15 +34,6 @@ extension Cart {
             case loaded(POSOrderableItem)
             case loading
             case error
-
-            var isLoading: Bool {
-                switch self {
-                case .loading:
-                    return true
-                default:
-                    return false
-                }
-            }
         }
 
         var formattedPrice: String? {
@@ -95,7 +86,7 @@ extension Cart {
 
 extension Cart {
     mutating func add(_ posItem: POSItem) {
-        if let purchasableItem = createPurchasableItem(id: UUID(), from: posItem) {
+        if let purchasableItem = createPurchasableItem(from: posItem) {
             purchasableItems.insert(purchasableItem, at: purchasableItems.startIndex)
         } else if case .coupon(let coupon) = posItem {
             let couponItem = Cart.CouponItem(id: coupon.id, code: coupon.code, summary: coupon.summary)
@@ -103,7 +94,7 @@ extension Cart {
         }
     }
 
-    private func createPurchasableItem(id: UUID, from posItem: POSItem) -> Cart.PurchasableItem? {
+    private func createPurchasableItem(from posItem: POSItem) -> Cart.PurchasableItem? {
         switch posItem {
         case .simpleProduct(let simpleProduct):
             return PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
@@ -125,7 +116,7 @@ extension Cart {
     mutating func updateLoadingItem(id: UUID, with posItem: POSItem) -> Cart.PurchasableItem? {
         guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return nil }
 
-        if let productItem = createPurchasableItem(id: id, from: posItem) {
+        if let productItem = createPurchasableItem(from: posItem) {
             purchasableItems[index] = productItem
             return productItem
         } else {

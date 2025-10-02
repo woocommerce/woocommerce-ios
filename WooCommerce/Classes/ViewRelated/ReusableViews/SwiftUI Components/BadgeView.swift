@@ -96,18 +96,9 @@ private extension BadgeView {
     func backgroundView() -> some View {
         switch backgroundShape {
         case .circle:
-            if #available(iOS 17, *) {
-                Circle()
-                    .fill(customizations.backgroundColor)
-                    .stroke(Color.white, lineWidth: Layout.borderLineWidth)
-            } else {
-                ZStack {
-                    Circle()
-                        .fill(customizations.backgroundColor)
-                    Circle()
-                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
-                }
-            }
+            Circle()
+                .fill(customizations.backgroundColor)
+                .stroke(Color.white, lineWidth: Layout.borderLineWidth)
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(.white, lineWidth: Layout.borderLineWidth)

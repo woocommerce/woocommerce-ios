@@ -3,7 +3,6 @@ import WooFoundation
 
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posAnalytics) private var analytics
     private let viewHelper = CartViewHelper()
 

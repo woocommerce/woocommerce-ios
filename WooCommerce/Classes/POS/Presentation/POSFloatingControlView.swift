@@ -147,31 +147,6 @@ private extension POSFloatingControlView {
             "The action is confirmed in a modal."
         )
 
-        static let getSupport = NSLocalizedString(
-            "pointOfSale.floatingButtons.getSupport.button.title",
-            value: "Get Support",
-            comment: "The title of the menu button to get support for Point of Sale, shown in a popover menu."
-        )
-
-        static let viewDocumentation = NSLocalizedString(
-            "pointOfSale.floatingButtons.viewDocumentation.button.title",
-            value: "Documentation",
-            comment: "The title of the menu button to read Point of Sale documentation, shown in a popover menu."
-        )
-
-        static let productRestrictionsInfo = NSLocalizedString(
-            "pointOfSale.floatingButtons.productRestrictionsInfo.button.title",
-            value: "Where are my products?",
-            comment: "The title of the menu button to view product restrictions info, shown in a popover menu. " +
-            "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
-        )
-
-        static let barcodeScanningSetup = NSLocalizedString(
-            "pointOfSale.floatingButtons.barcodeScanningSetup.button.title",
-            value: "Initial barcode scanner setup",
-            comment: "The title of the menu button to start a barcode scanner setup flow."
-        )
-
         static let settings = NSLocalizedString(
             "pointOfSale.floatingButtons.settings.button.title",
             value: "Settings",

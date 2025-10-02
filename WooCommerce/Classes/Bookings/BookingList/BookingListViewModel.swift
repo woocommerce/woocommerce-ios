@@ -1,4 +1,3 @@
-// periphery:ignore:all
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -9,6 +8,7 @@ final class BookingListViewModel: ObservableObject {
     @Published private(set) var bookings: [Booking] = []
 
     private let siteID: Int64
+    private let type: BookingListTab
     private let stores: StoresManager
     private let storage: StorageManagerType
 
@@ -33,9 +33,11 @@ final class BookingListViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
+         type: BookingListTab,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.type = type
         self.stores = stores
         self.storage = storage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
@@ -90,7 +92,12 @@ private extension BookingListViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        bookings = resultsController.fetchedObjects
+        /// TODO: update logic for fetching bookings
+        if type == .all {
+            bookings = resultsController.fetchedObjects
+        } else {
+            bookings = []
+        }
         transitionToResultsUpdatedState()
     }
 }

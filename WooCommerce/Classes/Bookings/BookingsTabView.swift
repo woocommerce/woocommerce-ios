@@ -47,7 +47,7 @@ struct BookingsTabView: View {
 
     var body: some View {
         NavigationSplitView(columnVisibility: $visibility) {
-            BookingListView(viewModel: BookingListViewModel(siteID: siteID))
+            BookingListContainerView(viewModel: BookingListContainerViewModel(siteID: siteID))
         } detail: {
             Text("Booking Detail Screen")
         }

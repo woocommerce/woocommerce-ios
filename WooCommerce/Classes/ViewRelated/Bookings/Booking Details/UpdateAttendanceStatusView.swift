@@ -10,35 +10,38 @@ struct UpdateAttendanceStatusView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            Text(Localization.title)
-                .font(.subheadline.weight(.medium))
-                .foregroundColor(.secondary)
-                .padding(.horizontal)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text(Localization.title)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
 
-            ForEach(statuses) { status in
-                HStack(spacing: 16) {
-                    Image(systemName: status.iconName)
-                        .font(.title3.weight(.medium))
-                        .foregroundStyle(Color(.systemGray))
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(status.title)
-                            .font(.body.weight(.medium))
-                        Text(status.description)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                ForEach(statuses) { status in
+                    HStack(alignment: .top, spacing: 16) {
+                        Image(systemName: status.iconName)
+                            .font(.title3.weight(.medium))
+                            .foregroundStyle(Color(.systemGray))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(status.title)
+                                .font(.body.weight(.medium))
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text(status.description)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .contentShape(Rectangle())
+                    .tappable {
+                        onStatusSelected(status)
+                        dismiss()
                     }
                 }
-                .padding(.horizontal)
-                .contentShape(Rectangle())
-                .tappable {
-                    onStatusSelected(status)
-                    dismiss()
-                }
             }
-            Spacer()
+            .padding(.top)
         }
-        .padding(.top)
     }
 }
 

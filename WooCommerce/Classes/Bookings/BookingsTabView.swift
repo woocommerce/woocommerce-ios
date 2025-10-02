@@ -40,19 +40,15 @@ private extension BookingsTabViewHostingController {
 struct BookingsTabView: View {
     @State private var selectedBooking: Booking?
     @State private var visibility: NavigationSplitViewVisibility = .automatic
-
-    private let siteID: Int64
+    @StateObject private var bookingListContainerViewModel: BookingListContainerViewModel
 
     init(siteID: Int64) {
-        self.siteID = siteID
+        _bookingListContainerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
     }
 
     var body: some View {
         NavigationSplitView(columnVisibility: $visibility) {
-            BookingListContainerView(
-                viewModel: BookingListContainerViewModel(siteID: siteID),
-                selectedBooking: $selectedBooking
-            )
+            BookingListContainerView(viewModel: bookingListContainerViewModel, selectedBooking: $selectedBooking)
         } detail: {
             if let selectedBooking {
                 let viewModel = BookingDetailsViewModel(booking: selectedBooking)

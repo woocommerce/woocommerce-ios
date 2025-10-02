@@ -125,16 +125,12 @@ private extension String {
 
 #if DEBUG
 #Preview {
-    if #available(iOS 17.0, *) {
-        PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
-            .environment(POSPreviewHelpers.makePreviewAggregateModel())
-    }
+    PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #Preview {
-    if #available(iOS 17.0, *) {
-        PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo sentimos, este cupón no se puede aplicar a los productos seleccionados.") {}
-            .environment(POSPreviewHelpers.makePreviewAggregateModel())
-    }
+    PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo sentimos, este cupón no se puede aplicar a los productos seleccionados.") {}
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

@@ -101,17 +101,6 @@ struct PaymentMethodsView: View {
                     ) {
                         AttributedText(viewModel.learnMoreViewModel.learnMoreAttributedString)
                     }.padding(.horizontal)
-
-                    NavigationLink(isActive: $showingCashAlert) {
-                        CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total, formattedTotal: viewModel.formattedTotal) { info in
-                            Task { @MainActor in
-                                await viewModel.markOrderAsPaidByCash(with: info)
-                                dismiss()
-                            }
-                        })
-                    } label: {
-                        EmptyView()
-                    }.hidden()
                 }
 
                 // Pushes content to the top
@@ -144,6 +133,15 @@ struct PaymentMethodsView: View {
                 viewModel.performScanToPayFinishedTasks()
             }
                 .background(FullScreenCoverClearBackgroundView())
+        }
+        .navigationDestination(isPresented: $showingCashAlert) {
+            CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total,
+                                                                        formattedTotal: viewModel.formattedTotal) { info in
+                Task { @MainActor in
+                    await viewModel.markOrderAsPaidByCash(with: info)
+                    dismiss()
+                }
+            })
         }
         .onAppear {
             guard rootViewController != nil else {

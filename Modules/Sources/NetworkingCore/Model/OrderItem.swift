@@ -127,8 +127,18 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                                                               forKey: .attributes)
             .first(where: { $0.key == "_pao_ids" })?.value ?? []
 
-        // Order item product image
-        let image = try container.decodeIfPresent(OrderItemProductImage.self, forKey: .image)
+        // Order item product image can be either a string URL or an object with src field
+        // Use failsafeDecodeIfPresent with alternative types to handle both formats gracefully
+        let image: OrderItemProductImage? = {
+            if let imageObject = container.failsafeDecodeIfPresent(OrderItemProductImage.self, forKey: .image) {
+                return imageObject
+            }
+            if let urlString = container.failsafeDecodeIfPresent(stringForKey: .image),
+               !urlString.isEmpty {
+                return OrderItemProductImage(src: urlString)
+            }
+            return nil
+        }()
 
         // Product Bundle extension properties:
         // If the order item is part of a product bundle, `bundledBy` is the parent order item (product bundle).
@@ -240,16 +250,20 @@ private struct OrderItemProductAddOnContainer: Decodable {
 // MARK: - Order Item Product Image
 //
 public struct OrderItemProductImage: Codable, Equatable, Hashable, Sendable {
-    public let src: String?
+    public let src: String
+
+    public init(src: String) {
+        self.src = src
+    }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.src = try? container.decodeIfPresent(String.self, forKey: .src)
+        self.src = try container.decode(String.self, forKey: .src)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(src, forKey: .src)
+        try container.encode(src, forKey: .src)
     }
 
     private enum CodingKeys: String, CodingKey {

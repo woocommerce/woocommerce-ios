@@ -4,7 +4,6 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel: Hashable {
     let title = Localization.title
     let subtitle = Localization.subtitle
-    let imageName = PointOfSaleAssets.readerLocation.imageName
 
     let primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel

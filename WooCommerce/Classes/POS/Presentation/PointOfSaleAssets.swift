@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum PointOfSaleAssets: CaseIterable {
     case error
@@ -10,10 +11,7 @@ enum PointOfSaleAssets: CaseIterable {
     case readerConnectionLowBattery
     case readerConnectionSuccess
     case readerDisconnected
-    case readerLocation
-    case shoppingBags
     case successCheck
-    case coupons
     case gears
     case barcodeFieldScreenshot
     case starBsh20SetupBarcode
@@ -22,6 +20,10 @@ enum PointOfSaleAssets: CaseIterable {
     case netum1228BCHIDBarcode
     case netum1228BCPairBarcode
     case testEan13Barcode
+
+    var decorativeImage: Image {
+        Image(decorative: imageName)
+    }
 
     var imageName: String {
         switch self {
@@ -43,14 +45,8 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-reader-connection-complete"
         case .readerDisconnected:
             "pos-reader-disconnected"
-        case .readerLocation:
-            "location"
-        case .shoppingBags:
-            "shopping-bags"
         case .successCheck:
             "pos-success-check"
-        case .coupons:
-            "coupons"
         case .gears:
             "pos-gears"
         case .barcodeFieldScreenshot:

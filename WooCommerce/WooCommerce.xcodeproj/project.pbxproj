@@ -57,7 +57,6 @@
 		01620C4E2C5394B200D3EA2F /* POSProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */; };
 		01654EB12E786223001DBB6F /* POSServiceLocatorAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01654EAF2E786223001DBB6F /* POSServiceLocatorAdaptor.swift */; };
 		01654EB62E78641B001DBB6F /* WooAnalyticsEvent+WooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01654EB52E78641B001DBB6F /* WooAnalyticsEvent+WooApp.swift */; };
-		016582C92E786840001DBB6F /* UIImage+POS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016582C72E786840001DBB6F /* UIImage+POS.swift */; };
 		016582D62E78715B001DBB6F /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016582CA2E78715B001DBB6F /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */; };
 		016582D72E78715B001DBB6F /* CardPresentPaymentsTransactionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016582D22E78715B001DBB6F /* CardPresentPaymentsTransactionAlertsProvider.swift */; };
 		016582D82E78715B001DBB6F /* POSCollectOrderPaymentAnalyticsAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016582D52E78715B001DBB6F /* POSCollectOrderPaymentAnalyticsAdaptor.swift */; };
@@ -3283,7 +3282,6 @@
 		01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProgressViewStyle.swift; sourceTree = "<group>"; };
 		01654EAF2E786223001DBB6F /* POSServiceLocatorAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSServiceLocatorAdaptor.swift; sourceTree = "<group>"; };
 		01654EB52E78641B001DBB6F /* WooAnalyticsEvent+WooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+WooApp.swift"; sourceTree = "<group>"; };
-		016582C72E786840001DBB6F /* UIImage+POS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+POS.swift"; sourceTree = "<group>"; };
 		016582CA2E78715B001DBB6F /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
 		016582CB2E78715B001DBB6F /* CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift; sourceTree = "<group>"; };
 		016582CC2E78715B001DBB6F /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentInvalidatablePaymentOrchestrator.swift; sourceTree = "<group>"; };
@@ -6577,7 +6575,6 @@
 		016582C82E786840001DBB6F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				016582C72E786840001DBB6F /* UIImage+POS.swift */,
 				01BE93FF2DDCB1110063541C /* Error+Connectivity.swift */,
 			);
 			path = Extensions;
@@ -15683,7 +15680,6 @@
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
 				689F291A2DE4557E004DF52B /* POSStockFormatter.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
-				016582C92E786840001DBB6F /* UIImage+POS.swift in Sources */,
 				DED0392B2BC7A076005D0571 /* StorePerformanceViewModel.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
 				CEEF742A2B9A02EB00B03948 /* OrdersReportCardViewModel.swift in Sources */,

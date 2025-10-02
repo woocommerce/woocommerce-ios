@@ -71,8 +71,6 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
 
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Constants {
-        static let headerSpacing: CGFloat = POSSpacing.large
-        static let textSpacing: CGFloat = POSSpacing.medium
         static let buttonSidePadding: CGFloat = POSPadding.xxLarge
         static let buttonBottomPadding: CGFloat = POSPadding.medium
     }
@@ -127,16 +125,12 @@ private extension String {
 
 #if DEBUG
 #Preview {
-    if #available(iOS 17.0, *) {
-        PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
-            .environment(POSPreviewHelpers.makePreviewAggregateModel())
-    }
+    PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #Preview {
-    if #available(iOS 17.0, *) {
-        PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo sentimos, este cupón no se puede aplicar a los productos seleccionados.") {}
-            .environment(POSPreviewHelpers.makePreviewAggregateModel())
-    }
+    PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo sentimos, este cupón no se puede aplicar a los productos seleccionados.") {}
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

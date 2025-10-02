@@ -15,37 +15,10 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 
 protocol PointOfSaleAggregateModelProtocol {
-    var orderStage: PointOfSaleOrderStage { get }
-
-    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { get }
-    func connectCardReader()
-    func disconnectCardReader()
-    var paymentState: PointOfSalePaymentState { get }
-    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
-    var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
-    func cancelCardPaymentsOnboarding()
-    func trackCardPaymentsOnboardingShown()
-
-    var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
-    var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
-    var couponsController: PointOfSaleCouponsControllerProtocol { get }
-    var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
-
     var cart: Cart { get }
-    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>)
     func addToCart(_ item: POSItem)
-    func remove(cartItem: CartItem)
-    func removeAllItemsFromCart(types: [CartItemType])
-    func addMoreToCart()
-    func startNewCart()
 
     func saveSearchTerm(_ term: String, for itemType: POSItemType)
-    func searchHistory(for itemType: POSItemType) -> [String]
-
-    var orderState: PointOfSaleOrderState { get }
-    func checkOut() async
-
-    func pointOfSaleClosed()
 }
 
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
@@ -264,10 +237,6 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func saveSearchTerm(_ term: String, for itemType: POSItemType) {
         searchHistoryService.saveSuccessfulSearch(term: term, for: itemType)
-    }
-
-    func searchHistory(for itemType: POSItemType) -> [String] {
-        return searchHistoryService.searchHistory(for: itemType)
     }
 }
 
@@ -619,12 +588,6 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         resetCardReaderObservation()
         cancellables.forEach { $0.cancel() }
-    }
-}
-
-private extension PointOfSaleAggregateModel {
-    enum Constants {
-        static let initialPage: Int = 1
     }
 }
 

@@ -29,11 +29,11 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
         }
     }
 
-    public func startObserving() {
+    private func startObserving() {
         networkMonitor.start(queue: observingQueue)
     }
 
-    public func stopObserving() {
+    func stopObserving() {
         networkMonitor.cancel()
     }
 

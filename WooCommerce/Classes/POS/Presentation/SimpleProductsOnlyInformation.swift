@@ -73,11 +73,6 @@ private extension SimpleProductsOnlyInformation {
             value: "Create an order in store management",
             comment: "Action text in the simple products information modal in POS"
         )
-        static let okButtonTitle = NSLocalizedString(
-            "pos.simpleProductsModal.ok.button.title",
-            value: "OK",
-            comment: "Title for the OK button on the simple products information modal in POS"
-        )
     }
 }
 

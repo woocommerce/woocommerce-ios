@@ -2,12 +2,11 @@ import SwiftUI
 
 struct CardWaveProgressViewStyle: ProgressViewStyle {
     func makeBody(configuration: Configuration) -> some View {
-        CardWaveProgressView(configuration: configuration)
+        CardWaveProgressView()
     }
 }
 
 private struct CardWaveProgressView: View {
-    let configuration: ProgressViewStyleConfiguration
     private let animationDuration: Double = 0.5
     private let radii: [CGFloat] = [40.0, 70.0, 100.0]
     private let inactiveInset: CGFloat = 0.025

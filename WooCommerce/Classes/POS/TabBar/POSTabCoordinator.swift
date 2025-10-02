@@ -146,8 +146,7 @@ private extension POSTabCoordinator {
                let orderService = POSOrderService(siteID: siteID,
                                                   credentials: credentials,
                                                   selectedSite: defaultSitePublisher,
-                                                  appPasswordSupportState: isAppPasswordSupported),
-               #available(iOS 17.0, *) {
+                                                  appPasswordSupportState: isAppPasswordSupported) {
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: posItemFetchStrategyFactory,

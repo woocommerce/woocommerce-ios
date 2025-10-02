@@ -82,17 +82,11 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
-    func providePointOfSaleItems() -> [POSItem] {
-        return mockItems
-    }
-
     func providePointOfSaleItem() -> POSOrderableItem {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
-
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
 }
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
@@ -121,15 +115,15 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> { $itemsViewState }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent):
-            await loadInitialChildItems(for: parent)
+        case .parent:
+            // Set `itemsViewState` instead.
+            break
         }
     }
 
@@ -145,10 +139,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loading(mockItems),
                                                                                               itemStates: [:]))
     }
-
-    private func loadInitialChildItems(for parent: POSItem) async {
-        // Set `itemsViewState` instead.
-    }
 }
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
@@ -161,10 +151,6 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
     func searchHistory(for itemType: POSItemType) -> [String] {
         return []
     }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {
@@ -214,16 +200,6 @@ private var mockVariationItems: [POSItem] {
     ]
 }
 
-final class POSConnectivityObserverPreview: ConnectivityObserver {
-    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
-        $currentStatus.eraseToAnyPublisher()
-    }
-    func startObserving() {}
-
-    func stopObserving() {}
-}
-
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -262,6 +238,20 @@ struct POSPreviewHelpers {
             receiptSender: POSReceiptSenderPreview())
     }
 
+    static func makePreviewOrders() -> [POSOrder] {
+        return [
+            makePreviewOrder(),
+            makePreviewFailedOrder(),
+            makePreviewOrderWithRefund(),
+            makePreviewOrderWithoutEmail(),
+            makePreviewOrderWithNetPayment()
+        ]
+    }
+
+    static func loadedState() -> POSOrderListState {
+        return .loaded(makePreviewOrders(), hasMoreItems: false)
+    }
+
     static func makePreviewOrder() -> POSOrder {
         return POSOrder(
             id: 1,
@@ -271,7 +261,6 @@ struct POSPreviewHelpers {
             formattedTotal: "$45.75",
             formattedSubtotal: "$41.99",
             customerEmail: "customer@example.com",
-            paymentMethodID: "cod",
             paymentMethodTitle: "Cash on Delivery",
             lineItems: [
                 POSOrderItem(itemID: 1,
@@ -301,98 +290,164 @@ struct POSPreviewHelpers {
             formattedNetAmount: nil
         )
     }
+
+    static func makePreviewOrderWithRefund() -> POSOrder {
+        return POSOrder(
+            id: 3,
+            number: "1003",
+            dateCreated: Date().addingTimeInterval(-7200),
+            status: .refunded,
+            formattedTotal: "$89.50",
+            formattedSubtotal: "$89.96",
+            customerEmail: "very.long.customer.email@withverylongdomainname.com",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [
+                POSOrderItem(
+                    itemID: 4,
+                    name: "Artisan Chocolate Box",
+                    quantity: 3.0,
+                    formattedPrice: "$19.99",
+                    formattedTotal: "$59.97",
+                    imageSrc: nil,
+                    attributes: []
+                ),
+                POSOrderItem(
+                    itemID: 5,
+                    name: "Gourmet Cookie Set - Mixed",
+                    quantity: 1.0,
+                    formattedPrice: "$29.99",
+                    formattedTotal: "$29.99",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 4, name: "Flavor", value: "Mixed"),
+                        OrderItemAttribute(metaID: 5, name: "Packaging", value: "Gift Box")
+                    ]
+                )
+            ],
+            refunds: [
+                POSOrderRefund(
+                    refundID: 1,
+                    formattedTotal: "-$19.99",
+                    reason: "Customer requested partial refund"
+                )
+            ],
+            formattedDiscountTotal: "-$15.00",
+            formattedTotalTax: "$8.95",
+            formattedPaymentTotal: "$89.50",
+            formattedNetAmount: "$69.51"
+        )
+    }
+
+    static func makePreviewFailedOrder() -> POSOrder {
+        return POSOrder(
+            id: 2,
+            number: "1002",
+            dateCreated: Date().addingTimeInterval(-3600),
+            status: .failed,
+            formattedTotal: "$129.99",
+            formattedSubtotal: "$120.00",
+            customerEmail: nil,
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [
+                POSOrderItem(
+                    itemID: 3,
+                    name: "Wireless Headphones",
+                    quantity: 1.0,
+                    formattedPrice: "$120.00",
+                    formattedTotal: "$120.00",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 3, name: "Color", value: "Black")
+                    ]
+                )
+            ],
+            refunds: [],
+            formattedDiscountTotal: "$0.00",
+            formattedTotalTax: "$9.99",
+            formattedPaymentTotal: "$0.00",
+            formattedNetAmount: nil
+        )
+    }
+
+    static func makePreviewOrderWithoutEmail() -> POSOrder {
+        return POSOrder(
+            id: 4,
+            number: "1004",
+            dateCreated: Date().addingTimeInterval(-10800),
+            status: .completed,
+            formattedTotal: "$24.99",
+            formattedSubtotal: "$22.99",
+            customerEmail: nil,
+            paymentMethodTitle: "Cash on Delivery",
+            lineItems: [
+                POSOrderItem(
+                    itemID: 6,
+                    name: "Coffee Mug",
+                    quantity: 1.0,
+                    formattedPrice: "$22.99",
+                    formattedTotal: "$22.99",
+                    imageSrc: nil,
+                    attributes: []
+                )
+            ],
+            refunds: [],
+            formattedDiscountTotal: "$0.00",
+            formattedTotalTax: "$2.00",
+            formattedPaymentTotal: "$24.99",
+            formattedNetAmount: nil
+        )
+    }
+
+    static func makePreviewOrderWithNetPayment() -> POSOrder {
+        return POSOrder(
+            id: 5,
+            number: "1005",
+            dateCreated: Date().addingTimeInterval(-14400),
+            status: .processing,
+            formattedTotal: "$156.47",
+            formattedSubtotal: "$145.00",
+            customerEmail: "john.doe@example.com",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [
+                POSOrderItem(
+                    itemID: 7,
+                    name: "Leather Wallet",
+                    quantity: 2.0,
+                    formattedPrice: "$45.00",
+                    formattedTotal: "$90.00",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 6, name: "Material", value: "Genuine Leather")
+                    ]
+                ),
+                POSOrderItem(
+                    itemID: 8,
+                    name: "Sunglasses",
+                    quantity: 1.0,
+                    formattedPrice: "$55.00",
+                    formattedTotal: "$55.00",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 7, name: "Frame", value: "Metal"),
+                        OrderItemAttribute(metaID: 8, name: "Lens", value: "Polarized")
+                    ]
+                )
+            ],
+            refunds: [],
+            formattedDiscountTotal: "-$10.00",
+            formattedTotalTax: "$11.47",
+            formattedPaymentTotal: "$156.47",
+            formattedNetAmount: "$153.50"
+        )
+    }
 }
 
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
     let ordersViewState: POSOrderListState
 
-    init(state: POSOrderListState? = nil) {
-        let orders = [
-            POSOrder(
-                id: 1,
-                number: "1001",
-                dateCreated: Date(),
-                status: .completed,
-                formattedTotal: "$45.75",
-                formattedSubtotal: "$40.99",
-                customerEmail: "customer@example.com",
-                paymentMethodID: "cod",
-                paymentMethodTitle: "Cash on Delivery",
-                lineItems: [
-                    POSOrderItem(itemID: 1,
-                                 name: "Premium Coffee Beans",
-                                 quantity: 2.0,
-                                 formattedPrice: "$12.50",
-                                 formattedTotal: "$25.00",
-                                 imageSrc: nil,
-                                 attributes: []),
-                    POSOrderItem(
-                        itemID: 2,
-                        name: "Organic Tea - Earl Grey",
-                        quantity: 1.0,
-                        formattedPrice: "$15.99",
-                        formattedTotal: "$15.99",
-                        imageSrc: nil,
-                        attributes: [
-                            OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
-                            OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
-                        ]
-                    )
-                ],
-                refunds: [],
-                formattedDiscountTotal: "-$5.24",
-                formattedTotalTax: "$4.75",
-                formattedPaymentTotal: "$45.75",
-                formattedNetAmount: nil
-            ),
-            POSOrder(
-                id: 2,
-                number: "1002",
-                dateCreated: Date().addingTimeInterval(-3600),
-                status: .processing,
-                formattedTotal: "$89.50",
-                formattedSubtotal: "$89.96",
-                customerEmail: "very.long.customer.email@withverylongdomainname.com",
-                paymentMethodID: "woocommerce_payments",
-                paymentMethodTitle: "WooCommerce Payments",
-                lineItems: [
-                    POSOrderItem(
-                        itemID: 3,
-                        name: "Artisan Chocolate Box",
-                        quantity: 3.0,
-                        formattedPrice: "$19.99",
-                        formattedTotal: "$59.97",
-                        imageSrc: nil,
-                        attributes: []
-                    ),
-                    POSOrderItem(
-                        itemID: 4,
-                        name: "Gourmet Cookie Set - Mixed",
-                        quantity: 1.0,
-                        formattedPrice: "$29.99",
-                        formattedTotal: "$29.99",
-                        imageSrc: nil,
-                        attributes: [
-                            OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
-                            OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")
-                        ]
-                    )
-                ],
-                refunds: [
-                    POSOrderRefund(
-                        refundID: 1,
-                        formattedTotal: "-$19.99",
-                        reason: "Customer requested partial refund"
-                    )
-                ],
-                formattedDiscountTotal: "-$15.00",
-                formattedTotalTax: "$8.95",
-                formattedPaymentTotal: "$89.50",
-                formattedNetAmount: "$69.51"
-            )
-        ]
-        self.ordersViewState = state ?? .loaded(orders, hasMoreItems: false)
+    init(state: POSOrderListState) {
+        self.ordersViewState = state
     }
 
     var selectedOrder: POSOrder? {
@@ -434,8 +489,6 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackCardReaderTapped() {}
 
     func trackCheckoutTapped() {}
-
-    func resetCheckoutTapCountTracker() {}
 
     func trackSuccessfulCashPayment() {}
 }

@@ -56,6 +56,9 @@ struct POSOrdersView: View {
             .onAppear {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListLoaded())
             }
+            .onDisappear {
+                orderListModel.ordersController.selectOrder(nil)
+            }
         }
     }
 
@@ -114,13 +117,18 @@ private struct CustomNavigationSplitView<Sidebar: View, Detail: View, DetailPlac
                     sidebar($selection)
                         .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
 
-                    if let selection = selection {
-                        detail(selection)
-                            .frame(maxWidth: .infinity)
-                    } else {
-                        detailPlaceholderView()
-                            .frame(maxWidth: .infinity)
+                    VStack {
+                        if let selection = selection {
+                            detail(selection)
+                                .frame(maxWidth: .infinity)
+                                .transition(.opacity)
+                        } else {
+                            detailPlaceholderView()
+                                .frame(maxWidth: .infinity)
+                                .transition(.opacity)
+                        }
                     }
+                    .animation(.default, value: selection != nil)
                 }
             }
             .onAppear {

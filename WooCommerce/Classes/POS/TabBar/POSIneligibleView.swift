@@ -209,48 +209,38 @@ private extension POSIneligibleReason {
 #if DEBUG
 
 #Preview("Unsupported currency") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
-            onRefresh: {}
-        )
-    }
+    POSIneligibleView(
+        reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
+        onRefresh: {}
+    )
 }
 
 #Preview("WooCommerce plugin not found") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .wooCommercePluginNotFound,
-            onRefresh: {}
-        )
-    }
+    POSIneligibleView(
+        reason: .wooCommercePluginNotFound,
+        onRefresh: {}
+    )
 }
 
 #Preview("Feature switch disabled") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .featureSwitchDisabled,
-            onRefresh: {}
-        )
-    }
+    POSIneligibleView(
+        reason: .featureSwitchDisabled,
+        onRefresh: {}
+    )
 }
 
 #Preview("Site settings unavailable") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .siteSettingsNotAvailable,
-            onRefresh: {}
-        )
-    }
+    POSIneligibleView(
+        reason: .siteSettingsNotAvailable,
+        onRefresh: {}
+    )
 }
 
 #Preview("Unsupported WooCommerce version") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
-            onRefresh: {}
-        )
-    }
+    POSIneligibleView(
+        reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
+        onRefresh: {}
+    )
 }
 
 #endif

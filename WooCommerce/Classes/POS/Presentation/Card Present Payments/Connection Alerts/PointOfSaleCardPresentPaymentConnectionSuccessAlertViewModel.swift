@@ -12,7 +12,7 @@ class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel: Hashable {
          scheduler: Scheduler = DefaultScheduler()) {
 
         self.scheduler = scheduler
-        let autoDismissAction = scheduler.schedule(after: 3.0, action: doneAction)
+        let autoDismissAction = self.scheduler.schedule(after: 3.0, action: doneAction)
         self.autoDismissAction = autoDismissAction
 
         self.buttonViewModel = CardPresentPaymentsModalButtonViewModel(

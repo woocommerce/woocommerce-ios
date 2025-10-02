@@ -46,14 +46,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow = nil
     }
 
-    func nextStep() {
-        currentFlow?.nextStep()
-    }
-
-    func previousStep() {
-        currentFlow?.previousStep()
-    }
-
     func getCurrentStep() -> PointOfSaleBarcodeScannerSetupStep? {
         currentFlow?.currentStep
     }
@@ -102,6 +94,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
 
     private func handleKeyboardConnected() {
         guard case .setupFlow(let scannerType) = currentState, let step = getCurrentSetupStepValue() else { return }
-        analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerConnected(scanner: scannerType, step: step))
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerConnected(scanner: scannerType))
     }
 }

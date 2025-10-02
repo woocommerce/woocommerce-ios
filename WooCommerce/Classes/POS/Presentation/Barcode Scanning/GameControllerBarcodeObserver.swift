@@ -82,7 +82,7 @@ final class GameControllerBarcodeObserver {
     }
 
     /// Handles the disconnection of the keyboard (coalesced).
-    @objc private func handleKeyboardDidDisconnect(_ notification: Notification) {
+    @objc private func handleKeyboardDidDisconnect() {
         cleanupKeyboard()
     }
 

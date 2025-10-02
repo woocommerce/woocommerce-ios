@@ -116,16 +116,6 @@ private extension ChildItemList {
     }
 }
 
-private extension ChildItemList {
-    enum Localization {
-        static let back = NSLocalizedString(
-            "pos.childItemList.back",
-            value: "Back",
-            comment: "Back button title in the child item list screen."
-        )
-    }
-}
-
 #if DEBUG
 
 #Preview("Variable product child items") {

@@ -11,10 +11,6 @@ struct SiteTimezoneKey: EnvironmentKey {
     static let defaultValue: TimeZone = .current
 }
 
-struct POSDependenciesKey: EnvironmentKey {
-    static let defaultValue: POSDependencyProviding? = nil
-}
-
 extension EnvironmentValues {
     var siteTimezone: TimeZone {
         get { self[SiteTimezoneKey.self] }
@@ -52,6 +48,11 @@ struct POSExternalViewKey: EnvironmentKey {
     static let defaultValue: POSExternalViewProviding = EmptyPOSExternalView()
 }
 
+/// Environment key for POS search text field unfocused border color
+struct POSSearchTextFieldUnfocusedBorderColorKey: EnvironmentKey {
+    static let defaultValue: Color = .posSurfaceBright
+}
+
 extension EnvironmentValues {
     var posAnalytics: POSAnalyticsProviding {
         get { self[POSAnalyticsKey.self] }
@@ -82,6 +83,19 @@ extension EnvironmentValues {
         get { self[POSExternalViewKey.self] }
         set { self[POSExternalViewKey.self] = newValue }
     }
+
+    var posSearchTextFieldUnfocusedBorderColor: Color {
+        get { self[POSSearchTextFieldUnfocusedBorderColorKey.self] }
+        set { self[POSSearchTextFieldUnfocusedBorderColorKey.self] = newValue }
+    }
+}
+
+// MARK: - View Modifiers
+
+extension View {
+    func posSearchTextFieldUnfocusedBorderColor(_ color: Color) -> some View {
+        environment(\.posSearchTextFieldUnfocusedBorderColor, color)
+    }
 }
 
 // MARK: - Empty Default Values
@@ -109,8 +123,6 @@ class EmptyPOSConnectivityProvider: POSConnectivityProviding {
 class EmptyPOSConnectivity: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
-    func startObserving() {}
-    func stopObserving() {}
     init() {}
 }
 

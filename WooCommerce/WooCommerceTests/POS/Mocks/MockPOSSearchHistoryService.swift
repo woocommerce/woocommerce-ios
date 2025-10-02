@@ -7,8 +7,4 @@ struct MockPOSSearchHistoryService: POSSearchHistoryProviding {
     func searchHistory(for itemType: POSItemType) -> [String] {
         return []
     }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
 }

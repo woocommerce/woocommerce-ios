@@ -12,7 +12,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var subtotalValue: String {
-        return order.subtotalValue(currencyFormatter: currencyFormatter) ?? String()
+        return order.subtotalValue(currencyFormatter: currencyFormatter)
     }
 
     var shouldHideSubtotal: Bool {

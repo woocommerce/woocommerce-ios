@@ -3,9 +3,11 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
+    @Binding var selectedBooking: Booking?
 
-    init(viewModel: BookingListViewModel) {
+    init(viewModel: BookingListViewModel, selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self._selectedBooking = selectedBooking
     }
 
     var body: some View {
@@ -34,22 +36,21 @@ struct BookingListView: View {
 
 private extension BookingListView {
     var bookingList: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.bookings) { item in
-                    NavigationLink(value: item) {
-                        bookingItem(item)
-                    }
-                    .buttonStyle(.plain)
+        List(selection: $selectedBooking) {
+            ForEach(viewModel.bookings) { item in
+                NavigationLink(value: item) {
+                    bookingItem(item)
                 }
-
-                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                    .padding(.top, Layout.viewPadding)
-                    .onAppear {
-                        viewModel.onLoadNextPageAction()
-                    }
+                .buttonStyle(.plain)
             }
+
+            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                .padding(.top, Layout.viewPadding)
+                .onAppear {
+                    viewModel.onLoadNextPageAction()
+                }
         }
+        .listStyle(.plain)
         .refreshable {
             await viewModel.onRefreshAction()
         }

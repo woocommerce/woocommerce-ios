@@ -27,7 +27,7 @@ struct POSFloatingControlView: View {
     var body: some View {
         HStack {
             Menu {
-                compactOptions()
+                menuOptions()
             } label: {
                 VStack {
                     Spacer()
@@ -67,7 +67,7 @@ struct POSFloatingControlView: View {
 }
 
 private extension POSFloatingControlView {
-    @ViewBuilder private func compactOptions() -> some View {
+    @ViewBuilder private func menuOptions() -> some View {
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
             showExitPOSModal = true

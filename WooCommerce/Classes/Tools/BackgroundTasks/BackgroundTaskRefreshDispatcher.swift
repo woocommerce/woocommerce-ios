@@ -189,7 +189,13 @@ private struct BackgroundTaskSystemInfo {
             monitor.cancel()
         }
 
+        let timeoutTask = Task {
+            try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+            continuation.finish()
+        }
+
         if let path = await stream.first(where: { _ in true }) {
+            timeoutTask.cancel()
             return NetworkInfo(path: path)
         } else {
             // Fallback in case no path is received.

@@ -48,6 +48,11 @@ struct POSExternalViewKey: EnvironmentKey {
     static let defaultValue: POSExternalViewProviding = EmptyPOSExternalView()
 }
 
+/// Environment key for POS search text field unfocused border color
+struct POSSearchTextFieldUnfocusedBorderColorKey: EnvironmentKey {
+    static let defaultValue: Color = .posSurfaceBright
+}
+
 extension EnvironmentValues {
     var posAnalytics: POSAnalyticsProviding {
         get { self[POSAnalyticsKey.self] }
@@ -77,6 +82,19 @@ extension EnvironmentValues {
     var posExternalViews: POSExternalViewProviding {
         get { self[POSExternalViewKey.self] }
         set { self[POSExternalViewKey.self] = newValue }
+    }
+
+    var posSearchTextFieldUnfocusedBorderColor: Color {
+        get { self[POSSearchTextFieldUnfocusedBorderColorKey.self] }
+        set { self[POSSearchTextFieldUnfocusedBorderColorKey.self] = newValue }
+    }
+}
+
+// MARK: - View Modifiers
+
+extension View {
+    func posSearchTextFieldUnfocusedBorderColor(_ color: Color) -> some View {
+        environment(\.posSearchTextFieldUnfocusedBorderColor, color)
     }
 }
 

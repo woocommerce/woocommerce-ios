@@ -136,6 +136,7 @@
 		01C21AB82E66EC26008E4D77 /* POSOrderDetailsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C21AB72E66EC14008E4D77 /* POSOrderDetailsEmptyView.swift */; };
 		01C9C59F2DA3D98400CD81D8 /* CartRowRemoveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */; };
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
+		01DE96902E8AE83200E07E1A /* POSOrderBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */; };
 		01DE92D22E8AAE6200E07E1A /* POSOrderListFetchAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE92D12E8AAE6200E07E1A /* POSOrderListFetchAnalytics.swift */; };
 		01E62EC82DFADF56003A6D9E /* Cart+BarcodeScanError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */; };
 		01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F067EC2D0C5D56001C5805 /* MockLocationService.swift */; };
@@ -3364,6 +3365,7 @@
 		01C21AB72E66EC14008E4D77 /* POSOrderDetailsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderDetailsEmptyView.swift; sourceTree = "<group>"; };
 		01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartRowRemoveButton.swift; sourceTree = "<group>"; };
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
+		01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderBadgeView.swift; sourceTree = "<group>"; };
 		01DE92D12E8AAE6200E07E1A /* POSOrderListFetchAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderListFetchAnalytics.swift; sourceTree = "<group>"; };
 		01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cart+BarcodeScanError.swift"; sourceTree = "<group>"; };
 		01F067EC2D0C5D56001C5805 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
@@ -6642,6 +6644,7 @@
 		01ABA0272E57579300829DC0 /* Orders */ = {
 			isa = PBXGroup;
 			children = (
+				01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */,
 				01B7C9C92E71C8D00004BE9D /* POSOrderListEmptyViewModel.swift */,
 				01C21AB72E66EC14008E4D77 /* POSOrderDetailsEmptyView.swift */,
 				01C21AB52E66EB70008E4D77 /* POSOrderDetailsLoadingView.swift */,
@@ -16047,6 +16050,7 @@
 				7E7C5F792719A8F900315B61 /* EditProductCategoryListViewModel.swift in Sources */,
 				DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */,
 				DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */,
+				01DE96902E8AE83200E07E1A /* POSOrderBadgeView.swift in Sources */,
 				204415912CE622BA0070BF54 /* PointOfSaleOrderTotals.swift in Sources */,
 				EEC259442B43EF3B004D703C /* BlazeEditAdViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,

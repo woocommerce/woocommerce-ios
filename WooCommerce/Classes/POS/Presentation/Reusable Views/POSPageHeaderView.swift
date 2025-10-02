@@ -89,63 +89,64 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 
     var body: some View {
-        HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
-            leadingContent
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+                leadingContent
 
-            if showsBackButton {
-                backButton
-            }
-
-            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
-                    ForEach(0..<items.count, id: \.self) { index in
-                        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                            HStack(spacing: POSSpacing.small) {
-                                if items[index].title.isNotEmpty {
-                                    Button(action: {
-                                        items[index].action?()
-                                    }) {
-                                        Text(items[index].title)
-                                            .font(.posHeadingBold)
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
-                                            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                            .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                    HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+                        if showsBackButton {
+                            backButton
+                        }
+                        ForEach(0..<items.count, id: \.self) { index in
+                            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                                HStack(spacing: POSSpacing.small) {
+                                    if items[index].title.isNotEmpty {
+                                        Button(action: {
+                                            items[index].action?()
+                                        }) {
+                                            Text(items[index].title)
+                                                .font(.posHeadingBold)
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                        }
+                                        .disabled(items[index].isSelected)
+                                        .accessibilityElement()
+                                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                        .accessibilityLabel(items[index].title)
                                     }
-                                    .disabled(items[index].isSelected)
-                                    .accessibilityElement()
-                                    .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                                    .accessibilityLabel(items[index].title)
+
+                                    if items[index].isLoading {
+                                        ProgressView()
+                                            .progressViewStyle(.circular)
+                                            .scaleEffect(0.7)
+                                            .transition(.opacity.combined(with: .scale))
+                                    }
                                 }
 
-                                if items[index].isLoading {
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                        .scaleEffect(0.7)
-                                        .transition(.opacity.combined(with: .scale))
+                                if let subtitle = items[index].subtitle {
+                                    Text(subtitle)
+                                        .font(.posBodyLargeRegular())
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                        .foregroundColor(.posOnSurface)
                                 }
-                            }
-
-                            if let subtitle = items[index].subtitle {
-                                Text(subtitle)
-                                    .font(.posBodyLargeRegular())
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
-                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                    .foregroundColor(.posOnSurface)
                             }
                         }
                     }
                 }
 
-                bottomContent
+                if items.isNotEmpty {
+                    Spacer()
+                }
+
+                trailingContent
             }
 
-            if items.isNotEmpty {
-                Spacer()
-            }
-
-            trailingContent
+            bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
         .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
@@ -179,6 +180,11 @@ struct POSHeaderBackButtonIconKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
+struct POSHeaderBackButtonPaddingKey: EnvironmentKey {
+    /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
+    static let defaultValue: CGFloat = POSPadding.large / 2
+}
+
 extension EnvironmentValues {
     var posHeaderBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         get { self[POSHeaderBackButtonConfigurationKey.self] }
@@ -188,6 +194,11 @@ extension EnvironmentValues {
     var posHeaderBackButtonIcon: String? {
         get { self[POSHeaderBackButtonIconKey.self] }
         set { self[POSHeaderBackButtonIconKey.self] = newValue }
+    }
+
+    var posHeaderBackButtonPadding: CGFloat {
+        get { self[POSHeaderBackButtonPaddingKey.self] }
+        set { self[POSHeaderBackButtonPaddingKey.self] = newValue }
     }
 }
 
@@ -199,6 +210,13 @@ extension View {
     /// - Returns: A view with the icon environment value set
     func posHeaderBackButtonIcon(systemName: String) -> some View {
         environment(\.posHeaderBackButtonIcon, systemName)
+    }
+
+    /// Sets the back button horizontal padding for all POSPageHeaderView instances in the view hierarchy.
+    /// - Parameter padding: The horizontal padding value
+    /// - Returns: A view with the padding environment value set
+    func posHeaderBackButtonPadding(_ padding: CGFloat) -> some View {
+        environment(\.posHeaderBackButtonPadding, padding)
     }
 }
 

@@ -56,6 +56,9 @@ struct POSOrdersView: View {
             .onAppear {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListLoaded())
             }
+            .onDisappear {
+                orderListModel.ordersController.selectOrder(nil)
+            }
         }
     }
 

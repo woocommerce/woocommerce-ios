@@ -10,7 +10,7 @@ struct BookingListContainerView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 headerView
                 TabView(selection: $viewModel.selectedTab) {
                     ForEach(BookingListTab.allCases, id: \.rawValue) { tab in

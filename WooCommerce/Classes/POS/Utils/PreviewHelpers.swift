@@ -45,7 +45,6 @@ import protocol Yosemite.POSItemFetchAnalyticsTracking
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
-import protocol Yosemite.POSOrderManagementServiceProtocol
 
 // MARK: - PreviewProvider helpers
 //
@@ -442,6 +441,7 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
+    
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
         .empty
     }
@@ -449,6 +449,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+    
+    func deleteOrder(siteID: Int64, order: Yosemite.Order, deletePermanently: Bool, onCompletion: @escaping (Result<Yosemite.Order, any Error>) -> Void) {}
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {
@@ -538,13 +540,6 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
-    var orderManagement: POSOrderManagementServiceProtocol = POSPreviewOrderManagementService()
-}
-
-final class POSPreviewOrderManagementService: POSOrderManagementServiceProtocol {
-    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        onCompletion(.success(order))
-    }
 }
 
 // MARK: - Preview Catalog Services

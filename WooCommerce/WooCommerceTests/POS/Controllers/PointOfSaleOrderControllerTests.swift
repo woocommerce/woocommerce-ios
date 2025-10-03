@@ -13,21 +13,18 @@ import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 import enum Networking.NetworkError
-import protocol Yosemite.POSOrderManagementServiceProtocol
 
 @MainActor
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
     let mockReceiptSender = MockPOSReceiptSender()
-    let mockOrderManagement = MockPOSOrderManagementService()
 
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
 
         // When
         await sut.syncOrder(for: Cart(), retryHandler: {})
@@ -41,8 +38,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
@@ -63,8 +59,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         mockOrderService.simulateSyncing = true
         Task {
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
@@ -91,8 +86,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(currencySettings: currencySettings),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
@@ -106,8 +100,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let cartItem = makeItem(quantity: 1)
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
@@ -129,8 +122,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
@@ -169,8 +161,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = nil
 
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
@@ -208,8 +199,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let email = "test@example.com"
 
         // When
@@ -227,8 +217,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let order = Order.fake()
         let recipientEmail = "test@fake.com"
         mockOrderService.orderToReturn = order
@@ -252,7 +241,6 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptSender: mockReceiptSender,
                                                  currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: MockPOSAnalytics(),
-                                                 orderManagement: mockOrderManagement,
                                                  celebration: MockPaymentCaptureCelebration())
             try await sut.collectCashPayment(changeDueAmount: nil)
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
@@ -269,7 +257,6 @@ struct PointOfSaleOrderControllerTests {
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement,
                                              celebration: mockPaymentCelebration)
 
         let orderItem = OrderItem.fake()
@@ -292,7 +279,6 @@ struct PointOfSaleOrderControllerTests {
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement,
                                              celebration: MockPaymentCaptureCelebration())
 
         let orderItem = OrderItem.fake()
@@ -314,8 +300,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake()
         let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
@@ -337,8 +322,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
 
@@ -362,8 +346,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
@@ -388,8 +371,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let cartItem = makeItem(quantity: 1)
 
         // When
@@ -409,8 +391,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let couponCode = "SAVE10"
         let coupon = OrderCouponLine.fake().copy(code: couponCode)
@@ -435,8 +416,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let initialCouponCode = "SAVE10"
         let initialCoupon = OrderCouponLine.fake().copy(code: initialCouponCode)
@@ -461,8 +441,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let couponCode = "SAVE10"
         let coupon = OrderCouponLine.fake().copy(code: couponCode)
@@ -487,8 +466,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage)
 
@@ -529,8 +507,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
         let errorMessage = "Coupon INVALID does not exist"
         let errorJSON = """
         {
@@ -578,8 +555,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
 
         // First create a successful order
         let orderItem = OrderItem.fake().copy(quantity: 1)
@@ -626,14 +602,13 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
 
         // When
         await sut.clearOrder()
 
         // Then
-        #expect(mockOrderManagement.deleteOrderWasCalled == false)
+        #expect(mockOrderService.deleteOrderWasCalled == false)
         #expect(sut.orderState == .idle)
     }
 
@@ -643,8 +618,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
 
         let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
         let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
@@ -657,9 +631,9 @@ struct PointOfSaleOrderControllerTests {
         await sut.clearOrder()
 
         // Then
-        #expect(mockOrderManagement.deleteOrderWasCalled == true)
-        #expect(mockOrderManagement.deletedOrder?.orderID == autoDraftOrder.orderID)
-        #expect(mockOrderManagement.deletedOrder?.status == .autoDraft)
+        #expect(mockOrderService.deleteOrderWasCalled == true)
+        #expect(mockOrderService.deletedOrder?.orderID == autoDraftOrder.orderID)
+        #expect(mockOrderService.deletedOrder?.status == .autoDraft)
         #expect(sut.orderState == .idle)
     }
 
@@ -669,8 +643,7 @@ struct PointOfSaleOrderControllerTests {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics(),
-                                             orderManagement: mockOrderManagement)
+                                             analytics: MockPOSAnalytics())
 
         let completedOrder = Order.fake().copy(status: .completed)
         mockOrderService.orderToReturn = completedOrder
@@ -680,7 +653,7 @@ struct PointOfSaleOrderControllerTests {
         await sut.clearOrder()
 
         // Then
-        #expect(mockOrderManagement.deleteOrderWasCalled == false)
+        #expect(mockOrderService.deleteOrderWasCalled == false)
         #expect(sut.orderState == .idle)
     }
 
@@ -696,8 +669,7 @@ struct PointOfSaleOrderControllerTests {
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptSender: mockReceiptSender,
                                                  currencySettingsProvider: MockCurrencySettingsProvider(),
-                                                 analytics: analytics,
-                                                 orderManagement: MockPOSOrderManagementService())
+                                                 analytics: analytics)
             let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
             let fakeOrder = Order.fake()
             let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
@@ -715,8 +687,7 @@ struct PointOfSaleOrderControllerTests {
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptSender: mockReceiptSender,
                                                  currencySettingsProvider: MockCurrencySettingsProvider(),
-                                                 analytics: analytics,
-                                                 orderManagement: MockPOSOrderManagementService())
+                                                 analytics: analytics)
             orderService.orderToReturn = nil
 
             // When
@@ -733,7 +704,6 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptSender: mockReceiptSender,
                                                  currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics,
-                                                 orderManagement: MockPOSOrderManagementService(),
                                                  celebration: MockPaymentCaptureCelebration())
 
             // In order to test the order controller failure we need to succeed first in creating a successful order:
@@ -768,20 +738,6 @@ private func makeItem(name: String = "",
                  title: name,
                  subtitle: nil,
                  quantity: quantity)
-}
-
-// MARK: - Mock POS Order Management Service
-
-final class MockPOSOrderManagementService: POSOrderManagementServiceProtocol {
-    var deleteOrderWasCalled = false
-    var deletedOrder: Order?
-    var deleteOrderResult: Result<Order, Error> = .success(Order.fake())
-
-    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        deleteOrderWasCalled = true
-        deletedOrder = order
-        onCompletion(deleteOrderResult)
-    }
 }
 
 // MARK: - Mock Currency Settings Provider

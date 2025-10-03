@@ -20,7 +20,6 @@ import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
 import class Yosemite.OrderTotalsCalculator
-import protocol Yosemite.POSOrderManagementServiceProtocol
 
 enum SyncOrderState {
     case newOrder
@@ -46,13 +45,11 @@ protocol PointOfSaleOrderControllerProtocol {
          receiptSender: POSReceiptSending,
          currencySettingsProvider: POSCurrencySettingsProviding,
          analytics: POSAnalyticsProviding,
-         orderManagement: POSOrderManagementServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
-        self.orderManagement = orderManagement
         self.celebration = celebration
     }
 
@@ -61,7 +58,6 @@ protocol PointOfSaleOrderControllerProtocol {
     private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
     private let analytics: POSAnalyticsProviding
-    private let orderManagement: POSOrderManagementServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
@@ -129,7 +125,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
         await withCheckedContinuation { continuation in
             Task { @MainActor in
-                orderManagement.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in
+                orderService.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in
                     continuation.resume()
                 }
             }

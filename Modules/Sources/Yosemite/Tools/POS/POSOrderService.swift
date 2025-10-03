@@ -4,6 +4,7 @@ import class WooFoundation.CurrencyFormatter
 import enum WooFoundation.CurrencyCode
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
+import protocol Storage.StorageManagerType
 
 public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
@@ -13,16 +14,19 @@ public protocol POSOrderServiceProtocol {
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void)
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
     private let siteID: Int64
     private let ordersRemote: POSOrdersRemoteProtocol
+    private let orderStoreMethods: OrderStoreMethodsProtocol
 
     public convenience init?(siteID: Int64,
                              credentials: Credentials?,
                              selectedSite: AnyPublisher<JetpackSite?, Never>,
-                             appPasswordSupportState: AnyPublisher<Bool, Never>) {
+                             appPasswordSupportState: AnyPublisher<Bool, Never>,
+                             storageManager: StorageManagerType) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
@@ -30,14 +34,18 @@ public final class POSOrderService: POSOrderServiceProtocol {
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
+        let remote = OrdersRemote(network: network)
         self.init(siteID: siteID,
-                  ordersRemote: OrdersRemote(network: network))
+                  ordersRemote: remote,
+                  orderStoreMethods: OrderStoreMethods(storageManager: storageManager, remote: remote))
     }
 
-    public init(siteID: Int64,
-                ordersRemote: POSOrdersRemoteProtocol) {
+    internal init(siteID: Int64,
+                  ordersRemote: POSOrdersRemoteProtocol,
+                  orderStoreMethods: OrderStoreMethodsProtocol) {
         self.siteID = siteID
         self.ordersRemote = ordersRemote
+        self.orderStoreMethods = orderStoreMethods
     }
 
     // MARK: - Protocol conformance
@@ -80,6 +88,10 @@ public final class POSOrderService: POSOrderServiceProtocol {
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
+    }
+
+    public func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        orderStoreMethods.deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
     }
 }
 

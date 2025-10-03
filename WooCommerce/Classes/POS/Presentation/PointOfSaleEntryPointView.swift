@@ -93,8 +93,7 @@ public struct PointOfSaleEntryPointView: View {
         self.orderController = PointOfSaleOrderController(orderService: orderService,
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
-                                                          analytics: services.analytics,
-                                                          orderManagement: services.orderManagement)
+                                                          analytics: services.analytics)
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,

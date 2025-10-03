@@ -5,11 +5,14 @@ import Testing
 struct POSOrderServiceTests {
     let sut: POSOrderService
     let mockOrdersRemote: MockPOSOrdersRemote
+    let mockOrderStoreMethods: MockOrderStoreMethods
 
     init() {
         let mockOrdersRemote = MockPOSOrdersRemote()
+        let mockOrderStoreMethods = MockOrderStoreMethods()
         self.mockOrdersRemote = mockOrdersRemote
-        self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote)
+        self.mockOrderStoreMethods = mockOrderStoreMethods
+        self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote, orderStoreMethods: mockOrderStoreMethods)
     }
 
     @Test

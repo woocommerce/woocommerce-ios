@@ -14,6 +14,10 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var spySyncOrderCurrency: CurrencyCode?
     var spyCashPaymentChangeDueAmount: String?
 
+    var deleteOrderWasCalled = false
+    var deletedOrder: Order?
+    var deleteOrderResult: Result<Order, Error> = .success(Order.fake())
+
     func syncOrder(cart: Yosemite.POSCart,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
@@ -59,6 +63,12 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         case .failure(let error):
             throw error
         }
+    }
+    
+    func deleteOrder(siteID: Int64, order: Yosemite.Order, deletePermanently: Bool, onCompletion: @escaping (Result<Yosemite.Order, any Error>) -> Void) {
+        deleteOrderWasCalled = true
+        deletedOrder = order
+        onCompletion(deleteOrderResult)
     }
 }
 

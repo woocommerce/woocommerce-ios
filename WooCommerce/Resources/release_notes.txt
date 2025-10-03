@@ -1,2 +1,1 @@
-- [*] Order details: Fixes broken country selector navigation and "Non editable banner" width. [https://github.com/woocommerce/woocommerce-ios/pull/16171]
-- [*] Store widget: Fixes widget background colours for default and clean Liquid Glass mode. [https://github.com/woocommerce/woocommerce-ios/pull/16183]
+This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.

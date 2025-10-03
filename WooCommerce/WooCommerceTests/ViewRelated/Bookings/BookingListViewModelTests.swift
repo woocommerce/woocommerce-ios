@@ -337,8 +337,8 @@ struct BookingListViewModelTests {
         viewModel.loadBookings()
 
         // Then
-        #expect(capturedStartDateAfter == "2021-01-01T00:00:00Z", "Today tab should filter after start of day")
-        #expect(capturedStartDateBefore == "2021-01-01T23:59:59Z", "Today tab should filter before end of day")
+        #expect(capturedStartDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
+        #expect(capturedStartDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
     }
 
     @Test func upcoming_tab_passes_correct_date_filters_to_booking_action() {
@@ -471,16 +471,16 @@ struct BookingListViewModelTests {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let todayStart = testDate.startOfDay(timezone: BookingListTab.utcTimeZone)
-        let todayEnd = testDate.endOfDay(timezone: BookingListTab.utcTimeZone)
+        let nextDayStart = testDate.endOfDay(timezone: BookingListTab.utcTimeZone).addingTimeInterval(1)
 
         // Create bookings with different start dates
-        let withinTodayBooking = createBooking(id: 1, startDate: todayStart.addingTimeInterval(3600)) // 1 hour after start
-        let beforeTodayBooking = createBooking(id: 2, startDate: todayStart.addingTimeInterval(-3600)) // 1 hour before start
-        let afterTodayBooking = createBooking(id: 3, startDate: todayEnd.addingTimeInterval(3600)) // 1 hour after end
-        let atStartOfDayBooking = createBooking(id: 4, startDate: todayStart) // Exactly at start
-        let atEndOfDayBooking = createBooking(id: 5, startDate: todayEnd) // Exactly at end
+        let atStartOfDayBooking = createBooking(id: 1, startDate: todayStart) // Exactly at start
+        let withinTodayBooking = createBooking(id: 2, startDate: todayStart.addingTimeInterval(3600)) // 1 hour after start
+        let beforeTodayBooking = createBooking(id: 3, startDate: todayStart.addingTimeInterval(-3600)) // 1 hour before start
+        let afterTodayBooking = createBooking(id: 4, startDate: nextDayStart.addingTimeInterval(3600)) // 1 hour after end
+        let startOfNextDayBooking = createBooking(id: 5, startDate: nextDayStart) // First second of next day
 
-        insertBookings([withinTodayBooking, beforeTodayBooking, afterTodayBooking, atStartOfDayBooking, atEndOfDayBooking])
+        insertBookings([withinTodayBooking, beforeTodayBooking, afterTodayBooking, atStartOfDayBooking, startOfNextDayBooking])
 
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .today,
@@ -489,8 +489,8 @@ struct BookingListViewModelTests {
                                              currentDate: testDate)
 
         // When/Then - should only show bookings within today (startDate > start AND startDate < end)
-        #expect(viewModel.bookings.count == 1, "Today tab should only show bookings within today")
-        #expect(viewModel.bookings.first?.bookingID == withinTodayBooking.bookingID, "Should contain only the booking within today")
+        #expect(viewModel.bookings.count == 2)
+        #expect(viewModel.bookings.first?.bookingID == withinTodayBooking.bookingID)
     }
 
     @Test func upcoming_tab_results_controller_filters_local_storage_correctly() {

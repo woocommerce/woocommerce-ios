@@ -57,7 +57,7 @@ private extension BookingListView {
             VStack(alignment: .leading) {
                 Text(booking.startDate.toString(dateStyle: .short,
                                                 timeStyle: .short,
-                                                timeZone: TimeZone(identifier: "UTC")!))
+                                                timeZone: BookingListTab.utcTimeZone))
                     .font(.body)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)

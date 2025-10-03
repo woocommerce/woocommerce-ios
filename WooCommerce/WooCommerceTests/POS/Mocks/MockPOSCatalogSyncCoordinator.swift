@@ -10,7 +10,6 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         true
     }
 
-    private var continuation: CheckedContinuation<Void, Never>?
     var onPerformFullSyncCalled: ((_ continuation: CheckedContinuation<Void, Never>) -> Void)? = nil
 
     func performFullSync(for siteID: Int64) async throws {

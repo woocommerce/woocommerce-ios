@@ -4,11 +4,13 @@ final class MockPOSCatalogSettingsService: POSCatalogSettingsServiceProtocol {
     var catalogInfoResult: Result<POSCatalogInfo, Error> = .success(
         .init(productCount: 0, variationCount: 0, lastFullSyncDate: nil, lastIncrementalSyncDate: nil)
     )
-    var shouldDelayResponse = false
+    var onLoadCatalogInfoCalled: ((_ continuation: CheckedContinuation<Void, Never>) -> Void)? = nil
 
     func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {
-        if shouldDelayResponse {
-            try await Task.sleep(for: .milliseconds(100))
+        if let onLoadCatalogInfoCalled {
+            await withCheckedContinuation { continuation in
+                onLoadCatalogInfoCalled(continuation)
+            }
         }
 
         switch catalogInfoResult {

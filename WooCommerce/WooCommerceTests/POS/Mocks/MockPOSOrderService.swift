@@ -64,7 +64,7 @@ class MockPOSOrderService: POSOrderServiceProtocol {
             throw error
         }
     }
-    
+
     func deleteOrder(siteID: Int64, order: Yosemite.Order, deletePermanently: Bool, onCompletion: @escaping (Result<Yosemite.Order, any Error>) -> Void) {
         deleteOrderWasCalled = true
         deletedOrder = order

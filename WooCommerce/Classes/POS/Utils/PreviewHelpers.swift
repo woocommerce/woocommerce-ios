@@ -441,7 +441,6 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
-    
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
         .empty
     }
@@ -449,7 +448,7 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
-    
+
     func deleteOrder(siteID: Int64, order: Yosemite.Order, deletePermanently: Bool, onCompletion: @escaping (Result<Yosemite.Order, any Error>) -> Void) {}
 }
 

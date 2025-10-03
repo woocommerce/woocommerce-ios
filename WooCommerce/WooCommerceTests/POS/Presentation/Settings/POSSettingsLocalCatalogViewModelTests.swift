@@ -91,20 +91,19 @@ struct POSSettingsLocalCatalogViewModelTests {
             lastFullSyncDate: nil,
             lastIncrementalSyncDate: nil
         ))
-        catalogSettingsService.shouldDelayResponse = true
 
-        // When
-        let loadTask = Task {
-            await sut.loadCatalogData()
+        catalogSettingsService.onLoadCatalogInfoCalled = { continuation in
+            // When loadCatalogInfo is called, loading is set to true
+            #expect(sut.isLoading == true)
+
+            // Finsh loadCatalogInfo
+            continuation.resume()
         }
 
+        // When
+        await sut.loadCatalogData()
+
         // Then
-        try await Task.sleep(for: .milliseconds(10))
-        #expect(sut.isLoading == true)
-
-        catalogSettingsService.shouldDelayResponse = false
-        await loadTask.value
-
         #expect(sut.isLoading == false)
     }
 
@@ -137,20 +136,19 @@ struct POSSettingsLocalCatalogViewModelTests {
             lastFullSyncDate: nil,
             lastIncrementalSyncDate: nil
         ))
-        catalogSyncCoordinator.shouldDelayResponse = true
 
-        // When
-        let refreshTask = Task {
-            await sut.refreshCatalog()
+        catalogSyncCoordinator.onPerformFullSyncCalled = { continuation in
+            // When performFullSyncCalled is called, isRefreshingCatalog is set to true
+            #expect(sut.isRefreshingCatalog == true)
+
+            // Finsh performFullSync
+            continuation.resume()
         }
 
+        // When
+        await sut.refreshCatalog()
+
         // Then
-        try await Task.sleep(for: .milliseconds(10))
-        #expect(sut.isRefreshingCatalog == true)
-
-        catalogSyncCoordinator.shouldDelayResponse = false
-        await refreshTask.value
-
         #expect(sut.isRefreshingCatalog == false)
     }
 

@@ -35,7 +35,7 @@ final class BookingListViewModel: ObservableObject {
             predicates.append(NSPredicate(format: "startDate > %@", after as NSDate))
         }
         let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
-        let sortDescriptorByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
+        let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
                                                                   matching: combinedPredicate,
                                                                   sortedBy: [sortDescriptorByDate])

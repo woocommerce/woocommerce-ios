@@ -24,10 +24,7 @@ struct BookingListView: View {
             }
         }
         .task {
-            // Only load first page if no content is available.
-            if viewModel.bookings.isEmpty {
-                viewModel.loadBookings()
-            }
+            viewModel.loadBookings()
         }
     }
 }

@@ -17,7 +17,7 @@ final class BackgroundTaskRefreshDispatcher {
         scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
     }
 
-    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date? = nil) {
+    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date) {
         // Do not run this code while running test because this framework is not enabled in the simulator
         guard Self.isNotRunningTests() else {
             return

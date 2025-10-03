@@ -12,6 +12,8 @@ final class BookingListViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
 
+    private static let refreshCacheReason = "refresh-cache"
+
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
 
@@ -67,7 +69,7 @@ final class BookingListViewModel: ObservableObject {
     @MainActor
     func onRefreshAction() async {
         await withCheckedContinuation { continuation in
-            paginationTracker.resync(reason: nil) {
+            paginationTracker.resync(reason: Self.refreshCacheReason) {
                 continuation.resume(returning: ())
             }
         }
@@ -107,11 +109,15 @@ private extension BookingListViewModel {
 extension BookingListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
-        let action = BookingAction.synchronizeBookings(siteID: siteID,
-                                                       pageNumber: pageNumber,
-                                                       pageSize: pageSize,
-                                                       startDateBefore: type.startDateBefore?.ISO8601Format(),
-                                                       startDateAfter: type.startDateAfter?.ISO8601Format()) { [weak self] result in
+        let shouldClearCache = reason == Self.refreshCacheReason
+        let action = BookingAction.synchronizeBookings(
+            siteID: siteID,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            startDateBefore: type.startDateBefore?.ISO8601Format(),
+            startDateAfter: type.startDateAfter?.ISO8601Format(),
+            shouldClearCache: shouldClearCache
+        ) { [weak self] result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(.success(hasNextPage))

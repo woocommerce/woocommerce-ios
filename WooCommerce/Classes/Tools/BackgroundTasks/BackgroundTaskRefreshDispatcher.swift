@@ -210,6 +210,22 @@ extension BackgroundTaskRefreshDispatcher {
     }
 }
 
+// MARK: - Background Task Type Helpers
+
+fileprivate extension BackgroundTaskRefreshDispatcher.BackgroundTaskType {
+    /// System background task identifier. Should match the info.plist value.
+    var identifier: String {
+        switch self {
+        case .ordersAndDashboardSync:
+            return "com.automattic.woocommerce.refresh"
+        case .posCatalogFullSync:
+            return "com.automattic.woocommerce.refresh.pos.catalog.sync.full"
+        case .posCatalogIncrementalSync:
+            return "com.automattic.woocommerce.refresh.pos.catalog.sync.incremental"
+        }
+    }
+}
+
 // MARK: - System Information Helper
 
 private struct NetworkInfo {

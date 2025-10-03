@@ -33,21 +33,11 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     }
 
     var clearOrderWasCalled: Bool = false
-    private var clearOrderContinuation: CheckedContinuation<Void, Never>?
+    var onClearOrderCalled: () -> Void = {}
 
     func clearOrder() async {
         clearOrderWasCalled = true
-        await withCheckedContinuation { continuation in
-            clearOrderContinuation = continuation
-            // Resume immediately to simulate completion
-            continuation.resume()
-        }
-    }
-
-    func waitForClearOrder() async {
-        while !clearOrderWasCalled {
-            try? await Task.sleep(nanoseconds: 1_000_000)
-        }
+        onClearOrderCalled()
     }
 
     var sendReceiptErrorToThrow: Error?

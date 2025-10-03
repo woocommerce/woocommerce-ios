@@ -213,14 +213,18 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
             )
-
             sut.addToCart(makePurchasableItem())
 
-            // When
-            sut.startNewCart()
+            await withCheckedContinuation { continuation in
+                orderController.onClearOrderCalled = {
+                    continuation.resume()
+                }
+
+                // When
+                sut.startNewCart()
+            }
 
             // Then
-            await orderController.waitForClearOrder()
             #expect(orderController.clearOrderWasCalled == true)
         }
 
@@ -323,14 +327,18 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-
             sut.addToCart(makePurchasableItem())
 
-            // When
-            sut.pointOfSaleClosed()
+            await withCheckedContinuation { continuation in
+                orderController.onClearOrderCalled = {
+                    continuation.resume()
+                }
+
+                // When
+                sut.pointOfSaleClosed()
+            }
 
             // Then
-            await orderController.waitForClearOrder()
             #expect(orderController.clearOrderWasCalled == true)
             #expect(cardPresentPaymentService.cancelPaymentCalled == true)
         }

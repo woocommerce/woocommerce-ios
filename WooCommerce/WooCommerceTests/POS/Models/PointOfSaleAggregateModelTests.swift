@@ -605,21 +605,20 @@ struct PointOfSaleAggregateModelTests {
             cardPresentPaymentService.connectedReader = nil
 
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
+
             await sut.checkOut()
-            cardPresentPaymentService.collectPaymentWasCalled = false
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
 
-            // When
-            // `await confirmation` callback only waits until this completes, not until some timeout.
-            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
-            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            await withCheckedContinuation { continuation in
+                cardPresentPaymentService.onCollectPaymentCalled = {
+                    continuation.resume()
+                }
 
-            // Then
-            let timeout = ContinuousClock.now + .seconds(2)
-
-            while cardPresentPaymentService.collectPaymentWasCalled != true {
-                try await Task.sleep(for: .milliseconds(1))
-                try #require(.now < timeout)
+                // Collect payment should only be called once the card reader is connect
+                cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             }
+
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
         @Test func checkOut_when_reader_is_already_connected_and_order_more_than_zero_collectPayment_called() async throws {
@@ -667,21 +666,20 @@ struct PointOfSaleAggregateModelTests {
 
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
             await sut.checkOut()
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
             await cardPresentPaymentService.disconnectReader()
             cardPresentPaymentService.collectPaymentWasCalled = false
 
-            // When
-            // `await confirmation` callback only waits until this completes, not until some timeout.
-            // Since this is synchonous but triggers async combine behaviour, we can't use that approach.
-            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            await withCheckedContinuation { continuation in
+                cardPresentPaymentService.onCollectPaymentCalled = {
+                    continuation.resume()
+                }
 
-            // Then
-            let timeout = ContinuousClock.now + .seconds(1)
-
-            while cardPresentPaymentService.collectPaymentWasCalled != true {
-                try await Task.sleep(for: .milliseconds(1))
-                try #require(.now < timeout)
+                // Collect payment should be called once the card reader is reconnected
+                cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             }
+
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
         @Test(.disabled()) func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {

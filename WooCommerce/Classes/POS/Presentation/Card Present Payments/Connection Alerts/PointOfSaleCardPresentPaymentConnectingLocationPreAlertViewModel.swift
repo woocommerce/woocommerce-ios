@@ -5,7 +5,6 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel: Hashabl
     let title = Localization.title
     let subtitle = Localization.subtitle
     let detail = Localization.settings
-    let imageName = PointOfSaleAssets.readerLocation.imageName
 
     let primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel
 

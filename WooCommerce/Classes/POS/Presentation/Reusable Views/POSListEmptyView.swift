@@ -1,12 +1,12 @@
 import SwiftUI
-import struct WooFoundation.ScrollableVStack
+import WooFoundation
 
 protocol POSListEmptyViewModelProtocol {
     var title: String { get }
     var subtitle: String { get }
     var hint: String? { get }
     var buttonTitle: String? { get }
-    var iconName: String { get }
+    var icon: Image { get }
 }
 
 struct POSListEmptyView: View {
@@ -85,7 +85,7 @@ struct POSListEmptyView: View {
 
     @ViewBuilder
     private var icon: some View {
-        Image(decorative: viewModel.iconName)
+        viewModel.icon
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: Constants.iconSize, height: Constants.iconSize)
@@ -166,12 +166,12 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
         }
     }
 
-    var iconName: String {
+    var icon: Image {
         switch itemListType {
         case .coupons(search: false):
-            PointOfSaleAssets.coupons.imageName
+            SharedImageAsset.coupons.decorativeImage
         default:
-            PointOfSaleAssets.magnifierNotFound.imageName
+            PointOfSaleAssets.magnifierNotFound.decorativeImage
         }
     }
 

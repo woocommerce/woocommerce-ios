@@ -211,7 +211,7 @@ private extension CartView {
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
                 .overlay(alignment: .top) {
-                    Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
+                    SharedImageAsset.shoppingBags.decorativeImage
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize, alignment: .bottom)
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))

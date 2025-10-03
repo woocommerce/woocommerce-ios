@@ -4,25 +4,31 @@ import BackgroundTasks
 import Network
 
 final class BackgroundTaskRefreshDispatcher {
+    enum BackgroundTaskType: CaseIterable {
+        case ordersAndDashboardSync
+        case posCatalogFullSync
+        case posCatalogIncrementalSync
+    }
 
-    // System background task identifier. Should match the info.plist value.
-    static let taskIdentifier = "com.automattic.woocommerce.refresh"
 
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
+        scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
+    }
 
+    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date? = nil) {
         // Do not run this code while running test because this framework is not enabled in the simulator
         guard Self.isNotRunningTests() else {
             return
         }
 
-        let request = BGAppRefreshTaskRequest(identifier: Self.taskIdentifier)
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60) // Fetch no earlier than 30 minutes from now.
+        let request = BGAppRefreshTaskRequest(identifier: type.identifier)
+        request.earliestBeginDate = earliestBeginDate ?? Date(timeIntervalSinceNow: 30 * 60)
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            DDLogError("⛔️ Could not schedule app refresh: \(error)")
+            DDLogError("⛔️ Could not schedule \(type) task: \(error)")
         }
     }
 
@@ -35,11 +41,14 @@ final class BackgroundTaskRefreshDispatcher {
             return
         }
 
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.taskIdentifier, using: nil) { task in
-            guard let refreshTask = task as? BGAppRefreshTask else {
-                return
+        // Register handlers for all task types
+        for taskType in BackgroundTaskType.allCases {
+            BGTaskScheduler.shared.register(forTaskWithIdentifier: taskType.identifier, using: nil) { [weak self] task in
+                guard let refreshTask = task as? BGAppRefreshTask else {
+                    return
+                }
+                self?.handleBackgroundTask(refreshTask, type: taskType)
             }
-            self.handleAppRefresh(backgroundTask: refreshTask)
         }
 
         if UIApplication.shared.backgroundRefreshStatus != .available {
@@ -47,15 +56,30 @@ final class BackgroundTaskRefreshDispatcher {
         }
     }
 
-    /// Handle the app specific tasks to be performed with an app refresh background task.
+    /// Routes background task to appropriate handler based on type.
     ///
-    private func handleAppRefresh(backgroundTask: BGAppRefreshTask) {
+    private func handleBackgroundTask(_ backgroundTask: BGAppRefreshTask, type: BackgroundTaskType) {
+        switch type {
+        case .ordersAndDashboardSync:
+            handleOrdersAndDashboardSync(backgroundTask: backgroundTask)
+        case .posCatalogFullSync:
+            // TODO
+            break
+        case .posCatalogIncrementalSync:
+            // TODO
+            break
+        }
+    }
 
+    /// Handles orders and dashboard sync.
+    ///
+    private func handleOrdersAndDashboardSync(backgroundTask: BGAppRefreshTask) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            backgroundTask.setTaskCompleted(success: false)
             return
         }
 
-        // Schedule a new refresh task.
+        // Schedules the next orders and dashboard sync.
         scheduleAppRefresh()
 
         // Launch all refresh tasks in parallel.
@@ -75,7 +99,7 @@ final class BackgroundTaskRefreshDispatcher {
 
                     // Rethrows error
                     for try await _ in group {
-                        // No=op
+                        // No-op
                     }
                 }
 

@@ -250,10 +250,9 @@ extension PaymentMethodsView {
     }
 }
 
-// MARK: Previews
-#Preview("Light") {
+#Preview {
     @Previewable @State var rootViewController = UIViewController()
-    NavigationView {
+    NavigationStack {
         PaymentMethodsView(
             rootViewController: rootViewController,
             viewModel: PaymentMethodsViewModel(total: "15.99",
@@ -263,35 +262,4 @@ extension PaymentMethodsView {
         )
         .navigationBarTitleDisplayMode(.inline)
     }
-    .environment(\.colorScheme, .light)
-}
-
-#Preview("Dark") {
-    @Previewable @State var rootViewController = UIViewController()
-    NavigationView {
-        PaymentMethodsView(
-            rootViewController: rootViewController,
-            viewModel: PaymentMethodsViewModel(total: "15.99",
-                                                formattedTotal: "$15.99",
-                                                flow: .orderPayment,
-                                                channel: .storeManagement)
-        )
-        .navigationBarTitleDisplayMode(.inline)
-    }
-    .environment(\.colorScheme, .dark)
-}
-
-#Preview("Accessibility") {
-    @Previewable @State var rootViewController = UIViewController()
-    NavigationView {
-        PaymentMethodsView(
-            rootViewController: rootViewController,
-            viewModel: PaymentMethodsViewModel(total: "15.99",
-                                                formattedTotal: "$15.99",
-                                                flow: .orderPayment,
-                                                channel: .storeManagement)
-        )
-        .navigationBarTitleDisplayMode(.inline)
-    }
-    .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
 }

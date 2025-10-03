@@ -10,14 +10,10 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         true
     }
 
-    var onPerformFullSyncCalled: ((_ continuation: CheckedContinuation<Void, Never>) -> Void)? = nil
+    var onPerformFullSyncCalled: (() -> Void)?
 
     func performFullSync(for siteID: Int64) async throws {
-        if let onPerformFullSyncCalled {
-            await withCheckedContinuation { continuation in
-                onPerformFullSyncCalled(continuation)
-            }
-        }
+        onPerformFullSyncCalled?()
 
         performFullSyncInvocationCount += 1
         performFullSyncSiteID = siteID

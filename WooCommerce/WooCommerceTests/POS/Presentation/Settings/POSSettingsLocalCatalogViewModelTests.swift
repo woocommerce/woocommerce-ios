@@ -92,16 +92,16 @@ struct POSSettingsLocalCatalogViewModelTests {
             lastIncrementalSyncDate: nil
         ))
 
-        catalogSettingsService.onLoadCatalogInfoCalled = { continuation in
-            // When loadCatalogInfo is called, loading is set to true
-            #expect(sut.isLoading == true)
+        await confirmation() { confirmation in
+            catalogSettingsService.onLoadCatalogInfoCalled = {
+                // At the time loadCatalogInfo is called, loading is set to true
+                #expect(sut.isLoading == true)
+                confirmation()
+            }
 
-            // Finsh loadCatalogInfo
-            continuation.resume()
+            // When
+            await sut.loadCatalogData()
         }
-
-        // When
-        await sut.loadCatalogData()
 
         // Then
         #expect(sut.isLoading == false)
@@ -137,16 +137,16 @@ struct POSSettingsLocalCatalogViewModelTests {
             lastIncrementalSyncDate: nil
         ))
 
-        catalogSyncCoordinator.onPerformFullSyncCalled = { continuation in
-            // When performFullSyncCalled is called, isRefreshingCatalog is set to true
-            #expect(sut.isRefreshingCatalog == true)
+        await confirmation() { confirmation in
+            catalogSyncCoordinator.onPerformFullSyncCalled = {
+                // At the time performFullSyncCalled is called, isRefreshingCatalog is set to true
+                #expect(sut.isRefreshingCatalog == true)
+                confirmation()
+            }
 
-            // Finsh performFullSync
-            continuation.resume()
+            // When
+            await sut.refreshCatalog()
         }
-
-        // When
-        await sut.refreshCatalog()
 
         // Then
         #expect(sut.isRefreshingCatalog == false)

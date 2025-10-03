@@ -6,6 +6,7 @@ struct POSSearchTextFieldModifier: ViewModifier {
     private let focused: Bool
     @Binding private var searchTerm: String
     @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
+    @Environment(\.posSearchTextFieldUnfocusedBorderColor) private var unfocusedBorderColor
 
     init(focused: Bool, searchTerm: Binding<String>) {
         self.focused = focused
@@ -17,7 +18,7 @@ struct POSSearchTextFieldModifier: ViewModifier {
         .textFieldStyle(WooRoundedBorderTextFieldStyle(
             focused: focused,
             focusedBorderColor: .posPrimary,
-            unfocusedBorderColor: .posSurfaceBright,
+            unfocusedBorderColor: unfocusedBorderColor,
             backgroundColor: .posSurfaceBright,
             cornerRadius: POSCornerRadiusStyle.medium.value,
             insets: EdgeInsets(top: POSPadding.small, leading: POSPadding.medium, bottom: POSPadding.small, trailing: POSPadding.medium),

@@ -27,26 +27,33 @@ struct POSOrderDetailsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: Localization.orderTitle(order.number),
+                title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                trailingContent: { PointOfSaleOrderBadgeView(order: order) },
-                bottomContent: { headerBottomContent(for: order) }
-            )
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                trailingContent: {
                     if actions.isNotEmpty {
                         actionsSection(actions)
                     }
+                },
+                bottomContent: {
+                    headerBottomContent(for: order)
+                }
+            )
+            .posHeaderBackButtonPadding(POSPadding.none)
+            .fixedSize(horizontal: false, vertical: true)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
+            ScrollView {
+                VStack(alignment: .leading, spacing: POSSpacing.medium) {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
                     totalsSection(order)
                 }
+                .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.medium)
             }
         }
         .background(Color.posSurface)
@@ -77,10 +84,15 @@ private extension POSOrderDetailsView {
             Text(Localization.productsTitle)
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(order.lineItems, id: \.itemID) { item in
+                ForEach(Array(order.lineItems.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
+
+                    if index < order.lineItems.count - 1 {
+                        divider
+                    }
                 }
             }
         }
@@ -91,23 +103,27 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func totalsSection(_ order: POSOrder) -> some View {
-
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.totalsTitle)
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: POSSpacing.small) {
                 productsSubtotalRow(order)
                 discountTotalRow(order)
                 taxTotalRow(order)
 
-                Divider()
-                    .background(Color.posSurfaceDim)
-
+                divider
                 mainTotalRow(order)
+
+                divider
                 paidAmountRow(order)
-                refundsSection(order)
+
+                if !order.refunds.isEmpty {
+                    divider
+                    refundsSection(order)
+                }
             }
         }
         .padding(POSPadding.medium)
@@ -133,8 +149,26 @@ private extension POSOrderDetailsView {
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            Spacer().frame(height: POSSpacing.xSmall)
+            POSOrderBadgeView(order: order)
         }
+        .padding(.top, POSSpacing.xSmall)
         .multilineTextAlignment(.leading)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(headerBottomContentAccessibilityLabel(for: order))
+    }
+
+    private func headerBottomContentAccessibilityLabel(for order: POSOrder) -> String {
+        let date = dateFormatter.string(from: order.dateCreated)
+        let email = order.customerEmail
+        let status = order.status.localizedName
+
+        return Localization.headerBottomContentAccessibilityLabel(
+            date: date,
+            email: email,
+            status: status
+        )
     }
 
 }
@@ -144,13 +178,25 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem) -> some View {
-        HStack(alignment: .top, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
             productImageView(item: item)
             productDetailsView(item: item)
             Spacer()
             productTotalView(item: item)
         }
-        .padding(.vertical, POSPadding.small)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(productRowAccessibilityLabel(for: item))
+    }
+
+    private func productRowAccessibilityLabel(for item: POSOrderItem) -> String {
+        let attributesText = item.attributes.isEmpty ? nil : item.attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", ")
+        return Localization.productRowAccessibilityLabel(
+            name: item.name,
+            attributes: attributesText,
+            quantity: String(item.quantity.intValue),
+            unitPrice: item.formattedPrice,
+            total: item.formattedTotal
+        )
     }
 
     @ViewBuilder
@@ -165,7 +211,7 @@ private extension POSOrderDetailsView {
     func productDetailsView(item: POSOrderItem) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             Text(item.name)
-                .font(.posBodyMediumBold)
+                .font(.posBodySmallBold)
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -191,7 +237,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func productTotalView(item: POSOrderItem) -> some View {
         Text(item.formattedTotal)
-            .font(.posBodyMediumRegular())
+            .font(.posBodySmallRegular())
             .foregroundStyle(Color.posOnSurface)
     }
 }
@@ -203,7 +249,8 @@ private extension POSOrderDetailsView {
     func productsSubtotalRow(_ order: POSOrder) -> some View {
         totalsRow(
             title: Localization.productsLabel,
-            amount: order.formattedSubtotal
+            amount: order.formattedSubtotal,
+            accessibilityLabel: Localization.subtotalAccessibilityLabel(order.formattedSubtotal)
         )
     }
 
@@ -212,7 +259,8 @@ private extension POSOrderDetailsView {
         if let formattedDiscountTotal = order.formattedDiscountTotal {
             totalsRow(
                 title: Localization.discountTotalLabel,
-                amount: formattedDiscountTotal
+                amount: formattedDiscountTotal,
+                accessibilityLabel: Localization.discountAccessibilityLabel(formattedDiscountTotal)
             )
         }
     }
@@ -221,7 +269,8 @@ private extension POSOrderDetailsView {
     func taxTotalRow(_ order: POSOrder) -> some View {
         totalsRow(
             title: Localization.taxesLabel,
-            amount: order.formattedTotalTax
+            amount: order.formattedTotalTax,
+            accessibilityLabel: Localization.taxAccessibilityLabel(order.formattedTotalTax)
         )
     }
 
@@ -230,37 +279,46 @@ private extension POSOrderDetailsView {
         totalsRow(
             title: Localization.totalLabel,
             amount: order.formattedTotal,
-            titleFont: .posBodyMediumBold
+            titleColor: .posOnSurface,
+            titleFont: .posBodySmallBold,
+            accessibilityLabel: Localization.totalAccessibilityLabel(order.formattedTotal)
         )
     }
 
     @ViewBuilder
     func paidAmountRow(_ order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
             totalsRow(
                 title: Localization.paidLabel,
                 amount: order.formattedPaymentTotal,
-                titleFont: .posBodyMediumBold
+                titleColor: .posOnSurface,
+                titleFont: .posBodySmallBold
             )
 
             if order.paymentMethodTitle.isNotEmpty {
                 Text(order.paymentMethodTitle)
-                    .font(.posBodySmallRegular())
+                    .font(.posCaptionRegular)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            Localization.paidAccessibilityLabel(
+                amount: order.formattedPaymentTotal,
+                method: order.paymentMethodTitle
+            )
+        )
     }
 
     @ViewBuilder
     func refundsSection(_ order: POSOrder) -> some View {
-        if !order.refunds.isEmpty {
-            ForEach(order.refunds, id: \.refundID) { refund in
-                refundRow(refund: refund)
-            }
+        ForEach(order.refunds, id: \.refundID) { refund in
+            refundRow(refund: refund)
+            divider
+        }
 
-            if let netAmount = order.formattedNetAmount {
-                netPaymentRow(netAmount: netAmount)
-            }
+        if let netAmount = order.formattedNetAmount {
+            netPaymentRow(netAmount: netAmount)
         }
     }
 
@@ -270,15 +328,18 @@ private extension POSOrderDetailsView {
             totalsRow(
                 title: Localization.refundLabel,
                 amount: refund.formattedTotal,
-                titleFont: .posBodyMediumBold
+                titleColor: .posOnSurface,
+                titleFont: .posBodySmallBold
             )
 
             if let reason = refund.reason, !reason.isEmpty {
                 Text(Localization.reasonLabel(reason))
-                    .font(.posBodySmallRegular())
+                    .font(.posCaptionRegular)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Localization.refundAccessibilityLabel(amount: refund.formattedTotal, reason: refund.reason))
     }
 
     @ViewBuilder
@@ -286,7 +347,9 @@ private extension POSOrderDetailsView {
         totalsRow(
             title: Localization.netPaymentLabel,
             amount: netAmount,
-            titleFont: .posBodyMediumBold
+            titleColor: .posOnSurface,
+            titleFont: .posBodySmallBold,
+            accessibilityLabel: Localization.netPaymentAccessibilityLabel(netAmount)
         )
     }
 
@@ -294,21 +357,25 @@ private extension POSOrderDetailsView {
     func totalsRow(
         title: String,
         amount: String,
-        titleFont: POSFontStyle = .posBodyMediumRegular(),
-        amountFont: POSFontStyle = .posBodyMediumRegular()
+        titleColor: Color = .posOnSurfaceVariantHighest,
+        titleFont: POSFontStyle = .posBodySmallRegular(),
+        accessibilityLabel: String? = nil
     ) -> some View {
         HStack {
             Text(title)
                 .font(titleFont)
+                .foregroundStyle(titleColor)
             Spacer()
             Text(amount)
-                .font(amountFont)
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurface)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel ?? "\(title) \(amount)")
     }
 }
 
 // MARK: - Actions
-
 private extension POSOrderDetailsView {
     enum POSOrderDetailsAction: Identifiable, CaseIterable {
         case emailReceipt
@@ -336,36 +403,48 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
-        HStack {
-            ForEach(actions) { action in
-                Button(action: {
-                    switch action {
-                    case .emailReceipt:
-                        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-                        isShowingEmailReceiptView = true
+        VStack {
+            HStack {
+                ForEach(actions) { action in
+                    Button(action: {
+                        switch action {
+                        case .emailReceipt:
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                            isShowingEmailReceiptView = true
+                        }
+                    }) {
+                        Text(Localization.emailReceiptActionTitle)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                     }
-                }) {
-                    Text(action.title)
+                    .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                    .accessibilityHint(accessibilityHint(for: action))
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
             }
+            Spacer()
         }
-        .padding(.vertical)
+    }
+
+    private func accessibilityHint(for action: POSOrderDetailsAction) -> String {
+        switch action {
+        case .emailReceipt:
+            return Localization.emailReceiptAccessibilityHint
+        }
+    }
+}
+
+private extension POSOrderDetailsView {
+    @ViewBuilder
+    var divider: some View {
+        Divider()
+            .overlay(Color.posOutlineVariant.opacity(0.5))
+            .padding(.vertical, POSSpacing.small)
     }
 }
 
 // MARK: - Localization
 
 private enum Localization {
-    static func orderTitle(_ orderNumber: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.orderTitle",
-            value: "Order #%1$@",
-            comment: "Order title with order number. %1$@ is the order number."
-        )
-        return String(format: format, orderNumber)
-    }
-
     static let productsTitle = NSLocalizedString(
         "pos.orderDetailsView.productsTitle",
         value: "Products",
@@ -412,8 +491,8 @@ private enum Localization {
     )
 
     static let paidLabel = NSLocalizedString(
-        "pos.orderDetailsView.paidLabel",
-        value: "Paid",
+        "pos.orderDetailsView.paidLabel2",
+        value: "Total paid",
         comment: "Label for the paid amount"
     )
 
@@ -443,13 +522,171 @@ private enum Localization {
         value: "Email receipt",
         comment: "Label for email receipt action on order details view"
     )
+
+    static let emailReceiptAccessibilityHint = NSLocalizedString(
+        "pos.orderDetailsView.emailReceiptAction.accessibilityHint",
+        value: "Tap to send order receipt via email",
+        comment: "Accessibility hint for email receipt button on order details view"
+    )
+
+    static func headerBottomContentAccessibilityLabel(date: String, email: String?, status: String) -> String {
+        let baseFormat = NSLocalizedString(
+            "pos.orderDetailsView.headerBottomContent.accessibilityLabel",
+            value: "Order date: %1$@, Status: %2$@",
+            comment: "Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status."
+        )
+        var label = String(format: baseFormat, date, status)
+
+        if let email = email, email.isNotEmpty {
+            let emailFormat = NSLocalizedString(
+                "pos.orderDetailsView.headerBottomContent.accessibilityLabel.email",
+                value: "Customer email: %1$@",
+                comment: "Email portion of order header accessibility label. %1$@ is customer email address."
+            )
+            label += ", " + String(format: emailFormat, email)
+        }
+
+        return label
+    }
+
+    static func productRowAccessibilityLabel(name: String, attributes: String?, quantity: String, unitPrice: String, total: String) -> String {
+        var label = name
+        if let attributes = attributes {
+            label += ", \(attributes)"
+        }
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.productRow.accessibilityLabel",
+            value: "Quantity: %1$@ at %2$@ each, Total %3$@",
+            comment: "Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price."
+        )
+        label += ", " + String(format: format, quantity, unitPrice, total)
+        return label
+    }
+
+    static func subtotalAccessibilityLabel(_ amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.subtotal.accessibilityLabel",
+            value: "Products subtotal: %1$@",
+            comment: "Accessibility label for products subtotal. %1$@ is the subtotal amount."
+        )
+        return String(format: format, amount)
+    }
+
+    static func discountAccessibilityLabel(_ amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.discount.accessibilityLabel",
+            value: "Discount total: %1$@",
+            comment: "Accessibility label for discount total. %1$@ is the discount amount."
+        )
+        return String(format: format, amount)
+    }
+
+    static func taxAccessibilityLabel(_ amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.tax.accessibilityLabel",
+            value: "Taxes: %1$@",
+            comment: "Accessibility label for taxes. %1$@ is the tax amount."
+        )
+        return String(format: format, amount)
+    }
+
+    static func totalAccessibilityLabel(_ amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.total.accessibilityLabel",
+            value: "Order total: %1$@",
+            comment: "Accessibility label for order total. %1$@ is the total amount."
+        )
+        return String(format: format, amount)
+    }
+
+    static func paidAccessibilityLabel(amount: String, method: String) -> String {
+        let baseFormat = NSLocalizedString(
+            "pos.orderDetailsView.paid.accessibilityLabel",
+            value: "Total paid: %1$@",
+            comment: "Accessibility label for total paid. %1$@ is the paid amount."
+        )
+        var label = String(format: baseFormat, amount)
+
+        if method.isNotEmpty {
+            let methodFormat = NSLocalizedString(
+                "pos.orderDetailsView.paid.accessibilityLabel.method",
+                value: "Payment method: %1$@",
+                comment: "Payment method portion of paid accessibility label. %1$@ is the payment method."
+            )
+            label += ", " + String(format: methodFormat, method)
+        }
+
+        return label
+    }
+
+    static func refundAccessibilityLabel(amount: String, reason: String?) -> String {
+        let baseFormat = NSLocalizedString(
+            "pos.orderDetailsView.refund.accessibilityLabel",
+            value: "Refunded: %1$@",
+            comment: "Accessibility label for refunded amount. %1$@ is the refund amount."
+        )
+        var label = String(format: baseFormat, amount)
+
+        if let reason = reason, !reason.isEmpty {
+            let reasonFormat = NSLocalizedString(
+                "pos.orderDetailsView.refund.accessibilityLabel.reason",
+                value: "Reason: %1$@",
+                comment: "Reason portion of refund accessibility label. %1$@ is the refund reason."
+            )
+            label += ", " + String(format: reasonFormat, reason)
+        }
+
+        return label
+    }
+
+    static func netPaymentAccessibilityLabel(_ amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.netPayment.accessibilityLabel",
+            value: "Net payment: %1$@",
+            comment: "Accessibility label for net payment. %1$@ is the net payment amount after refunds."
+        )
+        return String(format: format, amount)
+    }
 }
 
 #if DEBUG
-#Preview("Order Details") {
+#Preview("Order Details - Completed") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrder(),
         onBack: {}
     )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - Refunded") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrderWithRefund(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - Failed") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewFailedOrder(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - Without Email") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrderWithoutEmail(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Order Details - With Net Payment") {
+    POSOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrderWithNetPayment(),
+        onBack: {}
+    )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
 #endif

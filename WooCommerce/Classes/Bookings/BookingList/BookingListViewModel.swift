@@ -24,10 +24,17 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        var predicates = [NSPredicate(format: "siteID == %lld", siteID)]
+        if let before = type.startDateBefore {
+            predicates.append(NSPredicate(format: "startDate < %@", before as NSDate))
+        }
+        if let after = type.startDateAfter {
+            predicates.append(NSPredicate(format: "startDate > %@", after as NSDate))
+        }
+        let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
         let sortDescriptorByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
-                                                                  matching: predicate,
+                                                                  matching: combinedPredicate,
                                                                   sortedBy: [sortDescriptorByDate])
         return resultsController
     }()
@@ -92,12 +99,7 @@ private extension BookingListViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        /// TODO: update logic for fetching bookings
-        if type == .all {
-            bookings = resultsController.fetchedObjects
-        } else {
-            bookings = []
-        }
+        bookings = resultsController.fetchedObjects
         transitionToResultsUpdatedState()
     }
 }
@@ -105,7 +107,11 @@ private extension BookingListViewModel {
 extension BookingListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
-        let action = BookingAction.synchronizeBookings(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        let action = BookingAction.synchronizeBookings(siteID: siteID,
+                                                       pageNumber: pageNumber,
+                                                       pageSize: pageSize,
+                                                       startDateBefore: type.startDateBefore?.ISO8601Format(),
+                                                       startDateAfter: type.startDateAfter?.ISO8601Format()) { [weak self] result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(.success(hasNextPage))

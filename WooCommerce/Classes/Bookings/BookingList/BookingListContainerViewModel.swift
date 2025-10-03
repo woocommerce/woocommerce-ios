@@ -31,11 +31,33 @@ enum BookingListTab: Int, CaseIterable {
     case upcoming
     case all
 
+    static let utcTimeZone: TimeZone = {
+        guard let timeZone = TimeZone(identifier: "UTC") else {
+            fatalError("Unable to set up UTC time zone")
+        }
+        return timeZone
+    }()
+
     var title: String {
         switch self {
         case .today: Localization.today
         case .upcoming: Localization.upcoming
         case .all: Localization.all
+        }
+    }
+
+    var startDateBefore: Date? {
+        switch self {
+        case .today: Date().endOfDay(timezone: Self.utcTimeZone)
+        case .upcoming, .all: nil
+        }
+    }
+
+    var startDateAfter: Date? {
+        switch self {
+        case .today: Date().startOfDay(timezone: Self.utcTimeZone)
+        case .upcoming: Date().endOfDay(timezone: Self.utcTimeZone)
+        case .all: nil
         }
     }
 

@@ -58,7 +58,9 @@ private extension BookingListView {
     func bookingItem(_ booking: Booking) -> some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading) {
-                Text(booking.startDate.formatted(date: .numeric, time: .shortened))
+                Text(booking.startDate.toString(dateStyle: .short,
+                                                timeStyle: .short,
+                                                timeZone: TimeZone(identifier: "UTC")!))
                     .font(.body)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)

@@ -46,17 +46,17 @@ enum BookingListTab: Int, CaseIterable {
         }
     }
 
-    var startDateBefore: Date? {
+    func startDateBefore(currentDate: Date = Date()) -> Date? {
         switch self {
-        case .today: Date().endOfDay(timezone: Self.utcTimeZone)
+        case .today: currentDate.endOfDay(timezone: Self.utcTimeZone)
         case .upcoming, .all: nil
         }
     }
 
-    var startDateAfter: Date? {
+    func startDateAfter(currentDate: Date = Date()) -> Date? {
         switch self {
-        case .today: Date().startOfDay(timezone: Self.utcTimeZone)
-        case .upcoming: Date().endOfDay(timezone: Self.utcTimeZone)
+        case .today: currentDate.startOfDay(timezone: Self.utcTimeZone)
+        case .upcoming: currentDate.endOfDay(timezone: Self.utcTimeZone)
         case .all: nil
         }
     }

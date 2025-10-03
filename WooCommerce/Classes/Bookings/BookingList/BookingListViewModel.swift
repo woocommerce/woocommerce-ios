@@ -11,6 +11,7 @@ final class BookingListViewModel: ObservableObject {
     private let type: BookingListTab
     private let stores: StoresManager
     private let storage: StorageManagerType
+    private let currentDate: Date
 
     private static let refreshCacheReason = "refresh-cache"
 
@@ -27,10 +28,10 @@ final class BookingListViewModel: ObservableObject {
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
         var predicates = [NSPredicate(format: "siteID == %lld", siteID)]
-        if let before = type.startDateBefore {
+        if let before = type.startDateBefore(currentDate: currentDate) {
             predicates.append(NSPredicate(format: "startDate < %@", before as NSDate))
         }
-        if let after = type.startDateAfter {
+        if let after = type.startDateAfter(currentDate: currentDate) {
             predicates.append(NSPredicate(format: "startDate > %@", after as NSDate))
         }
         let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
@@ -44,11 +45,13 @@ final class BookingListViewModel: ObservableObject {
     init(siteID: Int64,
          type: BookingListTab,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         currentDate: Date = Date()) {
         self.siteID = siteID
         self.type = type
         self.stores = stores
         self.storage = storage
+        self.currentDate = currentDate
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
@@ -114,8 +117,8 @@ extension BookingListViewModel: PaginationTrackerDelegate {
             siteID: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            startDateBefore: type.startDateBefore?.ISO8601Format(),
-            startDateAfter: type.startDateAfter?.ISO8601Format(),
+            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
             shouldClearCache: shouldClearCache
         ) { [weak self] result in
             switch result {

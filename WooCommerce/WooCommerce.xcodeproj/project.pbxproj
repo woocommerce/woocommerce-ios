@@ -135,8 +135,8 @@
 		01C21AB82E66EC26008E4D77 /* POSOrderDetailsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C21AB72E66EC14008E4D77 /* POSOrderDetailsEmptyView.swift */; };
 		01C9C59F2DA3D98400CD81D8 /* CartRowRemoveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */; };
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
-		01DE96902E8AE83200E07E1A /* POSOrderBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */; };
 		01DE92D22E8AAE6200E07E1A /* POSOrderListFetchAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE92D12E8AAE6200E07E1A /* POSOrderListFetchAnalytics.swift */; };
+		01DE96902E8AE83200E07E1A /* POSOrderBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */; };
 		01E62EC82DFADF56003A6D9E /* Cart+BarcodeScanError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */; };
 		01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F067EC2D0C5D56001C5805 /* MockLocationService.swift */; };
 		01F3D1302E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F3D12F2E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift */; };
@@ -1251,6 +1251,7 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
+		2D05208F2E8FEA73004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05208E2E8FEA67004111FD /* BookingDetailsViewModel+PriceFormatting.swift */; };
 		2D05D19F2E82D1A8004111FD /* BookingDetailsViewModel+Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */; };
 		2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A12E82D233004111FD /* HeaderContent.swift */; };
 		2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */; };
@@ -3364,8 +3365,8 @@
 		01C21AB72E66EC14008E4D77 /* POSOrderDetailsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderDetailsEmptyView.swift; sourceTree = "<group>"; };
 		01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartRowRemoveButton.swift; sourceTree = "<group>"; };
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
-		01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderBadgeView.swift; sourceTree = "<group>"; };
 		01DE92D12E8AAE6200E07E1A /* POSOrderListFetchAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderListFetchAnalytics.swift; sourceTree = "<group>"; };
+		01DE968F2E8AE83200E07E1A /* POSOrderBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderBadgeView.swift; sourceTree = "<group>"; };
 		01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cart+BarcodeScanError.swift"; sourceTree = "<group>"; };
 		01F067EC2D0C5D56001C5805 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
 		01F3D12F2E741F3B00D867F1 /* POSCardPresentPaymentMessageViewImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCardPresentPaymentMessageViewImage.swift; sourceTree = "<group>"; };
@@ -4458,6 +4459,7 @@
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
+		2D05208E2E8FEA67004111FD /* BookingDetailsViewModel+PriceFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+PriceFormatting.swift"; sourceTree = "<group>"; };
 		2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Section.swift"; sourceTree = "<group>"; };
 		2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+SectionContent.swift"; sourceTree = "<group>"; };
 		2D05D1A12E82D233004111FD /* HeaderContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContent.swift; sourceTree = "<group>"; };
@@ -9164,6 +9166,7 @@
 				2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */,
 				2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */,
 				2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */,
+				2D05208E2E8FEA67004111FD /* BookingDetailsViewModel+PriceFormatting.swift */,
 			);
 			path = "Booking Details";
 			sourceTree = "<group>";
@@ -16144,6 +16147,7 @@
 				014997222E1432AB002C50E1 /* PointOfSaleCardPresentPaymentReaderUpdateProgressView.swift in Sources */,
 				01620C4E2C5394B200D3EA2F /* POSProgressViewStyle.swift in Sources */,
 				0196FF942DA8067A0063CEF1 /* CouponCardView.swift in Sources */,
+				2D05208F2E8FEA73004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */,
 				021125A52578E5730075AD2A /* BoldableTextView.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */,

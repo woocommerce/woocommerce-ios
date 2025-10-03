@@ -4,15 +4,14 @@ import class WooFoundationCore.CurrencyFormatter
 import class WooFoundationCore.CurrencySettings
 import enum WooFoundationCore.CurrencyCode
 
-extension BookingDetailsViewModel.AppointmentDetailsContent {
-    static func formatPrice(for booking: Booking) -> String {
-        let cost = booking.cost
-        guard let decimalPrice = Decimal(string: cost) else {
-            return cost
+extension BookingDetailsViewModel {
+    static func formatPrice(for booking: Booking, priceString: String) -> String {
+        guard let decimalPrice = Decimal(string: priceString) else {
+            return priceString
         }
         return CurrencyFormatter(
             currencySettings: Self.currencySettings(for: booking)
-        ).formatAmount(decimalPrice) ?? cost
+        ).formatAmount(decimalPrice) ?? priceString
     }
 
     private static func currencySettings(for booking: Booking) -> CurrencySettings {

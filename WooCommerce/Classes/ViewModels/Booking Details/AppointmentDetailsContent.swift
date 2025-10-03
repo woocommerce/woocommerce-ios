@@ -35,7 +35,7 @@ extension BookingDetailsViewModel {
                 ),
                 Row(
                     title: Localization.appointmentDetailsPriceTitle,
-                    value: Self.formatPrice(for: booking)
+                    value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost)
                 )
             ]
         }

@@ -9,10 +9,10 @@ extension BookingDetailsViewModel {
 
         init(booking: Booking) {
             amounts = [
-                .init(value: Self.formatPrice(booking.cost), type: .service),
-                .init(value: Self.formatPrice("0"), type: .tax),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost), type: .service),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: "0"), type: .tax),
                 .init(value: "-", type: .discount),
-                .init(value: Self.formatPrice(booking.cost), type: .total, emphasized: true),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost), type: .total, emphasized: true),
             ]
 
             actions = [
@@ -20,17 +20,6 @@ extension BookingDetailsViewModel {
                 .viewOrder
             ]
         }
-    }
-}
-
-private extension BookingDetailsViewModel.PaymentContent {
-    static func formatPrice(_ price: String) -> String {
-        guard let decimalPrice = Decimal(string: price) else {
-            return price
-        }
-        return CurrencyFormatter(
-            currencySettings: ServiceLocator.currencySettings
-        ).formatAmount(decimalPrice) ?? price
     }
 }
 

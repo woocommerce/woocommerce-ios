@@ -1,1 +1,2 @@
-Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.
+- [*] Order details: Fixes broken country selector navigation and "Non editable banner" width. [https://github.com/woocommerce/woocommerce-ios/pull/16171]
+- [*] Store widget: Fixes widget background colours for default and clean Liquid Glass mode. [https://github.com/woocommerce/woocommerce-ios/pull/16183]

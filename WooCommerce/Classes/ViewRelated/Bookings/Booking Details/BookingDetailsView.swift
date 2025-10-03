@@ -83,10 +83,10 @@ struct BookingDetailsView: View {
             Localization.cancelBookingAlertTitle,
             isPresented: $showingCancelAlert
         ) {
+            Button(Localization.cancelBookingAlertCancelAction, role: .cancel) {}
             Button(Localization.cancelBookingAlertConfirmAction, role: .destructive) {
                 print("On cancel booking confirmation tap")
             }
-            Button(Localization.cancelBookingAlertCancelAction, role: .cancel) {}
         } message: {
             Text(viewModel.cancellationAlertMessage)
         }

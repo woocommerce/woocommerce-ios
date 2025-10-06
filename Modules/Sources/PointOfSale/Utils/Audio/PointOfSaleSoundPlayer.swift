@@ -24,7 +24,7 @@ actor PointOfSaleSoundPlayer: NSObject, PointOfSaleSoundPlayerProtocol {
     }
 
     func playSound(_ sound: PointOfSaleSound, completion: @escaping (() -> Void)) async {
-        guard let url = Bundle.main.url(forResource: sound.name, withExtension: sound.type) else {
+        guard let url = Bundle.module.url(forResource: sound.name, withExtension: sound.type) else {
             DDLogError("Sound file not found: \(sound.name).\(sound.type)")
             completion()
             return

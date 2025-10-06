@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
 
@@ -127,7 +128,9 @@ private extension BookingListViewModel {
 extension BookingListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
-        errorFetching = false
+        withAnimation {
+            errorFetching = false
+        }
         let shouldClearCache = reason == Self.refreshCacheReason
         let action = BookingAction.synchronizeBookings(
             siteID: siteID,
@@ -143,7 +146,9 @@ extension BookingListViewModel: PaginationTrackerDelegate {
 
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing bookings: \(error)")
-                self?.errorFetching = true
+                withAnimation {
+                    self?.errorFetching = true
+                }
                 onCompletion?(.failure(error))
             }
 

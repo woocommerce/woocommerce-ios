@@ -26,8 +26,10 @@ struct BookingListView: View {
             viewModel.loadBookings()
         }
         .overlay(alignment: .bottom) {
-            errorSnackBar
-                .renderedIf(viewModel.errorFetching)
+            if viewModel.errorFetching {
+                errorSnackBar
+                    .transition(.move(edge: .bottom))
+            }
         }
     }
 }
@@ -113,7 +115,6 @@ private extension BookingListView {
                         Text(viewModel.emptyStateDescription)
                             .font(.title3)
                             .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
                     }
                     if viewModel.hasFilters {
                         VStack(spacing: Layout.textVerticalPadding) {
@@ -129,13 +130,14 @@ private extension BookingListView {
                     }
                     Spacer()
                 }
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Layout.emptyStatePadding)
                 .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
             }
             .refreshable {
                 await viewModel.onRefreshAction()
             }
         }
-        .padding(.horizontal, Layout.emptyStatePadding)
     }
 
     var errorSnackBar: some View {
@@ -150,7 +152,9 @@ private extension BookingListView {
             .padding(Layout.viewPadding)
             .contentShape(Rectangle())
             .onTapGesture {
-                viewModel.errorFetching = false
+                withAnimation {
+                    viewModel.errorFetching = false
+                }
             }
     }
 }

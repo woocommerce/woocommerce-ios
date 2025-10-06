@@ -21,7 +21,7 @@ struct POSOrderListEmptyViewModel: POSListEmptyViewModelProtocol {
     }
 
     var icon: Image {
-        PointOfSaleAssets.magnifierNotFound.decorativeImage
+        isSearching ? PointOfSaleAssets.magnifierNotFound.decorativeImage : PointOfSaleAssets.noOrders.decorativeImage
     }
 }
 
@@ -33,15 +33,15 @@ private enum Localization {
     )
 
     static let emptyOrdersSubtitle = NSLocalizedString(
-        "pos.orderListView.emptyOrdersSubtitle",
-        value: "Orders will appear here once you start processing sales on the POS.",
+        "pos.orderListView.emptyOrdersSubtitle2",
+        value: "Explore how you can increase your store sales.",
         comment: "Subtitle appearing when there are no orders to display."
     )
 
     static let emptyOrdersButtonTitle = NSLocalizedString(
-        "pos.orderListView.emptyOrdersButtonTitle",
-        value: "Refresh",
-        comment: "Button text for refreshing orders when list is empty."
+        "pos.orderListView.emptyOrdersButtonTitle2",
+        value: "Learn more",
+        comment: "Button text for opening an information view when orders when list is empty."
     )
 
     static let emptyOrdersSearchTitle = NSLocalizedString(

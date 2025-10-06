@@ -68,8 +68,10 @@ enum BookingListTab: Int, CaseIterable {
         switch self {
         case .today:
             return Localization.EmptyState.todayTitle
-        case .upcoming, .all:
+        case .upcoming:
             return Localization.EmptyState.upcomingTitle
+        case .all:
+            return Localization.EmptyState.filterTitle
         }
     }
 
@@ -80,8 +82,10 @@ enum BookingListTab: Int, CaseIterable {
         switch self {
         case .today:
             return Localization.EmptyState.todayDescription
-        case .upcoming, .all:
+        case .upcoming:
             return Localization.EmptyState.upcomingDescription
+        case .all:
+            return Localization.EmptyState.filterDescription
         }
     }
 

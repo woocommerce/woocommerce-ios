@@ -3,6 +3,7 @@ import struct Yosemite.Booking
 
 struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: BookingListContainerViewModel) {
         self.viewModel = viewModel
@@ -83,18 +84,19 @@ private extension BookingListContainerView {
                     .padding(.vertical, 12)
                 }
             }
+            .frame(height: Layout.topTabBarHeight * scale)
             .overlay(alignment: .bottom) {
                 Color.accentColor
                     .frame(width: geometry.size.width / CGFloat(BookingListTab.allCases.count),
-                           height: Layout.selectedTabIndicatorHeight)
+                           height: Layout.selectedTabIndicatorHeight * scale)
                     .offset(x: tabIndicatorOffset(containerWidth: geometry.size.width,
                                                   tabCount: BookingListTab.allCases.count,
                                                   selectedIndex: viewModel.selectedTab.rawValue),
-                            y: -Layout.selectedTabIndicatorHeight / 2)
+                            y: -Layout.selectedTabIndicatorHeight * scale / 2)
                     .animation(.easeInOut(duration: 0.3), value: viewModel.selectedTab.rawValue)
             }
         }
-        .frame(height: Layout.topTabBarHeight)
+        .frame(height: Layout.topTabBarHeight * scale)
         .background(Color(.listForeground(modal: false)))
     }
 

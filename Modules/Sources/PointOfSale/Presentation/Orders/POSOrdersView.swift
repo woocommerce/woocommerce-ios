@@ -68,38 +68,52 @@ struct POSOrdersView: View {
 
     @ViewBuilder
     private func errorView(_ error: PointOfSaleErrorState) -> some View {
-        VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: POSOrderListView.Localization.ordersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    isPresented = false
-                }))
-            .posHeaderBackButtonIcon(systemName: "xmark")
+        ZStack {
+            VStack {
+                POSPageHeaderView(
+                    title: POSOrderListView.Localization.ordersTitle,
+                    backButtonConfiguration: .init(state: .enabled, action: {
+                        isPresented = false
+                    }))
+                .posHeaderBackButtonIcon(systemName: "xmark")
+                Spacer()
+            }
 
-            POSListErrorView(error: error) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadOrders()
+            VStack {
+                Spacer()
+                POSListErrorView(error: error) {
+                    Task { @MainActor in
+                        await orderListModel.ordersController.loadOrders()
+                    }
                 }
+                Spacer()
             }
         }
     }
 
     @ViewBuilder
     private func emptyView() -> some View {
-        VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: POSOrderListView.Localization.ordersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    isPresented = false
-                }))
-            .posHeaderBackButtonIcon(systemName: "xmark")
+        ZStack {
+            VStack {
+                POSPageHeaderView(
+                    title: POSOrderListView.Localization.ordersTitle,
+                    backButtonConfiguration: .init(state: .enabled, action: {
+                        isPresented = false
+                    }))
+                .posHeaderBackButtonIcon(systemName: "xmark")
+                Spacer()
+            }
 
-            POSListEmptyView(
-                viewModel: POSOrderListEmptyViewModel(isSearching: false)
-            ) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadOrders()
+            VStack {
+                Spacer()
+                POSListEmptyView(
+                    viewModel: POSOrderListEmptyViewModel(isSearching: false)
+                ) {
+                    Task { @MainActor in
+                        await orderListModel.ordersController.loadOrders()
+                    }
                 }
+                Spacer()
             }
         }
     }

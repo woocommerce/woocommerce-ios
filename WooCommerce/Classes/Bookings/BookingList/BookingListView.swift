@@ -162,7 +162,6 @@ private extension BookingListView {
         static let emptyStatePadding: CGFloat = 24
         static let emptyStateImageWidth: CGFloat = 67
         static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
-        static let shadowColorOpacity: CGFloat = 0.16
         static let cornerRadius: CGFloat = 8
     }
 

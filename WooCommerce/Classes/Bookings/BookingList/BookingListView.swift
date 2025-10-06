@@ -3,6 +3,7 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: BookingListViewModel) {
         self.viewModel = viewModel
@@ -91,40 +92,44 @@ private extension BookingListView {
     }
 
     var emptyStateView: some View {
-        VStack(spacing: Layout.emptyStatePadding) {
-            Spacer()
-            Image(uiImage: .noBookings)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Layout.emptyStateImageWidth)
-                .padding(.bottom, Layout.viewPadding)
-            VStack(spacing: Layout.textVerticalPadding) {
-                Text(viewModel.emptyStateTitle)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
-                Text(viewModel.emptyStateDescription)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            if viewModel.hasFilters {
+        ScrollView {
+            VStack(spacing: Layout.emptyStatePadding) {
+                Spacer()
+                Image(uiImage: .noBookings)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Layout.emptyStateImageWidth * scale)
+                    .padding(.bottom, Layout.viewPadding)
                 VStack(spacing: Layout.textVerticalPadding) {
-                    Button("Change filters") {
-                        // TODO
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-
-                    Button("Clear filters") {
-                        // TODO
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
+                    Text(viewModel.emptyStateTitle)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                    Text(viewModel.emptyStateDescription)
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
+                if viewModel.hasFilters {
+                    VStack(spacing: Layout.textVerticalPadding) {
+                        Button("Change filters") {
+                            // TODO
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+
+                        Button("Clear filters") {
+                            // TODO
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                    }
+                }
+                Spacer()
             }
-            Spacer()
+            .padding(.horizontal, Layout.emptyStatePadding)
         }
-        .padding(.horizontal, Layout.emptyStatePadding)
-        .scrollVerticallyIfNeeded()
+        .refreshable {
+            await viewModel.onRefreshAction()
+        }
     }
 }
 

@@ -1,14 +1,31 @@
 import Foundation
 import struct Networking.Booking
+import struct Networking.Customer
+import struct Networking.Address
+import WooFoundation
+import Yosemite
+import SwiftUI // Added for withAnimation
 
+@MainActor
 final class BookingDetailsViewModel: ObservableObject {
-    let sections: [Section]
+    private let stores: StoresManager
+
     let navigationTitle: String
 
-    init(booking: Booking) {
-        navigationTitle = Self.navigationTitle(for: booking)
+    private let booking: Booking
+    private let customerContent = CustomerContent()
 
-        let headerSection = Section.init(
+    @Published private(set) var sections: [Section] = []
+
+    init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
+        self.booking = booking
+        self.stores = stores
+        navigationTitle = Self.navigationTitle(for: booking)
+        setupSections()
+    }
+
+    private func setupSections() {
+        let headerSection = Section(
             content: .header(HeaderContent(booking))
         )
 
@@ -21,21 +38,6 @@ final class BookingDetailsViewModel: ObservableObject {
             header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
             footerText: Localization.attendanceSectionFooterText,
             content: .attendance(AttendanceContent())
-        )
-
-        let customerSection = Section(
-            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
-            content: .customer(
-                /// Temporary hardcode
-                CustomerContent(
-                    nameText: "Margarita Nikolaevna",
-                    emailText: "margarita.n@mail.com",
-                    phoneText: "+1 742582943798",
-                    billingAddressText: """
-                        238 Willow Creek Drive Montgomery AL 36109
-                        """
-                )
-            )
         )
 
         let paymentSection = Section(
@@ -51,11 +53,68 @@ final class BookingDetailsViewModel: ObservableObject {
         sections = [
             headerSection,
             appointmentDetailsSection,
-            customerSection,
             attendanceSection,
             paymentSection,
             bookingNotes
         ]
+    }
+}
+
+// MARK: Syncing
+
+extension BookingDetailsViewModel {
+    func syncData() async {
+        await syncCustomer()
+    }
+}
+
+private extension BookingDetailsViewModel {
+    func syncCustomer() async {
+        guard shouldSyncCustomer else {
+            return
+        }
+
+        do {
+            let fetchedCustomer = try await retrieveCustomer()
+            customerContent.update(with: fetchedCustomer)
+
+            let customerSection = Section(
+                header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+                content: .customer(customerContent)
+            )
+            withAnimation {
+                sections.insert(customerSection, at: 2)
+            }
+        } catch {
+            DDLogError("⛔️ Error synchronizing Customer for Booking: \(error)")
+        }
+    }
+
+    func retrieveCustomer() async throws -> Customer {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = CustomerAction.retrieveCustomer(
+                siteID: booking.siteID,
+                customerID: booking.customerID
+            ) { result in
+                switch result {
+                case .success(let customer):
+                    continuation.resume(returning: customer)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Returns true when the `customerID` is non-zero and customer section doesn't exist
+    var shouldSyncCustomer: Bool {
+        return booking.customerID > 0 && !sections.contains(where: {
+            if case .customer = $0.content {
+                return true
+            }
+            return false
+        })
     }
 }
 

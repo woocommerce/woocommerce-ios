@@ -614,10 +614,11 @@ struct PointOfSaleAggregateModelTests {
                     continuation.resume()
                 }
 
-                // Collect payment should only be called once the card reader is connect
+                // When: the card reader connects
                 cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             }
 
+            // Then
             #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
@@ -675,10 +676,11 @@ struct PointOfSaleAggregateModelTests {
                     continuation.resume()
                 }
 
-                // Collect payment should be called once the card reader is reconnected
+                // When: the card reader is reconnected
                 cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             }
 
+            // Then
             #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 

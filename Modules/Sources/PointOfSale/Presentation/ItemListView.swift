@@ -147,9 +147,9 @@ struct ItemListView: View {
     @ViewBuilder
     private func itemListContent(_ itemListType: ItemListType) -> some View {
         switch itemListState(itemListType) {
-        case .loading(let items),
-                .loaded(let items, _),
-                .inlineError(let items, _, _):
+        case .loading,
+                .loaded,
+                .inlineError:
             listView(itemListType: itemListType)
         case .error(let errorState):
             errorView(errorState)

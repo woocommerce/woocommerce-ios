@@ -93,7 +93,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     }
 
     private func handleKeyboardConnected() {
-        guard case .setupFlow(let scannerType) = currentState, let step = getCurrentSetupStepValue() else { return }
+        guard case .setupFlow(let scannerType) = currentState else { return }
         analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerConnected(scanner: scannerType))
     }
 }

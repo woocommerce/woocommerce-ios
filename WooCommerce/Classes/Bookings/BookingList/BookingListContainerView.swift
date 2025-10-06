@@ -89,7 +89,8 @@ private extension BookingListContainerView {
                            height: Layout.selectedTabIndicatorHeight)
                     .offset(x: tabIndicatorOffset(containerWidth: geometry.size.width,
                                                   tabCount: BookingListTab.allCases.count,
-                                                  selectedIndex: viewModel.selectedTab.rawValue))
+                                                  selectedIndex: viewModel.selectedTab.rawValue),
+                            y: -Layout.selectedTabIndicatorHeight / 2)
                     .animation(.easeInOut(duration: 0.3), value: viewModel.selectedTab.rawValue)
             }
         }

@@ -64,3 +64,64 @@ We intend to move to the `Observation` framework, rather than using `@Published`
 To support this, try to avoid adding subscriptions to the aggregate model's published properties. Often it's sufficient to just use a computed var. 
 
 When any published property changes, any view which has an `@EnvironmentObject` var for the aggregate model will be redrawn anyway – this is part of the reason for moving to observation! 
+
+
+## PointOfSale Module
+
+The `PointOfSale` module contains all POS-specific functionality, extracted from the main Woo app target. It was introduced to improve compilation and preview speed, simplify testing, and support future architectural flexibility.
+
+### Purpose
+
+The module enables POS to evolve as an independent feature area, while maintaining integration with the main app through a controlled set of interfaces.
+This approach improves development speed and test isolation, while keeping the codebase aligned with the Woo app’s shared architecture.
+
+### Structure
+
+The `PointOfSale` module depends on shared internal modules (e.g. `WooFoundation`, `Yosemite`) and on adaptor protocols that are injected from the main app.
+
+* **`PointOfSaleEntryPointView`** — The main POS entry point, exposed publicly to the main app target.
+* **`POSDependencyProviding`** — The protocol defining all dependencies injected from the main app (e.g. analytics, feature flags, navigation).
+* **`POSTabCoordinator`** — Acts as a factory of PointOfSaleEntryPointView and injects the main app target dependencies.
+* **Adaptors Layer** — Implementations of the dependency protocols, located in the Woo app target, bridging POS to main app functionality.
+* **Environment Integration** — Dependencies are injected through environment values, providing access in SwiftUI views without using singletons directly.
+
+### Dependency Injection
+
+Direct access to the `ServiceLocator` was removed in favor of dependency injection at module entry.
+Services such as analytics, currency, and connectivity are now provided via environment wrappers:
+
+```swift
+@Environment(.posAnalytics) private var analytics
+
+analytics.track(.pointOfSaleItemsFetched)
+```
+
+This approach removes tight coupling with the main app and enables testing POS in isolation.
+
+### External Integrations
+
+For complex or tightly coupled components — such as support forms, navigation, or payment flows — POS uses type-erased adaptors.
+These expose necessary Woo app functionality while keeping dependencies transparent and replaceable:
+
+```swift
+@Environment(.posExternalViews) private var externalViews
+
+externalViews.createSupportFormView(isPresented: $showSupport)
+```
+
+Navigation back to the main app follows the same pattern:
+
+```swift
+@Environment(.posExternalNavigation) private var navigation
+navigation.navigateToCreateOrder()
+```
+
+### Migration Strategy
+
+The modularization was completed incrementally:
+
+1. Define an empty `PointOfSale` module and test target.
+2. Abstract direct `ServiceLocator` usages behind dependency protocols.
+3. Move shared utilities to `WooFoundation` or `Yosemite`, refactor and split some dependencies if needed.
+4. Move POS-specific files into the new module.
+5. Expose only the entry point and dependency protocols publicly.

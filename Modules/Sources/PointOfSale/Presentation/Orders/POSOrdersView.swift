@@ -8,6 +8,7 @@ struct POSOrdersView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @State private var isSearching: Bool = false
+    @State private var searchTerm: String = ""
 
     var body: some View {
         switch (orderListModel.ordersController.ordersViewState, isSearching) {
@@ -20,7 +21,7 @@ struct POSOrdersView: View {
                 get: { orderListModel.ordersController.selectedOrder },
                 set: { orderListModel.ordersController.selectOrder($0) }
             )) { _ in
-                POSOrderListView(isSearching: $isSearching) {
+                POSOrderListView(isSearching: $isSearching, searchTerm: $searchTerm) {
                     isPresented = false
                 }
             } detail: { selection in

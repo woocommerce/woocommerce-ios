@@ -1,5 +1,6 @@
 import Foundation
 import WooFoundation
+import protocol PointOfSale.POSAnalyticsProviding
 @testable import WooCommerce
 
 final class MockPOSAnalytics: POSAnalyticsProviding {

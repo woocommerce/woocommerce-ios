@@ -114,6 +114,13 @@
         "identifier" : "YosemiteTests",
         "name" : "YosemiteTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "PointOfSaleTests",
+        "name" : "PointOfSaleTests"
+      }
     }
   ],
   "version" : 1

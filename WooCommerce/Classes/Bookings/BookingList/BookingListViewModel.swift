@@ -7,6 +7,19 @@ final class BookingListViewModel: ObservableObject {
 
     @Published private(set) var bookings: [Booking] = []
 
+    var hasFilters: Bool {
+        // TODO: Update when adding filters
+        return false
+    }
+
+    var emptyStateTitle: String {
+        type.emptyStateTitle(hasFilters: hasFilters)
+    }
+
+    var emptyStateDescription: String {
+        type.emptyStateDescription(hasFilters: hasFilters)
+    }
+
     private let siteID: Int64
     private let type: BookingListTab
     private let stores: StoresManager

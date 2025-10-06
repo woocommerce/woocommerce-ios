@@ -12,9 +12,7 @@ struct BookingListView: View {
         VStack {
             switch viewModel.syncState {
             case .empty:
-                Spacer()
-                Text("No bookings found") // TODO: update this in WOOMOB-1394
-                Spacer()
+                emptyStateView
             case .syncingFirstPage:
                 Spacer()
                 ProgressView().progressViewStyle(.circular)
@@ -91,11 +89,51 @@ private extension BookingListView {
             .padding(.vertical, 4)
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
+
+    var emptyStateView: some View {
+        VStack(spacing: Layout.emptyStatePadding) {
+            Spacer()
+            Image(uiImage: .noBookings)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.emptyStateImageWidth)
+                .padding(.bottom, Layout.viewPadding)
+            VStack(spacing: Layout.textVerticalPadding) {
+                Text(viewModel.emptyStateTitle)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+                Text(viewModel.emptyStateDescription)
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            if viewModel.hasFilters {
+                VStack(spacing: Layout.textVerticalPadding) {
+                    Button("Change filters") {
+                        // TODO
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+
+                    Button("Clear filters") {
+                        // TODO
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
+            }
+            Spacer()
+        }
+        .padding(.horizontal, Layout.emptyStatePadding)
+        .scrollVerticallyIfNeeded()
+    }
 }
 
 private extension BookingListView {
     enum Layout {
+        static let textVerticalPadding: CGFloat = 8
         static let viewPadding: CGFloat = 16
+        static let emptyStatePadding: CGFloat = 24
+        static let emptyStateImageWidth: CGFloat = 67
         static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
     }
 }

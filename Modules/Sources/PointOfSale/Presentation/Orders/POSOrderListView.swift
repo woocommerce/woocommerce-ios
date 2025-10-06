@@ -9,7 +9,6 @@ struct POSOrderListView: View {
     let onClose: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
-    @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.siteTimezone) private var siteTimezone
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
@@ -80,14 +79,12 @@ struct POSOrderListView: View {
                         await orderListModel.ordersController.loadOrders()
                     }
                 }
-                .padding(.bottom, keyboardObserver.keyboardHeight)
             case (.error(let errorState), true):
                 POSListErrorView(error: errorState) {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
                 }
-                .padding(.bottom, keyboardObserver.keyboardHeight)
             default:
                 listView
             }

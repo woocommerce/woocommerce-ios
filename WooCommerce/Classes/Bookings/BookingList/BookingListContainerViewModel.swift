@@ -85,7 +85,7 @@ enum BookingListTab: Int, CaseIterable {
         case .upcoming:
             return Localization.EmptyState.upcomingDescription
         case .all:
-            return Localization.EmptyState.filterDescription
+            return ""
         }
     }
 

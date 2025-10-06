@@ -7,6 +7,8 @@ final class BookingListViewModel: ObservableObject {
 
     @Published private(set) var bookings: [Booking] = []
 
+    @Published var errorFetching = false
+
     var hasFilters: Bool {
         // TODO: Update when adding filters
         return false
@@ -125,6 +127,7 @@ private extension BookingListViewModel {
 extension BookingListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
+        errorFetching = false
         let shouldClearCache = reason == Self.refreshCacheReason
         let action = BookingAction.synchronizeBookings(
             siteID: siteID,
@@ -140,6 +143,7 @@ extension BookingListViewModel: PaginationTrackerDelegate {
 
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing bookings: \(error)")
+                self?.errorFetching = true
                 onCompletion?(.failure(error))
             }
 

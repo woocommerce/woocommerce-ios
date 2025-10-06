@@ -25,6 +25,10 @@ struct BookingListView: View {
         .task {
             viewModel.loadBookings()
         }
+        .overlay(alignment: .bottom) {
+            errorSnackBar
+                .renderedIf(viewModel.errorFetching)
+        }
     }
 }
 
@@ -133,6 +137,22 @@ private extension BookingListView {
         }
         .padding(.horizontal, Layout.emptyStatePadding)
     }
+
+    var errorSnackBar: some View {
+        Text(Localization.errorMessage)
+            .foregroundStyle(Color(.listForeground(modal: false)))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(Layout.viewPadding)
+            .background {
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .fill(Color(.text))
+            }
+            .padding(Layout.viewPadding)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                viewModel.errorFetching = false
+            }
+    }
 }
 
 private extension BookingListView {
@@ -142,5 +162,15 @@ private extension BookingListView {
         static let emptyStatePadding: CGFloat = 24
         static let emptyStateImageWidth: CGFloat = 67
         static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
+        static let shadowColorOpacity: CGFloat = 0.16
+        static let cornerRadius: CGFloat = 8
+    }
+
+    enum Localization {
+        static let errorMessage = NSLocalizedString(
+            "bookingList.errorMessage",
+            value: "Error fetching bookings",
+            comment: "Error message when fetching bookings fails"
+        )
     }
 }

@@ -92,44 +92,46 @@ private extension BookingListView {
     }
 
     var emptyStateView: some View {
-        ScrollView {
-            VStack(spacing: Layout.emptyStatePadding) {
-                Spacer()
-                Image(uiImage: .noBookings)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Layout.emptyStateImageWidth * scale)
-                    .padding(.bottom, Layout.viewPadding)
-                VStack(spacing: Layout.textVerticalPadding) {
-                    Text(viewModel.emptyStateTitle)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.primary)
-                    Text(viewModel.emptyStateDescription)
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                if viewModel.hasFilters {
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: Layout.emptyStatePadding) {
+                    Spacer()
+                    Image(uiImage: .noBookings)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Layout.emptyStateImageWidth * scale)
+                        .padding(.bottom, Layout.viewPadding)
                     VStack(spacing: Layout.textVerticalPadding) {
-                        Button("Change filters") {
-                            // TODO
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-
-                        Button("Clear filters") {
-                            // TODO
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
+                        Text(viewModel.emptyStateTitle)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
+                        Text(viewModel.emptyStateDescription)
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                     }
+                    if viewModel.hasFilters {
+                        VStack(spacing: Layout.textVerticalPadding) {
+                            Button("Change filters") {
+                                // TODO
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                            Button("Clear filters") {
+                                // TODO
+                            }
+                            .buttonStyle(SecondaryButtonStyle())
+                        }
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
             }
-            .padding(.horizontal, Layout.emptyStatePadding)
+            .refreshable {
+                await viewModel.onRefreshAction()
+            }
         }
-        .refreshable {
-            await viewModel.onRefreshAction()
-        }
+        .padding(.horizontal, Layout.emptyStatePadding)
     }
 }
 

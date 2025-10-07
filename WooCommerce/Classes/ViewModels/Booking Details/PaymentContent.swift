@@ -9,28 +9,18 @@ extension BookingDetailsViewModel {
 
         init(booking: Booking) {
             amounts = [
-                .init(value: Self.formatPrice(booking.cost), type: .service),
-                .init(value: Self.formatPrice("0"), type: .tax),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost), type: .service),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: "0"), type: .tax),
                 .init(value: "-", type: .discount),
-                .init(value: Self.formatPrice(booking.cost), type: .total, emphasized: true),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost), type: .total, emphasized: true),
             ]
 
             actions = [
                 .markAsPaid,
+                .issueRefund,
                 .viewOrder
             ]
         }
-    }
-}
-
-private extension BookingDetailsViewModel.PaymentContent {
-    static func formatPrice(_ price: String) -> String {
-        guard let decimalPrice = Decimal(string: price) else {
-            return price
-        }
-        return CurrencyFormatter(
-            currencySettings: ServiceLocator.currencySettings
-        ).formatAmount(decimalPrice) ?? price
     }
 }
 
@@ -83,7 +73,7 @@ extension BookingDetailsViewModel.PaymentContent.Amount.AmountType {
 extension BookingDetailsViewModel.PaymentContent {
     enum Action: String, Identifiable {
         case markAsPaid
-        case markAsRefunded
+        case issueRefund
         case viewOrder
 
         var id: String {
@@ -97,8 +87,8 @@ extension BookingDetailsViewModel.PaymentContent.Action {
         switch self {
         case .markAsPaid:
             return Localization.paymentMarkAsPaidButtonTitle
-        case .markAsRefunded:
-            return Localization.paymentMarkAsRefundedButtonTitle
+        case .issueRefund:
+            return Localization.paymentIssueRefundButtonTitle
         case .viewOrder:
             return Localization.paymentViewOrderButtonTitle
         }
@@ -108,7 +98,7 @@ extension BookingDetailsViewModel.PaymentContent.Action {
         switch self {
         case .markAsPaid:
             return true
-        case .markAsRefunded, .viewOrder:
+        case .issueRefund, .viewOrder:
             return false
         }
     }
@@ -145,10 +135,10 @@ private enum Localization {
         comment: "Title for 'Mark as paid' button in payment section in booking details view."
     )
 
-    static let paymentMarkAsRefundedButtonTitle = NSLocalizedString(
-        "BookingDetailsView.payment.markAsRefunded.title",
-        value: "Mark as refunded",
-        comment: "Title for 'Mark as refunded' button in payment section in booking details view."
+    static let paymentIssueRefundButtonTitle = NSLocalizedString(
+        "BookingDetailsView.payment.issueRefund.title",
+        value: "Issue refund",
+        comment: "Title for 'Issue refund' button in payment section in booking details view."
     )
 
     static let paymentViewOrderButtonTitle = NSLocalizedString(

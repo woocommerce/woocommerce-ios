@@ -26,10 +26,7 @@ struct BookingListView: View {
             }
         }
         .task {
-            // Only load first page if no content is available.
-            if viewModel.bookings.isEmpty {
-                viewModel.loadBookings()
-            }
+            viewModel.loadBookings()
         }
     }
 }
@@ -58,7 +55,9 @@ private extension BookingListView {
     func bookingItem(_ booking: Booking) -> some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading) {
-                Text(booking.startDate.formatted(date: .numeric, time: .shortened))
+                Text(booking.startDate.toString(dateStyle: .short,
+                                                timeStyle: .short,
+                                                timeZone: BookingListTab.utcTimeZone))
                     .font(.body)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)

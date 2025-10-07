@@ -3,6 +3,11 @@ import Networking
 
 struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var showingOptions = false
+    @State private var showingStatusSheet = false
+    @State private var showingCancelAlert = false
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
@@ -42,10 +47,20 @@ struct BookingDetailsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    //TODO: - present an action sheet
-                    print("On ellipsis item tap")
+                    showingOptions = true
                 } label: {
                     Image(systemName: "ellipsis")
+                }
+                .confirmationDialog("", isPresented: $showingOptions, titleVisibility: .hidden) {
+                    Button(Localization.markAsPaid) {
+                        print("On mark as paid tap")
+                    }
+                    Button(Localization.viewOrder) {
+                        print("On view order tap")
+                    }
+                    Button(Localization.cancelBookingAction, role: .destructive) {
+                        print("On cancel booking tap")
+                    }
                 }
             }
         }
@@ -53,6 +68,25 @@ struct BookingDetailsView: View {
             /// Removes back button title for iPhone layout
             /// Applied only for phones because it affects navigation title positioning on tablets
             $0.toolbarRole(.editor)
+        }
+        .sheet(isPresented: $showingStatusSheet) {
+            UpdateAttendanceStatusView { selectedStatus in
+                print("Selected status: \(selectedStatus)")
+            }
+            .padding(.top)
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        .alert(
+            Localization.cancelBookingAlertTitle,
+            isPresented: $showingCancelAlert
+        ) {
+            Button(Localization.cancelBookingAlertCancelAction, role: .cancel) {}
+            Button(Localization.cancelBookingAlertConfirmAction, role: .destructive) {
+                print("On cancel booking confirmation tap")
+            }
+        } message: {
+            Text(viewModel.cancellationAlertMessage)
         }
     }
 }
@@ -141,7 +175,9 @@ private extension BookingDetailsView {
             value: .placeholder(content.value),
             selectionStyle: .disclosure,
             horizontalPadding: 0
-        )
+        ) {
+            showingStatusSheet = true
+        }
     }
 
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
@@ -159,7 +195,7 @@ private extension BookingDetailsView {
             }
 
             Button {
-                /// On cancel booking button tap
+                showingCancelAlert = true
             } label: {
                 Text(Localization.cancelBooking)
             }
@@ -308,10 +344,44 @@ private extension View {
 
 private extension BookingDetailsView {
     enum Localization {
+        static let markAsPaid = NSLocalizedString(
+            "BookingDetailsView.options.markAsPaid",
+            value: "Mark as paid",
+            comment: "Action sheet option to mark a booking as paid."
+        )
+        static let viewOrder = NSLocalizedString(
+            "BookingDetailsView.options.viewOrder",
+            value: "View order",
+            comment: "Action sheet option to view the order for a booking."
+        )
+        static let cancelBookingAction = NSLocalizedString(
+            "BookingDetailsView.options.cancelBooking",
+            value: "Cancel booking",
+            comment: "Action sheet option to cancel a booking."
+        )
+
         static let cancelBooking = NSLocalizedString(
             "BookingDetailsView.customer.cancelBookingButton.title",
             value: "Cancel booking",
             comment: "'Cancel booking' button title in appointment details section in booking details view."
+        )
+
+        static let cancelBookingAlertTitle = NSLocalizedString(
+            "BookingDetailsView.cancelation.alert.title",
+            value: "Cancel booking",
+            comment: "Title for the booking cancellation confirmation alert."
+        )
+
+        static let cancelBookingAlertConfirmAction = NSLocalizedString(
+            "BookingDetailsView.cancelation.alert.confirmAction",
+            value: "Yes, cancel it",
+            comment: "Confirm button title for the booking cancellation confirmation alert."
+        )
+
+        static let cancelBookingAlertCancelAction = NSLocalizedString(
+            "BookingDetailsView.cancelation.alert.cancelAction",
+            value: "No, keep it",
+            comment: "Cancel button title for the booking cancellation confirmation alert."
         )
 
         /// Attendance section
@@ -359,7 +429,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             resourceID: 113,
             startDate: now,
             statusKey: "paid",
-            localTimezone: "America/New_York"
+            localTimezone: "America/New_York",
+            currency: "USD"
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

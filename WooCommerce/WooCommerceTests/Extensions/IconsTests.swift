@@ -824,4 +824,8 @@ final class IconsTests: XCTestCase {
     func test_wooShippingRatesPlaceholder_is_not_nil() {
         XCTAssertNotNil(UIImage.wooShippingRatesPlaceholder)
     }
+
+    func test_shoppingBagsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.shoppingBagsImage)
+    }
 }

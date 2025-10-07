@@ -1,11 +1,42 @@
 import Foundation
+import Networking
 
-/// Generic utility for loading paginated data with batch processing.
+/// Protocol for determining which errors should be retried.
+protocol RetryErrorEvaluator {
+    func shouldRetry(_ error: Error) -> Bool
+}
+
+/// Default implementation that retries network errors and server errors.
+struct DefaultRetryErrorEvaluator: RetryErrorEvaluator {
+    func shouldRetry(_ error: Error) -> Bool {
+        if let networkError = error as? NetworkError {
+            switch networkError {
+            case .invalidCookieNonce:
+                // Don't retry on auth errors that require user action to log in again.
+                return false
+            default:
+                return true
+            }
+        }
+        return true
+    }
+}
+
+/// Generic utility for loading paginated data with batch processing and retry support.
 final class BatchedRequestLoader {
     private let batchSize: Int
+    private let maxRetries: Int
+    private let retryDelay: TimeInterval
+    private let errorEvaluator: RetryErrorEvaluator
 
-    init(batchSize: Int) {
+    init(batchSize: Int,
+         maxRetries: Int = 4,
+         retryDelay: TimeInterval = 2.0,
+         errorEvaluator: RetryErrorEvaluator = DefaultRetryErrorEvaluator()) {
         self.batchSize = batchSize
+        self.maxRetries = maxRetries
+        self.retryDelay = retryDelay
+        self.errorEvaluator = errorEvaluator
     }
 
     /// Loads all items using a paginated request function.
@@ -22,9 +53,15 @@ final class BatchedRequestLoader {
 
             let batchResults = try await withThrowingTaskGroup(of: PageResult<T>.self) { group in
                 for pageNumber in pagesToFetch {
-                    group.addTask {
-                        let result = try await makeRequest(pageNumber)
-                        return PageResult(pageNumber: pageNumber, items: result)
+                    group.addTask { [maxRetries, retryDelay, errorEvaluator] in
+                        let pagedItems = try await Self.fetchPageWithRetry(
+                            pageNumber: pageNumber,
+                            maxRetries: maxRetries,
+                            retryDelay: retryDelay,
+                            errorEvaluator: errorEvaluator,
+                            makeRequest: makeRequest
+                        )
+                        return PageResult(pageNumber: pageNumber, items: pagedItems)
                     }
                 }
 
@@ -45,6 +82,40 @@ final class BatchedRequestLoader {
         }
 
         return allItems
+    }
+
+    private static func fetchPageWithRetry<T>(
+        pageNumber: Int,
+        maxRetries: Int,
+        retryDelay: TimeInterval,
+        errorEvaluator: RetryErrorEvaluator,
+        makeRequest: @escaping (Int) async throws -> PagedItems<T>
+    ) async throws -> PagedItems<T> {
+        var lastError: Error?
+
+        for attempt in 0..<maxRetries {
+            do {
+                return try await makeRequest(pageNumber)
+            } catch {
+                lastError = error
+
+                if !errorEvaluator.shouldRetry(error) {
+                    DDLogError("⛔️ Page \(pageNumber) failed with non-retryable error: \(error)")
+                    throw error
+                }
+
+                // Logs and retries with exponential backoff.
+                if attempt < maxRetries - 1 {
+                    let delay = retryDelay * pow(2.0, Double(attempt))
+                    DDLogWarn("⚠️ Page \(pageNumber) failed (attempt \(attempt + 1)/\(maxRetries)): \(error). Retrying in \(delay)s...")
+                    try await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
+                } else {
+                    DDLogError("⛔️ Page \(pageNumber) failed after \(maxRetries) attempts: \(error)")
+                }
+            }
+        }
+
+        throw lastError ?? URLError(.unknown)
     }
 }
 

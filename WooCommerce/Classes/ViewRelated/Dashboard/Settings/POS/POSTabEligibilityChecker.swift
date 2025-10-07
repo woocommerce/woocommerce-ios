@@ -17,6 +17,9 @@ import class Yosemite.POSSiteSettingService
 import class Yosemite.SiteAddress
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
+import enum PointOfSale.POSEligibilityState
+import enum PointOfSale.POSIneligibleReason
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64

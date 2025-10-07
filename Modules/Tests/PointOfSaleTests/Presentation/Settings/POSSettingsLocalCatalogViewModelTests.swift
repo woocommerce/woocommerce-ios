@@ -1,0 +1,209 @@
+import Testing
+import Foundation
+@testable import PointOfSale
+@testable import Yosemite
+
+struct POSSettingsLocalCatalogViewModelTests {
+    private let sampleSiteID: Int64 = 12345
+    private let sut: POSSettingsLocalCatalogViewModel
+    private let catalogSettingsService: MockPOSCatalogSettingsService
+    private let catalogSyncCoordinator: MockPOSCatalogSyncCoordinator
+
+    init() {
+        self.catalogSettingsService = MockPOSCatalogSettingsService()
+        self.catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
+        self.sut = POSSettingsLocalCatalogViewModel(
+            siteID: sampleSiteID,
+            catalogSettingsService: catalogSettingsService,
+            catalogSyncCoordinator: catalogSyncCoordinator
+        )
+    }
+
+    // MARK: - Initialization
+
+    @Test func view_model_initializes_with_correct_properties() async throws {
+        // Then
+        #expect(sut.catalogSize == "")
+        #expect(sut.lastFullSyncDate == "")
+        #expect(sut.lastIncrementalSyncDate == "")
+        #expect(sut.isLoading == false)
+        #expect(sut.isRefreshingCatalog == false)
+    }
+
+    // MARK: - `loadCatalogData` Tests
+
+    @Test func loadCatalogData_sets_catalog_size_and_sync_dates_on_success() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 150,
+            variationCount: 75,
+            lastFullSyncDate: Date(timeIntervalSinceNow: -3600), // 1 hour ago
+            lastIncrementalSyncDate: Date(timeIntervalSinceNow: -1800) // 30 minutes ago
+        ))
+
+        // When
+        await sut.loadCatalogData()
+
+        // Then
+        #expect(sut.catalogSize == "150 products, 75 variations")
+        #expect(sut.lastFullSyncDate.contains("ago"))
+        #expect(sut.lastIncrementalSyncDate.contains("ago"))
+        #expect(sut.isLoading == false)
+    }
+
+    @Test func loadCatalogData_sets_all_fields_to_unavailable_when_loadCatalogInfo_returns_error() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .failure(MockError.loadError)
+
+        // When
+        await sut.loadCatalogData()
+
+        // Then
+        #expect(sut.catalogSize == "Catalog size unavailable")
+        #expect(sut.lastFullSyncDate == "Update date unavailable")
+        #expect(sut.lastIncrementalSyncDate == "Update date unavailable")
+    }
+
+    @Test func loadCatalogData_sets_sync_dates_to_placeholder_when_sync_dates_are_nil() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 100,
+            variationCount: 50,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
+
+        // When
+        await sut.loadCatalogData()
+
+        // Then
+        #expect(sut.catalogSize == "100 products, 50 variations")
+        #expect(sut.lastFullSyncDate == "Not updated")
+        #expect(sut.lastIncrementalSyncDate == "Not updated")
+    }
+
+
+    @Test func loadCatalogData_sets_loading_state_correctly() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 0,
+            variationCount: 0,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
+        catalogSettingsService.shouldDelayResponse = true
+
+        // When
+        let loadTask = Task {
+            await sut.loadCatalogData()
+        }
+
+        // Then
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(sut.isLoading == true)
+
+        catalogSettingsService.shouldDelayResponse = false
+        await loadTask.value
+
+        #expect(sut.isLoading == false)
+    }
+
+    // MARK: - `refreshCatalog` Tests
+
+    @Test func refreshCatalog_performs_full_sync_and_reloads_data_when_sync_succeeds() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 200,
+            variationCount: 100,
+            lastFullSyncDate: Date(),
+            lastIncrementalSyncDate: Date()
+        ))
+
+        // When
+        await sut.refreshCatalog()
+
+        // Then
+        #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
+        #expect(catalogSyncCoordinator.performFullSyncSiteID == sampleSiteID)
+        #expect(sut.catalogSize == "200 products, 100 variations")
+        #expect(sut.isRefreshingCatalog == false)
+    }
+
+    @Test func refreshCatalog_sets_refreshing_state_correctly() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 0,
+            variationCount: 0,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
+        catalogSyncCoordinator.shouldDelayResponse = true
+
+        // When
+        let refreshTask = Task {
+            await sut.refreshCatalog()
+        }
+
+        // Then
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(sut.isRefreshingCatalog == true)
+
+        catalogSyncCoordinator.shouldDelayResponse = false
+        await refreshTask.value
+
+        #expect(sut.isRefreshingCatalog == false)
+    }
+
+    @Test func refreshCatalog_does_not_update_catalog_size_when_sync_fails() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 50,
+            variationCount: 25,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
+        catalogSyncCoordinator.performFullSyncResult = .failure(MockError.syncError)
+
+        // When
+        await sut.refreshCatalog()
+
+        // Then
+        #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
+        #expect(sut.catalogSize != "50 products, 25 variations") // `loadCatalogInfo` should not be invoked
+        #expect(sut.isRefreshingCatalog == false)
+    }
+
+    // MARK: - Test Concurrent Operations
+
+    @Test func concurrent_loadCatalogData_and_refreshCatalog_operations_work_correctly() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 100,
+            variationCount: 50,
+            lastFullSyncDate: Date(),
+            lastIncrementalSyncDate: Date()
+        ))
+
+        // When
+        let loadTask = Task {
+            await sut.loadCatalogData()
+        }
+        let refreshTask = Task {
+            await sut.refreshCatalog()
+        }
+
+        await loadTask.value
+        await refreshTask.value
+
+        // Then
+        #expect(sut.catalogSize == "100 products, 50 variations")
+        #expect(sut.isLoading == false)
+        #expect(sut.isRefreshingCatalog == false)
+        #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
+    }
+}
+
+private enum MockError: Error {
+    case loadError
+    case syncError
+}

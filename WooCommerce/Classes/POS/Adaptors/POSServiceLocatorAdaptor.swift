@@ -5,6 +5,14 @@ import Yosemite
 import protocol Experiments.FeatureFlagService
 import enum Experiments.FeatureFlag
 import protocol Storage.StorageManagerType
+import protocol PointOfSale.POSDependencyProviding
+import protocol PointOfSale.POSAnalyticsProviding
+import protocol PointOfSale.POSCurrencySettingsProviding
+import protocol PointOfSale.POSFeatureFlagProviding
+import protocol PointOfSale.POSConnectivityProviding
+import protocol PointOfSale.POSExternalNavigationProviding
+import protocol PointOfSale.POSExternalViewProviding
+
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     var analytics: POSAnalyticsProviding {
         POSAnalyticsAdaptor()
@@ -115,5 +123,9 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
             cancelButtonTitle: cancelButtonTitle,
             onSelection: onSelection
         ))
+    }
+
+    func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView {
+        AnyView(WCSettingsWebView(adminUrl: adminUrl, completion: completion))
     }
 }

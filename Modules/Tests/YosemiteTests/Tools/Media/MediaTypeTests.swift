@@ -25,7 +25,7 @@ final class MediaTypeTests: XCTestCase {
     func testInitWithAudioFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
         // Note: "ogg" isn't supported on iOS.
-        let audioFileExtensions = ["mp3", "m4a", "wav"]
+        let audioFileExtensions = ["mp3", "m4a", "wav", "ogg"]
         audioFileExtensions.forEach { fileExtension in
             XCTAssertEqual(MediaType(fileExtension: fileExtension), .audio, "Unexpected media type for file extension: \(fileExtension)")
         }
@@ -43,8 +43,8 @@ final class MediaTypeTests: XCTestCase {
         try XCTSkipIf(testingOnRosetta())
         let presentationFileExtensions = [
             "pdf", "doc", "odt", "xls", "xlsx",
-            // Audio/video formats that are not supported on iOS
-            "ogg", "ogv"
+            // Video formats that are not supported on iOS
+            "ogv"
         ]
         presentationFileExtensions.forEach { fileExtension in
             XCTAssertEqual(MediaType(fileExtension: fileExtension), .other, "Unexpected media type for file extension: \(fileExtension)")
@@ -80,7 +80,7 @@ final class MediaTypeTests: XCTestCase {
 
     func testInitWithAudioMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
-        let audioMimeTypes = ["audio/midi", "audio/x-midi", "audio/mpeg", "audio/wav"]
+        let audioMimeTypes = ["audio/midi", "audio/x-midi", "audio/mpeg", "audio/wav", "audio/ogg"]
         audioMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .audio, "Unexpected media type for file extension: \(mimeType)")
         }
@@ -102,7 +102,7 @@ final class MediaTypeTests: XCTestCase {
             // Video formats that are not supported on iOS
             "video/ogg", "video/mp2t", "video/webm",
             // Audio formats that are not supported on iOS
-            "audio/ogg", "audio/opus", "audio/webm"
+            "audio/opus", "audio/webm"
         ]
         otherMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .other, "Unexpected media type for file extension: \(mimeType)")

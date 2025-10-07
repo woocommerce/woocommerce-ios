@@ -14,7 +14,8 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
                          pageNumber: Int,
                          pageSize: Int,
                          startDateBefore: String?,
-                         startDateAfter: String?) async throws -> [Booking] {
+                         startDateAfter: String?,
+                         searchQuery: String?) async throws -> [Booking] {
         guard let result = loadAllBookingsResult else {
             throw NetworkError.timeout()
         }

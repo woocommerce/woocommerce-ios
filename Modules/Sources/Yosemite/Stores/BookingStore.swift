@@ -69,7 +69,8 @@ private extension BookingStore {
                                                                 pageNumber: pageNumber,
                                                                 pageSize: pageSize,
                                                                 startDateBefore: startDateBefore,
-                                                                startDateAfter: startDateAfter)
+                                                                startDateAfter: startDateAfter,
+                                                                searchQuery: nil)
                 await upsertStoredBookingsInBackground(
                     readOnlyBookings: bookings,
                     siteID: siteID,
@@ -101,7 +102,8 @@ private extension BookingStore {
                                                                 pageNumber: 1,
                                                                 pageSize: 1,
                                                                 startDateBefore: nil,
-                                                                startDateAfter: nil)
+                                                                startDateAfter: nil,
+                                                                searchQuery: nil)
                 let hasRemoteBookings = !bookings.isEmpty
                 onCompletion(.success(hasRemoteBookings))
             } catch {

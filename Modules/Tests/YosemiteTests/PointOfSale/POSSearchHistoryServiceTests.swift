@@ -89,38 +89,6 @@ struct POSSearchHistoryServiceTests {
         #expect(history.isEmpty)
     }
 
-    @Test func clearSearchHistory_clears_history_for_specific_item_type() throws {
-        // Given
-        sut.saveSuccessfulSearch(term: "product", for: .product)
-        sut.saveSuccessfulSearch(term: "coupon", for: .coupon)
-
-        // When
-        sut.clearSearchHistory(for: .product)
-
-        // Then
-        let productsSearchHistory = try #require(mockStoreMethods.mockSearchTerms[.product])
-        let couponsSearchHistory = try #require(mockStoreMethods.mockSearchTerms[.coupon])
-        #expect(productsSearchHistory.isEmpty)
-        #expect(couponsSearchHistory.count == 1)
-        #expect(couponsSearchHistory.first == "coupon")
-    }
-
-    @Test func clearAllSearchHistory_clears_all_history() throws {
-        // Given
-        mockStoreMethods.mockSearchTerms[.product] = ["product"]
-        mockStoreMethods.mockSearchTerms[.coupon] = ["coupon"]
-
-        // When
-        sut.clearAllSearchHistory()
-
-        // Then
-        #expect(mockStoreMethods.setSearchTermsCalled)
-        let productsSearchHistory = try #require(mockStoreMethods.mockSearchTerms[.product])
-        let couponsSearchHistory = try #require(mockStoreMethods.mockSearchTerms[.coupon])
-        #expect(productsSearchHistory.isEmpty)
-        #expect(couponsSearchHistory.isEmpty)
-    }
-
     @Test func search_history_is_separate_for_different_item_types() {
         // Given
         mockStoreMethods.mockSearchTerms[.product] = ["product"]

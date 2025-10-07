@@ -3,8 +3,11 @@ import struct Networking.Booking
 
 final class BookingDetailsViewModel: ObservableObject {
     let sections: [Section]
+    let navigationTitle: String
 
     init(booking: Booking) {
+        navigationTitle = Self.navigationTitle(for: booking)
+
         let headerSection = Section.init(
             content: .header(HeaderContent(booking))
         )
@@ -53,6 +56,17 @@ final class BookingDetailsViewModel: ObservableObject {
             paymentSection,
             bookingNotes
         ]
+    }
+}
+
+private extension BookingDetailsViewModel {
+    static func navigationTitle(for booking: Booking) -> String {
+        let titleFormat = NSLocalizedString(
+            "BookingDetailsView.navTitle",
+            value: "Booking #%1$d",
+            comment: "Booking Details screen nav bar title. %1$d is a placeholder for the booking ID."
+        )
+        return String(format: titleFormat, booking.bookingID)
     }
 }
 

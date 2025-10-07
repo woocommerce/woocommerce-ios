@@ -1,4 +1,5 @@
 import Foundation
+import PointOfSale
 import struct Yosemite.CardReaderInput
 
 struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlertsProviding {

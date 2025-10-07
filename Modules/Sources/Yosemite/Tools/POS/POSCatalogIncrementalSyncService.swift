@@ -35,8 +35,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
         }
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
-                                       appPasswordSupportState: appPasswordSupportState,
-                                       ensuresSessionManagerIsInitialized: true)
+                                       appPasswordSupportState: appPasswordSupportState)
         let syncRemote = POSCatalogSyncRemote(network: network)
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
         self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)

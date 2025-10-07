@@ -5,6 +5,7 @@ import WordPressUI
 import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 
 
 /// Enum representing the individual tabs

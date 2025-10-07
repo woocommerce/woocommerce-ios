@@ -60,6 +60,30 @@ final class BookingDetailsViewModel: ObservableObject {
     }
 }
 
+// MARK: Local Data
+
+extension BookingDetailsViewModel {
+    func loadLocalData() {
+        loadCustomerData()
+    }
+}
+
+private extension BookingDetailsViewModel {
+    func loadCustomerData() {
+        guard booking.customerID > 0 else {
+            return
+        }
+
+        let action = CustomerAction.loadCustomer(siteID: booking.siteID, customerID: booking.customerID) { [weak self] result in
+            guard let self = self else { return }
+            if case .success(let customer) = result {
+                self.updateCustomerSection(with: customer)
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
 // MARK: Syncing
 
 extension BookingDetailsViewModel {
@@ -76,15 +100,7 @@ private extension BookingDetailsViewModel {
 
         do {
             let fetchedCustomer = try await retrieveCustomer()
-            customerContent.update(with: fetchedCustomer)
-
-            let customerSection = Section(
-                header: .title(Localization.customerSectionHeaderTitle.uppercased()),
-                content: .customer(customerContent)
-            )
-            withAnimation {
-                sections.insert(customerSection, at: 2)
-            }
+            updateCustomerSection(with: fetchedCustomer)
         } catch {
             DDLogError("⛔️ Error synchronizing Customer for Booking: \(error)")
         }
@@ -104,6 +120,23 @@ private extension BookingDetailsViewModel {
                 }
             }
             stores.dispatch(action)
+        }
+    }
+
+    private func updateCustomerSection(with customer: Customer) {
+        customerContent.update(with: customer)
+
+        // Avoid adding if it already exists
+        guard !sections.contains(where: { if case .customer = $0.content { return true } else { return false } }) else {
+            return
+        }
+
+        let customerSection = Section(
+            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+            content: .customer(customerContent)
+        )
+        withAnimation {
+            sections.insert(customerSection, at: 2)
         }
     }
 

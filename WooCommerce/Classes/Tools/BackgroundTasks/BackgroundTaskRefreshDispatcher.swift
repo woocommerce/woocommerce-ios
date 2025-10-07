@@ -10,21 +10,25 @@ final class BackgroundTaskRefreshDispatcher {
         case posCatalogIncrementalSync
     }
 
-
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
         scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
     }
-
-    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date) {
+    
+    /// Schedules a background task with the specified type and timing.
+    ///
+    /// - Parameters:
+    ///   - type: The type of background task to schedule.
+    ///   - earliestBeginDate: The earliest date at which the task can begin. When `nil`, the task can be submitted right away.
+    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date?) {
         // Do not run this code while running test because this framework is not enabled in the simulator
         guard Self.isNotRunningTests() else {
             return
         }
 
         let request = BGAppRefreshTaskRequest(identifier: type.identifier)
-        request.earliestBeginDate = earliestBeginDate ?? Date(timeIntervalSinceNow: 30 * 60)
+        request.earliestBeginDate = earliestBeginDate
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
@@ -41,7 +45,7 @@ final class BackgroundTaskRefreshDispatcher {
             return
         }
 
-        // Register handlers for all task types
+        // Registers handlers for all task types.
         for taskType in BackgroundTaskType.allCases {
             BGTaskScheduler.shared.register(forTaskWithIdentifier: taskType.identifier, using: nil) { [weak self] task in
                 guard let refreshTask = task as? BGAppRefreshTask else {

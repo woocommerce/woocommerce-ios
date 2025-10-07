@@ -108,7 +108,7 @@ final class BatchedRequestLoader {
                 if attempt < maxRetries - 1 {
                     let delay = retryDelay * pow(2.0, Double(attempt))
                     DDLogWarn("⚠️ Page \(pageNumber) failed (attempt \(attempt + 1)/\(maxRetries)): \(error). Retrying in \(delay)s...")
-                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    try await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
                 } else {
                     DDLogError("⛔️ Page \(pageNumber) failed after \(maxRetries) attempts: \(error)")
                 }

@@ -26,6 +26,10 @@ struct BookingDetailsView: View {
 
     init(_ viewModel: BookingDetailsViewModel) {
         self.viewModel = viewModel
+
+        Task {
+            await viewModel.syncData()
+        }
     }
 
     var body: some View {
@@ -34,11 +38,6 @@ struct BookingDetailsView: View {
                 ForEach(viewModel.sections) { section in
                     sectionView(with: section)
                 }
-            }
-        }
-        .onAppear {
-            Task {
-                await viewModel.syncData()
             }
         }
         .refreshable {

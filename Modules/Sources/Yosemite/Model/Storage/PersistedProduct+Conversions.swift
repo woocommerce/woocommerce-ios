@@ -67,10 +67,17 @@ extension POSProduct {
             let product = PersistedProduct(from: self)
             try product.insert(db)
 
-            // Save related images
+            // Save related images and join table entries
             for image in self.images {
-                let persistedImage = PersistedProductImage(from: image, siteID: self.siteID, productID: self.productID)
-                try persistedImage.insert(db)
+                // Insert or update the image itself
+                let persistedImage = PersistedImage.make(from: image, siteID: self.siteID)
+                try persistedImage.save(db)
+
+                // Create join table entry
+                let joinEntry = PersistedProductImage(siteID: self.siteID,
+                                                      productID: self.productID,
+                                                      imageID: image.imageID)
+                try joinEntry.insert(db)
             }
 
             // Save related attributes
@@ -107,34 +114,6 @@ extension PersistedProductAttribute {
             visible: visible,
             variation: variation,
             options: options
-        )
-    }
-}
-
-// MARK: - PersistedProductImage Conversions
-// periphery:ignore - TODO: remove ignore when populating database
-extension PersistedProductImage {
-    init(from productImage: ProductImage, siteID: Int64, productID: Int64) {
-        self.init(
-            siteID: siteID,
-            id: productImage.imageID,
-            productID: productID,
-            dateCreated: productImage.dateCreated,
-            dateModified: productImage.dateModified,
-            src: productImage.src,
-            name: productImage.name,
-            alt: productImage.alt
-        )
-    }
-
-    func toProductImage() -> ProductImage {
-        return ProductImage(
-            imageID: id,
-            dateCreated: dateCreated,
-            dateModified: dateModified,
-            src: src,
-            name: name,
-            alt: alt
         )
     }
 }

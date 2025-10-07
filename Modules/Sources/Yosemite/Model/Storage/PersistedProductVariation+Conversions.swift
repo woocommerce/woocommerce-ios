@@ -63,8 +63,15 @@ extension POSProductVariation {
 
             // Save related image if present
             if let image = self.image {
-                let persistedImage = PersistedProductVariationImage(from: image, siteID: self.siteID, productVariationID: self.productVariationID)
-                try persistedImage.insert(db)
+                // Insert or update the image itself
+                let persistedImage = PersistedImage.make(from: image, siteID: self.siteID)
+                try persistedImage.save(db)
+
+                // Create join table entry
+                let joinEntry = PersistedProductVariationImage(siteID: self.siteID,
+                                                              productVariationID: self.productVariationID,
+                                                              imageID: image.imageID)
+                try joinEntry.insert(db)
             }
 
             // Save related attributes
@@ -94,34 +101,6 @@ extension PersistedProductVariationAttribute {
             id: remoteAttributeID,
             name: name,
             option: option
-        )
-    }
-}
-
-// MARK: - PersistedProductVariationImage Conversions
-// periphery:ignore - TODO: remove ignore when populating database
-extension PersistedProductVariationImage {
-    public init(from productImage: ProductImage, siteID: Int64, productVariationID: Int64) {
-        self.init(
-            siteID: siteID,
-            id: productImage.imageID,
-            productVariationID: productVariationID,
-            dateCreated: productImage.dateCreated,
-            dateModified: productImage.dateModified,
-            src: productImage.src,
-            name: productImage.name,
-            alt: productImage.alt
-        )
-    }
-
-    public func toProductImage() -> ProductImage {
-        return ProductImage(
-            imageID: id,
-            dateCreated: dateCreated,
-            dateModified: dateModified,
-            src: src,
-            name: name,
-            alt: alt
         )
     }
 }

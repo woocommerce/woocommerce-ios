@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.4
+This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.
+
 ## 23.3
 Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.
 

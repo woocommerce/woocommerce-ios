@@ -1,6 +1,7 @@
 import Foundation
 import protocol WooFoundation.Analytics
 import Yosemite
+import PointOfSale
 
 /// Overrides the default event tracking for card present payments on IPP in Order Creation flow
 ///

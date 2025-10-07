@@ -1,6 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+23.5
+-----
+- [internal] POS code was moved to its own module, including POS specific color and image assets. [https://github.com/woocommerce/woocommerce-ios/pull/16176]
+
+
 23.4
 -----
 - [*] Order details: Fixes broken country selector navigation and "Non editable banner" width. [https://github.com/woocommerce/woocommerce-ios/pull/16171]

@@ -1,5 +1,6 @@
 import Combine
 import Photos
+import PointOfSale
 import SwiftUI
 import TestKit
 import XCTest

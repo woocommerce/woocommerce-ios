@@ -1,4 +1,5 @@
 import Foundation
+import PointOfSale
 import WooFoundation
 import Combine
 import struct Yosemite.Order

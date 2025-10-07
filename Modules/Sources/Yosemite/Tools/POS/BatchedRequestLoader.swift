@@ -30,8 +30,8 @@ final class BatchedRequestLoader {
     private let errorEvaluator: RetryErrorEvaluator
 
     init(batchSize: Int,
-         maxRetries: Int = 3,
-         retryDelay: TimeInterval = 1.0,
+         maxRetries: Int = 4,
+         retryDelay: TimeInterval = 2.0,
          errorEvaluator: RetryErrorEvaluator = DefaultRetryErrorEvaluator()) {
         self.batchSize = batchSize
         self.maxRetries = maxRetries

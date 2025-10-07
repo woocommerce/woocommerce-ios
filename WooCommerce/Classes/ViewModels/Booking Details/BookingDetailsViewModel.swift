@@ -6,15 +6,13 @@ import WooFoundation
 import Yosemite
 import SwiftUI // Added for withAnimation
 
-@MainActor
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
-
-    let navigationTitle: String
 
     private let booking: Booking
     private let customerContent = CustomerContent()
 
+    let navigationTitle: String
     @Published private(set) var sections: [Section] = []
 
     init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
@@ -106,6 +104,7 @@ private extension BookingDetailsViewModel {
         }
     }
 
+    @MainActor
     func retrieveCustomer() async throws -> Customer {
         try await withCheckedThrowingContinuation { continuation in
             let action = CustomerAction.retrieveCustomer(
@@ -123,7 +122,7 @@ private extension BookingDetailsViewModel {
         }
     }
 
-    private func updateCustomerSection(with customer: Customer) {
+    func updateCustomerSection(with customer: Customer) {
         customerContent.update(with: customer)
 
         // Avoid adding if it already exists
@@ -148,6 +147,27 @@ private extension BookingDetailsViewModel {
             }
             return false
         })
+    }
+}
+
+extension BookingDetailsViewModel {
+    var cancellationAlertMessage: String {
+        // Temporary hardcoded
+        //TODO: - replace with associated customer data
+        let productName = "Women's Haircut"
+        let customerName = "Margarita Nikolaevna"
+
+        let date = booking.startDate.formatted(
+            date: .long,
+            time: .shortened
+        )
+
+        return String(
+            format: Localization.cancelBookingAlertMessage,
+            customerName,
+            productName,
+            date
+        )
     }
 }
 
@@ -198,6 +218,12 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.bookingNotes.headerTitle",
             value: "Booking notes",
             comment: "Header title for the 'Booking notes' section in the booking details screen."
+        )
+
+        static let cancelBookingAlertMessage = NSLocalizedString(
+            "BookingDetailsView.cancelation.alert.message",
+            value: "%1$@ will no longer be able to attend “%2$@” on %3$@.",
+            comment: "Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date."
         )
     }
 }

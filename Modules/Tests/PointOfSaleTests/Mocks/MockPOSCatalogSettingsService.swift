@@ -4,12 +4,10 @@ final class MockPOSCatalogSettingsService: POSCatalogSettingsServiceProtocol {
     var catalogInfoResult: Result<POSCatalogInfo, Error> = .success(
         .init(productCount: 0, variationCount: 0, lastFullSyncDate: nil, lastIncrementalSyncDate: nil)
     )
-    var shouldDelayResponse = false
+    var onLoadCatalogInfoCalled: (() -> Void)?
 
     func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {
-        if shouldDelayResponse {
-            try await Task.sleep(for: .milliseconds(100))
-        }
+        onLoadCatalogInfoCalled?()
 
         switch catalogInfoResult {
         case .success(let info):

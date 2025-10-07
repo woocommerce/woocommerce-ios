@@ -5,16 +5,11 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     var performFullSyncInvocationCount = 0
     var performFullSyncSiteID: Int64?
     var performFullSyncResult: Result<Void, Error> = .success(())
-    var shouldDelayResponse = false
 
-    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
-        true
-    }
+    var onPerformFullSyncCalled: (() -> Void)?
 
-    func performFullSync(for siteID: Int64) async throws {
-        if shouldDelayResponse {
-            try await Task.sleep(for: .milliseconds(100))
-        }
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+        onPerformFullSyncCalled?()
 
         performFullSyncInvocationCount += 1
         performFullSyncSiteID = siteID
@@ -27,5 +22,5 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {}
+    func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {}
 }

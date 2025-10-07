@@ -859,14 +859,11 @@ private extension MainTabBarController {
 
         // Check if sync is needed (older than 24 hours)
         let maxAge: TimeInterval = 24 * 60 * 60
-        guard await coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
-            return
-        }
 
         // Perform background sync
         Task.detached {
             do {
-                _ = try await coordinator.performFullSync(for: siteID)
+                _ = try await coordinator.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
             } catch POSCatalogSyncError.syncAlreadyInProgress {
                 DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
             } catch {

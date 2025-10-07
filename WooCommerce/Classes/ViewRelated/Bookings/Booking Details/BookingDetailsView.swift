@@ -3,7 +3,6 @@ import Networking
 
 struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-    @Environment(\.dismiss) private var dismiss
 
     @State private var showingOptions = false
     @State private var showingStatusSheet = false

@@ -984,6 +984,7 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
+		2D05337E2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */; };
 		2D05D19F2E82D1A8004111FD /* BookingDetailsViewModel+Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */; };
 		2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A12E82D233004111FD /* HeaderContent.swift */; };
 		2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */; };
@@ -3877,6 +3878,7 @@
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
+		2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+PriceFormatting.swift"; sourceTree = "<group>"; };
 		2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Section.swift"; sourceTree = "<group>"; };
 		2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+SectionContent.swift"; sourceTree = "<group>"; };
 		2D05D1A12E82D233004111FD /* HeaderContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContent.swift; sourceTree = "<group>"; };
@@ -7944,6 +7946,7 @@
 				2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */,
 				2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */,
 				2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */,
+				2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */,
 			);
 			path = "Booking Details";
 			sourceTree = "<group>";
@@ -14919,6 +14922,7 @@
 				45CE2D322625AA9A00E3CA00 /* ShippingLabelPackageList.swift in Sources */,
 				AEFF77A42978389400667F7A /* PriceInputViewController.swift in Sources */,
 				02535CBB25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift in Sources */,
+				2D05337E2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */,
 				CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */,
 				02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */,
 				E12AF69926BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift in Sources */,

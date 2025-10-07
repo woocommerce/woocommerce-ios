@@ -13,8 +13,6 @@ struct POSOrderListView: View {
     @Environment(\.siteTimezone) private var siteTimezone
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
-    @Namespace private var searchTransition
-
     private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
     }
@@ -45,8 +43,11 @@ struct POSOrderListView: View {
                             setSearch(true)
                         }
                         .accessibilityLabel(Localization.searchButtonAccessibilityLabel)
-                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
-                        .transition(.opacity.combined(with: .scale))
+                        .transition(.asymmetric(
+                            insertion: .scale.combined(with: .opacity)
+                                .animation(.easeInOut(duration: Constants.animationDuration).delay(Constants.animationDuration)),
+                            removal: .opacity.animation(.easeInOut(duration: Constants.animationDuration * 0.5))
+                        ))
                     }
 
                     if isSearching {
@@ -58,8 +59,12 @@ struct POSOrderListView: View {
                             }
                         )
                         .posSearchTextFieldUnfocusedBorderColor(.posOutlineVariant)
-                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
-                        .transition(.opacity.combined(with: .move(edge: .leading)))
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .move(edge: .trailing))
+                                .animation(.easeInOut(duration: Constants.animationDuration).delay(Constants.animationDuration * 0.5)),
+                            removal: .opacity.combined(with: .move(edge: .trailing))
+                                .animation(.easeInOut(duration: Constants.animationDuration))
+                        ))
                         .onChange(of: searchTerm) { _, newValue in
                             if newValue.isEmpty {
                                 orderListModel.ordersController.clearSearchOrders()
@@ -381,7 +386,6 @@ private enum Constants {
     static let orderCardMinHeight: CGFloat = 112
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     static let animationDuration: CGFloat = 0.2
-    static let searchControlID = "searchControl"
     static let scrollTopID = "orderListViewTopID"
 }
 

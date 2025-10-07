@@ -1,4 +1,5 @@
 import Foundation
+import PointOfSale
 
 struct CardPresentPaymentTapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentEventDetails

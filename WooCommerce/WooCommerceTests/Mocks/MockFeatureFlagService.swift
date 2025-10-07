@@ -1,5 +1,6 @@
 @testable import WooCommerce
 import Experiments
+import protocol PointOfSale.POSFeatureFlagProviding
 
 final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isInboxOn: Bool

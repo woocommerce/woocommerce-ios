@@ -7,6 +7,7 @@ final class BookingListContainerViewModel: ObservableObject {
     private let allListViewModel: BookingListViewModel
 
     @Published var selectedTab: BookingListTab = .today
+    @Published var searchQuery: String = ""
 
     init(siteID: Int64) {
         self.todayListViewModel = BookingListViewModel(siteID: siteID, type: .today)

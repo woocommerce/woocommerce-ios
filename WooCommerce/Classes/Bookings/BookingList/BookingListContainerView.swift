@@ -3,6 +3,7 @@ import struct Yosemite.Booking
 
 struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
+    @State private var isSearching = false
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: BookingListContainerViewModel) {
@@ -22,10 +23,20 @@ struct BookingListContainerView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
             .navigationTitle(Localization.viewTitle)
+            .if(isSearching, transform: { view in
+                view.searchable(text: $viewModel.searchQuery,
+                                isPresented: $isSearching,
+                                prompt: Localization.searchPrompt)
+            })
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        // TODO
+                        withAnimation {
+                            isSearching.toggle()
+                            if !isSearching {
+                                viewModel.searchQuery = ""
+                            }
+                        }
                     } label: {
                         Image(systemName: "magnifyingglass")
                     }
@@ -135,6 +146,11 @@ private extension BookingListContainerView {
             "bookingListView.filter",
             value: "Filter",
             comment: "Button to filter the booking list"
+        )
+        static let searchPrompt = NSLocalizedString(
+            "bookingListView.search.prompt",
+            value: "Search bookings",
+            comment: "Prompt in the search bar on top of the booking list"
         )
     }
 }

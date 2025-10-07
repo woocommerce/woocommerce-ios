@@ -3,6 +3,7 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
+    @StateObject private var connectivityMonitor = ConnectivityMonitor()
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: BookingListViewModel) {
@@ -150,6 +151,7 @@ private extension BookingListView {
                     .fill(Color(.text))
             }
             .padding(Layout.viewPadding)
+            .padding(.bottom, connectivityMonitor.isOffline ? OfflineBannerView.height : 0)
             .contentShape(Rectangle())
             .onTapGesture {
                 withAnimation {

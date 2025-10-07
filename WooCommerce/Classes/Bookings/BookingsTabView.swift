@@ -1,4 +1,6 @@
 import SwiftUI
+import Combine
+import WooFoundation
 
 /// Hosting view for `BookingsTabView`
 ///
@@ -11,10 +13,6 @@ final class BookingsTabViewHostingController: UIHostingController<BookingsTabVie
 
     @MainActor @preconcurrency required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override var shouldShowOfflineBanner: Bool {
-        return true
     }
 
     func didSwitchStore(id: Int64) {
@@ -38,6 +36,7 @@ private extension BookingsTabViewHostingController {
 ///
 struct BookingsTabView: View {
     @State private var visibility: NavigationSplitViewVisibility = .all
+    @StateObject private var connectivityMonitor = ConnectivityMonitor()
 
     private let siteID: Int64
 
@@ -52,5 +51,12 @@ struct BookingsTabView: View {
             Text("Booking Detail Screen")
         }
         .navigationSplitViewStyle(.balanced)
+        .safeAreaInset(edge: .bottom) {
+            if connectivityMonitor.isOffline {
+                OfflineBannerViewRepresentable()
+                    .frame(height: OfflineBannerView.height)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
     }
 }

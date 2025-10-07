@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import struct WooFoundation.WooAnalyticsEvent
+import struct WooFoundation.SafariView
 
 struct POSOrdersView: View {
     @Binding var isPresented: Bool
@@ -9,8 +10,17 @@ struct POSOrdersView: View {
     @Environment(\.posAnalytics) private var analytics
     @State private var isSearching: Bool = false
     @State private var searchTerm: String = ""
+    @State private var showBlog = false
 
     var body: some View {
+        contentView
+            .task {
+                await orderListModel.ordersController.loadOrders()
+            }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
         switch (orderListModel.ordersController.ordersViewState, isSearching) {
         case (.error(let error), false):
             errorView(error)
@@ -71,22 +81,22 @@ struct POSOrdersView: View {
     private func errorView(_ error: PointOfSaleErrorState) -> some View {
         ZStack {
             VStack {
-                POSPageHeaderView(
-                    title: POSOrderListView.Localization.ordersTitle,
-                    backButtonConfiguration: .init(state: .enabled, action: {
-                        isPresented = false
-                    }))
-                .posHeaderBackButtonIcon(systemName: "xmark")
-                Spacer()
-            }
-
-            VStack {
                 Spacer()
                 POSListErrorView(error: error) {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
                 }
+                Spacer()
+            }
+
+            VStack {
+                POSPageHeaderView(
+                    title: POSOrderListView.Localization.ordersTitle,
+                    backButtonConfiguration: .init(state: .enabled, action: {
+                        isPresented = false
+                    }))
+                .posHeaderBackButtonIcon(systemName: "xmark")
                 Spacer()
             }
         }
@@ -96,6 +106,16 @@ struct POSOrdersView: View {
     private func emptyView() -> some View {
         ZStack {
             VStack {
+                Spacer()
+                POSListEmptyView(
+                    viewModel: POSOrderListEmptyViewModel(isSearching: false)
+                ) {
+                    showBlog = true
+                }
+                Spacer()
+            }
+
+            VStack {
                 POSPageHeaderView(
                     title: POSOrderListView.Localization.ordersTitle,
                     backButtonConfiguration: .init(state: .enabled, action: {
@@ -104,18 +124,9 @@ struct POSOrdersView: View {
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 Spacer()
             }
-
-            VStack {
-                Spacer()
-                POSListEmptyView(
-                    viewModel: POSOrderListEmptyViewModel(isSearching: false)
-                ) {
-                    Task { @MainActor in
-                        await orderListModel.ordersController.loadOrders()
-                    }
-                }
-                Spacer()
-            }
+        }
+        .posFullScreenCover(isPresented: $showBlog) {
+            SafariView(url: POSConstants.URLs.wooCommerceBlog.asURL())
         }
     }
 }

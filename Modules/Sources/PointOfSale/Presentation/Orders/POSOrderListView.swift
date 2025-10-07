@@ -101,9 +101,6 @@ struct POSOrderListView: View {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListPullToRefresh())
             await orderListModel.ordersController.refreshOrders()
         }
-        .task {
-            await orderListModel.ordersController.loadOrders()
-        }
     }
 
     @ViewBuilder

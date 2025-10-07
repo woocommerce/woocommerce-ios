@@ -8,7 +8,6 @@ final class ConnectivityMonitor: ObservableObject {
     @Published private(set) var isOffline: Bool = false
 
     private let connectivityObserver: ConnectivityObserver
-    private var subscriptions: Set<AnyCancellable> = []
 
     init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.connectivityObserver = connectivityObserver

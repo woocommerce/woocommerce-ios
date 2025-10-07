@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import WooFoundation
 
 /// Hosting view for `BookingsTabView`
 ///

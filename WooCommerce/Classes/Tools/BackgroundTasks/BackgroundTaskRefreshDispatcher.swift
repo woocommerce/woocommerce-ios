@@ -154,12 +154,8 @@ final class BackgroundTaskRefreshDispatcher {
         let syncTask = Task {
             do {
                 // Performs full sync only if the catalog age is older than 24 hours.
-                let fullSyncMaxAge: TimeInterval = 24 * 60 * 60
-                guard let syncCoordinator = ServiceLocator.stores.posCatalogSyncCoordinator,
-                      await syncCoordinator.shouldPerformFullSync(for: siteID, maxAge: fullSyncMaxAge) else {
-                    return backgroundTask.setTaskCompleted(success: true)
-                }
-                try await syncCoordinator.performFullSync(for: siteID)
+                let maxAge: TimeInterval = 24 * 60 * 60
+                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
                 backgroundTask.setTaskCompleted(success: true)
             } catch {
                 DDLogError("⛔️ POS catalog full sync background refresh failed: \(error)")
@@ -184,7 +180,9 @@ final class BackgroundTaskRefreshDispatcher {
 
         let syncTask = Task {
             do {
-                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performIncrementalSyncIfApplicable(for: siteID, forceSync: false)
+                // Performs incremental sync only if the catalog age is older than 1 hour.
+                let maxAge: TimeInterval = 60 * 60
+                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performIncrementalSyncIfApplicable(for: siteID, maxAge: maxAge)
                 backgroundTask.setTaskCompleted(success: true)
             } catch {
                 DDLogError("⛔️ POS catalog incremental sync background refresh failed: \(error)")

@@ -130,7 +130,7 @@ struct POSOrderListView: View {
                     await orderListModel.ordersController.loadNextOrders()
                 },
                 content: {
-                    LazyVStack(spacing: POSSpacing.small) {
+                    LazyVStack(spacing: POSSpacing.medium) {
                         headerRows
                             .id(Constants.scrollTopID)
 

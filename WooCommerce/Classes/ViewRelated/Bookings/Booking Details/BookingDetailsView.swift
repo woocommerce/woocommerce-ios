@@ -318,13 +318,6 @@ extension BookingDetailsView {
             comment: "'Status' row title in attendance section in booking details view."
         )
 
-        /// Customer section
-        static let billingAddressRowTitle = NSLocalizedString(
-            "BookingDetailsView.customer.billingAddress.title",
-            value: "Billing address",
-            comment: "Billing address row title in customer section in booking details view."
-        )
-
         /// Booking notes
         static let bookingNotesRowText = NSLocalizedString(
             "BookingDetailsView.bookingNotes.addANoteRow.title",

@@ -100,6 +100,8 @@ extension BookingDetailsView {
         private func billingAddressView(with billingAddressText: String) -> some View {
             HStack {
                 VStack(alignment: .leading) {
+                    Text(Localization.billingAddressRowTitle)
+                        .rowTextStyle()
                     Text(billingAddressText)
                         .font(TextFont.bodyMedium)
                         .foregroundStyle(.secondary)
@@ -118,6 +120,13 @@ private extension BookingDetailsView.CustomerDetailsView {
             "BookingDetailsView.customer.emailCopied.toastMessage",
             value: "Email address copied",
             comment: "Toast message shown when the user copies the customer's email address."
+        )
+
+        /// Customer section
+        static let billingAddressRowTitle = NSLocalizedString(
+            "BookingDetailsView.customer.billingAddress.title",
+            value: "Billing address",
+            comment: "Billing address row title in customer section in booking details view."
         )
     }
 }

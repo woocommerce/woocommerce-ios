@@ -3,9 +3,11 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
+    @Binding var selectedBooking: Booking?
 
-    init(viewModel: BookingListViewModel) {
+    init(viewModel: BookingListViewModel, selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self._selectedBooking = selectedBooking
     }
 
     var body: some View {
@@ -31,22 +33,20 @@ struct BookingListView: View {
 
 private extension BookingListView {
     var bookingList: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(viewModel.bookings) { item in
-                    NavigationLink(value: item) {
-                        bookingItem(item)
-                    }
-                    .buttonStyle(.plain)
-                }
-
-                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                    .padding(.top, Layout.viewPadding)
-                    .onAppear {
-                        viewModel.onLoadNextPageAction()
-                    }
+        List(selection: $selectedBooking) {
+            ForEach(viewModel.bookings) { item in
+                bookingItem(item)
+                    .tag(item)
             }
+
+            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                .padding(.top, Layout.viewPadding)
+                .onAppear {
+                    viewModel.onLoadNextPageAction()
+                }
         }
+        .listStyle(.plain)
+        .accentColor(Color(.listSelectedBackground))
         .refreshable {
             await viewModel.onRefreshAction()
         }
@@ -61,6 +61,7 @@ private extension BookingListView {
                     .font(.body)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(Color.primary)
 
                 // TODO: fetch bookable products & customer to get names or wait for API update
                 Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
@@ -76,17 +77,13 @@ private extension BookingListView {
                     Spacer()
                 }
             }
-            .padding(Layout.viewPadding)
-
-            Divider()
-                .padding(.leading, Layout.viewPadding)
         }
-        .background(Color(.listForeground(modal: false))) // TODO: update selected background color as part of selection handling
     }
 
     func statusBadge(text: String, color: Color) -> some View {
         Text(text)
             .font(.caption2)
+            .foregroundStyle(Color.primary)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))

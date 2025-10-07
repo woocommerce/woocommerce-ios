@@ -3,7 +3,7 @@ import Networking
 
 struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-    @Environment(\.dismiss) private var dismiss
+
     @State private var showingOptions = false
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
@@ -43,15 +43,7 @@ struct BookingDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.navigationTitle)
         .background(Color(uiColor: .systemGroupedBackground))
-        .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                }
-            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     showingOptions = true
@@ -70,6 +62,11 @@ struct BookingDetailsView: View {
                     }
                 }
             }
+        }
+        .if(UIDevice.current.userInterfaceIdiom == .phone) {
+            /// Removes back button title for iPhone layout
+            /// Applied only for phones because it affects navigation title positioning on tablets
+            $0.toolbarRole(.editor)
         }
         .sheet(isPresented: $showingStatusSheet) {
             UpdateAttendanceStatusView { selectedStatus in

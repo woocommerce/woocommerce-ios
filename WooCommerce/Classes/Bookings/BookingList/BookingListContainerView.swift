@@ -3,37 +3,36 @@ import struct Yosemite.Booking
 
 struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
+    @Binding var selectedBooking: Booking?
 
-    init(viewModel: BookingListContainerViewModel) {
+    init(viewModel: BookingListContainerViewModel, selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self._selectedBooking = selectedBooking
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                headerView
-                TabView(selection: $viewModel.selectedTab) {
-                    ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
-                        BookingListView(viewModel: viewModel.listViewModel(for: tab))
-                            .tag(tab)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-            }
-            .navigationTitle(Localization.viewTitle)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        // TODO
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
+        VStack(spacing: 0) {
+            headerView
+            TabView(selection: $viewModel.selectedTab) {
+                ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
+                    BookingListView(
+                        viewModel: viewModel.listViewModel(for: tab),
+                        selectedBooking: $selectedBooking
+                    )
+                    .tag(tab)
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .navigationDestination(for: Booking.self) { booking in
-            let viewModel = BookingDetailsViewModel(booking: booking)
-            BookingDetailsView(viewModel)
+        .navigationTitle(Localization.viewTitle)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    // TODO
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+            }
         }
     }
 }

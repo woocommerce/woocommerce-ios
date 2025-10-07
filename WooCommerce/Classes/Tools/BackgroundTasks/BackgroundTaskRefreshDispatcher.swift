@@ -15,7 +15,7 @@ final class BackgroundTaskRefreshDispatcher {
     func scheduleAppRefresh() {
         scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
     }
-    
+
     /// Schedules a background task with the specified type and timing.
     ///
     /// - Parameters:

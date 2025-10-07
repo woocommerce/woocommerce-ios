@@ -76,7 +76,9 @@ extension BookingDetailsView {
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
-                print("On email copy")
+                emailText.sendToPasteboard()
+                let notice = Notice(title: Localization.emailCopiedMessage, feedbackType: .success)
+                ServiceLocator.noticePresenter.enqueue(notice: notice)
             }
         }
 
@@ -98,8 +100,6 @@ extension BookingDetailsView {
         private func billingAddressView(with billingAddressText: String) -> some View {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(Localization.billingAddressRowTitle)
-                        .rowTextStyle()
                     Text(billingAddressText)
                         .font(TextFont.bodyMedium)
                         .foregroundStyle(.secondary)
@@ -109,5 +109,15 @@ extension BookingDetailsView {
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
         }
+    }
+}
+
+private extension BookingDetailsView.CustomerDetailsView {
+    enum Localization {
+        static let emailCopiedMessage = NSLocalizedString(
+            "BookingDetailsView.customer.emailCopied.toastMessage",
+            value: "Email address copied",
+            comment: "Toast message shown when the user copies the customer's email address."
+        )
     }
 }

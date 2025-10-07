@@ -1,5 +1,6 @@
 import Foundation
 import struct Networking.Booking
+import class WooFoundationCore.CurrencyFormatter
 
 extension BookingDetailsViewModel {
     struct PaymentContent {
@@ -8,10 +9,10 @@ extension BookingDetailsViewModel {
 
         init(booking: Booking) {
             amounts = [
-                .init(value: booking.cost, type: .service),
-                .init(value: "$0", type: .tax),
+                .init(value: Self.formatPrice(booking.cost), type: .service),
+                .init(value: Self.formatPrice("0"), type: .tax),
                 .init(value: "-", type: .discount),
-                .init(value: "$55.00", type: .total, emphasized: true),
+                .init(value: Self.formatPrice(booking.cost), type: .total, emphasized: true),
             ]
 
             actions = [
@@ -19,6 +20,17 @@ extension BookingDetailsViewModel {
                 .viewOrder
             ]
         }
+    }
+}
+
+private extension BookingDetailsViewModel.PaymentContent {
+    static func formatPrice(_ price: String) -> String {
+        guard let decimalPrice = Decimal(string: price) else {
+            return price
+        }
+        return CurrencyFormatter(
+            currencySettings: ServiceLocator.currencySettings
+        ).formatAmount(decimalPrice) ?? price
     }
 }
 

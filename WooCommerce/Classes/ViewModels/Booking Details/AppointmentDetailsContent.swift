@@ -1,5 +1,6 @@
 import Foundation
 import struct Networking.Booking
+import class WooFoundationCore.CurrencyFormatter
 
 extension BookingDetailsViewModel {
     struct AppointmentDetailsContent {
@@ -15,7 +16,6 @@ extension BookingDetailsViewModel {
         let rows: [Row]
 
         init(_ booking: Booking) {
-            let durationMinutes = Int(booking.endDate.timeIntervalSince(booking.startDate) / 60)
             let appointmentDate = booking.startDate.formatted(date: .numeric, time: .omitted)
             let appointmentTimeFrame = [
                 booking.startDate.formatted(date: .omitted, time: .shortened),
@@ -27,10 +27,38 @@ extension BookingDetailsViewModel {
                 Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
                 Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: "Marianne Renoir"), /// Temporarily hardcoded
                 Row(title: Localization.appointmentDetailsLocationTitle, value: "238 Willow Creek Drive, Montgomery ..."), /// Temporarily hardcoded
-                Row(title: Localization.appointmentDetailsDurationTitle, value: String(durationMinutes)),
-                Row(title: Localization.appointmentDetailsPriceTitle, value: booking.cost)
+                Row(
+                    title: Localization.appointmentDetailsDurationTitle,
+                    value: Self.formatDuration(
+                        from: booking.startDate,
+                        to: booking.endDate
+                    )
+                ),
+                Row(title: Localization.appointmentDetailsPriceTitle, value: Self.formatPrice(booking.cost))
             ]
         }
+    }
+}
+
+private extension BookingDetailsViewModel.AppointmentDetailsContent {
+    static let durationFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.hour, .minute]
+        return formatter
+    }()
+
+    static func formatDuration(from startDate: Date, to endDate: Date) -> String {
+        durationFormatter.string(from: startDate, to: endDate) ?? ""
+    }
+
+    static func formatPrice(_ price: String) -> String {
+        guard let decimalPrice = Decimal(string: price) else {
+            return price
+        }
+        return CurrencyFormatter(
+            currencySettings: ServiceLocator.currencySettings
+        ).formatAmount(decimalPrice) ?? price
     }
 }
 

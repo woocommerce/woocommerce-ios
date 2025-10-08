@@ -135,7 +135,7 @@ private extension BookingDetailsViewModel {
 
     @MainActor
     func updateHeader(with customer: Customer) {
-        headerContent.update(customerName: customerContent.nameText)
+        headerContent.update(with: customer)
     }
 
     func insertCustomerSectionIfAbsent() {

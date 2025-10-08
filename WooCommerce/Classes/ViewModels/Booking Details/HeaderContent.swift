@@ -1,5 +1,6 @@
 import Foundation
 import struct Networking.Booking
+import struct Networking.Customer
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
@@ -29,10 +30,18 @@ extension BookingDetailsViewModel {
         }
 
         @MainActor
-        func update(customerName: String?) {
+        func update(with customer: Customer) {
+            let customerName = [
+                customer.firstName,
+                customer.lastName
+            ]
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+
             /// Temporary hardcode for service name
             let serviceName = "Women's Haircut"
-            if let customerName = customerName, !customerName.isEmpty {
+            if !customerName.isEmpty {
                 serviceAndCustomerLine = [
                     serviceName,
                     customerName

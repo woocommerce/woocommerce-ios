@@ -285,6 +285,7 @@ struct AddEditCoupon: View {
                         }
                     }
                 }
+                .scrollDismissesKeyboard(.immediately)
             }
             .sheet(isPresented: $showingSelectProducts) {
                 ProductSelectorNavigationView(configuration: .productsForCoupons,

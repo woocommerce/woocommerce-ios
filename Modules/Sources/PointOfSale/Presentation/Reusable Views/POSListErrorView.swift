@@ -28,7 +28,7 @@ struct POSListErrorView: View {
                             .frame(width: 88, height: 88)
                             .foregroundColor(.posOnSurfaceVariantHighest)
                     } else {
-                        POSErrorExclamationMark(size: .large)
+                        POSErrorXMark(size: .large)
                     }
                     Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
                 }

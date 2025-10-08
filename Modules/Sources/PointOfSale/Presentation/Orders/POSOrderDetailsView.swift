@@ -312,7 +312,7 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func refundsSection(_ order: POSOrder) -> some View {
-        ForEach(order.refunds, id: \.refundID) { refund in
+        ForEach(order.refunds.sorted(by: { $0.refundID < $1.refundID }), id: \.refundID) { refund in
             refundRow(refund: refund)
             divider
         }

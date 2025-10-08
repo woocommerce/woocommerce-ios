@@ -1,23 +1,37 @@
 import SwiftUI
 import UIKit
 import struct WooFoundation.WooAnalyticsEvent
+import struct WooFoundation.SafariView
 
 struct POSOrdersView: View {
     @Binding var isPresented: Bool
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
+    @State private var isSearching: Bool = false
+    @State private var searchTerm: String = ""
+    @State private var showBlog = false
 
     var body: some View {
-        switch orderListModel.ordersController.ordersViewState {
-        case .error(let error):
+        contentView
+            .task {
+                await orderListModel.ordersController.loadOrders()
+            }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        switch (orderListModel.ordersController.ordersViewState, isSearching) {
+        case (.error(let error), false):
             errorView(error)
+        case (.empty, false):
+            emptyView()
         default:
             CustomNavigationSplitView(selection: Binding(
                 get: { orderListModel.ordersController.selectedOrder },
                 set: { orderListModel.ordersController.selectOrder($0) }
             )) { _ in
-                POSOrderListView() {
+                POSOrderListView(isSearching: $isSearching, searchTerm: $searchTerm) {
                     isPresented = false
                 }
             } detail: { selection in
@@ -65,19 +79,54 @@ struct POSOrdersView: View {
 
     @ViewBuilder
     private func errorView(_ error: PointOfSaleErrorState) -> some View {
-        VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: POSOrderListView.Localization.ordersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    isPresented = false
-                }))
-            .posHeaderBackButtonIcon(systemName: "xmark")
-
-            POSListErrorView(error: error) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadOrders()
+        ZStack {
+            VStack {
+                Spacer()
+                POSListErrorView(error: error) {
+                    Task { @MainActor in
+                        await orderListModel.ordersController.loadOrders()
+                    }
                 }
+                Spacer()
             }
+
+            VStack {
+                POSPageHeaderView(
+                    title: POSOrderListView.Localization.ordersTitle,
+                    backButtonConfiguration: .init(state: .enabled, action: {
+                        isPresented = false
+                    }))
+                .posHeaderBackButtonIcon(systemName: "xmark")
+                Spacer()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func emptyView() -> some View {
+        ZStack {
+            VStack {
+                Spacer()
+                POSListEmptyView(
+                    viewModel: POSOrderListEmptyViewModel(isSearching: false)
+                ) {
+                    showBlog = true
+                }
+                Spacer()
+            }
+
+            VStack {
+                POSPageHeaderView(
+                    title: POSOrderListView.Localization.ordersTitle,
+                    backButtonConfiguration: .init(state: .enabled, action: {
+                        isPresented = false
+                    }))
+                .posHeaderBackButtonIcon(systemName: "xmark")
+                Spacer()
+            }
+        }
+        .posFullScreenCover(isPresented: $showBlog) {
+            SafariView(url: POSConstants.URLs.wooCommerceBlog.asURL())
         }
     }
 }
@@ -158,8 +207,18 @@ private enum Constants {
 }
 
 #if DEBUG
-#Preview("Orders View") {
+#Preview("Orders View List") {
+    POSOrdersView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
+}
+
+#Preview("Orders View Empty") {
     POSOrdersView(isPresented: .constant(true))
         .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+}
+
+#Preview("Orders View Error") {
+    POSOrdersView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .error(.errorOnLoadingOrders())))
 }
 #endif

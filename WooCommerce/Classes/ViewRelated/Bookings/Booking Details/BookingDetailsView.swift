@@ -138,7 +138,7 @@ private extension BookingDetailsView {
     func sectionContentView(_ content: BookingDetailsViewModel.SectionContent) -> some View {
         switch content {
         case .header(let content):
-            headerView(with: content)
+            HeaderView(content: content)
         case .appointmentDetails(let content):
             appointmentDetailsView(with: content)
         case .attendance(let content):
@@ -150,30 +150,6 @@ private extension BookingDetailsView {
         case .bookingNotes:
             bookingNotesView()
         }
-    }
-
-    func headerView(with headerContent: BookingDetailsViewModel.HeaderContent) -> some View {
-        VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
-            Text(headerContent.bookingDate)
-                .font(TextFont.bodyMedium)
-                .foregroundColor(.primary)
-            Text(headerContent.serviceAndCustomerLine)
-                .font(.footnote.weight(.medium))
-                .foregroundColor(.secondary)
-            HStack {
-                ForEach(headerContent.status, id: \.self) { status in
-                    Text(status.labelText)
-                        .font(.caption2)
-                        .padding(.vertical, 4.5)
-                        .padding(.horizontal, 8)
-                        .background(status.labelColor)
-                        .cornerRadius(4)
-                }
-            }
-            .padding(.top, Layout.headerBadgesAdditionalTopPadding)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical)
     }
 
     func attendanceView(with content: BookingDetailsViewModel.AttendanceContent) -> some View {

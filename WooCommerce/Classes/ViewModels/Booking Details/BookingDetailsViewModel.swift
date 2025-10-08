@@ -9,6 +9,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
 
     private let booking: Booking
+    private let headerContent: HeaderContent
     private let customerContent = CustomerContent()
 
     let navigationTitle: String
@@ -17,13 +18,14 @@ final class BookingDetailsViewModel: ObservableObject {
     init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
         self.booking = booking
         self.stores = stores
+        self.headerContent = HeaderContent(booking)
         navigationTitle = Self.navigationTitle(for: booking)
         setupSections()
     }
 
     private func setupSections() {
         let headerSection = Section(
-            content: .header(HeaderContent(booking))
+            content: .header(headerContent)
         )
 
         let appointmentDetailsSection = Section(
@@ -74,7 +76,10 @@ private extension BookingDetailsViewModel {
         let action = CustomerAction.loadCustomer(siteID: booking.siteID, customerID: booking.customerID) { [weak self] result in
             guard let self = self else { return }
             if case .success(let customer) = result {
-                self.updateCustomerSection(with: customer)
+                Task {
+                    await self.updateCustomerSection(with: customer)
+                    await self.updateHeader(with: customer)
+                }
             }
         }
         stores.dispatch(action)
@@ -97,7 +102,8 @@ private extension BookingDetailsViewModel {
 
         do {
             let fetchedCustomer = try await retrieveCustomer()
-            updateCustomerSection(with: fetchedCustomer)
+            await updateCustomerSection(with: fetchedCustomer)
+            await updateHeader(with: fetchedCustomer)
         } catch {
             DDLogError("⛔️ Error synchronizing Customer for Booking: \(error)")
         }
@@ -121,9 +127,18 @@ private extension BookingDetailsViewModel {
         }
     }
 
+    @MainActor
     func updateCustomerSection(with customer: Customer) {
         customerContent.update(with: customer)
+        insertCustomerSectionIfAbsent()
+    }
 
+    @MainActor
+    func updateHeader(with customer: Customer) {
+        headerContent.update(customerName: customerContent.nameText)
+    }
+
+    func insertCustomerSectionIfAbsent() {
         // Avoid adding if it already exists
         guard !sections.contains(where: { if case .customer = $0.content { return true } else { return false } }) else {
             return

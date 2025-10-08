@@ -26,6 +26,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
     func testLoadCustomerDataPopulatesCustomerContent() {
         // Given
+        let expectation = self.expectation(description: "The view model's customer content should be populated.")
         let customerID: Int64 = 123
         let mockBooking = Networking.Booking.fake().copy(customerID: customerID)
 
@@ -45,6 +46,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             lastName: "Doe",
             billing: billingAddress
         )
+
         let mockStorageCustomer = storageManager.insertSampleCustomer(readOnlyCustomer: mockReadOnlyCustomer)
         let viewModel = BookingDetailsViewModel(booking: mockBooking, stores: storesManager)
 
@@ -53,19 +55,19 @@ final class BookingDetailsViewModelTests: XCTestCase {
                 return
             }
             onCompletion(.success(mockStorageCustomer.toReadOnly()))
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                expectation.fulfill()
+            }
         }
 
         // When
         viewModel.loadLocalData()
 
-        // Then
-        let customerSection = viewModel.sections.first { section in
-            if case .customer = section.content {
-                return true
-            }
-            return false
-        }
+        // Wait for async updates to finish
+        wait(for: [expectation], timeout: 1.0)
 
+        // Then
+        let customerSection = viewModel.sections.first { if case .customer = $0.content { true } else { false } }
         guard let customerSection = customerSection,
               case let .customer(customerContent) = customerSection.content else {
             XCTFail("Customer section not found in view model sections")
@@ -89,5 +91,48 @@ final class BookingDetailsViewModelTests: XCTestCase {
         .joined(separator: "\n")
 
         XCTAssertEqual(customerContent.billingAddressText, expectedBillingAddress)
+    }
+
+    func testLoadLocalDataPopulatesHeaderContent() {
+        // Given
+        let expectation = self.expectation(description: "The view model's header content should be populated.")
+        let customerID: Int64 = 123
+        let mockBooking = Networking.Booking.fake().copy(customerID: customerID)
+
+        let mockReadOnlyCustomer = Networking.Customer.fake().copy(
+            customerID: customerID,
+            firstName: "John",
+            lastName: "Doe"
+        )
+
+        let mockStorageCustomer = storageManager.insertSampleCustomer(readOnlyCustomer: mockReadOnlyCustomer)
+        let viewModel = BookingDetailsViewModel(booking: mockBooking, stores: storesManager)
+
+        storesManager.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .loadCustomer(_, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(mockStorageCustomer.toReadOnly()))
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        viewModel.loadLocalData()
+
+        // Wait for async updates to finish
+        wait(for: [expectation], timeout: 1.0)
+
+        // Then
+        let headerSection = viewModel.sections.first { if case .header = $0.content { true } else { false } }
+        guard let headerSection = headerSection,
+              case let .header(headerContent) = headerSection.content else {
+            XCTFail("Header section not found in view model sections")
+            return
+        }
+
+        let expectedHeaderLine = "Women's Haircut • John Doe"
+        XCTAssertEqual(headerContent.serviceAndCustomerLine, expectedHeaderLine)
     }
 }

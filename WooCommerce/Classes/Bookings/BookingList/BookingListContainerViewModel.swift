@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
@@ -9,10 +10,31 @@ final class BookingListContainerViewModel: ObservableObject {
     @Published var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
 
+    private let searchQuerySubject = PassthroughSubject<String, Never>()
+    private var searchQuerySubscription: AnyCancellable?
+
     init(siteID: Int64) {
-        self.todayListViewModel = BookingListViewModel(siteID: siteID, type: .today)
-        self.upcomingListViewModel = BookingListViewModel(siteID: siteID, type: .upcoming)
-        self.allListViewModel = BookingListViewModel(siteID: siteID, type: .all)
+        let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
+        self.todayListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .today,
+            searchQueryPublisher: searchQueryPublisher
+        )
+        self.upcomingListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .upcoming,
+            searchQueryPublisher: searchQueryPublisher
+        )
+        self.allListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .all,
+            searchQueryPublisher: searchQueryPublisher
+        )
+
+        searchQuerySubscription = $searchQuery
+            .sink { [weak self] query in
+                self?.searchQuerySubject.send(query)
+            }
     }
 
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {

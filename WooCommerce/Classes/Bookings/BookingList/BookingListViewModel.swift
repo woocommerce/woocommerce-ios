@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Yosemite
+import Combine
 import protocol Storage.StorageManagerType
 
 /// View model for `BookingListView`
@@ -9,6 +10,9 @@ final class BookingListViewModel: ObservableObject {
     @Published private(set) var bookings: [Booking] = []
 
     @Published var errorFetching = false
+
+    /// Search view model for handling search functionality
+    let searchViewModel: BookingSearchViewModel
 
     var hasFilters: Bool {
         // TODO: Update when adding filters
@@ -60,6 +64,7 @@ final class BookingListViewModel: ObservableObject {
 
     init(siteID: Int64,
          type: BookingListTab,
+         searchQueryPublisher: AnyPublisher<String, Never>,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          currentDate: Date = Date()) {
@@ -69,6 +74,13 @@ final class BookingListViewModel: ObservableObject {
         self.storage = storage
         self.currentDate = currentDate
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
+        self.searchViewModel = BookingSearchViewModel(
+            siteID: siteID,
+            type: type,
+            searchQueryPublisher: searchQueryPublisher,
+            stores: stores,
+            currentDate: currentDate
+        )
 
         configureResultsController()
         configurePaginationTracker()

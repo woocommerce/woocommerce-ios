@@ -78,6 +78,6 @@ public extension BookingsRemote {
         static let perPage: String         = "per_page"
         static let startDateBefore: String = "start_date_before"
         static let startDateAfter: String  = "start_date_after"
-        static let search: String          = "s"
+        static let search: String          = "search"
     }
 }

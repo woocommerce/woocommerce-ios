@@ -92,8 +92,22 @@ struct PersistedProductTests {
         ]
 
         let persistedAttributes = [
-            PersistedProductAttribute(siteID: siteID, productID: productID, name: "Material", position: 0, visible: true, variation: false, options: ["Cotton"]),
-            PersistedProductAttribute(siteID: siteID, productID: productID, name: "Fit", position: 1, visible: true, variation: true, options: ["Slim", "Regular"])
+            PersistedProductAttribute(siteID: siteID,
+                                      productID: productID,
+                                      remoteAttributeID: 501,
+                                      name: "Material",
+                                      position: 0,
+                                      visible: true,
+                                      variation: false,
+                                      options: ["Cotton"]),
+            PersistedProductAttribute(siteID: siteID,
+                                      productID: productID,
+                                      remoteAttributeID: 502,
+                                      name: "Fit",
+                                      position: 1,
+                                      visible: true,
+                                      variation: true,
+                                      options: ["Slim", "Regular"])
         ]
 
         // When
@@ -178,6 +192,7 @@ struct PersistedProductTests {
             var attribute1 = PersistedProductAttribute(
                 siteID: 1,
                 productID: 100,
+                remoteAttributeID: 501,
                 name: "Color",
                 position: 0,
                 visible: true,
@@ -187,6 +202,7 @@ struct PersistedProductTests {
             var attribute2 = PersistedProductAttribute(
                 siteID: 1,
                 productID: 100,
+                remoteAttributeID: 502,
                 name: "Size",
                 position: 1,
                 visible: false,
@@ -310,6 +326,117 @@ struct PersistedProductTests {
         #expect(back.visible == attribute.visible)
         #expect(back.variation == attribute.variation)
         #expect(back.options == attribute.options)
+    }
+
+    @Test("PersistedProductAttribute with remoteAttributeID of 0 represents non-global attribute")
+    func product_attribute_with_zero_remote_id_is_non_global() throws {
+        // Given a non-global attribute (not shared across products)
+        let siteID: Int64 = 10
+        let productID: Int64 = 100
+        let attribute = ProductAttribute(siteID: siteID,
+                                         attributeID: 0,
+                                         name: "Custom Color",
+                                         position: 0,
+                                         visible: true,
+                                         variation: true,
+                                         options: ["Custom Red", "Custom Blue"])
+
+        // When
+        let persisted = PersistedProductAttribute(from: attribute, siteID: siteID, productID: productID)
+
+        // Then the remoteAttributeID should be 0 for non-global attributes
+        #expect(persisted.remoteAttributeID == 0)
+        #expect(persisted.name == "Custom Color")
+        #expect(persisted.options == ["Custom Red", "Custom Blue"])
+
+        // When converting back to ProductAttribute
+        let back = persisted.toProductAttribute(siteID: siteID)
+
+        // Then the attributeID should remain 0
+        #expect(back.attributeID == 0)
+        #expect(back.name == "Custom Color")
+        #expect(back.options == ["Custom Red", "Custom Blue"])
+    }
+
+    @Test("Non-global product attribute persists and retrieves correctly with remoteAttributeID 0")
+    func non_global_product_attribute_persists_correctly() throws {
+        // Given
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        try db.write { db in
+            let site = PersistedSite(id: 5)
+            try site.insert(db)
+
+            let product = PersistedProduct(
+                id: 500,
+                siteID: 5,
+                name: "Custom Product",
+                productTypeKey: "variable",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "25.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try product.insert(db)
+
+            // Insert a non-global attribute with remoteAttributeID = 0
+            var nonGlobalAttribute = PersistedProductAttribute(
+                siteID: 5,
+                productID: 500,
+                remoteAttributeID: 0,
+                name: "Custom Texture",
+                position: 0,
+                visible: true,
+                variation: true,
+                options: ["Smooth", "Rough", "Textured"]
+            )
+            try nonGlobalAttribute.insert(db)
+
+            // Also insert a global attribute for comparison
+            var globalAttribute = PersistedProductAttribute(
+                siteID: 5,
+                productID: 500,
+                remoteAttributeID: 123,
+                name: "Standard Size",
+                position: 1,
+                visible: true,
+                variation: false,
+                options: ["Small", "Medium", "Large"]
+            )
+            try globalAttribute.insert(db)
+        }
+
+        // When
+        let fetchedProduct = try db.read { db in
+            try PersistedProduct.filter(PersistedProduct.Columns.id == 500).fetchOne(db)
+        }
+
+        let product = try #require(fetchedProduct)
+        let posProduct = try product.toPOSProduct(db: db)
+
+        // Then both attributes should be present
+        #expect(posProduct.attributes.count == 2)
+
+        // Verify non-global attribute
+        let nonGlobalAttr = posProduct.attributes.first { $0.name == "Custom Texture" }
+        #expect(nonGlobalAttr != nil)
+        #expect(nonGlobalAttr?.attributeID == 0)
+        #expect(nonGlobalAttr?.options == ["Smooth", "Rough", "Textured"])
+        #expect(nonGlobalAttr?.variation == true)
+
+        // Verify global attribute
+        let globalAttr = posProduct.attributes.first { $0.name == "Standard Size" }
+        #expect(globalAttr != nil)
+        #expect(globalAttr?.attributeID == 123)
+        #expect(globalAttr?.options == ["Small", "Medium", "Large"])
+        #expect(globalAttr?.variation == false)
     }
 
     @Test("PersistedProductImage init(from:) and toProductImage round-trip")

@@ -24,7 +24,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         storageManager = nil
     }
 
-    func testLoadCustomerDataPopulatesCustomerContent() {
+    func test_load_local_data_when_customer_exists_in_storage_populates_customer_content() {
         // Given
         let expectation = self.expectation(description: "The view model's customer content should be populated.")
         let customerID: Int64 = 123
@@ -93,7 +93,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(customerContent.billingAddressText, expectedBillingAddress)
     }
 
-    func testLoadLocalDataPopulatesHeaderContent() {
+    func test_load_local_data_when_customer_exists_in_storage_populates_header_content() {
         // Given
         let expectation = self.expectation(description: "The view model's header content should be populated.")
         let customerID: Int64 = 123

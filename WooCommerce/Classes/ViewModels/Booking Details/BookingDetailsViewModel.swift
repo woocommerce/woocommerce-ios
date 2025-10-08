@@ -140,12 +140,7 @@ private extension BookingDetailsViewModel {
 
     /// Returns true when the `customerID` is non-zero and customer section doesn't exist
     var shouldSyncCustomer: Bool {
-        return booking.customerID > 0 && !sections.contains(where: {
-            if case .customer = $0.content {
-                return true
-            }
-            return false
-        })
+        return booking.customerID > 0
     }
 }
 

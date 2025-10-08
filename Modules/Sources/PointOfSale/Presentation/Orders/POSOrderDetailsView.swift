@@ -139,13 +139,13 @@ private extension POSOrderDetailsView {
     func headerBottomContent(for order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             Text(dateFormatter.string(from: order.dateCreated))
-                .font(.posBodySmallRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)
 
             if let customerEmail = order.customerEmail, customerEmail.isNotEmpty {
                 Text(customerEmail)
-                    .font(.posBodySmallRegular())
+                    .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .fixedSize(horizontal: false, vertical: true)
             }

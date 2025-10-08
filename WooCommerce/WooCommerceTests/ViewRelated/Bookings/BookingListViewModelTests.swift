@@ -19,6 +19,9 @@ struct BookingListViewModelTests {
         storageManager.viewStorage
     }
 
+    /// Search query publisher for tests
+    private let searchQueryPublisher = PassthroughSubject<String, Never>().eraseToAnyPublisher()
+
     init() {
         storageManager = MockStorageManager()
     }
@@ -35,7 +38,7 @@ struct BookingListViewModelTests {
             }
             invocationCountOfLoadBookings += 1
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores)
 
         // Then
         #expect(viewModel.syncState == .empty)
@@ -52,7 +55,7 @@ struct BookingListViewModelTests {
             }
             invocationCountOfLoadBookings += 1
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores)
 
         // When
         viewModel.loadBookings()
@@ -63,7 +66,7 @@ struct BookingListViewModelTests {
 
     @Test func state_is_syncing_first_page_upon_load_bookings_if_no_existing_booking_in_storage() {
         // Given
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher)
 
         // When
         viewModel.loadBookings()
@@ -77,6 +80,7 @@ struct BookingListViewModelTests {
         insertBookings([existingBooking])
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: MockStoresManager(sessionManager: .testingInstance),
                                              storage: storageManager)
 
@@ -100,6 +104,7 @@ struct BookingListViewModelTests {
         }
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: stores,
                                              storage: storageManager)
 
@@ -137,6 +142,7 @@ struct BookingListViewModelTests {
         }
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: stores,
                                              storage: storageManager)
 
@@ -181,6 +187,7 @@ struct BookingListViewModelTests {
 
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: stores,
                                              storage: storageManager)
 
@@ -226,6 +233,7 @@ struct BookingListViewModelTests {
         }
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: stores,
                                              storage: storageManager)
 
@@ -250,6 +258,7 @@ struct BookingListViewModelTests {
         }
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: stores,
                                              storage: storageManager)
 
@@ -275,6 +284,7 @@ struct BookingListViewModelTests {
         }
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: stores,
                                              storage: storageManager)
 
@@ -303,7 +313,7 @@ struct BookingListViewModelTests {
 
             onCompletion(.success(false))
         }
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores)
 
         // When
         await viewModel.onRefreshAction()
@@ -331,7 +341,7 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .today, stores: stores, currentDate: testDate)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .today, searchQueryPublisher: searchQueryPublisher, stores: stores, currentDate: testDate)
 
         // When
         viewModel.loadBookings()
@@ -357,7 +367,7 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .upcoming, stores: stores, currentDate: testDate)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .upcoming, searchQueryPublisher: searchQueryPublisher, stores: stores, currentDate: testDate)
 
         // When
         viewModel.loadBookings()
@@ -383,7 +393,7 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores, currentDate: testDate)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores, currentDate: testDate)
 
         // When
         viewModel.loadBookings()
@@ -408,7 +418,7 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores)
 
         // When
         viewModel.loadBookings()
@@ -432,7 +442,7 @@ struct BookingListViewModelTests {
             onCompletion(.success(actionCallCount == 1)) // First call has next page, second doesn't
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores)
 
         // When
         viewModel.loadBookings() // First page
@@ -456,7 +466,7 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, searchQueryPublisher: searchQueryPublisher, stores: stores)
 
         // When
         await viewModel.onRefreshAction()
@@ -484,6 +494,7 @@ struct BookingListViewModelTests {
 
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .today,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: MockStoresManager(sessionManager: .testingInstance),
                                              storage: storageManager,
                                              currentDate: testDate)
@@ -509,6 +520,7 @@ struct BookingListViewModelTests {
 
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .upcoming,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: MockStoresManager(sessionManager: .testingInstance),
                                              storage: storageManager,
                                              currentDate: testDate)
@@ -538,6 +550,7 @@ struct BookingListViewModelTests {
 
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: MockStoresManager(sessionManager: .testingInstance),
                                              storage: storageManager,
                                              currentDate: testDate)
@@ -565,6 +578,7 @@ struct BookingListViewModelTests {
 
         let viewModel = BookingListViewModel(siteID: sampleSiteID,
                                              type: .all,
+                                             searchQueryPublisher: searchQueryPublisher,
                                              stores: MockStoresManager(sessionManager: .testingInstance),
                                              storage: storageManager,
                                              currentDate: testDate)

@@ -107,9 +107,9 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             switch result {
             case .success(let bookings):
                 if pageNumber == self.pageFirstIndex {
-                    self.searchResults = bookings
+                    searchResults = bookings
                 } else {
-                    self.searchResults.append(contentsOf: bookings)
+                    searchResults.append(contentsOf: bookings)
                 }
                 let hasNextPage = bookings.count == pageSize
                 onCompletion?(.success(hasNextPage))
@@ -122,7 +122,8 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
                 onCompletion?(.failure(error))
             }
 
-            self.shouldShowBottomActivityIndicator = false
+            isSearching = false
+            shouldShowBottomActivityIndicator = false
         }
         stores.dispatch(action)
     }

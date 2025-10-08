@@ -3,30 +3,42 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
+    @ObservedObject private var searchViewModel: BookingSearchViewModel
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding var selectedBooking: Booking?
 
     init(viewModel: BookingListViewModel, selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self.searchViewModel = viewModel.searchViewModel
         self._selectedBooking = selectedBooking
     }
 
     var body: some View {
         VStack {
+            mainContentView
+                .overlay {
+                    searchContentView
+                        .renderedIf(searchViewModel.currentSearchQuery.isNotEmpty)
+                }
+        }
+        .task {
+            viewModel.loadBookings()
+        }
+    }
+}
+
+private extension BookingListView {
+    var mainContentView: some View {
+        VStack {
             switch viewModel.syncState {
             case .empty:
                 emptyStateView
             case .syncingFirstPage:
-                Spacer()
-                ProgressView().progressViewStyle(.circular)
-                Spacer()
+                loadingView
             case .results:
-                bookingList
+                bookingList(with: viewModel.bookings)
             }
-        }
-        .task {
-            viewModel.loadBookings()
         }
         .overlay(alignment: .bottom) {
             if viewModel.errorFetching {
@@ -35,12 +47,32 @@ struct BookingListView: View {
             }
         }
     }
-}
 
-private extension BookingListView {
-    var bookingList: some View {
+    var searchContentView: some View {
+        VStack {
+            if searchViewModel.isSearching {
+                loadingView
+            } else if searchViewModel.searchResults.isEmpty {
+                emptyStateView
+            } else {
+                bookingList(with: searchViewModel.searchResults)
+            }
+        }
+    }
+
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            ProgressView().progressViewStyle(.circular)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemBackground))
+    }
+
+    func bookingList(with bookings: [Booking]) -> some View {
         List(selection: $selectedBooking) {
-            ForEach(viewModel.bookings) { item in
+            ForEach(bookings) { item in
                 bookingItem(item)
                     .tag(item)
             }
@@ -137,6 +169,7 @@ private extension BookingListView {
                 await viewModel.onRefreshAction()
             }
         }
+        .background(Color(.systemBackground))
     }
 
     var errorSnackBar: some View {

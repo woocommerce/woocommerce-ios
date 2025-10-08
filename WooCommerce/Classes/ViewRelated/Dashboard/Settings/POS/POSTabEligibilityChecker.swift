@@ -6,9 +6,7 @@ import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import struct Yosemite.Site
-import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
-import class Yosemite.POSEligibilityService
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
@@ -16,47 +14,29 @@ import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
 import class Yosemite.POSSiteSettingService
+import class Yosemite.SiteAddress
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
-
-protocol POSEntryPointEligibilityCheckerProtocol {
-    /// Checks the initial visibility of the POS tab.
-    func checkInitialVisibility() -> Bool
-    /// Checks the final visibility of the POS tab.
-    func checkVisibility() async -> Bool
-    /// Determines whether the site is eligible for POS.
-    func checkEligibility() async -> POSEligibilityState
-    /// Refreshes the eligibility state based on the provided ineligible reason.
-    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState
-}
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
+import enum PointOfSale.POSEligibilityState
+import enum PointOfSale.POSIneligibleReason
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    private let site: Site
-    private let userInterfaceIdiom: UIUserInterfaceIdiom
+    private let siteID: Int64
     private let siteSettings: SelectedSiteSettingsProtocol
-    private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
-    init(site: Site,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+    init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
-         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
-         siteSettingService: POSSiteSettingServiceProtocol? = nil,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
-        self.site = site
-        self.userInterfaceIdiom = userInterfaceIdiom
+         siteSettingService: POSSiteSettingServiceProtocol? = nil) {
+        self.siteID = siteID
         self.siteSettings = siteSettings
-        self.eligibilityService = eligibilityService
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
@@ -73,24 +53,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             selectedSite: selectedSite,
             appPasswordSupportState: appPasswordSupport
         )
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
-    }
-
-    /// Checks the initial visibility of the POS tab without dependance on network requests.
-    func checkInitialVisibility() -> Bool {
-        eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
-            return .ineligible(reason: .unsupportedInCIABSites)
-        }
-
-        guard #available(iOS 17.0, *) else {
-            return .ineligible(reason: .unsupportedIOSVersion)
-        }
-
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let pluginEligibility = checkPluginEligibility()
 
@@ -109,34 +75,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         }
     }
 
-    /// Checks the final visibility of the POS tab.
-    func checkVisibility() async -> Bool {
-        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
-            return false
-        }
-
-        guard userInterfaceIdiom == .pad else {
-            return false
-        }
-
-        async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()
-        async let featureFlagEligibility = checkRemoteFeatureEligibility()
-
-        switch await siteSettingsEligibility {
-        case .ineligible(.unsupportedCountry):
-            return false
-        default:
-            break
-        }
-
-        return await featureFlagEligibility == .eligible
-    }
-
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
         switch ineligibleReason {
-        case .unsupportedIOSVersion:
-            // TODO: WOOMOB-768 - hide refresh CTA in this case
-            return .ineligible(reason: .unsupportedIOSVersion)
         case .siteSettingsNotAvailable, .unsupportedCurrency:
             do {
                 try await syncSiteSettingsRemotely()
@@ -149,11 +89,9 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
             return await checkEligibility()
         case .featureSwitchDisabled:
-            _ = try await siteSettingService.setFeature(siteID: site.siteID, feature: .pointOfSale, enabled: true)
+            _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
-            return await checkEligibility()
-        case .unsupportedInCIABSites:
             return await checkEligibility()
         }
     }
@@ -168,7 +106,7 @@ private extension POSTabEligibilityChecker {
     /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch.
     func checkPluginEligibility() async -> POSEligibilityState {
         do {
-            let info = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: site.siteID)
+            let info = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
             let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: info.wcPlugin)
             switch wcPluginEligibility {
             case .eligible:
@@ -261,7 +199,7 @@ private extension POSTabEligibilityChecker {
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream.values {
-            guard siteSettings.siteID == site.siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
                 continue
             }
             return siteSettings.settings
@@ -293,7 +231,7 @@ private extension POSTabEligibilityChecker {
             guard let self else {
                 return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
             }
-            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: site.siteID) { [weak self] error in
+            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
                 guard let self else {
                     return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
                 }
@@ -303,46 +241,6 @@ private extension POSTabEligibilityChecker {
                 siteSettings.refresh()
                 continuation.resume(returning: ())
             })
-        }
-    }
-}
-
-// MARK: - Remote Feature Flag Eligibility Check
-
-private extension POSTabEligibilityChecker {
-    enum RemoteFeatureFlagEligibilityState: Equatable {
-        case eligible
-        case ineligible(reason: RemoteFeatureFlagIneligibleReason)
-    }
-
-    enum RemoteFeatureFlagIneligibleReason: Equatable {
-        case selfDeallocated
-        case featureFlagDisabled
-    }
-
-    @MainActor
-    func checkRemoteFeatureEligibility() async -> RemoteFeatureFlagEligibilityState {
-        // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
-        // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-            }
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSale, defaultValue: false) { [weak self] result in
-                guard let self else {
-                    return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-                }
-                switch result {
-                case true:
-                    // The site is whitelisted.
-                    continuation.resume(returning: .eligible)
-                case false:
-                    // When the site is not whitelisted, check the local feature flag configuration.
-                    let localFeatureFlag = featureFlagService.isFeatureFlagEnabled(.pointOfSale)
-                    continuation.resume(returning: localFeatureFlag ? .eligible : .ineligible(reason: .featureFlagDisabled))
-                }
-            }
-            self.stores.dispatch(action)
         }
     }
 }

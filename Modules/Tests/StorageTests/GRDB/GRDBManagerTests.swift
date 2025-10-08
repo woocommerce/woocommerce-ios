@@ -193,6 +193,7 @@ struct GRDBManagerTests {
                 let attribute = TestProductAttribute(
                     siteID: 1,
                     productID: 100,
+                    remoteAttributeID: 0,
                     name: "Color",
                     position: 0,
                     visible: true,
@@ -247,6 +248,7 @@ struct GRDBManagerTests {
                 let variationAttribute = TestProductVariationAttribute(
                     siteID: 1,
                     productVariationID: 200,
+                    remoteAttributeID: 0,
                     name: "Color",
                     option: "Red"
                 )
@@ -300,6 +302,7 @@ struct GRDBManagerTests {
                 let productAttribute = TestProductAttribute(
                     siteID: testSiteId,
                     productID: 100,
+                    remoteAttributeID: 50,
                     name: "Color",
                     position: 0,
                     visible: true,
@@ -311,6 +314,7 @@ struct GRDBManagerTests {
                 let variationAttribute = TestProductVariationAttribute(
                     siteID: testSiteId,
                     productVariationID: 200,
+                    remoteAttributeID: 60,
                     name: "Size",
                     option: "Large"
                 )
@@ -563,6 +567,7 @@ struct GRDBManagerTests {
                         let productAttribute = TestProductAttribute(
                             siteID: siteID,
                             productID: product.id,
+                            remoteAttributeID: 50,
                             name: "Color \(i)",
                             position: i,
                             visible: true,
@@ -575,6 +580,7 @@ struct GRDBManagerTests {
                         let variationAttribute = TestProductVariationAttribute(
                             siteID: siteID,
                             productVariationID: variation.id,
+                            remoteAttributeID: 60,
                             name: "Size \(i)",
                             option: "Large"
                         )
@@ -744,6 +750,7 @@ extension TestProductVariation: FetchableRecord, PersistableRecord {
 struct TestProductAttribute: Codable {
     let siteID: Int64
     let productID: Int64
+    let remoteAttributeID: Int64
     let name: String
     let position: Int
     let visible: Bool
@@ -758,6 +765,7 @@ extension TestProductAttribute: FetchableRecord, PersistableRecord {
 struct TestProductVariationAttribute: Codable {
     let siteID: Int64
     let productVariationID: Int64
+    let remoteAttributeID: Int64
     let name: String
     let option: String
 }

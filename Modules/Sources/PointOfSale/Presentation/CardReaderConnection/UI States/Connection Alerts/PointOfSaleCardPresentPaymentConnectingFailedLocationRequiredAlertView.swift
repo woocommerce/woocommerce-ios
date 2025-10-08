@@ -1,0 +1,48 @@
+import SwiftUI
+import WooFoundation
+
+struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: View {
+    let viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel
+    let animation: POSCardPresentPaymentAlertAnimation
+
+    var body: some View {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                SharedImageAsset.location.image
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+
+                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .font(POSFontStyle.posHeadingBold)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+
+                    Text(viewModel.subtitle)
+                        .font(POSFontStyle.posBodyLargeRegular())
+                        .fixedSize(horizontal: false, vertical: true)
+                        .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            Button(viewModel.primaryButtonViewModel.title,
+                   action: viewModel.primaryButtonViewModel.actionHandler)
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
+        }
+        .scrollVerticallyIfNeeded()
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.cancelButtonViewModel.title)
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+#Preview {
+    @Previewable @Namespace var namespace
+    PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView(
+        viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(cancelSearchAction: {}),
+        animation: .init(namespace: namespace)
+    )
+}

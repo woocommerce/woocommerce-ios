@@ -24,8 +24,12 @@ final class MediaTypeTests: XCTestCase {
 
     func testInitWithAudioFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
-        // Note: "ogg" isn't supported on iOS.
-        let audioFileExtensions = ["mp3", "m4a", "wav"]
+        var audioFileExtensions = ["mp3", "m4a", "wav"]
+        // Note: "ogg" is only supported on iOS 26 and above.
+        if #available(iOS 26.0, *) {
+            audioFileExtensions.append("ogg")
+        }
+
         audioFileExtensions.forEach { fileExtension in
             XCTAssertEqual(MediaType(fileExtension: fileExtension), .audio, "Unexpected media type for file extension: \(fileExtension)")
         }
@@ -41,11 +45,16 @@ final class MediaTypeTests: XCTestCase {
 
     func testInitWithOtherFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
-        let presentationFileExtensions = [
+        var presentationFileExtensions = [
             "pdf", "doc", "odt", "xls", "xlsx",
-            // Audio/video formats that are not supported on iOS
-            "ogg", "ogv"
+            // Video formats that are not supported on iOS
+            "ogv"
         ]
+
+        // Note: "ogg" is only supported on iOS 26 and above.
+        if #unavailable(iOS 26.0) {
+            presentationFileExtensions.append("ogg")
+        }
         presentationFileExtensions.forEach { fileExtension in
             XCTAssertEqual(MediaType(fileExtension: fileExtension), .other, "Unexpected media type for file extension: \(fileExtension)")
         }
@@ -80,7 +89,11 @@ final class MediaTypeTests: XCTestCase {
 
     func testInitWithAudioMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
-        let audioMimeTypes = ["audio/midi", "audio/x-midi", "audio/mpeg", "audio/wav"]
+        var audioMimeTypes = ["audio/midi", "audio/x-midi", "audio/mpeg", "audio/wav"]
+        // Note: "ogg" is only supported on iOS 26 and above.
+        if #available(iOS 26.0, *) {
+            audioMimeTypes.append("audio/ogg")
+        }
         audioMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .audio, "Unexpected media type for file extension: \(mimeType)")
         }
@@ -96,14 +109,19 @@ final class MediaTypeTests: XCTestCase {
 
     func testInitWithOtherMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
-        let otherMimeTypes = [
+        var otherMimeTypes = [
             "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "application/vnd.oasis.opendocument.text", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             // Video formats that are not supported on iOS
             "video/ogg", "video/mp2t", "video/webm",
             // Audio formats that are not supported on iOS
-            "audio/ogg", "audio/opus", "audio/webm"
+            "audio/opus", "audio/webm"
         ]
+
+        // Note: "ogg" is only supported on iOS 26 and above.
+        if #unavailable(iOS 26.0) {
+            otherMimeTypes.append("audio/ogg")
+        }
         otherMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .other, "Unexpected media type for file extension: \(mimeType)")
         }

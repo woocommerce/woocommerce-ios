@@ -1,5 +1,6 @@
 import Combine
 import Photos
+import PointOfSale
 import SwiftUI
 import TestKit
 import XCTest
@@ -76,7 +77,7 @@ final class MainTabBarControllerTests: XCTestCase {
         ServiceLocator.setPushNotesManager(pushNotificationsManager)
 
         // Hides POS tab.
-        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = false
 
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
@@ -87,7 +88,7 @@ final class MainTabBarControllerTests: XCTestCase {
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         stores: storesManager,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }
@@ -475,7 +476,7 @@ final class MainTabBarControllerTests: XCTestCase {
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         stores: stores,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }
@@ -539,7 +540,7 @@ final class MainTabBarControllerTests: XCTestCase {
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         stores: stores,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker },
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker },
                                         posEligibilityService: mockPOSEligibilityService)
         }) else {
             return
@@ -564,7 +565,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_event_is_tracked_after_eligibility_check() throws {
         // Given
-        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
         mockPOSEligibilityChecker.visibility = true
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -573,7 +574,7 @@ final class MainTabBarControllerTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         analytics: self.analytics,
                                         stores: storesManager,
-                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+                                        posTabVisibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }
@@ -593,6 +594,77 @@ final class MainTabBarControllerTests: XCTestCase {
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.pointOfSaleTabVisibilityChecked.rawValue))
         assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
+    }
+
+    func test_bookings_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
+        // Given
+        let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()
+        mockBookingsEligibilityChecker.initialVisibility = true
+
+        let mockFeatureFlagService = MockFeatureFlagService()
+        ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        stores: stores,
+                                        bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
+        }) else {
+            return
+        }
+
+        window.rootViewController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When bookings tab initial visibility is set to true
+        let siteID: Int64 = 1126
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+
+        // Then bookings tab is visible before eligibility check is returned
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 5
+        }
+        assertThat(tabBarController.tabRootViewController(
+            tab: .bookings,
+            isPOSTabVisible: false,
+            isBookingsTabVisible: true
+        ), isAnInstanceOf: BookingsTabViewHostingController.self)
+
+        // When bookings tab becomes invisible
+        mockBookingsEligibilityChecker.setVisibilityResult(false)
+
+        // Then bookings tab is hidden
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 4
+        }
+
+        assertThat(tabBarController.tabRootViewController(
+            tab: .myStore,
+            isPOSTabVisible: false,
+            isBookingsTabVisible: false
+        ), isAnInstanceOf: DashboardViewHostingController.self)
+        assertThat(tabBarController.tabRootViewController(
+            tab: .orders,
+            isPOSTabVisible: false,
+            isBookingsTabVisible: false
+        ), isAnInstanceOf: OrdersSplitViewWrapperController.self)
+        assertThat(tabBarController.tabRootViewController(
+            tab: .products,
+            isPOSTabVisible: false,
+            isBookingsTabVisible: false
+        ), isAnInstanceOf: ProductsViewController.self)
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(
+            tab: .hubMenu,
+            isPOSTabVisible: false,
+            isBookingsTabVisible: false
+        ) as? UINavigationController)
+        assertThat(hubMenuNavigationController.topViewController,
+                   isAnInstanceOf: HubMenuViewController.self)
     }
 }
 
@@ -621,17 +693,20 @@ extension MainTabBarController {
         return rootViewControllers
     }
 
-    func tabRootViewController(tab: WooTab, isPOSTabVisible: Bool) -> UIViewController? {
+    func tabRootViewController(tab: WooTab, isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) -> UIViewController? {
         // swiftlint:disable:next empty_enum_arguments
-        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)] else {
+        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex(
+            isPOSTabVisible: isPOSTabVisible,
+            isBookingsTabVisible: isBookingsTabVisible
+        )] else {
             XCTFail("Unexpected access to root controller at tab: \(tab)")
             return nil
         }
         return viewController
     }
 
-    func tabContainerController(tab: WooTab, isPOSTabVisible: Bool) -> UIViewController? {
-        guard let viewController = viewControllers?[tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)] else {
+    func tabContainerController(tab: WooTab, isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) -> UIViewController? {
+        guard let viewController = viewControllers?[tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)] else {
             XCTFail("Unexpected access to container controller at tab: \(tab)")
             return nil
         }
@@ -639,25 +714,15 @@ extension MainTabBarController {
     }
 }
 
-private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+private final class MockAsyncPOSEligibilityChecker: POSTabVisibilityCheckerProtocol {
     var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
-    private var eligibilityResult: POSEligibilityState?
-    private var eligibilityContinuation: CheckedContinuation<POSEligibilityState, Never>?
 
     func setVisibilityResult(_ result: Bool) {
         visibilityResult = result
         if let continuation = visibilityContinuation {
             visibilityContinuation = nil
-            continuation.resume(returning: result)
-        }
-    }
-
-    func setEligibilityResult(_ result: POSEligibilityState) {
-        eligibilityResult = result
-        if let continuation = eligibilityContinuation {
-            eligibilityContinuation = nil
             continuation.resume(returning: result)
         }
     }
@@ -678,21 +743,35 @@ private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityChec
             }
         }
     }
+}
 
-    func checkEligibility() async -> POSEligibilityState {
-        if let eligibilityResult {
-            return eligibilityResult
-        }
-        return await withCheckedContinuation { continuation in
-            eligibilityContinuation = continuation
-            // If we already have a result, return it immediately.
-            if eligibilityContinuation == nil {
-                continuation.resume(returning: eligibilityResult ?? .eligible)
-            }
+private final class MockAsyncBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
+    var initialVisibility: Bool = false
+    private var visibilityResult: Bool?
+    private var visibilityContinuation: CheckedContinuation<Bool, Never>?
+
+    func setVisibilityResult(_ result: Bool) {
+        visibilityResult = result
+        if let continuation = visibilityContinuation {
+            visibilityContinuation = nil
+            continuation.resume(returning: result)
         }
     }
 
-    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
-        .ineligible(reason: ineligibleReason)
+    func checkInitialVisibility() -> Bool {
+        initialVisibility
+    }
+
+    func checkVisibility() async -> Bool {
+        if let visibilityResult {
+            return visibilityResult
+        }
+        return await withCheckedContinuation { continuation in
+            visibilityContinuation = continuation
+            // If we already have a result, return it immediately.
+            if visibilityContinuation == nil {
+                continuation.resume(returning: visibilityResult ?? true)
+            }
+        }
     }
 }

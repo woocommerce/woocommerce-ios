@@ -151,6 +151,7 @@ struct CouponRestrictions: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .scrollDismissesKeyboard(.immediately)
             .background(Color(.listForeground(modal: false)))
             .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {

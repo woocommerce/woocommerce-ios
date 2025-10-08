@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-10 13:54:06+0000 */
+/* Translation-Revision-Date: 2025-09-23 13:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -3202,9 +3202,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "I %1$@ får kort endast användas med Tryck för att betala för transaktioner upp till gränsen för kontaktlös betalning.";
-
-/* Accessibility label for an indeterminate loading indicator */
-"In progress" = "Pågår";
 
 /* Display label for the bundle item's inventory stock status */
 "In stock" = "I lager";
@@ -11468,6 +11465,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Help section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Hjälp";
 
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Hantera kataloginställningar";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Katalog";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Butikskonfiguration och inställningar";
 
@@ -11786,6 +11789,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Avfärda";
 
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "Ingen beställning att visa";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Beställning";
+
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "Produkter";
 
@@ -11797,6 +11806,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "Total rabatt";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "E-postkvitto";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "Nettobetalning";
@@ -11837,8 +11849,29 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Kan inte ladda beställningar";
 
+/* Button text for refreshing orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle" = "Uppdatera";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Prova att justera din sökterm.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "Vi kunde inte hitta några beställningar som matchar din sökning.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "Inga beställningar hittades";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle" = "Beställningar kommer att visas här när du börjar behandla försäljning i POS.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "Inga beställningar än";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "Beställningar";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Sök beställningar";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Alternativ tillgängliga";
@@ -11930,9 +11963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Total rabatt";
 
-/* Text for the banner requiring specific WooCommerce version. */
-"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Uppdatera WooCommerce till version 9.5.0";
-
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Delsumma";
 
@@ -11947,6 +11977,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Försäljningsplats stöds inte med den här skärmbredden.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "Tillåt fullständig synkronisering med mobildata";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "Katalogstorlek";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "Katalogstatus";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync" = "Senaste fullständiga synkronisering";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "Senaste inkrementella uppdatering";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage" = "Hantera datanvändning";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Manuell kataloguppdatering";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Använd endast den här uppdateringen när något verkar vara fel – POS håller data aktuella automatiskt.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "Uppdatera katalog";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "Kataloginställningar";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Stäng";

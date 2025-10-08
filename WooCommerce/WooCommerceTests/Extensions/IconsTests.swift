@@ -288,6 +288,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.launchImage)
     }
 
+    func test_noBookings_is_not_nil() {
+        XCTAssertNotNil(UIImage.noBookings)
+    }
+
     func test_storeDetailsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.storeDetailsImage)
     }
@@ -823,5 +827,9 @@ final class IconsTests: XCTestCase {
 
     func test_wooShippingRatesPlaceholder_is_not_nil() {
         XCTAssertNotNil(UIImage.wooShippingRatesPlaceholder)
+    }
+
+    func test_shoppingBagsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.shoppingBagsImage)
     }
 }

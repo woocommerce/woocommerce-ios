@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v23.3-whats-new"
+msgctxt "v23.4-whats-new"
 msgid ""
-"Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and noticeably faster logins for WordPress.com users. All designed to streamline your daily workflow.\n"
+"This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

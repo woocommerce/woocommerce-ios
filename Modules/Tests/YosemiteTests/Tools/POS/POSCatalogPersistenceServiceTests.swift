@@ -120,11 +120,14 @@ struct POSCatalogPersistenceServiceTests {
         // Then - should not fail and should handle duplicates
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
-            let imageCount = try PersistedProductImage.fetchCount(db)
+            let joinCount = try PersistedProductImage.fetchCount(db)
+            let imageCount = try PersistedImage.fetchCount(db)
 
             #expect(productCount == 2)
-            // While there's only one, the current implementation doesn't
-            // have a join table so only one product has a reference to it
+            // Two products share the same image, so:
+            // - 2 join table entries (one per product)
+            // - 1 actual image record (shared)
+            #expect(joinCount == 2)
             #expect(imageCount == 1)
         }
     }
@@ -301,7 +304,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_replaces_images_for_updated_product() async throws {
+    @Test func persistIncrementalCatalogData_updates_and_adds_images_for_updated_product_but_does_not_delete() async throws {
         // Given
         let image1 = ProductImage.fake().copy(imageID: 1, src: "https://example.com/image1.jpg")
         let image2 = ProductImage.fake().copy(imageID: 2, src: "https://example.com/image2.jpg")
@@ -317,14 +320,24 @@ struct POSCatalogPersistenceServiceTests {
 
         // Then
         try await grdbManager.databaseConnection.read { db in
-            let attributeCount = try PersistedProductImage.fetchCount(db)
-            #expect(attributeCount == 2)
+            // Check join table has correct count
+            let joinCount = try PersistedProductImage.fetchCount(db)
+            #expect(joinCount == 2)
 
-            let attributes = try PersistedProductImage.fetchAll(db).sorted(by: { $0.id < $1.id })
-            #expect(attributes[0].src == "https://example.com/image1-1.jpg")
-            #expect(attributes[0].productID == 1)
-            #expect(attributes[1].src == "https://example.com/image3.jpg")
-            #expect(attributes[1].productID == 1)
+            // Check join table entries
+            let joins = try PersistedProductImage.fetchAll(db).sorted(by: { $0.imageID < $1.imageID })
+            #expect(joins.count == 2)
+            #expect(joins[0].productID == 1)
+            #expect(joins[0].imageID == 1)
+            #expect(joins[1].productID == 1)
+            #expect(joins[1].imageID == 3)
+
+            // Check actual images
+            let images = try PersistedImage.fetchAll(db).sorted(by: { $0.id < $1.id })
+            #expect(images.count == 3) // `image2` remains, but is unlinked.
+            #expect(images[0].src == "https://example.com/image1-1.jpg")
+            #expect(images[1].src == "https://example.com/image2.jpg")
+            #expect(images[2].src == "https://example.com/image3.jpg")
         }
     }
 
@@ -449,12 +462,17 @@ struct POSCatalogPersistenceServiceTests {
 
         // Then
         try await grdbManager.databaseConnection.read { db in
-            let imageCount = try PersistedProductVariationImage.fetchCount(db)
-            #expect(imageCount == 1)
+            // Check join table
+            let joinCount = try PersistedProductVariationImage.fetchCount(db)
+            #expect(joinCount == 1)
 
-            let image = try PersistedProductVariationImage.fetchOne(db)
+            let join = try PersistedProductVariationImage.fetchOne(db)
+            #expect(join?.productVariationID == 1)
+            #expect(join?.imageID == 1)
+
+            // Check actual image
+            let image = try PersistedImage.fetchOne(db)
             #expect(image?.src == "https://example.com/variation1-updated.jpg")
-            #expect(image?.productVariationID == 1)
         }
     }
 

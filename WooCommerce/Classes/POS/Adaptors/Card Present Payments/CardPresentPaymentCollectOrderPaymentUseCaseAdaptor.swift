@@ -1,4 +1,5 @@
 import Foundation
+import PointOfSale
 import WooFoundation
 import Combine
 import struct Yosemite.Order
@@ -30,7 +31,6 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
                             CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
-                            onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,

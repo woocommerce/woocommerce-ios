@@ -1,0 +1,96 @@
+import Foundation
+import struct Networking.Booking
+
+extension BookingDetailsViewModel {
+    struct AppointmentDetailsContent {
+        struct Row: Identifiable {
+            let title: String
+            let value: String
+
+            var id: String {
+                return title
+            }
+        }
+
+        let rows: [Row]
+
+        init(_ booking: Booking) {
+            let appointmentDate = booking.startDate.formatted(date: .numeric, time: .omitted)
+            let appointmentTimeFrame = [
+                booking.startDate.formatted(date: .omitted, time: .shortened),
+                booking.endDate.formatted(date: .omitted, time: .shortened)
+            ].joined(separator: " - ")
+
+            rows = [
+                Row(title: Localization.appointmentDetailsDateRowTitle, value: appointmentDate),
+                Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
+                Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: "Marianne Renoir"), /// Temporarily hardcoded
+                Row(title: Localization.appointmentDetailsLocationTitle, value: "238 Willow Creek Drive, Montgomery ..."), /// Temporarily hardcoded
+                Row(
+                    title: Localization.appointmentDetailsDurationTitle,
+                    value: Self.formatDuration(
+                        from: booking.startDate,
+                        to: booking.endDate
+                    )
+                ),
+                Row(
+                    title: Localization.appointmentDetailsPriceTitle,
+                    value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost)
+                )
+            ]
+        }
+    }
+}
+
+private extension BookingDetailsViewModel.AppointmentDetailsContent {
+    static let durationFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .short
+        formatter.allowedUnits = [.hour, .minute]
+        return formatter
+    }()
+
+    static func formatDuration(from startDate: Date, to endDate: Date) -> String {
+        durationFormatter.string(from: startDate, to: endDate) ?? ""
+    }
+}
+
+private extension BookingDetailsViewModel.AppointmentDetailsContent {
+    enum Localization {
+        static let appointmentDetailsDateRowTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.dateRow.title",
+            value: "Date",
+            comment: "Date row title in appointment details section in booking details view."
+        )
+
+        static let appointmentDetailsTimeRowTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.timeRow.title",
+            value: "Time",
+            comment: "Time row title in appointment details section in booking details view."
+        )
+
+        static let appointmentDetailsAssignedStaffTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.assignedStaff.title",
+            value: "Assigned staff",
+            comment: "Assigned staff row title in appointment details section in booking details view."
+        )
+
+        static let appointmentDetailsLocationTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.locationRow.title",
+            value: "Location",
+            comment: "Location row title in appointment details section in booking details view."
+        )
+
+        static let appointmentDetailsDurationTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.durationRow.title",
+            value: "Duration",
+            comment: "Duration row title in appointment details section in booking details view."
+        )
+
+        static let appointmentDetailsPriceTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.priceRow.title",
+            value: "Price",
+            comment: "Price row title in appointment details section in booking details view."
+        )
+    }
+}

@@ -1,4 +1,5 @@
 import Foundation
+import PointOfSale
 import enum Yosemite.CardReaderServiceError
 
 struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {

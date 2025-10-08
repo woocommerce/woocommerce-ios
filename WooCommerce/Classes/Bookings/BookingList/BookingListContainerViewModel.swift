@@ -61,6 +61,34 @@ enum BookingListTab: Int, CaseIterable {
         }
     }
 
+    func emptyStateTitle(hasFilters: Bool) -> String {
+        guard !hasFilters else {
+            return Localization.EmptyState.filterTitle
+        }
+        switch self {
+        case .today:
+            return Localization.EmptyState.todayTitle
+        case .upcoming:
+            return Localization.EmptyState.upcomingTitle
+        case .all:
+            return Localization.EmptyState.filterTitle
+        }
+    }
+
+    func emptyStateDescription(hasFilters: Bool) -> String {
+        guard !hasFilters else {
+            return Localization.EmptyState.filterDescription
+        }
+        switch self {
+        case .today:
+            return Localization.EmptyState.todayDescription
+        case .upcoming:
+            return Localization.EmptyState.upcomingDescription
+        case .all:
+            return ""
+        }
+    }
+
     private enum Localization {
         static let today = NSLocalizedString(
             "bookingListView.today",
@@ -77,5 +105,37 @@ enum BookingListTab: Int, CaseIterable {
             value: "All",
             comment: "Tab title for all bookings"
         )
+        enum EmptyState {
+            static let todayTitle = NSLocalizedString(
+                "bookingListView.emptyState.today.title",
+                value: "No bookings today",
+                comment: "Title for the empty state when no bookings for today is found"
+            )
+            static let todayDescription = NSLocalizedString(
+                "bookingListView.emptyState.today.description",
+                value: "You don't have any appointments or events scheduled for today.",
+                comment: "Description for the empty state when no bookings for today is found"
+            )
+            static let upcomingTitle = NSLocalizedString(
+                "bookingListView.emptyState.upcoming.title",
+                value: "No upcoming bookings",
+                comment: "Title for the empty state when there's no bookings for today"
+            )
+            static let upcomingDescription = NSLocalizedString(
+                "bookingListView.emptyState.upcoming.description",
+                value: "You don't have any future appointments or events scheduled yet.",
+                comment: "Description for the empty state when there's no upcoming bookings"
+            )
+            static let filterTitle = NSLocalizedString(
+                "bookingListView.emptyState.filter.title",
+                value: "No bookings found",
+                comment: "Title for the empty state when there's no bookings for the given filter"
+            )
+            static let filterDescription = NSLocalizedString(
+                "bookingListView.emptyState.filter.description",
+                value: "No bookings match your filters. Try adjusting them to see more results.",
+                comment: "Description for the empty state when there's no bookings for the given filter"
+            )
+        }
     }
 }

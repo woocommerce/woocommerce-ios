@@ -2499,6 +2499,7 @@
 		DEA90D392C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */; };
 		DEA90D3B2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */; };
 		DEACB8852A64F74A00253F0F /* MediaPickingCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */; };
+		DEB06E1F2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB06E1E2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift */; };
 		DEB2D2E82C92B00400ACD75D /* CollapsibleHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB2D2E72C92B00400ACD75D /* CollapsibleHStack.swift */; };
 		DEB387952C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */; };
 		DEB387982C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */; };
@@ -5428,6 +5429,7 @@
 		DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDetailWebViewModel.swift; sourceTree = "<group>"; };
 		DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDetailWebViewModelTests.swift; sourceTree = "<group>"; };
 		DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPickingCoordinatorTests.swift; sourceTree = "<group>"; };
+		DEB06E1E2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineBannerViewRepresentable.swift; sourceTree = "<group>"; };
 		DEB2D2E72C92B00400ACD75D /* CollapsibleHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleHStack.swift; sourceTree = "<group>"; };
 		DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultGoogleAdsEligibilityCheckTests.swift; sourceTree = "<group>"; };
@@ -11557,6 +11559,7 @@
 				57896D6425362AC2000E8C4D /* TitleAndEditableValueTableViewCell */,
 				3120491A26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift */,
 				3120491C26DD80F700A4EC4F /* ActivitySpinnerAndLabelTableViewCell.xib */,
+				DEB06E1E2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift */,
 				D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */,
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
@@ -14786,6 +14789,7 @@
 				023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
 				02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */,
+				DEB06E1F2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift in Sources */,
 				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
 				86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */,
 				EE19058C2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift in Sources */,

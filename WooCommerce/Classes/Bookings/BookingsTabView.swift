@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import struct Yosemite.Booking
 
 /// Hosting view for `BookingsTabView`
@@ -12,10 +13,6 @@ final class BookingsTabViewHostingController: UIHostingController<BookingsTabVie
 
     @MainActor @preconcurrency required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override var shouldShowOfflineBanner: Bool {
-        return true
     }
 
     func didSwitchStore(id: Int64) {
@@ -41,6 +38,7 @@ struct BookingsTabView: View {
     @State private var selectedBooking: Booking?
     @State private var visibility: NavigationSplitViewVisibility = .automatic
     @StateObject private var bookingListContainerViewModel: BookingListContainerViewModel
+    @StateObject private var connectivityMonitor = ConnectivityMonitor()
 
     init(siteID: Int64) {
         _bookingListContainerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
@@ -58,5 +56,11 @@ struct BookingsTabView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
+        .safeAreaInset(edge: .bottom) {
+            if connectivityMonitor.isOffline {
+                OfflineBannerViewRepresentable()
+                    .frame(height: OfflineBannerView.height)
+            }
+        }
     }
 }

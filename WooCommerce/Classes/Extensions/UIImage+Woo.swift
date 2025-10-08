@@ -832,6 +832,10 @@ extension UIImage {
         return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
+    static var noBookings: UIImage {
+        UIImage(named: "no-bookings")!
+    }
+
     static var incorrectRoleError: UIImage {
         return UIImage(named: "woo-incorrect-role-error")!.imageFlippedForRightToLeftLayoutDirection()
     }

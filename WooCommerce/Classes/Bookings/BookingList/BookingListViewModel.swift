@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
 
@@ -6,6 +7,21 @@ import protocol Storage.StorageManagerType
 final class BookingListViewModel: ObservableObject {
 
     @Published private(set) var bookings: [Booking] = []
+
+    @Published var errorFetching = false
+
+    var hasFilters: Bool {
+        // TODO: Update when adding filters
+        return false
+    }
+
+    var emptyStateTitle: String {
+        type.emptyStateTitle(hasFilters: hasFilters)
+    }
+
+    var emptyStateDescription: String {
+        type.emptyStateDescription(hasFilters: hasFilters)
+    }
 
     private let siteID: Int64
     private let type: BookingListTab
@@ -112,6 +128,9 @@ private extension BookingListViewModel {
 extension BookingListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
+        withAnimation {
+            errorFetching = false
+        }
         let shouldClearCache = reason == Self.refreshCacheReason
         let action = BookingAction.synchronizeBookings(
             siteID: siteID,
@@ -127,6 +146,9 @@ extension BookingListViewModel: PaginationTrackerDelegate {
 
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing bookings: \(error)")
+                withAnimation {
+                    self?.errorFetching = true
+                }
                 onCompletion?(.failure(error))
             }
 

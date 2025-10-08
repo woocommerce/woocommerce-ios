@@ -36,16 +36,15 @@ private extension BookingsTabViewHostingController {
 struct BookingsTabView: View {
     @State private var visibility: NavigationSplitViewVisibility = .all
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
-
-    private let siteID: Int64
+    @StateObject private var containerViewModel: BookingListContainerViewModel
 
     init(siteID: Int64) {
-        self.siteID = siteID
+        _containerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
     }
 
     var body: some View {
         NavigationSplitView(columnVisibility: $visibility) {
-            BookingListContainerView(viewModel: BookingListContainerViewModel(siteID: siteID))
+            BookingListContainerView(viewModel: containerViewModel)
         } detail: {
             Text("Booking Detail Screen")
         }
@@ -54,7 +53,6 @@ struct BookingsTabView: View {
             if connectivityMonitor.isOffline {
                 OfflineBannerViewRepresentable()
                     .frame(height: OfflineBannerView.height)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
     }

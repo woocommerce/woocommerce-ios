@@ -82,7 +82,7 @@ private extension POSOrderDetailsView {
     func productsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.productsTitle)
-                .font(.posBodyLargeBold)
+                .font(.posBodyXLarge)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
@@ -105,7 +105,7 @@ private extension POSOrderDetailsView {
     func totalsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.totalsTitle)
-                .font(.posBodyLargeBold)
+                .font(.posBodyXLarge)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
@@ -211,7 +211,7 @@ private extension POSOrderDetailsView {
     func productDetailsView(item: POSOrderItem) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             Text(item.name)
-                .font(.posBodySmallBold)
+                .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -221,7 +221,7 @@ private extension POSOrderDetailsView {
 
             Text(Localization.quantityLabel(item.quantity.intValue,
                                             item.formattedPrice))
-                .font(.posBodySmallRegular())
+            .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
         }
     }
@@ -230,14 +230,14 @@ private extension POSOrderDetailsView {
     func productAttributesView(_ attributes: [OrderItemAttribute]) -> some View {
         let attributeText = attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", ")
         Text(attributeText)
-            .font(.posBodySmallRegular())
+            .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurfaceVariantHighest)
     }
 
     @ViewBuilder
     func productTotalView(item: POSOrderItem) -> some View {
         Text(item.formattedTotal)
-            .font(.posBodySmallRegular())
+            .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurface)
     }
 }
@@ -280,7 +280,7 @@ private extension POSOrderDetailsView {
             title: Localization.totalLabel,
             amount: order.formattedTotal,
             titleColor: .posOnSurface,
-            titleFont: .posBodySmallBold,
+            titleFont: .posBodyLargeBold,
             accessibilityLabel: Localization.totalAccessibilityLabel(order.formattedTotal)
         )
     }
@@ -292,12 +292,12 @@ private extension POSOrderDetailsView {
                 title: Localization.paidLabel,
                 amount: order.formattedPaymentTotal,
                 titleColor: .posOnSurface,
-                titleFont: .posBodySmallBold
+                titleFont: .posBodyLargeBold
             )
 
             if order.paymentMethodTitle.isNotEmpty {
                 Text(order.paymentMethodTitle)
-                    .font(.posCaptionRegular)
+                    .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
         }
@@ -329,12 +329,12 @@ private extension POSOrderDetailsView {
                 title: Localization.refundLabel,
                 amount: refund.formattedTotal,
                 titleColor: .posOnSurface,
-                titleFont: .posBodySmallBold
+                titleFont: .posBodyLargeBold
             )
 
             if let reason = refund.reason, !reason.isEmpty {
                 Text(Localization.reasonLabel(reason))
-                    .font(.posCaptionRegular)
+                    .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
         }
@@ -348,7 +348,7 @@ private extension POSOrderDetailsView {
             title: Localization.netPaymentLabel,
             amount: netAmount,
             titleColor: .posOnSurface,
-            titleFont: .posBodySmallBold,
+            titleFont: .posBodyLargeBold,
             accessibilityLabel: Localization.netPaymentAccessibilityLabel(netAmount)
         )
     }
@@ -358,7 +358,7 @@ private extension POSOrderDetailsView {
         title: String,
         amount: String,
         titleColor: Color = .posOnSurfaceVariantHighest,
-        titleFont: POSFontStyle = .posBodySmallRegular(),
+        titleFont: POSFontStyle = .posBodyMediumRegular(),
         accessibilityLabel: String? = nil
     ) -> some View {
         HStack {
@@ -367,7 +367,7 @@ private extension POSOrderDetailsView {
                 .foregroundStyle(titleColor)
             Spacer()
             Text(amount)
-                .font(.posBodySmallRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
         .accessibilityElement(children: .combine)

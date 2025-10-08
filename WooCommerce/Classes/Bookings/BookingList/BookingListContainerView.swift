@@ -26,6 +26,7 @@ struct BookingListContainerView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .navigationTitle(Localization.viewTitle)
+        .toolbar(removing: .sidebarToggle)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button {

@@ -44,7 +44,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
 
             // Insert actual image data first (shared by products and variations)
             for image in catalog.imagesToPersist {
-                try image.save(db)
+                try image.insert(db, onConflict: .replace)
             }
 
             // Then insert join table entries
@@ -113,7 +113,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
 
             // Insert/update actual image data (shared by products and variations)
             for image in catalog.imagesToPersist {
-                try image.save(db)
+                try image.insert(db, onConflict: .replace)
             }
 
             // Insert new join table entries

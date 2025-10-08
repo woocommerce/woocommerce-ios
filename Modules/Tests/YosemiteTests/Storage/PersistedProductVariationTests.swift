@@ -87,10 +87,9 @@ struct PersistedProductVariationTests {
                                                name: "Fit",
                                                option: "Slim")
         ]
-        let varImage = PersistedProductVariationImage(
+        let varImage = PersistedImage(
             siteID: siteID,
             id: 601,
-            productVariationID: variationID,
             dateCreated: Date(timeIntervalSince1970: 2000),
             dateModified: Date(timeIntervalSince1970: 3000),
             src: "https://example.com/vi.png",
@@ -164,10 +163,10 @@ struct PersistedProductVariationTests {
             )
             try variation.insert(db)
 
-            let variationImage = PersistedProductVariationImage(
+            // Insert image into image table
+            let variationImage = PersistedImage(
                 siteID: 2,
                 id: 600,
-                productVariationID: 500,
                 dateCreated: Date(timeIntervalSince1970: 3000),
                 dateModified: Date(timeIntervalSince1970: 3500),
                 src: "https://example.com/var-img.png",
@@ -175,6 +174,10 @@ struct PersistedProductVariationTests {
                 alt: "Variation alt text"
             )
             try variationImage.insert(db)
+
+            // Create join table entry
+            let variationImageJoin = PersistedProductVariationImage(siteID: 2, productVariationID: 500, imageID: 600)
+            try variationImageJoin.insert(db)
 
             var attr1 = PersistedProductVariationAttribute(
                 siteID: 2,
@@ -197,7 +200,7 @@ struct PersistedProductVariationTests {
         // When we fetch it, specifying inclusion of image and attributes
         struct DetailedVariation: Decodable, FetchableRecord {
             var variation: PersistedProductVariation
-            var image: PersistedProductVariationImage
+            var image: PersistedImage
             var attributes: [PersistedProductVariationAttribute]
 
             enum CodingKeys: CodingKey {
@@ -447,10 +450,9 @@ struct PersistedProductVariationTests {
         #expect(globalAttr?.option == "Navy")
     }
 
-    @Test("PersistedProductVariationImage init(from:) and toProductImage round-trip")
+    @Test("PersistedImage make(from:) and toProductImage round-trip for variation")
     func variation_image_round_trip() throws {
         // Given
-        let variationID: Int64 = 800
         let image = ProductImage(imageID: 801,
                                  dateCreated: Date(timeIntervalSince1970: 4000),
                                  dateModified: nil,
@@ -460,12 +462,12 @@ struct PersistedProductVariationTests {
 
         // When
         let siteID: Int64 = 8
-        let persisted = PersistedProductVariationImage(from: image, siteID: siteID, productVariationID: variationID)
+        let persisted = PersistedImage.make(from: image, siteID: siteID)
         let back = persisted.toProductImage()
 
         // Then
         #expect(persisted.id == image.imageID)
-        #expect(persisted.productVariationID == variationID)
+        #expect(persisted.siteID == siteID)
         #expect(persisted.dateCreated == image.dateCreated)
         #expect(persisted.dateModified == image.dateModified)
         #expect(persisted.src == image.src)

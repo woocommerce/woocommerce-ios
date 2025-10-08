@@ -73,22 +73,20 @@ struct PersistedProductTests {
         )
 
         let productImages = [
-            PersistedProductImage(siteID: siteID,
-                                  id: 200,
-                                  productID: productID,
-                                  dateCreated: Date(timeIntervalSince1970: 10),
-                                  dateModified: nil,
-                                  src: "https://example.com/p1.png",
-                                  name: "p1",
-                                  alt: "a1"),
-            PersistedProductImage(siteID: siteID,
-                                  id: 201,
-                                  productID: productID,
-                                  dateCreated: Date(timeIntervalSince1970: 11),
-                                  dateModified: Date(timeIntervalSince1970: 12),
-                                  src: "https://example.com/p2.png",
-                                  name: nil,
-                                  alt: nil)
+            PersistedImage(siteID: siteID,
+                          id: 200,
+                          dateCreated: Date(timeIntervalSince1970: 10),
+                          dateModified: nil,
+                          src: "https://example.com/p1.png",
+                          name: "p1",
+                          alt: "a1"),
+            PersistedImage(siteID: siteID,
+                          id: 201,
+                          dateCreated: Date(timeIntervalSince1970: 11),
+                          dateModified: Date(timeIntervalSince1970: 12),
+                          src: "https://example.com/p2.png",
+                          name: nil,
+                          alt: nil)
         ]
 
         let persistedAttributes = [
@@ -166,20 +164,19 @@ struct PersistedProductTests {
             )
             try product.insert(db)
 
-            let image1 = PersistedProductImage(
+            // Insert images into the image table
+            let image1 = PersistedImage(
                 siteID: 1,
                 id: 200,
-                productID: 100,
                 dateCreated: Date(timeIntervalSince1970: 1000),
                 dateModified: nil,
                 src: "https://example.com/img1.png",
                 name: "Image 1",
                 alt: "Alt text 1"
             )
-            let image2 = PersistedProductImage(
+            let image2 = PersistedImage(
                 siteID: 1,
                 id: 201,
-                productID: 100,
                 dateCreated: Date(timeIntervalSince1970: 2000),
                 dateModified: Date(timeIntervalSince1970: 2500),
                 src: "https://example.com/img2.png",
@@ -188,6 +185,12 @@ struct PersistedProductTests {
             )
             try image1.insert(db)
             try image2.insert(db)
+
+            // Create join table entries
+            let productImage1 = PersistedProductImage(siteID: 1, productID: 100, imageID: 200)
+            let productImage2 = PersistedProductImage(siteID: 1, productID: 100, imageID: 201)
+            try productImage1.insert(db)
+            try productImage2.insert(db)
 
             var attribute1 = PersistedProductAttribute(
                 siteID: 1,
@@ -439,10 +442,9 @@ struct PersistedProductTests {
         #expect(globalAttr?.variation == false)
     }
 
-    @Test("PersistedProductImage init(from:) and toProductImage round-trip")
+    @Test("PersistedImage make(from:) and toProductImage round-trip")
     func product_image_round_trip() throws {
         // Given
-        let productID: Int64 = 40
         let image = ProductImage(imageID: 400,
                                  dateCreated: Date(timeIntervalSince1970: 100),
                                  dateModified: Date(timeIntervalSince1970: 200),
@@ -452,12 +454,12 @@ struct PersistedProductTests {
 
         // When
         let siteID: Int64 = 4
-        let persisted = PersistedProductImage(from: image, siteID: siteID, productID: productID)
+        let persisted = PersistedImage.make(from: image, siteID: siteID)
         let back = persisted.toProductImage()
 
         // Then
         #expect(persisted.id == image.imageID)
-        #expect(persisted.productID == productID)
+        #expect(persisted.siteID == siteID)
         #expect(persisted.dateCreated == image.dateCreated)
         #expect(persisted.dateModified == image.dateModified)
         #expect(persisted.src == image.src)

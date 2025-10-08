@@ -10,6 +10,7 @@ struct V001InitialSchema {
         try createSiteTable(db)
         try createProductTable(db)
         try createProductAttributeTable(db)
+        try createImageTable(db)
         try createProductImageTable(db)
         try createProductVariationTable(db)
         try createProductVariationAttributeTable(db)
@@ -74,23 +75,39 @@ struct V001InitialSchema {
         }
     }
 
+    private static func createImageTable(_ db: Database) throws {
+        // Single image table shared by products and variations
+        try db.create(table: "image") { imageTable in
+            imageTable.column("id", .integer).notNull()
+            imageTable.primaryKey(["siteID", "id"]) // SiteID column created by belongsTo relationship
+            imageTable.belongsTo("site", onDelete: .cascade)
+
+            imageTable.column("dateCreated", .datetime).notNull()
+            imageTable.column("dateModified", .datetime)
+
+            imageTable.column("src", .text).notNull()
+            imageTable.column("name", .text)
+            imageTable.column("alt", .text)
+        }
+    }
+
     private static func createProductImageTable(_ db: Database) throws {
+        // Join table for many-to-many relationship between products and images
         try db.create(table: "productImage") { productImageTable in
             productImageTable.column("siteID", .integer).notNull()
-            productImageTable.column("id", .integer).notNull()
-            productImageTable.primaryKey(["siteID", "id"])
             productImageTable.column("productID", .integer).notNull()
+            productImageTable.column("imageID", .integer).notNull()
+            productImageTable.primaryKey(["siteID", "productID", "imageID"])
+
             productImageTable.foreignKey(["siteID", "productID"],
                                          references: "product",
                                          columns: ["siteID", "id"],
                                          onDelete: .cascade)
 
-            productImageTable.column("dateCreated", .datetime).notNull()
-            productImageTable.column("dateModified", .datetime)
-
-            productImageTable.column("src", .text).notNull()
-            productImageTable.column("name", .text)
-            productImageTable.column("alt", .text)
+            productImageTable.foreignKey(["siteID", "imageID"],
+                                         references: "image",
+                                         columns: ["siteID", "id"],
+                                         onDelete: .cascade)
         }
     }
 
@@ -138,22 +155,22 @@ struct V001InitialSchema {
     }
 
     private static func createProductVariationImageTable(_ db: Database) throws {
+        // Join table for many-to-many relationship between product variations and images
         try db.create(table: "productVariationImage") { productVariationImageTable in
             productVariationImageTable.column("siteID", .integer).notNull()
-            productVariationImageTable.column("id", .integer).notNull()
-            productVariationImageTable.primaryKey(["siteID", "id"])
             productVariationImageTable.column("productVariationID", .integer).notNull()
+            productVariationImageTable.column("imageID", .integer).notNull()
+            productVariationImageTable.primaryKey(["siteID", "productVariationID", "imageID"])
+
             productVariationImageTable.foreignKey(["siteID", "productVariationID"],
                                                   references: "productVariation",
                                                   columns: ["siteID", "id"],
                                                   onDelete: .cascade)
 
-            productVariationImageTable.column("dateCreated", .datetime).notNull()
-            productVariationImageTable.column("dateModified", .datetime)
-
-            productVariationImageTable.column("src", .text).notNull()
-            productVariationImageTable.column("name", .text)
-            productVariationImageTable.column("alt", .text)
+            productVariationImageTable.foreignKey(["siteID", "imageID"],
+                                                  references: "image",
+                                                  columns: ["siteID", "id"],
+                                                  onDelete: .cascade)
         }
     }
 }

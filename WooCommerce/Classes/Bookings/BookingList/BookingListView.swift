@@ -33,17 +33,25 @@ private extension BookingListView {
         VStack {
             switch viewModel.syncState {
             case .empty:
-                emptyStateView
+                emptyStateView(isSearching: false) {
+                    await viewModel.onRefreshAction()
+                }
             case .syncingFirstPage:
                 loadingView
             case .results:
-                bookingList(with: viewModel.bookings)
+                bookingList(with: viewModel.bookings, onRefresh: {
+                    await viewModel.onRefreshAction()
+                })
             }
         }
         .overlay(alignment: .bottom) {
             if viewModel.errorFetching {
-                errorSnackBar
-                    .transition(.move(edge: .bottom))
+                errorSnackBar(onTap: {
+                    withAnimation {
+                        viewModel.errorFetching = false
+                    }
+                })
+                .transition(.move(edge: .bottom))
             }
         }
     }
@@ -53,9 +61,23 @@ private extension BookingListView {
             if searchViewModel.isSearching {
                 loadingView
             } else if searchViewModel.searchResults.isEmpty {
-                emptyStateView
+                emptyStateView(isSearching: true) {
+                    await searchViewModel.onRefreshAction()
+                }
             } else {
-                bookingList(with: searchViewModel.searchResults)
+                bookingList(with: searchViewModel.searchResults, onRefresh: {
+                    await searchViewModel.onRefreshAction()
+                })
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if searchViewModel.errorFetching {
+                errorSnackBar(onTap: {
+                    withAnimation {
+                        searchViewModel.errorFetching = false
+                    }
+                })
+                .transition(.move(edge: .bottom))
             }
         }
     }
@@ -70,7 +92,7 @@ private extension BookingListView {
         .background(Color(.systemBackground))
     }
 
-    func bookingList(with bookings: [Booking]) -> some View {
+    func bookingList(with bookings: [Booking], onRefresh: @escaping () async -> Void) -> some View {
         List(selection: $selectedBooking) {
             ForEach(bookings) { item in
                 bookingItem(item)
@@ -87,7 +109,7 @@ private extension BookingListView {
         .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
         .refreshable {
-            await viewModel.onRefreshAction()
+            await onRefresh()
         }
     }
 
@@ -128,35 +150,39 @@ private extension BookingListView {
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
 
-    var emptyStateView: some View {
+    func emptyStateView(isSearching: Bool, onRefresh: @escaping () async -> Void) -> some View {
         GeometryReader { proxy in
             ScrollView {
                 VStack(spacing: Layout.emptyStatePadding) {
                     Spacer()
-                    Image(uiImage: .noBookings)
+                    Image(uiImage: isSearching ? .magnifyingGlassNotFound : .noBookings)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: Layout.emptyStateImageWidth * scale)
                         .padding(.bottom, Layout.viewPadding)
-                    VStack(spacing: Layout.textVerticalPadding) {
-                        Text(viewModel.emptyStateTitle)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.primary)
-                        Text(viewModel.emptyStateDescription)
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
-                    }
-                    if viewModel.hasFilters {
+                    if isSearching {
+                        Text(searchViewModel.emptyStateMessage)
+                    } else {
                         VStack(spacing: Layout.textVerticalPadding) {
-                            Button("Change filters") {
-                                // TODO
+                            Text(viewModel.emptyStateTitle)
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.primary)
+                            Text(viewModel.emptyStateDescription)
+                                .font(.title3)
+                                .foregroundStyle(.secondary)
+                        }
+                        if viewModel.hasFilters {
+                            VStack(spacing: Layout.textVerticalPadding) {
+                                Button("Change filters") {
+                                    // TODO
+                                }
+                                .buttonStyle(PrimaryButtonStyle())
+                                Button("Clear filters") {
+                                    // TODO
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
                             }
-                            .buttonStyle(PrimaryButtonStyle())
-                            Button("Clear filters") {
-                                // TODO
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
                         }
                     }
                     Spacer()
@@ -166,13 +192,13 @@ private extension BookingListView {
                 .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
             }
             .refreshable {
-                await viewModel.onRefreshAction()
+                await onRefresh()
             }
         }
         .background(Color(.systemBackground))
     }
 
-    var errorSnackBar: some View {
+    func errorSnackBar(onTap: @escaping () -> Void) -> some View {
         Text(Localization.errorMessage)
             .foregroundStyle(Color(.listForeground(modal: false)))
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -184,11 +210,7 @@ private extension BookingListView {
             .padding(Layout.viewPadding)
             .padding(.bottom, connectivityMonitor.isOffline ? OfflineBannerView.height : 0)
             .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation {
-                    viewModel.errorFetching = false
-                }
-            }
+            .onTapGesture { onTap() }
     }
 }
 

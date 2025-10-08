@@ -28,6 +28,24 @@ final class BookingSearchViewModel: ObservableObject {
     /// Current search query
     @Published var currentSearchQuery: String = ""
 
+    var emptyStateMessage: AttributedString {
+        let quotedSearchQuery = "\"\(currentSearchQuery)\""
+        let content = String.localizedStringWithFormat(Localization.emptySearchText, quotedSearchQuery)
+
+        var attributedText = AttributedString(content)
+        attributedText.font = .headline.weight(.regular)
+        attributedText.foregroundColor = Color(.text)
+
+        if let range = attributedText.range(of: quotedSearchQuery) {
+            let textStyleContainer = AttributeContainer()
+                .font(.headline.weight(.semibold))
+                .foregroundColor(Color(.text))
+            attributedText[range].setAttributes(textStyleContainer)
+        }
+
+        return attributedText
+    }
+
     init(siteID: Int64,
          type: BookingListTab,
          searchQueryPublisher: AnyPublisher<String, Never>,
@@ -41,6 +59,16 @@ final class BookingSearchViewModel: ObservableObject {
 
         configureSearchPaginationTracker()
         configureSearchQuerySubscription(searchQueryPublisher: searchQueryPublisher)
+    }
+
+    /// Called when the user pulls down the list to refresh.
+    @MainActor
+    func onRefreshAction() async {
+        await withCheckedContinuation { continuation in
+            searchPaginationTracker.resync(reason: nil) {
+                continuation.resume(returning: ())
+            }
+        }
     }
 
     /// Called when the next page should be loaded.
@@ -126,5 +154,16 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             shouldShowBottomActivityIndicator = false
         }
         stores.dispatch(action)
+    }
+}
+
+private extension BookingSearchViewModel {
+    enum Localization {
+        static let emptySearchText = NSLocalizedString(
+            "bookingList.emptySearchText",
+            value: "We're sorry, we couldn't find results for %1$@",
+            comment: "Message displayed when searching bookings by keyword yields no results. " +
+            "The placeholder is the search keyword."
+        )
     }
 }

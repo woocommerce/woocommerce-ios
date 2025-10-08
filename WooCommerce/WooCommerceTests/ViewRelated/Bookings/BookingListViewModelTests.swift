@@ -367,7 +367,11 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .upcoming, searchQueryPublisher: searchQueryPublisher, stores: stores, currentDate: testDate)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .upcoming,
+                                             searchQueryPublisher: searchQueryPublisher,
+                                             stores: stores,
+                                             currentDate: testDate)
 
         // When
         viewModel.loadBookings()

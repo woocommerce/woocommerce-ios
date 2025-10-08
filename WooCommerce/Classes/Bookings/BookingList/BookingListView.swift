@@ -39,9 +39,9 @@ private extension BookingListView {
             case .syncingFirstPage:
                 loadingView
             case .results:
-                bookingList(with: viewModel.bookings, onRefresh: {
-                    await viewModel.onRefreshAction()
-                })
+                bookingList(with: viewModel.bookings,
+                            onNextPage: { viewModel.onLoadNextPageAction() },
+                            onRefresh: { await viewModel.onRefreshAction() })
             }
         }
         .overlay(alignment: .bottom) {
@@ -65,9 +65,9 @@ private extension BookingListView {
                     await searchViewModel.onRefreshAction()
                 }
             } else {
-                bookingList(with: searchViewModel.searchResults, onRefresh: {
-                    await searchViewModel.onRefreshAction()
-                })
+                bookingList(with: searchViewModel.searchResults,
+                            onNextPage: { searchViewModel.onLoadNextPageAction() },
+                            onRefresh: {await searchViewModel.onRefreshAction()})
             }
         }
         .overlay(alignment: .bottom) {
@@ -92,7 +92,9 @@ private extension BookingListView {
         .background(Color(.systemBackground))
     }
 
-    func bookingList(with bookings: [Booking], onRefresh: @escaping () async -> Void) -> some View {
+    func bookingList(with bookings: [Booking],
+                     onNextPage: @escaping () -> Void,
+                     onRefresh: @escaping () async -> Void) -> some View {
         List(selection: $selectedBooking) {
             ForEach(bookings) { item in
                 bookingItem(item)
@@ -102,7 +104,7 @@ private extension BookingListView {
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
                 .padding(.top, Layout.viewPadding)
                 .onAppear {
-                    viewModel.onLoadNextPageAction()
+                    onNextPage()
                 }
         }
         .listStyle(.plain)

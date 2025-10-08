@@ -62,7 +62,7 @@ struct BookingsRemoteTests {
         #expect((parameters["per_page"] as? String) == "50")
         #expect((parameters["start_date_before"] as? String) == startDateBefore)
         #expect((parameters["start_date_after"] as? String) == startDateAfter)
-        #expect((parameters["s"] as? String) == searchQuery)
+        #expect((parameters["search"] as? String) == searchQuery)
     }
 
     @Test func test_loadAllBookings_omits_nil_parameters() async throws {

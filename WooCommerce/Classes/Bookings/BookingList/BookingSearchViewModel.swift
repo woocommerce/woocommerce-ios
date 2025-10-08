@@ -109,6 +109,11 @@ private extension BookingSearchViewModel {
 
 extension BookingSearchViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
+        defer {
+            isSearching = false
+            shouldShowBottomActivityIndicator = false
+        }
+
         guard !currentSearchQuery.isEmpty else {
             onCompletion?(.success(false))
             return
@@ -149,9 +154,6 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
                 }
                 onCompletion?(.failure(error))
             }
-
-            isSearching = false
-            shouldShowBottomActivityIndicator = false
         }
         stores.dispatch(action)
     }

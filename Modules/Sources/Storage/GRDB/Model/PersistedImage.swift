@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 
+// periphery:ignore
 public struct PersistedImage: Codable {
     public let siteID: Int64
     public let id: Int64

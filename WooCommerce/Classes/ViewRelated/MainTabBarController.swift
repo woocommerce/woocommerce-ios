@@ -930,7 +930,7 @@ private extension MainTabBarController {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
 
-        guard featureFlagService.isFeatureFlagEnabled(.replacingTabDotWithNativeTabBadge) else {
+        guard featureFlagService.isFeatureFlagEnabled(.liquidGlassDesign) else {
             let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
             notificationsBadge.updateBadge(with: input)
             return

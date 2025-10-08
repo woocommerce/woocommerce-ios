@@ -208,7 +208,8 @@ public enum FeatureFlag: Int {
     ///
     case ciabBookings
 
-    /// Enables replacing the Menu tab custom "dot" badge with the native tab bar badge, while design confirmation is still in progress.
+    /// Should be enabled when the Liquid Glass design is enabled (via the Info.plist `UIDesignRequiresCompatibility`).
+    /// Current changes behind this feature flag: replacing the Menu tab custom "dot" badge with the native tab bar badge.
     ///
-    case replacingTabDotWithNativeTabBadge
+    case liquidGlassDesign
 }

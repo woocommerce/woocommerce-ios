@@ -100,7 +100,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ciabBookings:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .replacingTabDotWithNativeTabBadge:
+        case .liquidGlassDesign:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

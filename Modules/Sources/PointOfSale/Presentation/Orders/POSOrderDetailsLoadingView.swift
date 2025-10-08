@@ -77,7 +77,7 @@ struct POSOrderDetailsLoadingView: View {
     private var shimmeringProductsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.productsTitle)
-                .font(.posBodyLargeBold)
+                .font(.posBodyXLarge)
                 .foregroundStyle(Color.posOnSurface)
 
             VStack(spacing: POSSpacing.small) {
@@ -132,7 +132,7 @@ struct POSOrderDetailsLoadingView: View {
     private var shimmeringTotalsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.totalsTitle)
-                .font(.posBodyLargeBold)
+                .font(.posBodyXLarge)
                 .foregroundStyle(Color.posOnSurface)
 
             VStack(spacing: POSSpacing.medium) {

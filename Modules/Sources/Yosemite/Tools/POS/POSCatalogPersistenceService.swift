@@ -159,15 +159,29 @@ private extension POSCatalog {
         products.map { PersistedProduct(from: $0) }
     }
 
-    // Actual image data (shared table for products and variations)
     var imagesToPersist: [PersistedImage] {
         let productImages = products.flatMap { product in
             product.images.map { PersistedImage.make(from: $0, siteID: product.siteID) }
         }
-        let variationImages = variations.compactMap { variation in
-            variation.image.map { PersistedImage.make(from: $0, siteID: variation.siteID) }
+
+        let variationImages = variations.compactMap { variation -> PersistedImage? in
+            guard let image = variation.image else { return nil }
+            return PersistedImage.make(from: image, siteID: variation.siteID)
         }
-        return productImages + variationImages
+
+        return deduplicateImages(productImages + variationImages)
+    }
+
+    func deduplicateImages(_ images: [PersistedImage]) -> [PersistedImage] {
+        // Deduplicate by imageID since multiple products/variations can share the same image
+        // (siteID is the same for all images in a catalog)
+        var imageDict = [Int64: PersistedImage]()
+
+        for image in images {
+            imageDict[image.id] = image
+        }
+
+        return Array(imageDict.values)
     }
 
     // Join table entries for product-image relationships

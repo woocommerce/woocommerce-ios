@@ -85,15 +85,21 @@ final class AlamofireNetworkErrorHandler {
         originalRequest: URLRequestConvertible,
         failure: Error?
     ) {
-        let retriedRequestIndex = retriedJetpackRequests.firstIndex { retriedRequest in
-            let urlRequest = try? originalRequest.asURLRequest()
-            let retriedRequest = try? retriedRequest.request.asURLRequest()
-            return urlRequest == retriedRequest
+        let retriedRequest: RetriedJetpackRequest? = queue.sync(flags: .barrier) { [weak self] in
+            guard let self else { return nil }
+
+            let retriedRequestIndex = _retriedJetpackRequests.firstIndex { retriedRequest in
+                let urlRequest = try? originalRequest.asURLRequest()
+                let retriedRequest = try? retriedRequest.request.asURLRequest()
+                return urlRequest == retriedRequest
+            }
+
+            guard let index = retriedRequestIndex else { return nil }
+
+            return _retriedJetpackRequests.remove(at: index)
         }
 
-        guard let index = retriedRequestIndex else { return }
-
-        let retriedRequest = retriedJetpackRequests.remove(at: index)
+        guard let retriedRequest else { return }
 
         if failure == nil {
             let siteID = retriedRequest.request.siteID

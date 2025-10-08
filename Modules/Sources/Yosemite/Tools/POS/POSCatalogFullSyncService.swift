@@ -5,6 +5,7 @@ import class Networking.POSCatalogSyncRemote
 import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
+import struct Networking.POSCatalogResponse
 
 // TODO - remove the periphery ignore comment when the catalog is integrated with POS.
 // periphery:ignore
@@ -64,9 +65,16 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     public func startFullSync(for siteID: Int64) async throws -> POSCatalog {
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
 
+        let usesCatalogEndpoint = false
+
         do {
             // Sync from network
-            let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
+            let catalog: POSCatalog
+            if usesCatalogEndpoint {
+                catalog = try await loadCatalogFromCatalogEndpoint(for: siteID, syncRemote: syncRemote)
+            } else {
+                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
+            }
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
             // Persist to database
@@ -102,4 +110,53 @@ private extension POSCatalogFullSyncService {
         return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
     }
 
+    func loadCatalogFromCatalogEndpoint(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
+        let downloadStartTime = CFAbsoluteTimeGetCurrent()
+        let catalog = try await downloadCatalog(for: siteID, syncRemote: syncRemote)
+        let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
+        print("🟣 Download completed - Time: \(String(format: "%.2f", downloadTime))s")
+
+        return .init(products: catalog.products, variations: catalog.variations, syncDate: .init())
+    }
+}
+
+private extension POSCatalogFullSyncService {
+    func downloadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalogResponse {
+        print("🟣 Starting catalog generation...")
+
+        // 1. Generate catalog and get job ID
+        let jobResponse = try await syncRemote.generateCatalog(for: siteID)
+        print("🟣 Catalog generation started - Job ID: \(jobResponse.jobID)")
+
+        // 2. Poll for completion
+        let downloadURL = try await pollForCatalogCompletion(jobID: jobResponse.jobID, siteID: siteID, syncRemote: syncRemote)
+        print("🟣 Catalog ready for download: \(downloadURL)")
+
+        // 3. Download using the provided URL
+        return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL)
+    }
+
+    func pollForCatalogCompletion(jobID: String, siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> String {
+        let maxAttempts = 1000 // each attempt is made 1 second after the last one completes
+        var attempts = 0
+
+        while attempts < maxAttempts {
+            let statusResponse = try await syncRemote.checkCatalogStatus(for: siteID, jobID: jobID)
+
+            switch statusResponse.status {
+            case .complete:
+                guard let downloadURL = statusResponse.downloadURL else {
+                    throw POSCatalogSyncError.invalidData
+                }
+                return downloadURL
+
+            case .pending, .processing:
+                print("🟣 Catalog generation \(statusResponse.status) at \(statusResponse.progress)%... (attempt \(attempts + 1)/\(maxAttempts))")
+                try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+                attempts += 1
+            }
+        }
+
+        throw POSCatalogSyncError.timeout
+    }
 }

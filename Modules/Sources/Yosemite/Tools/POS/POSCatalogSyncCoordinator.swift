@@ -47,6 +47,8 @@ public extension POSCatalogSyncCoordinatorProtocol {
 public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
+    case invalidData
+    case timeout
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
@@ -278,6 +280,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
 private extension POSCatalogSyncCoordinator {
     enum Constants {
-        static let defaultSizeLimitForPOSCatalog = 1000
+        // Temporary high limit to allow large catalog size
+        static let defaultSizeLimitForPOSCatalog = 100000000
     }
 }

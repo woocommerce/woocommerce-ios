@@ -202,8 +202,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
 
     func productImageView(item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: item.imageSrc, imageSize: 40, scale: 1)
-            .frame(width: 40, height: 40)
+        POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
+            .frame(width: 56, height: 56)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 

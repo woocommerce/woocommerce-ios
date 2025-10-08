@@ -5,6 +5,7 @@
 -----
 - [internal] POS code was moved to its own module, including POS specific color and image assets. [https://github.com/woocommerce/woocommerce-ios/pull/16176]
 - [*] Fix race condition when flagging sites as unsupported for application passwords [https://github.com/woocommerce/woocommerce-ios/pull/16223]
+- [*] Fix Create Coupon screen scrolling issue. [https://github.com/woocommerce/woocommerce-ios/pull/16218]
 
 
 23.4

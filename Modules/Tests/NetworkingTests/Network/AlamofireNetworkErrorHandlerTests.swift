@@ -560,6 +560,52 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
+
+    func test_concurrent_flagSiteAsUnsupportedForAppPasswordIfNeeded_no_race_condition() {
+        // Given - test for the race condition fix where multiple threads
+        // try to remove the same item simultaneously
+        let expectation = XCTestExpectation(description: "All concurrent flag operations complete without crash")
+        let threadCount = 50
+        let siteID: Int64 = 999
+        let jetpackRequest = createJetpackRequest(siteID: siteID)
+        let restRequest = createRESTRequest()
+        let error = createNetworkError()
+
+        expectation.expectedFulfillmentCount = threadCount
+
+        // Add a single request to the retry list
+        _ = errorHandler.shouldRetryJetpackRequest(
+            originalRequest: jetpackRequest,
+            convertedRequest: restRequest,
+            failure: error
+        )
+
+        // When - multiple threads simultaneously try to flag and remove the SAME item
+        // This would cause a race condition in the old code where:
+        // 1. Thread A reads the array, finds index 0
+        // 2. Thread B reads the array, finds index 0
+        // 3. Thread A removes at index 0 (succeeds)
+        // 4. Thread B tries to remove at index 0 (crashes - array is now empty)
+        let group = DispatchGroup()
+        for _ in 0..<threadCount {
+            group.enter()
+            DispatchQueue.global().async {
+                // All threads try to remove the same request concurrently
+                self.errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(
+                    originalRequest: jetpackRequest,
+                    failure: nil
+                )
+                group.leave()
+                expectation.fulfill()
+            }
+        }
+
+        // Force threads to start as close together as possible
+        group.wait()
+
+        // Then - no crashes should occur (especially no EXC_BREAKPOINT from array index out of bounds)
+        wait(for: [expectation], timeout: 5.0)
+    }
 }
 
 // MARK: - Helper Methods

@@ -55,7 +55,8 @@ struct V001InitialSchema {
 
     private static func createProductAttributeTable(_ db: Database) throws {
         try db.create(table: "productAttribute") { productAttributeTable in
-            // This table holds local product attributes only. Global attributes belong to a site.
+            // This table holds both local and global product attributes.
+            // Local attributes have remoteAttributeID = 0, global attributes have remoteAttributeID > 0
             productAttributeTable.autoIncrementedPrimaryKey("id").notNull()
             productAttributeTable.column("siteID", .integer).notNull()
             productAttributeTable.column("productID", .integer).notNull()
@@ -64,6 +65,7 @@ struct V001InitialSchema {
                                              columns: ["siteID", "id"],
                                              onDelete: .cascade)
 
+            productAttributeTable.column("remoteAttributeID", .integer).notNull()
             productAttributeTable.column("name", .text).notNull()
             productAttributeTable.column("position", .integer).notNull()
             productAttributeTable.column("visible", .boolean).notNull()
@@ -119,7 +121,8 @@ struct V001InitialSchema {
 
     private static func createProductVariationAttributeTable(_ db: Database) throws {
         try db.create(table: "productVariationAttribute") { productVariationAttributeTable in
-            // This table holds local variation attributes only. Global attributes belong to a site.
+            // This table holds both local and global variation attributes.
+            // Local attributes have remoteAttributeID = 0, global attributes have remoteAttributeID > 0
             productVariationAttributeTable.autoIncrementedPrimaryKey("id").notNull()
             productVariationAttributeTable.column("siteID", .integer).notNull()
             productVariationAttributeTable.column("productVariationID", .integer).notNull()
@@ -128,6 +131,7 @@ struct V001InitialSchema {
                                                       columns: ["siteID", "id"],
                                                       onDelete: .cascade)
 
+            productVariationAttributeTable.column("remoteAttributeID", .integer).notNull()
             productVariationAttributeTable.column("name", .text).notNull()
             productVariationAttributeTable.column("option", .text).notNull()
         }

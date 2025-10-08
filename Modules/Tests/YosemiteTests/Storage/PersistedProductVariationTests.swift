@@ -76,8 +76,16 @@ struct PersistedProductVariationTests {
         )
 
         let varAttrs = [
-            PersistedProductVariationAttribute(siteID: siteID, productVariationID: variationID, name: "Material", option: "Wool"),
-            PersistedProductVariationAttribute(siteID: siteID, productVariationID: variationID, name: "Fit", option: "Slim")
+            PersistedProductVariationAttribute(siteID: siteID,
+                                               productVariationID: variationID,
+                                               remoteAttributeID: 100,
+                                               name: "Material",
+                                               option: "Wool"),
+            PersistedProductVariationAttribute(siteID: siteID,
+                                               productVariationID: variationID,
+                                               remoteAttributeID: 101,
+                                               name: "Fit",
+                                               option: "Slim")
         ]
         let varImage = PersistedProductVariationImage(
             siteID: siteID,
@@ -171,12 +179,14 @@ struct PersistedProductVariationTests {
             var attr1 = PersistedProductVariationAttribute(
                 siteID: 2,
                 productVariationID: 500,
+                remoteAttributeID: 502,
                 name: "Color",
                 option: "Purple"
             )
             var attr2 = PersistedProductVariationAttribute(
                 siteID: 2,
                 productVariationID: 500,
+                remoteAttributeID: 503,
                 name: "Material",
                 option: "Cotton"
             )
@@ -282,6 +292,7 @@ struct PersistedProductVariationTests {
             var attr = PersistedProductVariationAttribute(
                 siteID: 4,
                 productVariationID: 700,
+                remoteAttributeID: 105,
                 name: "Style",
                 option: "Modern"
             )
@@ -322,6 +333,118 @@ struct PersistedProductVariationTests {
 
         #expect(back.name == attr.name)
         #expect(back.option == attr.option)
+    }
+
+    @Test("ProductVariationAttribute with remoteAttributeID of 0 represents non-global attribute")
+    func variation_attribute_with_zero_remote_id_is_non_global() throws {
+        // Given a non-global variation attribute (not shared across variations)
+        let siteID: Int64 = 20
+        let variationID: Int64 = 2000
+        let attr = ProductVariationAttribute(id: 0, name: "Custom Finish", option: "Matte")
+
+        // When
+        let persisted = PersistedProductVariationAttribute(from: attr, siteID: siteID, productVariationID: variationID)
+
+        // Then the remoteAttributeID should be 0 for non-global attributes
+        #expect(persisted.remoteAttributeID == 0)
+        #expect(persisted.name == "Custom Finish")
+        #expect(persisted.option == "Matte")
+
+        // When converting back to ProductVariationAttribute
+        let back = persisted.toProductVariationAttribute()
+
+        // Then the id should remain 0
+        #expect(back.id == 0)
+        #expect(back.name == "Custom Finish")
+        #expect(back.option == "Matte")
+    }
+
+    @Test("Non-global variation attribute persists and retrieves correctly with remoteAttributeID 0")
+    func non_global_variation_attribute_persists_correctly() throws {
+        // Given
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        try db.write { db in
+            let site = PersistedSite(id: 6)
+            try site.insert(db)
+
+            let parentProduct = PersistedProduct(
+                id: 600,
+                siteID: 6,
+                name: "Parent Product with Variations",
+                productTypeKey: "variable",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "0.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try parentProduct.insert(db)
+
+            let variation = PersistedProductVariation(
+                id: 6000,
+                siteID: 6,
+                productID: 600,
+                sku: "VAR-6000",
+                globalUniqueID: nil,
+                price: "30.00",
+                downloadable: false,
+                fullDescription: nil,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try variation.insert(db)
+
+            // Insert a non-global variation attribute with remoteAttributeID = 0
+            var nonGlobalAttribute = PersistedProductVariationAttribute(
+                siteID: 6,
+                productVariationID: 6000,
+                remoteAttributeID: 0,
+                name: "Custom Pattern",
+                option: "Striped"
+            )
+            try nonGlobalAttribute.insert(db)
+
+            // Also insert a global variation attribute for comparison
+            var globalAttribute = PersistedProductVariationAttribute(
+                siteID: 6,
+                productVariationID: 6000,
+                remoteAttributeID: 456,
+                name: "Standard Color",
+                option: "Navy"
+            )
+            try globalAttribute.insert(db)
+        }
+
+        // When
+        let fetchedVariation = try db.read { db in
+            try PersistedProductVariation.filter(PersistedProductVariation.Columns.id == 6000).fetchOne(db)
+        }
+
+        let variation = try #require(fetchedVariation)
+        let posVariation = try variation.toPOSProductVariation(db: db)
+
+        // Then both attributes should be present
+        #expect(posVariation.attributes.count == 2)
+
+        // Verify non-global attribute
+        let nonGlobalAttr = posVariation.attributes.first { $0.name == "Custom Pattern" }
+        #expect(nonGlobalAttr != nil)
+        #expect(nonGlobalAttr?.id == 0)
+        #expect(nonGlobalAttr?.option == "Striped")
+
+        // Verify global attribute
+        let globalAttr = posVariation.attributes.first { $0.name == "Standard Color" }
+        #expect(globalAttr != nil)
+        #expect(globalAttr?.id == 456)
+        #expect(globalAttr?.option == "Navy")
     }
 
     @Test("PersistedProductVariationImage init(from:) and toProductImage round-trip")

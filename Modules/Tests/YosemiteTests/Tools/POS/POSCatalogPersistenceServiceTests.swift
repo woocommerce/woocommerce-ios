@@ -304,7 +304,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_replaces_images_for_updated_product() async throws {
+    @Test func persistIncrementalCatalogData_updates_and_adds_images_for_updated_product_but_does_not_delete() async throws {
         // Given
         let image1 = ProductImage.fake().copy(imageID: 1, src: "https://example.com/image1.jpg")
         let image2 = ProductImage.fake().copy(imageID: 2, src: "https://example.com/image2.jpg")
@@ -326,6 +326,7 @@ struct POSCatalogPersistenceServiceTests {
 
             // Check join table entries
             let joins = try PersistedProductImage.fetchAll(db).sorted(by: { $0.imageID < $1.imageID })
+            #expect(joins.count == 2)
             #expect(joins[0].productID == 1)
             #expect(joins[0].imageID == 1)
             #expect(joins[1].productID == 1)
@@ -333,8 +334,10 @@ struct POSCatalogPersistenceServiceTests {
 
             // Check actual images
             let images = try PersistedImage.fetchAll(db).sorted(by: { $0.id < $1.id })
+            #expect(images.count == 3) // `image2` remains, but is unlinked.
             #expect(images[0].src == "https://example.com/image1-1.jpg")
-            #expect(images[1].src == "https://example.com/image3.jpg")
+            #expect(images[1].src == "https://example.com/image2.jpg")
+            #expect(images[2].src == "https://example.com/image3.jpg")
         }
     }
 

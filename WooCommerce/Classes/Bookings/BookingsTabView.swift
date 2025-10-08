@@ -42,7 +42,6 @@ struct BookingsTabView: View {
 
     init(siteID: Int64) {
         _bookingListContainerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
-        _containerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
     }
 
     var body: some View {

@@ -52,6 +52,7 @@ private extension BookingListView {
                 }
         }
         .listStyle(.plain)
+        .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
         .refreshable {
             await viewModel.onRefreshAction()

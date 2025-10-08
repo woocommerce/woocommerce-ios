@@ -1,0 +1,402 @@
+import Combine
+import Foundation
+import Testing
+import Yosemite
+@testable import WooCommerce
+
+@MainActor
+struct BookingSearchViewModelTests {
+
+    private let sampleSiteID: Int64 = 322
+
+    // MARK: - Search query subscription
+
+    @Test func search_query_updates_from_publisher() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher()
+        )
+
+        // When
+        searchQuerySubject.send("test query")
+
+        // Wait for the publisher to propagate (no debounce on assignment)
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // Then
+        #expect(viewModel.currentSearchQuery == "test query")
+    }
+
+    @Test func search_results_are_cleared_when_query_becomes_empty() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, startDate: Date())
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success([booking]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When - perform search
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000) // Wait for debounce + search
+
+        #expect(viewModel.searchResults.count == 1)
+
+        // Clear query
+        searchQuerySubject.send("")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(viewModel.searchResults.isEmpty)
+        #expect(viewModel.isSearching == false)
+    }
+
+    // MARK: - Search action
+
+    @Test func search_bookings_is_dispatched_when_query_is_not_empty() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var invocationCount = 0
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            invocationCount += 1
+            onCompletion(.success([]))
+        }
+
+        _ = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When
+        searchQuerySubject.send("test query")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(invocationCount == 1)
+    }
+
+    @Test func search_bookings_passes_correct_search_query() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedSearchQuery: String?
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, searchQuery, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            capturedSearchQuery = searchQuery
+            onCompletion(.success([]))
+        }
+
+        _ = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When
+        searchQuerySubject.send("my test query")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedSearchQuery == "my test query")
+    }
+
+    @Test func search_results_are_updated_on_successful_search() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, startDate: Date())
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 2, startDate: Date())
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success([booking1, booking2]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(viewModel.searchResults.count == 2)
+        #expect(viewModel.searchResults.contains { $0.bookingID == booking1.bookingID })
+        #expect(viewModel.searchResults.contains { $0.bookingID == booking2.bookingID })
+    }
+
+    @Test func error_fetching_is_true_on_search_failure() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.failure(NSError(domain: "test", code: 1)))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(viewModel.errorFetching == true)
+    }
+
+    // MARK: - Pagination
+
+    @Test func on_load_next_page_action_loads_next_page() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedPageNumbers: [Int] = []
+
+        // First page returns exactly pageSize (25) items to indicate there's a next page
+        let firstPageBookings = (1...25).map { Booking.fake().copy(siteID: sampleSiteID, bookingID: Int64($0), startDate: Date()) }
+        let secondPageBookings = [Booking.fake().copy(siteID: sampleSiteID, bookingID: 26, startDate: Date())]
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, pageNumber, _, _, _, onCompletion) = action else {
+                return
+            }
+            capturedPageNumbers.append(pageNumber)
+            let bookings = pageNumber == 1 ? firstPageBookings : secondPageBookings
+            onCompletion(.success(bookings))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        #expect(viewModel.searchResults.count == 25, "First page should have 25 results")
+
+        viewModel.onLoadNextPageAction()
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        // Then
+        #expect(capturedPageNumbers == [1, 2])
+        #expect(viewModel.searchResults.count == 26, "Should have 26 results total (25 from page 1 + 1 from page 2)")
+    }
+
+    @Test func search_results_are_cleared_on_new_search() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let firstSearchBookings = [Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, startDate: Date())]
+        let secondSearchBookings = [Booking.fake().copy(siteID: sampleSiteID, bookingID: 2, startDate: Date())]
+        var searchCount = 0
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            searchCount += 1
+            let bookings = searchCount == 1 ? firstSearchBookings : secondSearchBookings
+            onCompletion(.success(bookings))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When - first search
+        searchQuerySubject.send("test1")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        #expect(viewModel.searchResults.count == 1)
+        #expect(viewModel.searchResults.first?.bookingID == 1)
+
+        // Second search
+        searchQuerySubject.send("test2")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then - results should be replaced, not appended
+        #expect(viewModel.searchResults.count == 1)
+        #expect(viewModel.searchResults.first?.bookingID == 2)
+    }
+
+    // MARK: - Type-based filtering
+
+    @Test func today_tab_passes_correct_date_filters_to_search_action() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedStartDateBefore: String?
+        var capturedStartDateAfter: String?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, startDateBefore, startDateAfter, onCompletion) = action else {
+                return
+            }
+            capturedStartDateBefore = startDateBefore
+            capturedStartDateAfter = startDateAfter
+            onCompletion(.success([]))
+        }
+
+        _ = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .today,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        // When
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedStartDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
+        #expect(capturedStartDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
+    }
+
+    @Test func upcoming_tab_passes_correct_date_filters_to_search_action() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedStartDateBefore: String?
+        var capturedStartDateAfter: String?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, startDateBefore, startDateAfter, onCompletion) = action else {
+                return
+            }
+            capturedStartDateBefore = startDateBefore
+            capturedStartDateAfter = startDateAfter
+            onCompletion(.success([]))
+        }
+
+        _ = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .upcoming,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        // When
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedStartDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
+        #expect(capturedStartDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
+    }
+
+    @Test func all_tab_passes_no_date_filters_to_search_action() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedStartDateBefore: String?
+        var capturedStartDateAfter: String?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, startDateBefore, startDateAfter, onCompletion) = action else {
+                return
+            }
+            capturedStartDateBefore = startDateBefore
+            capturedStartDateAfter = startDateAfter
+            onCompletion(.success([]))
+        }
+
+        _ = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        // When
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedStartDateBefore == nil, "All tab should not have startDateBefore filter")
+        #expect(capturedStartDateAfter == nil, "All tab should not have startDateAfter filter")
+    }
+
+    // MARK: - Refresh action
+
+    @Test func on_refresh_action_resyncs_search_results() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var searchCount = 0
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            searchCount += 1
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When - initial search
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        #expect(searchCount == 1)
+
+        // Refresh
+        await viewModel.onRefreshAction()
+
+        // Then
+        #expect(searchCount == 2, "Should have searched twice")
+    }
+}

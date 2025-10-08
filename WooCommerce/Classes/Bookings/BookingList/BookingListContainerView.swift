@@ -5,47 +5,46 @@ struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
     @State private var isSearching = false
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Binding var selectedBooking: Booking?
 
-    init(viewModel: BookingListContainerViewModel) {
+    init(viewModel: BookingListContainerViewModel, selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self._selectedBooking = selectedBooking
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                headerView
-                TabView(selection: $viewModel.selectedTab) {
-                    ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
-                        BookingListView(viewModel: viewModel.listViewModel(for: tab))
-                            .tag(tab)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-            }
-            .navigationTitle(Localization.viewTitle)
-            .if(isSearching, transform: { view in
-                view.searchable(text: $viewModel.searchQuery,
-                                isPresented: $isSearching,
-                                prompt: Localization.searchPrompt)
-            })
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        withAnimation {
-                            isSearching.toggle()
-                            if !isSearching {
-                                viewModel.searchQuery = ""
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
+        VStack(spacing: 0) {
+            headerView
+            TabView(selection: $viewModel.selectedTab) {
+                ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
+                    BookingListView(
+                        viewModel: viewModel.listViewModel(for: tab),
+                        selectedBooking: $selectedBooking
+                    )
+                    .tag(tab)
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .navigationDestination(for: Booking.self) { booking in
-            let viewModel = BookingDetailsViewModel(booking: booking)
-            BookingDetailsView(viewModel)
+        .navigationTitle(Localization.viewTitle)
+        .if(isSearching, transform: { view in
+            view.searchable(text: $viewModel.searchQuery,
+                            isPresented: $isSearching,
+                            prompt: Localization.searchPrompt)
+        })
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    withAnimation {
+                        isSearching.toggle()
+                        if !isSearching {
+                            viewModel.searchQuery = ""
+                        }
+                    }
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+            }
         }
     }
 }

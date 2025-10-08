@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "3AC78C29-73D0-49A5-B27C-4DCF32BF597D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "PointOfSaleTests",
+        "name" : "PointOfSaleTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import struct Yosemite.Booking
 
 /// Hosting view for `BookingsTabView`
 ///
@@ -34,27 +35,31 @@ private extension BookingsTabViewHostingController {
 /// Main content of the Bookings tab
 ///
 struct BookingsTabView: View {
-    @State private var visibility: NavigationSplitViewVisibility = .all
+    @State private var selectedBooking: Booking?
+    @State private var visibility: NavigationSplitViewVisibility = .automatic
+    @StateObject private var bookingListContainerViewModel: BookingListContainerViewModel
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
 
-    private let siteID: Int64
-
     init(siteID: Int64) {
-        self.siteID = siteID
+        _bookingListContainerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
     }
 
     var body: some View {
         NavigationSplitView(columnVisibility: $visibility) {
-            BookingListContainerView(viewModel: BookingListContainerViewModel(siteID: siteID))
+            BookingListContainerView(viewModel: bookingListContainerViewModel, selectedBooking: $selectedBooking)
         } detail: {
-            Text("Booking Detail Screen")
+            if let selectedBooking {
+                let viewModel = BookingDetailsViewModel(booking: selectedBooking)
+                BookingDetailsView(viewModel)
+            } else {
+                Text("Select a booking to see details.")
+            }
         }
         .navigationSplitViewStyle(.balanced)
         .safeAreaInset(edge: .bottom) {
             if connectivityMonitor.isOffline {
                 OfflineBannerViewRepresentable()
                     .frame(height: OfflineBannerView.height)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
     }

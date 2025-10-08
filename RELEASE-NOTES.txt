@@ -3,6 +3,7 @@
 
 23.5
 -----
+- [internal] POS code was moved to its own module, including POS specific color and image assets. [https://github.com/woocommerce/woocommerce-ios/pull/16176]
 
 
 23.4

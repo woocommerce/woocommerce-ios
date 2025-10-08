@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
 import struct Combine.AnyPublisher
+import PointOfSale
 
 protocol POSTabVisibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.

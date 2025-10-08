@@ -12,7 +12,7 @@ struct POSOrderBadgeView: View {
     var body: some View {
         Text(order.status.localizedName)
             .font(.posCaptionRegular)
-            .foregroundStyle(.black)
+            .foregroundStyle(statusTextColor)
             .padding(.horizontal, POSPadding.small)
             .padding(.vertical, POSPadding.xSmall)
             .background(statusBackgroundColor)
@@ -20,18 +20,25 @@ struct POSOrderBadgeView: View {
             .accessibilityLabel(Localization.badgeAccessibilityLabel(status: order.status.localizedName))
     }
 
+    private var statusTextColor: Color {
+        switch order.status {
+        case .completed:
+            return Color(uiColor: .init(red: 10/255, green: 17/255, blue: 45/255, alpha: 1))
+        case .failed:
+            return Color(uiColor: .init(red: 36/255, green: 10/255, blue: 10/255, alpha: 1))
+        default:
+            return Color(uiColor: .init(red: 16/255, green: 21/255, blue: 23/255, alpha: 1))
+        }
+    }
+
     private var statusBackgroundColor: Color {
         switch order.status {
         case .completed:
-            return Color(uiColor: .withColorStudio(.blue, shade: .shade5))
+            return Color(uiColor: .init(red: 214/255, green: 221/255, blue: 249/255, alpha: 1))
         case .failed:
-            return Color(uiColor: .withColorStudio(.red, shade: .shade5))
-        case .processing:
-            return Color(uiColor: .withColorStudio(.green, shade: .shade5))
-        case .onHold:
-            return Color(uiColor: .withColorStudio(.orange, shade: .shade5))
+            return Color(uiColor: .init(red: 247/255, green: 235/255, blue: 236/255, alpha: 1))
         default:
-            return Color(uiColor: .gray(.shade5))
+            return Color(uiColor: .init(red: 220/255, green: 220/255, blue: 222/255, alpha: 1))
         }
     }
 }

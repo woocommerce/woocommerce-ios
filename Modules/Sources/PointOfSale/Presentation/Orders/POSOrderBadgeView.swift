@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 import struct Yosemite.POSOrder
 
 struct POSOrderBadgeView: View {

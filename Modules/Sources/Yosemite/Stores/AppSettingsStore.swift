@@ -293,6 +293,10 @@ public class AppSettingsStore: Store {
             setAppPasswordsExperimentSettingEnabled(isOn: value, onCompletion: onCompletion)
         case .getAppPasswordsExperimentSettingState(let onCompletion):
             getAppPasswordsExperimentSettingEnabled(onCompletion: onCompletion)
+        case .setPOSSurveyNotificationScheduled(let onCompletion):
+            setPOSSurveyNotificationScheduled(onCompletion: onCompletion)
+        case .getPOSSurveyNotificationScheduled(let onCompletion):
+            getPOSSurveyNotificationScheduled(onCompletion: onCompletion)
         }
     }
 }
@@ -1287,6 +1291,19 @@ private extension AppSettingsStore {
 
     func getAppPasswordsExperimentSettingEnabled(onCompletion: (Bool) -> Void) {
         onCompletion(generalAppSettings.value(for: \.isApplicationPasswordsSwitchEnabled))
+    }
+
+    func setPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(true, for: \.isPOSSurveyNotificationScheduled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    func getPOSSurveyNotificationScheduled(onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.isPOSSurveyNotificationScheduled))
     }
 }
 

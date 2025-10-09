@@ -366,4 +366,14 @@ public enum AppSettingsAction: Action {
     /// Loads Loads the state of the App Passwords Experiment feature
     ///
     case getAppPasswordsExperimentSettingState(onCompletion: (Bool) -> Void)
+
+    // MARK: - Point of Sale Survey Notification
+
+    /// Sets the Point of Sale survey notification as scheduled
+    ///
+    case setPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether the Point of Sale survey notification has been scheduled
+    ///
+    case getPOSSurveyNotificationScheduled(onCompletion: (Bool) -> Void)
 }

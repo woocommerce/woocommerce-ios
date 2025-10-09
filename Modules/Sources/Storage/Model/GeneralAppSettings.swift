@@ -56,6 +56,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isCustomFieldsTopBannerDismissed: Bool
 
+    /// Whether the Point of Sale survey notification has been scheduled
+    ///
+    public var isPOSSurveyNotificationScheduled: Bool
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -66,7 +70,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
                 sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>,
                 isEUShippingNoticeDismissed: Bool,
-                isCustomFieldsTopBannerDismissed: Bool) {
+                isCustomFieldsTopBannerDismissed: Bool,
+                isPOSSurveyNotificationScheduled: Bool) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -78,6 +83,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
         self.isEUShippingNoticeDismissed = isEUShippingNoticeDismissed
         self.isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed
+        self.isPOSSurveyNotificationScheduled = isPOSSurveyNotificationScheduled
     }
 
     public static var `default`: Self {
@@ -90,7 +96,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               featureAnnouncementCampaignSettings: [:],
               sitesWithAtLeastOneIPPTransactionFinished: [],
               isEUShippingNoticeDismissed: false,
-              isCustomFieldsTopBannerDismissed: false)
+              isCustomFieldsTopBannerDismissed: false,
+              isPOSSurveyNotificationScheduled: false)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -120,7 +127,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
             isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+            isPOSSurveyNotificationScheduled: isPOSSurveyNotificationScheduled
         )
     }
 
@@ -141,7 +149,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             featureAnnouncementCampaignSettings: updatedSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
             isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+            isPOSSurveyNotificationScheduled: isPOSSurveyNotificationScheduled
         )
     }
 }
@@ -167,6 +176,7 @@ extension GeneralAppSettings {
                                                                                         forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
         self.isEUShippingNoticeDismissed = try container.decodeIfPresent(Bool.self, forKey: .isEUShippingNoticeDismissed) ?? false
         self.isCustomFieldsTopBannerDismissed = try container.decodeIfPresent(Bool.self, forKey: .isCustomFieldsTopBannerDismissed) ?? false
+        self.isPOSSurveyNotificationScheduled = try container.decodeIfPresent(Bool.self, forKey: .isPOSSurveyNotificationScheduled) ?? false
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

@@ -489,6 +489,9 @@ private extension PaymentMethodsViewModel {
         let amountInSmallestUnit = amountNormalized
             .multiplying(by: NSDecimalNumber(value: currencySettings.currencyCode.smallestCurrencyUnitMultiplier))
             .intValue
+        
+        // TODO: We should separate the calls, not inside the tracking func.
+        scheduleNotificationIfNeeded()
 
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
                                                                                     amount: formattedTotal,
@@ -498,6 +501,75 @@ private extension PaymentMethodsViewModel {
                                                                                     method: method,
                                                                                     orderID: orderID,
                                                                                     cardReaderType: cardReaderType))
+    }
+    
+    struct PointOfSaleSurveyEligibility {
+        private let featureFlag: FeatureFlagService
+        private let country: CountryCode // US/UK
+        private let stores: StoresManager
+        // TODO:
+        // Device check? Only iPads or all?
+
+        init(featureFlag: FeatureFlagService = ServiceLocator.featureFlagService,
+             country: CountryCode,
+             stores: StoresManager = ServiceLocator.stores) {
+            self.featureFlag = featureFlag
+            self.country = country
+            self.stores = stores
+        }
+
+        func isEligible(onCompletion: @escaping (Bool) -> Void) {
+            // Check if notification has already been scheduled
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { hasBeenScheduled in
+                // If already scheduled, not eligible
+                if hasBeenScheduled {
+                    onCompletion(false)
+                    return
+                }
+
+                // TODO: Add the other eligibility checks (country, device type, feature flag)
+                // For now, return true if not yet scheduled
+                onCompletion(true)
+            }
+            stores.dispatch(action)
+        }
+    }
+    
+    private func scheduleNotificationIfNeeded() {
+        PointOfSaleSurveyEligibility(country: cardPresentPaymentsConfiguration.countryCode, stores: stores).isEligible { [weak self] isEligible in
+            guard let self = self, isEligible else {
+                debugPrint("🍍 Not eligible for POS surveys")
+                return
+            }
+
+            Task { @MainActor in
+                // Create & set trigger
+                let seconds = TimeInterval(5)
+                let userInfo: [AnyHashable: Any] = [
+                    LocalNotification.UserInfoKey.surveyURL: LocalNotification.SurveyURL.pointOfSalePotentialMerchant
+                ]
+                let notification = LocalNotification(
+                    title: LocalNotification.Localization.PointOfSalePotentialMerchant.title,
+                    body: LocalNotification.Localization.PointOfSalePotentialMerchant.body,
+                    scenario: .pointOfSalePotentialMerchant,
+                    actions: nil,
+                    userInfo: userInfo
+                )
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+                // Schedule
+                await ServiceLocator.pushNotesManager.requestLocalNotification(notification, trigger: trigger)
+
+                // Mark as scheduled
+                self.stores.dispatch(AppSettingsAction.setPOSSurveyNotificationScheduled { result in
+                    switch result {
+                    case .success:
+                        debugPrint("🍍 POS survey notification scheduled and marked as scheduled")
+                    case .failure(let error):
+                        debugPrint("🍍 Error marking notification as scheduled: \(error)")
+                    }
+                })
+            }
+        }
     }
 
     /// Tracks the `paymentsFlowFailed` event.

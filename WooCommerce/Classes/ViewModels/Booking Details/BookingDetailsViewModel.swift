@@ -1,7 +1,4 @@
 import Foundation
-import struct Networking.Booking
-import struct Networking.Customer
-import struct Networking.Address
 import Yosemite
 import SwiftUI // Added for withAnimation
 

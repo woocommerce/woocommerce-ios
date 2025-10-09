@@ -33,8 +33,8 @@ struct POSCatalogFullSyncServiceTests {
         // Then
         #expect(result.products.count == expectedProducts.count)
         #expect(result.variations.count == expectedVariations.count)
-        #expect(mockSyncRemote.loadProductsCallCount == 2) // 1 batch of 2 requests
-        #expect(mockSyncRemote.loadProductVariationsCallCount == 2) // 1 batch of 2 requests
+        #expect(await mockSyncRemote.loadProductsCallCount.value == 2) // 1 batch of 2 requests
+        #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 2) // 1 batch of 2 requests
     }
 
     @Test func startFullSync_handles_paginated_products_correctly() async throws {
@@ -54,8 +54,8 @@ struct POSCatalogFullSyncServiceTests {
 
         // Then
         #expect(result.products.count == 3)
-        #expect(mockSyncRemote.loadProductsCallCount == 4) // 2 batches of 2 requests
-        #expect(mockSyncRemote.loadProductVariationsCallCount == 2) // 1 batch of 2 requests
+        #expect(await mockSyncRemote.loadProductsCallCount.value == 4) // 2 batches of 2 requests
+        #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 2) // 1 batch of 2 requests
     }
 
     @Test func startFullSync_handles_paginated_variations_correctly() async throws {
@@ -75,8 +75,8 @@ struct POSCatalogFullSyncServiceTests {
 
         // Then
         #expect(result.variations.count == 4)
-        #expect(mockSyncRemote.loadProductsCallCount == 2) // 1 batch of 2 requests
-        #expect(mockSyncRemote.loadProductVariationsCallCount == 4) // 2 batches of 2 requests
+        #expect(await mockSyncRemote.loadProductsCallCount.value == 2) // 1 batch of 2 requests
+        #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 4) // 2 batches of 2 requests
     }
 
     @Test func startFullSync_stops_pagination_when_no_new_items_returned_and_hasMorePages_is_inaccurate() async throws {
@@ -95,7 +95,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // Then - Should stop after empty page
         #expect(result.products.count == 1)
-        #expect(mockSyncRemote.loadProductsCallCount == 4) // The results from the second batch are empty
+        #expect(await mockSyncRemote.loadProductsCallCount.value == 4) // The results from the second batch are empty
     }
 
     @Test func startFullSync_handles_batch_processing_correctly() async throws {
@@ -116,7 +116,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // Then
         #expect(result.products.count == 5)
-        #expect(mockSyncRemote.loadProductsCallCount == 6)
+        #expect(await mockSyncRemote.loadProductsCallCount.value == 6)
     }
 
     @Test func startFullSync_propagates_network_errors() async throws {
@@ -176,7 +176,7 @@ struct POSCatalogFullSyncServiceTests {
         _ = try await service.startFullSync(for: sampleSiteID)
 
         // Then
-        #expect(mockSyncRemote.loadProductsCallCount == 5)
-        #expect(mockSyncRemote.loadProductVariationsCallCount == 5)
+        #expect(await mockSyncRemote.loadProductsCallCount.value == 5)
+        #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 5)
     }
 }

@@ -31,8 +31,8 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
-        #expect(mockSyncRemote.loadIncrementalProductsCallCount == 2)
-        #expect(mockSyncRemote.loadIncrementalProductVariationsCallCount == 2)
+        #expect(await mockSyncRemote.loadIncrementalProductsCallCount.value == 2)
+        #expect(await mockSyncRemote.loadIncrementalProductVariationsCallCount.value == 2)
         #expect(mockSyncRemote.lastIncrementalProductsModifiedAfter == lastFullSyncDate)
         #expect(mockSyncRemote.lastIncrementalVariationsModifiedAfter == lastFullSyncDate)
         #expect(mockPersistenceService.persistIncrementalCatalogDataCallCount == 1)
@@ -76,7 +76,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
-        #expect(mockSyncRemote.loadIncrementalProductsCallCount == 4)
+        #expect(await mockSyncRemote.loadIncrementalProductsCallCount.value == 4)
         let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
         #expect(persistedCatalog.products.count == 3)
     }
@@ -97,7 +97,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
-        #expect(mockSyncRemote.loadIncrementalProductVariationsCallCount == 2)
+        #expect(await mockSyncRemote.loadIncrementalProductVariationsCallCount.value == 2)
         let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
         #expect(persistedCatalog.variations.count == 2)
     }

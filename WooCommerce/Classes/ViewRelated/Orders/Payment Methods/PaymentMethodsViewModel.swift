@@ -507,8 +507,6 @@ private extension PaymentMethodsViewModel {
         private let featureFlag: FeatureFlagService
         private let country: CountryCode // US/UK
         private let stores: StoresManager
-        // TODO:
-        // Device check? Only iPads or all?
 
         init(featureFlag: FeatureFlagService = ServiceLocator.featureFlagService,
              country: CountryCode,
@@ -527,7 +525,7 @@ private extension PaymentMethodsViewModel {
                     return
                 }
 
-                // TODO: Add the other eligibility checks (country, device type, feature flag)
+                // TODO: Add the other eligibility checks (country, feature flag)
                 // For now, return true if not yet scheduled
                 onCompletion(true)
             }
@@ -536,6 +534,14 @@ private extension PaymentMethodsViewModel {
     }
     
     private func scheduleNotificationIfNeeded() {
+        // For testing only: Resets the flag before checking for eligibility, so we can re-trigger it with all conditions without reinstalling
+        stores.dispatch(AppSettingsAction.resetPOSSurveyNotificationScheduled { [weak self] _ in
+            guard let self = self else { return }
+            self.checkEligibilityAndSchedule()
+        })
+    }
+
+    private func checkEligibilityAndSchedule() {
         PointOfSaleSurveyEligibility(country: cardPresentPaymentsConfiguration.countryCode, stores: stores).isEligible { [weak self] isEligible in
             guard let self = self, isEligible else {
                 debugPrint("🍍 Not eligible for POS surveys")

@@ -297,6 +297,8 @@ public class AppSettingsStore: Store {
             setPOSSurveyNotificationScheduled(onCompletion: onCompletion)
         case .getPOSSurveyNotificationScheduled(let onCompletion):
             getPOSSurveyNotificationScheduled(onCompletion: onCompletion)
+        case .resetPOSSurveyNotificationScheduled(let onCompletion):
+            resetPOSSurveyNotificationScheduled(onCompletion: onCompletion)
         }
     }
 }
@@ -1304,6 +1306,16 @@ private extension AppSettingsStore {
 
     func getPOSSurveyNotificationScheduled(onCompletion: (Bool) -> Void) {
         onCompletion(generalAppSettings.value(for: \.isPOSSurveyNotificationScheduled))
+    }
+
+    // For testing only. If we merge this, then remove along FF
+    func resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(false, for: \.isPOSSurveyNotificationScheduled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
     }
 }
 

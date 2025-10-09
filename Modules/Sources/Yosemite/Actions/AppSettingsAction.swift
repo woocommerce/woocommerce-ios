@@ -376,4 +376,9 @@ public enum AppSettingsAction: Action {
     /// Gets whether the Point of Sale survey notification has been scheduled
     ///
     case getPOSSurveyNotificationScheduled(onCompletion: (Bool) -> Void)
+
+    /// Resets the Point of Sale survey notification scheduled state
+    /// For testing only. If we merge this, then remove along FF
+    ///
+    case resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
 }

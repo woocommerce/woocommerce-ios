@@ -321,7 +321,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        lastFullSyncTimestamp: nil,
                                        completionHandler: unimportantCompletionHandler)
 
-        // Assert
+        // Then
         guard case .fetchFilteredOrders(_, _, _, _, _, _, _, let createdVia, _, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return

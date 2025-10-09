@@ -5,7 +5,8 @@ import SwiftUI
 enum POSFontStyle {
     case posHeadingBold
     case posHeadingRegular
-    case posBodyXLarge
+    case posBodyXLargeRegular
+    case posBodyXLargeBold
     case posBodyLargeBold
     case posBodyLargeRegular(underline: Bool = false)
     case posBodyMediumBold
@@ -24,10 +25,15 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
         case .posHeadingRegular:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .regular)
-        case .posBodyXLarge:
+        case .posBodyXLargeRegularRegular:
             Font.system(
                 size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
                 weight: .semibold
+            )
+        case .posBodyXLargeRegularBold:
+            Font.system(
+                size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
+                weight: .bold
             )
         case .posBodyLargeBold:
             Font.system(size: scaledValue(FontSize.bodyLarge, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
@@ -144,8 +150,10 @@ extension UIContentSizeCategory {
                     .font(.posHeadingBold)
                 Text("Heading Regular")
                     .font(.posHeadingRegular)
-                Text("Body Extra Large")
-                    .font(.posBodyXLarge)
+                Text("Body Extra Large Regular")
+                    .font(.posBodyXLargeRegular)
+                Text("Body Extra Large Bold")
+                    .font(.posBodyXLargeBold)
                 Text("Body Large Bold")
                     .font(.posBodyLargeBold)
                 Text("Body Large Regular")

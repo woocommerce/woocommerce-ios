@@ -11,9 +11,6 @@ final class BookingListViewModel: ObservableObject {
 
     @Published var errorFetching = false
 
-    /// Search view model for handling search functionality
-    let searchViewModel: BookingSearchViewModel
-
     var hasFilters: Bool {
         // TODO: Update when adding filters
         return false
@@ -41,6 +38,9 @@ final class BookingListViewModel: ObservableObject {
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
+    /// Tracks if initial load has been triggered.
+    private var hasLoadedInitially = false
+
     /// Supports infinite scroll.
     private let paginationTracker: PaginationTracker
     private let pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex
@@ -64,7 +64,6 @@ final class BookingListViewModel: ObservableObject {
 
     init(siteID: Int64,
          type: BookingListTab,
-         searchQueryPublisher: AnyPublisher<String, Never>,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          currentDate: Date = Date()) {
@@ -74,13 +73,6 @@ final class BookingListViewModel: ObservableObject {
         self.storage = storage
         self.currentDate = currentDate
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
-        self.searchViewModel = BookingSearchViewModel(
-            siteID: siteID,
-            type: type,
-            searchQueryPublisher: searchQueryPublisher,
-            stores: stores,
-            currentDate: currentDate
-        )
 
         configureResultsController()
         configurePaginationTracker()
@@ -88,6 +80,8 @@ final class BookingListViewModel: ObservableObject {
 
     /// Called when loading the first page of bookings.
     func loadBookings() {
+        guard !hasLoadedInitially else { return }
+        hasLoadedInitially = true
         paginationTracker.syncFirstPage()
     }
 

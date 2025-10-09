@@ -19,6 +19,7 @@ struct BookingListContainerView: View {
                 ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
                     BookingListView(
                         viewModel: viewModel.listViewModel(for: tab),
+                        searchViewModel: viewModel.searchViewModel(for: tab),
                         selectedBooking: $selectedBooking
                     )
                     .tag(tab)

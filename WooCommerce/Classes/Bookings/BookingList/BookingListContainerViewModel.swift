@@ -7,6 +7,10 @@ final class BookingListContainerViewModel: ObservableObject {
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
 
+    private let todaySearchViewModel: BookingSearchViewModel
+    private let upcomingSearchViewModel: BookingSearchViewModel
+    private let allSearchViewModel: BookingSearchViewModel
+
     @Published var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
 
@@ -18,14 +22,27 @@ final class BookingListContainerViewModel: ObservableObject {
         self.todayListViewModel = BookingListViewModel(
             siteID: siteID,
             type: .today,
-            searchQueryPublisher: searchQueryPublisher
         )
         self.upcomingListViewModel = BookingListViewModel(
             siteID: siteID,
             type: .upcoming,
-            searchQueryPublisher: searchQueryPublisher
         )
         self.allListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .all,
+        )
+
+        self.todaySearchViewModel = BookingSearchViewModel(
+            siteID: siteID,
+            type: .today,
+            searchQueryPublisher: searchQueryPublisher
+        )
+        self.upcomingSearchViewModel = BookingSearchViewModel(
+            siteID: siteID,
+            type: .upcoming,
+            searchQueryPublisher: searchQueryPublisher
+        )
+        self.allSearchViewModel = BookingSearchViewModel(
             siteID: siteID,
             type: .all,
             searchQueryPublisher: searchQueryPublisher
@@ -45,6 +62,17 @@ final class BookingListContainerViewModel: ObservableObject {
             upcomingListViewModel
         case .all:
             allListViewModel
+        }
+    }
+
+    func searchViewModel(for tab: BookingListTab) -> BookingSearchViewModel {
+        switch tab {
+        case .today:
+            todaySearchViewModel
+        case .upcoming:
+            upcomingSearchViewModel
+        case .all:
+            allSearchViewModel
         }
     }
 }

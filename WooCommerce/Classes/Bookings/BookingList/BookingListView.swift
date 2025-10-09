@@ -4,27 +4,29 @@ import struct Yosemite.Booking
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
     @ObservedObject private var searchViewModel: BookingSearchViewModel
+
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
     @ScaledMetric private var scale: CGFloat = 1.0
+
     @Binding var selectedBooking: Booking?
 
-    init(viewModel: BookingListViewModel, selectedBooking: Binding<Booking?>) {
+    init(viewModel: BookingListViewModel,
+         searchViewModel: BookingSearchViewModel,
+         selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
-        self.searchViewModel = viewModel.searchViewModel
+        self.searchViewModel = searchViewModel
         self._selectedBooking = selectedBooking
     }
 
     var body: some View {
-        VStack {
-            mainContentView
-                .overlay {
-                    searchContentView
-                        .renderedIf(searchViewModel.currentSearchQuery.isNotEmpty)
-                }
-        }
-        .task {
-            viewModel.loadBookings()
-        }
+        mainContentView
+            .task {
+                viewModel.loadBookings()
+            }
+            .overlay {
+                searchContentView
+                    .renderedIf(searchViewModel.currentSearchQuery.isNotEmpty)
+            }
     }
 }
 
@@ -67,7 +69,7 @@ private extension BookingListView {
             } else {
                 bookingList(with: searchViewModel.searchResults,
                             onNextPage: { searchViewModel.onLoadNextPageAction() },
-                            onRefresh: {await searchViewModel.onRefreshAction()})
+                            onRefresh: { await searchViewModel.onRefreshAction() })
             }
         }
         .overlay(alignment: .bottom) {

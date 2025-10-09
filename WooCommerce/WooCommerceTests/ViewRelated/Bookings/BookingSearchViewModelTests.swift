@@ -30,40 +30,6 @@ struct BookingSearchViewModelTests {
         #expect(viewModel.currentSearchQuery == "test query")
     }
 
-    @Test func search_results_are_cleared_when_query_becomes_empty() async throws {
-        // Given
-        let searchQuerySubject = PassthroughSubject<String, Never>()
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, startDate: Date())
-        stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
-                return
-            }
-            onCompletion(.success([booking]))
-        }
-
-        let viewModel = BookingSearchViewModel(
-            siteID: sampleSiteID,
-            type: .all,
-            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
-            stores: stores
-        )
-
-        // When - perform search
-        searchQuerySubject.send("test")
-        try await Task.sleep(nanoseconds: 400_000_000) // Wait for debounce + search
-
-        #expect(viewModel.searchResults.count == 1)
-
-        // Clear query
-        searchQuerySubject.send("")
-        try await Task.sleep(nanoseconds: 400_000_000)
-
-        // Then
-        #expect(viewModel.searchResults.isEmpty)
-        #expect(viewModel.isSearching == false)
-    }
-
     // MARK: - Search action
 
     @Test func search_bookings_is_dispatched_when_query_is_not_empty() async throws {

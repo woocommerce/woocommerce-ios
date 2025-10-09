@@ -163,7 +163,9 @@ private extension BookingListView {
                         .frame(width: Layout.emptyStateImageWidth * scale)
                         .padding(.bottom, Layout.viewPadding)
                     if isSearching {
-                        Text(searchViewModel.emptyStateMessage)
+                        Text(Localization.emptySearchText)
+                            .font(.body)
+                            .foregroundStyle(Color.secondary)
                     } else {
                         VStack(spacing: Layout.textVerticalPadding) {
                             Text(viewModel.emptyStateTitle)
@@ -231,6 +233,11 @@ private extension BookingListView {
             "bookingList.errorMessage",
             value: "Error fetching bookings",
             comment: "Error message when fetching bookings fails"
+        )
+        static let emptySearchText = NSLocalizedString(
+            "bookingList.emptySearchText",
+            value: "We couldn’t find any bookings with that name — try adjusting your search term to see more results.",
+            comment: "Message displayed when searching bookings by keyword yields no results."
         )
     }
 }

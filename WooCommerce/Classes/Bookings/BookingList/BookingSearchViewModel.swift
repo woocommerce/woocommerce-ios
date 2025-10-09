@@ -28,24 +28,6 @@ final class BookingSearchViewModel: ObservableObject {
     /// Current search query
     @Published var currentSearchQuery: String = ""
 
-    var emptyStateMessage: AttributedString {
-        let quotedSearchQuery = "\"\(currentSearchQuery)\""
-        let content = String.localizedStringWithFormat(Localization.emptySearchText, quotedSearchQuery)
-
-        var attributedText = AttributedString(content)
-        attributedText.font = .headline.weight(.regular)
-        attributedText.foregroundColor = Color(.text)
-
-        if let range = attributedText.range(of: quotedSearchQuery) {
-            let textStyleContainer = AttributeContainer()
-                .font(.headline.weight(.semibold))
-                .foregroundColor(Color(.text))
-            attributedText[range].setAttributes(textStyleContainer)
-        }
-
-        return attributedText
-    }
-
     init(siteID: Int64,
          type: BookingListTab,
          searchQueryPublisher: AnyPublisher<String, Never>,
@@ -96,12 +78,11 @@ private extension BookingSearchViewModel {
             .removeDuplicates()
             .sink { [weak self] query in
                 guard let self else { return }
+                isSearching = true
                 if query.isEmpty {
-                    self.searchResults = []
-                    self.isSearching = false
+                    searchResults = []
                 } else {
-                    self.isSearching = true
-                    self.searchPaginationTracker.syncFirstPage()
+                    searchPaginationTracker.syncFirstPage()
                 }
             }
     }
@@ -114,10 +95,6 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             isSearching = false
             shouldShowBottomActivityIndicator = false
             return
-        }
-
-        if pageNumber == pageFirstIndex {
-            searchResults = [] // Clear previous search results
         }
 
         shouldShowBottomActivityIndicator = true
@@ -136,7 +113,7 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             guard let self else { return }
             switch result {
             case .success(let bookings):
-                if pageNumber == self.pageFirstIndex {
+                if pageNumber == pageFirstIndex {
                     searchResults = bookings
                 } else {
                     searchResults.append(contentsOf: bookings)
@@ -156,16 +133,5 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             shouldShowBottomActivityIndicator = false
         }
         stores.dispatch(action)
-    }
-}
-
-private extension BookingSearchViewModel {
-    enum Localization {
-        static let emptySearchText = NSLocalizedString(
-            "bookingList.emptySearchText",
-            value: "We're sorry, we couldn't find results for %1$@",
-            comment: "Message displayed when searching bookings by keyword yields no results. " +
-            "The placeholder is the search keyword."
-        )
     }
 }

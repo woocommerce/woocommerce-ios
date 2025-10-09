@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 import GRDB
 import Combine

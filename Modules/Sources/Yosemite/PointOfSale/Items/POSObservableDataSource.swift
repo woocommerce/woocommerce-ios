@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 
 /// Protocol for observable data sources that provide POS items with automatic updates

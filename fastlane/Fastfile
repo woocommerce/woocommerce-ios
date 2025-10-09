@@ -184,6 +184,7 @@ platform :ios do
 
   # This lane executes the steps planned on code freeze, creating a new release branch from the current trunk
   #
+  # @param [String] version (optional) The version number for the release from the release tool. If not provided, uses the calculated version.
   # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
   #
   # @example Running the lane

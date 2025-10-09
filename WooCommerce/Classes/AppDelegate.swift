@@ -31,21 +31,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UIApplication.shared.delegate as! AppDelegate
     }
 
-    /// Main Window
-    ///
-    var window: UIWindow?
-
-    /// Coordinates app navigation based on authentication state.
-    ///
-    private var appCoordinator: AppCoordinator?
-
-    /// Initializes storage manager along with AppDelegate
-    private let storageManager = ServiceLocator.storageManager
-
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
-        appCoordinator?.tabBarController
+        guard let sceneDelegate = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .compactMap({ $0.delegate as? SceneDelegate })
+            .first else { return nil }
+        return sceneDelegate.tabBarController
     }
 
     /// Coordinates the Jetpack setup flow for users authenticated without Jetpack.
@@ -54,11 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var universalLinkRouter: UniversalLinkRouter?
 
-    private lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
+    private(set) var requirementsChecker = RequirementsChecker(baseViewController: nil)
 
     /// Handles events to background refresh the app.
     ///
-    private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+    let appRefreshHandler = BackgroundTaskRefreshDispatcher()
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -110,11 +103,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Setup the Interface!
-        setupMainWindow()
+        // Global UIAppearance that doesn't require a WindowScene
         setupComponentsAppearance()
-        setupNoticePresenter()
-        setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
 
         // Don't track startup waiting time if user starts logged out
@@ -122,21 +112,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             cancelStartupWaitingTimeTracker()
         }
 
-        // Start app navigation.
-        appCoordinator?.start()
-
-        // Register for background app refresh events.
+        // Register for background app refresh events (scene will schedule actual refreshes)
         appRefreshHandler.registerSystemTaskIdentifier()
 
         return true
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        guard let rootViewController = window?.rootViewController else {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .compactMap({ $0.delegate as? SceneDelegate })
+            .first,
+              let rootViewController = sceneDelegate.window?.rootViewController else {
             fatalError()
         }
 
-        if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
+        if let universalLinkRouter = sceneDelegate.universalLinkRouter, universalLinkRouter.canHandle(url: url) {
             universalLinkRouter.handle(url: url)
             return true
         }
@@ -213,23 +204,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers,
-        // and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-
-        // Don't track startup waiting time if app is backgrounded before everything is loaded
         cancelStartupWaitingTimeTracker()
-
-        // Schedule the background app refresh when sending the app to the background.
-        // The OS is in charge of determining when these tasks will run based on app usage patterns.
-        appRefreshHandler.scheduleAppRefresh()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-
-        // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
-        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
+        // Handled per-scene in SceneDelegate.sceneWillEnterForeground(_:)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -248,7 +227,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      continue userActivity: NSUserActivity,
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            handleWebActivity(userActivity)
+            if let sceneDelegate = UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .compactMap({ $0.delegate as? SceneDelegate })
+                .first {
+                sceneDelegate.handleWebActivity(userActivity)
+            }
         }
 
         SpotlightManager.handleUserActivity(userActivity)
@@ -264,19 +248,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+// MARK: - UIScene Configuration
+extension AppDelegate {
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let config = UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        config.delegateClass = SceneDelegate.self
+        return config
+    }
+
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+        // Resources tied to discarded scenes can be released here if needed.
+    }
+}
+
 // MARK: - Initialization Methods
 //
-private extension AppDelegate {
-
-    /// Sets up the main UIWindow instance.
-    ///
-    func setupMainWindow() {
-        let window = UIWindow()
-        window.makeKeyAndVisible()
-        self.window = window
-
-        appCoordinator = AppCoordinator(window: window)
-    }
+extension AppDelegate {
 
     /// Sets up all of the component(s) Appearance.
     ///
@@ -293,8 +280,13 @@ private extension AppDelegate {
         UILabel.applyWooAppearance()
         UITabBar.applyWooAppearance()
 
-        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        window?.tintColor = .primary
+        // Apply tint to current key window when available
+        if let keyWindow = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }) {
+            keyWindow.tintColor = .primary
+        }
     }
 
     /// Sets up FancyAlert's UIAppearance.
@@ -368,13 +360,6 @@ private extension AppDelegate {
         CocoaLumberjackSwift.dynamicLogLevel = level
     }
 
-    /// Setup: Notice Presenter
-    ///
-    func setupNoticePresenter() {
-        var noticePresenter = ServiceLocator.noticePresenter
-        noticePresenter.presentingViewController = appCoordinator?.tabBarController
-    }
-
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
@@ -389,11 +374,6 @@ private extension AppDelegate {
 
     func setupUserNotificationCenter() {
         UNUserNotificationCenter.current().delegate = self
-    }
-
-    func setupUniversalLinkRouter() {
-        guard let tabBarController = tabBarController else { return }
-        universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter(tabBarController: tabBarController)
     }
 
     /// Set up app review prompt
@@ -445,7 +425,7 @@ private extension AppDelegate {
         }
 
         if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
-            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: storageManager))
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
         if ProcessConfiguration.shouldSimulatePushNotification {
@@ -560,20 +540,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
-// MARK: - Universal Links
-
-private extension AppDelegate {
-    func handleWebActivity(_ activity: NSUserActivity) {
-        guard let linkURL = activity.webpageURL else {
-            return
-        }
-
-        universalLinkRouter?.handle(url: linkURL)
-    }
-}
-
 // MARK: - Magic link
-private extension AppDelegate {
+extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
         return if ServiceLocator.stores.isAuthenticated {
             handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)

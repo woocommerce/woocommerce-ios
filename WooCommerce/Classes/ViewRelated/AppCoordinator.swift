@@ -1,5 +1,6 @@
 import Combine
 import Experiments
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import Yosemite
@@ -121,6 +122,7 @@ private extension AppCoordinator {
         }
     }
 
+    //
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
         let identifier = response.notification.request.identifier
 
@@ -133,6 +135,18 @@ private extension AppCoordinator {
 
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
+
+        // Handle specific notification types that require additional actions
+        if identifier == LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
+           let surveyURLString = userInfo[LocalNotification.UserInfoKey.surveyURL] as? String,
+           let surveyURL = URL(string: surveyURLString) {
+            presentSurveyWebView(url: surveyURL)
+        }
+    }
+
+    func presentSurveyWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        tabBarController.present(safariViewController, animated: true)
     }
 }
 

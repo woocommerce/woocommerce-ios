@@ -240,7 +240,16 @@ final class OrdersRootViewController: UIViewController {
         Task { @MainActor in
             // Create & set trigger
             let seconds = TimeInterval(5)
-            let notification = LocalNotification(scenario: .pointOfSalePotentialMerchant)
+            let userInfo: [AnyHashable: Any] = [
+                LocalNotification.UserInfoKey.surveyURL: LocalNotification.SurveyURL.pointOfSalePotentialMerchant
+            ]
+            let notification = LocalNotification(
+                title: LocalNotification.Localization.PointOfSalePotentialMerchant.title,
+                body: LocalNotification.Localization.PointOfSalePotentialMerchant.body,
+                scenario: .pointOfSalePotentialMerchant,
+                actions: nil,
+                userInfo: userInfo
+            )
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
             // Schedule
             await ServiceLocator.pushNotesManager.requestLocalNotification(notification, trigger: trigger)

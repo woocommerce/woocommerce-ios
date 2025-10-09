@@ -225,6 +225,110 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         XCTAssertEqual(writeStrategy, .deleteAllBeforeSaving)
         XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
     }
+
+    func test_sales_channel_filter_point_of_sale_maps_to_pos_rest_api() {
+        // Given
+        let filters = FilterOrderListViewModel.Filters(orderStatus: nil,
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: .pointOfSale,
+                                                       numberOfActiveFilters: 1)
+        let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: filters)
+
+        // When
+        let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
+                                       pageSize: pageSize,
+                                       reason: nil,
+                                       lastFullSyncTimestamp: nil,
+                                       completionHandler: unimportantCompletionHandler)
+
+        // Then
+        guard case .fetchFilteredOrders(_, _, _, _, _, _, _, let createdVia, _, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertEqual(createdVia, "pos-rest-api")
+    }
+
+    func test_sales_channel_filter_web_checkout_maps_to_checkout() {
+        // Given
+        let filters = FilterOrderListViewModel.Filters(orderStatus: nil,
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: .webCheckout,
+                                                       numberOfActiveFilters: 1)
+        let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: filters)
+
+        // When
+        let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
+                                       pageSize: pageSize,
+                                       reason: nil,
+                                       lastFullSyncTimestamp: nil,
+                                       completionHandler: unimportantCompletionHandler)
+
+        // Then
+        guard case .fetchFilteredOrders(_, _, _, _, _, _, _, let createdVia, _, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertEqual(createdVia, "checkout,store-api")
+    }
+
+    func test_sales_channel_filter_wp_admin_maps_to_admin() {
+        // Given
+        let filters = FilterOrderListViewModel.Filters(orderStatus: nil,
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: .wpAdmin,
+                                                       numberOfActiveFilters: 1)
+        let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: filters)
+
+        // When
+        let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
+                                       pageSize: pageSize,
+                                       reason: nil,
+                                       lastFullSyncTimestamp: nil,
+                                       completionHandler: unimportantCompletionHandler)
+
+        // Then
+        guard case .fetchFilteredOrders(_, _, _, _, _, _, _, let createdVia, _, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertEqual(createdVia, "admin")
+    }
+
+    func test_sales_channel_filter_any_maps_to_nil() {
+        // Given
+        let filters = FilterOrderListViewModel.Filters(orderStatus: nil,
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: .any,
+                                                       numberOfActiveFilters: 0)
+        let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: filters)
+
+        // When
+        let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
+                                       pageSize: pageSize,
+                                       reason: nil,
+                                       lastFullSyncTimestamp: nil,
+                                       completionHandler: unimportantCompletionHandler)
+
+        // Assert
+        guard case .fetchFilteredOrders(_, _, _, _, _, _, _, let createdVia, _, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertNil(createdVia)
+    }
 }
 
 private extension OrderListSyncActionUseCaseTests {

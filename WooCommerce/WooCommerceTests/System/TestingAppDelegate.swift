@@ -18,10 +18,6 @@ class TestingAppDelegate: AppDelegate {
         let bundle = Bundle(for: type(of: self))
         let storyboard = UIStoryboard(name: "TestingMode", bundle: bundle)
 
-        window = UIWindow()
-        window?.rootViewController = storyboard.instantiateInitialViewController()
-        window?.makeKeyAndVisible()
-
         return true
     }
 
@@ -29,5 +25,30 @@ class TestingAppDelegate: AppDelegate {
         // Don't call super so nothing gets set up.
 
         return true
+    }
+
+    override func application(_ application: UIApplication,
+                              configurationForConnecting connectingSceneSession: UISceneSession,
+                              options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let config = UISceneConfiguration(name: "Testing Configuration", sessionRole: connectingSceneSession.role)
+        config.delegateClass = TestingSceneDelegate.self
+        return config
+    }
+}
+
+// MARK: - Testing Scene Delegate (UIWindowSceneDelegate)
+final class TestingSceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+
+        let bundle = Bundle(for: TestingAppDelegate.self)
+        let storyboard = UIStoryboard(name: "TestingMode", bundle: bundle)
+
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = storyboard.instantiateInitialViewController()
+        window.makeKeyAndVisible()
+        self.window = window
     }
 }

@@ -45,8 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    private var universalLinkRouter: UniversalLinkRouter?
-
     private(set) var requirementsChecker = RequirementsChecker(baseViewController: nil)
 
     /// Handles events to background refresh the app.
@@ -364,6 +362,7 @@ extension AppDelegate {
 
     /// Push Notifications: Authorization + Registration!
     ///
+    /// periphery: ignore - Fails when build on simulator
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")

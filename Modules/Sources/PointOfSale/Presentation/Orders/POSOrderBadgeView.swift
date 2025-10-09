@@ -22,22 +22,22 @@ struct POSOrderBadgeView: View {
     private var statusTextColor: Color {
         switch order.status {
         case .completed:
-            return Color(uiColor: .init(red: 10/255, green: 17/255, blue: 45/255, alpha: 1))
+            return .posOnInfoLowest
         case .failed:
-            return Color(uiColor: .init(red: 36/255, green: 10/255, blue: 10/255, alpha: 1))
+            return .posOnErrorLowest
         default:
-            return Color(uiColor: .init(red: 16/255, green: 21/255, blue: 23/255, alpha: 1))
+            return .posOnDefault
         }
     }
 
     private var statusBackgroundColor: Color {
         switch order.status {
         case .completed:
-            return Color(uiColor: .init(red: 214/255, green: 221/255, blue: 249/255, alpha: 1))
+            return .posInfoLowest
         case .failed:
-            return Color(uiColor: .init(red: 247/255, green: 235/255, blue: 236/255, alpha: 1))
+            return .posErrorLowest
         default:
-            return Color(uiColor: .init(red: 220/255, green: 220/255, blue: 222/255, alpha: 1))
+            return .posDefault
         }
     }
 }

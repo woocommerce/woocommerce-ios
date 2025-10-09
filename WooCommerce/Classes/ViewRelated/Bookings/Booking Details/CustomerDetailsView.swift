@@ -4,6 +4,7 @@ import SwiftUI
 extension BookingDetailsView {
     struct CustomerDetailsView: View {
         @ObservedObject var content: BookingDetailsViewModel.CustomerContent
+        let showNotice: (Notice) -> Void
 
         private enum Row: Hashable {
             case name(String)
@@ -77,8 +78,12 @@ extension BookingDetailsView {
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
                 emailText.sendToPasteboard()
-                let notice = Notice(title: Localization.emailCopiedMessage, feedbackType: .success)
-                ServiceLocator.noticePresenter.enqueue(notice: notice)
+                showNotice(
+                    Notice(
+                        title: Localization.emailCopiedMessage,
+                        feedbackType: .success
+                    )
+                )
             }
         }
 

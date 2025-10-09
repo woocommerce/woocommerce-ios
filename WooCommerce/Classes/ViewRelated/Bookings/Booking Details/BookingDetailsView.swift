@@ -7,6 +7,7 @@ struct BookingDetailsView: View {
     @State private var showingOptions = false
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
+    @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
@@ -95,6 +96,7 @@ struct BookingDetailsView: View {
         } message: {
             Text(viewModel.cancellationAlertMessage)
         }
+        .notice($notice)
     }
 }
 
@@ -144,7 +146,9 @@ private extension BookingDetailsView {
         case .attendance(let content):
             attendanceView(with: content)
         case .customer(let content):
-            CustomerDetailsView(content: content)
+            CustomerDetailsView(content: content, showNotice: {
+                notice = $0
+            })
         case .payment(let content):
             paymentDetailsView(with: content)
         case .bookingNotes:

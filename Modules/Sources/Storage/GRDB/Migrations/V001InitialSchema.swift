@@ -10,6 +10,7 @@ struct V001InitialSchema {
         try createSiteTable(db)
         try createProductTable(db)
         try createProductAttributeTable(db)
+        try createImageTable(db)
         try createProductImageTable(db)
         try createProductVariationTable(db)
         try createProductVariationAttributeTable(db)
@@ -55,7 +56,8 @@ struct V001InitialSchema {
 
     private static func createProductAttributeTable(_ db: Database) throws {
         try db.create(table: "productAttribute") { productAttributeTable in
-            // This table holds local product attributes only. Global attributes belong to a site.
+            // This table holds both local and global product attributes.
+            // Local attributes have remoteAttributeID = 0, global attributes have remoteAttributeID > 0
             productAttributeTable.autoIncrementedPrimaryKey("id").notNull()
             productAttributeTable.column("siteID", .integer).notNull()
             productAttributeTable.column("productID", .integer).notNull()
@@ -64,6 +66,7 @@ struct V001InitialSchema {
                                              columns: ["siteID", "id"],
                                              onDelete: .cascade)
 
+            productAttributeTable.column("remoteAttributeID", .integer).notNull()
             productAttributeTable.column("name", .text).notNull()
             productAttributeTable.column("position", .integer).notNull()
             productAttributeTable.column("visible", .boolean).notNull()
@@ -72,23 +75,39 @@ struct V001InitialSchema {
         }
     }
 
+    private static func createImageTable(_ db: Database) throws {
+        // Single image table shared by products and variations
+        try db.create(table: "image") { imageTable in
+            imageTable.column("id", .integer).notNull()
+            imageTable.primaryKey(["siteID", "id"]) // SiteID column created by belongsTo relationship
+            imageTable.belongsTo("site", onDelete: .cascade)
+
+            imageTable.column("dateCreated", .datetime).notNull()
+            imageTable.column("dateModified", .datetime)
+
+            imageTable.column("src", .text).notNull()
+            imageTable.column("name", .text)
+            imageTable.column("alt", .text)
+        }
+    }
+
     private static func createProductImageTable(_ db: Database) throws {
+        // Join table for many-to-many relationship between products and images
         try db.create(table: "productImage") { productImageTable in
             productImageTable.column("siteID", .integer).notNull()
-            productImageTable.column("id", .integer).notNull()
-            productImageTable.primaryKey(["siteID", "id"])
             productImageTable.column("productID", .integer).notNull()
+            productImageTable.column("imageID", .integer).notNull()
+            productImageTable.primaryKey(["siteID", "productID", "imageID"])
+
             productImageTable.foreignKey(["siteID", "productID"],
                                          references: "product",
                                          columns: ["siteID", "id"],
                                          onDelete: .cascade)
 
-            productImageTable.column("dateCreated", .datetime).notNull()
-            productImageTable.column("dateModified", .datetime)
-
-            productImageTable.column("src", .text).notNull()
-            productImageTable.column("name", .text)
-            productImageTable.column("alt", .text)
+            productImageTable.foreignKey(["siteID", "imageID"],
+                                         references: "image",
+                                         columns: ["siteID", "id"],
+                                         onDelete: .cascade)
         }
     }
 
@@ -119,7 +138,8 @@ struct V001InitialSchema {
 
     private static func createProductVariationAttributeTable(_ db: Database) throws {
         try db.create(table: "productVariationAttribute") { productVariationAttributeTable in
-            // This table holds local variation attributes only. Global attributes belong to a site.
+            // This table holds both local and global variation attributes.
+            // Local attributes have remoteAttributeID = 0, global attributes have remoteAttributeID > 0
             productVariationAttributeTable.autoIncrementedPrimaryKey("id").notNull()
             productVariationAttributeTable.column("siteID", .integer).notNull()
             productVariationAttributeTable.column("productVariationID", .integer).notNull()
@@ -128,28 +148,29 @@ struct V001InitialSchema {
                                                       columns: ["siteID", "id"],
                                                       onDelete: .cascade)
 
+            productVariationAttributeTable.column("remoteAttributeID", .integer).notNull()
             productVariationAttributeTable.column("name", .text).notNull()
             productVariationAttributeTable.column("option", .text).notNull()
         }
     }
 
     private static func createProductVariationImageTable(_ db: Database) throws {
+        // Join table for many-to-many relationship between product variations and images
         try db.create(table: "productVariationImage") { productVariationImageTable in
             productVariationImageTable.column("siteID", .integer).notNull()
-            productVariationImageTable.column("id", .integer).notNull()
-            productVariationImageTable.primaryKey(["siteID", "id"])
             productVariationImageTable.column("productVariationID", .integer).notNull()
+            productVariationImageTable.column("imageID", .integer).notNull()
+            productVariationImageTable.primaryKey(["siteID", "productVariationID", "imageID"])
+
             productVariationImageTable.foreignKey(["siteID", "productVariationID"],
                                                   references: "productVariation",
                                                   columns: ["siteID", "id"],
                                                   onDelete: .cascade)
 
-            productVariationImageTable.column("dateCreated", .datetime).notNull()
-            productVariationImageTable.column("dateModified", .datetime)
-
-            productVariationImageTable.column("src", .text).notNull()
-            productVariationImageTable.column("name", .text)
-            productVariationImageTable.column("alt", .text)
+            productVariationImageTable.foreignKey(["siteID", "imageID"],
+                                                  references: "image",
+                                                  columns: ["siteID", "id"],
+                                                  onDelete: .cascade)
         }
     }
 }

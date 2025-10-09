@@ -35,8 +35,14 @@ public class BookingStore: Store {
         }
 
         switch action {
-        case let .synchronizeBookings(siteID, pageNumber, pageSize, onCompletion):
-            synchronizeBookings(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, shouldClearCache, onCompletion):
+            synchronizeBookings(siteID: siteID,
+                                pageNumber: pageNumber,
+                                pageSize: pageSize,
+                                startDateBefore: startDateBefore,
+                                startDateAfter: startDateAfter,
+                                shouldClearCache: shouldClearCache,
+                                onCompletion: onCompletion)
         case let .checkIfStoreHasBookings(siteID, onCompletion):
             checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
         }
@@ -53,17 +59,21 @@ private extension BookingStore {
     func synchronizeBookings(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int,
+                             startDateBefore: String?,
+                             startDateAfter: String?,
+                             shouldClearCache: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let bookings = try await remote.loadAllBookings(for: siteID,
                                                                 pageNumber: pageNumber,
-                                                                pageSize: pageSize)
-                let shouldDeleteExistingBookings = pageNumber == Default.firstPageNumber
+                                                                pageSize: pageSize,
+                                                                startDateBefore: startDateBefore,
+                                                                startDateAfter: startDateAfter)
                 await upsertStoredBookingsInBackground(
                     readOnlyBookings: bookings,
                     siteID: siteID,
-                    shouldDeleteExistingBookings: shouldDeleteExistingBookings
+                    shouldDeleteExistingBookings: shouldClearCache
                 )
                 let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
@@ -89,7 +99,9 @@ private extension BookingStore {
             do {
                 let bookings = try await remote.loadAllBookings(for: siteID,
                                                                 pageNumber: 1,
-                                                                pageSize: 1)
+                                                                pageSize: 1,
+                                                                startDateBefore: nil,
+                                                                startDateAfter: nil)
                 let hasRemoteBookings = !bookings.isEmpty
                 onCompletion(.success(hasRemoteBookings))
             } catch {

@@ -65,11 +65,19 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
                                            using: ForeignKey([PersistedProductVariationAttribute.CodingKeys.siteID.stringValue,
                                                               PersistedProductVariationAttribute.CodingKeys.productVariationID.stringValue],
                                                              to: primaryKey))
-    public static let image = hasOne(PersistedProductVariationImage.self,
-                                     key: "image",
-                                     using: ForeignKey([PersistedProductVariationImage.CodingKeys.siteID.stringValue,
-                                                        PersistedProductVariationImage.CodingKeys.productVariationID.stringValue],
-                                                       to: primaryKey))
+
+    // Join table association (internal - used by 'image' through association)
+    private static let productVariationImage = hasOne(PersistedProductVariationImage.self,
+                                                      key: "productVariationImage",
+                                                      using: ForeignKey([PersistedProductVariationImage.CodingKeys.siteID.stringValue,
+                                                                         PersistedProductVariationImage.CodingKeys.productVariationID.stringValue],
+                                                                        to: primaryKey))
+
+    // Through association to access actual image via join table (use this to fetch image)
+    public static let image = hasOne(PersistedImage.self,
+                                     through: productVariationImage,
+                                     using: PersistedProductVariationImage.image,
+                                     key: "image")
 }
 
 

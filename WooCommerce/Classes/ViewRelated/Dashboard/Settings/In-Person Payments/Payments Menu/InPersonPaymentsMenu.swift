@@ -82,13 +82,13 @@ struct InPersonPaymentsMenu: View {
                             viewModel.purchaseCardReaderTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                        title: Localization.purchaseCardReader,
-                                        isActive: $viewModel.presentPurchaseCardReader) {
-                                AuthenticatedWebView(isPresented: .constant(true),
-                                                     viewModel: viewModel.purchaseCardReaderWebViewModel)
-                            }
+                                        title: Localization.purchaseCardReader)
                         }
                         .buttonStyle(.scrollViewRow)
+                        .navigationDestination(isPresented: $viewModel.presentPurchaseCardReader) {
+                            AuthenticatedWebView(isPresented: .constant(true),
+                                                 viewModel: viewModel.purchaseCardReaderWebViewModel)
+                        }
 
                         Button {
                             viewModel.manageCardReadersTapped()
@@ -118,12 +118,12 @@ struct InPersonPaymentsMenu: View {
                             viewModel.cardReaderManualsTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                        title: Localization.cardReaderManuals,
-                                        isActive: $viewModel.presentCardReaderManuals) {
-                                CardReaderManualsView()
-                            }
+                                        title: Localization.cardReaderManuals)
                         }
                         .buttonStyle(.scrollViewRow)
+                        .navigationDestination(isPresented: $viewModel.presentCardReaderManuals) {
+                            CardReaderManualsView()
+                        }
                         .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())

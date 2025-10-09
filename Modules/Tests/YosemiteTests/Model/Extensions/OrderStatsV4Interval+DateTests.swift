@@ -11,7 +11,9 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
                                             dateEnd: dateStringInSiteTimeZone,
                                             subtotals: mockIntervalSubtotals)
         // As long as the dates are parsed and formatted in the same time zone, they should be consistent.
-        let timeZone = TimeZone(secondsFromGMT: 29302)!
+        // Note that iOS 26 has changed behaviour here, and excess seconds in the timezone break the calculation
+        // This is 488 minutes, or 8 hours and 8 minutes
+        let timeZone = TimeZone(secondsFromGMT: 29280)!
         [interval.dateStart(timeZone: timeZone), interval.dateEnd(timeZone: timeZone)].forEach { date in
             let dateComponents = Calendar(identifier: .iso8601).dateComponents(in: timeZone, from: date)
             XCTAssertEqual(dateComponents.year, 2019)

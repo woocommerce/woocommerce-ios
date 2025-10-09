@@ -72,10 +72,17 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
         public static let stockStatusKey = Column(CodingKeys.stockStatusKey)
     }
 
-    public static let images = hasMany(PersistedProductImage.self,
-                                       using: ForeignKey([PersistedProductImage.CodingKeys.siteID.stringValue,
-                                                          PersistedProductImage.CodingKeys.productID.stringValue],
-                                                         to: primaryKey))
+    // Join table association (internal - used by 'images' through association)
+    private static let productImages = hasMany(PersistedProductImage.self,
+                                               using: ForeignKey([PersistedProductImage.CodingKeys.siteID.stringValue,
+                                                                  PersistedProductImage.CodingKeys.productID.stringValue],
+                                                                 to: primaryKey))
+
+    // Through association to access actual images via join table (use this to fetch images)
+    public static let images = hasMany(PersistedImage.self,
+                                       through: productImages,
+                                       using: PersistedProductImage.image)
+
     public static let attributes = hasMany(PersistedProductAttribute.self,
                                            using: ForeignKey([PersistedProductAttribute.CodingKeys.siteID.stringValue,
                                                               PersistedProductAttribute.CodingKeys.productID.stringValue],

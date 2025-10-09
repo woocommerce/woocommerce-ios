@@ -338,7 +338,8 @@ extension Networking.Booking {
             resourceID: .fake(),
             startDate: .fake(),
             statusKey: .fake(),
-            localTimezone: .fake()
+            localTimezone: .fake(),
+            currency: .fake()
         )
     }
 }

@@ -26,6 +26,7 @@ extension Storage.Booking: ReadOnlyConvertible {
         startDate = booking.startDate
         statusKey = booking.statusKey
         localTimezone = booking.localTimezone
+        currency = booking.currency
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -47,6 +48,7 @@ extension Storage.Booking: ReadOnlyConvertible {
                 resourceID: resourceID,
                 startDate: startDate ?? Date(),
                 statusKey: statusKey ?? "",
-                localTimezone: localTimezone ?? "")
+                localTimezone: localTimezone ?? "",
+                currency: currency ?? "USD")
     }
 }

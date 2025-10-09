@@ -244,9 +244,7 @@ struct SingleAddressForm: View {
                 }
             }
             .sheet(isPresented: $showMapPicker) {
-                if #available(iOS 17, *) {
-                    AddressMapPickerView(fields: $fields, countryByCode: countryByCode)
-                }
+                AddressMapPickerView(fields: $fields, countryByCode: countryByCode)
             }
     }
 
@@ -324,7 +322,7 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            if #available(iOS 17, *), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
                 Button(action: {
                     showMapPicker = true
                     ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,

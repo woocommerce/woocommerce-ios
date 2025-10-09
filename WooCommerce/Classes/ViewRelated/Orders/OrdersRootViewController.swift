@@ -234,6 +234,21 @@ final class OrdersRootViewController: UIViewController {
         orderDurationRecorder.startRecording()
     }
 
+    @objc func testScheduleNotification() {
+        debugPrint("🍍 Test notification button tapped")
+
+        Task { @MainActor in
+            // Create & set trigger
+            let seconds = TimeInterval(5)
+            let notification = LocalNotification(scenario: .pointOfSalePotentialMerchant)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+            // Schedule
+            await ServiceLocator.pushNotesManager.requestLocalNotification(notification, trigger: trigger)
+
+            debugPrint("🍍 Test notification scheduled for \(seconds) seconds from now")
+        }
+    }
+
     /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
@@ -511,7 +526,7 @@ private extension OrdersRootViewController {
         let button = UIBarButtonItem(image: .scanImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentOrderCreationFlowByProductScanning))
+                                     action: #selector(testScheduleNotification))
         button.accessibilityTraits = .button
         button.accessibilityLabel = NSLocalizedString(
             "orderForm.products.add.scan.button.accessibilityLabel",

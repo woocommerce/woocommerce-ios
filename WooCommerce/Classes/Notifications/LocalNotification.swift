@@ -22,6 +22,7 @@ struct LocalNotification {
         case blazeNoCampaignReminder
         case blazeAbandonedCampaignCreationReminder
         case productImageBackgroundUpload
+        case pointOfSalePotentialMerchant
         case unknown(siteID: Int64)
 
         var identifier: String {
@@ -32,6 +33,8 @@ struct LocalNotification {
                 return "blaze_abandoned_campaign_reminder"
             case .productImageBackgroundUpload:
                 return "product_image_background_upload"
+            case .pointOfSalePotentialMerchant:
+                return "point_of_sale_potential_merchant"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -95,6 +98,9 @@ extension LocalNotification {
         case .productImageBackgroundUpload:
             title = Localization.ProductImageBackgroundUpload.title
             body = Localization.ProductImageBackgroundUpload.body
+        case .pointOfSalePotentialMerchant:
+            title = Localization.PointOfSalePotentialMerchant.title
+            body = Localization.PointOfSalePotentialMerchant.body
         case .unknown:
             title = ""
             body = ""
@@ -145,6 +151,18 @@ extension LocalNotification {
                 value: "Your product images are still uploading in the background. Upload speed may be slower, and errors could occur." +
                 " For best results, please keep the app open until uploads are complete.",
                 comment: "Message on the local notification to inform the user about the background upload of product images."
+            )
+        }
+        enum PointOfSalePotentialMerchant {
+            static let title = NSLocalizedString(
+                "localNotification.PointOfSalePotentialMerchant.title",
+                value: "Thinking about in-person sales?",
+                comment: ""
+            )
+            static let body = NSLocalizedString(
+                "localNotification.PointOfSalePotentialMerchant.body",
+                value: "Take a quick 2-minute survey to help us shape features you’ll love.",
+                comment: ""
             )
         }
     }

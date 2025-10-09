@@ -10,9 +10,10 @@ extension BookingDetailsViewModel {
         @Published var serviceAndCustomerLine: String
 
         init(_ booking: Booking, customerName: String? = nil) {
-            bookingDate = booking.startDate.formatted(
-                date: .numeric,
-                time: .shortened
+            bookingDate = booking.startDate.toString(
+                dateStyle: .short,
+                timeStyle: .short,
+                timeZone: BookingListTab.utcTimeZone
             )
 
             /// Temporary hardcode for service name

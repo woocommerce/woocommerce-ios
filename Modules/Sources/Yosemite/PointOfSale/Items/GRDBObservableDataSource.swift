@@ -4,6 +4,7 @@ import GRDB
 import Combine
 import Observation
 import Storage
+import WooFoundation
 
 /// Observable data source for GRDB-based POS items using ValueObservation
 /// Provides automatic SwiftUI updates when database changes occur
@@ -47,11 +48,12 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
     public init(siteID: Int64,
                 grdbManager: GRDBManagerProtocol,
-                itemMapper: PointOfSaleItemMapperProtocol,
+                currencySettings: CurrencySettings,
+                itemMapper: PointOfSaleItemMapperProtocol? = nil,
                 pageSize: Int = 20) {
         self.siteID = siteID
         self.grdbManager = grdbManager
-        self.itemMapper = itemMapper
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
         self.pageSize = pageSize
 
         setupStatisticsObservation()

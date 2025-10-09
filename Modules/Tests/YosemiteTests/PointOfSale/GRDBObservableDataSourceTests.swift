@@ -9,7 +9,6 @@ import WooFoundation
 struct GRDBObservableDataSourceTests {
     private let siteID: Int64 = 123
     private var grdbManager: GRDBManager!
-    private var itemMapper: PointOfSaleItemMapper!
     private var sut: GRDBObservableDataSource!
 
     init() async throws {
@@ -20,11 +19,10 @@ struct GRDBObservableDataSourceTests {
             try PersistedSite(id: siteID).insert(db)
         }
 
-        itemMapper = PointOfSaleItemMapper(currencySettings: CurrencySettings())
         sut = GRDBObservableDataSource(
             siteID: siteID,
             grdbManager: grdbManager,
-            itemMapper: itemMapper,
+            currencySettings: CurrencySettings(),
             pageSize: 5
         )
     }

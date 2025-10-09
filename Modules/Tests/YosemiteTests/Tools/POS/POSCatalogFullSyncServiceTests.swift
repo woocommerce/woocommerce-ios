@@ -123,6 +123,7 @@ struct POSCatalogFullSyncServiceTests {
         // Given
         let expectedError = NSError(domain: "network", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
         mockSyncRemote.setProductResult(pageNumber: 1, result: .failure(expectedError))
+        let sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, retryDelay: 0, persistenceService: mockPersistenceService)
 
         // When/Then
         await #expect(throws: expectedError) {

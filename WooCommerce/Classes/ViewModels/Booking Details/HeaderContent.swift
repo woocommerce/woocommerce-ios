@@ -1,6 +1,6 @@
 import Foundation
-import struct Networking.Booking
-import struct Networking.Customer
+import struct Yosemite.Booking
+import struct Yosemite.Customer
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {

@@ -66,11 +66,23 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        self.itemsController = PointOfSaleItemsController(
-            itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
-            itemFetchStrategyFactory: itemFetchStrategyFactory,
-            analyticsProvider: services.analytics
-        )
+        // Use observable controller with GRDB if available and feature flag is enabled, otherwise fall back to standard controller
+        // Note: We check feature flag here for eligibility. Once eligibility checking is
+        // refactored to be more centralized, this check can be simplified.
+        let isGRDBEnabled = services.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        if let grdbManager = grdbManager, catalogSyncCoordinator != nil, isGRDBEnabled {
+            self.itemsController = PointOfSaleObservableItemsController(
+                siteID: siteID,
+                grdbManager: grdbManager,
+                currencySettings: services.currency.currencySettings
+            )
+        } else {
+            self.itemsController = PointOfSaleItemsController(
+                itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+                itemFetchStrategyFactory: itemFetchStrategyFactory,
+                analyticsProvider: services.analytics
+            )
+        }
         self.purchasableItemsSearchController = PointOfSaleItemsController(
             itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
             itemFetchStrategyFactory: itemFetchStrategyFactory,

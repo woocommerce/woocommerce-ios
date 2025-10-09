@@ -11,6 +11,7 @@
 -----
 - [*] Order details: Fixes broken country selector navigation and "Non editable banner" width. [https://github.com/woocommerce/woocommerce-ios/pull/16171]
 - [*] Store widget: Fixes widget background colours for default and clean Liquid Glass mode. [https://github.com/woocommerce/woocommerce-ios/pull/16183]
+- [*] Order list: Allow filtering of Web, Point of Sale, and WP-Admin orders. [https://github.com/woocommerce/woocommerce-ios/pull/16228]
 
 23.3
 -----

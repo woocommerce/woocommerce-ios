@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 import struct Yosemite.POSOrder
 
 struct POSOrderBadgeView: View {
@@ -12,7 +11,7 @@ struct POSOrderBadgeView: View {
     var body: some View {
         Text(order.status.localizedName)
             .font(.posCaptionRegular)
-            .foregroundStyle(.black)
+            .foregroundStyle(statusTextColor)
             .padding(.horizontal, POSPadding.small)
             .padding(.vertical, POSPadding.xSmall)
             .background(statusBackgroundColor)
@@ -20,18 +19,25 @@ struct POSOrderBadgeView: View {
             .accessibilityLabel(Localization.badgeAccessibilityLabel(status: order.status.localizedName))
     }
 
+    private var statusTextColor: Color {
+        switch order.status {
+        case .completed:
+            return .posOnInfoLowest
+        case .failed:
+            return .posOnErrorLowest
+        default:
+            return .posOnDefault
+        }
+    }
+
     private var statusBackgroundColor: Color {
         switch order.status {
         case .completed:
-            return Color(uiColor: .withColorStudio(.blue, shade: .shade5))
+            return .posInfoLowest
         case .failed:
-            return Color(uiColor: .withColorStudio(.red, shade: .shade5))
-        case .processing:
-            return Color(uiColor: .withColorStudio(.green, shade: .shade5))
-        case .onHold:
-            return Color(uiColor: .withColorStudio(.orange, shade: .shade5))
+            return .posErrorLowest
         default:
-            return Color(uiColor: .gray(.shade5))
+            return .posDefault
         }
     }
 }

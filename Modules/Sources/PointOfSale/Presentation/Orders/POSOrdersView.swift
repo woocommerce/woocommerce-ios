@@ -34,6 +34,7 @@ struct POSOrdersView: View {
                 POSOrderListView(isSearching: $isSearching, searchTerm: $searchTerm) {
                     isPresented = false
                 }
+                .environment(orderListModel)
             } detail: { selection in
                 POSOrderDetailsView(
                     order: selection,
@@ -42,6 +43,7 @@ struct POSOrdersView: View {
                     }
                 )
                 .id(selection.id)
+                .environment(orderListModel)
             } detailPlaceholderView: {
                 if orderListModel.ordersController.ordersViewState.isLoading {
                     POSOrderDetailsLoadingView()

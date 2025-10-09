@@ -252,7 +252,7 @@ extension PushNotificationsManager {
         unregisterForRemoteNotifications()
     }
 
-    /// Handles a Notification while in Foreground Mode. Currently, only remote notifications are handled in the foreground.
+/// Handles a Notification while in Foreground Mode. [Currently, only remote notifications are handled in the foreground.]
     ///
     /// - Parameters:
     ///     - userInfo: The Notification's Payload
@@ -263,8 +263,15 @@ extension PushNotificationsManager {
     @MainActor
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
         let content = notification.request.content
+
+        // Check if this is a local notification
+        if !content.isRemoteNotification {
+            // Display local notifications as banners with sound when app is in foreground
+            return [.banner, .sound]
+        }
+
         guard applicationState == .active, content.isRemoteNotification, inAppNotices == true else {
-            // Local notifications are currently not handled when the app is in the foreground.
+            // Remote notifications not handled when app is not active or in-app notices are disabled
             return UNNotificationPresentationOptions(rawValue: 0)
         }
 

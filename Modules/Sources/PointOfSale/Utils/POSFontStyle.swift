@@ -25,12 +25,12 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
         case .posHeadingRegular:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .regular)
-        case .posBodyXLargeRegularRegular:
+        case .posBodyXLargeRegular:
             Font.system(
                 size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
                 weight: .semibold
             )
-        case .posBodyXLargeRegularBold:
+        case .posBodyXLargeBold:
             Font.system(
                 size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
                 weight: .bold

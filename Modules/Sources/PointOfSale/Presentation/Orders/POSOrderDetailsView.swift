@@ -82,7 +82,7 @@ private extension POSOrderDetailsView {
     func productsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.productsTitle)
-                .font(.posBodyXLarge)
+                .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
@@ -105,7 +105,7 @@ private extension POSOrderDetailsView {
     func totalsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.totalsTitle)
-                .font(.posBodyXLarge)
+                .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 

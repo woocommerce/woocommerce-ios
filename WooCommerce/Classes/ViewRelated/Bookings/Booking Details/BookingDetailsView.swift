@@ -7,10 +7,11 @@ struct BookingDetailsView: View {
     @State private var showingOptions = false
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
+    @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
-    private enum Layout {
+    enum Layout {
         static let contentSidePadding: CGFloat = 16
         static let contentVerticalPadding: CGFloat = 16
         static let headerContentVerticalPadding: CGFloat = 6
@@ -19,7 +20,7 @@ struct BookingDetailsView: View {
         static let rowTextVerticalPadding: CGFloat = 11
     }
 
-    fileprivate enum TextFont {
+    enum TextFont {
         static var bodyMedium: Font {
             Font.body.weight(.medium)
         }
@@ -27,6 +28,14 @@ struct BookingDetailsView: View {
 
     init(_ viewModel: BookingDetailsViewModel) {
         self.viewModel = viewModel
+
+        /// Trigger local data load
+        viewModel.loadLocalData()
+
+        /// Trigger remote data sync
+        Task {
+            await viewModel.syncData()
+        }
     }
 
     var body: some View {
@@ -38,7 +47,7 @@ struct BookingDetailsView: View {
             }
         }
         .refreshable {
-            print("Refresh triggered")
+            await viewModel.syncData()
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.navigationTitle)
@@ -87,6 +96,7 @@ struct BookingDetailsView: View {
         } message: {
             Text(viewModel.cancellationAlertMessage)
         }
+        .notice($notice)
     }
 }
 
@@ -136,7 +146,9 @@ private extension BookingDetailsView {
         case .attendance(let content):
             attendanceView(with: content)
         case .customer(let content):
-            customerDetailsView(with: content)
+            CustomerDetailsView(content: content, showNotice: {
+                notice = $0
+            })
         case .payment(let content):
             paymentDetailsView(with: content)
         case .bookingNotes:
@@ -203,71 +215,6 @@ private extension BookingDetailsView {
         }
     }
 
-    func customerDetailsView(with content: BookingDetailsViewModel.CustomerContent) -> some View {
-        VStack(spacing: 0) {
-            /// Name
-            HStack {
-                Text(content.nameText)
-                    .rowTextStyle()
-                Spacer()
-            }
-            .padding(.vertical, Layout.rowTextVerticalPadding)
-
-            Divider()
-                .padding(.trailing, -Layout.contentSidePadding)
-
-            /// Email
-            HStack {
-                Text(content.emailText)
-                    .rowTextStyle()
-                Spacer()
-                Image(systemName: "doc.on.doc")
-                    .font(TextFont.bodyMedium)
-                    .foregroundStyle(Color.accentColor)
-            }
-            .padding(.vertical, Layout.rowTextVerticalPadding)
-            .tappable {
-                print("On email copy")
-            }
-
-            Divider()
-                .padding(.trailing, -Layout.contentSidePadding)
-
-            /// Phone
-            HStack {
-                Text(content.phoneText)
-                    .rowTextStyle()
-                Spacer()
-                Image(systemName: "ellipsis")
-                    .font(TextFont.bodyMedium)
-                    .foregroundStyle(Color.accentColor)
-            }
-            .padding(.vertical, Layout.rowTextVerticalPadding)
-            .tappable {
-                print("On phone ellipsis")
-            }
-
-            Divider()
-                .padding(.trailing, -Layout.contentSidePadding)
-
-            /// Billing address
-            if let billingAddressText = content.billingAddressText, !billingAddressText.isEmpty {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(Localization.billingAddressRowTitle)
-                            .rowTextStyle()
-                        Text(billingAddressText)
-                            .font(TextFont.bodyMedium)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.leading)
-                    }
-                    Spacer()
-                }
-                .padding(.vertical, Layout.rowTextVerticalPadding)
-            }
-        }
-    }
-
     func paymentDetailsView(with content: BookingDetailsViewModel.PaymentContent) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 8) {
@@ -326,22 +273,7 @@ private extension BookingDetailsView {
     }
 }
 
-private struct RowTextStyle: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .font(BookingDetailsView.TextFont.bodyMedium)
-            .foregroundStyle(.primary)
-            .multilineTextAlignment(.leading)
-    }
-}
-
-private extension View {
-    func rowTextStyle() -> some View {
-        self.modifier(RowTextStyle())
-    }
-}
-
-private extension BookingDetailsView {
+extension BookingDetailsView {
     enum Localization {
         static let markAsPaid = NSLocalizedString(
             "BookingDetailsView.options.markAsPaid",
@@ -388,13 +320,6 @@ private extension BookingDetailsView {
             "BookingDetailsView.customer.status.title",
             value: "Status",
             comment: "'Status' row title in attendance section in booking details view."
-        )
-
-        /// Customer section
-        static let billingAddressRowTitle = NSLocalizedString(
-            "BookingDetailsView.customer.billingAddress.title",
-            value: "Billing address",
-            comment: "Billing address row title in customer section in booking details view."
         )
 
         /// Booking notes

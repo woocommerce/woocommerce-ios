@@ -8,6 +8,7 @@ private struct TappableViewModifier: ViewModifier {
             onTap()
         } label: {
             content
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

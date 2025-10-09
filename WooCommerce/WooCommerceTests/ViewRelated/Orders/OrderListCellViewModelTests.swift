@@ -70,23 +70,12 @@ final class OrderListCellViewModelTests: XCTestCase {
         let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
-        XCTAssertEqual(viewModel.salesChannel, "POS")
+        XCTAssertEqual(viewModel.salesChannel?.description, "POS")
     }
 
     func test_salesChannel_when_createdVia_is_nil_then_returns_nil() {
         // Given
         let order = MockOrders().sampleOrder().copy(createdVia: nil)
-
-        // When
-        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
-
-        // Then
-        XCTAssertNil(viewModel.salesChannel)
-    }
-
-    func test_salesChannel_when_createdVia_is_not_pos_rest_api_then_returns_nil() {
-        // Given
-        let order = MockOrders().sampleOrder().copy(createdVia: "checkout")
 
         // When
         let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)

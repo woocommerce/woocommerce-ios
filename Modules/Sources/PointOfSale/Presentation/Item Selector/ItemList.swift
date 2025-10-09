@@ -122,7 +122,7 @@ struct ItemList<HeaderView: View>: View {
                     await itemsController.loadNextItems(base: node)
                 }
             })
-        case .loaded, .error, .empty, .none, .inlineError(_, _, .refresh):
+        case .initial, .loaded, .error, .empty, .none, .inlineError(_, _, .refresh):
             EmptyView()
         }
     }
@@ -136,7 +136,7 @@ struct ItemList<HeaderView: View>: View {
                     await itemsController.loadItems(base: .root)
                 }
             })
-        case .loaded, .error, .empty, .none, .loading, .inlineError(_, _, .pagination):
+        case .initial, .loaded, .error, .empty, .none, .loading, .inlineError(_, _, .pagination):
             EmptyView()
         }
     }

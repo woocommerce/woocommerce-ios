@@ -434,6 +434,7 @@ struct OrderForm: View {
                 switch viewModel.navigationTrailingItem {
                 case .create:
                     Button(Localization.createButton) {
+                        // onCreateOrderTapped triggers remote order creation...
                         viewModel.onCreateOrderTapped()
                     }
                     .id(navigationButtonID)

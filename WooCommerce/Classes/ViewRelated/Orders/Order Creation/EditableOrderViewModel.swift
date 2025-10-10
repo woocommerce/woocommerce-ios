@@ -6,6 +6,53 @@ import UIKit
 import WooFoundation
 import enum Networking.DotcomError
 
+protocol PointOfSaleNotificationScheduling {
+    func scheduleNotificationIfEligible()
+}
+
+final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling {
+    private let stores: StoresManager
+    private let siteSettings: [SiteSetting]
+    private let featureFlagService: FeatureFlagService
+    
+    init(stores: StoresManager = ServiceLocator.stores,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.stores = stores
+        self.siteSettings = siteSettings
+        self.featureFlagService = featureFlagService
+    }
+    
+    func scheduleNotificationIfEligible() {
+        // Eligibility 1: Flag
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
+        
+        // Eligibility 2: Country as US/UK
+        guard isCountryEligible() else { return }
+        
+        // Eligibility 3: Hasn't been sent before
+        let action = AppSettingsAction.getPOSSurveyNotificationScheduled { [weak self] isScheduled in
+            guard !isScheduled else { return }
+            self?.scheduleNotification()
+        }
+        stores.dispatch(action)
+    }
+    
+    private func isCountryEligible() -> Bool {
+        let storeCountry = SiteAddress(siteSettings: siteSettings).countryCode
+        if storeCountry == .US || storeCountry == .GB {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func scheduleNotification() {
+        // TODO
+        debugPrint("🍍 notification scheduled!")
+    }
+}
+
 /// Encapsulates the item type an order can have, products or variations
 ///
 typealias OrderBaseItem = ItemIdentifierSearchResult
@@ -19,6 +66,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
+    private let pointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling
 
     @Published var syncRequired: Bool = false
 
@@ -460,6 +508,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
+         pointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling = PointOfSaleNotificationScheduler(),
          initialItem: OrderBaseItem? = nil,
          initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
@@ -473,6 +522,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
+        self.pointOfSaleNotificationScheduler = pointOfSaleNotificationScheduler
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
@@ -1025,6 +1075,8 @@ final class EditableOrderViewModel: ObservableObject {
             guard let self else { return }
             self.onFinished(order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            // If successfully created, check if we need to schedule a notification
+            pointOfSaleNotificationScheduler.scheduleNotificationIfEligible()
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }
             self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)

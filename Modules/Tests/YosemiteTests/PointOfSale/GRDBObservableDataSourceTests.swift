@@ -61,8 +61,8 @@ struct GRDBObservableDataSourceTests {
         let variableProduct = createPersistedProduct(id: 2, name: "Variable Product", type: "variable")
         try await insertProducts([simpleProduct, variableProduct])
 
-        // When: Load products
-        await waitForProductLoad {
+        // When: Load products and wait for items to be populated
+        await waitForProductLoad(expectedCount: 2) {
             sut.loadProducts()
         }
 
@@ -276,36 +276,76 @@ struct GRDBObservableDataSourceTests {
 
     // MARK: - Helper Methods
 
-    private func waitForProductLoad(action: () -> Void) async {
-        action()
-        // Wait for observation to complete
-        for _ in 0..<50 { // Max 500ms
-            if !sut.isLoadingProducts {
-                return
-            }
-            try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
+    private func waitForProductLoad(expectedCount: Int? = nil, action: () -> Void) async {
+        await waitForCondition {
+            let loadingComplete = !sut.isLoadingProducts
+            let countMatches = expectedCount.map { sut.productItems.count == $0 } ?? true
+            return loadingComplete && countMatches
+        } performAction: {
+            action()
         }
     }
 
     private func waitForVariationLoad(action: () -> Void) async {
-        action()
-        // Wait for observation to complete
-        for _ in 0..<50 { // Max 500ms
-            if !sut.isLoadingVariations {
-                return
-            }
-            try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        await waitForCondition {
+            !sut.isLoadingVariations
+        } performAction: {
+            action()
         }
     }
 
     private func waitForProductChange(expectedCount: Int, action: () async throws -> Void) async rethrows {
+        try await waitForCondition {
+            sut.productItems.count == expectedCount
+        } performAction: {
+            try await action()
+        }
+    }
+
+    private func waitForCondition(
+        _ condition: @escaping () -> Bool,
+        performAction action: () async throws -> Void
+    ) async rethrows {
         try await action()
-        // Wait for observation to complete
-        for _ in 0..<50 { // Max 500ms
-            if sut.productItems.count == expectedCount {
-                return
+
+        // Use withObservationTracking recursively until condition is met, with timeout as backstop
+        await withCheckedContinuation { continuation in
+            var hasResumed = false
+
+            // Timeout backstop to ensure we don't hang forever
+            Task {
+                try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+                if !hasResumed {
+                    hasResumed = true
+                    continuation.resume()
+                }
             }
-            try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
+
+            @Sendable func observe() {
+                let conditionMet = withObservationTracking {
+                    // Access the observable properties and check condition
+                    _ = sut.productItems
+                    _ = sut.variationItems
+                    _ = sut.isLoadingProducts
+                    _ = sut.isLoadingVariations
+
+                    return condition()
+                } onChange: {
+                    // Re-observe on the main actor when changes occur
+                    Task { @MainActor in
+                        observe()
+                    }
+                }
+
+                if conditionMet && !hasResumed {
+                    hasResumed = true
+                    continuation.resume()
+                }
+            }
+
+            Task { @MainActor in
+                observe()
+            }
         }
     }
 

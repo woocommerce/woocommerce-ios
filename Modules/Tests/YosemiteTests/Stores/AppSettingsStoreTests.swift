@@ -1506,6 +1506,25 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(loadedOrderStatus)
     }
+
+    // MARK: - Point of Sale Survey Notification
+
+    func test_getPOSSurveyNotificationScheduled_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
 }
 
 // MARK: - Utils

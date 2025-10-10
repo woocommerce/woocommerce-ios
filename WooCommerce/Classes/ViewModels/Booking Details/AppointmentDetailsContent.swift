@@ -1,6 +1,5 @@
 import Foundation
 import struct Networking.Booking
-import Yosemite
 
 extension BookingDetailsViewModel {
     struct AppointmentDetailsContent {

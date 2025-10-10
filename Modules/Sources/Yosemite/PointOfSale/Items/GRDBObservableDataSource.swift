@@ -133,23 +133,20 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
         productObservationCancellable = observation
             .publisher(in: grdbManager.databaseConnection)
+            .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        Task { @MainActor in
-                            self?.error = error
-                            self?.isLoadingProducts = false
-                        }
+                        self?.error = error
+                        self?.isLoadingProducts = false
                     }
                 },
                 receiveValue: { [weak self] observedProducts in
                     guard let self else { return }
                     let posItems = itemMapper.mapProductsToPOSItems(products: observedProducts)
-                    Task { @MainActor [weak self] in
-                        self?.productItems = posItems
-                        self?.error = nil
-                        self?.isLoadingProducts = false
-                    }
+                    productItems = posItems
+                    error = nil
+                    isLoadingProducts = false
                 }
             )
     }
@@ -180,13 +177,12 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
         variationObservationCancellable = observation
             .publisher(in: grdbManager.databaseConnection)
+            .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        Task { @MainActor in
-                            self?.error = error
-                            self?.isLoadingVariations = false
-                        }
+                        self?.error = error
+                        self?.isLoadingVariations = false
                     }
                 },
                 receiveValue: { [weak self] observedVariations in
@@ -195,11 +191,9 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                         variations: observedVariations,
                         parentProduct: parentProduct
                     )
-                    Task { @MainActor [weak self] in
-                        self?.variationItems = posItems
-                        self?.error = nil
-                        self?.isLoadingVariations = false
-                    }
+                    variationItems = posItems
+                    error = nil
+                    isLoadingVariations = false
                 }
             )
     }
@@ -222,6 +216,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
         statisticsObservationCancellable = observation
             .publisher(in: grdbManager.databaseConnection)
+            .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { completion in
                     if case .failure = completion {
@@ -229,10 +224,8 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                     }
                 },
                 receiveValue: { [weak self] (productCount, variationCount) in
-                    Task { @MainActor in
-                        self?.totalProductCount = productCount
-                        self?.totalVariationCount = variationCount
-                    }
+                    self?.totalProductCount = productCount
+                    self?.totalVariationCount = variationCount
                 }
             )
     }

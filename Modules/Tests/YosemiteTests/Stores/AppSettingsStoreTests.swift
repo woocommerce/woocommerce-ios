@@ -1525,6 +1525,41 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    func test_getPOSSurveyNotificationScheduled_returns_true_after_setting_as_scheduled() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let setAction = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in }
+        subject?.onAction(setAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_setPOSSurveyNotificationScheduled_stores_value_correctly() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setPOSSurveyNotificationScheduled { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertTrue(savedSettings.isPOSSurveyNotificationScheduled)
+    }
 }
 
 // MARK: - Utils

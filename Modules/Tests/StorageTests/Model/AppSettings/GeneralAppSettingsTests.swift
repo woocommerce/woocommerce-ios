@@ -73,7 +73,8 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                                                   sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
                                                   isEUShippingNoticeDismissed: false,
-                                                  isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed)
+                                                  isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+                                                  isPOSSurveyNotificationScheduled: false)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -122,6 +123,7 @@ private extension GeneralAppSettingsTests {
                            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
                            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-                           isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed)
+                           isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+                           isPOSSurveyNotificationScheduled: false)
     }
 }

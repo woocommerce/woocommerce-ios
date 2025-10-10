@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables a new Bookings tab for CIAB sites
     ///
     case ciabBookings
+
+    /// Enables surveys for potential and current POS merchants
+    ///
+    case pointOfSaleSurveys
 }

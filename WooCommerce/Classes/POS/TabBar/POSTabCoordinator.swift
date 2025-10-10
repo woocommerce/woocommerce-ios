@@ -124,6 +124,27 @@ private extension POSTabCoordinator {
     func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }
+            // Testing:
+            Task { @MainActor in
+                // Create & set trigger
+                let seconds = TimeInterval(10)
+                let userInfo: [AnyHashable: Any] = [
+                    LocalNotification.UserInfoKey.surveyURL: LocalNotification.SurveyURL.pointOfSaleCurrentMerchant
+                ]
+                let notification = LocalNotification(
+                    title: LocalNotification.Localization.PointOfSaleCurrentMerchant.title,
+                    body: LocalNotification.Localization.PointOfSaleCurrentMerchant.body,
+                    scenario: .pointOfSaleCurrentMerchant,
+                    actions: nil,
+                    userInfo: userInfo
+                )
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+                // Schedule
+                await ServiceLocator.pushNotesManager.requestLocalNotification(notification, trigger: trigger)
+
+                debugPrint("🍍 Test notification scheduled for \(seconds) seconds from now")
+            }
+            
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,

@@ -136,8 +136,13 @@ private extension AppCoordinator {
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
 
-        // Handle specific notification types that require additional actions
-        if identifier == LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
+        // Handle POS survey notification taps
+        let posSurveyScenarios = [
+            LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
+            LocalNotification.Scenario.pointOfSaleCurrentMerchant.identifier
+        ]
+
+        if posSurveyScenarios.contains(identifier),
            let surveyURLString = userInfo[LocalNotification.UserInfoKey.surveyURL] as? String,
            let surveyURL = URL(string: surveyURLString) {
             presentSurveyWebView(url: surveyURL)
@@ -146,7 +151,18 @@ private extension AppCoordinator {
 
     func presentSurveyWebView(url: URL) {
         let safariViewController = SFSafariViewController(url: url)
-        tabBarController.present(safariViewController, animated: true)
+
+        // Present on the topmost view controller to handle both normal mode and POS mode
+        // In POS mode, the full-screen POS view is presented on top of tabBarController so we cannot rely only on tabBarController
+        // If we don't handle it, then it wont work due to:
+        // Attempt to present <SFSafariViewController: 0x11d0bd900> on <WooCommerce.MainTabBarController: 0x11ec98000>
+        // (from <WooCommerce.MainTabBarController: 0x11ec98000>) whose view is not in the window hierarchy.
+        if let topmostViewController = window.topmostPresentedViewController {
+            topmostViewController.present(safariViewController, animated: true)
+        } else {
+            // Fallback to tab bar controller
+            tabBarController.present(safariViewController, animated: true)
+        }
     }
 }
 

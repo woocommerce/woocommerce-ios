@@ -30,6 +30,10 @@ fileprivate extension SalesChannelFilter {
         switch self {
         case .pointOfSale:
             return "pos"
+        case .webCheckout:
+            return "checkout"
+        case .wpAdmin:
+            return "admin"
         case .any:
             return nil
         }

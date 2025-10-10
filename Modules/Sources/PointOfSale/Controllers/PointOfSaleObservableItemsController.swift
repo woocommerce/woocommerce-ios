@@ -40,6 +40,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
         )
     }
 
+    // periphery:ignore used by tests
     init(dataSource: POSObservableDataSourceProtocol) {
         self.dataSource = dataSource
     }

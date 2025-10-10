@@ -303,7 +303,7 @@ struct GRDBObservableDataSourceTests {
     }
 
     private func waitForCondition(
-        _ condition: @escaping () -> Bool,
+        _ condition: @escaping @MainActor () -> Bool,
         performAction action: () async throws -> Void
     ) async rethrows {
         try await action()
@@ -314,14 +314,14 @@ struct GRDBObservableDataSourceTests {
 
             // Timeout backstop to ensure we don't hang forever
             Task {
-                try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+                try? await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
                 if !hasResumed {
                     hasResumed = true
                     continuation.resume()
                 }
             }
 
-            @Sendable func observe() {
+            @MainActor func observe() {
                 let conditionMet = withObservationTracking {
                     // Access the observable properties and check condition
                     _ = sut.productItems

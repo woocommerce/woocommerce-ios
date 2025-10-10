@@ -1527,7 +1527,8 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyNotificationScheduled: false
         )
         return (settings, feedback)
     }
@@ -1542,7 +1543,8 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyNotificationScheduled: false
         )
         return settings
     }

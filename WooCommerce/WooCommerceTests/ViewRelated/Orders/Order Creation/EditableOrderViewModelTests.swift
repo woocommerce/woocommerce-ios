@@ -5,6 +5,22 @@ import WooFoundation
 import Networking
 import Combine
 
+/// Mock implementation of PointOfSaleNotificationScheduling for testing
+final class MockPointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling {
+    private(set) var scheduleNotificationIfEligibleCalled = false
+    private(set) var scheduleNotificationIfEligibleCallCount = 0
+
+    func scheduleNotificationIfEligible() {
+        scheduleNotificationIfEligibleCalled = true
+        scheduleNotificationIfEligibleCallCount += 1
+    }
+
+    func reset() {
+        scheduleNotificationIfEligibleCalled = false
+        scheduleNotificationIfEligibleCallCount = 0
+    }
+}
+
 @MainActor
 final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
@@ -1469,6 +1485,88 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCreationClearAddressFromBottomSheetTapped.rawValue])
+    }
+
+    // MARK: - Point of Sale Notification Tests
+
+    func test_onCreateOrderTapped_schedules_pos_notification_on_success() {
+        // Given
+        let mockScheduler = MockPointOfSaleNotificationScheduler()
+        let viewModel = EditableOrderViewModel(
+            siteID: sampleSiteID,
+            stores: stores,
+            pointOfSaleNotificationScheduler: mockScheduler
+        )
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.onCreateOrderTapped()
+
+        // Then
+        XCTAssertTrue(mockScheduler.scheduleNotificationIfEligibleCalled)
+        XCTAssertEqual(mockScheduler.scheduleNotificationIfEligibleCallCount, 1)
+    }
+
+    func test_onCreateOrderTapped_does_not_schedule_pos_notification_on_failure() {
+        // Given
+        let mockScheduler = MockPointOfSaleNotificationScheduler()
+        let viewModel = EditableOrderViewModel(
+            siteID: sampleSiteID,
+            stores: stores,
+            pointOfSaleNotificationScheduler: mockScheduler
+        )
+
+        let error = NSError(domain: "Error", code: 0)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, _, _, onCompletion):
+                onCompletion(.failure(error))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.onCreateOrderTapped()
+
+        // Then
+        XCTAssertFalse(mockScheduler.scheduleNotificationIfEligibleCalled)
+        XCTAssertEqual(mockScheduler.scheduleNotificationIfEligibleCallCount, 0)
+    }
+
+    func test_onCollectPaymentTapped_does_not_schedule_pos_notification() {
+        // Given
+        let mockScheduler = MockPointOfSaleNotificationScheduler()
+        let viewModel = EditableOrderViewModel(
+            siteID: sampleSiteID,
+            stores: stores,
+            pointOfSaleNotificationScheduler: mockScheduler
+        )
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.onCollectPaymentTapped()
+
+        // Then
+        // Notification should NOT be scheduled in collect payment flow
+        XCTAssertFalse(mockScheduler.scheduleNotificationIfEligibleCalled)
+        XCTAssertEqual(mockScheduler.scheduleNotificationIfEligibleCallCount, 0)
     }
 
     // MARK: -

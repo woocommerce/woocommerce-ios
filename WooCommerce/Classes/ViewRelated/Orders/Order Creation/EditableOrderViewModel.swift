@@ -48,8 +48,11 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
     }
     
     private func scheduleNotification() {
-        // TODO
-        debugPrint("🍍 notification scheduled!")
+        // Mark as scheduled in app settings
+        let action = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in
+            // TODO
+        }
+        stores.dispatch(action)
     }
 }
 

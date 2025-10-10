@@ -1,5 +1,5 @@
-// periphery:ignore:all
 import Foundation
+import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
 
@@ -8,9 +8,28 @@ final class BookingListViewModel: ObservableObject {
 
     @Published private(set) var bookings: [Booking] = []
 
+    @Published var errorFetching = false
+
+    var hasFilters: Bool {
+        // TODO: Update when adding filters
+        return false
+    }
+
+    var emptyStateTitle: String {
+        type.emptyStateTitle(hasFilters: hasFilters)
+    }
+
+    var emptyStateDescription: String {
+        type.emptyStateDescription(hasFilters: hasFilters)
+    }
+
     private let siteID: Int64
+    private let type: BookingListTab
     private let stores: StoresManager
     private let storage: StorageManagerType
+    private let currentDate: Date
+
+    private static let refreshCacheReason = "refresh-cache"
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -24,20 +43,31 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
+        var predicates = [NSPredicate(format: "siteID == %lld", siteID)]
+        if let before = type.startDateBefore(currentDate: currentDate) {
+            predicates.append(NSPredicate(format: "startDate < %@", before as NSDate))
+        }
+        if let after = type.startDateAfter(currentDate: currentDate) {
+            predicates.append(NSPredicate(format: "startDate > %@", after as NSDate))
+        }
+        let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+        let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
-                                                                  matching: predicate,
+                                                                  matching: combinedPredicate,
                                                                   sortedBy: [sortDescriptorByDate])
         return resultsController
     }()
 
     init(siteID: Int64,
+         type: BookingListTab,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         currentDate: Date = Date()) {
         self.siteID = siteID
+        self.type = type
         self.stores = stores
         self.storage = storage
+        self.currentDate = currentDate
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
@@ -58,7 +88,7 @@ final class BookingListViewModel: ObservableObject {
     @MainActor
     func onRefreshAction() async {
         await withCheckedContinuation { continuation in
-            paginationTracker.resync(reason: nil) {
+            paginationTracker.resync(reason: Self.refreshCacheReason) {
                 continuation.resume(returning: ())
             }
         }
@@ -98,13 +128,27 @@ private extension BookingListViewModel {
 extension BookingListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
-        let action = BookingAction.synchronizeBookings(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        withAnimation {
+            errorFetching = false
+        }
+        let shouldClearCache = reason == Self.refreshCacheReason
+        let action = BookingAction.synchronizeBookings(
+            siteID: siteID,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            shouldClearCache: shouldClearCache
+        ) { [weak self] result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(.success(hasNextPage))
 
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing bookings: \(error)")
+                withAnimation {
+                    self?.errorFetching = true
+                }
                 onCompletion?(.failure(error))
             }
 

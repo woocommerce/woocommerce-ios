@@ -269,7 +269,7 @@ private extension SettingsViewController {
     func configureWormholy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.launchWormHolyDebug
+        cell.textLabel?.text = "Launch Wormholy Debug"
     }
 
     func configureWhatsNew(cell: BasicTableViewCell) {
@@ -887,11 +887,6 @@ private extension SettingsViewController {
         static let openDeviceSettings = NSLocalizedString(
             "Open Device Settings",
             comment: "Opens iOS's Device Settings for the app"
-        )
-
-        static let launchWormHolyDebug = NSLocalizedString(
-            "Launch Wormholy Debug",
-            comment: "Opens an internal library called Wormholy. Not visible to users."
         )
 
         static let whatsNew = NSLocalizedString(

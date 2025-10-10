@@ -13,7 +13,6 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
     @Test func analytics_when_successful_payment_then_tracks_event_and_properties() {
         // Given
-        let siteID: Int64 = 123
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
         let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)

@@ -4,5 +4,7 @@ import Foundation
 ///
 public enum SalesChannelFilter: String, Codable, Hashable {
     case pointOfSale
+    case webCheckout
+    case wpAdmin
     case any
 }

@@ -4,25 +4,35 @@ import BackgroundTasks
 import Network
 
 final class BackgroundTaskRefreshDispatcher {
-
-    // System background task identifier. Should match the info.plist value.
-    static let taskIdentifier = "com.automattic.woocommerce.refresh"
+    enum BackgroundTaskType: CaseIterable {
+        case ordersAndDashboardSync
+        case posCatalogFullSync
+        case posCatalogIncrementalSync
+    }
 
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
+        scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
+    }
 
+    /// Schedules a background task with the specified type and timing.
+    ///
+    /// - Parameters:
+    ///   - type: The type of background task to schedule.
+    ///   - earliestBeginDate: The earliest date at which the task can begin. When `nil`, the task can be submitted right away.
+    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date?) {
         // Do not run this code while running test because this framework is not enabled in the simulator
         guard Self.isNotRunningTests() else {
             return
         }
 
-        let request = BGAppRefreshTaskRequest(identifier: Self.taskIdentifier)
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60) // Fetch no earlier than 30 minutes from now.
+        let request = BGAppRefreshTaskRequest(identifier: type.identifier)
+        request.earliestBeginDate = earliestBeginDate
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            DDLogError("⛔️ Could not schedule app refresh: \(error)")
+            DDLogError("⛔️ Could not schedule \(type) task: \(error)")
         }
     }
 
@@ -35,11 +45,14 @@ final class BackgroundTaskRefreshDispatcher {
             return
         }
 
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.taskIdentifier, using: nil) { task in
-            guard let refreshTask = task as? BGAppRefreshTask else {
-                return
+        // Registers handlers for all task types.
+        for taskType in BackgroundTaskType.allCases {
+            BGTaskScheduler.shared.register(forTaskWithIdentifier: taskType.identifier, using: nil) { [weak self] task in
+                guard let refreshTask = task as? BGAppRefreshTask else {
+                    return
+                }
+                self?.handleBackgroundTask(refreshTask, type: taskType)
             }
-            self.handleAppRefresh(backgroundTask: refreshTask)
         }
 
         if UIApplication.shared.backgroundRefreshStatus != .available {
@@ -47,15 +60,28 @@ final class BackgroundTaskRefreshDispatcher {
         }
     }
 
-    /// Handle the app specific tasks to be performed with an app refresh background task.
+    /// Routes background task to appropriate handler based on type.
     ///
-    private func handleAppRefresh(backgroundTask: BGAppRefreshTask) {
+    private func handleBackgroundTask(_ backgroundTask: BGAppRefreshTask, type: BackgroundTaskType) {
+        switch type {
+        case .ordersAndDashboardSync:
+            handleOrdersAndDashboardSync(backgroundTask: backgroundTask)
+        case .posCatalogFullSync:
+            handlePOSCatalogFullSync(backgroundTask: backgroundTask)
+        case .posCatalogIncrementalSync:
+            handlePOSCatalogIncrementalSync(backgroundTask: backgroundTask)
+        }
+    }
 
+    /// Handles orders and dashboard sync.
+    ///
+    private func handleOrdersAndDashboardSync(backgroundTask: BGAppRefreshTask) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            backgroundTask.setTaskCompleted(success: false)
             return
         }
 
-        // Schedule a new refresh task.
+        // Schedules the next orders and dashboard sync.
         scheduleAppRefresh()
 
         // Launch all refresh tasks in parallel.
@@ -75,7 +101,7 @@ final class BackgroundTaskRefreshDispatcher {
 
                     // Rethrows error
                     for try await _ in group {
-                        // No=op
+                        // No-op
                     }
                 }
 
@@ -116,6 +142,60 @@ final class BackgroundTaskRefreshDispatcher {
             refreshTasks.cancel()
         }
     }
+
+    /// Handles POS catalog full sync refresh task.
+    ///
+    private func handlePOSCatalogFullSync(backgroundTask: BGAppRefreshTask) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            backgroundTask.setTaskCompleted(success: false)
+            return
+        }
+
+        let syncTask = Task {
+            do {
+                // Performs full sync only if the catalog age is older than 24 hours.
+                let maxAge: TimeInterval = 24 * 60 * 60
+                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
+                backgroundTask.setTaskCompleted(success: true)
+            } catch {
+                DDLogError("⛔️ POS catalog full sync background refresh failed: \(error)")
+                backgroundTask.setTaskCompleted(success: false)
+            }
+        }
+
+        backgroundTask.expirationHandler = {
+            DDLogError("⛔️ POS catalog full sync background refresh expired")
+            syncTask.cancel()
+            backgroundTask.setTaskCompleted(success: false)
+        }
+    }
+
+    /// Handles POS catalog incremental sync refresh task.
+    ///
+    private func handlePOSCatalogIncrementalSync(backgroundTask: BGAppRefreshTask) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            backgroundTask.setTaskCompleted(success: false)
+            return
+        }
+
+        let syncTask = Task {
+            do {
+                // Performs incremental sync only if the catalog age is older than 1 hour.
+                let maxAge: TimeInterval = 60 * 60
+                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performIncrementalSyncIfApplicable(for: siteID, maxAge: maxAge)
+                backgroundTask.setTaskCompleted(success: true)
+            } catch {
+                DDLogError("⛔️ POS catalog incremental sync background refresh failed: \(error)")
+                backgroundTask.setTaskCompleted(success: false)
+            }
+        }
+
+        backgroundTask.expirationHandler = {
+            DDLogError("⛔️ POS catalog incremental sync background refresh expired")
+            syncTask.cancel()
+            backgroundTask.setTaskCompleted(success: false)
+        }
+    }
 }
 
 private extension BackgroundTaskRefreshDispatcher {
@@ -129,6 +209,22 @@ private extension BackgroundTaskRefreshDispatcher {
 extension BackgroundTaskRefreshDispatcher {
     private enum BackgroundError: Error {
         case expired
+    }
+}
+
+// MARK: - Background Task Type Helpers
+
+fileprivate extension BackgroundTaskRefreshDispatcher.BackgroundTaskType {
+    /// System background task identifier. Should match the info.plist value.
+    var identifier: String {
+        switch self {
+        case .ordersAndDashboardSync:
+            return "com.automattic.woocommerce.refresh"
+        case .posCatalogFullSync:
+            return "com.automattic.woocommerce.refresh.pos.catalog.sync.full"
+        case .posCatalogIncrementalSync:
+            return "com.automattic.woocommerce.refresh.pos.catalog.sync.incremental"
+        }
     }
 }
 
@@ -173,16 +269,33 @@ private struct BackgroundTaskSystemInfo {
     }
 
     private static func getNetworkInfo() async -> NetworkInfo {
-        return await withCheckedContinuation { continuation in
-            let monitor = NWPathMonitor()
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "network.monitor.queue")
 
-            monitor.pathUpdateHandler = { path in
-                monitor.cancel()
-                continuation.resume(returning: NetworkInfo(path: path))
-            }
+        let (stream, continuation) = AsyncStream.makeStream(of: NWPath.self)
 
-            let queue = DispatchQueue(label: "network.monitor.queue")
-            monitor.start(queue: queue)
+        monitor.pathUpdateHandler = { path in
+            continuation.yield(path)
+        }
+
+        monitor.start(queue: queue)
+
+        defer {
+            continuation.finish()
+            monitor.cancel()
+        }
+
+        let timeoutTask = Task {
+            try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+            continuation.finish()
+        }
+
+        if let path = await stream.first(where: { _ in true }) {
+            timeoutTask.cancel()
+            return NetworkInfo(path: path)
+        } else {
+            // Fallback in case no path is received.
+            return NetworkInfo(type: "unknown", isExpensive: false, isLowDataMode: false)
         }
     }
 }

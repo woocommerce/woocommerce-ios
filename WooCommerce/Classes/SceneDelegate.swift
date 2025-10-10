@@ -39,10 +39,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillResignActive(_ scene: UIScene) {}
 
     func sceneWillEnterForeground(_ scene: UIScene) {
+        // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
         AppDelegate.shared.refreshCardPresentPaymentsOnboardingIfNeeded()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        // Schedule the background app refresh when sending the app to the background.
+        // The OS is in charge of determining when these tasks will run based on app usage patterns.
         AppDelegate.shared.appRefreshHandler.scheduleAppRefresh()
     }
 

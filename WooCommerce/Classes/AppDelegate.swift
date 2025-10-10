@@ -34,11 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
-        guard let sceneDelegate = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .compactMap({ $0.delegate as? SceneDelegate })
-            .first else { return nil }
-        return sceneDelegate.tabBarController
+        return UIApplication.sceneDelegate?.tabBarController
     }
 
     /// Coordinates the Jetpack setup flow for users authenticated without Jetpack.
@@ -117,10 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        guard let sceneDelegate = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .compactMap({ $0.delegate as? SceneDelegate })
-            .first,
+        guard let sceneDelegate = UIApplication.sceneDelegate,
               let rootViewController = sceneDelegate.window?.rootViewController else {
             fatalError()
         }
@@ -202,6 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+        // Don't track startup waiting time if app is backgrounded before everything is loaded
         cancelStartupWaitingTimeTracker()
     }
 
@@ -225,12 +219,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      continue userActivity: NSUserActivity,
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            if let sceneDelegate = UIApplication.shared.connectedScenes
-                .compactMap({ $0 as? UIWindowScene })
-                .compactMap({ $0.delegate as? SceneDelegate })
-                .first {
-                sceneDelegate.handleWebActivity(userActivity)
-            }
+            UIApplication.sceneDelegate?.handleWebActivity(userActivity)
         }
 
         SpotlightManager.handleUserActivity(userActivity)
@@ -280,10 +269,8 @@ extension AppDelegate {
         UILabel.applyWooAppearance()
         UITabBar.applyWooAppearance()
 
-        // Apply tint to current key window when available
-        if let keyWindow = UIApplication.wooKeyWindow {
-            keyWindow.tintColor = .primary
-        }
+        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
+        UIApplication.wooKeyWindow?.tintColor = .primary
     }
 
     /// Sets up FancyAlert's UIAppearance.

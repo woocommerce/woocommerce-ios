@@ -29,4 +29,11 @@ extension UIApplication {
             .flatMap { $0.windows }
             .first { $0.isKeyWindow }
     }
+
+    static var sceneDelegate: SceneDelegate? {
+        UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .compactMap({ $0.delegate as? SceneDelegate })
+            .first
+    }
 }

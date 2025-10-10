@@ -116,8 +116,8 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 guard let self else { return [] }
 
                 let persistedProducts = try PersistedProduct
-                    .filter(PersistedProduct.Columns.siteID == self.siteID)
-                    .limit(self.pageSize * currentPage)
+                    .posProductsRequest(siteID: siteID)
+                    .limit(pageSize * currentPage)
                     .fetchAll(database)
 
                 return try persistedProducts.map { persistedProduct in
@@ -126,7 +126,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
                     return persistedProduct.toPOSProduct(
                         images: images.map { $0.toProductImage() },
-                        attributes: attributes.map { $0.toProductAttribute(siteID: self.siteID) }
+                        attributes: attributes.map { $0.toProductAttribute(siteID: persistedProduct.siteID) }
                     )
                 }
             }
@@ -144,11 +144,11 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 },
                 receiveValue: { [weak self] observedProducts in
                     guard let self else { return }
-                    let posItems = self.itemMapper.mapProductsToPOSItems(products: observedProducts)
-                    Task { @MainActor in
-                        self.productItems = posItems
-                        self.error = nil
-                        self.isLoadingProducts = false
+                    let posItems = itemMapper.mapProductsToPOSItems(products: observedProducts)
+                    Task { @MainActor [weak self] in
+                        self?.productItems = posItems
+                        self?.error = nil
+                        self?.isLoadingProducts = false
                     }
                 }
             )
@@ -163,8 +163,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 guard let self else { return [] }
 
                 let persistedVariations = try PersistedProductVariation
-                    .filter(PersistedProductVariation.Columns.siteID == self.siteID &&
-                            PersistedProductVariation.Columns.productID == parentProduct.productID)
+                    .posVariationsRequest(siteID: self.siteID, parentProductID: parentProduct.productID)
                     .limit(self.pageSize * currentPage)
                     .fetchAll(database)
 
@@ -192,14 +191,14 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 },
                 receiveValue: { [weak self] observedVariations in
                     guard let self else { return }
-                    let posItems = self.itemMapper.mapVariationsToPOSItems(
+                    let posItems = itemMapper.mapVariationsToPOSItems(
                         variations: observedVariations,
                         parentProduct: parentProduct
                     )
-                    Task { @MainActor in
-                        self.variationItems = posItems
-                        self.error = nil
-                        self.isLoadingVariations = false
+                    Task { @MainActor [weak self] in
+                        self?.variationItems = posItems
+                        self?.error = nil
+                        self?.isLoadingVariations = false
                     }
                 }
             )
@@ -211,11 +210,11 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 guard let self else { return (0, 0) }
 
                 let productCount = try PersistedProduct
-                    .filter(PersistedProduct.Columns.siteID == self.siteID)
+                    .posProductsRequest(siteID: siteID)
                     .fetchCount(database)
 
                 let variationCount = try PersistedProductVariation
-                    .filter(PersistedProductVariation.Columns.siteID == self.siteID)
+                    .filter(PersistedProductVariation.Columns.siteID == siteID)
                     .fetchCount(database)
 
                 return (productCount, variationCount)

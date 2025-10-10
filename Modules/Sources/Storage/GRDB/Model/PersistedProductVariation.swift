@@ -80,6 +80,16 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
                                      key: "image")
 }
 
+// MARK: - Point of Sale Requests
+public extension PersistedProductVariation {
+    /// Returns a request for non-downloadable variations of a parent product, ordered by ID
+    static func posVariationsRequest(siteID: Int64, parentProductID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return PersistedProductVariation
+            .filter(Columns.siteID == siteID && Columns.productID == parentProductID)
+            .filter(Columns.downloadable == false)
+            .order(Columns.id)
+    }
+}
 
 // periphery:ignore - TODO: remove ignore when populating database
 private extension PersistedProductVariation {

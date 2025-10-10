@@ -95,7 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForUpgrades()
 
         // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
+        refreshCardPresentPaymentsOnboardingIfNeeded()
 
         return true
     }
@@ -448,8 +448,10 @@ extension AppDelegate {
             }
     }
 
-    func refreshCardPresentPaymentsOnboardingIfNeeded(completion: @escaping (() -> Void)) {
-        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState(completion: completion)
+    func refreshCardPresentPaymentsOnboardingIfNeeded() {
+        ServiceLocator
+            .cardPresentPaymentsOnboardingIPPUsersRefresher
+            .refreshIPPUsersOnboardingState(completion: reconnectToTapToPayReaderIfNeeded)
     }
 
     func reconnectToTapToPayReaderIfNeeded() {

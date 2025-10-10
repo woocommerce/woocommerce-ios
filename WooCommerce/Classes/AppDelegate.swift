@@ -146,32 +146,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         await ServiceLocator.pushNotesManager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Simulate push notification for capturing snapshot.
-        // This is supposed to be called only by the WooCommerceScreenshots target.
-        if ProcessConfiguration.shouldSimulatePushNotification {
-            let content = UNMutableNotificationContent()
-            content.title = NSLocalizedString(
-                "You have a new order! 🎉",
-                comment: "Title for the mocked order notification needed for the AppStore listing screenshot"
-            )
-            content.body = NSLocalizedString(
-                "New order for $13.98 on Your WooCommerce Store",
-                comment: "Message for the mocked order notification needed for the AppStore listing screenshot. " +
-                "'Your WooCommerce Store' is the name of the mocked store."
-            )
-
-            // show this notification seconds from now
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
-
-            // choose a random identifier
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-            // add our notification request
-            UNUserNotificationCenter.current().add(request)
-        }
-    }
-
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         guard let quickAction = QuickAction(rawValue: shortcutItem.type),
             let tabBarController else {
@@ -192,22 +166,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tabBarController.navigate(to: OrdersDestination.createOrder)
             completionHandler(true)
         }
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Don't track startup waiting time if app is backgrounded before everything is loaded
-        cancelStartupWaitingTimeTracker()
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Handled per-scene in SceneDelegate.sceneWillEnterForeground(_:)
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive.
-        // If the application was previously in the background, optionally refresh the user interface.
-
-        requirementsChecker.checkEligibilityForDefaultStore()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -240,14 +198,11 @@ extension AppDelegate {
     func application(_ application: UIApplication,
                      configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        let config = UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        let config = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         config.delegateClass = SceneDelegate.self
         return config
     }
 
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Resources tied to discarded scenes can be released here if needed.
-    }
 }
 
 // MARK: - Initialization Methods

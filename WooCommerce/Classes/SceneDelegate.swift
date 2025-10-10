@@ -34,9 +34,37 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppDelegate.shared.requirementsChecker.baseViewController = tabBarController
     }
 
-    func sceneDidBecomeActive(_ scene: UIScene) {}
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        // Restart any tasks that were paused (or not yet started) while the application was inactive.
+        // If the application was previously in the background, optionally refresh the user interface.
+        AppDelegate.shared.requirementsChecker.checkEligibilityForDefaultStore()
+    }
 
-    func sceneWillResignActive(_ scene: UIScene) {}
+    func sceneWillResignActive(_ scene: UIScene) {
+        // Simulate push notification for capturing snapshot.
+        // This is supposed to be called only by the WooCommerceScreenshots target.
+        if ProcessConfiguration.shouldSimulatePushNotification {
+            let content = UNMutableNotificationContent()
+            content.title = NSLocalizedString(
+                "You have a new order! 🎉",
+                comment: "Title for the mocked order notification needed for the AppStore listing screenshot"
+            )
+            content.body = NSLocalizedString(
+                "New order for $13.98 on Your WooCommerce Store",
+                comment: "Message for the mocked order notification needed for the AppStore listing screenshot. " +
+                "'Your WooCommerce Store' is the name of the mocked store."
+            )
+
+            // show this notification seconds from now
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
+
+            // choose a random identifier
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+            // add our notification request
+            UNUserNotificationCenter.current().add(request)
+        }
+    }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
@@ -44,6 +72,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        // Don't track startup waiting time if app is backgrounded before everything is loaded
+        AppDelegate.shared.cancelStartupWaitingTimeTracker()
+
         // Schedule the background app refresh when sending the app to the background.
         // The OS is in charge of determining when these tasks will run based on app usage patterns.
         AppDelegate.shared.appRefreshHandler.scheduleAppRefresh()

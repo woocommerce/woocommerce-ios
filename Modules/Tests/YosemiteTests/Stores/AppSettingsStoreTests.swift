@@ -1560,6 +1560,42 @@ extension AppSettingsStoreTests {
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertTrue(savedSettings.isPOSSurveyNotificationScheduled)
     }
+
+    func test_resetPOSSurveyNotificationScheduled_resets_to_false_after_being_set_to_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // 1. Set to true
+        let setAction = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in }
+        subject?.onAction(setAction)
+
+        // 2. Verify it's true
+        let checkBeforeReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertTrue(checkBeforeReset)
+
+        // When - 3. Reset it
+        var resetResult: Result<Void, Error>?
+        let resetAction = AppSettingsAction.resetPOSSurveyNotificationScheduled { aResult in
+            resetResult = aResult
+        }
+        subject?.onAction(resetAction)
+
+        // Then - 4. Verify it's false
+        XCTAssertTrue(try XCTUnwrap(resetResult).isSuccess)
+
+        let checkAfterReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertFalse(checkAfterReset)
+    }
 }
 
 // MARK: - Utils

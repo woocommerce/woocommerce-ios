@@ -1313,7 +1313,12 @@ private extension AppSettingsStore {
     }
 
     func resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void) {
-        // TODO
+        do {
+            try generalAppSettings.setValue(false, for: \.isPOSSurveyNotificationScheduled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
     }
 }
 

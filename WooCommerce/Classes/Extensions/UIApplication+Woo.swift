@@ -20,3 +20,13 @@ extension UIApplication.State {
         }
     }
 }
+
+extension UIApplication {
+    /// Returns the current key window from the connected window scenes.
+    static var wooKeyWindow: UIWindow? {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+    }
+}

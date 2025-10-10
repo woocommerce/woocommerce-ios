@@ -323,11 +323,7 @@ final class MainTabBarController: UITabBarController {
     private func fixTabBarTraitCollectionOnIpadForiOS18() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             traitOverrides.horizontalSizeClass = .compact
-            if let rootHorizontalSizeClass = UIApplication.shared.connectedScenes
-                .compactMap({ $0 as? UIWindowScene })
-                .flatMap({ $0.windows })
-                .first(where: { $0.isKeyWindow })?
-                .traitCollection.horizontalSizeClass {
+            if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
                 tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
                 if let viewControllers {
                     for vc in viewControllers {

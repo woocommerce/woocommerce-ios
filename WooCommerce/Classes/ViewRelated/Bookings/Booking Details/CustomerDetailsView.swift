@@ -104,7 +104,7 @@ extension BookingDetailsView {
                 showingPhoneOptions = true
             }
             .confirmationDialog(
-                String(format: Localization.phoneNumberOptionsTitle, selectedPhoneNumber ?? ""),
+                selectedPhoneNumber ?? "",
                 isPresented: $showingPhoneOptions,
                 titleVisibility: .visible
             ) {
@@ -145,12 +145,6 @@ private extension BookingDetailsView.CustomerDetailsView {
             "BookingDetailsView.customer.emailCopied.toastMessage",
             value: "Email address copied",
             comment: "Toast message shown when the user copies the customer's email address."
-        )
-
-        static let phoneNumberOptionsTitle = NSLocalizedString(
-            "BookingDetailsView.phoneNumberOptions.title",
-            value: "%@",
-            comment: "Title for the phone number action sheet, where %@ is the phone number."
         )
 
         static let callActionTitle = NSLocalizedString(

@@ -1,5 +1,6 @@
 import Combine
 import Experiments
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import Yosemite
@@ -130,9 +131,31 @@ private extension AppCoordinator {
                                                                 userInfo: userInfo))
             return
         }
+        
+        let posSurveyScenarios = [
+            LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
+            LocalNotification.Scenario.pointOfSaleCurrentMerchant.identifier,
+        ]
+
+        if posSurveyScenarios.contains(identifier),
+           let surveyURLString = userInfo[LocalNotification.UserInfoKey.surveyURL] as? String,
+           let surveyURL = URL(string: surveyURLString) {
+            presentSurveyWebView(url: surveyURL)
+        }
 
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
+    }
+
+    private func presentSurveyWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        // POS mode is presented via a UIHostingController as full-screen view on top of the tabBarController, so
+        // we have to target the topmost VC if we want to present a web view on top of this when tapping on the local notification.
+        if let topmostPresentedViewController = window.topmostPresentedViewController {
+            topmostPresentedViewController.present(safariViewController, animated: true)
+        } else {
+            tabBarController.present(safariViewController, animated: true)
+        }
     }
 }
 

@@ -69,6 +69,13 @@ struct LocalNotification {
     enum UserInfoKey {
         static let storeName = "storeName"
         static let isIAPAvailable = WooAnalyticsEvent.LocalNotification.Key.isIAPAvailable
+        static let surveyURL = "surveyURL"
+    }
+
+    enum SurveyURL {
+        // TODO: Real survey links to be added in WOOMOB-1497
+        static let pointOfSalePotentialMerchant = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
+        static let pointOfSaleCurrentMerchant = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
     }
 }
 

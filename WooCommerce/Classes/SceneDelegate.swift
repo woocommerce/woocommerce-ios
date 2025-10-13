@@ -1,4 +1,5 @@
 import UIKit
+import class WidgetKit.WidgetCenter
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -30,8 +31,16 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.scene(scene, continue: activity)
         }
 
+        // Cold-start quick action
+        if let shortcut = connectionOptions.shortcutItem {
+            handle(shortcutItem: shortcut, completion: nil)
+        }
+
         // Update AppDelegate-scoped dependencies that rely on a base VC
         AppDelegate.shared.requirementsChecker.baseViewController = tabBarController
+
+        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
+        UIApplication.wooKeyWindow?.tintColor = .primary
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -93,7 +102,38 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        handleWebActivity(userActivity)
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            handleWebActivity(userActivity)
+        }
+
+        SpotlightManager.handleUserActivity(userActivity)
+        trackWidgetTappedIfNeeded(userActivity: userActivity)
+    }
+
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        handle(shortcutItem: shortcutItem, completion: completionHandler)
+    }
+
+    private func handle(shortcutItem: UIApplicationShortcutItem, completion: ((Bool) -> Void)?) {
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type),
+              let tabBarController else {
+            completion?(false)
+            return
+        }
+        switch quickAction {
+        case .addProduct:
+            MainTabBarController.presentAddProductFlow()
+            completion?(true)
+        case .addOrder:
+            tabBarController.navigate(to: OrdersDestination.createOrder)
+            completion?(true)
+        case .openOrders:
+            tabBarController.navigate(to: OrdersDestination.orderList)
+            completion?(true)
+        case .collectPayment:
+            tabBarController.navigate(to: OrdersDestination.createOrder)
+            completion?(true)
+        }
     }
 
     // MARK: - Scene-scoped helpers moved from AppDelegate
@@ -110,5 +150,20 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func handleWebActivity(_ activity: NSUserActivity) {
         guard let linkURL = activity.webpageURL else { return }
         universalLinkRouter?.handle(url: linkURL)
+    }
+
+
+    /// Tracks if the application was opened via a widget tap.
+    ///
+    func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
+        switch userActivity.activityType {
+        case WooConstants.storeInfoWidgetKind:
+            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
+        case WooConstants.appLinkWidgetKind:
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
+        default:
+            break
+        }
     }
 }

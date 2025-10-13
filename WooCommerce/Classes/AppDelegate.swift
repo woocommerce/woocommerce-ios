@@ -3,7 +3,6 @@ import Combine
 import Storage
 import class Networking.UserAgent
 import Experiments
-import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
@@ -146,44 +145,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         await ServiceLocator.pushNotesManager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
     }
 
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        guard let quickAction = QuickAction(rawValue: shortcutItem.type),
-            let tabBarController else {
-            completionHandler(false)
-            return
-        }
-        switch quickAction {
-        case QuickAction.addProduct:
-            MainTabBarController.presentAddProductFlow()
-            completionHandler(true)
-        case QuickAction.addOrder:
-            tabBarController.navigate(to: OrdersDestination.createOrder)
-            completionHandler(true)
-        case QuickAction.openOrders:
-            tabBarController.navigate(to: OrdersDestination.orderList)
-            completionHandler(true)
-        case QuickAction.collectPayment:
-            tabBarController.navigate(to: OrdersDestination.createOrder)
-            completionHandler(true)
-        }
-    }
-
     func applicationWillTerminate(_ application: UIApplication) {
         DDLogVerbose("👀 Application terminating...")
         NotificationCenter.default.post(name: .applicationTerminating, object: nil)
-    }
-
-    func application(_ application: UIApplication,
-                     continue userActivity: NSUserActivity,
-                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            UIApplication.sceneDelegate?.handleWebActivity(userActivity)
-        }
-
-        SpotlightManager.handleUserActivity(userActivity)
-        trackWidgetTappedIfNeeded(userActivity: userActivity)
-
-        return true
     }
 
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
@@ -223,9 +187,6 @@ extension AppDelegate {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
         UITabBar.applyWooAppearance()
-
-        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        UIApplication.wooKeyWindow?.tintColor = .primary
     }
 
     /// Sets up FancyAlert's UIAppearance.
@@ -398,20 +359,6 @@ extension AppDelegate {
 
     func reconnectToTapToPayReaderIfNeeded() {
         ServiceLocator.tapToPayReconnectionController.reconnectIfNeeded()
-    }
-
-    /// Tracks if the application was opened via a widget tap.
-    ///
-    func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
-        switch userActivity.activityType {
-        case WooConstants.storeInfoWidgetKind:
-            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
-            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
-        case WooConstants.appLinkWidgetKind:
-            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
-        default:
-            break
-        }
     }
 }
 

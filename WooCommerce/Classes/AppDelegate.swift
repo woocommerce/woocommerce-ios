@@ -248,6 +248,7 @@ extension AppDelegate {
 
     /// Push Notifications: Authorization + Registration!
     ///
+    // periphery: ignore - Fails when build on simulator
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")

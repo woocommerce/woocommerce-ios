@@ -79,7 +79,7 @@ extension BookingDetailsView {
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
-                emailText.sendToPasteboard()
+                emailText.sendToPasteboard(includeTrailingNewline: false)
                 showNotice(
                     Notice(
                         title: Localization.emailCopiedMessage,
@@ -116,7 +116,7 @@ extension BookingDetailsView {
                 }
                 Button(Localization.copyActionTitle) {
                     guard let phoneNumber = selectedPhoneNumber else { return }
-                    phoneNumber.sendToPasteboard()
+                    phoneNumber.sendToPasteboard(includeTrailingNewline: false)
                     showNotice(Notice(title: Localization.phoneNumberCopied, feedbackType: .success))
                 }
             }

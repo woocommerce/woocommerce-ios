@@ -5,7 +5,8 @@
 -----
 - [internal] POS code was moved to its own module, including POS specific color and image assets. [https://github.com/woocommerce/woocommerce-ios/pull/16176]
 - [*] Fix Create Coupon screen scrolling issue. [https://github.com/woocommerce/woocommerce-ios/pull/16218]
-
+- [*] Order list: Allow filtering of Web, Point of Sale, and WP-Admin orders. [https://github.com/woocommerce/woocommerce-ios/pull/16228]
+- [**] POS: Allow merchants to view, search, and manage POS orders directly within the POS interface. [https://github.com/woocommerce/woocommerce-ios/pull/16198]
 
 23.4
 -----

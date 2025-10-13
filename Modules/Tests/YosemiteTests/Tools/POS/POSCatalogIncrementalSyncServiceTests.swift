@@ -31,8 +31,8 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
-        #expect(mockSyncRemote.loadIncrementalProductsCallCount == 2)
-        #expect(mockSyncRemote.loadIncrementalProductVariationsCallCount == 2)
+        #expect(await mockSyncRemote.loadIncrementalProductsCallCount.value == 2)
+        #expect(await mockSyncRemote.loadIncrementalProductVariationsCallCount.value == 2)
         #expect(mockSyncRemote.lastIncrementalProductsModifiedAfter == lastFullSyncDate)
         #expect(mockSyncRemote.lastIncrementalVariationsModifiedAfter == lastFullSyncDate)
         #expect(mockPersistenceService.persistIncrementalCatalogDataCallCount == 1)
@@ -76,7 +76,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
-        #expect(mockSyncRemote.loadIncrementalProductsCallCount == 4)
+        #expect(await mockSyncRemote.loadIncrementalProductsCallCount.value == 4)
         let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
         #expect(persistedCatalog.products.count == 3)
     }
@@ -97,7 +97,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
-        #expect(mockSyncRemote.loadIncrementalProductVariationsCallCount == 2)
+        #expect(await mockSyncRemote.loadIncrementalProductVariationsCallCount.value == 2)
         let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
         #expect(persistedCatalog.variations.count == 2)
     }
@@ -108,6 +108,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         // Given
         let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
         let expectedError = NSError(domain: "test", code: 500, userInfo: nil)
+        let sut = POSCatalogIncrementalSyncService(syncRemote: mockSyncRemote, batchSize: 2, retryDelay: 0, persistenceService: mockPersistenceService)
 
         mockSyncRemote.setIncrementalProductResult(pageNumber: 1, result: .failure(expectedError))
         mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))

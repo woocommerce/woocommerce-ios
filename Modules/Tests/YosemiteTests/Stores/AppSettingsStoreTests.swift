@@ -1506,6 +1506,96 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(loadedOrderStatus)
     }
+
+    // MARK: - Point of Sale Survey Notification
+
+    func test_getPOSSurveyNotificationScheduled_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_getPOSSurveyNotificationScheduled_returns_true_after_setting_as_scheduled() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let setAction = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in }
+        subject?.onAction(setAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_setPOSSurveyNotificationScheduled_stores_value_correctly() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setPOSSurveyNotificationScheduled { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertTrue(savedSettings.isPOSSurveyNotificationScheduled)
+    }
+
+    func test_resetPOSSurveyNotificationScheduled_resets_to_false_after_being_set_to_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // 1. Set to true
+        let setAction = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in }
+        subject?.onAction(setAction)
+
+        // 2. Verify it's true
+        let checkBeforeReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertTrue(checkBeforeReset)
+
+        // When - 3. Reset it
+        var resetResult: Result<Void, Error>?
+        let resetAction = AppSettingsAction.resetPOSSurveyNotificationScheduled { aResult in
+            resetResult = aResult
+        }
+        subject?.onAction(resetAction)
+
+        // Then - 4. Verify it's false
+        XCTAssertTrue(try XCTUnwrap(resetResult).isSuccess)
+
+        let checkAfterReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertFalse(checkAfterReset)
+    }
 }
 
 // MARK: - Utils
@@ -1527,7 +1617,8 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyNotificationScheduled: false
         )
         return (settings, feedback)
     }
@@ -1542,7 +1633,8 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyNotificationScheduled: false
         )
         return settings
     }

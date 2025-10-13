@@ -36,7 +36,7 @@ private extension BookingsTabViewHostingController {
 ///
 struct BookingsTabView: View {
     @State private var selectedBooking: Booking?
-    @State private var visibility: NavigationSplitViewVisibility = .automatic
+    @State private var visibility: NavigationSplitViewVisibility = .all
     @StateObject private var bookingListContainerViewModel: BookingListContainerViewModel
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
 

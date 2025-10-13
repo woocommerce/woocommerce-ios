@@ -187,10 +187,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleOrdersi2
 
-    /// Enables the entry point for Point of Sale Settings
-    ///
-    case pointOfSaleSettingsi1
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
@@ -212,4 +208,8 @@ public enum FeatureFlag: Int {
     /// Current changes behind this feature flag: replacing the Menu tab custom "dot" badge with the native tab bar badge.
     ///
     case liquidGlassDesign
+
+    /// Enables surveys for potential and current POS merchants
+    ///
+    case pointOfSaleSurveys
 }

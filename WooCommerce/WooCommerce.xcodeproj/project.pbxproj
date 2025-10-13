@@ -984,7 +984,11 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
+		2D052FB42E9408AF004111FD /* CustomerDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */; };
+		2D052FB52E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */; };
 		2D05337E2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */; };
+		2D054A2A2E953E3C004111FD /* BookingDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D054A292E953E3C004111FD /* BookingDetailsViewModelTests.swift */; };
+		2D0555812E9693E6004111FD /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0555802E9693E1004111FD /* HeaderView.swift */; };
 		2D05D19F2E82D1A8004111FD /* BookingDetailsViewModel+Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */; };
 		2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A12E82D233004111FD /* HeaderContent.swift */; };
 		2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */; };
@@ -3879,7 +3883,11 @@
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
+		2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsView+RowTextStyle.swift"; sourceTree = "<group>"; };
+		2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailsView.swift; sourceTree = "<group>"; };
 		2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+PriceFormatting.swift"; sourceTree = "<group>"; };
+		2D054A292E953E3C004111FD /* BookingDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsViewModelTests.swift; sourceTree = "<group>"; };
+		2D0555802E9693E1004111FD /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Section.swift"; sourceTree = "<group>"; };
 		2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+SectionContent.swift"; sourceTree = "<group>"; };
 		2D05D1A12E82D233004111FD /* HeaderContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContent.swift; sourceTree = "<group>"; };
@@ -7964,6 +7972,9 @@
 		2DAC2C962E82A169008521AF /* Booking Details */ = {
 			isa = PBXGroup;
 			children = (
+				2D0555802E9693E1004111FD /* HeaderView.swift */,
+				2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */,
+				2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */,
 				2DAC2C972E82A185008521AF /* BookingDetailsView.swift */,
 				2D05FE952E8D71EA004111FD /* UpdateAttendanceStatusView.swift */,
 			);
@@ -12515,6 +12526,7 @@
 			isa = PBXGroup;
 			children = (
 				DED1E3152E8556270089909C /* BookingListViewModelTests.swift */,
+				2D054A292E953E3C004111FD /* BookingDetailsViewModelTests.swift */,
 			);
 			path = Bookings;
 			sourceTree = "<group>";
@@ -14844,6 +14856,8 @@
 				020B2F8F23BD9F1F00BD79AD /* IntegerInputFormatter.swift in Sources */,
 				0204F0CA29C047A400CFC78F /* SelfSizingHostingController.swift in Sources */,
 				7441EBC9226A71AA008BF83D /* TitleBodyTableViewCell.swift in Sources */,
+				2D052FB42E9408AF004111FD /* CustomerDetailsView.swift in Sources */,
+				2D052FB52E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift in Sources */,
 				EECB6D1E2AFBFE0000040BC9 /* WooSubscriptionProductsEligibilityChecker.swift in Sources */,
 				CEA455C72BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift in Sources */,
 				EE45E29D2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift in Sources */,
@@ -15210,6 +15224,7 @@
 				032E481D2982996E00469D92 /* CardPresentModalTapToPayConnectingFailedNonRetryable.swift in Sources */,
 				DED9740D2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift in Sources */,
 				EEC0120F2CE34B87003B865B /* WooAnalyticsEvent+WPCOMSuspendedSite.swift in Sources */,
+				2D0555812E9693E6004111FD /* HeaderView.swift in Sources */,
 				0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */,
 				D85136B9231CED5800DD0539 /* ReviewAge.swift in Sources */,
 				209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */,
@@ -15825,6 +15840,7 @@
 				DE61979528A25842005E4362 /* StorePickerViewModelTests.swift in Sources */,
 				EEB4E2D329B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
+				2D054A2A2E953E3C004111FD /* BookingDetailsViewModelTests.swift in Sources */,
 				267D6882296485850072ED0C /* ProductVariationGeneratorTests.swift in Sources */,
 				0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,

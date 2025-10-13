@@ -257,8 +257,11 @@ final class OrderListViewModel {
 
             switch salesChannelFilter {
             case .pointOfSale:
-                let predicate = NSPredicate(format: "createdVia == %@", "pos-rest-api")
-                return predicate
+                return NSPredicate(format: "createdVia == %@", "pos-rest-api")
+            case .webCheckout:
+                return NSPredicate(format: "createdVia IN %@", ["checkout", "store-api"])
+            case .wpAdmin:
+                return NSPredicate(format: "createdVia == %@", "admin")
             case .any:
                 return nil
             }

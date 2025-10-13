@@ -23,6 +23,7 @@ struct LocalNotification {
         case blazeAbandonedCampaignCreationReminder
         case productImageBackgroundUpload
         case pointOfSalePotentialMerchant
+        case pointOfSaleCurrentMerchant
         case unknown(siteID: Int64)
 
         var identifier: String {
@@ -35,6 +36,8 @@ struct LocalNotification {
                 return "product_image_background_upload"
             case .pointOfSalePotentialMerchant:
                 return "point_of_sale_potential_merchant"
+            case .pointOfSaleCurrentMerchant:
+                return "point_of_sale_current_merchant"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -101,6 +104,9 @@ extension LocalNotification {
         case .pointOfSalePotentialMerchant:
             title = Localization.PointOfSalePotentialMerchant.title
             body = Localization.PointOfSalePotentialMerchant.body
+        case .pointOfSaleCurrentMerchant:
+            title = Localization.PointOfSaleCurrentMerchant.title
+            body = Localization.PointOfSaleCurrentMerchant.body
         case .unknown:
             title = ""
             body = ""
@@ -163,6 +169,18 @@ extension LocalNotification {
                 "localNotification.PointOfSalePotentialMerchant.body",
                 value: "Take a quick 2-minute survey to help us shape features you’ll love.",
                 comment: "Message body of the local notification sent to potential Point of Sale merchants"
+            )
+        }
+        enum PointOfSaleCurrentMerchant {
+            static let title = NSLocalizedString(
+                "localNotification.PointOfSaleCurrentMerchant.title",
+                value: "How’s POS working for you?",
+                comment: "Title of the local notification for current POS merchants survey."
+            )
+            static let body = NSLocalizedString(
+                "localNotification.PointOfSaleCurrentMerchant.body",
+                value: "Share your experience in a quick 2-minute survey and help us improve.",
+                comment: "Body of the local notification for current POS merchants survey."
             )
         }
     }

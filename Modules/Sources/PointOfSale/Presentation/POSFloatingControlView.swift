@@ -25,18 +25,10 @@ struct POSFloatingControlView: View {
         self._showSettings = showSettings
     }
 
-    private var isPOSSettingsEnabled: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
-    }
-
     var body: some View {
         HStack {
             Menu {
-                if isPOSSettingsEnabled {
-                    compactOptions()
-                } else {
-                    completeOptions()
-                }
+                menuOptions()
             } label: {
                 VStack {
                     Spacer()
@@ -76,42 +68,7 @@ struct POSFloatingControlView: View {
 }
 
 private extension POSFloatingControlView {
-    @ViewBuilder private func compactOptions() -> some View {
-        Button {
-            analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
-        } label: {
-            Label(
-                title: { Text(Localization.exitPointOfSale) },
-                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-            )
-        }
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
-            Button {
-                analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.settings) },
-                    icon: { Image(systemName: "gearshape") }
-                )
-            }
-        }
-
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
-            Button {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                showOrders = true
-            } label: {
-                Label(
-                    title: { Text(Localization.orders) },
-                    icon: { Image(systemName: "text.document") }
-                )
-            }
-        }
-    }
-
-    @ViewBuilder private func completeOptions() -> some View {
+    @ViewBuilder private func menuOptions() -> some View {
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
             showExitPOSModal = true
@@ -122,50 +79,13 @@ private extension POSFloatingControlView {
             )
         }
         Button {
-            analytics.track(.pointOfSaleGetSupportTapped)
-            showSupport = true
+            analytics.track(.pointOfSaleSettingsMenuItemTapped)
+            showSettings = true
         } label: {
             Label(
-                title: { Text(Localization.getSupport) },
-                icon: { Image(systemName: "questionmark.circle") }
+                title: { Text(Localization.settings) },
+                icon: { Image(systemName: "gearshape") }
             )
-        }
-        Button {
-            showDocumentation = true
-            analytics.track(.pointOfSaleViewDocsTapped)
-        } label: {
-            Label(
-                title: { Text(Localization.viewDocumentation) },
-                icon: { Image(systemName: "info.circle") }
-            )
-        }
-        Button {
-            showProductRestrictionsModal = true
-            analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-        } label: {
-            Label(
-                title: { Text(Localization.productRestrictionsInfo) },
-                icon: { Image(systemName: "magnifyingglass") })
-        }
-        Button {
-            showBarcodeScanningModal = true
-            analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
-        } label: {
-            Label(
-                title: {
-                    Text(Localization.barcodeScanningSetup)
-                },
-                icon: { Image(systemName: "barcode.viewfinder") })
-        }
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
-            Button {
-                showSettings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.settings) },
-                    icon: { Image(systemName: "gearshape") }
-                )
-            }
         }
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
@@ -226,31 +146,6 @@ private extension POSFloatingControlView {
             value: "Exit POS",
             comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
             "The action is confirmed in a modal."
-        )
-
-        static let getSupport = NSLocalizedString(
-            "pointOfSale.floatingButtons.getSupport.button.title",
-            value: "Get Support",
-            comment: "The title of the menu button to get support for Point of Sale, shown in a popover menu."
-        )
-
-        static let viewDocumentation = NSLocalizedString(
-            "pointOfSale.floatingButtons.viewDocumentation.button.title",
-            value: "Documentation",
-            comment: "The title of the menu button to read Point of Sale documentation, shown in a popover menu."
-        )
-
-        static let productRestrictionsInfo = NSLocalizedString(
-            "pointOfSale.floatingButtons.productRestrictionsInfo.button.title",
-            value: "Where are my products?",
-            comment: "The title of the menu button to view product restrictions info, shown in a popover menu. " +
-            "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
-        )
-
-        static let barcodeScanningSetup = NSLocalizedString(
-            "pointOfSale.floatingButtons.barcodeScanningSetup.button.title",
-            value: "Initial barcode scanner setup",
-            comment: "The title of the menu button to start a barcode scanner setup flow."
         )
 
         static let settings = NSLocalizedString(

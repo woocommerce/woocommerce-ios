@@ -90,15 +90,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleOrdersi2:
             return true
-        case .pointOfSaleSettingsi1:
-            return true
         case .orderAddressMapSearch:
             return true
         case .pointOfSaleHistoricalOrdersi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .pointOfSaleLocalCatalogi1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ciabBookings:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleSurveys:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

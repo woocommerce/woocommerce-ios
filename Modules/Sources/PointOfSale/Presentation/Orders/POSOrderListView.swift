@@ -4,17 +4,14 @@ import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
 
 struct POSOrderListView: View {
+    @Binding var isSearching: Bool
+    @Binding var searchTerm: String
     let onClose: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
-    @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.siteTimezone) private var siteTimezone
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
-
-    @State private var isSearching: Bool = false
-    @State private var searchTerm: String = ""
-    @Namespace private var searchTransition
 
     private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
@@ -46,8 +43,11 @@ struct POSOrderListView: View {
                             setSearch(true)
                         }
                         .accessibilityLabel(Localization.searchButtonAccessibilityLabel)
-                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
-                        .transition(.opacity.combined(with: .scale))
+                        .transition(.asymmetric(
+                            insertion: .scale.combined(with: .opacity)
+                                .animation(.easeInOut(duration: Constants.animationDuration).delay(Constants.animationDuration)),
+                            removal: .opacity.animation(.easeInOut(duration: Constants.animationDuration * 0.5))
+                        ))
                     }
 
                     if isSearching {
@@ -59,8 +59,12 @@ struct POSOrderListView: View {
                             }
                         )
                         .posSearchTextFieldUnfocusedBorderColor(.posOutlineVariant)
-                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
-                        .transition(.opacity.combined(with: .move(edge: .leading)))
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .move(edge: .trailing))
+                                .animation(.easeInOut(duration: Constants.animationDuration).delay(Constants.animationDuration * 0.5)),
+                            removal: .opacity.combined(with: .move(edge: .trailing))
+                                .animation(.easeInOut(duration: Constants.animationDuration))
+                        ))
                         .onChange(of: searchTerm) { _, newValue in
                             if newValue.isEmpty {
                                 orderListModel.ordersController.clearSearchOrders()
@@ -71,23 +75,21 @@ struct POSOrderListView: View {
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
-            switch ordersViewState {
-            case .empty:
+            switch (ordersViewState, isSearching) {
+            case (.empty, true):
                 POSListEmptyView(
-                    viewModel: POSOrderListEmptyViewModel(isSearching: isSearching)
+                    viewModel: POSOrderListEmptyViewModel(isSearching: true)
                 ) {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
                 }
-                .padding(.bottom, keyboardObserver.keyboardHeight)
-            case .error(let errorState):
+            case (.error(let errorState), true):
                 POSListErrorView(error: errorState) {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
                 }
-                .padding(.bottom, keyboardObserver.keyboardHeight)
             default:
                 listView
             }
@@ -98,9 +100,6 @@ struct POSOrderListView: View {
         .refreshable {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListPullToRefresh())
             await orderListModel.ordersController.refreshOrders()
-        }
-        .task {
-            await orderListModel.ordersController.loadOrders()
         }
     }
 
@@ -128,7 +127,7 @@ struct POSOrderListView: View {
                     await orderListModel.ordersController.loadNextOrders()
                 },
                 content: {
-                    LazyVStack(spacing: POSSpacing.small) {
+                    LazyVStack(spacing: POSSpacing.medium) {
                         headerRows
                             .id(Constants.scrollTopID)
 
@@ -384,7 +383,6 @@ private enum Constants {
     static let orderCardMinHeight: CGFloat = 112
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     static let animationDuration: CGFloat = 0.2
-    static let searchControlID = "searchControl"
     static let scrollTopID = "orderListViewTopID"
 }
 
@@ -450,7 +448,7 @@ private enum Localization {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(false), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
     } detail: {
@@ -459,9 +457,9 @@ private enum Localization {
     .navigationSplitViewStyle(.balanced)
 }
 
-#Preview("Empty State") {
+#Preview("Empty State in Search") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(true), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
     } detail: {
@@ -469,9 +467,9 @@ private enum Localization {
     }
 }
 
-#Preview("Error State") {
+#Preview("Error State in Search") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(true), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .error(.errorOnLoadingOrders())))
     } detail: {
@@ -481,7 +479,7 @@ private enum Localization {
 
 #Preview("Loading State") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(false), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loading([])))
     } detail: {
@@ -491,7 +489,7 @@ private enum Localization {
 
 #Preview("Inline Error - Refresh") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(false), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(
                 state: .inlineError(POSPreviewHelpers.makePreviewOrders(),
@@ -505,7 +503,7 @@ private enum Localization {
 
 #Preview("Inline Error - Pagination") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(false), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(
                 state: .inlineError(POSPreviewHelpers.makePreviewOrders(),
@@ -519,7 +517,7 @@ private enum Localization {
 
 #Preview("Search Empty State") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        POSOrderListView(onClose: {})
+        POSOrderListView(isSearching: .constant(true), searchTerm: .constant(""), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
     } detail: {

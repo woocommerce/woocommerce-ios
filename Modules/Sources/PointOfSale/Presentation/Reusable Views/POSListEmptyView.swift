@@ -68,7 +68,7 @@ struct POSListEmptyView: View {
                     }, label: {
                         Text(buttonTitle)
                     })
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .frame(width: viewWidth / 2)
                     .padding([.leading, .trailing])
                 }

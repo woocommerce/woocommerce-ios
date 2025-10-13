@@ -28,7 +28,6 @@ public struct POSCatalog {
 // periphery:ignore
 public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     private let syncRemote: POSCatalogSyncRemoteProtocol
-    private let batchSize: Int
     private let persistenceService: POSCatalogPersistenceServiceProtocol
     private let batchedLoader: BatchedRequestLoader
 
@@ -49,11 +48,15 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)
     }
 
-    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int, persistenceService: POSCatalogPersistenceServiceProtocol) {
+    init(
+        syncRemote: POSCatalogSyncRemoteProtocol,
+        batchSize: Int,
+        retryDelay: TimeInterval = 2.0,
+        persistenceService: POSCatalogPersistenceServiceProtocol
+    ) {
         self.syncRemote = syncRemote
-        self.batchSize = batchSize
         self.persistenceService = persistenceService
-        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize)
+        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize, retryDelay: retryDelay)
     }
 
     // MARK: - Protocol Conformance

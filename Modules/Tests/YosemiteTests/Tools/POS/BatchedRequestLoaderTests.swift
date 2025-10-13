@@ -11,10 +11,10 @@ struct BatchedRequestLoaderTests {
         // Given
         let sut = BatchedRequestLoader(batchSize: 2)
         let expectedItems = ["item1", "item2", "item3"]
-        var callCount = 0
+        let callCount = Counter()
 
         let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
-            callCount += 1
+            await callCount.increment()
             #expect(pageNumber == 1 || pageNumber == 2)
             if pageNumber == 1 {
                 return PagedItems(items: expectedItems, hasMorePages: false, totalItems: 3)
@@ -28,7 +28,7 @@ struct BatchedRequestLoaderTests {
 
         // Then
         #expect(result == expectedItems)
-        #expect(callCount == 2) // batchSize = 2, so it fetches pages 1 and 2
+        #expect(await callCount.value == 2) // batchSize = 2, so it fetches pages 1 and 2
     }
 
     // MARK: - Retry Logic Tests
@@ -43,13 +43,23 @@ struct BatchedRequestLoaderTests {
             errorEvaluator: mockErrorEvaluator
         )
 
-        var attemptsByPage: [Int: Int] = [:]
+        let attemptCountForPage1 = Counter()
+        let attemptCountForPage2 = Counter()
+        let attemptCountForPage3 = Counter()
         let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
-            attemptsByPage[pageNumber, default: 0] += 1
-
-            // Page 2 fails once, then succeeds
-            if pageNumber == 2 && attemptsByPage[pageNumber] == 1 {
-                throw URLError(.timedOut)
+            switch pageNumber {
+            case 1:
+                await attemptCountForPage1.increment()
+            case 2:
+                await attemptCountForPage2.increment()
+                // Page 2 fails once, then succeeds
+                if await attemptCountForPage2.value == 1 {
+                    throw URLError(.timedOut)
+                }
+            case 3:
+                await attemptCountForPage3.increment()
+            default:
+                throw NSError(domain: "Invalid page number", code: 0)
             }
 
             return PagedItems(items: ["page \(pageNumber) success"], hasMorePages: false, totalItems: 1)
@@ -60,9 +70,9 @@ struct BatchedRequestLoaderTests {
 
         // Then
         #expect(result == ["page 1 success", "page 2 success", "page 3 success"])
-        #expect(attemptsByPage[1] == 1) // Page 1 succeeded immediately
-        #expect(attemptsByPage[2] == 2) // Page 2 failed once, then succeeded
-        #expect(attemptsByPage[3] == 1) // Page 3 succeeded immediately
+        #expect(await attemptCountForPage1.value == 1) // Page 1 succeeded immediately
+        #expect(await attemptCountForPage2.value == 2) // Page 2 failed once, then succeeded
+        #expect(await attemptCountForPage3.value == 1) // Page 3 succeeded immediately
     }
 
     @Test func loadAll_does_not_retry_on_non_retryable_error() async throws {
@@ -75,9 +85,9 @@ struct BatchedRequestLoaderTests {
             errorEvaluator: mockErrorEvaluator
         )
 
-        var attemptCount = 0
+        let attemptCount = Counter()
         let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
-            attemptCount += 1
+            await attemptCount.increment()
             throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
         }
 
@@ -85,7 +95,7 @@ struct BatchedRequestLoaderTests {
         await #expect(throws: NetworkError.self) {
             try await sut.loadAll(makeRequest: makeRequest)
         }
-        #expect(attemptCount == 2) // No retries for non-retryable error for both pages
+        #expect(await attemptCount.value == 2) // No retries for non-retryable error for both pages
     }
 
     @Test func loadAll_fails_after_max_retries() async throws {
@@ -98,10 +108,10 @@ struct BatchedRequestLoaderTests {
             errorEvaluator: mockErrorEvaluator
         )
 
-        var attemptCount = 0
+        let attemptCount = Counter()
         let expectedError = URLError(.networkConnectionLost)
         let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
-            attemptCount += 1
+            await attemptCount.increment()
             throw expectedError
         }
 
@@ -109,7 +119,7 @@ struct BatchedRequestLoaderTests {
         await #expect(throws: URLError.self) {
             try await sut.loadAll(makeRequest: makeRequest)
         }
-        #expect(attemptCount == 3) // maxRetries = 3
+        #expect(await attemptCount.value == 3) // maxRetries = 3
     }
 }
 

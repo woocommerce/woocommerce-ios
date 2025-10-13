@@ -20,6 +20,10 @@ enum POSConstants {
         ///
         case inPersonPaymentsLearnMoreWCPay =
                 "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
+
+        /// URL for WooCommerce blog
+        ///
+        case wooCommerceBlog = "https://woocommerce.com/blog/"
     }
 }
 

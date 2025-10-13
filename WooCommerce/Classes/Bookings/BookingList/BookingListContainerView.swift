@@ -33,6 +33,7 @@ struct BookingListContainerView: View {
                             isPresented: $isSearching,
                             prompt: Localization.searchPrompt)
         })
+        .toolbar(removing: .sidebarToggle)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button {

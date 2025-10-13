@@ -38,9 +38,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             handle(shortcutItem: shortcut, completion: nil)
         }
 
-        // Update AppDelegate-scoped dependencies that rely on a base VC
-        AppDelegate.shared.requirementsChecker.baseViewController = tabBarController
-
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
         UIApplication.wooKeyWindow?.tintColor = .primary
     }

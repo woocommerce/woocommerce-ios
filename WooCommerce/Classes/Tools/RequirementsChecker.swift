@@ -25,7 +25,7 @@ enum RequirementCheckResult: Int, CaseIterable {
 final class RequirementsChecker {
 
     private let stores: StoresManager
-    var baseViewController: UIViewController?
+    private let baseViewController: UIViewController?
 
     init(stores: StoresManager = ServiceLocator.stores,
          baseViewController: UIViewController? = nil) {

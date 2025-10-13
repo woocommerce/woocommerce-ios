@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    private(set) var requirementsChecker = RequirementsChecker(baseViewController: nil)
+    private(set) lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
     /// Handles events to background refresh the app.
     ///
@@ -109,20 +109,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appRefreshHandler.registerSystemTaskIdentifier()
 
         return true
-    }
-
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        guard let sceneDelegate = UIApplication.sceneDelegate,
-              let rootViewController = sceneDelegate.window?.rootViewController else {
-            fatalError()
-        }
-
-        if let universalLinkRouter = sceneDelegate.universalLinkRouter, universalLinkRouter.canHandle(url: url) {
-            universalLinkRouter.handle(url: url)
-            return true
-        }
-
-        return handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -262,7 +248,6 @@ extension AppDelegate {
 
     /// Push Notifications: Authorization + Registration!
     ///
-    /// periphery: ignore - Fails when build on simulator
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")

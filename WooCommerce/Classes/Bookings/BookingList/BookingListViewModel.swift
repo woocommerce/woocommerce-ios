@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Yosemite
+import Combine
 import protocol Storage.StorageManagerType
 
 /// View model for `BookingListView`
@@ -36,6 +37,9 @@ final class BookingListViewModel: ObservableObject {
 
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
+
+    /// Tracks if initial load has been triggered.
+    private var hasLoadedInitially = false
 
     /// Supports infinite scroll.
     private let paginationTracker: PaginationTracker
@@ -76,6 +80,8 @@ final class BookingListViewModel: ObservableObject {
 
     /// Called when loading the first page of bookings.
     func loadBookings() {
+        guard !hasLoadedInitially else { return }
+        hasLoadedInitially = true
         paginationTracker.syncFirstPage()
     }
 

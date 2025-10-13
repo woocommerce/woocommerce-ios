@@ -374,6 +374,87 @@ struct BookingStoreTests {
         let error = result.failure as? NetworkError
         #expect(error == .timeout())
     }
+
+    // MARK: - searchBookings
+
+    @Test func searchBookings_returns_bookings_on_success() async throws {
+        // Given
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let bookings = try result.get()
+        #expect(bookings.count == 2)
+        #expect(bookings[0].bookingID == 123)
+        #expect(bookings[1].bookingID == 456)
+    }
+
+    @Test func searchBookings_returns_error_on_failure() async throws {
+        // Given
+        remote.whenLoadingAllBookings(thenReturn: .failure(NetworkError.timeout()))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isFailure)
+        let error = result.failure as? NetworkError
+        #expect(error == .timeout())
+    }
+
+    @Test func searchBookings_does_not_save_results_to_storage() async throws {
+        // Given
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+        #expect(storedBookingCount == 0)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingCount == 0)
+    }
 }
 
 private extension BookingStoreTests {

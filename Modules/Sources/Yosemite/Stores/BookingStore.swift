@@ -45,6 +45,14 @@ public class BookingStore: Store {
                                 onCompletion: onCompletion)
         case let .checkIfStoreHasBookings(siteID, onCompletion):
             checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
+        case let .searchBookings(siteID, searchQuery, pageNumber, pageSize, startDateBefore, startDateAfter, onCompletion):
+            searchBookings(siteID: siteID,
+                           searchQuery: searchQuery,
+                           pageNumber: pageNumber,
+                           pageSize: pageSize,
+                           startDateBefore: startDateBefore,
+                           startDateAfter: startDateAfter,
+                           onCompletion: onCompletion)
         }
     }
 }
@@ -69,7 +77,8 @@ private extension BookingStore {
                                                                 pageNumber: pageNumber,
                                                                 pageSize: pageSize,
                                                                 startDateBefore: startDateBefore,
-                                                                startDateAfter: startDateAfter)
+                                                                startDateAfter: startDateAfter,
+                                                                searchQuery: nil)
                 await upsertStoredBookingsInBackground(
                     readOnlyBookings: bookings,
                     siteID: siteID,
@@ -101,9 +110,35 @@ private extension BookingStore {
                                                                 pageNumber: 1,
                                                                 pageSize: 1,
                                                                 startDateBefore: nil,
-                                                                startDateAfter: nil)
+                                                                startDateAfter: nil,
+                                                                searchQuery: nil)
                 let hasRemoteBookings = !bookings.isEmpty
                 onCompletion(.success(hasRemoteBookings))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Searches for bookings matching the specified criteria and search query.
+    /// Returns results immediately without saving to storage.
+    ///
+    func searchBookings(siteID: Int64,
+                       searchQuery: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       startDateBefore: String?,
+                       startDateAfter: String?,
+                       onCompletion: @escaping (Result<[Booking], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let bookings = try await remote.loadAllBookings(for: siteID,
+                                                                pageNumber: pageNumber,
+                                                                pageSize: pageSize,
+                                                                startDateBefore: startDateBefore,
+                                                                startDateAfter: startDateAfter,
+                                                                searchQuery: searchQuery)
+                onCompletion(.success(bookings))
             } catch {
                 onCompletion(.failure(error))
             }

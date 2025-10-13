@@ -3,6 +3,7 @@ import Foundation
 import Testing
 import Yosemite
 @testable import WooCommerce
+@testable import Networking
 
 @MainActor
 struct BookingSearchViewModelTests {
@@ -364,5 +365,141 @@ struct BookingSearchViewModelTests {
 
         // Then
         #expect(searchCount == 2, "Should have searched twice")
+    }
+
+    // MARK: - Sort order
+
+    @Test func update_sort_order_triggers_new_search_with_ascending_order() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedOrder: BookingsRemote.Order?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, order, onCompletion) = action else {
+                return
+            }
+            capturedOrder = order
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // Setup initial search
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // When
+        viewModel.updateSortOrder(.oldestToNewest)
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then
+        #expect(capturedOrder == .ascending, "Should search with ascending order")
+    }
+
+    @Test func update_sort_order_triggers_new_search_with_descending_order() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedOrder: BookingsRemote.Order?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, order, onCompletion) = action else {
+                return
+            }
+            capturedOrder = order
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // Setup initial search
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // When
+        viewModel.updateSortOrder(.newestToOldest)
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then
+        #expect(capturedOrder == .descending, "Should search with descending order")
+    }
+
+    @Test func update_sort_order_does_not_trigger_search_when_query_is_empty() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var searchCount = 0
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case .searchBookings = action else {
+                return
+            }
+            searchCount += 1
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When - update sort order without any search query
+        viewModel.updateSortOrder(.oldestToNewest)
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then
+        #expect(searchCount == 0, "Should not trigger search when query is empty")
+    }
+
+    @Test func update_sort_order_uses_current_sort_for_subsequent_searches() async throws {
+        // Given
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedOrders: [BookingsRemote.Order] = []
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, _, _, order, onCompletion) = action else {
+                return
+            }
+            capturedOrders.append(order)
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores
+        )
+
+        // When - first search with default order
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Update sort order
+        viewModel.updateSortOrder(.oldestToNewest)
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        // Second search should use updated sort order
+        searchQuerySubject.send("another test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedOrders.count == 3, "Should have three searches")
+        #expect(capturedOrders[0] == .descending, "First search uses default descending order")
+        #expect(capturedOrders[1] == .ascending, "Second search from updateSortOrder uses ascending")
+        #expect(capturedOrders[2] == .ascending, "Third search should maintain ascending order")
     }
 }

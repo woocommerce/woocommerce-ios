@@ -1,6 +1,7 @@
 import Foundation
 import struct Yosemite.Booking
 import struct Yosemite.Customer
+import struct Networking.Address
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
@@ -31,10 +32,10 @@ extension BookingDetailsViewModel {
         }
 
         @MainActor
-        func update(with customer: Customer) {
+        func update(with address: Address) {
             let customerName = [
-                customer.firstName,
-                customer.lastName
+                address.firstName,
+                address.lastName
             ]
             .compactMap { $0 }
             .filter { !$0.isEmpty }

@@ -8,6 +8,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let booking: Booking
     private let headerContent: HeaderContent
     private let customerContent = CustomerContent()
+    private(set) var order: Order?
 
     let navigationTitle: String
     @Published private(set) var sections: [Section] = []
@@ -87,7 +88,10 @@ private extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func syncData() async {
-        await syncCustomer()
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.syncCustomer() }
+            group.addTask { await self.syncOrder() }
+        }
     }
 }
 
@@ -106,6 +110,21 @@ private extension BookingDetailsViewModel {
         }
     }
 
+    func syncOrder() async {
+        guard booking.orderID > 0 else {
+            return
+        }
+
+        do {
+            let fetchedOrder = try await retrieveOrder()
+            await MainActor.run {
+                self.order = fetchedOrder
+            }
+        } catch {
+            DDLogError("⛔️ Error synchronizing Order for Booking: \(error)")
+        }
+    }
+
     @MainActor
     func retrieveCustomer() async throws -> Customer {
         try await withCheckedThrowingContinuation { continuation in
@@ -118,6 +137,29 @@ private extension BookingDetailsViewModel {
                     continuation.resume(returning: customer)
                 case .failure(let error):
                     continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    func retrieveOrder() async throws -> Order {
+        enum OrderSyncError: Error {
+            case unknown
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = OrderAction.retrieveOrder(
+                siteID: booking.siteID,
+                orderID: booking.orderID
+            ) { order, error in
+                if let order = order {
+                    continuation.resume(returning: order)
+                } else if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(throwing: OrderSyncError.unknown)
                 }
             }
             stores.dispatch(action)

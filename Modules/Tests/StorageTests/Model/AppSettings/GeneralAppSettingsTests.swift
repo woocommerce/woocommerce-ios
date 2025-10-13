@@ -51,6 +51,14 @@ final class GeneralAppSettingsTests: XCTestCase {
         XCTAssertEqual(newSettings.feedbacks[.general], newFeedback)
     }
 
+    func test_isPOSSurveyNotificationScheduled_defaults_to_false() {
+        // Given
+        let settings = createGeneralAppSettings()
+
+        // Then
+        XCTAssertFalse(settings.isPOSSurveyNotificationScheduled)
+    }
+
     func test_updating_properties_to_generalAppSettings_does_not_breaks_decoding() throws {
         // Given
         let installationDate = Date(timeIntervalSince1970: 1630314000) // Mon Aug 30 2021 09:00:00 UTC+0000
@@ -63,6 +71,7 @@ final class GeneralAppSettingsTests: XCTestCase {
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
         let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
         let isCustomFieldsTopBannerDismissed = true
+        let isPOSSurveyNotificationScheduled = true
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
@@ -73,13 +82,15 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                                                   sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
                                                   isEUShippingNoticeDismissed: false,
-                                                  isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed)
+                                                  isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+                                                  isPOSSurveyNotificationScheduled: isPOSSurveyNotificationScheduled)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
 
         // When
         previousSettingsJson?.removeValue(forKey: "isViewAddOnsSwitchEnabled")
+        previousSettingsJson?.removeValue(forKey: "isPOSSurveyNotificationScheduled")
         let newEncodedSettings = try JSONSerialization.data(withJSONObject: previousSettingsJson as Any, options: .fragmentsAllowed)
         let newSettings = try JSONDecoder().decode(GeneralAppSettings.self, from: newEncodedSettings)
 
@@ -93,6 +104,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
         assertEqual(newSettings.sitesWithAtLeastOneIPPTransactionFinished, sitesWithAtLeastOneIPPTransactionFinished)
         assertEqual(newSettings.isCustomFieldsTopBannerDismissed, isCustomFieldsTopBannerDismissed)
+        assertEqual(newSettings.isPOSSurveyNotificationScheduled, false)
     }
 }
 
@@ -122,6 +134,7 @@ private extension GeneralAppSettingsTests {
                            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
                            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-                           isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed)
+                           isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+                           isPOSSurveyNotificationScheduled: false)
     }
 }

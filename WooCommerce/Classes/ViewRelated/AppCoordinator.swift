@@ -131,7 +131,7 @@ private extension AppCoordinator {
                                                                 userInfo: userInfo))
             return
         }
-        
+
         let posSurveyScenarios = [
             LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
             LocalNotification.Scenario.pointOfSaleCurrentMerchant.identifier,

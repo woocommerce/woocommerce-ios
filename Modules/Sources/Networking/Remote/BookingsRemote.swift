@@ -11,7 +11,8 @@ public protocol BookingsRemoteProtocol {
                          pageSize: Int,
                          startDateBefore: String?,
                          startDateAfter: String?,
-                         searchQuery: String?) async throws -> [Booking]
+                         searchQuery: String?,
+                         order: BookingsRemote.Order) async throws -> [Booking]
 }
 
 /// Booking: Remote Endpoints
@@ -29,16 +30,19 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     ///     - startDateBefore: Filter bookings with start date before this timestamp.
     ///     - startDateAfter: Filter bookings with start date after this timestamp.
     ///     - searchQuery: Search query to filter bookings.
+    ///     - order: Sort order for bookings (ascending or descending).
     ///
     public func loadAllBookings(for siteID: Int64,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
                                 startDateBefore: String? = nil,
                                 startDateAfter: String? = nil,
-                                searchQuery: String? = nil) async throws -> [Booking] {
+                                searchQuery: String? = nil,
+                                order: Order) async throws -> [Booking] {
         var parameters = [
             ParameterKey.page: String(pageNumber),
-            ParameterKey.perPage: String(pageSize)
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order.rawValue
         ]
 
         if let startDateBefore = startDateBefore {
@@ -69,6 +73,11 @@ public extension BookingsRemote {
         public static let pageNumber: Int = Remote.Default.firstPageNumber
     }
 
+    enum Order: String {
+        case ascending = "asc"
+        case descending = "desc"
+    }
+
     private enum Path {
         static let bookings = "bookings"
     }
@@ -79,5 +88,6 @@ public extension BookingsRemote {
         static let startDateBefore: String = "start_date_before"
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
+        static let order: String           = "order"
     }
 }

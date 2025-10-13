@@ -17,6 +17,7 @@ final class BookingListContainerViewModel: ObservableObject {
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
+    private var sortBySubscription: AnyCancellable?
 
     init(siteID: Int64) {
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
@@ -52,6 +53,14 @@ final class BookingListContainerViewModel: ObservableObject {
         searchQuerySubscription = $searchQuery
             .sink { [weak self] query in
                 self?.searchQuerySubject.send(query)
+            }
+
+        sortBySubscription = $sortBy
+            .sink { [weak self] sortBy in
+                guard let self else { return }
+                self.todayListViewModel.updateSortOrder(sortBy)
+                self.upcomingListViewModel.updateSortOrder(sortBy)
+                self.allListViewModel.updateSortOrder(sortBy)
             }
     }
 

@@ -99,6 +99,14 @@ final class BookingListViewModel: ObservableObject {
             }
         }
     }
+
+    /// Updates the sort order and reloads the results controller.
+    func updateSortOrder(_ sortBy: SortBy) {
+        let ascending = sortBy == .oldestToNewest
+        let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: ascending)
+        resultsController.sortDescriptors = [sortDescriptorByDate]
+        updateResults()
+    }
 }
 
 // MARK: Configuration

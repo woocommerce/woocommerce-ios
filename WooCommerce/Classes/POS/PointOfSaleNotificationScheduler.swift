@@ -20,12 +20,13 @@ final class PointOfSaleNotificationScheduler {
         self.pushNotificationsManager = pushNotificationsManager
     }
     
-    func scheduleLocalNotificationIfEligible() {
+    func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) {
+        // TODO: Additional check to see if .currentMerchant case has used POS before - WOOMOB-1498
+        // TODO: Check as well if the notification hasn't been scheduled already WOOMOB-1461
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
         guard isCountryEligible() else { return }
-        // TODO: Check as well if the notification hasn't been scheduled already WOOMOB-1461
 
-        scheduleLocalNotification(for: .currentMerchant)
+        scheduleLocalNotification(for: merchantType)
     }
     
     private func isCountryEligible() -> Bool {
@@ -38,14 +39,11 @@ final class PointOfSaleNotificationScheduler {
     }
     
     private func scheduleLocalNotification(for merchantType: PointOfSaleNotificationScheduler.MerchantType) {
-        // 1. Set in app storage
-        // TODO: WOOMOB-1461
-        
-        // 2. Trigger
+        // TODO: Set scheduled notification value in app storage - WOOMOB-1461
         switch merchantType {
         case .potentialMerchant:
             Task { @MainActor in
-                let seconds = TimeInterval(60)
+                let seconds = TimeInterval(Constants.potentialMerchantNotificationTimeIntervalInSeconds)
                 let payload: [AnyHashable: Any] = [
                     LocalNotification.UserInfoKey.surveyURL: LocalNotification.SurveyURL.pointOfSalePotentialMerchant
                 ]
@@ -61,7 +59,7 @@ final class PointOfSaleNotificationScheduler {
             }
         case .currentMerchant:
             Task { @MainActor in
-                let seconds = TimeInterval(60 * 5)
+                let seconds = TimeInterval(Constants.currentMerchantNotificationTimeIntervalInSeconds)
                 let payload: [AnyHashable: Any] = [
                     LocalNotification.UserInfoKey.surveyURL: LocalNotification.SurveyURL.pointOfSaleCurrentMerchant
                 ]
@@ -76,5 +74,12 @@ final class PointOfSaleNotificationScheduler {
                 await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
             }
         }
+    }
+}
+
+private extension PointOfSaleNotificationScheduler {
+    enum Constants {
+        static let potentialMerchantNotificationTimeIntervalInSeconds: Int = 60
+        static let currentMerchantNotificationTimeIntervalInSeconds: Int = 60 * 5
     }
 }

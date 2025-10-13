@@ -204,11 +204,6 @@ public enum FeatureFlag: Int {
     ///
     case ciabBookings
 
-    /// Should be enabled when the Liquid Glass design is enabled (via the Info.plist `UIDesignRequiresCompatibility`).
-    /// Current changes behind this feature flag: replacing the Menu tab custom "dot" badge with the native tab bar badge.
-    ///
-    case liquidGlassDesign
-
     /// Enables surveys for potential and current POS merchants
     ///
     case pointOfSaleSurveys

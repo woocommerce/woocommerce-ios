@@ -929,8 +929,9 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
+        let isLiquidGlassDesignDisabled = Bundle.main.infoDictionary?["UIDesignRequiresCompatibility"] as? Bool ?? false
 
-        guard featureFlagService.isFeatureFlagEnabled(.liquidGlassDesign) else {
+        guard !isLiquidGlassDesignDisabled else {
             let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
             notificationsBadge.updateBadge(with: input)
             return

@@ -580,7 +580,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             failure: error
         )
 
-        // When - multiple threads simultaneously try to flag and remove the SAME item
+        // When - multiple threads concurrently try to flag and remove the SAME item
         // This would cause a race condition in the old code where:
         // 1. Thread A reads the array, finds index 0
         // 2. Thread B reads the array, finds index 0
@@ -600,7 +600,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             }
         }
 
-        // Force threads to start as close together as possible
+        // Wait for all threads to complete
         group.wait()
 
         // Then - no crashes should occur (especially no EXC_BREAKPOINT from array index out of bounds)

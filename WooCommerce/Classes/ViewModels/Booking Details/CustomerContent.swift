@@ -8,7 +8,6 @@ extension BookingDetailsViewModel {
         @Published var phoneText: String?
         @Published var billingAddressText: String?
 
-        @MainActor
         func update(with address: Address) {
             let name = [
                 address.firstName,

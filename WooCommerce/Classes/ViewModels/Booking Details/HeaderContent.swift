@@ -31,7 +31,6 @@ extension BookingDetailsViewModel {
             status = [.booked, .payAtLocation]
         }
 
-        @MainActor
         func update(with address: Address) {
             let customerName = [
                 address.firstName,

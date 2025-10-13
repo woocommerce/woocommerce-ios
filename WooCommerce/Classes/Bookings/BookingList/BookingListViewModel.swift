@@ -3,6 +3,7 @@ import SwiftUI
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
+import class Networking.BookingsRemote
 
 /// View model for `BookingListView`
 final class BookingListViewModel: ObservableObject {
@@ -29,8 +30,10 @@ final class BookingListViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let currentDate: Date
+    private var currentOrder: SortBy = .newestToOldest
 
     private static let refreshCacheReason = "refresh-cache"
+    private static let reorderReason = "reorder"
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -102,10 +105,16 @@ final class BookingListViewModel: ObservableObject {
 
     /// Updates the sort order and reloads the results controller.
     func updateSortOrder(_ sortBy: SortBy) {
+        currentOrder = sortBy
         let ascending = sortBy == .oldestToNewest
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: ascending)
         resultsController.sortDescriptors = [sortDescriptorByDate]
-        updateResults()
+        paginationTracker.resync(reason: Self.reorderReason) {}
+    }
+
+    /// Converts SortBy to BookingsRemote.Order
+    private func remoteOrder(from sortBy: SortBy) -> BookingsRemote.Order {
+        sortBy == .oldestToNewest ? .ascending : .descending
     }
 }
 
@@ -152,6 +161,7 @@ extension BookingListViewModel: PaginationTrackerDelegate {
             pageSize: pageSize,
             startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
             startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            order: remoteOrder(from: currentOrder),
             shouldClearCache: shouldClearCache
         ) { [weak self] result in
             switch result {

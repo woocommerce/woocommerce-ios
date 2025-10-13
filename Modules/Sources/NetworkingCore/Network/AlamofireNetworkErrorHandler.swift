@@ -152,7 +152,7 @@ final class AlamofireNetworkErrorHandler {
         guard let urlRequest = try? request.asURLRequest() else {
             return false
         }
-        retriedJetpackRequests.contains { retriedRequest in
+        return retriedJetpackRequests.contains { retriedRequest in
             guard let currentItem = try? retriedRequest.request.asURLRequest() else {
                 return false
             }

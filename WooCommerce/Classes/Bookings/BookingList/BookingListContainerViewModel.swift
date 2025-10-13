@@ -58,9 +58,12 @@ final class BookingListContainerViewModel: ObservableObject {
         sortBySubscription = $sortBy
             .sink { [weak self] sortBy in
                 guard let self else { return }
-                self.todayListViewModel.updateSortOrder(sortBy)
-                self.upcomingListViewModel.updateSortOrder(sortBy)
-                self.allListViewModel.updateSortOrder(sortBy)
+                todayListViewModel.updateSortOrder(sortBy)
+                upcomingListViewModel.updateSortOrder(sortBy)
+                allListViewModel.updateSortOrder(sortBy)
+                todaySearchViewModel.updateSortOrder(sortBy)
+                upcomingSearchViewModel.updateSortOrder(sortBy)
+                allSearchViewModel.updateSortOrder(sortBy)
             }
     }
 

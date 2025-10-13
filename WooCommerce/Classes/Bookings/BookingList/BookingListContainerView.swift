@@ -5,7 +5,6 @@ struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
     @State private var isSearching = false
     @State private var showingSortOptions = false
-    @State private var sortBy: BookingListViewModel.SortBy = .newestToOldest
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding var selectedBooking: Booking?
@@ -142,7 +141,7 @@ private extension BookingListContainerView {
 
             ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
                 Button {
-                    self.sortBy = sortBy
+                    viewModel.sortBy = sortBy
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         showingSortOptions = false
                     }
@@ -155,7 +154,7 @@ private extension BookingListContainerView {
                         Image(systemName: "checkmark")
                             .font(.title3.weight(.medium))
                             .foregroundStyle(Color.accentColor)
-                            .renderedIf(self.sortBy == sortBy)
+                            .renderedIf(viewModel.sortBy == sortBy)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

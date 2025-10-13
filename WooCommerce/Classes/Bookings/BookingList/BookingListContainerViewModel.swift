@@ -13,6 +13,7 @@ final class BookingListContainerViewModel: ObservableObject {
 
     @Published var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
+    @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?

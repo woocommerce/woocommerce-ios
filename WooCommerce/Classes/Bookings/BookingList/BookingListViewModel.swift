@@ -188,3 +188,30 @@ extension BookingListViewModel {
         syncState = bookings.isNotEmpty ? .results : .empty
     }
 }
+
+extension BookingListViewModel {
+    enum SortBy: Int, CaseIterable {
+        case newestToOldest
+        case oldestToNewest
+
+        var title: String {
+            switch self {
+            case .newestToOldest: Localization.newestToOldest
+            case .oldestToNewest: Localization.oldestToNewest
+            }
+        }
+
+        enum Localization {
+            static let newestToOldest = NSLocalizedString(
+                "bookingList.sort.newestToOldest",
+                value: "Newest to oldest",
+                comment: "Option to sort bookings from newest to oldest"
+            )
+            static let oldestToNewest = NSLocalizedString(
+                "bookingList.sort.oldestToNewest",
+                value: "Oldest to newest",
+                comment: "Option to sort bookings from oldest to newest"
+            )
+        }
+    }
+}

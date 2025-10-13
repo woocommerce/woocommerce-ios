@@ -2,12 +2,14 @@ import UIKit
 import class WidgetKit.WidgetCenter
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+
+    // MARK: - Properties
     var window: UIWindow?
     private(set) var appCoordinator: AppCoordinator?
     var universalLinkRouter: UniversalLinkRouter?
-
     var tabBarController: MainTabBarController? { appCoordinator?.tabBarController }
 
+    // MARK: - Scene lifecycle
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
@@ -110,6 +112,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         trackWidgetTappedIfNeeded(userActivity: userActivity)
     }
 
+
+    private func handleWebActivity(_ activity: NSUserActivity) {
+        guard let linkURL = activity.webpageURL else { return }
+        universalLinkRouter?.handle(url: linkURL)
+    }
+
+    // MARK: - Home Screen Quick Actions
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         handle(shortcutItem: shortcutItem, completion: completionHandler)
     }
@@ -136,7 +145,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    // MARK: - Scene-scoped helpers moved from AppDelegate
+    // MARK: - Routers & Presenters
     private func setupNoticePresenter() {
         var noticePresenter = ServiceLocator.noticePresenter
         noticePresenter.presentingViewController = tabBarController
@@ -147,11 +156,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter(tabBarController: tabBarController)
     }
 
-    func handleWebActivity(_ activity: NSUserActivity) {
-        guard let linkURL = activity.webpageURL else { return }
-        universalLinkRouter?.handle(url: linkURL)
-    }
-
+    // MARK: - Analytics & Widgets
 
     /// Tracks if the application was opened via a widget tap.
     ///

@@ -77,7 +77,10 @@ private extension BookingDetailsViewModel {
     }
 
     func updateCustomerInfo(from order: Order) {
-        guard let billingAddress = order.billingAddress else {
+        guard
+            let billingAddress = order.billingAddress,
+            !billingAddress.isEmpty
+        else {
             return
         }
 

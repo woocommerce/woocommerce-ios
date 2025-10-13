@@ -5,6 +5,8 @@ extension BookingDetailsView {
     struct CustomerDetailsView: View {
         @ObservedObject var content: BookingDetailsViewModel.CustomerContent
         let showNotice: (Notice) -> Void
+        @State private var showingPhoneOptions = false
+        @State private var selectedPhoneNumber: String?
 
         private enum Row: Hashable {
             case name(String)
@@ -77,7 +79,7 @@ extension BookingDetailsView {
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
-                emailText.sendToPasteboard()
+                emailText.sendToPasteboard(includeTrailingNewline: false)
                 showNotice(
                     Notice(
                         title: Localization.emailCopiedMessage,
@@ -98,7 +100,25 @@ extension BookingDetailsView {
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
-                print("On phone ellipsis")
+                selectedPhoneNumber = phoneText
+                showingPhoneOptions = true
+            }
+            .confirmationDialog(
+                selectedPhoneNumber ?? "",
+                isPresented: $showingPhoneOptions,
+                titleVisibility: .visible
+            ) {
+                Button(Localization.callActionTitle) {
+                    guard let phoneNumber = selectedPhoneNumber else { return }
+                    if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
+                        showNotice(Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error))
+                    }
+                }
+                Button(Localization.copyActionTitle) {
+                    guard let phoneNumber = selectedPhoneNumber else { return }
+                    phoneNumber.sendToPasteboard(includeTrailingNewline: false)
+                    showNotice(Notice(title: Localization.phoneNumberCopied, feedbackType: .success))
+                }
             }
         }
 
@@ -125,6 +145,30 @@ private extension BookingDetailsView.CustomerDetailsView {
             "BookingDetailsView.customer.emailCopied.toastMessage",
             value: "Email address copied",
             comment: "Toast message shown when the user copies the customer's email address."
+        )
+
+        static let callActionTitle = NSLocalizedString(
+            "BookingDetailsView.phoneNumberOptions.call",
+            value: "Call",
+            comment: "Action to call the phone number."
+        )
+
+        static let copyActionTitle = NSLocalizedString(
+            "BookingDetailsView.phoneNumberOptions.copy",
+            value: "Copy",
+            comment: "Action to copy the phone number."
+        )
+
+        static let phoneNumberCopied = NSLocalizedString(
+            "BookingDetailsView.phoneNumberOptions.copied",
+            value: "Phone number copied",
+            comment: "Notice message shown when the phone number is copied."
+        )
+
+        static let phoneNumberErrorNotice = NSLocalizedString(
+            "BookingDetailsView.phoneNumberOptions.error",
+            value: "Could not place a call to this number.",
+            comment: "Notice message shown when a phone call cannot be initiated."
         )
 
         /// Customer section

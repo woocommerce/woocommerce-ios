@@ -67,7 +67,7 @@ struct LocalNotification {
 
     /// Holds `userInfo` dictionary keys
     enum UserInfoKey {
-        static let storeName = "storeName"
+        // periphery:ignore - will be removed on PR-16128
         static let isIAPAvailable = WooAnalyticsEvent.LocalNotification.Key.isIAPAvailable
         static let surveyURL = "surveyURL"
     }

@@ -87,11 +87,13 @@ final class AlamofireNetworkErrorHandler {
     ) {
         let retriedRequest: RetriedJetpackRequest? = queue.sync(flags: .barrier) { [weak self] in
             guard let self else { return nil }
-
+            guard let urlRequest = try? originalRequest.asURLRequest() else { return nil }
             let retriedRequestIndex = _retriedJetpackRequests.firstIndex { retriedRequest in
-                let urlRequest = try? originalRequest.asURLRequest()
-                let retriedRequest = try? retriedRequest.request.asURLRequest()
-                return urlRequest == retriedRequest
+                guard let retriedURLRequest = try? retriedRequest.request.asURLRequest() else {
+                    return false
+                }
+                return urlRequest.url == retriedURLRequest.url &&
+                       urlRequest.httpMethod == retriedURLRequest.httpMethod
             }
 
             guard let index = retriedRequestIndex else { return nil }
@@ -147,10 +149,15 @@ final class AlamofireNetworkErrorHandler {
     }
 
     func isRequestRetried(_ request: URLRequestConvertible) -> Bool {
+        guard let urlRequest = try? request.asURLRequest() else {
+            return false
+        }
         retriedJetpackRequests.contains { retriedRequest in
-            let urlRequest = try? request.asURLRequest()
-            let currentItem = try? retriedRequest.request.asURLRequest()
-            return currentItem == urlRequest
+            guard let currentItem = try? retriedRequest.request.asURLRequest() else {
+                return false
+            }
+            return currentItem.url == urlRequest.url &&
+                   currentItem.httpMethod == urlRequest.httpMethod
         }
     }
 

@@ -168,7 +168,9 @@ private extension BookingDetailsViewModel {
 
     @MainActor
     func updateCustomerSection(with customer: Customer) {
-        customerContent.update(with: customer)
+        if let billingAddress = customer.billing {
+            customerContent.update(with: billingAddress)
+        }
         insertCustomerSectionIfAbsent()
     }
 

@@ -9,20 +9,20 @@ extension BookingDetailsViewModel {
         @Published var billingAddressText: String?
 
         @MainActor
-        func update(with customer: Customer) {
+        func update(with address: Address) {
             let name = [
-                customer.firstName,
-                customer.lastName
+                address.firstName,
+                address.lastName
             ]
             .compactMap { $0 }
             .filter { !$0.isEmpty }
             .joined(separator: " ")
 
-            let billingAddress = customer.billing.flatMap(formatAddress)
+            let billingAddress = formatAddress(address)
 
             nameText = name
-            emailText = customer.email
-            phoneText = customer.billing?.phone ?? ""
+            emailText = address.email
+            phoneText = address.phone ?? ""
             billingAddressText = billingAddress
         }
 

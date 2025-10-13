@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
 import struct Combine.AnyPublisher
+import PointOfSale
 
 protocol POSTabVisibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.
@@ -146,8 +147,7 @@ private extension POSTabCoordinator {
                let orderService = POSOrderService(siteID: siteID,
                                                   credentials: credentials,
                                                   selectedSite: defaultSitePublisher,
-                                                  appPasswordSupportState: isAppPasswordSupported),
-               #available(iOS 17.0, *) {
+                                                  appPasswordSupportState: isAppPasswordSupported) {
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: posItemFetchStrategyFactory,

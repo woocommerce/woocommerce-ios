@@ -3,145 +3,72 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
-    @State private var selectedTabIndex = 0
+    @StateObject private var connectivityMonitor = ConnectivityMonitor()
+    @ScaledMetric private var scale: CGFloat = 1.0
+    @Binding var selectedBooking: Booking?
 
-    @Namespace var topID
-
-    private let tabs = [Localization.today, Localization.upcoming, Localization.all]
-
-    init(viewModel: BookingListViewModel) {
+    init(viewModel: BookingListViewModel, selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self._selectedBooking = selectedBooking
     }
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                switch viewModel.syncState {
-                case .empty:
-                    headerView
-                    Spacer()
-                    Text("No bookings found") // TODO: update this in WOOMOB-1394
-                    Spacer()
-                case .syncingFirstPage:
-                    headerView
-                    Spacer()
-                    ProgressView().progressViewStyle(.circular)
-                    Spacer()
-                case .results:
-                    bookingList
-                }
+        VStack {
+            switch viewModel.syncState {
+            case .empty:
+                emptyStateView
+            case .syncingFirstPage:
+                Spacer()
+                ProgressView().progressViewStyle(.circular)
+                Spacer()
+            case .results:
+                bookingList
             }
-            .navigationTitle(Localization.viewTitle)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        // TODO
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
-            }
-            .task {
-                viewModel.loadBookings()
+        }
+        .task {
+            viewModel.loadBookings()
+        }
+        .overlay(alignment: .bottom) {
+            if viewModel.errorFetching {
+                errorSnackBar
+                    .transition(.move(edge: .bottom))
             }
         }
     }
 }
 
 private extension BookingListView {
-    var headerView: some View {
-        VStack(spacing: 0) {
-            topTabView
-            Divider()
-            HStack {
-                Button {
-                    // TODO
-                } label: {
-                    Text(Localization.sortBy)
-                        .font(.body)
-                        .foregroundStyle(Color.accentColor)
-                }
-                Spacer()
-                Button {
-                    // TODO
-                } label: {
-                    Text(Localization.filter)
-                        .font(.body)
-                        .foregroundStyle(Color.accentColor)
-                }
-            }
-            .padding()
-            .background(Color(.listForeground(modal: false)))
-            Divider()
-        }
-    }
-
-    var topTabView: some View {
-        GeometryReader { geometry in
-            HStack {
-                ForEach(Array(tabs.enumerated()), id: \.element) { (index, title) in
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            selectedTabIndex = index
-                        }
-                    } label: {
-                        Text(title)
-                            .font(.subheadline)
-                            .foregroundStyle(selectedTabIndex == index ? Color.accentColor : Color.primary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                }
-            }
-            .overlay(alignment: .bottom) {
-                Color.accentColor
-                    .frame(width: geometry.size.width / CGFloat(tabs.count),
-                           height: Layout.selectedTabIndicatorHeight)
-                    .offset(x: tabIndicatorOffset(containerWidth: geometry.size.width,
-                                                  tabCount: tabs.count,
-                                                  selectedIndex: selectedTabIndex))
-                    .animation(.easeInOut(duration: 0.3), value: selectedTabIndex)
-            }
-        }
-        .frame(height: Layout.topTabBarHeight)
-        .background(Color(.listForeground(modal: false)))
-    }
-
     var bookingList: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
-                    Section {
-                        ForEach(viewModel.bookings) { item in
-                            bookingItem(item)
-                        }
-                    } header: {
-                        headerView
-                    }
-                    .id(topID)
+        List(selection: $selectedBooking) {
+            ForEach(viewModel.bookings) { item in
+                bookingItem(item)
+                    .tag(item)
+            }
 
-                    InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                        .padding(.top, Layout.viewPadding)
-                        .onAppear {
-                            viewModel.onLoadNextPageAction()
-                        }
+            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                .padding(.top, Layout.viewPadding)
+                .onAppear {
+                    viewModel.onLoadNextPageAction()
                 }
-            }
-            .refreshable {
-                await viewModel.onRefreshAction()
-                // workaround as navigation bar is not snapped back after refreshing
-                proxy.scrollTo(topID, anchor: .top)
-            }
+        }
+        .listStyle(.plain)
+        .background(Color(.listBackground))
+        .accentColor(Color(.listSelectedBackground))
+        .refreshable {
+            await viewModel.onRefreshAction()
         }
     }
 
     func bookingItem(_ booking: Booking) -> some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading) {
-                Text(booking.startDate.formatted(date: .numeric, time: .shortened))
+                Text(booking.startDate.toString(dateStyle: .short,
+                                                timeStyle: .short,
+                                                timeZone: BookingListTab.utcTimeZone))
                     .font(.body)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(Color.primary)
 
                 // TODO: fetch bookable products & customer to get names or wait for API update
                 Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
@@ -157,78 +84,96 @@ private extension BookingListView {
                     Spacer()
                 }
             }
-            .padding(Layout.viewPadding)
-
-            Divider()
-                .padding(.leading, Layout.viewPadding)
         }
-        .background(Color(.listForeground(modal: false))) // TODO: update selected background color as part of selection handling
     }
 
     func statusBadge(text: String, color: Color) -> some View {
         Text(text)
             .font(.caption2)
+            .foregroundStyle(Color.primary)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
 
-    /// SwiftUI's coordinate system places (0,0) at the center of the container, so we need to:
-    /// 1. Calculate how far the selected tab is from the left edge
-    /// 2. Adjust for the center-based coordinate system
-    /// 3. Center the indicator within the selected tab
-    ///
-    func tabIndicatorOffset(containerWidth: CGFloat, tabCount: Int, selectedIndex: Int) -> CGFloat {
-        let tabWidth = containerWidth / CGFloat(tabCount)
-        let distanceFromLeftEdge = tabWidth * CGFloat(selectedIndex)
-        let adjustmentForCenterOrigin = containerWidth / 2
-        let centerWithinTab = tabWidth / 2
+    var emptyStateView: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: Layout.emptyStatePadding) {
+                    Spacer()
+                    Image(uiImage: .noBookings)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Layout.emptyStateImageWidth * scale)
+                        .padding(.bottom, Layout.viewPadding)
+                    VStack(spacing: Layout.textVerticalPadding) {
+                        Text(viewModel.emptyStateTitle)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
+                        Text(viewModel.emptyStateDescription)
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                    }
+                    if viewModel.hasFilters {
+                        VStack(spacing: Layout.textVerticalPadding) {
+                            Button("Change filters") {
+                                // TODO
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                            Button("Clear filters") {
+                                // TODO
+                            }
+                            .buttonStyle(SecondaryButtonStyle())
+                        }
+                    }
+                    Spacer()
+                }
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Layout.emptyStatePadding)
+                .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
+            }
+            .refreshable {
+                await viewModel.onRefreshAction()
+            }
+        }
+    }
 
-        return distanceFromLeftEdge - adjustmentForCenterOrigin + centerWithinTab
+    var errorSnackBar: some View {
+        Text(Localization.errorMessage)
+            .foregroundStyle(Color(.listForeground(modal: false)))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(Layout.viewPadding)
+            .background {
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .fill(Color(.text))
+            }
+            .padding(Layout.viewPadding)
+            .padding(.bottom, connectivityMonitor.isOffline ? OfflineBannerView.height : 0)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                withAnimation {
+                    viewModel.errorFetching = false
+                }
+            }
     }
 }
+
 private extension BookingListView {
     enum Layout {
+        static let textVerticalPadding: CGFloat = 8
         static let viewPadding: CGFloat = 16
-        static let topTabBarHeight: CGFloat = 44
-        static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let emptyStatePadding: CGFloat = 24
+        static let emptyStateImageWidth: CGFloat = 67
         static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
+        static let cornerRadius: CGFloat = 8
     }
 
     enum Localization {
-        static let viewTitle = NSLocalizedString(
-            "bookingListView.view.title",
-            value: "Bookings",
-            comment: "Title of the booking list view"
-        )
-        static let sortBy = NSLocalizedString(
-            "bookingListView.sortBy",
-            value: "Sort by",
-            comment: "Button to select the order of the booking list"
-        )
-        static let filter = NSLocalizedString(
-            "bookingListView.filter",
-            value: "Filter",
-            comment: "Button to filter the booking list"
-        )
-        static let today = NSLocalizedString(
-            "bookingListView.today",
-            value: "Today",
-            comment: "Tab title for today's bookings"
-        )
-        static let upcoming = NSLocalizedString(
-            "bookingListView.upcoming",
-            value: "Upcoming",
-            comment: "Tab title for upcoming bookings"
-        )
-        static let all = NSLocalizedString(
-            "bookingListView.all",
-            value: "All",
-            comment: "Tab title for all bookings"
+        static let errorMessage = NSLocalizedString(
+            "bookingList.errorMessage",
+            value: "Error fetching bookings",
+            comment: "Error message when fetching bookings fails"
         )
     }
-}
-
-#Preview {
-    BookingListView(viewModel: BookingListViewModel(siteID: 123))
 }

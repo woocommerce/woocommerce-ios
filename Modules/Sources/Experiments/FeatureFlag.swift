@@ -187,10 +187,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleOrdersi2
 
-    /// Enables the entry point for Point of Sale Settings
-    ///
-    case pointOfSaleSettingsi1
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
@@ -207,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables a new Bookings tab for CIAB sites
     ///
     case ciabBookings
+
+    /// Enables surveys for potential and current POS merchants
+    ///
+    case pointOfSaleSurveys
 }

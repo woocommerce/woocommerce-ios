@@ -8,10 +8,10 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var incrementalProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
 
-    private(set) var loadProductsCallCount = 0
-    private(set) var loadProductVariationsCallCount = 0
-    private(set) var loadIncrementalProductsCallCount = 0
-    private(set) var loadIncrementalProductVariationsCallCount = 0
+    let loadProductsCallCount = Counter()
+    let loadProductVariationsCallCount = Counter()
+    let loadIncrementalProductsCallCount = Counter()
+    let loadIncrementalProductVariationsCallCount = Counter()
 
     private(set) var lastIncrementalProductsModifiedAfter: Date?
     private(set) var lastIncrementalVariationsModifiedAfter: Date?
@@ -67,7 +67,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // MARK: - Protocol Methods - Incremental Sync
 
     func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        loadIncrementalProductsCallCount += 1
+        await loadIncrementalProductsCallCount.increment()
         lastIncrementalProductsModifiedAfter = modifiedAfter
 
         if let result = incrementalProductResults[pageNumber] {
@@ -82,7 +82,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     }
 
     func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        loadIncrementalProductVariationsCallCount += 1
+        await loadIncrementalProductVariationsCallCount.increment()
         lastIncrementalVariationsModifiedAfter = modifiedAfter
 
         if let result = incrementalVariationResults[pageNumber] {
@@ -99,7 +99,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // MARK: - Protocol Methods - Full Sync
 
     func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        loadProductsCallCount += 1
+        await loadProductsCallCount.increment()
 
         if let result = productResults[pageNumber] {
             switch result {
@@ -113,7 +113,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     }
 
     func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        loadProductVariationsCallCount += 1
+        await loadProductVariationsCallCount.increment()
 
         if let result = variationResults[pageNumber] {
             switch result {

@@ -66,7 +66,6 @@ extension Yosemite.POSOrder {
         formattedTotal: CopiableProp<String> = .copy,
         formattedSubtotal: CopiableProp<String> = .copy,
         customerEmail: NullableCopiableProp<String> = .copy,
-        paymentMethodID: CopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
         lineItems: CopiableProp<[POSOrderItem]> = .copy,
         refunds: CopiableProp<[POSOrderRefund]> = .copy,
@@ -82,7 +81,6 @@ extension Yosemite.POSOrder {
         let formattedTotal = formattedTotal ?? self.formattedTotal
         let formattedSubtotal = formattedSubtotal ?? self.formattedSubtotal
         let customerEmail = customerEmail ?? self.customerEmail
-        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
         let lineItems = lineItems ?? self.lineItems
         let refunds = refunds ?? self.refunds
@@ -99,7 +97,6 @@ extension Yosemite.POSOrder {
             formattedTotal: formattedTotal,
             formattedSubtotal: formattedSubtotal,
             customerEmail: customerEmail,
-            paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
             refunds: refunds,

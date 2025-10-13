@@ -10,7 +10,11 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
         loadAllBookingsResult = result
     }
 
-    func loadAllBookings(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Booking] {
+    func loadAllBookings(for siteID: Int64,
+                         pageNumber: Int,
+                         pageSize: Int,
+                         startDateBefore: String?,
+                         startDateAfter: String?) async throws -> [Booking] {
         guard let result = loadAllBookingsResult else {
             throw NetworkError.timeout()
         }

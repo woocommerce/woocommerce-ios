@@ -606,9 +606,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Advertise on Google" = "Advertise on Google";
 
-/* Country option for a site address. */
-"Afghanistan" = "Afghanistan";
-
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)";
 
@@ -627,14 +624,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of Formal AI Tone */
 "aiToneVoice.formal" = "Formal";
 
-/* Country option for a site address. */
-"Albania" = "Albania";
-
 /* Description of albums in the photo libraries */
 "Albums" = "Albums";
-
-/* Country option for a site address. */
-"Algeria" = "Algeria";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "All available packages have been activated";
@@ -683,9 +674,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternatively:";
-
-/* Country option for a site address. */
-"American Samoa" = "American Samoa";
 
 /* Title above the amount field on the add custom amount view in orders.
    Title of the Amount label on Coupon Details screen */
@@ -838,23 +826,8 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Metric";
 
-/* Country option for a site address. */
-"Andorra" = "Andorra";
-
-/* Country option for a site address. */
-"Angola" = "Angola";
-
-/* Country option for a site address. */
-"Anguilla" = "Anguilla";
-
 /* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
 "Annually (Save 35%)" = "Annually (Save 35%)";
-
-/* Country option for a site address. */
-"Antarctica" = "Antarctica";
-
-/* Country option for a site address. */
-"Antigua and Barbuda" = "Antigua and Barbuda";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
@@ -972,15 +945,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
 
-/* Country option for a site address. */
-"Argentina" = "Argentina";
-
-/* Country option for a site address. */
-"Armenia" = "Armenia";
-
-/* Country option for a site address. */
-"Aruba" = "Aruba";
-
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Attribute name";
 
@@ -996,12 +960,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "Audio, %@";
-
-/* Country option for a site address. */
-"Australia" = "Australia";
-
-/* Country option for a site address. */
-"Austria" = "Austria";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Authenticating";
@@ -1046,12 +1004,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "Awaiting payment via %@";
 
-/* Country option for a site address. */
-"Azerbaijan" = "Azerbaijan";
-
-/* Country option for a site address. */
-"Åland Islands" = "Åland Islands";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -1079,44 +1031,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Backorders";
 
-/* Country option for a site address. */
-"Bahamas" = "Bahamas";
-
-/* Country option for a site address. */
-"Bahrain" = "Bahrain";
-
-/* Country option for a site address. */
-"Bangladesh" = "Bangladesh";
-
-/* Country option for a site address. */
-"Barbados" = "Barbados";
-
 /* Title for the instructions on the Woo payments setup instructions screen. */
 "Before you start setup" = "Before you start setup";
 
 /* Title on the action button on the Woo payments setup instructions screen. */
 "Begin Setup" = "Begin Setup";
-
-/* Country option for a site address. */
-"Belarus" = "Belarus";
-
-/* Country option for a site address. */
-"Belau" = "Belau";
-
-/* Country option for a site address. */
-"Belgium" = "Belgium";
-
-/* Country option for a site address. */
-"Belize" = "Belize";
-
-/* Country option for a site address. */
-"Benin" = "Benin";
-
-/* Country option for a site address. */
-"Bermuda" = "Bermuda";
-
-/* Country option for a site address. */
-"Bhutan" = "Bhutan";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data */
@@ -1965,11 +1884,137 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Bold";
 
-/* Country option for a site address. */
-"Bolivia" = "Bolivia";
+/* Assigned staff row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.assignedStaff.title" = "Assigned staff";
 
-/* Country option for a site address. */
-"Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius and Saba";
+/* Date row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.dateRow.title" = "Date";
+
+/* Duration row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.durationRow.title" = "Duration";
+
+/* Header title for the 'Appointment Details' section in the booking details screen. */
+"BookingDetailsView.appointmentDetails.headerTitle" = "Appointment Details";
+
+/* Location row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.locationRow.title" = "Location";
+
+/* Price row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.priceRow.title" = "Price";
+
+/* Time row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.timeRow.title" = "Time";
+
+/* Footer text for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.footerText" = "Mark attendance to keep your reports accurate and spot booking trends.";
+
+/* Header title for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.headerTitle" = "Attendance";
+
+/* Add a note row title in booking notes section in booking details view. */
+"BookingDetailsView.bookingNotes.addANoteRow.title" = "Add a note";
+
+/* Header title for the 'Booking notes' section in the booking details screen. */
+"BookingDetailsView.bookingNotes.headerTitle" = "Booking notes";
+
+/* Billing address row title in customer section in booking details view. */
+"BookingDetailsView.customer.billingAddress.title" = "Billing address";
+
+/* 'Cancel booking' button title in appointment details section in booking details view. */
+"BookingDetailsView.customer.cancelBookingButton.title" = "Cancel booking";
+
+/* Header title for the 'Customer' section in the booking details screen. */
+"BookingDetailsView.customer.headerTitle" = "Customer";
+
+/* 'Status' row title in attendance section in booking details view. */
+"BookingDetailsView.customer.status.title" = "Status";
+
+/* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
+"BookingDetailsView.navTitle" = "Booking #%1$d";
+
+/* Action sheet option to cancel a booking. */
+"BookingDetailsView.options.cancelBooking" = "Cancel booking";
+
+/* Action sheet option to mark a booking as paid. */
+"BookingDetailsView.options.markAsPaid" = "Mark as paid";
+
+/* Action sheet option to view the order for a booking. */
+"BookingDetailsView.options.viewOrder" = "View order";
+
+/* Discount row title in payment section in booking details view. */
+"BookingDetailsView.payment.discountRow.title" = "Discount";
+
+/* Header title for the 'Payment' section in the booking details screen. */
+"BookingDetailsView.payment.headerTitle" = "Payment";
+
+/* Title for 'Mark as paid' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsPaid.title" = "Mark as paid";
+
+/* Title for 'Mark as refunded' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsRefunded.title" = "Mark as refunded";
+
+/* Service row title in payment section in booking details view. */
+"BookingDetailsView.payment.serviceRow.title" = "Service";
+
+/* Tax row title in payment section in booking details view. */
+"BookingDetailsView.payment.taxRow.title" = "Tax";
+
+/* Total row title in payment section in booking details view. */
+"BookingDetailsView.payment.totalRow.title" = "Total";
+
+/* Title for 'View order' button in payment section in booking details view. */
+"BookingDetailsView.payment.viewOrder.title" = "View order";
+
+/* Title for the 'Booked' status label in the header view. */
+"BookingDetailsView.statusLabel.booked" = "Booked";
+
+/* Title for the 'Paid' status label in the header view. */
+"BookingDetailsView.statusLabel.paid" = "Paid";
+
+/* Title for the 'Pay at location' status label in the header view. */
+"BookingDetailsView.statusLabel.payAtLocation" = "Pay at location";
+
+/* Tab title for all bookings */
+"bookingListView.all" = "All";
+
+/* Button to filter the booking list */
+"bookingListView.filter" = "Filter";
+
+/* Button to select the order of the booking list */
+"bookingListView.sortBy" = "Sort by";
+
+/* Tab title for today's bookings */
+"bookingListView.today" = "Today";
+
+/* Tab title for upcoming bookings */
+"bookingListView.upcoming" = "Upcoming";
+
+/* Title of the booking list view */
+"bookingListView.view.title" = "Bookings";
+
+/* Title of the Bookings tab */
+"bookingsTabViewHostingController.tab.title" = "Bookings";
+
+/* Status of a canceled booking */
+"bookingStatus.title.canceled" = "Cancelled";
+
+/* Status of a complete booking */
+"bookingStatus.title.complete" = "Complete";
+
+/* Status of a confirmed booking */
+"bookingStatus.title.confirmed" = "Confirmed";
+
+/* Status of a paid booking */
+"bookingStatus.title.paid" = "Paid";
+
+/* Status of a pending confirmation booking */
+"bookingStatus.title.pendingConfirmation" = "Pending confirmation";
+
+/* Status of a booking with unexpected status */
+"bookingStatus.title.unknown" = "Unknown";
+
+/* Status of an unpaid booking */
+"bookingStatus.title.unpaid" = "Unpaid";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Boost sales with special offers";
@@ -1979,12 +2024,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "Boost your sales with linked products";
-
-/* Country option for a site address. */
-"Bosnia and Herzegovina" = "Bosnia and Herzegovina";
-
-/* Country option for a site address. */
-"Botswana" = "Botswana";
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "bottomSheetProductType.affiliate.description" = "Link a product to an external website";
@@ -2034,26 +2073,8 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variable subscription";
 
-/* Country option for a site address. */
-"Bouvet Island" = "Bouvet Island";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Box";
-
-/* Country option for a site address. */
-"Brazil" = "Brazil";
-
-/* Country option for a site address. */
-"British Indian Ocean Territory" = "British Indian Ocean Territory";
-
-/* Country option for a site address. */
-"British Virgin Islands" = "British Virgin Islands";
-
-/* Country option for a site address. */
-"Brunei" = "Brunei";
-
-/* Country option for a site address. */
-"Bulgaria" = "Bulgaria";
 
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "Bulk update";
@@ -2073,12 +2094,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
 "Bundles Sold" = "Bundles Sold";
-
-/* Country option for a site address. */
-"Burkina Faso" = "Burkina Faso";
-
-/* Country option for a site address. */
-"Burundi" = "Burundi";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Button Text";
@@ -2111,9 +2126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "Call";
 
-/* Country option for a site address. */
-"Cambodia" = "Cambodia";
-
 /* Accessibility label for the camera tile in the collection view */
 "Camera" = "Camera";
 
@@ -2129,9 +2141,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action sheet button that links to settings for camera access */
 "Camera permissions" = "Camera permissions";
 
-/* Country option for a site address. */
-"Cameroon" = "Cameroon";
-
 /* Title of the Blaze campaign details view. */
 "Campaign Details" = "Campaign Details";
 
@@ -2143,9 +2152,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Can Not Request Link";
-
-/* Country option for a site address. */
-"Canada" = "Canada";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
@@ -2270,9 +2276,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Cannot verify your site's WooCommerce installation.";
-
-/* Country option for a site address. */
-"Cape Verde" = "Cape Verde";
 
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
@@ -2428,20 +2431,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categories";
 
-/* Country option for a site address. */
-"Cayman Islands" = "Cayman Islands";
-
-/* Country option for a site address. */
-"Central African Republic" = "Central African Republic";
-
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "Certain required fields need attention.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certificate error";
-
-/* Country option for a site address. */
-"Chad" = "Chad";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "Change product type";
@@ -2474,12 +2468,6 @@ which should be translated separately and considered part of this sentence. */
 /* Bottom title of the alert presented with a spinner while the order is being validated */
 "Checking order" = "Checking order";
 
-/* Country option for a site address. */
-"Chile" = "Chile";
-
-/* Country option for a site address. */
-"China" = "China";
-
 /* Navigation title on the shipping label country selector screen */
 "Choose a Country" = "Choose a Country";
 
@@ -2506,9 +2494,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Choose your Payment Provider";
-
-/* Country option for a site address. */
-"Christmas Island" = "Christmas Island";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -2594,9 +2579,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Closing account...";
 
-/* Country option for a site address. */
-"Cocos (Keeling) Islands" = "Cocos (Keeling) Islands";
-
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Collapsed";
 
@@ -2670,14 +2652,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Order total has changed since the beginning of payment. Please go back and check the order is correct, then try the payment again.";
 
-/* Country option for a site address. */
-"Colombia" = "Colombia";
-
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "Come back soon for more tips and insights on growing your store.";
-
-/* Country option for a site address. */
-"Comoros" = "Comoros";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -2807,12 +2783,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Confirm Payment Method";
-
-/* Country option for a site address. */
-"Congo (Brazzaville)" = "Congo (Brazzaville)";
-
-/* Country option for a site address. */
-"Congo (Kinshasa)" = "Congo (Kinshasa)";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
@@ -2968,9 +2938,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Conversion Rate";
 
-/* Country option for a site address. */
-"Cook Islands" = "Cook Islands";
-
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookie Policy";
 
@@ -2992,9 +2959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "Copy tracking number";
-
-/* Country option for a site address. */
-"Costa Rica" = "Costa Rica";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
@@ -3149,18 +3113,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>";
 
-/* Country option for a site address. */
-"Croatia" = "Croatia";
-
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Cross-sells";
-
-/* Country option for a site address. */
-"Cuba" = "Cuba";
-
-/* Country option for a site address. */
-"Curacao" = "Curacao";
 
 /* Cell title: the current date. */
 "Current" = "Current";
@@ -3492,12 +3447,6 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "Customs forms must be printed and included on these international shipments";
 
-/* Country option for a site address. */
-"Cyprus" = "Cyprus";
-
-/* Country option for a site address. */
-"Czech Republic" = "Czech Republic";
-
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Blaze campaigns";
 
@@ -3652,9 +3601,6 @@ which should be translated separately and considered part of this sentence. */
 /* Delete tracking button title */
 "Delete Tracking" = "Delete Tracking";
 
-/* Country option for a site address. */
-"Denmark" = "Denmark";
-
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe your product";
 
@@ -3775,9 +3721,6 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)";
 
-/* Country option for a site address. */
-"Djibouti" = "Djibouti";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "Do you want to add Pay in Person to your web checkout?";
 
@@ -3795,12 +3738,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documents";
-
-/* Country option for a site address. */
-"Dominica" = "Dominica";
-
-/* Country option for a site address. */
-"Dominican Republic" = "Dominican Republic";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
@@ -3904,9 +3841,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Easily identify your products with unique codes";
-
-/* Country option for a site address. */
-"Ecuador" = "Ecuador";
 
 /* Button to edit a product category
    Button to edit an order on Order Details screen
@@ -4036,12 +3970,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footer of the Other Stores section on the Edit Store List view */
 "editStoreListView.unselectedStoresNote" = "Unselected stores will be excluded from the store picker and won't receive push notifications for new orders or product.";
-
-/* Country option for a site address. */
-"Egypt" = "Egypt";
-
-/* Country option for a site address. */
-"El Salvador" = "El Salvador";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Eligible for free pickup";
@@ -4252,12 +4180,6 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelope";
 
-/* Country option for a site address. */
-"Equatorial Guinea" = "Equatorial Guinea";
-
-/* Country option for a site address. */
-"Eritrea" = "Eritrea";
-
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Error";
 
@@ -4338,12 +4260,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "Estimated setup time";
-
-/* Country option for a site address. */
-"Estonia" = "Estonia";
-
-/* Country option for a site address. */
-"Ethiopia" = "Ethiopia";
 
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "Shipping to countries that follow European Union (EU) customs rules now requires you clearly describe every item. For example, if you are sending clothing, you must indicate what type of clothing (e.g., men’s shirts, girl’s vest, boy’s jacket) for the description to be acceptable. Otherwise, shipments may be delayed or interrupted at customs.";
@@ -4493,9 +4409,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "Failed to undo fulfillment of order #%1$d";
 
-/* Country option for a site address. */
-"Falkland Islands" = "Falkland Islands";
-
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "OK";
 
@@ -4504,9 +4417,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.redactionInfoTitle" = "Visitors and conversion data not available";
-
-/* Country option for a site address. */
-"Faroe Islands" = "Faroe Islands";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -4528,9 +4438,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Your Site Orders connectivity tool card */
 "Fetching your site orders" = "Fetching your site orders";
-
-/* Country option for a site address. */
-"Fiji" = "Fiji";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -4630,9 +4537,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Finish Setup in Store Admin";
 
-/* Country option for a site address. */
-"Finland" = "Finland";
-
 /* Text field name in Edit Address Form */
 "First name" = "First name";
 
@@ -4663,23 +4567,11 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "Forward";
 
-/* Country option for a site address. */
-"France" = "France";
-
 /* No comment provided by engineer. */
 "Free SSL certificate" = "Free SSL certificate";
 
 /* Plan name for an active free trial */
 "Free Trial" = "Free Trial";
-
-/* Country option for a site address. */
-"French Guiana" = "French Guiana";
-
-/* Country option for a site address. */
-"French Polynesia" = "French Polynesia";
-
-/* Country option for a site address. */
-"French Southern Territories" = "French Southern Territories";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "From";
@@ -4698,12 +4590,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Funds become available after pending for %1$d days.";
-
-/* Country option for a site address. */
-"Gabon" = "Gabon";
-
-/* Country option for a site address. */
-"Gambia" = "Gambia";
 
 /* General section title in the hub menu */
 "General" = "General";
@@ -4734,12 +4620,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Generous storage" = "Generous storage";
-
-/* Country option for a site address. */
-"Georgia" = "Georgia";
-
-/* Country option for a site address. */
-"Germany" = "Germany";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Get a login link by email";
@@ -4789,12 +4669,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "Getting ready to collect payment";
-
-/* Country option for a site address. */
-"Ghana" = "Ghana";
-
-/* Country option for a site address. */
-"Gibraltar" = "Gibraltar";
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Gift";
@@ -4906,15 +4780,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title in AI product description celebration screen. */
 "Great start!" = "Great start!";
 
-/* Country option for a site address. */
-"Greece" = "Greece";
-
-/* Country option for a site address. */
-"Greenland" = "Greenland";
-
-/* Country option for a site address. */
-"Grenada" = "Grenada";
-
 /* A hazardous material description stating when a package can fit into this category */
 "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)";
 
@@ -4932,30 +4797,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
 "GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
-
-/* Country option for a site address. */
-"Guadeloupe" = "Guadeloupe";
-
-/* Country option for a site address. */
-"Guam" = "Guam";
-
-/* Country option for a site address. */
-"Guatemala" = "Guatemala";
-
-/* Country option for a site address. */
-"Guernsey" = "Guernsey";
-
-/* Country option for a site address. */
-"Guinea" = "Guinea";
-
-/* Country option for a site address. */
-"Guinea-Bissau" = "Guinea-Bissau";
-
-/* Country option for a site address. */
-"Guyana" = "Guyana";
-
-/* Country option for a site address. */
-"Haiti" = "Haiti";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Have your store credentials ready.";
@@ -4999,9 +4840,6 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "Heading 6";
 
-/* Country option for a site address. */
-"Heard Island and McDonald Islands" = "Heard Island and McDonald Islands";
-
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "Height";
@@ -5036,12 +4874,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Highlight your product's unique features and audience with keywords for a tailored description.";
-
-/* Country option for a site address. */
-"Honduras" = "Honduras";
-
-/* Country option for a site address. */
-"Hong Kong" = "Hong Kong";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
@@ -5088,14 +4920,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the hub menu Google Ads button */
 "hubMenuViewModel.googleAdsDescription" = "Drive sales and generate more traffic with Google Ads";
 
-/* Country option for a site address. */
-"Hungary" = "Hungary";
-
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "I need help with";
-
-/* Country option for a site address. */
-"Iceland" = "Iceland";
 
 /* A hazardous material description stating when a package can fit into this category */
 "ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)";
@@ -5201,9 +5027,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
 
-/* Country option for a site address. */
-"India" = "India";
-
 /* Text on Coupon Details screen to indicate that the coupon can not be applied in conjunction with other coupons */
 "Individual use only" = "Individual use only";
 
@@ -5212,9 +5035,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Individually shipped item";
-
-/* Country option for a site address. */
-"Indonesia" = "Indonesia";
 
 /* Button to cancel a payment */
 "inPersonPayments.cardPresent.cardInserted.cancel" = "Cancel";
@@ -5343,26 +5163,11 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments isn't available for this store" = "In‑Person Payments isn't available for this store";
 
-/* Country option for a site address. */
-"Iran" = "Iran";
-
-/* Country option for a site address. */
-"Iraq" = "Iraq";
-
-/* Country option for a site address. */
-"Ireland" = "Ireland";
-
 /* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
 "Is the generated description helpful?" = "Is the generated description helpful?";
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Is the generated message helpful?";
-
-/* Country option for a site address. */
-"Isle of Man" = "Isle of Man";
-
-/* Country option for a site address. */
-"Israel" = "Israel";
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Issue Refund";
@@ -5404,9 +5209,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Italic";
 
-/* Country option for a site address. */
-"Italy" = "Italy";
-
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "Item description is required";
 
@@ -5435,18 +5237,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "ITN is required for shipping items valued over $2,500 per tariff number";
 
-/* Country option for a site address. */
-"Ivory Coast" = "Ivory Coast";
-
-/* Country option for a site address. */
-"Jamaica" = "Jamaica";
-
-/* Country option for a site address. */
-"Japan" = "Japan";
-
-/* Country option for a site address. */
-"Jersey" = "Jersey";
-
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats.";
 
@@ -5465,12 +5255,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Join from anywhere";
 
-/* Country option for a site address. */
-"Jordan" = "Jordan";
-
-/* Country option for a site address. */
-"Kazakhstan" = "Kazakhstan";
-
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Keep Editing";
 
@@ -5480,26 +5264,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for a button that when tapped, continues searching for card readers */
 "Keep Searching" = "Keep Searching";
 
-/* Country option for a site address. */
-"Kenya" = "Kenya";
-
-/* Country option for a site address. */
-"Kiribati" = "Kiribati";
-
-/* Country option for a site address. */
-"Kuwait" = "Kuwait";
-
-/* Country option for a site address. */
-"Kyrgyzstan" = "Kyrgyzstan";
-
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Label (4 x 6 in)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Label Format Options";
-
-/* Country option for a site address. */
-"Laos" = "Laos";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "Last 2 Days";
@@ -5563,9 +5332,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Later today */
 "later today" = "later today";
 
-/* Country option for a site address. */
-"Latvia" = "Latvia";
-
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Launch Wormholy Debug";
 
@@ -5617,9 +5383,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 which should be translated separately and considered part of this sentence. */
 "learnMore.text" = "%1$@ about accepting payments with your mobile device and ordering card readers";
 
-/* Country option for a site address. */
-"Lebanon" = "Lebanon";
-
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
 
@@ -5630,23 +5393,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Length";
 
-/* Country option for a site address. */
-"Lesotho" = "Lesotho";
-
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
 
 /* Title to let the user know what do we want on the support screen. */
 "Let’s get this sorted" = "Let’s get this sorted";
-
-/* Country option for a site address. */
-"Liberia" = "Liberia";
-
-/* Country option for a site address. */
-"Libya" = "Libya";
-
-/* Country option for a site address. */
-"Liechtenstein" = "Liechtenstein";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Lighters Package - Authorized Lighters" = "Lighters Package - Authorized Lighters";
@@ -5691,9 +5442,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "List unlimited products" = "List unlimited products";
-
-/* Country option for a site address. */
-"Lithuania" = "Lithuania";
 
 /* No comment provided by engineer. */
 "Live chat support" = "Live chat support";
@@ -5855,18 +5603,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Loyalty points programs" = "Loyalty points programs";
 
-/* Country option for a site address. */
-"Luxembourg" = "Luxembourg";
-
-/* Country option for a site address. */
-"Macao S.A.R., China" = "Macao S.A.R., China";
-
-/* Country option for a site address. */
-"Macedonia" = "Macedonia";
-
-/* Country option for a site address. */
-"Madagascar" = "Madagascar";
-
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>" = "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>";
 
@@ -5881,21 +5617,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Make your products easier to find with tags";
-
-/* Country option for a site address. */
-"Malawi" = "Malawi";
-
-/* Country option for a site address. */
-"Malaysia" = "Malaysia";
-
-/* Country option for a site address. */
-"Maldives" = "Maldives";
-
-/* Country option for a site address. */
-"Mali" = "Mali";
-
-/* Country option for a site address. */
-"Malta" = "Malta";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Manage and edit orders on the go";
@@ -5969,18 +5690,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Marketing automation" = "Marketing automation";
 
-/* Country option for a site address. */
-"Marshall Islands" = "Marshall Islands";
-
-/* Country option for a site address. */
-"Martinique" = "Martinique";
-
-/* Country option for a site address. */
-"Mauritania" = "Mauritania";
-
-/* Country option for a site address. */
-"Mauritius" = "Mauritius";
-
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Max. Spend (%1$@)";
 
@@ -5995,9 +5704,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title for modally presented Just in Time Messages */
 "Maybe Later" = "Maybe Later";
-
-/* Country option for a site address. */
-"Mayotte" = "Mayotte";
 
 /* Title for alert when access to media capture is not granted */
 "Media Capture" = "Media Capture";
@@ -6118,12 +5824,6 @@ which should be translated separately and considered part of this sentence. */
    Message phone number button title */
 "Message" = "Message";
 
-/* Country option for a site address. */
-"Mexico" = "Mexico";
-
-/* Country option for a site address. */
-"Micronesia" = "Micronesia";
-
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -6148,18 +5848,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the mobile app support area option */
 "Mobile App" = "Mobile App";
 
-/* Country option for a site address. */
-"Moldova" = "Moldova";
-
-/* Country option for a site address. */
-"Monaco" = "Monaco";
-
-/* Country option for a site address. */
-"Mongolia" = "Mongolia";
-
-/* Country option for a site address. */
-"Montenegro" = "Montenegro";
-
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "month";
 
@@ -6171,9 +5859,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "months";
-
-/* Country option for a site address. */
-"Montserrat" = "Montserrat";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -6194,9 +5879,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* More Privacy toggle section in the privacy screen. */
 "More privacy options available for woocommerce.com users. Check here to learn more." = "More privacy options available for woocommerce.com users. Check here to learn more.";
-
-/* Country option for a site address. */
-"Morocco" = "Morocco";
 
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "Coupons";
@@ -6237,9 +5919,6 @@ which should be translated separately and considered part of this sentence. */
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Moves the comment to Trash";
 
-/* Country option for a site address. */
-"Mozambique" = "Mozambique";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Multiple Stores";
 
@@ -6254,9 +5933,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "My Store";
 
-/* Country option for a site address. */
-"Myanmar" = "Myanmar";
-
 /* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N/A" = "N/A";
 
@@ -6268,12 +5944,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Name missing";
-
-/* Country option for a site address. */
-"Namibia" = "Namibia";
-
-/* Country option for a site address. */
-"Nauru" = "Nauru";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Need a shipping label?";
@@ -6298,9 +5968,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "Need some help? %1$@";
 
-/* Country option for a site address. */
-"Nepal" = "Nepal";
-
 /* The title for the net amount paid cell */
 "Net Payment" = "Net Payment";
 
@@ -6309,9 +5976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "Net sales: %@";
-
-/* Country option for a site address. */
-"Netherlands" = "Netherlands";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Never expire";
@@ -6325,9 +5989,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "New Attribute Name";
 
-/* Country option for a site address. */
-"New Caledonia" = "New Caledonia";
-
 /* The title of the top banner on the Products tab. */
 "New features available!" = "New features available!";
 
@@ -6339,9 +6000,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "New order for $13.98 on Your WooCommerce Store";
-
-/* Country option for a site address. */
-"New Zealand" = "New Zealand";
 
 /* Spoken label to indicate switch control is turned off. */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Email note to customer Off";
@@ -6387,18 +6045,6 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "Next";
-
-/* Country option for a site address. */
-"Nicaragua" = "Nicaragua";
-
-/* Country option for a site address. */
-"Niger" = "Niger";
-
-/* Country option for a site address. */
-"Nigeria" = "Nigeria";
-
-/* Country option for a site address. */
-"Niue" = "Niue";
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "No (approved) reviews";
@@ -6522,18 +6168,6 @@ which should be translated separately and considered part of this sentence. */
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "None";
 
-/* Country option for a site address. */
-"Norfolk Island" = "Norfolk Island";
-
-/* Country option for a site address. */
-"North Korea" = "North Korea";
-
-/* Country option for a site address. */
-"Northern Mariana Islands" = "Northern Mariana Islands";
-
-/* Country option for a site address. */
-"Norway" = "Norway";
-
 /* Description when no 'group of' quantity is set in quantity rules. */
 "Not grouped" = "Not grouped";
 
@@ -6643,9 +6277,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Weeks Section Header */
 "Older than a Week" = "Older than a Week";
-
-/* Country option for a site address. */
-"Oman" = "Oman";
 
 /* Display label for the bundle item's inventory stock status */
 "On back order" = "On back order";
@@ -7201,23 +6832,8 @@ which should be translated separately and considered part of this sentence. */
 /* Rich order notification text, will read as: Paid with Visa credit card */
 "Paid with %@" = "Paid with %@";
 
-/* Country option for a site address. */
-"Pakistan" = "Pakistan";
-
-/* Country option for a site address. */
-"Palestinian Territory" = "Palestinian Territory";
-
-/* Country option for a site address. */
-"Panama" = "Panama";
-
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Paper Size";
-
-/* Country option for a site address. */
-"Papua New Guinea" = "Papua New Guinea";
-
-/* Country option for a site address. */
-"Paraguay" = "Paraguay";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Parent Category";
@@ -7363,12 +6979,6 @@ which should be translated separately and considered part of this sentence. */
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Permanently Close Account";
 
-/* Country option for a site address. */
-"Peru" = "Peru";
-
-/* Country option for a site address. */
-"Philippines" = "Philippines";
-
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Phone";
@@ -7390,9 +7000,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "Pick up an order, then just pay, print, package, and post.";
-
-/* Country option for a site address. */
-"Pitcairn" = "Pitcairn";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Placing your product in the trash...";
@@ -8184,15 +7791,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Store";
 
-/* Country option for a site address. */
-"Poland" = "Poland";
-
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
 "Popular" = "Popular";
-
-/* Country option for a site address. */
-"Portugal" = "Portugal";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Barcode scanning";
@@ -8380,9 +7981,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "Clear cart";
 
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "Back";
-
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "No internet connection";
 
@@ -8421,9 +8019,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
 "pos.ineligible.suggestion.unsupportedCurrency.1" = "The POS system is not available for your store’s currency. In %1$@, it currently supports only %2$@. Please check your store currency settings or contact support for assistance.";
-
-/* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "The POS system requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.";
 
 /* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
 "pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Your WooCommerce version is not supported. The POS system requires WooCommerce version %1$@ or above. Please update WooCommerce to the latest version.";
@@ -8506,6 +8101,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Dismiss";
 
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "Order status: %1$@";
+
 /* Text appearing in the order details pane when there are no orders available. */
 "pos.orderDetailsEmptyView.noOrderToDisplay" = "No order to display";
 
@@ -8515,26 +8113,44 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "Products";
 
-/* Title for the order details screen when no specific order is selected */
-"pos.orderDetailsLoadingView.title" = "Order";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totals";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "Discount total: %1$@";
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "Discount total";
 
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Tap to send order receipt via email";
+
 /* Label for email receipt action on order details view */
 "pos.orderDetailsView.emailReceiptAction.title" = "Email receipt";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Order date: %1$@, Status: %2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Customer email: %1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "Net payment: %1$@";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "Net Payment";
 
-/* Order title with order number. %1$@ is the order number. */
-"pos.orderDetailsView.orderTitle" = "Order #%1$@";
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "Total paid: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "Payment method: %1$@";
 
 /* Label for the paid amount */
-"pos.orderDetailsView.paidLabel" = "Paid";
+"pos.orderDetailsView.paidLabel2" = "Total paid";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "Quantity: %1$@ at %2$@ each, Total %3$@";
 
 /* Label for products subtotal in the totals section */
 "pos.orderDetailsView.productsLabel" = "Products";
@@ -8548,11 +8164,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label for refund reason. %1$@ is the reason text. */
 "pos.orderDetailsView.reasonLabel" = "Reason: %1$@";
 
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "Refunded: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Reason: %1$@";
+
 /* Label for a refund entry. %1$lld is the refund ID. */
 "pos.orderDetailsView.refundLabel" = "Refunded";
 
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "Products subtotal: %1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "Taxes: %1$@";
+
 /* Label for taxes in the totals section */
 "pos.orderDetailsView.taxesLabel" = "Taxes";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "Order total: %1$@";
 
 /* Label for the order total */
 "pos.orderDetailsView.totalLabel" = "Total";
@@ -8584,8 +8215,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "No orders yet";
 
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "Tap to view order details";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "Order #%1$@, Total %2$@, %3$@, Status: %4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "Email: %1$@";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "Orders";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "#%1$@";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "Search orders";
 
 /* Placeholder for a search field in the Orders view. */
 "pos.orderListView.searchFieldPlaceholder" = "Search orders";
@@ -8653,9 +8299,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "Only simple and variable non-downloadable products can be used with POS right now.";
 
-/* Title for the OK button on the simple products information modal in POS */
-"pos.simpleProductsModal.ok.button.title" = "OK";
-
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Why can't I see my products?";
 
@@ -8696,7 +8339,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.unsupportedWidth.title" = "Point of Sale is not supported in this screen width.";
 
 /* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "Allow full sync on cellular data";
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Allow full update on cellular data";
 
 /* Label for catalog size field in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.catalogSize" = "Catalog size";
@@ -8705,13 +8348,13 @@ which should be translated separately and considered part of this sentence. */
 "posSettingsLocalCatalogDetailView.catalogStatus" = "Catalog Status";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync" = "Last full sync";
+"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Last full update";
 
 /* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "Last incremental update";
+"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Last update";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage" = "Managing data usage";
+"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Managing Data Usage";
 
 /* Section title for manual catalog update in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Manual Catalog Update";
@@ -8724,6 +8367,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the local catalog details in POS settings. */
 "posSettingsLocalCatalogDetailView.title" = "Catalog Settings";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d products, %2$ld variations";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Catalog size unavailable";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "Not updated";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Update date unavailable";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -9376,9 +9031,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publishing your product...";
 
-/* Country option for a site address. */
-"Puerto Rico" = "Puerto Rico";
-
 /* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
 "Purchase %1$@" = "Purchase %1$@";
 
@@ -9400,9 +9052,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of push notifications as part of Jetpack benefits. */
 "Push Notifications" = "Push Notifications";
-
-/* Country option for a site address. */
-"Qatar" = "Qatar";
 
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
@@ -9727,9 +9376,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Return to sender if package is unable to be delivered";
 
-/* Country option for a site address. */
-"Reunion" = "Reunion";
-
 /* Title for revenue analytics section in the Analytics Hub */
 "REVENUE" = "REVENUE";
 
@@ -9774,44 +9420,11 @@ which should be translated separately and considered part of this sentence. */
 /* Post Rich content */
 "Rich Content" = "Rich Content";
 
-/* Country option for a site address. */
-"Romania" = "Romania";
-
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.";
 
-/* Country option for a site address. */
-"Russia" = "Russia";
-
-/* Country option for a site address. */
-"Rwanda" = "Rwanda";
-
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
-
-/* Country option for a site address. */
-"Saint Barthélemy" = "Saint Barthélemy";
-
-/* Country option for a site address. */
-"Saint Helena" = "Saint Helena";
-
-/* Country option for a site address. */
-"Saint Kitts and Nevis" = "Saint Kitts and Nevis";
-
-/* Country option for a site address. */
-"Saint Lucia" = "Saint Lucia";
-
-/* Country option for a site address. */
-"Saint Martin (Dutch part)" = "Saint Martin (Dutch part)";
-
-/* Country option for a site address. */
-"Saint Martin (French part)" = "Saint Martin (French part)";
-
-/* Country option for a site address. */
-"Saint Pierre and Miquelon" = "Saint Pierre and Miquelon";
-
-/* Country option for a site address. */
-"Saint Vincent and the Grenadines" = "Saint Vincent and the Grenadines";
 
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "Sale dates: %@";
@@ -9834,20 +9447,11 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "Point of Sale";
 
-/* Country option for a site address. */
-"Samoa" = "Samoa";
-
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "Sample";
 
-/* Country option for a site address. */
-"San Marino" = "San Marino";
-
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary / Phytosanitary Inspection" = "Sanitary / Phytosanitary Inspection";
-
-/* Country option for a site address. */
-"Saudi Arabia" = "Saudi Arabia";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -9882,9 +9486,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "Saving your variation...";
-
-/* Country option for a site address. */
-"São Tomé and Príncipe" = "São Tomé and Príncipe";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan code like XXXX-XXXX-XXXX-XXXX" = "Scan code like XXXX-XXXX-XXXX-XXXX";
@@ -10075,12 +9676,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Send Link by Email";
 
-/* Country option for a site address. */
-"Senegal" = "Senegal";
-
-/* Country option for a site address. */
-"Serbia" = "Serbia";
-
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Service Package";
 
@@ -10147,9 +9742,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Several readers found";
-
-/* Country option for a site address. */
-"Seychelles" = "Seychelles";
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
@@ -10354,9 +9946,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Shows more options.";
 
-/* Country option for a site address. */
-"Sierra Leone" = "Sierra Leone";
-
 /* Button title. Takes the user the Enter site credentials screen. */
 "Sign in with site credentials" = "Sign in with site credentials";
 
@@ -10380,9 +9969,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Signed in as @%1$@";
-
-/* Country option for a site address. */
-"Singapore" = "Singapore";
 
 /* Site Address title on the support form */
 "Site Address" = "Site Address";
@@ -10433,12 +10019,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "SKU: %@";
 
-/* Country option for a site address. */
-"Slovakia" = "Slovakia";
-
-/* Country option for a site address. */
-"Slovenia" = "Slovenia";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
@@ -10452,12 +10032,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "Software updated";
-
-/* Country option for a site address. */
-"Solomon Islands" = "Solomon Islands";
-
-/* Country option for a site address. */
-"Somalia" = "Somalia";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Some email address is not valid.";
@@ -10551,29 +10125,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "Sort by";
 
-/* Country option for a site address. */
-"South Africa" = "South Africa";
-
-/* Country option for a site address. */
-"South Georgia/Sandwich Islands" = "South Georgia/Sandwich Islands";
-
-/* Country option for a site address. */
-"South Korea" = "South Korea";
-
-/* Country option for a site address. */
-"South Sudan" = "South Sudan";
-
-/* Country option for a site address. */
-"Spain" = "Spain";
-
 /* Verb, spam a comment */
 "Spam" = "Spam";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
-
-/* Country option for a site address. */
-"Sri Lanka" = "Sri Lanka";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standard rate";
@@ -10834,9 +10390,6 @@ which should be translated separately and considered part of this sentence. */
 /* Notice text after updating the order successfully */
 "Successfully updated" = "Successfully updated";
 
-/* Country option for a site address. */
-"Sudan" = "Sudan";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Sum of products and package weight";
 
@@ -10876,18 +10429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Sorry, we cannot create support requests right now, please try again later.";
 
-/* Country option for a site address. */
-"Suriname" = "Suriname";
-
-/* Country option for a site address. */
-"Svalbard and Jan Mayen" = "Svalbard and Jan Mayen";
-
-/* Country option for a site address. */
-"Swaziland" = "Swaziland";
-
-/* Country option for a site address. */
-"Sweden" = "Sweden";
-
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Switch Store";
 
@@ -10915,17 +10456,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility Identifier for the H6 Aztec Style */
 "Switches to the Heading 6 font size" = "Switches to the Heading 6 font size";
 
-/* Country option for a site address. */
-"Switzerland" = "Switzerland";
-
 /* No comment provided by engineer. */
 "Sync with Pinterest" = "Sync with Pinterest";
 
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "Syncing data";
-
-/* Country option for a site address. */
-"Syria" = "Syria";
 
 /* View system status report cell title on Help screen */
 "System Status Report" = "System Status Report";
@@ -10940,12 +10475,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "Tags";
-
-/* Country option for a site address. */
-"Taiwan" = "Taiwan";
-
-/* Country option for a site address. */
-"Tajikistan" = "Tajikistan";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Take a photo";
@@ -10962,9 +10491,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Taking you back to collect a payment";
-
-/* Country option for a site address. */
-"Tanzania" = "Tanzania";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "Tap card to pay";
@@ -11215,9 +10741,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The button's title text to send a 2FA code via SMS text message. */
 "Text me a code via SMS" = "Text me a code via SMS";
-
-/* Country option for a site address. */
-"Thailand" = "Thailand";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Thank you for sharing your thoughts with us";
@@ -11627,9 +11150,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Time's up, but don't worry, your security is our priority. Please try again!";
 
-/* Country option for a site address. */
-"Timor-Leste" = "Timor-Leste";
-
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tip";
 
@@ -11710,17 +11230,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "Toggles the unordered list style";
 
-/* Country option for a site address. */
-"Togo" = "Togo";
-
-/* Country option for a site address. */
-"Tokelau" = "Tokelau";
-
 /* Title of the AI tone selection button. */
 "toneOfVoiceView.title" = "Tone of voice";
-
-/* Country option for a site address. */
-"Tonga" = "Tonga";
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Add";
@@ -11778,9 +11289,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Plan name for an expired free trial */
 "Trial ended" = "Trial ended";
-
-/* Country option for a site address. */
-"Trinidad and Tobago" = "Trinidad and Tobago";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Troubleshoot";
@@ -11859,18 +11367,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Try with the site address";
 
-/* Country option for a site address. */
-"Tunisia" = "Tunisia";
-
-/* Country option for a site address. */
-"Turkey" = "Turkey";
-
-/* Country option for a site address. */
-"Turkmenistan" = "Turkmenistan";
-
-/* Country option for a site address. */
-"Turks and Caicos Islands" = "Turks and Caicos Islands";
-
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Turn card reader on and place it next to mobile device";
 
@@ -11883,20 +11379,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale.";
 
-/* Country option for a site address. */
-"Tuvalu" = "Tuvalu";
-
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Type of contents";
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "Type of restriction";
-
-/* Country option for a site address. */
-"Uganda" = "Uganda";
-
-/* Country option for a site address. */
-"Ukraine" = "Ukraine";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "Unable to add coupon.";
@@ -12072,21 +11559,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "Unexpected error";
 
-/* Country option for a site address. */
-"United Arab Emirates" = "United Arab Emirates";
-
-/* Country option for a site address. */
-"United Kingdom" = "United Kingdom";
-
-/* Country option for a site address. */
-"United States" = "United States";
-
-/* Country option for a site address. */
-"United States Minor Outlying Islands" = "United States Minor Outlying Islands";
-
-/* Country option for a site address. */
-"United States Virgin Islands" = "United States Virgin Islands";
-
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "unknown";
 
@@ -12096,9 +11568,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displayed in the unlikely event a card reader has an indeterminate battery status */
 "Unknown Battery Level" = "Unknown Battery Level";
-
-/* Fallback country option for a site address. */
-"Unknown country" = "Unknown country";
 
 /* Label to use when creation date from media asset is not know. */
 "Unknown creation date" = "Unknown creation date";
@@ -12185,6 +11654,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the hub menu settings button */
 "Update your preferences" = "Update your preferences";
+
+/* Description for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.description" = "The appointment is scheduled but hasn't happened yet.";
+
+/* Title for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.title" = "Booked";
+
+/* Description for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.description" = "The customer arrived and the session took place as planned.";
+
+/* Title for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.title" = "Checked-in";
+
+/* Description for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.description" = "The client missed the appointment without canceling in advance.";
+
+/* Title for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.title" = "No-show";
+
+/* Title of the update attendance status bottom sheet. */
+"UpdateAttendanceStatusView.title" = "Update attendance status";
 
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "Quantity updated: %@";
@@ -12281,9 +11771,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    URL text field placeholder */
 "URL" = "URL";
 
-/* Country option for a site address. */
-"Uruguay" = "Uruguay";
-
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "Usage Details";
 
@@ -12346,17 +11833,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A clickable text link that willredirect the user to a website */
 "USPS HAZMAT Search Tool" = "USPS HAZMAT Search Tool";
 
-/* Country option for a site address. */
-"Uzbekistan" = "Uzbekistan";
-
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "Validating";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Value (%1$@ per unit)";
-
-/* Country option for a site address. */
-"Vanuatu" = "Vanuatu";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variation #%1$@";
@@ -12378,12 +11859,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Various system information about your site";
 
-/* Country option for a site address. */
-"Vatican" = "Vatican";
-
-/* Country option for a site address. */
-"Venezuela" = "Venezuela";
-
 /* two factor code placeholder */
 "Verification code" = "Verification code";
 
@@ -12404,9 +11879,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
 "Video, %@" = "Video, %@";
-
-/* Country option for a site address. */
-"Vietnam" = "Vietnam";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -12493,9 +11965,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* View title during the Google auth process. */
 "Waiting..." = "Waiting...";
-
-/* Country option for a site address. */
-"Wallis and Futuna" = "Wallis and Futuna";
 
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.messageUpdated" = "Open Woo on your iPhone, log into your store, and hold your Watch nearby.";
@@ -12722,9 +12191,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Weight: %1$@%2$@";
-
-/* Country option for a site address. */
-"Western Sahara" = "Western Sahara";
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "We’ll use the info to get a head start on your shipping, tax, and payments settings.";
@@ -13822,9 +13288,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for a product's subscription period, e.g. '2 years'. */
 "years" = "years";
 
-/* Country option for a site address. */
-"Yemen" = "Yemen";
-
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Yes, change";
 
@@ -14024,12 +13487,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments.";
-
-/* Country option for a site address. */
-"Zambia" = "Zambia";
-
-/* Country option for a site address. */
-"Zimbabwe" = "Zimbabwe";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Log in with Google.";

@@ -1,4 +1,7 @@
 import Foundation
+import enum PointOfSale.POSEligibilityState
+import enum PointOfSale.POSIneligibleReason
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 @testable import WooCommerce
 
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {

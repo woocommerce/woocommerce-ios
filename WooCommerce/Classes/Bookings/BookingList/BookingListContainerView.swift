@@ -22,17 +22,15 @@ struct BookingListContainerView: View {
                         searchViewModel: viewModel.searchViewModel(for: tab),
                         selectedBooking: $selectedBooking
                     )
+                    .searchable(text: $viewModel.searchQuery,
+                                isPresented: $isSearching,
+                                prompt: Localization.searchPrompt)
                     .tag(tab)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .navigationTitle(Localization.viewTitle)
-        .if(isSearching, transform: { view in
-            view.searchable(text: $viewModel.searchQuery,
-                            isPresented: $isSearching,
-                            prompt: Localization.searchPrompt)
-        })
         .toolbar(removing: .sidebarToggle)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

@@ -1,5 +1,6 @@
 import Foundation
 import GameController
+import WooFoundation
 
 /// Parses GameController keyboard input into barcode scans.
 /// This class handles the core logic for interpreting GameController GCKeyCode input as barcode data,

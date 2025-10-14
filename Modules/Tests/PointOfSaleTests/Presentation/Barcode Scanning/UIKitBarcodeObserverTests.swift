@@ -2,6 +2,7 @@ import Testing
 import GameController
 import UIKit
 @testable import PointOfSale
+import WooFoundation
 
 @MainActor
 struct UIKitBarcodeObserverTests {

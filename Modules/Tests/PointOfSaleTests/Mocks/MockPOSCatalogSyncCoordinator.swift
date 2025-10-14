@@ -5,6 +5,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     var performFullSyncInvocationCount = 0
     var performFullSyncSiteID: Int64?
     var performFullSyncResult: Result<Void, Error> = .success(())
+    var lastSyncDate: Date?
 
     var onPerformFullSyncCalled: (() -> Void)?
 
@@ -23,4 +24,8 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {}
+
+    func getLastFullSyncDate(for siteID: Int64) async -> Date? {
+        lastSyncDate
+    }
 }

@@ -85,15 +85,23 @@ final class AlamofireNetworkErrorHandler {
         originalRequest: URLRequestConvertible,
         failure: Error?
     ) {
-        let retriedRequestIndex = retriedJetpackRequests.firstIndex { retriedRequest in
-            let urlRequest = try? originalRequest.asURLRequest()
-            let retriedRequest = try? retriedRequest.request.asURLRequest()
-            return urlRequest == retriedRequest
+        let retriedRequest: RetriedJetpackRequest? = queue.sync(flags: .barrier) { [weak self] in
+            guard let self else { return nil }
+            guard let urlRequest = try? originalRequest.asURLRequest() else { return nil }
+            let retriedRequestIndex = _retriedJetpackRequests.firstIndex { retriedRequest in
+                guard let retriedURLRequest = try? retriedRequest.request.asURLRequest() else {
+                    return false
+                }
+                return urlRequest.url == retriedURLRequest.url &&
+                       urlRequest.httpMethod == retriedURLRequest.httpMethod
+            }
+
+            guard let index = retriedRequestIndex else { return nil }
+
+            return _retriedJetpackRequests.remove(at: index)
         }
 
-        guard let index = retriedRequestIndex else { return }
-
-        let retriedRequest = retriedJetpackRequests.remove(at: index)
+        guard let retriedRequest else { return }
 
         if failure == nil {
             let siteID = retriedRequest.request.siteID
@@ -141,10 +149,15 @@ final class AlamofireNetworkErrorHandler {
     }
 
     func isRequestRetried(_ request: URLRequestConvertible) -> Bool {
-        retriedJetpackRequests.contains { retriedRequest in
-            let urlRequest = try? request.asURLRequest()
-            let currentItem = try? retriedRequest.request.asURLRequest()
-            return currentItem == urlRequest
+        guard let urlRequest = try? request.asURLRequest() else {
+            return false
+        }
+        return retriedJetpackRequests.contains { retriedRequest in
+            guard let currentItem = try? retriedRequest.request.asURLRequest() else {
+                return false
+            }
+            return currentItem.url == urlRequest.url &&
+                   currentItem.httpMethod == urlRequest.httpMethod
         }
     }
 

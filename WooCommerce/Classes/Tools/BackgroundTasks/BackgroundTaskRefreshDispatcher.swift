@@ -14,6 +14,7 @@ final class BackgroundTaskRefreshDispatcher {
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
+        BGTaskScheduler.shared.cancelAllTaskRequests()
         schedule.setDefaultPreferredTaskDates()
         scheduleNextTask()
     }
@@ -159,7 +160,7 @@ final class BackgroundTaskRefreshDispatcher {
     ///
     private func handlePOSCatalogSync(backgroundTask: BGAppRefreshTask, siteID: Int64) {
         guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
-            DDLogError("⛔️ POS catalog sync background refresh skipped: POS catalog sync coordinator is missing")
+            DDLogInfo("POS catalog sync background refresh skipped: Feature flag disabled or logged out")
             backgroundTask.setTaskCompleted(success: false)
             return
         }

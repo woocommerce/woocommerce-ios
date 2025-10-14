@@ -1,8 +1,15 @@
 import Foundation
 
+public protocol OrdersRemoteProtocol {
+    func loadOrders(
+        for siteID: Int64,
+        orderIDs: [Int64]
+    ) async throws -> [Order]
+}
+
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote {
+public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement

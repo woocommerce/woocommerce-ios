@@ -6,7 +6,7 @@ import Storage
 //
 public class BookingStore: Store {
     private let remote: BookingsRemoteProtocol
-    private let ordersRemote: OrdersRemote
+    private let ordersRemote: OrdersRemoteProtocol
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
@@ -18,7 +18,7 @@ public class BookingStore: Store {
                 storageManager: StorageManagerType,
                 network: Network,
                 remote: BookingsRemoteProtocol,
-                ordersRemote: OrdersRemote) {
+                ordersRemote: OrdersRemoteProtocol) {
         self.remote = remote
         self.ordersRemote = ordersRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)

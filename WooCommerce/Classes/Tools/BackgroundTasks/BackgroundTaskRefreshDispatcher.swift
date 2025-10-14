@@ -7,21 +7,25 @@ final class BackgroundTaskRefreshDispatcher {
     enum BackgroundTaskType: CaseIterable {
         case ordersAndDashboardSync
         case posCatalogSync
-
-        var period: TimeInterval {
-            switch self {
-            case .ordersAndDashboardSync:
-                return 30 * 60 // 30 minutes
-            case .posCatalogSync:
-                return 60 * 60 // 60 minutes
-            }
-        }
     }
+
+    private let schedule = BackgroundTaskSchedule()
 
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
-        scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
+        schedule.setDefaultPreferredTaskDates()
+        scheduleNextTask()
+    }
+
+    /// Schedules a next background task using a BackgroundTaskSchedule
+    /// Sets earliestBeginDate to nil (no delay) if preferred run date is in the past
+    ///
+    private func scheduleNextTask() {
+        let nextTask = schedule.getNextTask()
+        let preferredDate = schedule.preferredRunDate(for: nextTask)
+        let earliestBeginDate = preferredDate > Date() ? preferredDate : nil
+        scheduleTask(type: nextTask, earliestBeginDate: earliestBeginDate)
     }
 
     /// Schedules a background task with the specified type and timing.
@@ -29,7 +33,7 @@ final class BackgroundTaskRefreshDispatcher {
     /// - Parameters:
     ///   - type: The type of background task to schedule.
     ///   - earliestBeginDate: The earliest date at which the task can begin. When `nil`, the task can be submitted right away.
-    func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date?) {
+    private func scheduleTask(type: BackgroundTaskType, earliestBeginDate: Date?) {
         // Do not run this code while running test because this framework is not enabled in the simulator
         guard Self.isNotRunningTests() else {
             return
@@ -38,6 +42,7 @@ final class BackgroundTaskRefreshDispatcher {
         let request = BGAppRefreshTaskRequest(identifier: type.identifier)
         request.earliestBeginDate = earliestBeginDate
         do {
+            DDLogInfo("Scheduling background refresh task \(type) in \(Int(earliestBeginDate?.timeIntervalSinceNow ?? 0))s")
             try BGTaskScheduler.shared.submit(request)
         } catch {
             DDLogError("⛔️ Could not schedule \(type) task: \(error)")
@@ -71,25 +76,26 @@ final class BackgroundTaskRefreshDispatcher {
     /// Routes background task to appropriate handler based on type.
     ///
     private func handleBackgroundTask(_ backgroundTask: BGAppRefreshTask, type: BackgroundTaskType) {
-        switch type {
-        case .ordersAndDashboardSync:
-            handleOrdersAndDashboardSync(backgroundTask: backgroundTask)
-        case .posCatalogSync:
-            handlePOSCatalogSync(backgroundTask: backgroundTask)
-        }
-    }
-
-    /// Handles orders and dashboard sync.
-    ///
-    private func handleOrdersAndDashboardSync(backgroundTask: BGAppRefreshTask) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             backgroundTask.setTaskCompleted(success: false)
             return
         }
 
-        // Schedules the next orders and dashboard sync.
-        scheduleAppRefresh()
+        // Make sure the next task is scheduled
+        schedule.setNextPreferredRunDate(for: type)
+        scheduleNextTask()
 
+        switch type {
+        case .ordersAndDashboardSync:
+            handleOrdersAndDashboardSync(backgroundTask: backgroundTask, siteID: siteID)
+        case .posCatalogSync:
+            handlePOSCatalogSync(backgroundTask: backgroundTask, siteID: siteID)
+        }
+    }
+
+    /// Handles orders and dashboard sync.
+    ///
+    private func handleOrdersAndDashboardSync(backgroundTask: BGAppRefreshTask, siteID: Int64) {
         // Launch all refresh tasks in parallel.
         let refreshTasks = Task {
             do {
@@ -151,12 +157,7 @@ final class BackgroundTaskRefreshDispatcher {
 
     /// Handles POS catalog sync refresh task.
     ///
-    private func handlePOSCatalogSync(backgroundTask: BGAppRefreshTask) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            backgroundTask.setTaskCompleted(success: false)
-            return
-        }
-
+    private func handlePOSCatalogSync(backgroundTask: BGAppRefreshTask, siteID: Int64) {
         guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
             DDLogError("⛔️ POS catalog sync background refresh skipped: POS catalog sync coordinator is missing")
             backgroundTask.setTaskCompleted(success: false)

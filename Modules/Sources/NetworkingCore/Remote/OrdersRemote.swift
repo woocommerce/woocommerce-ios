@@ -129,8 +129,7 @@ public class OrdersRemote: Remote {
 
         let parameters: [String: Any] = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
-            ParameterKeys.fields: ParameterValues.fieldValues,
-            ParameterKeys.perPage: String(orderIDs.count)
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let path = Constants.ordersPath

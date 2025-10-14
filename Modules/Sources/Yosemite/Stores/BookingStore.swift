@@ -103,6 +103,45 @@ private extension BookingStore {
         }
     }
 
+    func synchronizeBooking(
+        siteID: Int64,
+        bookingID: Int64,
+        onCompletion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        enum SynchronizeBookingError: Error {
+            case bookingIsMissing
+        }
+
+        Task { @MainActor in
+            do {
+                let booking = try await remote.loadBooking(
+                    bookingID: bookingID,
+                    siteID: siteID
+                )
+
+                guard let booking else {
+                    onCompletion(.failure(SynchronizeBookingError.bookingIsMissing))
+                    return
+                }
+
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: [booking.orderID]
+                )
+
+                await upsertStoredBookingsInBackground(
+                    readOnlyBookings: [booking],
+                    readOnlyOrders: orders,
+                    siteID: siteID
+                )
+
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     /// Checks if the store already has any bookings.
     /// Returns `false` if the store has no bookings.
     ///

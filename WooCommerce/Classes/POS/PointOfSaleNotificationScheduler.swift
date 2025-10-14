@@ -3,6 +3,7 @@ import UserNotifications
 import Yosemite
 import Experiments
 
+// periphery: ignore - work in progress
 protocol PointOfSaleNotificationScheduling {
     func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async
 }

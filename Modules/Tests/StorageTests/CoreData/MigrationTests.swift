@@ -2121,6 +2121,34 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "BookingOrderInfo"), 1)
         let insertedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
         XCTAssertEqual(insertedOrderInfo, orderInfo)
+
+        // Verify customerInfo relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["customerInfo"])
+        let customerInfo = insertBookingCustomerInfo(to: targetContext)
+        orderInfo.setValue(customerInfo, forKey: "customerInfo")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "customerInfo") as? NSManagedObject, customerInfo)
+
+        // Verify productInfo relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["productInfo"])
+        let productInfo = insertBookingProductInfo(to: targetContext)
+        orderInfo.setValue(productInfo, forKey: "productInfo")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "productInfo") as? NSManagedObject, productInfo)
+
+        // Verify paymentInfo relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["paymentInfo"])
+        let paymentInfo = insertBookingPaymentInfo(to: targetContext)
+        orderInfo.setValue(paymentInfo, forKey: "paymentInfo")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "paymentInfo") as? NSManagedObject, paymentInfo)
+
+        // Verify booking relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["booking"])
+        let booking = insertBooking(to: targetContext)
+        orderInfo.setValue(booking, forKey: "booking")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "booking") as? NSManagedObject, booking)
     }
 
     func test_migrating_127_to_128_adds_new_bookingCustomerInfo_entity() throws {

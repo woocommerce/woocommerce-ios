@@ -80,8 +80,10 @@ extension Storage.GeneralAppSettings {
         let sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished ?? self.sitesWithAtLeastOneIPPTransactionFinished
         let isEUShippingNoticeDismissed = isEUShippingNoticeDismissed ?? self.isEUShippingNoticeDismissed
         let isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed ?? self.isCustomFieldsTopBannerDismissed
-        let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ?? self.isPOSSurveyPotentialMerchantNotificationScheduled
-        let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ?? self.isPOSSurveyCurrentMerchantNotificationScheduled
+        let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ??
+        self.isPOSSurveyPotentialMerchantNotificationScheduled
+        let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ??
+        self.isPOSSurveyCurrentMerchantNotificationScheduled
         let hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce ?? self.hasPOSBeenOpenedAtLeastOnce
 
         return Storage.GeneralAppSettings(

@@ -194,7 +194,9 @@ extension GeneralAppSettings {
                                                                                         forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
         self.isEUShippingNoticeDismissed = try container.decodeIfPresent(Bool.self, forKey: .isEUShippingNoticeDismissed) ?? false
         self.isCustomFieldsTopBannerDismissed = try container.decodeIfPresent(Bool.self, forKey: .isCustomFieldsTopBannerDismissed) ?? false
+        //swiftlint:disable:next line_length
         self.isPOSSurveyPotentialMerchantNotificationScheduled = try container.decodeIfPresent(Bool.self, forKey: .isPOSSurveyPotentialMerchantNotificationScheduled) ?? false
+        //swiftlint:disable:next line_length
         self.isPOSSurveyCurrentMerchantNotificationScheduled = try container.decodeIfPresent(Bool.self, forKey: .isPOSSurveyCurrentMerchantNotificationScheduled) ?? false
         self.hasPOSBeenOpenedAtLeastOnce = try container.decodeIfPresent(Bool.self, forKey: .hasPOSBeenOpenedAtLeastOnce) ?? false
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.

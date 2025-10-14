@@ -51,12 +51,28 @@ final class GeneralAppSettingsTests: XCTestCase {
         XCTAssertEqual(newSettings.feedbacks[.general], newFeedback)
     }
 
-    func test_isPOSSurveyNotificationScheduled_defaults_to_false() {
+    func test_isPOSSurveyPotentialMerchantNotificationScheduled_defaults_to_false() {
         // Given
         let settings = createGeneralAppSettings()
 
         // Then
-        XCTAssertFalse(settings.isPOSSurveyNotificationScheduled)
+        XCTAssertFalse(settings.isPOSSurveyPotentialMerchantNotificationScheduled)
+    }
+
+    func test_isPOSSurveyCurrentMerchantNotificationScheduled_defaults_to_false() {
+        // Given
+        let settings = createGeneralAppSettings()
+
+        // Then
+        XCTAssertFalse(settings.isPOSSurveyCurrentMerchantNotificationScheduled)
+    }
+
+    func test_hasPOSBeenOpenedAtLeastOnce_defaults_to_false() {
+        // Given
+        let settings = createGeneralAppSettings()
+
+        // Then
+        XCTAssertFalse(settings.hasPOSBeenOpenedAtLeastOnce)
     }
 
     func test_updating_properties_to_generalAppSettings_does_not_breaks_decoding() throws {
@@ -71,7 +87,9 @@ final class GeneralAppSettingsTests: XCTestCase {
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
         let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
         let isCustomFieldsTopBannerDismissed = true
-        let isPOSSurveyNotificationScheduled = true
+        let isPOSSurveyPotentialMerchantNotificationScheduled = true
+        let isPOSSurveyCurrentMerchantNotificationScheduled = true
+        let hasPOSBeenOpenedAtLeastOnce = true
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
@@ -83,14 +101,18 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
                                                   isEUShippingNoticeDismissed: false,
                                                   isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
-                                                  isPOSSurveyNotificationScheduled: isPOSSurveyNotificationScheduled)
+                                                  isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
+                                                  isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
+                                                  hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
 
         // When
         previousSettingsJson?.removeValue(forKey: "isViewAddOnsSwitchEnabled")
-        previousSettingsJson?.removeValue(forKey: "isPOSSurveyNotificationScheduled")
+        previousSettingsJson?.removeValue(forKey: "isPOSSurveyPotentialMerchantNotificationScheduled")
+        previousSettingsJson?.removeValue(forKey: "isPOSSurveyCurrentMerchantNotificationScheduled")
+        previousSettingsJson?.removeValue(forKey: "hasPOSBeenOpenedAtLeastOnce")
         let newEncodedSettings = try JSONSerialization.data(withJSONObject: previousSettingsJson as Any, options: .fragmentsAllowed)
         let newSettings = try JSONDecoder().decode(GeneralAppSettings.self, from: newEncodedSettings)
 
@@ -104,7 +126,9 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
         assertEqual(newSettings.sitesWithAtLeastOneIPPTransactionFinished, sitesWithAtLeastOneIPPTransactionFinished)
         assertEqual(newSettings.isCustomFieldsTopBannerDismissed, isCustomFieldsTopBannerDismissed)
-        assertEqual(newSettings.isPOSSurveyNotificationScheduled, false)
+        assertEqual(newSettings.isPOSSurveyPotentialMerchantNotificationScheduled, false)
+        assertEqual(newSettings.isPOSSurveyCurrentMerchantNotificationScheduled, false)
+        assertEqual(newSettings.hasPOSBeenOpenedAtLeastOnce, false)
     }
 }
 
@@ -122,7 +146,10 @@ private extension GeneralAppSettingsTests {
                                   featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:],
                                   sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [],
                                   isEUShippingNoticeDismissed: Bool = false,
-                                  isCustomFieldsTopBannerDismissed: Bool = false
+                                  isCustomFieldsTopBannerDismissed: Bool = false,
+                                  isPOSSurveyPotentialMerchantNotificationScheduled: Bool = false,
+                                  isPOSSurveyCurrentMerchantNotificationScheduled: Bool = false,
+                                  hasPOSBeenOpenedAtLeastOnce: Bool = false
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
@@ -135,6 +162,8 @@ private extension GeneralAppSettingsTests {
                            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
                            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
                            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
-                           isPOSSurveyNotificationScheduled: false)
+                           isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
+                           isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
+                           hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce)
     }
 }

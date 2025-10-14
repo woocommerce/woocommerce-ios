@@ -366,4 +366,18 @@ public enum AppSettingsAction: Action {
     /// Loads Loads the state of the App Passwords Experiment feature
     ///
     case getAppPasswordsExperimentSettingState(onCompletion: (Bool) -> Void)
+
+    // MARK: - Point of Sale Surveys
+
+    /// Sets the POS survey notification as scheduled
+    ///
+    case setPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether the POS survey notification has been scheduled
+    ///
+    case getPOSSurveyNotificationScheduled(onCompletion: (Bool) -> Void)
+
+    /// Resets the POS survey notification scheduled state
+    /// At the moment this one is used for testing only. To remove in WOOMOB-1480
+    case resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
 }

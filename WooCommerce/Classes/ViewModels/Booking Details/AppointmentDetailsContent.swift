@@ -15,10 +15,10 @@ extension BookingDetailsViewModel {
         let rows: [Row]
 
         init(_ booking: Booking) {
-            let appointmentDate = booking.startDate.formatted(date: .numeric, time: .omitted)
+            let appointmentDate = booking.startDate.toString(dateStyle: .short, timeStyle: .none, timeZone: BookingListTab.utcTimeZone)
             let appointmentTimeFrame = [
-                booking.startDate.formatted(date: .omitted, time: .shortened),
-                booking.endDate.formatted(date: .omitted, time: .shortened)
+                booking.startDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone),
+                booking.endDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone)
             ].joined(separator: " - ")
 
             rows = [

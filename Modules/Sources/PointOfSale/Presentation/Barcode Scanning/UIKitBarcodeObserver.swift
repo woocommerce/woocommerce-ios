@@ -1,6 +1,8 @@
 import Foundation
 import GameController
 import UIKit
+import protocol WooFoundation.TimeProvider
+import struct WooFoundation.DefaultTimeProvider
 
 /// An observer that processes UIKit UIPress events for barcode scanner input.
 /// This class serves as a fallback for VoiceOver scenarios where GameController framework

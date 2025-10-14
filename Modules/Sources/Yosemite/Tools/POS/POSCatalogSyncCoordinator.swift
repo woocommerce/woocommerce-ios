@@ -18,6 +18,11 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws
+
+    /// Returns the date of the last successful full catalog sync for a site
+    /// - Parameter siteID: The site ID to check
+    /// - Returns: The date of the last full sync, or nil if never synced
+    func getLastFullSyncDate(for siteID: Int64) async -> Date?
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -32,6 +37,7 @@ public extension POSCatalogSyncCoordinatorProtocol {
 
 public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
+    case syncNotApplicable(siteID: Int64)
     case negativeMaxAge
 }
 
@@ -65,7 +71,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         guard await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
-            return
+            throw POSCatalogSyncError.syncNotApplicable(siteID: siteID)
         }
 
         if ongoingSyncs.contains(siteID) {
@@ -212,6 +218,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), with " +
                   "\(catalogSize.productCount) products and \(catalogSize.variationCount) variations")
         return true
+    }
+
+    public func getLastFullSyncDate(for siteID: Int64) async -> Date? {
+        return await lastFullSyncDate(for: siteID)
     }
 
     private func lastFullSyncDate(for siteID: Int64) async -> Date? {

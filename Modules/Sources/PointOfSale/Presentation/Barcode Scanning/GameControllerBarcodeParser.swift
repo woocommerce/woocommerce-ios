@@ -1,5 +1,7 @@
 import Foundation
 import GameController
+import protocol WooFoundation.TimeProvider
+import struct WooFoundation.DefaultTimeProvider
 
 /// Parses GameController keyboard input into barcode scans.
 /// This class handles the core logic for interpreting GameController GCKeyCode input as barcode data,

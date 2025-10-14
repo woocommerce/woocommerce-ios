@@ -56,9 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
-    /// Handles events to background refresh the app.
-    ///
-    private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+    private let backgroundWorkScheduler = BackgroundWorkScheduler()
 
     private var subscriptions: Set<AnyCancellable> = []
 

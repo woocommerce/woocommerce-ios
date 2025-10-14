@@ -1,5 +1,6 @@
 import Foundation
 @testable import PointOfSale
+import WooFoundation
 
 final class MockTimer: Timer {
     var isCancelled = false
@@ -58,6 +59,10 @@ final class MockTimeProvider: TimeProvider {
         )
         activeTimers.append(mockTimer)
         return mockTimer
+    }
+
+    func scheduledTimer(withTimeInterval interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer {
+        fatalError("Not used")
     }
 
     func removeTimer(_ timer: MockTimer) {

@@ -866,6 +866,8 @@ private extension MainTabBarController {
                 _ = try await coordinator.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
             } catch POSCatalogSyncError.syncAlreadyInProgress {
                 DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
+            } catch POSCatalogSyncError.syncNotApplicable {
+                DDLogInfo("ℹ️ POS catalog sync is not applicable \(siteID), skipping")
             } catch {
                 DDLogError("⚠️ POS catalog sync failed: \(error)")
             }

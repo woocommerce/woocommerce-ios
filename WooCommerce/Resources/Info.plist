@@ -6,8 +6,7 @@
 	<true/>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.automattic.woocommerce.refresh.pos.catalog.sync.incremental</string>
-		<string>com.automattic.woocommerce.refresh.pos.catalog.sync.full</string>
+		<string>com.automattic.woocommerce.refresh.pos.catalog.sync</string>
 		<string>com.automattic.woocommerce.refresh</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>

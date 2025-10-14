@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="25A354" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="25A362" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -81,6 +81,39 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="statusKey" attributeType="String" defaultValueString=""/>
+        <relationship name="orderInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingOrderInfo" inverseName="booking" inverseEntity="BookingOrderInfo"/>
+    </entity>
+    <entity name="BookingCustomerInfo" representedClassName="BookingCustomerInfo" syncable="YES">
+        <attribute name="billingAddress1" optional="YES" attributeType="String"/>
+        <attribute name="billingAddress2" optional="YES" attributeType="String"/>
+        <attribute name="billingCity" optional="YES" attributeType="String"/>
+        <attribute name="billingCompany" optional="YES" attributeType="String"/>
+        <attribute name="billingCountry" optional="YES" attributeType="String"/>
+        <attribute name="billingEmail" optional="YES" attributeType="String"/>
+        <attribute name="billingFirstName" optional="YES" attributeType="String"/>
+        <attribute name="billingLastName" optional="YES" attributeType="String"/>
+        <attribute name="billingPhone" optional="YES" attributeType="String"/>
+        <attribute name="billingPostcode" optional="YES" attributeType="String"/>
+        <attribute name="billingState" optional="YES" attributeType="String"/>
+        <relationship name="orderInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookingOrderInfo" inverseName="customerInfo" inverseEntity="BookingOrderInfo"/>
+    </entity>
+    <entity name="BookingOrderInfo" representedClassName="BookingOrderInfo" syncable="YES">
+        <attribute name="statusKey" attributeType="String"/>
+        <relationship name="booking" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Booking" inverseName="orderInfo" inverseEntity="Booking"/>
+        <relationship name="customerInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingCustomerInfo" inverseName="orderInfo" inverseEntity="BookingCustomerInfo"/>
+        <relationship name="paymentInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingPaymentInfo" inverseName="orderInfo" inverseEntity="BookingPaymentInfo"/>
+        <relationship name="productInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingProductInfo" inverseName="orderInfo" inverseEntity="BookingProductInfo"/>
+    </entity>
+    <entity name="BookingPaymentInfo" representedClassName="BookingPaymentInfo" syncable="YES">
+        <attribute name="subtotal" optional="YES" attributeType="String"/>
+        <attribute name="subtotalTax" optional="YES" attributeType="String"/>
+        <attribute name="total" optional="YES" attributeType="String"/>
+        <attribute name="totalTax" optional="YES" attributeType="String"/>
+        <relationship name="orderInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookingOrderInfo" inverseName="paymentInfo" inverseEntity="BookingOrderInfo"/>
+    </entity>
+    <entity name="BookingProductInfo" representedClassName="BookingProductInfo" syncable="YES">
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <relationship name="orderInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookingOrderInfo" inverseName="productInfo" inverseEntity="BookingOrderInfo"/>
     </entity>
     <entity name="Country" representedClassName="Country" syncable="YES">
         <attribute name="code" attributeType="String"/>

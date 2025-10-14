@@ -21,5 +21,5 @@ extension Booking {
     @NSManaged public var statusKey: String?
     @NSManaged public var localTimezone: String?
     @NSManaged public var currency: String?
-
+    @NSManaged public var orderInfo: BookingOrderInfo?
 }

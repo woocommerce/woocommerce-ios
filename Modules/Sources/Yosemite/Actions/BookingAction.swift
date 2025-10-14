@@ -23,4 +23,16 @@ public enum BookingAction: Action {
     ///
     case checkIfStoreHasBookings(siteID: Int64,
                                  onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Searches for bookings matching the specified criteria and search query.
+    ///
+    /// - Parameter onCompletion: called when search completes, returns an error or an array of bookings.
+    ///
+    case searchBookings(siteID: Int64,
+                        searchQuery: String,
+                        pageNumber: Int,
+                        pageSize: Int = BookingsRemote.Default.pageSize,
+                        startDateBefore: String? = nil,
+                        startDateAfter: String? = nil,
+                        onCompletion: (Result<[Booking], Error>) -> Void)
 }

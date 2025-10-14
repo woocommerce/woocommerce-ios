@@ -264,7 +264,7 @@ extension PushNotificationsManager {
             // Check if this is a local notification
             if !content.isRemoteNotification {
                 // Display local notifications with banner and sound when app is in foreground
-                return [.banner, .sound]
+                return [.banner, .sound, .list]
             }
         }
 

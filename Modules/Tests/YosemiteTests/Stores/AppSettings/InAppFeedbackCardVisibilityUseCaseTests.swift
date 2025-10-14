@@ -244,7 +244,8 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false)
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyNotificationScheduled: false)
         return settings
     }
 }

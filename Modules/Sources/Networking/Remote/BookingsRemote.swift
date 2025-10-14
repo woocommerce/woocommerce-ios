@@ -10,7 +10,8 @@ public protocol BookingsRemoteProtocol {
                          pageNumber: Int,
                          pageSize: Int,
                          startDateBefore: String?,
-                         startDateAfter: String?) async throws -> [Booking]
+                         startDateAfter: String?,
+                         searchQuery: String?) async throws -> [Booking]
 }
 
 /// Booking: Remote Endpoints
@@ -27,12 +28,14 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     ///     - pageSize: Number of bookings to be retrieved per page.
     ///     - startDateBefore: Filter bookings with start date before this timestamp.
     ///     - startDateAfter: Filter bookings with start date after this timestamp.
+    ///     - searchQuery: Search query to filter bookings.
     ///
     public func loadAllBookings(for siteID: Int64,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
                                 startDateBefore: String? = nil,
-                                startDateAfter: String? = nil) async throws -> [Booking] {
+                                startDateAfter: String? = nil,
+                                searchQuery: String? = nil) async throws -> [Booking] {
         var parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
@@ -44,6 +47,10 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         if let startDateAfter = startDateAfter {
             parameters[ParameterKey.startDateAfter] = startDateAfter
+        }
+
+        if let searchQuery = searchQuery, !searchQuery.isEmpty {
+            parameters[ParameterKey.search] = searchQuery
         }
 
         let path = Path.bookings
@@ -71,5 +78,6 @@ public extension BookingsRemote {
         static let perPage: String         = "per_page"
         static let startDateBefore: String = "start_date_before"
         static let startDateAfter: String  = "start_date_after"
+        static let search: String          = "search"
     }
 }

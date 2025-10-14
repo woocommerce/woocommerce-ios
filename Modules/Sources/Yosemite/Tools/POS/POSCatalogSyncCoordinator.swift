@@ -18,6 +18,11 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws
+
+    /// Returns the date of the last successful full catalog sync for a site
+    /// - Parameter siteID: The site ID to check
+    /// - Returns: The date of the last full sync, or nil if never synced
+    func getLastFullSyncDate(for siteID: Int64) async -> Date?
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -86,6 +91,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         _ = try await fullSyncService.startFullSync(for: siteID)
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
+    }
+
+    public func getLastFullSyncDate(for siteID: Int64) async -> Date? {
+        return await lastFullSyncDate(for: siteID)
     }
 
     /// Determines if a full sync should be performed based on the age of the last sync

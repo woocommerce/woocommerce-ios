@@ -6,8 +6,16 @@ import Network
 final class BackgroundTaskRefreshDispatcher {
     enum BackgroundTaskType: CaseIterable {
         case ordersAndDashboardSync
-        case posCatalogFullSync
-        case posCatalogIncrementalSync
+        case posCatalogSync
+
+        var period: TimeInterval {
+            switch self {
+            case .ordersAndDashboardSync:
+                return 30 * 60 // 30 minutes
+            case .posCatalogSync:
+                return 60 * 60 // 60 minutes
+            }
+        }
     }
 
     /// Schedule the app refresh background task.
@@ -66,10 +74,8 @@ final class BackgroundTaskRefreshDispatcher {
         switch type {
         case .ordersAndDashboardSync:
             handleOrdersAndDashboardSync(backgroundTask: backgroundTask)
-        case .posCatalogFullSync:
-            handlePOSCatalogFullSync(backgroundTask: backgroundTask)
-        case .posCatalogIncrementalSync:
-            handlePOSCatalogIncrementalSync(backgroundTask: backgroundTask)
+        case .posCatalogSync:
+            handlePOSCatalogSync(backgroundTask: backgroundTask)
         }
     }
 
@@ -143,10 +149,16 @@ final class BackgroundTaskRefreshDispatcher {
         }
     }
 
-    /// Handles POS catalog full sync refresh task.
+    /// Handles POS catalog sync refresh task.
     ///
-    private func handlePOSCatalogFullSync(backgroundTask: BGAppRefreshTask) {
+    private func handlePOSCatalogSync(backgroundTask: BGAppRefreshTask) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            backgroundTask.setTaskCompleted(success: false)
+            return
+        }
+
+        guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
+            DDLogError("⛔️ POS catalog sync background refresh skipped: POS catalog sync coordinator is missing")
             backgroundTask.setTaskCompleted(success: false)
             return
         }
@@ -154,44 +166,25 @@ final class BackgroundTaskRefreshDispatcher {
         let syncTask = Task {
             do {
                 // Performs full sync only if the catalog age is older than 24 hours.
-                let maxAge: TimeInterval = 24 * 60 * 60
-                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
+                // otherwise, performs incremental sync
+                let twentyFourHours: TimeInterval = 24 * 60 * 60
+                let lastFullSync = await coordinator.getLastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
+
+                if Date().timeIntervalSince(lastFullSync) >= twentyFourHours {
+                    try await coordinator.performFullSync(for: siteID)
+                } else {
+                    try await coordinator.performIncrementalSync(for: siteID)
+                }
+
                 backgroundTask.setTaskCompleted(success: true)
             } catch {
-                DDLogError("⛔️ POS catalog full sync background refresh failed: \(error)")
+                DDLogError("⛔️ POS catalog sync background refresh failed: \(error)")
                 backgroundTask.setTaskCompleted(success: false)
             }
         }
 
         backgroundTask.expirationHandler = {
-            DDLogError("⛔️ POS catalog full sync background refresh expired")
-            syncTask.cancel()
-            backgroundTask.setTaskCompleted(success: false)
-        }
-    }
-
-    /// Handles POS catalog incremental sync refresh task.
-    ///
-    private func handlePOSCatalogIncrementalSync(backgroundTask: BGAppRefreshTask) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            backgroundTask.setTaskCompleted(success: false)
-            return
-        }
-
-        let syncTask = Task {
-            do {
-                // Performs incremental sync only if the catalog age is older than 1 hour.
-                let maxAge: TimeInterval = 60 * 60
-                try await ServiceLocator.stores.posCatalogSyncCoordinator?.performIncrementalSyncIfApplicable(for: siteID, maxAge: maxAge)
-                backgroundTask.setTaskCompleted(success: true)
-            } catch {
-                DDLogError("⛔️ POS catalog incremental sync background refresh failed: \(error)")
-                backgroundTask.setTaskCompleted(success: false)
-            }
-        }
-
-        backgroundTask.expirationHandler = {
-            DDLogError("⛔️ POS catalog incremental sync background refresh expired")
+            DDLogError("⛔️ POS catalog sync background refresh expired")
             syncTask.cancel()
             backgroundTask.setTaskCompleted(success: false)
         }
@@ -220,10 +213,8 @@ fileprivate extension BackgroundTaskRefreshDispatcher.BackgroundTaskType {
         switch self {
         case .ordersAndDashboardSync:
             return "com.automattic.woocommerce.refresh"
-        case .posCatalogFullSync:
-            return "com.automattic.woocommerce.refresh.pos.catalog.sync.full"
-        case .posCatalogIncrementalSync:
-            return "com.automattic.woocommerce.refresh.pos.catalog.sync.incremental"
+        case .posCatalogSync:
+            return "com.automattic.woocommerce.refresh.pos.catalog.sync"
         }
     }
 }

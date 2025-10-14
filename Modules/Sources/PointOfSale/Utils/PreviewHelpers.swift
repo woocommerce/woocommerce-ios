@@ -618,6 +618,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         // Simulates an incremental sync operation with a 0.5 second delay.
         try await Task.sleep(nanoseconds: 500_000_000)
     }
+
+    func getLastFullSyncDate(for siteID: Int64) async -> Date? {
+        return nil
+    }
 }
 
 #endif

@@ -92,7 +92,7 @@ struct PointOfSaleNotificationSchedulerTests {
         #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
     }
 
-    @Test func scheduleLocalNotificationIfEligible_when_potentialMerchant_then_uses_correct_scenario() async throws {
+    @Test func scheduleLocalNotificationIfEligible_when_potentialMerchant_case_then_uses_correct_scenario() async throws {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
@@ -121,7 +121,7 @@ struct PointOfSaleNotificationSchedulerTests {
         #expect(trigger.repeats == false)
     }
 
-    @Test func scheduleLocalNotificationIfEligible_when_currentMerchant_then_correctScenario() async throws {
+    @Test func scheduleLocalNotificationIfEligible_when_currentMerchant_case_then_uses_correct_scenario() async throws {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true

@@ -143,18 +143,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-// MARK: - UIScene Configuration
-extension AppDelegate {
-    func application(_ application: UIApplication,
-                     configurationForConnecting connectingSceneSession: UISceneSession,
-                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        let config = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
-        config.delegateClass = SceneDelegate.self
-        return config
-    }
-
-}
-
 // MARK: - Initialization Methods
 //
 extension AppDelegate {

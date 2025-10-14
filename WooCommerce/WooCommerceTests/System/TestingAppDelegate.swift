@@ -26,12 +26,4 @@ class TestingAppDelegate: AppDelegate {
 
         return true
     }
-
-    override func application(_ application: UIApplication,
-                              configurationForConnecting connectingSceneSession: UISceneSession,
-                              options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        let config = UISceneConfiguration(name: "Testing Configuration", sessionRole: connectingSceneSession.role)
-        config.delegateClass = TestingSceneDelegate.self
-        return config
-    }
 }

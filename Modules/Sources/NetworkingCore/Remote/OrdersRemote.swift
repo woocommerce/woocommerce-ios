@@ -128,7 +128,7 @@ public class OrdersRemote: Remote {
         }
 
         let parameters: [String: Any] = [
-            ParameterKeys.include: orderIDs.map(String.init).joined(separator: ","),
+            ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.fields: ParameterValues.fieldValues,
             ParameterKeys.perPage: String(orderIDs.count)
         ]

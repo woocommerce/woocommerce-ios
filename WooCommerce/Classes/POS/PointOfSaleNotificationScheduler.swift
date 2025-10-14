@@ -2,8 +2,13 @@ import Foundation
 import UserNotifications
 import Yosemite
 import Experiments
+
+protocol PointOfSaleNotificationScheduling {
+    func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async
+}
+
 // periphery: ignore - work in progress
-final class PointOfSaleNotificationScheduler {
+final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling {
     enum MerchantType {
         case potentialMerchant
         case currentMerchant
@@ -52,13 +57,13 @@ final class PointOfSaleNotificationScheduler {
         self.pushNotificationsManager = pushNotificationsManager
     }
 
-    func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) {
+    func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
         // TODO: Additional check to see if .currentMerchant case has used POS before - WOOMOB-1498
         // TODO: Check as well if the notification hasn't been scheduled already WOOMOB-1461
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
         guard isCountryEligible() else { return }
 
-        scheduleLocalNotification(for: merchantType)
+        await scheduleLocalNotification(for: merchantType)
     }
 
     private func isCountryEligible() -> Bool {
@@ -70,24 +75,22 @@ final class PointOfSaleNotificationScheduler {
         }
     }
 
-    private func scheduleLocalNotification(for merchantType: PointOfSaleNotificationScheduler.MerchantType) {
+    private func scheduleLocalNotification(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
         // TODO: Set scheduled notification value in app storage - WOOMOB-1461
-        Task { @MainActor in
-            let payload: [AnyHashable: Any] = [
-                LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL
-            ]
+        let payload: [AnyHashable: Any] = [
+            LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL
+        ]
 
-            let notification = LocalNotification(
-                scenario: merchantType.scenario,
-                userInfo: payload
-            )
+        let notification = LocalNotification(
+            scenario: merchantType.scenario,
+            userInfo: payload
+        )
 
-            let trigger = UNTimeIntervalNotificationTrigger(
-                timeInterval: merchantType.timeInterval,
-                repeats: false
-            )
+        let trigger = UNTimeIntervalNotificationTrigger(
+            timeInterval: merchantType.timeInterval,
+            repeats: false
+        )
 
-            await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
-        }
+        await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
     }
 }

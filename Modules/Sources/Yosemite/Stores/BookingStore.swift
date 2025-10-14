@@ -47,6 +47,8 @@ public class BookingStore: Store {
                                 startDateAfter: startDateAfter,
                                 shouldClearCache: shouldClearCache,
                                 onCompletion: onCompletion)
+        case .synchronizeBooking(siteID: let siteID, bookingID: let bookingID, onCompletion: let onCompletion):
+            synchronizeBooking(siteID: siteID, bookingID: bookingID, onCompletion: onCompletion)
         case let .checkIfStoreHasBookings(siteID, onCompletion):
             checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
         case let .searchBookings(siteID, searchQuery, pageNumber, pageSize, startDateBefore, startDateAfter, onCompletion):

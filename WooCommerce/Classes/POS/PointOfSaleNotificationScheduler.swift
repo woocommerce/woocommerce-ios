@@ -46,22 +46,31 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
         }
     }
 
+    private let stores: StoresManager
     private let siteSettings: [SiteSetting]
     private let featureFlagService: FeatureFlagService
     private let pushNotificationsManager: PushNotesManager
 
-    init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+    init(stores: StoresManager = ServiceLocator.stores,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+        self.stores = stores
         self.siteSettings = siteSettings
         self.featureFlagService = featureFlagService
         self.pushNotificationsManager = pushNotificationsManager
     }
 
     func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
-        // TODO: Additional check to see if .currentMerchant case has used POS before - WOOMOB-1498
-        // TODO: Check as well if the notification hasn't been scheduled already WOOMOB-1461
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
+
+        let isScheduled = await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
+                continuation.resume(returning: isScheduled)
+            }
+            stores.dispatch(action)
+        }
+        guard !isScheduled else { return }
         guard isCountryEligible() else { return }
 
         await scheduleLocalNotification(for: merchantType)
@@ -77,7 +86,7 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
     }
 
     private func scheduleLocalNotification(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
-        // TODO: Set scheduled notification value in app storage - WOOMOB-1461
+
         let payload: [AnyHashable: Any] = [
             LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL
         ]
@@ -93,5 +102,12 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
         )
 
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
+
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in
+                continuation.resume()
+            }
+            stores.dispatch(action)
+        }
     }
 }

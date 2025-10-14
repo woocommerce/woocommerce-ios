@@ -2097,6 +2097,137 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(insertedBooking, booking)
         XCTAssertEqual(insertedBooking.parentID, 0) // default value
     }
+
+    func test_migrating_127_to_128_adds_new_bookingOrderInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingOrderInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingOrderInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingOrderInfo"), 0)
+
+        let orderInfo = insertBookingOrderInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingOrderInfo"), 1)
+        let insertedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+        XCTAssertEqual(insertedOrderInfo, orderInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingCustomerInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingCustomerInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingCustomerInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingCustomerInfo"), 0)
+
+        let customerInfo = insertBookingCustomerInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingCustomerInfo"), 1)
+        let insertedCustomerInfo = try XCTUnwrap(targetContext.first(entityName: "BookingCustomerInfo"))
+        XCTAssertEqual(insertedCustomerInfo, customerInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingProductInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingProductInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingProductInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingProductInfo"), 0)
+
+        let productInfo = insertBookingProductInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingProductInfo"), 1)
+        let insertedProductInfo = try XCTUnwrap(targetContext.first(entityName: "BookingProductInfo"))
+        XCTAssertEqual(insertedProductInfo, productInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingPaymentInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingPaymentInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingPaymentInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingPaymentInfo"), 0)
+
+        let paymentInfo = insertBookingPaymentInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingPaymentInfo"), 1)
+        let insertedPaymentInfo = try XCTUnwrap(targetContext.first(entityName: "BookingPaymentInfo"))
+        XCTAssertEqual(insertedPaymentInfo, paymentInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_relationship_orderInfo_to_booking() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        let booking = insertBooking(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(booking.entity.relationshipsByName["orderInfo"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedBooking = try XCTUnwrap(targetContext.first(entityName: "Booking"))
+
+        // `orderInfo` should be present in `migratedBooking`
+        XCTAssertNotNil(migratedBooking.entity.relationshipsByName["orderInfo"])
+
+        let savedOrderInfo = migratedBooking.value(forKey: "orderInfo") as? NSManagedObject
+        XCTAssertNil(savedOrderInfo) // default value
+
+        let orderInfo = insertBookingOrderInfo(to: targetContext)
+        migratedBooking.setValue(orderInfo, forKey: "orderInfo")
+        try targetContext.save()
+
+        let updatedOrderInfo = migratedBooking.value(forKey: "orderInfo") as? NSManagedObject
+        XCTAssertEqual(updatedOrderInfo, orderInfo)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3027,6 +3158,46 @@ private extension MigrationTests {
         context.insert(entityName: "Booking", properties: [
             "siteID": 1,
             "bookingID": 23
+        ])
+    }
+
+    @discardableResult
+    func insertBookingOrderInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingOrderInfo", properties: [
+            "statusKey": "completed"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingCustomerInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingCustomerInfo", properties: [
+            "billingFirstName": "John",
+            "billingLastName": "Doe",
+            "billingEmail": "john.doe@example.com",
+            "billingAddress1": "123 Main St",
+            "billingCity": "San Francisco",
+            "billingState": "CA",
+            "billingPostcode": "94102",
+            "billingCountry": "US"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingProductInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingProductInfo", properties: [
+            "name": "Sample Product"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingPaymentInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingPaymentInfo", properties: [
+            "paymentMethodID": "credit_card",
+            "paymentMethodTitle": "Credit Card",
+            "subtotal": "100.00",
+            "subtotalTax": "10.00",
+            "total": "110.00",
+            "totalTax": "10.00"
         ])
     }
 }

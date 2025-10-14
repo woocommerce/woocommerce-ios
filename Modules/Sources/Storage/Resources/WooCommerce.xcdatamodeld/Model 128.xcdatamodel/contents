@@ -105,6 +105,8 @@
         <relationship name="productInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingProductInfo" inverseName="orderInfo" inverseEntity="BookingProductInfo"/>
     </entity>
     <entity name="BookingPaymentInfo" representedClassName="BookingPaymentInfo" syncable="YES">
+        <attribute name="paymentMethodID" optional="YES" attributeType="String"/>
+        <attribute name="paymentMethodTitle" optional="YES" attributeType="String"/>
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="subtotalTax" optional="YES" attributeType="String"/>
         <attribute name="total" optional="YES" attributeType="String"/>

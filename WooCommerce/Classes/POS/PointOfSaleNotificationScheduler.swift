@@ -64,14 +64,15 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
     func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
 
-        let isScheduled = await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.getPOSSurveyNotificationScheduled { isScheduled in
-                continuation.resume(returning: isScheduled)
-            }
-            stores.dispatch(action)
-        }
+        let isScheduled = await isNotificationScheduled(for: merchantType)
         guard !isScheduled else { return }
         guard isCountryEligible() else { return }
+
+        // For current merchants, also check if they've opened POS at least once
+        if merchantType == .currentMerchant {
+            let hasOpenedPOS = await hasOpenedPOSAtLeastOnce()
+            guard hasOpenedPOS else { return }
+        }
 
         await scheduleLocalNotification(for: merchantType)
     }
@@ -82,6 +83,36 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
             return true
         } else {
             return false
+        }
+    }
+
+    private func isNotificationScheduled(for merchantType: MerchantType) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action: AppSettingsAction
+            switch merchantType {
+            case .potentialMerchant:
+                action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
+                    continuation.resume(returning: isScheduled)
+                }
+            case .currentMerchant:
+                action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
+                    continuation.resume(returning: isScheduled)
+                }
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
+
+    private func hasOpenedPOSAtLeastOnce() async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+                continuation.resume(returning: hasOpened)
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 
@@ -104,10 +135,20 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
 
         await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.setPOSSurveyNotificationScheduled { _ in
-                continuation.resume()
+            let action: AppSettingsAction
+            switch merchantType {
+            case .potentialMerchant:
+                action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in
+                    continuation.resume()
+                }
+            case .currentMerchant:
+                action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in
+                    continuation.resume()
+                }
             }
-            stores.dispatch(action)
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 }

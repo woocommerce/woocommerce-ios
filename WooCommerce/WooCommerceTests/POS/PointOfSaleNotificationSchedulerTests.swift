@@ -3,21 +3,26 @@ import UserNotifications
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 struct PointOfSaleNotificationSchedulerTests {
     private let mockFeatureFlagService: MockFeatureFlagService
     private let mockPushNotesManager: MockPushNotificationsManager
+    private let mockStores: MockStoresManager
 
-    init() {
+    init() async throws {
         mockFeatureFlagService = MockFeatureFlagService()
         mockPushNotesManager = MockPushNotificationsManager()
+        mockStores = MockStoresManager(sessionManager: .makeForTesting())
     }
 
     @Test func scheduleLocalNotificationIfEligible_when_featureFlag_is_disabled_then_no_notification_scheduled() async throws {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = false
+        setupMockStores()
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -34,8 +39,10 @@ struct PointOfSaleNotificationSchedulerTests {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores()
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -56,8 +63,10 @@ struct PointOfSaleNotificationSchedulerTests {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "GB")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores()
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -78,8 +87,10 @@ struct PointOfSaleNotificationSchedulerTests {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "FR")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores()
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -96,8 +107,10 @@ struct PointOfSaleNotificationSchedulerTests {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores()
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -125,8 +138,10 @@ struct PointOfSaleNotificationSchedulerTests {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores(hasPOSBeenOpened: true) // Current merchant requires POS to have been opened
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -154,8 +169,10 @@ struct PointOfSaleNotificationSchedulerTests {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "GB")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores()
 
         let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -177,6 +194,72 @@ struct PointOfSaleNotificationSchedulerTests {
         #expect(notification.userInfo.keys.contains(LocalNotification.UserInfoKey.surveyURL))
     }
 
+    @Test func scheduleLocalNotificationIfEligible_when_potentialMerchant_already_scheduled_then_currentMerchant_can_still_be_scheduled() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores(isPotentialMerchantScheduled: true, hasPOSBeenOpened: true)
+
+        let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When/Then
+        await confirmation() { confirmation in
+            mockPushNotesManager.onRequestLocalNotificationCalled = {
+                confirmation()
+            }
+            await scheduler.scheduleLocalNotificationIfEligible(for: .currentMerchant)
+        }
+
+        // Then
+        let notification = try #require(mockPushNotesManager.requestedLocalNotifications.first)
+        #expect(notification.scenario == .pointOfSaleCurrentMerchant)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_currentMerchant_already_scheduled_then_no_duplicate_scheduled() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores(isCurrentMerchantScheduled: true, hasPOSBeenOpened: true)
+
+        let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .currentMerchant)
+
+        // Then
+        #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_currentMerchant_but_POS_not_opened_then_no_notification_scheduled() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores(hasPOSBeenOpened: false)
+
+        let scheduler = PointOfSaleNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .currentMerchant)
+
+        // Then
+        #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
+    }
+
     private func sampleSiteSettings(countryCode: String) -> [SiteSetting] {
         [
             SiteSetting.fake().copy(
@@ -186,5 +269,26 @@ struct PointOfSaleNotificationSchedulerTests {
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
         ]
+    }
+
+    private func setupMockStores(isPotentialMerchantScheduled: Bool = false,
+                                  isCurrentMerchantScheduled: Bool = false,
+                                  hasPOSBeenOpened: Bool = false) {
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .getPOSSurveyPotentialMerchantNotificationScheduled(let onCompletion):
+                onCompletion(isPotentialMerchantScheduled)
+            case .getPOSSurveyCurrentMerchantNotificationScheduled(let onCompletion):
+                onCompletion(isCurrentMerchantScheduled)
+            case .getHasPOSBeenOpenedAtLeastOnce(let onCompletion):
+                onCompletion(hasPOSBeenOpened)
+            case .setPOSSurveyPotentialMerchantNotificationScheduled(let onCompletion):
+                onCompletion(.success(()))
+            case .setPOSSurveyCurrentMerchantNotificationScheduled(let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
     }
 }

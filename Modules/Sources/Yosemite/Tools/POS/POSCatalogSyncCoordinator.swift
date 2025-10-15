@@ -22,7 +22,8 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a smart sync that decides between full and incremental sync based on the last full sync date
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
-    ///   - fullSyncMaxAge: Maximum age before a full sync is triggered. If the last full sync is older than this, performs full sync; otherwise, performs incremental sync
+    ///   - fullSyncMaxAge: Maximum age before a full sync is triggered. If the last full sync is older than this,
+    ///                     performs full sync; otherwise, performs incremental sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
 }

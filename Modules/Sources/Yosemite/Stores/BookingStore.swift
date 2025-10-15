@@ -261,12 +261,36 @@ private extension BookingStore {
             let storageBooking = storedBookings.first { $0.bookingID == readOnlyBooking.bookingID } ??
                 storage.insertNewObject(ofType: StorageBooking.self)
 
-            // TODO: - Apply new Booking specific models
             if let associatedOrder = readOnlyOrders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
-                /// 1. Convert `Order` into `Booking` specific order, product and customer
-                /// 2. Obtain corresponding associated `Storage` models from `storageBooking` or create new ones.
-                /// 3. Update the above models with values from `associatedOrder`
-                print("The order for the booking \(readOnlyBooking.bookingID): \(associatedOrder)")
+                let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
+
+                let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
+                let productName = associatedOrder.items.first(where: { $0.productID == readOnlyBooking.productID })?.name
+                productInfo.update(with: .init(name: productName ?? ""))
+                orderInfo.productInfo = productInfo
+
+                if let billingAddress = associatedOrder.billingAddress {
+                    let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
+                    customerInfo.update(with: .init(billingAddress: billingAddress))
+                    orderInfo.customerInfo = customerInfo
+                }
+
+                let paymentInfo = orderInfo.paymentInfo ?? storage.insertNewObject(ofType: Storage.BookingPaymentInfo.self)
+                paymentInfo.update(with:
+                        BookingPaymentInfo(
+                            paymentMethodID: associatedOrder.paymentMethodID,
+                            paymentMethodTitle: associatedOrder.paymentMethodTitle,
+                            subtotal: associatedOrder.items.map({ Double($0.subtotal) ?? 0 }).reduce(0, +).description,
+                            subtotalTax: associatedOrder.items.map({ Double($0.subtotalTax) ?? 0 }).reduce(0, +).description,
+                            total: associatedOrder.total,
+                            totalTax: associatedOrder.totalTax
+                        )
+                )
+
+                orderInfo.paymentInfo = paymentInfo
+
+                orderInfo.statusKey = associatedOrder.status.rawValue
+                storageBooking.orderInfo = orderInfo
             }
 
             storageBooking.update(with: readOnlyBooking)

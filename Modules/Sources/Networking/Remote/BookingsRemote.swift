@@ -13,6 +13,9 @@ public protocol BookingsRemoteProtocol {
                          startDateAfter: String?,
                          searchQuery: String?,
                          order: BookingsRemote.Order) async throws -> [Booking]
+
+    func loadBooking(bookingID: Int64,
+                     siteID: Int64) async throws -> Booking?
 }
 
 /// Booking: Remote Endpoints
@@ -60,6 +63,24 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         let path = Path.bookings
         let request = JetpackRequest(wooApiVersion: .wcBookings, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ListMapper<Booking>(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func loadBooking(
+        bookingID: Int64,
+        siteID: Int64
+    ) async throws -> Booking? {
+        let path = "\(Path.bookings)/\(bookingID)"
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = BookingMapper(siteID: siteID)
 
         return try await enqueue(request, mapper: mapper)
     }

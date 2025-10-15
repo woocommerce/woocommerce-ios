@@ -56,6 +56,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var triggersForRequestedLocalNotificationsIfNeeded: [UNNotificationTrigger] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
     private(set) var resetBadgeCountKinds: [Note.Kind] = []
+    var onRequestLocalNotificationCalled: (() -> Void)?
 
     init(mockedDeviceID: String? = nil) {
         self.mockedDeviceID = mockedDeviceID
@@ -111,6 +112,7 @@ final class MockPushNotificationsManager: PushNotesManager {
             if let trigger {
                 triggersForRequestedLocalNotifications.append(trigger)
             }
+            onRequestLocalNotificationCalled?()
         }
     }
 

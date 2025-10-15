@@ -3,7 +3,7 @@ import UserNotifications
 @testable import WooCommerce
 @testable import Yosemite
 
-struct PointOfSaleNotificationSchedulerTests {
+struct POSNotificationSchedulerTests {
     private let mockFeatureFlagService: MockFeatureFlagService
     private let mockPushNotesManager: MockPushNotificationsManager
 
@@ -17,7 +17,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = false
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -35,7 +35,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -57,7 +57,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "GB")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -79,7 +79,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "FR")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -97,7 +97,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -126,7 +126,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "US")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager
@@ -155,7 +155,7 @@ struct PointOfSaleNotificationSchedulerTests {
         let siteSettings = sampleSiteSettings(countryCode: "GB")
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
             pushNotificationsManager: mockPushNotesManager

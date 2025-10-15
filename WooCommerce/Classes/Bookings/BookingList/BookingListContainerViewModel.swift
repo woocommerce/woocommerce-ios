@@ -13,9 +13,11 @@ final class BookingListContainerViewModel: ObservableObject {
 
     @Published var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
+    @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
+    private var sortBySubscription: AnyCancellable?
 
     init(siteID: Int64) {
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
@@ -51,6 +53,18 @@ final class BookingListContainerViewModel: ObservableObject {
         searchQuerySubscription = $searchQuery
             .sink { [weak self] query in
                 self?.searchQuerySubject.send(query)
+            }
+
+        sortBySubscription = $sortBy
+            .removeDuplicates()
+            .sink { [weak self] sortBy in
+                guard let self else { return }
+                todayListViewModel.updateSortOrder(sortBy)
+                upcomingListViewModel.updateSortOrder(sortBy)
+                allListViewModel.updateSortOrder(sortBy)
+                todaySearchViewModel.updateSortOrder(sortBy)
+                upcomingSearchViewModel.updateSortOrder(sortBy)
+                allSearchViewModel.updateSortOrder(sortBy)
             }
     }
 

@@ -3,6 +3,7 @@ import SwiftUI
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
+import class Networking.BookingsRemote
 
 /// View model for `BookingListView`
 final class BookingListViewModel: ObservableObject {
@@ -29,8 +30,10 @@ final class BookingListViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let currentDate: Date
+    private var currentOrder: SortBy = .newestToOldest
 
     private static let refreshCacheReason = "refresh-cache"
+    private static let reorderReason = "reorder"
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -99,6 +102,20 @@ final class BookingListViewModel: ObservableObject {
             }
         }
     }
+
+    /// Updates the sort order and reloads the results controller.
+    func updateSortOrder(_ sortBy: SortBy) {
+        currentOrder = sortBy
+        let ascending = sortBy == .oldestToNewest
+        let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: ascending)
+        resultsController.sortDescriptors = [sortDescriptorByDate]
+        paginationTracker.resync(reason: Self.reorderReason) {}
+    }
+
+    /// Converts SortBy to BookingsRemote.Order
+    private func remoteOrder(from sortBy: SortBy) -> BookingsRemote.Order {
+        sortBy == .oldestToNewest ? .ascending : .descending
+    }
 }
 
 // MARK: Configuration
@@ -144,6 +161,7 @@ extension BookingListViewModel: PaginationTrackerDelegate {
             pageSize: pageSize,
             startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
             startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            order: remoteOrder(from: currentOrder),
             shouldClearCache: shouldClearCache
         ) { [weak self] result in
             switch result {
@@ -186,5 +204,32 @@ extension BookingListViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = bookings.isNotEmpty ? .results : .empty
+    }
+}
+
+extension BookingListViewModel {
+    enum SortBy: Int, CaseIterable {
+        case newestToOldest
+        case oldestToNewest
+
+        var title: String {
+            switch self {
+            case .newestToOldest: Localization.newestToOldest
+            case .oldestToNewest: Localization.oldestToNewest
+            }
+        }
+
+        enum Localization {
+            static let newestToOldest = NSLocalizedString(
+                "bookingList.sort.newestToOldest",
+                value: "Date: Newest to Oldest",
+                comment: "Option to sort bookings from newest to oldest"
+            )
+            static let oldestToNewest = NSLocalizedString(
+                "bookingList.sort.oldestToNewest",
+                value: "Date: Oldest to Newest",
+                comment: "Option to sort bookings from oldest to newest"
+            )
+        }
     }
 }

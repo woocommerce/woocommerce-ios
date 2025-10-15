@@ -13,7 +13,7 @@ struct BookingsRemoteTests {
         network.simulateResponse(requestUrlSuffix: "bookings", filename: "booking-list")
 
         // When
-        let bookings = try await remote.loadAllBookings(for: sampleSiteID)
+        let bookings = try await remote.loadAllBookings(for: sampleSiteID, order: .descending)
 
         // Then
         #expect(bookings.count == 2)
@@ -34,7 +34,7 @@ struct BookingsRemoteTests {
 
         // Then
         await #expect(throws: NetworkError.notFound()) {
-            _ = try await remote.loadAllBookings(for: sampleSiteID)
+            _ = try await remote.loadAllBookings(for: sampleSiteID, order: .descending)
         }
     }
 
@@ -43,6 +43,7 @@ struct BookingsRemoteTests {
         let remote = BookingsRemote(network: network)
         let startDateBefore = "2024-12-31T23:59:59"
         let startDateAfter = "2024-01-01T00:00:00"
+        let searchQuery = "test search"
         network.simulateResponse(requestUrlSuffix: "bookings", filename: "booking-list")
 
         // When
@@ -50,7 +51,9 @@ struct BookingsRemoteTests {
                                              pageNumber: 2,
                                              pageSize: 50,
                                              startDateBefore: startDateBefore,
-                                             startDateAfter: startDateAfter)
+                                             startDateAfter: startDateAfter,
+                                             searchQuery: searchQuery,
+                                             order: .ascending)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
@@ -60,9 +63,11 @@ struct BookingsRemoteTests {
         #expect((parameters["per_page"] as? String) == "50")
         #expect((parameters["start_date_before"] as? String) == startDateBefore)
         #expect((parameters["start_date_after"] as? String) == startDateAfter)
+        #expect((parameters["search"] as? String) == searchQuery)
+        #expect((parameters["order"] as? String) == "asc")
     }
 
-    @Test func test_loadAllBookings_omits_nil_date_parameters() async throws {
+    @Test func test_loadAllBookings_omits_nil_parameters() async throws {
         // Given
         let remote = BookingsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "bookings", filename: "booking-list")
@@ -70,7 +75,9 @@ struct BookingsRemoteTests {
         // When
         _ = try await remote.loadAllBookings(for: sampleSiteID,
                                              startDateBefore: nil,
-                                             startDateAfter: nil)
+                                             startDateAfter: nil,
+                                             searchQuery: nil,
+                                             order: .descending)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
@@ -78,7 +85,9 @@ struct BookingsRemoteTests {
 
         #expect(parameters["start_date_before"] == nil)
         #expect(parameters["start_date_after"] == nil)
+        #expect(parameters["s"] == nil)
         #expect(parameters["page"] != nil)
         #expect(parameters["per_page"] != nil)
+        #expect(parameters["order"] != nil)
     }
 }

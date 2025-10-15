@@ -323,7 +323,7 @@ final class MainTabBarController: UITabBarController {
     private func fixTabBarTraitCollectionOnIpadForiOS18() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             traitOverrides.horizontalSizeClass = .compact
-            if let rootHorizontalSizeClass = AppDelegate.shared.window?.traitCollection.horizontalSizeClass {
+            if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
                 tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
                 if let viewControllers {
                     for vc in viewControllers {
@@ -929,9 +929,20 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
+        let isLiquidGlassDesignDisabled = Bundle.main.infoDictionary?["UIDesignRequiresCompatibility"] as? Bool ?? false
 
-        self.notificationsBadge.updateBadge(with: input)
+        guard !isLiquidGlassDesignDisabled else {
+            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
+            notificationsBadge.updateBadge(with: input)
+            return
+        }
+
+        switch action {
+        case .show:
+            tabBar.items?[tabIndex].badgeValue = "•"
+        case .hide:
+            tabBar.items?[tabIndex].badgeValue = nil
+        }
     }
 }
 

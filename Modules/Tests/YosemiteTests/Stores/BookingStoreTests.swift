@@ -12,6 +12,7 @@ struct BookingStoreTests {
     /// Spy remote to check request parameter use
     ///
     private var remote: MockBookingsRemote
+    private var ordersRemote: MockOrdersRemote
 
     /// Mock Storage: InMemory
     ///
@@ -51,6 +52,7 @@ struct BookingStoreTests {
         network = MockNetwork()
         storageManager = MockStorageManager()
         remote = MockBookingsRemote()
+        ordersRemote = MockOrdersRemote()
     }
 
     // MARK: - synchronizeBookings
@@ -61,7 +63,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -85,7 +88,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -108,7 +112,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -126,6 +131,68 @@ struct BookingStoreTests {
         #expect(error == .timeout())
     }
 
+    @Test func test_synchronizeBookings_when_invoked_fetches_orders_for_bookings() async throws {
+        // Given
+        let booking1 = Booking.fake().copy(orderID: 1)
+        let booking2 = Booking.fake().copy(orderID: 2)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+
+        let order1 = Order.fake().copy(orderID: 1)
+        let order2 = Order.fake().copy(orderID: 2)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order1, order2]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(ordersRemote.invokedLoadOrders)
+        #expect(ordersRemote.invokedLoadOrdersParameters?.orderIDs == [1, 2])
+    }
+
+    @Test func test_synchronizeBooking_when_invoked_fetches_order_for_booking() async throws {
+        // Given
+        let booking = Booking.fake().copy(bookingID: 1, orderID: 10)
+        remote.whenLoadingBooking(thenReturn: .success(booking))
+        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.synchronizeBooking(
+                    siteID: sampleSiteID,
+                    bookingID: 1
+                ) { result in
+                    continuation.resume(returning: result)
+                }
+            )
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(ordersRemote.invokedLoadOrders)
+        #expect(ordersRemote.invokedLoadOrdersParameters?.orderIDs == [10])
+    }
+
     @Test func synchronizeBookings_stores_bookings_upon_success() async throws {
         // Given
         let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
@@ -133,7 +200,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
         #expect(storedBookingCount == 0)
 
         // When
@@ -162,7 +230,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -189,7 +258,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
         #expect(storedBookingCount == 0)
 
         // When
@@ -218,7 +288,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -253,7 +324,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -289,7 +361,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -313,7 +386,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -336,7 +410,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -359,7 +434,8 @@ struct BookingStoreTests {
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
 
         // When
         let result = await withCheckedContinuation { continuation in
@@ -374,6 +450,90 @@ struct BookingStoreTests {
         let error = result.failure as? NetworkError
         #expect(error == .timeout())
     }
+
+    // MARK: - searchBookings
+
+    @Test func searchBookings_returns_bookings_on_success() async throws {
+        // Given
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let bookings = try result.get()
+        #expect(bookings.count == 2)
+        #expect(bookings[0].bookingID == 123)
+        #expect(bookings[1].bookingID == 456)
+    }
+
+    @Test func searchBookings_returns_error_on_failure() async throws {
+        // Given
+        remote.whenLoadingAllBookings(thenReturn: .failure(NetworkError.timeout()))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isFailure)
+        let error = result.failure as? NetworkError
+        #expect(error == .timeout())
+    }
+
+    @Test func searchBookings_does_not_save_results_to_storage() async throws {
+        // Given
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+        #expect(storedBookingCount == 0)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingCount == 0)
+    }
 }
 
 private extension BookingStoreTests {
@@ -382,5 +542,30 @@ private extension BookingStoreTests {
         let storedBooking = storage.insertNewObject(ofType: Storage.Booking.self)
         storedBooking.update(with: booking)
         return storedBooking
+    }
+}
+
+private class MockOrdersRemote: OrdersRemoteProtocol {
+    var invokedLoadOrders = false
+    var invokedLoadOrdersParameters: (siteID: Int64, orderIDs: [Int64])?
+    private var loadOrdersResult: Result<[Yosemite.Order], Error> = .success([])
+
+    func whenLoadingOrders(thenReturn result: Result<[Yosemite.Order], Error>) {
+        loadOrdersResult = result
+    }
+
+    func loadOrders(for siteID: Int64, orderIDs: [Int64]) async throws -> [Yosemite.Order] {
+        invokedLoadOrders = true
+        invokedLoadOrdersParameters = (siteID, orderIDs)
+        switch loadOrdersResult {
+        case .success(let orders):
+            return orders
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (NetworkingCore.Order?, (any Error)?) -> Void) {
+        return
     }
 }

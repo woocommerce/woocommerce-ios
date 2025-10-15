@@ -1,7 +1,6 @@
 import Foundation
 import Storage
 
-
 // MARK: - Storage.Booking: ReadOnlyConvertible
 //
 extension Storage.Booking: ReadOnlyConvertible {

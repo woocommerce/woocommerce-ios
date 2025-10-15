@@ -250,7 +250,7 @@ private extension BookingStore {
     ///     - readOnlyOrders: Remote Orders associated with bookings.
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredBookings(readOnlyBookings: [Networking.Booking], readOnlyOrders: [Yosemite.Order], in storage: StorageType) {
+    func upsertStoredBookings(readOnlyBookings: [Yosemite.Booking], readOnlyOrders: [Yosemite.Order], in storage: StorageType) {
         // Fetch all existing bookings for the site at once
         let bookingIDs = readOnlyBookings.map { $0.bookingID }
         let siteID = readOnlyBookings.first?.siteID ?? 0

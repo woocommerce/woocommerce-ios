@@ -172,17 +172,7 @@ final class BackgroundTaskRefreshDispatcher {
 
         let syncTask = Task {
             do {
-                // Performs full sync only if the catalog age is older than 24 hours.
-                // otherwise, performs incremental sync
-                let twentyFourHours: TimeInterval = 24 * 60 * 60
-                let lastFullSync = await coordinator.getLastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
-
-                if Date().timeIntervalSince(lastFullSync) >= twentyFourHours {
-                    try await coordinator.performFullSync(for: siteID)
-                } else {
-                    try await coordinator.performIncrementalSync(for: siteID)
-                }
-
+                try await coordinator.performSmartSync(for: siteID)
                 backgroundTask.setTaskCompleted(success: true)
             } catch {
                 DDLogError("⛔️ POS catalog sync background refresh failed: \(error)")

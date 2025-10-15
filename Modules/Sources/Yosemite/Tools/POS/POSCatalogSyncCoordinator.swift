@@ -19,10 +19,12 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws
 
-    /// Returns the date of the last successful full catalog sync for a site
-    /// - Parameter siteID: The site ID to check
-    /// - Returns: The date of the last full sync, or nil if never synced
-    func getLastFullSyncDate(for siteID: Int64) async -> Date?
+    /// Performs a smart sync that decides between full and incremental sync based on the last full sync date
+    /// - Parameters:
+    ///   - siteID: The site ID to sync catalog for
+    ///   - fullSyncMaxAge: Maximum age before a full sync is triggered. If the last full sync is older than this, performs full sync; otherwise, performs incremental sync
+    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -32,6 +34,12 @@ public extension POSCatalogSyncCoordinatorProtocol {
 
     func performIncrementalSync(for siteID: Int64) async throws {
         try await performIncrementalSyncIfApplicable(for: siteID, maxAge: .zero)
+    }
+
+    /// Performs a smart sync with a default 24-hour threshold for full sync
+    func performSmartSync(for siteID: Int64) async throws {
+        let twentyFourHours: TimeInterval = 24 * 60 * 60
+        try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours)
     }
 }
 
@@ -93,8 +101,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
 
-    public func getLastFullSyncDate(for siteID: Int64) async -> Date? {
-        return await lastFullSyncDate(for: siteID)
+    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+        let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
+
+        if Date().timeIntervalSince(lastFullSync) >= fullSyncMaxAge {
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSync))")
+            try await performFullSync(for: siteID)
+        } else {
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSync))")
+            try await performIncrementalSync(for: siteID)
+        }
     }
 
     /// Determines if a full sync should be performed based on the age of the last sync

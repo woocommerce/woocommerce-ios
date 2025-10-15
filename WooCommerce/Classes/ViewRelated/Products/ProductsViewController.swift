@@ -1214,6 +1214,7 @@ extension ProductsViewController: UITableViewDelegate {
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
         guard isSplitViewEnabled else {
+            // TODO: Replace with ProductDetailRouter
             ProductDetailsFactory.productDetails(product: product,
                                                  presentationStyle: .navigationStack,
                                                  forceReadOnly: false) { [weak self] viewController in
@@ -1221,6 +1222,7 @@ private extension ProductsViewController {
             }
             return
         }
+        // TODO: Replace with ProductDetailRouter
         navigateToContent(.productForm(product: product))
     }
 }

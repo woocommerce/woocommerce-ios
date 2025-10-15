@@ -176,6 +176,7 @@ private extension TopPerformerDataViewController {
     /// Presents the product details for a given TopEarnerStatsItem.
     ///
     func presentProductDetails(statsItem: TopEarnerStatsItem) {
+        // TODO: Replace with ProductDetailRouter
         let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: statsItem),
                                                                siteID: siteID,
                                                                forceReadOnly: false)

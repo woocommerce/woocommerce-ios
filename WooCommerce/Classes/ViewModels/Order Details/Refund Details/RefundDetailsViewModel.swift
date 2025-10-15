@@ -128,6 +128,7 @@ extension RefundDetailsViewModel {
 
         case .orderItem:
             let item = refund.items[indexPath.row]
+            // TODO: Replace with ProductDetailRouter, native
             let loaderViewController = ProductLoaderViewController(model: .init(orderItemRefund: item),
                                                                    siteID: refund.siteID,
                                                                    forceReadOnly: true)

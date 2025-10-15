@@ -189,6 +189,7 @@ private extension ProductStockDashboardCard {
                 .product(productID: item.productID)
             }
         }()
+        // TODO: Replace with ProductDetailRouter
         let loaderViewController = ProductLoaderViewController(model: model,
                                                                siteID: viewModel.siteID,
                                                                forceReadOnly: false)

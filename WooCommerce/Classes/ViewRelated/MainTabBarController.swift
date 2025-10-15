@@ -1036,6 +1036,7 @@ private extension MainTabBarController {
                 return .productVariation(productID: productID, variationID: variationID)
             }
         }()
+        // TODO: Replace with ProductDetailRouter
         let productViewController = ProductLoaderViewController(model: model,
                                                                 siteID: error.siteID,
                                                                 forceReadOnly: false)

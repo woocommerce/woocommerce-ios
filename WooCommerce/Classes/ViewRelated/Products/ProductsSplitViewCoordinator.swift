@@ -122,6 +122,7 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
+        // TODO: Replace with ProductDetailRouter
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false,

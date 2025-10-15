@@ -52,7 +52,7 @@ struct BookingListContainerView: View {
         }
         .sheet(isPresented: $showingSortOptions) {
             sortingOptions
-                .presentationDetents([.fraction(0.2), .medium, .large])
+                .presentationDetents([.fraction(0.25), .medium, .large])
         }
     }
 }
@@ -133,37 +133,40 @@ private extension BookingListContainerView {
     }
 
     var sortingOptions: some View {
-        VStack(alignment: .leading, spacing: Layout.SortingOptions.contentSpacing) {
-            Text(Localization.sortBy)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
-                .padding(.top, Layout.SortingOptions.contentSpacing)
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.SortingOptions.contentSpacing) {
+                Text(Localization.sortBy)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, Layout.SortingOptions.contentSpacing)
 
-            ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
-                Button {
-                    viewModel.sortBy = sortBy
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        showingSortOptions = false
+                ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
+                    Button {
+                        viewModel.sortBy = sortBy
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            showingSortOptions = false
+                        }
+                    } label: {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(sortBy.title)
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(Color.primary)
+                            Spacer()
+                            Image(systemName: "checkmark")
+                                .font(.title3.weight(.medium))
+                                .foregroundStyle(Color.accentColor)
+                                .renderedIf(viewModel.sortBy == sortBy)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
                     }
-                } label: {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(sortBy.title)
-                            .font(.body.weight(.medium))
-                            .foregroundStyle(Color.primary)
-                        Spacer()
-                        Image(systemName: "checkmark")
-                            .font(.title3.weight(.medium))
-                            .foregroundStyle(Color.accentColor)
-                            .renderedIf(viewModel.sortBy == sortBy)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-            }
 
-            Spacer()
+                Spacer()
+            }
+            .padding(.horizontal, Layout.SortingOptions.margin)
+            .padding(.vertical, Layout.SortingOptions.contentSpacing)
         }
-        .padding(.horizontal, Layout.SortingOptions.margin)
-        .padding(.vertical, Layout.SortingOptions.contentSpacing)
     }
 }
 

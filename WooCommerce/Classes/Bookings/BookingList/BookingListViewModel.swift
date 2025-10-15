@@ -222,12 +222,12 @@ extension BookingListViewModel {
         enum Localization {
             static let newestToOldest = NSLocalizedString(
                 "bookingList.sort.newestToOldest",
-                value: "Newest to oldest",
+                value: "Date: Newest to Oldest",
                 comment: "Option to sort bookings from newest to oldest"
             )
             static let oldestToNewest = NSLocalizedString(
                 "bookingList.sort.oldestToNewest",
-                value: "Oldest to newest",
+                value: "Date: Oldest to Newest",
                 comment: "Option to sort bookings from oldest to newest"
             )
         }

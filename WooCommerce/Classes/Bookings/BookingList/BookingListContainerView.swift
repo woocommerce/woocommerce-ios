@@ -138,7 +138,6 @@ private extension BookingListContainerView {
                 Text(Localization.sortBy)
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(.secondary)
-                    .padding(.top, Layout.SortingOptions.contentSpacing)
 
                 ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
                     Button {
@@ -165,7 +164,7 @@ private extension BookingListContainerView {
                 Spacer()
             }
             .padding(.horizontal, Layout.SortingOptions.margin)
-            .padding(.vertical, Layout.SortingOptions.contentSpacing)
+            .padding(.vertical, Layout.SortingOptions.topPadding)
         }
     }
 }
@@ -178,6 +177,7 @@ private extension BookingListContainerView {
         enum SortingOptions {
             static let contentSpacing: CGFloat = 24
             static let margin: CGFloat = 16
+            static let topPadding: CGFloat = 52
         }
     }
 

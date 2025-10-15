@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 
 public struct BookingOrderInfo: Hashable {

@@ -22,7 +22,7 @@ final class TabContainerController: UIViewController {
             newWrappedController.didMove(toParent: self)
 
             if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad,
-               let horizontalSize = AppDelegate.shared.window?.traitCollection.horizontalSizeClass {
+               let horizontalSize = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
                 newWrappedController.traitOverrides.horizontalSizeClass = horizontalSize
             }
 

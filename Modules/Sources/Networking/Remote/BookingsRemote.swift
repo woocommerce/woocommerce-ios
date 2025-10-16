@@ -11,7 +11,11 @@ public protocol BookingsRemoteProtocol {
                          pageSize: Int,
                          startDateBefore: String?,
                          startDateAfter: String?,
-                         searchQuery: String?) async throws -> [Booking]
+                         searchQuery: String?,
+                         order: BookingsRemote.Order) async throws -> [Booking]
+
+    func loadBooking(bookingID: Int64,
+                     siteID: Int64) async throws -> Booking?
 }
 
 /// Booking: Remote Endpoints
@@ -29,16 +33,19 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     ///     - startDateBefore: Filter bookings with start date before this timestamp.
     ///     - startDateAfter: Filter bookings with start date after this timestamp.
     ///     - searchQuery: Search query to filter bookings.
+    ///     - order: Sort order for bookings (ascending or descending).
     ///
     public func loadAllBookings(for siteID: Int64,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
                                 startDateBefore: String? = nil,
                                 startDateAfter: String? = nil,
-                                searchQuery: String? = nil) async throws -> [Booking] {
+                                searchQuery: String? = nil,
+                                order: Order) async throws -> [Booking] {
         var parameters = [
             ParameterKey.page: String(pageNumber),
-            ParameterKey.perPage: String(pageSize)
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order.rawValue
         ]
 
         if let startDateBefore = startDateBefore {
@@ -59,6 +66,24 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func loadBooking(
+        bookingID: Int64,
+        siteID: Int64
+    ) async throws -> Booking? {
+        let path = "\(Path.bookings)/\(bookingID)"
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = BookingMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 // MARK: - Constants
@@ -67,6 +92,11 @@ public extension BookingsRemote {
     enum Default {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = Remote.Default.firstPageNumber
+    }
+
+    enum Order: String {
+        case ascending = "asc"
+        case descending = "desc"
     }
 
     private enum Path {
@@ -79,5 +109,6 @@ public extension BookingsRemote {
         static let startDateBefore: String = "start_date_before"
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
+        static let order: String           = "order"
     }
 }

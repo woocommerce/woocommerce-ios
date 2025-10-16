@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Yosemite
 import Combine
+import class Networking.BookingsRemote
 
 /// View model for booking search functionality
 final class BookingSearchViewModel: ObservableObject {
@@ -17,6 +18,7 @@ final class BookingSearchViewModel: ObservableObject {
     private let stores: StoresManager
     private let currentDate: Date
     private var searchQuerySubscription: AnyCancellable?
+    private var currentOrder: BookingListViewModel.SortBy = .newestToOldest
 
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
@@ -57,6 +59,20 @@ final class BookingSearchViewModel: ObservableObject {
     func onLoadNextPageAction() {
         guard !currentSearchQuery.isEmpty else { return }
         searchPaginationTracker.ensureNextPageIsSynced()
+    }
+
+    /// Updates the sort order for search results.
+    func updateSortOrder(_ sortBy: BookingListViewModel.SortBy) {
+        currentOrder = sortBy
+        // Trigger a new search if we have a query
+        if !currentSearchQuery.isEmpty {
+            searchPaginationTracker.syncFirstPage()
+        }
+    }
+
+    /// Converts SortBy to BookingsRemote.Order
+    private func remoteOrder(from sortBy: BookingListViewModel.SortBy) -> BookingsRemote.Order {
+        sortBy == .oldestToNewest ? .ascending : .descending
     }
 }
 
@@ -108,7 +124,8 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             pageNumber: pageNumber,
             pageSize: pageSize,
             startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            order: remoteOrder(from: currentOrder)
         ) { [weak self] result in
             guard let self else { return }
             switch result {

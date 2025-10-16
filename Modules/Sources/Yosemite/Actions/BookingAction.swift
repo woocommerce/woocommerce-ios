@@ -15,8 +15,16 @@ public enum BookingAction: Action {
                              pageSize: Int = BookingsRemote.Default.pageSize,
                              startDateBefore: String? = nil,
                              startDateAfter: String? = nil,
+                             order: BookingsRemote.Order = .descending,
                              shouldClearCache: Bool = false,
                              onCompletion: (Result<Bool, Error>) -> Void)
+    /// Synchronizes the Booking matching the specified criteria.
+    ///
+    /// - Parameter onCompletion: called when sync completes, returns an error in case of a failure or empty in case of success.
+    ///
+    case synchronizeBooking(siteID: Int64,
+                            bookingID: Int64,
+                            onCompletion: (Result<Void, Error>) -> Void)
 
     /// Checks if the store already has any bookings.
     /// Returns `false` if the store has no bookings.
@@ -34,5 +42,6 @@ public enum BookingAction: Action {
                         pageSize: Int = BookingsRemote.Default.pageSize,
                         startDateBefore: String? = nil,
                         startDateAfter: String? = nil,
+                        order: BookingsRemote.Order = .descending,
                         onCompletion: (Result<[Booking], Error>) -> Void)
 }

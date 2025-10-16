@@ -18,10 +18,6 @@ class TestingAppDelegate: AppDelegate {
         let bundle = Bundle(for: type(of: self))
         let storyboard = UIStoryboard(name: "TestingMode", bundle: bundle)
 
-        window = UIWindow()
-        window?.rootViewController = storyboard.instantiateInitialViewController()
-        window?.makeKeyAndVisible()
-
         return true
     }
 

@@ -82,7 +82,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     }
 
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
+        DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) updated products and \(catalog.variations.count) updated variations")
 
         try await grdbManager.databaseConnection.write { db in
             for product in catalog.productsToPersist {

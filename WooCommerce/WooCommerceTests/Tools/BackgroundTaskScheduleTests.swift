@@ -8,8 +8,10 @@ struct BackgroundTaskScheduleTests {
     private let timeProvider: MockTimeProvider
 
     init() {
+        let userDefaults = UserDefaults(suiteName: #file)!
+        userDefaults.removePersistentDomain(forName: #file)
         timeProvider = MockTimeProvider()
-        sut = BackgroundTaskSchedule(timeProvider: timeProvider)
+        sut = BackgroundTaskSchedule(timeProvider: timeProvider, userDefaults: userDefaults)
     }
 
     @Test func initial_state_returns_task_with_shortest_period() {

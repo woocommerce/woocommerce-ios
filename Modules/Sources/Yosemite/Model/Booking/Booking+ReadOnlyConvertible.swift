@@ -1,7 +1,6 @@
 import Foundation
 import Storage
 
-
 // MARK: - Storage.Booking: ReadOnlyConvertible
 //
 extension Storage.Booking: ReadOnlyConvertible {
@@ -49,6 +48,7 @@ extension Storage.Booking: ReadOnlyConvertible {
                 startDate: startDate ?? Date(),
                 statusKey: statusKey ?? "",
                 localTimezone: localTimezone ?? "",
-                currency: currency ?? "USD")
+                currency: currency ?? "USD",
+                orderInfo: orderInfo?.toReadOnly())
     }
 }

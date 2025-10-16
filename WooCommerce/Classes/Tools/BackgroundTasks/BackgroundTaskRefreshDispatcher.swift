@@ -4,7 +4,7 @@ import BackgroundTasks
 import Network
 
 final class BackgroundTaskRefreshDispatcher {
-    enum BackgroundTaskType: CaseIterable {
+    enum BackgroundTaskType: Codable, CaseIterable {
         case ordersAndDashboardSync
         case posCatalogSync
     }
@@ -14,7 +14,9 @@ final class BackgroundTaskRefreshDispatcher {
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
-        BGTaskScheduler.shared.cancelAllTaskRequests()
+        for taskType in BackgroundTaskType.allCases {
+            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: taskType.identifier)
+        }
         schedule.setDefaultPreferredTaskDates()
         scheduleNextTask()
     }

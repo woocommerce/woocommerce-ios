@@ -46,23 +46,33 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         }
     }
 
+    private let stores: StoresManager
     private let siteSettings: [SiteSetting]
     private let featureFlagService: FeatureFlagService
     private let pushNotificationsManager: PushNotesManager
 
-    init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+    init(stores: StoresManager = ServiceLocator.stores,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+        self.stores = stores
         self.siteSettings = siteSettings
         self.featureFlagService = featureFlagService
         self.pushNotificationsManager = pushNotificationsManager
     }
 
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
-        // TODO: Additional check to see if .currentMerchant case has used POS before - WOOMOB-1498
-        // TODO: Check as well if the notification hasn't been scheduled already WOOMOB-1461
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
+
+        let isScheduled = await isNotificationScheduled(for: merchantType)
+        guard !isScheduled else { return }
         guard isCountryEligible() else { return }
+
+        // For current merchants, also check if they've opened POS at least once
+        if merchantType == .currentMerchant {
+            let hasOpenedPOS = await hasOpenedPOSAtLeastOnce()
+            guard hasOpenedPOS else { return }
+        }
 
         await scheduleLocalNotification(for: merchantType)
     }
@@ -76,8 +86,38 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         }
     }
 
+    private func isNotificationScheduled(for merchantType: MerchantType) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action: AppSettingsAction
+            switch merchantType {
+            case .potentialMerchant:
+                action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
+                    continuation.resume(returning: isScheduled)
+                }
+            case .currentMerchant:
+                action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
+                    continuation.resume(returning: isScheduled)
+                }
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
+
+    private func hasOpenedPOSAtLeastOnce() async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+                continuation.resume(returning: hasOpened)
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
+
     private func scheduleLocalNotification(for merchantType: POSNotificationScheduler.MerchantType) async {
-        // TODO: Set scheduled notification value in app storage - WOOMOB-1461
+
         let payload: [AnyHashable: Any] = [
             LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL
         ]
@@ -93,5 +133,22 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         )
 
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
+
+        await withCheckedContinuation { continuation in
+            let action: AppSettingsAction
+            switch merchantType {
+            case .potentialMerchant:
+                action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in
+                    continuation.resume()
+                }
+            case .currentMerchant:
+                action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in
+                    continuation.resume()
+                }
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
     }
 }

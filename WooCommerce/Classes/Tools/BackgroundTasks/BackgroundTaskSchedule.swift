@@ -12,14 +12,20 @@ extension BackgroundTaskRefreshDispatcher.BackgroundTaskType {
     }
 }
 
-/// BackgroundTaskSchedule is a helper tool to etermine the next BackgroundTask based on the preferred run period
+/// BackgroundTaskSchedule is a helper tool to determine the next BackgroundTask based on the preferred run period
 ///
 final class BackgroundTaskSchedule {
-    private var preferredTaskDate: [BackgroundTaskRefreshDispatcher.BackgroundTaskType: Date] = [:]
+    private var preferredTaskDate: [BackgroundTaskRefreshDispatcher.BackgroundTaskType: Date] = [:] {
+        didSet { setPersistedDates () }
+    }
     private let timeProvider: TimeProvider
+    private let userDefaults: UserDefaults
 
-    init(timeProvider: TimeProvider = DefaultTimeProvider()) {
+    init(timeProvider: TimeProvider = DefaultTimeProvider(),
+         userDefaults: UserDefaults = .standard) {
         self.timeProvider = timeProvider
+        self.userDefaults = userDefaults
+        loadPersistedDates()
     }
 
     // Set preferred task dates when going into background
@@ -52,5 +58,26 @@ final class BackgroundTaskSchedule {
 
     func setNextPreferredRunDate(for task: BackgroundTaskRefreshDispatcher.BackgroundTaskType) {
         preferredTaskDate[task] = timeProvider.now().addingTimeInterval(task.period)
+    }
+}
+
+// MARK: - Persistence
+
+private extension BackgroundTaskSchedule {
+    private var userDefaultsKey: String { "BackgroundTaskSchedule.preferredTaskDate" }
+
+    private func loadPersistedDates() {
+        guard let data = userDefaults.data(forKey: userDefaultsKey),
+              let decoded = try? JSONDecoder().decode([BackgroundTaskRefreshDispatcher.BackgroundTaskType: Date].self, from: data)
+        else {
+            return
+        }
+        preferredTaskDate = decoded
+    }
+
+    private func setPersistedDates() {
+        if let data = try? JSONEncoder().encode(preferredTaskDate) {
+            userDefaults.set(data, forKey: userDefaultsKey)
+        }
     }
 }

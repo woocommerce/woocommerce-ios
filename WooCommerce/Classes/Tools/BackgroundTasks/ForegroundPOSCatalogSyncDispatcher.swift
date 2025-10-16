@@ -19,6 +19,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
     private let timerProvider: DispatchTimerProviding
     private let featureFlagService: FeatureFlagService
     private let stores: StoresManager
+    private let isAppActive: () -> Bool
     private var observers: [NSObjectProtocol] = []
     private var timer: DispatchTimerProtocol?
 
@@ -31,12 +32,14 @@ final class ForegroundPOSCatalogSyncDispatcher {
          notificationCenter: NotificationCenter = .default,
          timerProvider: DispatchTimerProviding = DefaultDispatchTimerProvider(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         isAppActive: @escaping () -> Bool = { UIApplication.shared.applicationState == .active }) {
         self.interval = interval
         self.notificationCenter = notificationCenter
         self.timerProvider = timerProvider
         self.featureFlagService = featureFlagService
         self.stores = stores
+        self.isAppActive = isAppActive
     }
 
     deinit {
@@ -83,7 +86,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
 
         observers = [activeObserver, backgroundObserver, defaultSiteObserver]
 
-        if UIApplication.shared.applicationState == .active {
+        if isAppActive() {
             startTimer()
         }
 

@@ -58,7 +58,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
 
         guard !isRunning else { return }
 
-        DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Starting foreground sync dispatcher")
+        DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Starting foreground sync dispatcher for site \(stores.sessionManager.defaultStoreID ?? 0)")
 
         let activeObserver = notificationCenter.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
@@ -96,7 +96,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
     func stop() {
         guard isRunning else { return }
 
-        DDLogInfo("🛑 ForegroundPOSCatalogSyncDispatcher: Stopping foreground sync dispatcher")
+        DDLogInfo("🛑 ForegroundPOSCatalogSyncDispatcher: Stopping foreground sync dispatcher for site \(syncSiteID ?? 0)")
         observers.forEach(notificationCenter.removeObserver)
         observers.removeAll()
         stopTimer()

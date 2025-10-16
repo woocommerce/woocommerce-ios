@@ -12,7 +12,10 @@ final class BookingDetailsViewModel: ObservableObject {
         }
     }
     private let headerContent: HeaderContent
-    private let customerContent = CustomerContent()
+    private let customerContent: CustomerContent
+    private let appointmentDetailsContent: AppointmentDetailsContent
+    private let attendanceContent: AttendanceContent
+    private let paymentContent: PaymentContent
 
     let navigationTitle: String
     @Published private(set) var sections: [Section] = []
@@ -20,9 +23,17 @@ final class BookingDetailsViewModel: ObservableObject {
     init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
         self.booking = booking
         self.stores = stores
-        self.resultsController = BookingDetailsResultsController(booking: booking)
-        self.headerContent = HeaderContent(booking)
+
+        resultsController = BookingDetailsResultsController(booking: booking)
+
+        customerContent = CustomerContent()
+        attendanceContent = AttendanceContent()
+        headerContent = HeaderContent(booking)
+        appointmentDetailsContent = AppointmentDetailsContent(booking)
+        paymentContent = PaymentContent(booking: booking)
+
         navigationTitle = Self.navigationTitle(for: booking)
+
         setupSections()
         configureResultsController()
         updateDisplayProperties(from: booking)
@@ -39,18 +50,18 @@ private extension BookingDetailsViewModel {
 
         let appointmentDetailsSection = Section(
             header: .title(Localization.appointmentDetailsSectionHeaderTitle.uppercased()),
-            content: .appointmentDetails(AppointmentDetailsContent(booking))
+            content: .appointmentDetails(appointmentDetailsContent)
         )
 
         let attendanceSection = Section(
             header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
             footerText: Localization.attendanceSectionFooterText,
-            content: .attendance(AttendanceContent())
+            content: .attendance(attendanceContent)
         )
 
         let paymentSection = Section(
             header: .title(Localization.paymentSectionHeaderTitle.uppercased()),
-            content: .payment(PaymentContent(booking: booking))
+            content: .payment(paymentContent)
         )
 
         let bookingNotes = Section(
@@ -79,16 +90,26 @@ private extension BookingDetailsViewModel {
     }
 
     func updateDisplayProperties(from booking: Booking) {
-        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress {
+        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
             customerContent.update(with: billingAddress)
-            headerContent.update(with: billingAddress)
             insertCustomerSectionIfAbsent()
         }
+        headerContent.update(with: booking)
+        appointmentDetailsContent.update(with: booking)
+        paymentContent.update(with: booking)
     }
 
     func insertCustomerSectionIfAbsent() {
         // Avoid adding if it already exists
-        guard !sections.contains(where: { if case .customer = $0.content { return true } else { return false } }) else {
+        let customerSectionExists = sections.contains {
+            if case .customer = $0.content {
+                return true
+            }
+
+            return false
+        }
+
+        guard !customerSectionExists else {
             return
         }
 

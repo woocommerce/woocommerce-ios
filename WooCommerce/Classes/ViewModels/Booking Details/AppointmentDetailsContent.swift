@@ -2,7 +2,7 @@ import Foundation
 import struct Networking.Booking
 
 extension BookingDetailsViewModel {
-    struct AppointmentDetailsContent {
+    final class AppointmentDetailsContent: ObservableObject {
         struct Row: Identifiable {
             let title: String
             let value: String
@@ -12,9 +12,14 @@ extension BookingDetailsViewModel {
             }
         }
 
-        let rows: [Row]
+        @Published var rows: [Row]
 
         init(_ booking: Booking) {
+            rows = []
+            update(with: booking)
+        }
+
+        func update(with booking: Booking) {
             let appointmentDate = booking.startDate.toString(dateStyle: .short, timeStyle: .none, timeZone: BookingListTab.utcTimeZone)
             let appointmentTimeFrame = [
                 booking.startDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone),

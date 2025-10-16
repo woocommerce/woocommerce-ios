@@ -1,25 +1,36 @@
 import Foundation
 import struct Yosemite.Booking
+import struct Yosemite.BookingProductInfo
 import struct Yosemite.Customer
-import struct Networking.Address
+import struct Yosemite.Address
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
-        let bookingDate: String
-        let status: [Status]
+        @Published var bookingDate: String = ""
+        @Published var status: [Status] = []
+        @Published var serviceAndCustomerLine: String = ""
 
-        @Published var serviceAndCustomerLine: String
+        init(_ booking: Booking) {
+            update(with: booking)
+        }
 
-        init(_ booking: Booking, customerName: String? = nil) {
+        func update(with booking: Booking) {
             bookingDate = booking.startDate.toString(
                 dateStyle: .short,
                 timeStyle: .short,
                 timeZone: BookingListTab.utcTimeZone
             )
 
-            /// Temporary hardcode for service name
-            let serviceName = "Women's Haircut"
-            if let customerName = customerName, !customerName.isEmpty {
+            let serviceName = booking.orderInfo?.productInfo?.name ?? ""
+            let customerName = [
+                booking.orderInfo?.customerInfo?.billingAddress.firstName,
+                booking.orderInfo?.customerInfo?.billingAddress.lastName
+            ]
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+
+            if !customerName.isEmpty {
                 serviceAndCustomerLine = [
                     serviceName,
                     customerName
@@ -29,27 +40,6 @@ extension BookingDetailsViewModel {
             }
 
             status = [.booked, .payAtLocation]
-        }
-
-        func update(with address: Address) {
-            let customerName = [
-                address.firstName,
-                address.lastName
-            ]
-            .compactMap { $0 }
-            .filter { !$0.isEmpty }
-            .joined(separator: " ")
-
-            /// Temporary hardcode for service name
-            let serviceName = "Women's Haircut"
-            if !customerName.isEmpty {
-                serviceAndCustomerLine = [
-                    serviceName,
-                    customerName
-                ].joined(separator: Constants.dotSeparator)
-            } else {
-                serviceAndCustomerLine = serviceName
-            }
         }
     }
 }

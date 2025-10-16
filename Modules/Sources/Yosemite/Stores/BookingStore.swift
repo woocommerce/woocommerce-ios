@@ -298,6 +298,16 @@ private extension BookingStore {
 
                 orderInfo.statusKey = associatedOrder.status.rawValue
                 storageBooking.orderInfo = orderInfo
+            } else if let product = storage.loadProduct(siteID: readOnlyBooking.siteID, productID: readOnlyBooking.productID) {
+                /// Fallback when order info cannot be fetched:
+                /// get cached product to fill in product info
+                let productInfo = storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
+                productInfo.name = product.name
+
+                let orderInfo = storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
+                orderInfo.statusKey = readOnlyBooking.statusKey
+                orderInfo.productInfo = productInfo
+                storageBooking.orderInfo = orderInfo
             }
 
             storageBooking.update(with: readOnlyBooking)

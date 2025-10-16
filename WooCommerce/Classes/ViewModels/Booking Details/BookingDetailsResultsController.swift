@@ -4,44 +4,40 @@ import Storage
 
 final class BookingDetailsResultsController {
     private let storageManager: StorageManagerType
-    private let booking: Yosemite.Booking
+    private let bookingResultsController: ResultsController<StorageBooking>
 
-    private lazy var orderResultsController: ResultsController<StorageOrder> = {
-        let predicate = NSPredicate(
-            format: "siteID = %ld AND orderID = %ld",
-            booking.siteID,
-            booking.orderID
-        )
-        return ResultsController<StorageOrder>(
-            storageManager: storageManager,
-            matching: predicate,
-            sortedBy: []
-        )
-    }()
-
-    var order: Yosemite.Order? {
-        orderResultsController.fetchedObjects.first
+    var booking: Yosemite.Booking? {
+        bookingResultsController.fetchedObjects.first
     }
 
     init(booking: Yosemite.Booking, storageManager: StorageManagerType = ServiceLocator.storageManager) {
-        self.booking = booking
         self.storageManager = storageManager
+
+        bookingResultsController = ResultsController<StorageBooking>(
+            storageManager: storageManager,
+            matching: NSPredicate(
+                format: "siteID = %ld AND bookingID = %ld",
+                booking.siteID,
+                booking.bookingID
+            ),
+            sortedBy: []
+        )
     }
 
     func configure(onReload: @escaping () -> Void) {
-        orderResultsController.onDidChangeContent = {
+        bookingResultsController.onDidChangeContent = {
             onReload()
         }
 
-        orderResultsController.onDidResetContent = { [weak self] in
-            try? self?.orderResultsController.performFetch()
+        bookingResultsController.onDidResetContent = { [weak self] in
+            try? self?.bookingResultsController.performFetch()
             onReload()
         }
 
         do {
-            try orderResultsController.performFetch()
+            try bookingResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch Order for Booking: \(error)")
+            DDLogError("⛔️ Unable to fetch Booking: \(error)")
         }
     }
 }

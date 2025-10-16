@@ -4,19 +4,15 @@ import SwiftUI // Added for withAnimation
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
-    private lazy var resultsController = BookingDetailsResultsController(booking: booking)
+    private let resultsController: BookingDetailsResultsController
 
-    private let booking: Booking
-    private let headerContent: HeaderContent
-    private let customerContent = CustomerContent()
-    private(set) var order: Order? {
+    private var booking: Booking {
         didSet {
-            guard let order else {
-                return
-            }
-            updateCustomerInfo(from: order)
+            updateDisplayProperties(from: booking)
         }
     }
+    private let headerContent: HeaderContent
+    private let customerContent = CustomerContent()
 
     let navigationTitle: String
     @Published private(set) var sections: [Section] = []
@@ -24,10 +20,12 @@ final class BookingDetailsViewModel: ObservableObject {
     init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
         self.booking = booking
         self.stores = stores
+        self.resultsController = BookingDetailsResultsController(booking: booking)
         self.headerContent = HeaderContent(booking)
         navigationTitle = Self.navigationTitle(for: booking)
         setupSections()
         configureResultsController()
+        updateDisplayProperties(from: booking)
     }
 }
 
@@ -71,22 +69,21 @@ private extension BookingDetailsViewModel {
 
     func configureResultsController() {
         resultsController.configure { [weak self] in
-            self?.order = self?.resultsController.order
+            if let newBooking = self?.resultsController.booking {
+                self?.booking = newBooking
+            }
         }
-        self.order = resultsController.order
+        if let newBooking = resultsController.booking {
+            self.booking = newBooking
+        }
     }
 
-    func updateCustomerInfo(from order: Order) {
-        guard
-            let billingAddress = order.billingAddress,
-            !billingAddress.isEmpty
-        else {
-            return
+    func updateDisplayProperties(from booking: Booking) {
+        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress {
+            customerContent.update(with: billingAddress)
+            headerContent.update(with: billingAddress)
+            insertCustomerSectionIfAbsent()
         }
-
-        customerContent.update(with: billingAddress)
-        headerContent.update(with: billingAddress)
-        insertCustomerSectionIfAbsent()
     }
 
     func insertCustomerSectionIfAbsent() {
@@ -109,34 +106,36 @@ private extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func syncData() async {
-        await syncOrder()
+        await syncBooking()
     }
 }
 
 private extension BookingDetailsViewModel {
-    func syncOrder() async {
-        guard booking.orderID > 0 else {
+    func syncBooking() async {
+        guard booking.bookingID > 0 else {
             return
         }
 
         do {
-            try await fetchRemoteOrder()
+            try await fetchRemoteBooking()
         } catch {
-            DDLogError("⛔️ Error synchronizing Order for Booking: \(error)")
+            DDLogError("⛔️ Error synchronizing Booking: \(error)")
         }
     }
 
     @MainActor
-    func fetchRemoteOrder() async throws {
+    func fetchRemoteBooking() async throws {
         return try await withCheckedThrowingContinuation { continuation in
-            let action = OrderAction.retrieveOrder(
+            let action = BookingAction.synchronizeBooking(
                 siteID: booking.siteID,
-                orderID: booking.orderID
-            ) { _, error in
-                if let error {
+                bookingID: booking.bookingID
+            ) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: ())
+                case .failure(let error):
                     continuation.resume(throwing: error)
                 }
-                continuation.resume(returning: ())
             }
             stores.dispatch(action)
         }
@@ -145,10 +144,16 @@ private extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     var cancellationAlertMessage: String {
-        // Temporary hardcoded
-        //TODO: - replace with associated customer data
-        let productName = "Women's Haircut"
-        let customerName = "Margarita Nikolaevna"
+        let productName = booking.orderInfo?.productInfo?.name ?? ""
+
+        let customerName: String = {
+            guard let address = booking.orderInfo?.customerInfo?.billingAddress else {
+                return ""
+            }
+            return [address.firstName, address.lastName]
+                .compactMap { $0 }
+                .joined(separator: " ")
+        }()
 
         let date = booking.startDate.formatted(
             date: .long,

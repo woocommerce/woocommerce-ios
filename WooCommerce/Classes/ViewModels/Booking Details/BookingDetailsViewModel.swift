@@ -26,6 +26,7 @@ final class BookingDetailsViewModel: ObservableObject {
 
         navigationTitle = Self.navigationTitle(for: booking)
         setupSections(with: booking)
+        configureEntityListener()
     }
 
     private func setupSections(with booking: Booking) {

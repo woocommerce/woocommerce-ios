@@ -9,7 +9,7 @@ extension BookingDetailsViewModel {
 
         @Published var serviceAndCustomerLine: String
 
-        init(_ booking: Booking, customerName: String? = nil) {
+        init(_ booking: Booking) {
             bookingDate = booking.startDate.toString(
                 dateStyle: .short,
                 timeStyle: .short,
@@ -19,11 +19,5 @@ extension BookingDetailsViewModel {
             serviceAndCustomerLine = booking.summaryText
             status = [.booked, .payAtLocation]
         }
-    }
-}
-
-private extension BookingDetailsViewModel {
-    enum Constants {
-        static let dotSeparator: String = " • "
     }
 }

@@ -68,12 +68,12 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("✅ Catalog persistence complete")
 
         try await grdbManager.databaseConnection.read { db in
-            let productCount = try PersistedProduct.fetchCount(db)
-            let productImageCount = try PersistedProductImage.fetchCount(db)
-            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
-            let variationCount = try PersistedProductVariation.fetchCount(db)
-            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
-            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
 
             DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
@@ -140,12 +140,12 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("✅ Incremental catalog persistence complete")
 
         try await grdbManager.databaseConnection.read { db in
-            let productCount = try PersistedProduct.fetchCount(db)
-            let productImageCount = try PersistedProductImage.fetchCount(db)
-            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
-            let variationCount = try PersistedProductVariation.fetchCount(db)
-            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
-            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
 
             DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +

@@ -4,6 +4,8 @@ import struct Yosemite.Booking
 struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
     @State private var isSearching = false
+    @State private var showingSortOptions = false
+
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding var selectedBooking: Booking?
 
@@ -48,6 +50,10 @@ struct BookingListContainerView: View {
                 }
             }
         }
+        .sheet(isPresented: $showingSortOptions) {
+            sortingOptions
+                .presentationDetents([.fraction(0.25), .medium, .large])
+        }
     }
 }
 
@@ -58,7 +64,7 @@ private extension BookingListContainerView {
             Divider()
             HStack {
                 Button {
-                    // TODO
+                    showingSortOptions = true
                 } label: {
                     Text(Localization.sortBy)
                         .font(.body)
@@ -125,11 +131,54 @@ private extension BookingListContainerView {
 
         return distanceFromLeftEdge - adjustmentForCenterOrigin + centerWithinTab
     }
+
+    var sortingOptions: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.SortingOptions.contentSpacing) {
+                Text(Localization.sortBy)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+
+                ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
+                    Button {
+                        viewModel.sortBy = sortBy
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            showingSortOptions = false
+                        }
+                    } label: {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(sortBy.title)
+                                .font(.body.weight(.medium))
+                                .foregroundStyle(Color.primary)
+                            Spacer()
+                            Image(systemName: "checkmark")
+                                .font(.title3.weight(.medium))
+                                .foregroundStyle(Color.accentColor)
+                                .renderedIf(viewModel.sortBy == sortBy)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding(.horizontal, Layout.SortingOptions.margin)
+            .padding(.vertical, Layout.SortingOptions.topPadding)
+        }
+    }
 }
+
+
 private extension BookingListContainerView {
     enum Layout {
         static let topTabBarHeight: CGFloat = 44
         static let selectedTabIndicatorHeight: CGFloat = 3.0
+        enum SortingOptions {
+            static let contentSpacing: CGFloat = 24
+            static let margin: CGFloat = 16
+            static let topPadding: CGFloat = 52
+        }
     }
 
     enum Localization {

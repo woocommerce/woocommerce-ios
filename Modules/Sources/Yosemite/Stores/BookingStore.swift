@@ -39,25 +39,27 @@ public class BookingStore: Store {
         }
 
         switch action {
-        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, shouldClearCache, onCompletion):
+        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, order, shouldClearCache, onCompletion):
             synchronizeBookings(siteID: siteID,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize,
                                 startDateBefore: startDateBefore,
                                 startDateAfter: startDateAfter,
+                                order: order,
                                 shouldClearCache: shouldClearCache,
                                 onCompletion: onCompletion)
         case .synchronizeBooking(siteID: let siteID, bookingID: let bookingID, onCompletion: let onCompletion):
             synchronizeBooking(siteID: siteID, bookingID: bookingID, onCompletion: onCompletion)
         case let .checkIfStoreHasBookings(siteID, onCompletion):
             checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
-        case let .searchBookings(siteID, searchQuery, pageNumber, pageSize, startDateBefore, startDateAfter, onCompletion):
+        case let .searchBookings(siteID, searchQuery, pageNumber, pageSize, startDateBefore, startDateAfter, order, onCompletion):
             searchBookings(siteID: siteID,
                            searchQuery: searchQuery,
                            pageNumber: pageNumber,
                            pageSize: pageSize,
                            startDateBefore: startDateBefore,
                            startDateAfter: startDateAfter,
+                           order: order,
                            onCompletion: onCompletion)
         }
     }
@@ -75,6 +77,7 @@ private extension BookingStore {
                              pageSize: Int,
                              startDateBefore: String?,
                              startDateAfter: String?,
+                             order: BookingsRemote.Order,
                              shouldClearCache: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
@@ -84,7 +87,8 @@ private extension BookingStore {
                                                                 pageSize: pageSize,
                                                                 startDateBefore: startDateBefore,
                                                                 startDateAfter: startDateAfter,
-                                                                searchQuery: nil)
+                                                                searchQuery: nil,
+                                                                order: order)
 
                 let orders = try await ordersRemote.loadOrders(
                     for: siteID,
@@ -163,7 +167,8 @@ private extension BookingStore {
                                                                 pageSize: 1,
                                                                 startDateBefore: nil,
                                                                 startDateAfter: nil,
-                                                                searchQuery: nil)
+                                                                searchQuery: nil,
+                                                                order: .descending)
                 let hasRemoteBookings = !bookings.isEmpty
                 onCompletion(.success(hasRemoteBookings))
             } catch {
@@ -181,6 +186,7 @@ private extension BookingStore {
                        pageSize: Int,
                        startDateBefore: String?,
                        startDateAfter: String?,
+                       order: BookingsRemote.Order,
                        onCompletion: @escaping (Result<[Booking], Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -189,7 +195,8 @@ private extension BookingStore {
                                                                 pageSize: pageSize,
                                                                 startDateBefore: startDateBefore,
                                                                 startDateAfter: startDateAfter,
-                                                                searchQuery: searchQuery)
+                                                                searchQuery: searchQuery,
+                                                                order: order)
                 onCompletion(.success(bookings))
             } catch {
                 onCompletion(.failure(error))

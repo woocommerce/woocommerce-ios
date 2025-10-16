@@ -15,6 +15,7 @@ public enum BookingAction: Action {
                              pageSize: Int = BookingsRemote.Default.pageSize,
                              startDateBefore: String? = nil,
                              startDateAfter: String? = nil,
+                             order: BookingsRemote.Order = .descending,
                              shouldClearCache: Bool = false,
                              onCompletion: (Result<Bool, Error>) -> Void)
     /// Synchronizes the Booking matching the specified criteria.
@@ -41,5 +42,6 @@ public enum BookingAction: Action {
                         pageSize: Int = BookingsRemote.Default.pageSize,
                         startDateBefore: String? = nil,
                         startDateAfter: String? = nil,
+                        order: BookingsRemote.Order = .descending,
                         onCompletion: (Result<[Booking], Error>) -> Void)
 }

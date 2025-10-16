@@ -13,7 +13,7 @@ struct BookingsRemoteTests {
         network.simulateResponse(requestUrlSuffix: "bookings", filename: "booking-list")
 
         // When
-        let bookings = try await remote.loadAllBookings(for: sampleSiteID)
+        let bookings = try await remote.loadAllBookings(for: sampleSiteID, order: .descending)
 
         // Then
         #expect(bookings.count == 2)
@@ -34,7 +34,7 @@ struct BookingsRemoteTests {
 
         // Then
         await #expect(throws: NetworkError.notFound()) {
-            _ = try await remote.loadAllBookings(for: sampleSiteID)
+            _ = try await remote.loadAllBookings(for: sampleSiteID, order: .descending)
         }
     }
 
@@ -52,7 +52,8 @@ struct BookingsRemoteTests {
                                              pageSize: 50,
                                              startDateBefore: startDateBefore,
                                              startDateAfter: startDateAfter,
-                                             searchQuery: searchQuery)
+                                             searchQuery: searchQuery,
+                                             order: .ascending)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
@@ -63,6 +64,7 @@ struct BookingsRemoteTests {
         #expect((parameters["start_date_before"] as? String) == startDateBefore)
         #expect((parameters["start_date_after"] as? String) == startDateAfter)
         #expect((parameters["search"] as? String) == searchQuery)
+        #expect((parameters["order"] as? String) == "asc")
     }
 
     @Test func test_loadAllBookings_omits_nil_parameters() async throws {
@@ -74,7 +76,8 @@ struct BookingsRemoteTests {
         _ = try await remote.loadAllBookings(for: sampleSiteID,
                                              startDateBefore: nil,
                                              startDateAfter: nil,
-                                             searchQuery: nil)
+                                             searchQuery: nil,
+                                             order: .descending)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
@@ -85,5 +88,6 @@ struct BookingsRemoteTests {
         #expect(parameters["s"] == nil)
         #expect(parameters["page"] != nil)
         #expect(parameters["per_page"] != nil)
+        #expect(parameters["order"] != nil)
     }
 }

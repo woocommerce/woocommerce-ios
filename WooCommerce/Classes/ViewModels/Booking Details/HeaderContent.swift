@@ -19,28 +19,6 @@ extension BookingDetailsViewModel {
             serviceAndCustomerLine = booking.summaryText
             status = [.booked, .payAtLocation]
         }
-
-        @MainActor
-        func update(with customer: Customer) {
-            let customerName = [
-                customer.firstName,
-                customer.lastName
-            ]
-            .compactMap { $0 }
-            .filter { !$0.isEmpty }
-            .joined(separator: " ")
-
-            /// Temporary hardcode for service name
-            let serviceName = "Women's Haircut"
-            if !customerName.isEmpty {
-                serviceAndCustomerLine = [
-                    serviceName,
-                    customerName
-                ].joined(separator: Constants.dotSeparator)
-            } else {
-                serviceAndCustomerLine = serviceName
-            }
-        }
     }
 }
 

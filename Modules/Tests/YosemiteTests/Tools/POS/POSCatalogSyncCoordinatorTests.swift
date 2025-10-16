@@ -590,6 +590,102 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
 
+    // MARK: - Smart Sync Tests
+
+    @Test func performSmartSync_performs_full_sync_when_last_full_sync_older_than_threshold() async throws {
+        // Given - last full sync was 25 hours ago (older than 24 hour threshold)
+        let twentyFiveHoursAgo = Date().addingTimeInterval(-25 * 60 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twentyFiveHoursAgo)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID)
+
+        // Then - should perform full sync
+        #expect(mockSyncService.startFullSyncCallCount == 1)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performSmartSync_performs_incremental_sync_when_last_full_sync_within_threshold() async throws {
+        // Given - last full sync was 12 hours ago (within 24 hour threshold)
+        let twelveHoursAgo = Date().addingTimeInterval(-12 * 60 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twelveHoursAgo)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID)
+
+        // Then - should perform incremental sync
+        #expect(mockSyncService.startFullSyncCallCount == 0)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+
+    @Test func performSmartSync_performs_full_sync_when_no_previous_sync() async throws {
+        // Given - no previous sync exists
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID)
+
+        // Then - should perform full sync
+        #expect(mockSyncService.startFullSyncCallCount == 1)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performSmartSync_respects_custom_fullSyncMaxAge() async throws {
+        // Given - last full sync was 2 hours ago
+        let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo)
+
+        // When - using custom threshold of 1 hour
+        let oneHour: TimeInterval = 60 * 60
+        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour)
+
+        // Then - should perform full sync because last sync is older than 1 hour
+        #expect(mockSyncService.startFullSyncCallCount == 1)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performSmartSync_performs_incremental_sync_with_custom_threshold() async throws {
+        // Given - last full sync was 30 minutes ago
+        let thirtyMinutesAgo = Date().addingTimeInterval(-30 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: thirtyMinutesAgo)
+
+        // When - using custom threshold of 1 hour
+        let oneHour: TimeInterval = 60 * 60
+        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour)
+
+        // Then - should perform incremental sync because last sync is within 1 hour
+        #expect(mockSyncService.startFullSyncCallCount == 0)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+
+    @Test func performSmartSync_propagates_full_sync_errors() async throws {
+        // Given - last full sync was 25 hours ago (should trigger full sync)
+        let twentyFiveHoursAgo = Date().addingTimeInterval(-25 * 60 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twentyFiveHoursAgo)
+
+        let expectedError = NSError(domain: "full_sync", code: 500, userInfo: [NSLocalizedDescriptionKey: "Full sync failed"])
+        mockSyncService.startFullSyncResult = .failure(expectedError)
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            try await sut.performSmartSync(for: sampleSiteID)
+        }
+    }
+
+    @Test func performSmartSync_propagates_incremental_sync_errors() async throws {
+        // Given - last full sync was 12 hours ago (should trigger incremental sync)
+        let twelveHoursAgo = Date().addingTimeInterval(-12 * 60 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twelveHoursAgo)
+
+        let expectedError = NSError(domain: "incremental_sync", code: 500, userInfo: [NSLocalizedDescriptionKey: "Incremental sync failed"])
+        mockIncrementalSyncService.startIncrementalSyncResult = .failure(expectedError)
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            try await sut.performSmartSync(for: sampleSiteID)
+        }
+    }
+
     // MARK: - Helper Methods
 
     private func createSiteInDatabase(siteID: Int64, lastFullSyncDate: Date? = nil, lastIncrementalSyncDate: Date? = nil) throws {

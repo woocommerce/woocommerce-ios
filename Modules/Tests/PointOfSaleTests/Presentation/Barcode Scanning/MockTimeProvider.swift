@@ -1,5 +1,6 @@
 import Foundation
 @testable import PointOfSale
+import WooFoundation
 
 final class MockTimer: Timer {
     var isCancelled = false

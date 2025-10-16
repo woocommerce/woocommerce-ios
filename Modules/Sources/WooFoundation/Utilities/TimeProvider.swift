@@ -1,16 +1,18 @@
 import Foundation
 
-protocol TimeProvider {
+public protocol TimeProvider {
     func now() -> Date
     func scheduleTimer(timeInterval: TimeInterval, target: Any, selector: Selector) -> Timer
 }
 
-struct DefaultTimeProvider: TimeProvider {
-    func now() -> Date {
+public struct DefaultTimeProvider: TimeProvider {
+    public init() {}
+
+    public func now() -> Date {
         Date()
     }
 
-    func scheduleTimer(timeInterval: TimeInterval, target: Any, selector: Selector) -> Timer {
+    public func scheduleTimer(timeInterval: TimeInterval, target: Any, selector: Selector) -> Timer {
         return Timer.scheduledTimer(timeInterval: timeInterval, target: target, selector: selector, userInfo: nil, repeats: false)
     }
 }

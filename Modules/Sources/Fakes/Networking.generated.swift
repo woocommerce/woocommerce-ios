@@ -349,9 +349,10 @@ extension Networking.BookingResource {
     ///
     public static func fake() -> Networking.BookingResource {
         .init(
-            id: .fake(),
+            siteID: .fake(),
+            bookingID: .fake(),
             name: .fake(),
-            qty: .fake(),
+            quantity: .fake(),
             role: .fake(),
             email: .fake(),
             phoneNumber: .fake(),

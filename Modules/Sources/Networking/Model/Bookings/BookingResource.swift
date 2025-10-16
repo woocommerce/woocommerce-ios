@@ -3,9 +3,9 @@ import Foundation
 
 public struct BookingResource: Hashable, Decodable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
-    public let id: Int64
+    public let bookingID: Int64
     public let name: String
-    public let qty: Int64
+    public let quantity: Int64
     public let role: String
     public let email: String?
     public let phoneNumber: String?
@@ -14,9 +14,9 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
     public let description: String?
 
     public init(siteID: Int64,
-                id: Int64,
+                bookingID: Int64,
                 name: String,
-                qty: Int64,
+                quantity: Int64,
                 role: String,
                 email: String?,
                 phoneNumber: String?,
@@ -24,9 +24,9 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
                 imageURL: String?,
                 description: String?) {
         self.siteID = siteID
-        self.id = id
+        self.bookingID = bookingID
         self.name = name
-        self.qty = qty
+        self.quantity = quantity
         self.role = role
         self.email = email
         self.phoneNumber = phoneNumber
@@ -42,9 +42,9 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let id = try container.decode(Int64.self, forKey: .id)
+        let bookingID = try container.decode(Int64.self, forKey: .bookingID)
         let name = try container.decode(String.self, forKey: .name)
-        let qty = try container.decode(Int64.self, forKey: .qty)
+        let quantity = try container.decode(Int64.self, forKey: .quantity)
         let role = try container.decode(String.self, forKey: .role)
         let email = try container.decodeIfPresent(String.self, forKey: .email)
         let phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
@@ -53,9 +53,9 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
         let description = try container.decodeIfPresent(String.self, forKey: .description)
 
         self.init(siteID: siteID,
-                  id: id,
+                  bookingID: bookingID,
                   name: name,
-                  qty: qty,
+                  quantity: quantity,
                   role: role,
                   email: email,
                   phoneNumber: phoneNumber,
@@ -67,9 +67,9 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
 
 private extension BookingResource {
     enum CodingKeys: String, CodingKey {
-        case id
+        case bookingID = "id"
         case name
-        case qty
+        case quantity = "qty"
         case role
         case email
         case phoneNumber = "phone_number"

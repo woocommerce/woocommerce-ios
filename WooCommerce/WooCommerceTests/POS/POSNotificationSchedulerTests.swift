@@ -4,7 +4,7 @@ import UserNotifications
 @testable import Yosemite
 
 @MainActor
-struct PointOfSaleNotificationSchedulerTests {
+struct POSNotificationSchedulerTests {
     private let mockFeatureFlagService: MockFeatureFlagService
     private let mockPushNotesManager: MockPushNotificationsManager
     private let mockStores: MockStoresManager
@@ -21,7 +21,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = false
         setupMockStores()
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -41,7 +41,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores()
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -65,7 +65,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores()
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -89,7 +89,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores()
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -109,7 +109,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores()
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -140,7 +140,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores(hasPOSBeenOpened: true) // Current merchant requires POS to have been opened
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -171,7 +171,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores()
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -200,7 +200,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores(isPotentialMerchantScheduled: true, hasPOSBeenOpened: true)
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -226,7 +226,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores(isCurrentMerchantScheduled: true, hasPOSBeenOpened: true)
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,
@@ -246,7 +246,7 @@ struct PointOfSaleNotificationSchedulerTests {
         mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
         setupMockStores(hasPOSBeenOpened: false)
 
-        let scheduler = PointOfSaleNotificationScheduler(
+        let scheduler = POSNotificationScheduler(
             stores: mockStores,
             siteSettings: siteSettings,
             featureFlagService: mockFeatureFlagService,

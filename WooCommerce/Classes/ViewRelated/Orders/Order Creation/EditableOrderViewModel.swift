@@ -1026,7 +1026,7 @@ final class EditableOrderViewModel: ObservableObject {
             self.onFinished(order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
             Task {
-                await PointOfSaleNotificationScheduler().scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+                await POSNotificationScheduler().scheduleLocalNotificationIfEligible(for: .potentialMerchant)
             }
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }

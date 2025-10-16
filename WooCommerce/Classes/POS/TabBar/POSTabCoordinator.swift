@@ -124,7 +124,7 @@ final class POSTabCoordinator {
 private extension POSTabCoordinator {
     func schedulePOSSurveyNotificationIfNeeded() {
         Task { @MainActor in
-            await PointOfSaleNotificationScheduler().scheduleLocalNotificationIfEligible(for: .currentMerchant)
+            await POSNotificationScheduler().scheduleLocalNotificationIfEligible(for: .currentMerchant)
 
             let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
             storesManager.dispatch(action)

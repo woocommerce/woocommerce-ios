@@ -4,12 +4,12 @@ import Yosemite
 import Experiments
 
 // periphery: ignore - work in progress
-protocol PointOfSaleNotificationScheduling {
-    func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async
+protocol POSNotificationScheduling {
+    func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async
 }
 
 // periphery: ignore - work in progress
-final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling {
+final class POSNotificationScheduler: POSNotificationScheduling {
     enum MerchantType {
         case potentialMerchant
         case currentMerchant
@@ -61,7 +61,7 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
         self.pushNotificationsManager = pushNotificationsManager
     }
 
-    func scheduleLocalNotificationIfEligible(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
+    func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
 
         let isScheduled = await isNotificationScheduled(for: merchantType)
@@ -116,7 +116,7 @@ final class PointOfSaleNotificationScheduler: PointOfSaleNotificationScheduling 
         }
     }
 
-    private func scheduleLocalNotification(for merchantType: PointOfSaleNotificationScheduler.MerchantType) async {
+    private func scheduleLocalNotification(for merchantType: POSNotificationScheduler.MerchantType) async {
 
         let payload: [AnyHashable: Any] = [
             LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL

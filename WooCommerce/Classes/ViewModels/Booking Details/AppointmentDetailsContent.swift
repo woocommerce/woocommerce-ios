@@ -1,5 +1,5 @@
 import Foundation
-import struct Networking.Booking
+import Yosemite
 
 extension BookingDetailsViewModel {
     struct AppointmentDetailsContent {
@@ -14,17 +14,21 @@ extension BookingDetailsViewModel {
 
         let rows: [Row]
 
-        init(_ booking: Booking) {
+        init(_ booking: Booking, resource: BookingResource?) {
             let appointmentDate = booking.startDate.toString(dateStyle: .short, timeStyle: .none, timeZone: BookingListTab.utcTimeZone)
             let appointmentTimeFrame = [
                 booking.startDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone),
                 booking.endDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone)
             ].joined(separator: " - ")
 
+            let resourceRow: Row? = {
+                guard booking.resourceID > 0 else { return nil }
+                return Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: resource?.name ?? "-")
+            }()
             rows = [
                 Row(title: Localization.appointmentDetailsDateRowTitle, value: appointmentDate),
                 Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
-                Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: "Marianne Renoir"), /// Temporarily hardcoded
+                resourceRow,
                 Row(title: Localization.appointmentDetailsLocationTitle, value: "238 Willow Creek Drive, Montgomery ..."), /// Temporarily hardcoded
                 Row(
                     title: Localization.appointmentDetailsDurationTitle,
@@ -37,7 +41,7 @@ extension BookingDetailsViewModel {
                     title: Localization.appointmentDetailsPriceTitle,
                     value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost)
                 )
-            ]
+            ].compactMap { $0 }
         }
     }
 }

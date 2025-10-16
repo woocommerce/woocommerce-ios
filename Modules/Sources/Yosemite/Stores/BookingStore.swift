@@ -197,7 +197,18 @@ private extension BookingStore {
                                                                 startDateAfter: startDateAfter,
                                                                 searchQuery: searchQuery,
                                                                 order: order)
-                onCompletion(.success(bookings))
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: bookings.map { $0.orderID }
+                )
+                let updatedBookings = bookings.map { booking in
+                    guard let order = orders.first(where: { booking.orderID == $0.orderID }) else {
+                        return booking
+                    }
+                    let orderInfo = BookingOrderInfo(booking: booking, order: order)
+                    return booking.copy(orderInfo: orderInfo)
+                }
+                onCompletion(.success(updatedBookings))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -269,44 +280,29 @@ private extension BookingStore {
                 storage.insertNewObject(ofType: StorageBooking.self)
 
             if let associatedOrder = readOnlyOrders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
+                let readOnlyOrderInfo = BookingOrderInfo(booking: readOnlyBooking, order: associatedOrder)
+    
                 let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
 
                 let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
-                let productName = associatedOrder.items.first(where: { $0.productID == readOnlyBooking.productID })?.name
-                productInfo.update(with: .init(name: productName ?? ""))
+                if let readOnlyProductInfo = readOnlyOrderInfo.productInfo {
+                    productInfo.update(with: readOnlyProductInfo)
+                }
                 orderInfo.productInfo = productInfo
 
-                if let billingAddress = associatedOrder.billingAddress {
-                    let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
-                    customerInfo.update(with: .init(billingAddress: billingAddress))
-                    orderInfo.customerInfo = customerInfo
+                let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
+                if let readOnlyCustomerInfo = readOnlyOrderInfo.customerInfo {
+                    customerInfo.update(with: readOnlyCustomerInfo)
                 }
+                orderInfo.customerInfo = customerInfo
 
                 let paymentInfo = orderInfo.paymentInfo ?? storage.insertNewObject(ofType: Storage.BookingPaymentInfo.self)
-                paymentInfo.update(with:
-                        BookingPaymentInfo(
-                            paymentMethodID: associatedOrder.paymentMethodID,
-                            paymentMethodTitle: associatedOrder.paymentMethodTitle,
-                            subtotal: associatedOrder.items.map({ Double($0.subtotal) ?? 0 }).reduce(0, +).description,
-                            subtotalTax: associatedOrder.items.map({ Double($0.subtotalTax) ?? 0 }).reduce(0, +).description,
-                            total: associatedOrder.total,
-                            totalTax: associatedOrder.totalTax
-                        )
-                )
-
+                if let readOnlyPaymentInfo = readOnlyOrderInfo.paymentInfo {
+                    paymentInfo.update(with: readOnlyPaymentInfo)
+                }
                 orderInfo.paymentInfo = paymentInfo
 
                 orderInfo.statusKey = associatedOrder.status.rawValue
-                storageBooking.orderInfo = orderInfo
-            } else if let product = storage.loadProduct(siteID: readOnlyBooking.siteID, productID: readOnlyBooking.productID) {
-                /// Fallback when order info cannot be fetched:
-                /// get cached product to fill in product info
-                let productInfo = storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
-                productInfo.name = product.name
-
-                let orderInfo = storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
-                orderInfo.statusKey = readOnlyBooking.statusKey
-                orderInfo.productInfo = productInfo
                 storageBooking.orderInfo = orderInfo
             }
 

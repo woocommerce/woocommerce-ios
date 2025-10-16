@@ -455,9 +455,14 @@ struct BookingStoreTests {
 
     @Test func searchBookings_returns_bookings_on_success() async throws {
         // Given
-        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
-        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456)
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 1)
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456, orderID: 2)
         remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+
+        let order1 = Order.fake().copy(orderID: 1)
+        let order2 = Order.fake().copy(orderID: 2)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order1, order2]))
+
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
@@ -510,8 +515,12 @@ struct BookingStoreTests {
 
     @Test func searchBookings_does_not_save_results_to_storage() async throws {
         // Given
-        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 1)
         remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+
+        let order = Order.fake().copy(orderID: 1)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order]))
+
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
@@ -533,6 +542,80 @@ struct BookingStoreTests {
         // Then
         #expect(result.isSuccess)
         #expect(storedBookingCount == 0)
+    }
+
+    @Test func searchBookings_fetches_orders_for_bookings() async throws {
+        // Given
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 10)
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456, orderID: 20)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+
+        let order1 = Order.fake().copy(orderID: 10)
+        let order2 = Order.fake().copy(orderID: 20)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order1, order2]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(ordersRemote.invokedLoadOrders)
+        #expect(ordersRemote.invokedLoadOrdersParameters?.orderIDs == [10, 20])
+    }
+
+    @Test func searchBookings_returns_bookings_with_orderInfo_when_orders_are_available() async throws {
+        // Given
+        let productID: Int64 = 100
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 123,
+            orderID: 1,
+            productID: productID
+        )
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Test Product", productID: productID)
+        let order = Order.fake().copy(orderID: 1, status: .processing, items: [orderItem])
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let bookings = try result.get()
+        #expect(bookings.count == 1)
+        let returnedBooking = try #require(bookings.first)
+        let orderInfo = try #require(returnedBooking.orderInfo)
+        #expect(orderInfo.productInfo?.name == "Test Product")
+        #expect(orderInfo.statusKey == "processing")
     }
 
     // MARK: - orderInfo Storage Tests
@@ -662,144 +745,6 @@ struct BookingStoreTests {
         let customerInfo = try #require(orderInfo.customerInfo)
         #expect(customerInfo.billingFirstName == "Test")
         #expect(customerInfo.billingLastName == "User")
-    }
-
-    @Test func synchronizeBookings_falls_back_to_cached_product_when_order_cannot_be_fetched() async throws {
-        // Given
-        let productID: Int64 = 200
-        let booking = Booking.fake().copy(
-            siteID: sampleSiteID,
-            bookingID: 999,
-            orderID: 0, // No valid order
-            productID: productID,
-            statusKey: "pending"
-        )
-        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
-
-        // Store a cached product in storage
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: productID, name: "Cached Product")
-        storeProduct(product)
-
-        // Orders remote returns empty (order not found)
-        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
-
-        let store = BookingStore(dispatcher: Dispatcher(),
-                                 storageManager: storageManager,
-                                 network: network,
-                                 remote: remote,
-                                 ordersRemote: ordersRemote)
-
-        // When
-        let result = await withCheckedContinuation { continuation in
-            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
-                                                             pageNumber: defaultPageNumber,
-                                                             pageSize: defaultPageSize,
-                                                             onCompletion: { result in
-                continuation.resume(returning: result)
-            }))
-        }
-
-        // Then
-        #expect(result.isSuccess)
-        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 999))
-        let orderInfo = try #require(storedBooking.orderInfo)
-
-        // Verify orderInfo has product info from cached product
-        let productInfo = try #require(orderInfo.productInfo)
-        #expect(productInfo.name == "Cached Product")
-
-        // Verify status is from booking
-        #expect(orderInfo.statusKey == "pending")
-
-        // Verify customer and payment info are not present
-        #expect(orderInfo.customerInfo == nil)
-        #expect(orderInfo.paymentInfo == nil)
-    }
-
-    @Test func synchronizeBooking_falls_back_to_cached_product_when_order_cannot_be_fetched() async throws {
-        // Given
-        let productID: Int64 = 300
-        let booking = Booking.fake().copy(
-            siteID: sampleSiteID,
-            bookingID: 888,
-            orderID: 0,
-            productID: productID,
-            statusKey: "confirmed"
-        )
-        remote.whenLoadingBooking(thenReturn: .success(booking))
-
-        // Store a cached product
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: productID, name: "Spa Treatment")
-        storeProduct(product)
-
-        // Orders remote returns empty
-        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
-
-        let store = BookingStore(dispatcher: Dispatcher(),
-                                 storageManager: storageManager,
-                                 network: network,
-                                 remote: remote,
-                                 ordersRemote: ordersRemote)
-
-        // When
-        let result = await withCheckedContinuation { continuation in
-            store.onAction(
-                BookingAction.synchronizeBooking(
-                    siteID: sampleSiteID,
-                    bookingID: 888
-                ) { result in
-                    continuation.resume(returning: result)
-                }
-            )
-        }
-
-        // Then
-        #expect(result.isSuccess)
-        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 888))
-        let orderInfo = try #require(storedBooking.orderInfo)
-
-        // Verify fallback behavior
-        let productInfo = try #require(orderInfo.productInfo)
-        #expect(productInfo.name == "Spa Treatment")
-        #expect(orderInfo.statusKey == "confirmed")
-        #expect(orderInfo.customerInfo == nil)
-        #expect(orderInfo.paymentInfo == nil)
-    }
-
-    @Test func synchronizeBookings_has_no_orderInfo_when_order_and_product_not_found() async throws {
-        // Given
-        let booking = Booking.fake().copy(
-            siteID: sampleSiteID,
-            bookingID: 777,
-            orderID: 0,
-            productID: 999, // Product doesn't exist in cache
-            statusKey: "pending"
-        )
-        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
-        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
-
-        let store = BookingStore(dispatcher: Dispatcher(),
-                                 storageManager: storageManager,
-                                 network: network,
-                                 remote: remote,
-                                 ordersRemote: ordersRemote)
-
-        // When
-        let result = await withCheckedContinuation { continuation in
-            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
-                                                             pageNumber: defaultPageNumber,
-                                                             pageSize: defaultPageSize,
-                                                             onCompletion: { result in
-                continuation.resume(returning: result)
-            }))
-        }
-
-        // Then
-        #expect(result.isSuccess)
-        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 777))
-
-        // Verify no orderInfo is created when neither order nor product is available
-        #expect(storedBooking.orderInfo == nil)
     }
 }
 

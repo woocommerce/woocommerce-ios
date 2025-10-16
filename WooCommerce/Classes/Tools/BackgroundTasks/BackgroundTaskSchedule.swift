@@ -12,7 +12,7 @@ extension BackgroundTaskRefreshDispatcher.BackgroundTaskType {
     }
 }
 
-/// BackgroundTaskSchedule is a helper tool to etermine the next BackgroundTask based on the preferred run period
+/// BackgroundTaskSchedule is a helper tool to determine the next BackgroundTask based on the preferred run period
 ///
 final class BackgroundTaskSchedule {
     private var preferredTaskDate: [BackgroundTaskRefreshDispatcher.BackgroundTaskType: Date] = [:]

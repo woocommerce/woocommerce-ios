@@ -57,7 +57,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager, storageManager: storageManager)
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
 
         // Then
         XCTAssertEqual(viewModel.sections.count, 6)
@@ -111,7 +111,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager, storageManager: storageManager)
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
 
         // Then
         XCTAssertEqual(viewModel.sections.count, 5)
@@ -143,7 +143,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager, storageManager: storageManager)
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
 
         // Then
         let headerSection = viewModel.sections.first { section in
@@ -186,7 +186,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager, storageManager: storageManager)
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
 
         // Then
         let customerSection = viewModel.sections.first { section in
@@ -215,7 +215,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(bookingID: 12345)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager, storageManager: storageManager)
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
 
         // Then
         XCTAssertTrue(viewModel.navigationTitle.contains("12345"))
@@ -224,7 +224,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
     func test_syncData_triggers_booking_synchronization() async {
         // Given
         let booking = Booking.fake().copy(siteID: 123, bookingID: 456)
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager, storageManager: storageManager)
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
 
         let expectation = self.expectation(description: "Booking synchronization should be triggered")
 

@@ -1,12 +1,10 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
 
     private var booking: Booking
-    private let storageManager: StorageManagerType
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -17,12 +15,9 @@ final class BookingDetailsViewModel: ObservableObject {
     let navigationTitle: String
     @Published private(set) var sections: [Section] = []
 
-    init(booking: Booking,
-         stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
         self.booking = booking
         self.stores = stores
-        self.storageManager = storageManager
 
         navigationTitle = Self.navigationTitle(for: booking)
         setupSections(with: booking)
@@ -108,12 +103,7 @@ private extension BookingDetailsViewModel {
                 siteID: booking.siteID,
                 bookingID: booking.bookingID
             ) { result in
-                switch result {
-                case .success:
-                    continuation.resume(returning: Void())
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             }
             stores.dispatch(action)
         }

@@ -534,6 +534,135 @@ struct BookingStoreTests {
         #expect(result.isSuccess)
         #expect(storedBookingCount == 0)
     }
+
+    // MARK: - orderInfo Storage Tests
+
+    @Test func synchronizeBookings_stores_complete_orderInfo_with_all_nested_properties() async throws {
+        // Given
+        let productID: Int64 = 100
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 1, productID: productID)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+
+        let billingAddress = Address.fake().copy(
+            firstName: "Jane",
+            lastName: "Smith",
+            address1: "456 Oak Ave",
+            city: "Los Angeles",
+            postcode: "90001",
+            country: "US"
+        )
+        let orderItem = OrderItem.fake().copy(
+            itemID: 1,
+            name: "Premium Booking",
+            productID: productID,
+            subtotal: "200.00",
+            subtotalTax: "20.00"
+        )
+        let order = Order.fake().copy(
+            orderID: 1,
+            status: .processing,
+            total: "220.00",
+            totalTax: "20.00",
+            paymentMethodID: "paypal",
+            paymentMethodTitle: "PayPal",
+            items: [orderItem],
+            billingAddress: billingAddress
+        )
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 123))
+        let orderInfo = try #require(storedBooking.orderInfo)
+
+        // Verify order status
+        #expect(orderInfo.statusKey == "processing")
+
+        // Verify product info
+        let productInfo = try #require(orderInfo.productInfo)
+        #expect(productInfo.name == "Premium Booking")
+
+        // Verify customer info
+        let customerInfo = try #require(orderInfo.customerInfo)
+        #expect(customerInfo.billingFirstName == "Jane")
+        #expect(customerInfo.billingLastName == "Smith")
+        #expect(customerInfo.billingAddress1 == "456 Oak Ave")
+        #expect(customerInfo.billingCity == "Los Angeles")
+
+        // Verify payment info
+        let paymentInfo = try #require(orderInfo.paymentInfo)
+        #expect(paymentInfo.paymentMethodID == "paypal")
+        #expect(paymentInfo.paymentMethodTitle == "PayPal")
+        #expect(paymentInfo.subtotal == "200.0")
+        #expect(paymentInfo.subtotalTax == "20.0")
+        #expect(paymentInfo.total == "220.00")
+        #expect(paymentInfo.totalTax == "20.00")
+    }
+
+    @Test func synchronizeBooking_stores_orderInfo_correctly() async throws {
+        // Given
+        let productID: Int64 = 100
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 1, productID: productID)
+        remote.whenLoadingBooking(thenReturn: .success(booking))
+
+        let billingAddress = Address.fake().copy(firstName: "Test", lastName: "User")
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Test Product", productID: productID)
+        let order = Order.fake().copy(
+            orderID: 1,
+            status: .onHold,
+            paymentMethodID: "cod",
+            items: [orderItem],
+            billingAddress: billingAddress
+        )
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.synchronizeBooking(
+                    siteID: sampleSiteID,
+                    bookingID: 123
+                ) { result in
+                    continuation.resume(returning: result)
+                }
+            )
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 123))
+        let orderInfo = try #require(storedBooking.orderInfo)
+        #expect(orderInfo.statusKey == "on-hold")
+
+        let productInfo = try #require(orderInfo.productInfo)
+        #expect(productInfo.name == "Test Product")
+
+        let customerInfo = try #require(orderInfo.customerInfo)
+        #expect(customerInfo.billingFirstName == "Test")
+        #expect(customerInfo.billingLastName == "User")
+    }
 }
 
 private extension BookingStoreTests {

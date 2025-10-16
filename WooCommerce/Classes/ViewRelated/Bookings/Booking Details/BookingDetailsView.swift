@@ -330,7 +330,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             startDate: now,
             statusKey: "paid",
             localTimezone: "America/New_York",
-            currency: "USD"
+            currency: "USD",
+            orderInfo: nil
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

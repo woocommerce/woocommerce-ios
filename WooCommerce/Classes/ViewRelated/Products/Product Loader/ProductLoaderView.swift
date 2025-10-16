@@ -9,7 +9,6 @@ struct ProductLoaderView: UIViewControllerRepresentable {
     let forceReadOnly: Bool
 
     func makeUIViewController(context: Context) -> UINavigationController {
-        // TODO: Replace with ProductDetailRouter
         let viewController = ProductLoaderViewController(model: model,
                                                          siteID: siteID,
                                                          forceReadOnly: forceReadOnly)

@@ -12,7 +12,6 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
         let exp = expectation(description: #function)
         // Action
-        // TODO: Replace with ProductDetailRouter
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false) { viewController in
@@ -31,7 +30,6 @@ final class ProductDetailsFactoryTests: XCTestCase {
         let exp = expectation(description: #function)
 
         // Action
-        // TODO: Replace with ProductDetailRouter
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false) { viewController in
@@ -50,7 +48,6 @@ final class ProductDetailsFactoryTests: XCTestCase {
         let exp = expectation(description: #function)
 
         // Action
-        // TODO: Replace with ProductDetailRouter
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false) { viewController in
@@ -69,7 +66,6 @@ final class ProductDetailsFactoryTests: XCTestCase {
         let exp = expectation(description: #function)
 
         // Action
-        // TODO: Replace with ProductDetailRouter
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false) { viewController in
@@ -88,7 +84,6 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
         // Action
         waitForExpectation { expectation in
-            // TODO: Replace with ProductDetailRouter
             ProductDetailsFactory.productDetails(product: product,
                                                  presentationStyle: .navigationStack,
                                                  forceReadOnly: false) { viewController in
@@ -105,7 +100,6 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
         // Action
         waitForExpectation { expectation in
-            // TODO: Replace with ProductDetailRouter
             ProductDetailsFactory.productDetails(product: product,
                                                  presentationStyle: .navigationStack,
                                                  forceReadOnly: true) { viewController in

@@ -122,7 +122,6 @@ private extension AggregatedProductListViewController {
     /// Displays the product details screen for the provided AggregateOrderItem
     ///
     func productWasPressed(orderItem: AggregateOrderItem) {
-        // TODO: Replace with ProductDetailRouter, native
         let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: orderItem),
                                                                siteID: viewModel.order.siteID,
                                                                forceReadOnly: true)

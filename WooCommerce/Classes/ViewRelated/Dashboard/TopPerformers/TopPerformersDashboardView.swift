@@ -181,7 +181,6 @@ private extension TopPerformersDashboardView {
     }
 
     func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
-        // TODO: Replace with ProductDetailRouter
         let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: item),
                                                                siteID: viewModel.siteID,
                                                                forceReadOnly: false)

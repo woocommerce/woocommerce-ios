@@ -4,16 +4,10 @@ import Yosemite
 final class ProductDetailRouter {
     enum PresentationStyle {
         case undefined
-        case push
-        case modal
         case contained(containerViewController: () -> UIViewController?)
 
         var asProductFormPresentationStyle: ProductFormPresentationStyle {
             switch self {
-            case .push:
-                    .navigationStack
-            case .modal:
-                    .navigationStack
             case .contained(let containerViewController):
                     .contained(containerViewController: containerViewController)
             case .undefined:
@@ -30,42 +24,24 @@ final class ProductDetailRouter {
         self.productURLProvider = productURLProvider
     }
 
-    func open(product: Product,
-              presenter: UIViewController,
-              presentationStyle: PresentationStyle,
-              onDismiss: (() -> Void)? = nil) {
-        if  product.productType == .booking {
-            let coordinator = WebViewProductDetailCoordinator(product: product,
-                                                              productURLProvider: productURLProvider)
-            coordinator.start(presenter: presenter, onDismiss: onDismiss)
-        } else {
-            let coordinator = NativeProductDetailCoordinator(product: product)
-            coordinator.start(presenter: presenter,
-                              presentationStyle: presentationStyle,
-                              onDismiss: onDismiss)
-        }
-    }
-
     func viewController(product: Product,
                         presentationStyle: PresentationStyle = .undefined,
                         forceReadOnly: Bool,
                         onDeleteCompletion: (() -> Void)? = nil) -> UIViewController {
+
+        let viewController: UIViewController
         if  product.productType == .booking {
             let coordinator = WebViewProductDetailCoordinator(product: product,
                                                               productURLProvider: productURLProvider)
-            return coordinator.viewController()
+            viewController = coordinator.viewController()
 
         } else {
             let coordinator = NativeProductDetailCoordinator(product: product)
-            return coordinator.viewController(presentationStyle: presentationStyle,
+            viewController = coordinator.viewController(presentationStyle: presentationStyle,
                                               forceReadOnly: forceReadOnly)
         }
-    }
-}
 
-final class ProductURLProvider {
-    func adminURL(for product: Product) -> URL? {
-        return URL(string: "https://wordpress.com")
+        return viewController
     }
 }
 
@@ -91,18 +67,6 @@ final class WebViewProductDetailCoordinator: NSObject {
         return webViewController
     }
 
-    func start(presenter: UIViewController,
-               onDismiss: (() -> Void)? = nil) {
-        let webViewController = viewController()
-        webViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .done,
-            target: self,
-            action: #selector(dismissWebView)
-        )
-
-        presenter.navigationController?.present(webViewController, animated: true)
-    }
-
     @objc
     private func dismissWebView() {
         let completion = onDismiss
@@ -118,12 +82,6 @@ final class NativeProductDetailCoordinator {
         self.product = product
     }
 
-    func start(presenter: UIViewController,
-               presentationStyle: ProductDetailRouter.PresentationStyle,
-               onDismiss: (() -> Void)? = nil) {
-
-    }
-
     func viewController(
         presentationStyle: ProductDetailRouter.PresentationStyle,
         forceReadOnly: Bool,
@@ -133,4 +91,10 @@ final class NativeProductDetailCoordinator {
                                                         forceReadOnly: false,
                                                         onDeleteCompletion: onDeleteCompletion ?? {})
         }
+}
+
+final class ProductURLProvider {
+    func adminURL(for product: Product) -> URL? {
+        return URL(string: "https://wordpress.com")
+    }
 }

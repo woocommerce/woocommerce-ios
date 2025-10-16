@@ -27,6 +27,13 @@ struct ProductDetailsFactory {
         onCompletion(vc)
     }
 
+    /// Creates a product details view controller asynchronously based on the app settings.
+    /// - Parameters:
+    ///   - product: product model.
+    ///   - presentationStyle: how the product details are presented.
+    ///   - currencySettings: site currency settings.
+    ///   - forceReadOnly: force the product detail to be presented in read only mode
+    ///   - onDeleteCompletion: called when the product deletion completes in the product form.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,

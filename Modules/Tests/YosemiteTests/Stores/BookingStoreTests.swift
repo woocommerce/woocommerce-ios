@@ -663,6 +663,144 @@ struct BookingStoreTests {
         #expect(customerInfo.billingFirstName == "Test")
         #expect(customerInfo.billingLastName == "User")
     }
+
+    @Test func synchronizeBookings_falls_back_to_cached_product_when_order_cannot_be_fetched() async throws {
+        // Given
+        let productID: Int64 = 200
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 999,
+            orderID: 0, // No valid order
+            productID: productID,
+            statusKey: "pending"
+        )
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+
+        // Store a cached product in storage
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: productID, name: "Cached Product")
+        storeProduct(product)
+
+        // Orders remote returns empty (order not found)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 999))
+        let orderInfo = try #require(storedBooking.orderInfo)
+
+        // Verify orderInfo has product info from cached product
+        let productInfo = try #require(orderInfo.productInfo)
+        #expect(productInfo.name == "Cached Product")
+
+        // Verify status is from booking
+        #expect(orderInfo.statusKey == "pending")
+
+        // Verify customer and payment info are not present
+        #expect(orderInfo.customerInfo == nil)
+        #expect(orderInfo.paymentInfo == nil)
+    }
+
+    @Test func synchronizeBooking_falls_back_to_cached_product_when_order_cannot_be_fetched() async throws {
+        // Given
+        let productID: Int64 = 300
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 888,
+            orderID: 0,
+            productID: productID,
+            statusKey: "confirmed"
+        )
+        remote.whenLoadingBooking(thenReturn: .success(booking))
+
+        // Store a cached product
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: productID, name: "Spa Treatment")
+        storeProduct(product)
+
+        // Orders remote returns empty
+        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.synchronizeBooking(
+                    siteID: sampleSiteID,
+                    bookingID: 888
+                ) { result in
+                    continuation.resume(returning: result)
+                }
+            )
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 888))
+        let orderInfo = try #require(storedBooking.orderInfo)
+
+        // Verify fallback behavior
+        let productInfo = try #require(orderInfo.productInfo)
+        #expect(productInfo.name == "Spa Treatment")
+        #expect(orderInfo.statusKey == "confirmed")
+        #expect(orderInfo.customerInfo == nil)
+        #expect(orderInfo.paymentInfo == nil)
+    }
+
+    @Test func synchronizeBookings_has_no_orderInfo_when_order_and_product_not_found() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 777,
+            orderID: 0,
+            productID: 999, // Product doesn't exist in cache
+            statusKey: "pending"
+        )
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+        ordersRemote.whenLoadingOrders(thenReturn: .success([]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 777))
+
+        // Verify no orderInfo is created when neither order nor product is available
+        #expect(storedBooking.orderInfo == nil)
+    }
 }
 
 private extension BookingStoreTests {
@@ -671,6 +809,13 @@ private extension BookingStoreTests {
         let storedBooking = storage.insertNewObject(ofType: Storage.Booking.self)
         storedBooking.update(with: booking)
         return storedBooking
+    }
+
+    @discardableResult
+    func storeProduct(_ product: Networking.Product) -> Storage.Product {
+        let storedProduct = storage.insertNewObject(ofType: Storage.Product.self)
+        storedProduct.update(with: product)
+        return storedProduct
     }
 }
 

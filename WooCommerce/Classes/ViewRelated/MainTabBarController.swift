@@ -722,7 +722,7 @@ private extension MainTabBarController {
             viewModel.loadHubMenuTabBadge()
 
             // Begin foreground synchronization if POS tab becomes visible
-            isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
+            await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
         }
     }
 

@@ -7,7 +7,7 @@ import Experiments
 /// Periodically syncs POS catalog while the app is in the foreground.
 /// Triggers `catalogCoordinator.performSmartSync()` every hour when active.
 ///
-final class ForegroundPOSCatalogSyncDispatcher {
+final actor ForegroundPOSCatalogSyncDispatcher {
     private enum Constants {
         static let syncInterval: TimeInterval = 60 * 60 // 1 hour
         static let initialSyncDelay: TimeInterval = 5 // 5 seconds after becoming active
@@ -19,7 +19,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
     private let timerProvider: DispatchTimerProviding
     private let featureFlagService: FeatureFlagService
     private let stores: StoresManager
-    private let isAppActive: () -> Bool
+    private let isAppActive: () async -> Bool
     private var observers: [NSObjectProtocol] = []
     private var timer: DispatchTimerProtocol?
 
@@ -33,7 +33,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
          timerProvider: DispatchTimerProviding = DefaultDispatchTimerProvider(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
-         isAppActive: @escaping () -> Bool = { UIApplication.shared.applicationState == .active }) {
+         isAppActive: @escaping () async -> Bool = UIApplication.isApplicationActive) {
         self.interval = interval
         self.notificationCenter = notificationCenter
         self.timerProvider = timerProvider
@@ -42,11 +42,7 @@ final class ForegroundPOSCatalogSyncDispatcher {
         self.isAppActive = isAppActive
     }
 
-    deinit {
-        stop()
-    }
-
-    func start() {
+    func start() async {
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
             return
         }
@@ -65,7 +61,9 @@ final class ForegroundPOSCatalogSyncDispatcher {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.startTimer()
+            Task {
+                await self?.startTimer()
+            }
         }
 
         let backgroundObserver = notificationCenter.addObserver(
@@ -73,7 +71,9 @@ final class ForegroundPOSCatalogSyncDispatcher {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.stopTimer()
+            Task {
+                await self?.stopTimer()
+            }
         }
 
         let defaultSiteObserver = notificationCenter.addObserver(
@@ -81,12 +81,14 @@ final class ForegroundPOSCatalogSyncDispatcher {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.stop()
+            Task {
+                await self?.stop()
+            }
         }
 
         observers = [activeObserver, backgroundObserver, defaultSiteObserver]
 
-        if isAppActive() {
+        if await isAppActive() {
             startTimer()
         }
 
@@ -112,7 +114,9 @@ final class ForegroundPOSCatalogSyncDispatcher {
         let timer = timerProvider.makeTimer(queue: queue)
         timer.schedule(deadline: .now() + Constants.initialSyncDelay, repeating: interval, leeway: .seconds(Constants.leeway))
         timer.setEventHandler { [weak self] in
-            self?.performSync()
+            Task {
+                await self?.performSync()
+            }
         }
         timer.resume()
         self.timer = timer
@@ -209,5 +213,11 @@ protocol DispatchTimerProviding {
 struct DefaultDispatchTimerProvider: DispatchTimerProviding {
     func makeTimer(queue: DispatchQueue) -> DispatchTimerProtocol {
         DispatchSource.makeTimerSource(queue: queue).asTimer()
+    }
+}
+
+extension UIApplication {
+    static func isApplicationActive() async -> Bool {
+        shared.applicationState == .active
     }
 }

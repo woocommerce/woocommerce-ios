@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import Yosemite
 @testable import WooCommerce
+import UIKit
 
 @MainActor
 struct ForegroundPOSCatalogSyncDispatcherTests {
@@ -29,7 +30,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func start_whenFeatureFlagEnabled_createsTimer() async throws {
         // When
-        sut.start()
+        await sut.start()
 
         // Then
         #expect(timerProvider.createdTimers.count == 1)
@@ -39,18 +40,10 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func start_whenFeatureFlagDisabled_doesNotCreateTimer() async throws {
         // Given
-        let disabledFlags = MockFeatureFlagService()
-        disabledFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = false
-        let dispatcher = ForegroundPOSCatalogSyncDispatcher(
-            notificationCenter: notificationCenter,
-            timerProvider: timerProvider,
-            featureFlagService: disabledFlags,
-            stores: stores,
-            isAppActive: { true }
-        )
+        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = false
 
         // When
-        dispatcher.start()
+        await sut.start()
 
         // Then
         #expect(timerProvider.createdTimers.isEmpty)
@@ -62,7 +55,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         let coordinator = MockPOSCatalogSyncCoordinator()
         stores.testPOSCatalogSyncCoordinator = coordinator
 
-        sut.start()
+        await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
 
         // When - fire timer and wait for sync to be called
@@ -82,19 +75,10 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     func timerFires_whenNoDefaultStore_skipsSync() async throws {
         // Given
         let coordinator = MockPOSCatalogSyncCoordinator()
-        let noStoreSession = SessionManager.testingInstance
-        noStoreSession.setStoreId(nil)
-        let noStoreStores = MockStoresManager(sessionManager: noStoreSession)
-        noStoreStores.testPOSCatalogSyncCoordinator = coordinator
-        let dispatcher = ForegroundPOSCatalogSyncDispatcher(
-            notificationCenter: notificationCenter,
-            timerProvider: timerProvider,
-            featureFlagService: featureFlags,
-            stores: noStoreStores,
-            isAppActive: { true }
-        )
+        sessionManager.setStoreId(nil)
+        stores.testPOSCatalogSyncCoordinator = coordinator
 
-        dispatcher.start()
+        await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
 
         // When
@@ -111,7 +95,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         coordinator.performSmartSyncResult = .failure(POSCatalogSyncError.syncAlreadyInProgress(siteID: 123))
         stores.testPOSCatalogSyncCoordinator = coordinator
 
-        sut.start()
+        await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
 
         // When - fire timer and wait for sync to be called
@@ -129,13 +113,13 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func start_whenSiteChanges_resetsAndRestartsSync() async throws {
         // Given - start with site 123
-        sut.start()
+        await sut.start()
         let firstTimer = try #require(timerProvider.createdTimers.first)
         #expect(timerProvider.createdTimers.count == 1)
 
         // When - change site to 456 and start again
         sessionManager.setStoreId(456)
-        sut.start()
+        await sut.start()
 
         // Then - old timer cancelled, new timer created
         #expect(firstTimer.isCancelled == true)
@@ -160,18 +144,76 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func defaultSiteNotification_stopsDispatcher() async throws {
         // Given
-        sut.start()
+        await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
         #expect(timer.isResumed == true)
 
         // When - default site changes
-        notificationCenter.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
+        await withCheckedContinuation { continuation in
+            timer.onCancelled = { continuation.resume() }
 
-        // Then - dispatcher stops
-        #expect(timer.isCancelled == true)
+            notificationCenter.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
+        }
 
         // Verify dispatcher can restart after notification
-        sut.start()
+        await sut.start()
+        #expect(timerProvider.createdTimers.count == 2)
+        #expect(timerProvider.createdTimers.last?.isResumed == true)
+    }
+
+    @Test
+    func didBecomeActiveNotification_startsTimer() async throws {
+        // Given - dispatcher started but app not active initially
+        let inactiveDispatcher = ForegroundPOSCatalogSyncDispatcher(
+            notificationCenter: notificationCenter,
+            timerProvider: timerProvider,
+            featureFlagService: featureFlags,
+            stores: stores,
+            isAppActive: { false }
+        )
+        await inactiveDispatcher.start()
+
+        // Then - no timer created yet
+        #expect(timerProvider.createdTimers.isEmpty)
+
+        // When - app becomes active, wait for timer to be created
+        await withCheckedContinuation { continuation in
+            timerProvider.onTimerCreated = { continuation.resume() }
+
+            notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        }
+
+        // Then - timer should be created and started
+        #expect(timerProvider.createdTimers.count == 1)
+        #expect(timerProvider.createdTimers.first?.isResumed == true)
+    }
+
+    @Test
+    func didEnterBackgroundNotification_stopsTimer() async throws {
+        // Given
+        await sut.start()
+        let timer = try #require(timerProvider.createdTimers.first)
+        #expect(timer.isResumed == true)
+        #expect(timer.isCancelled == false)
+
+        // When - app enters background
+        await withCheckedContinuation { continuation in
+            timer.onCancelled = { continuation.resume() }
+
+            notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+        }
+
+        // Then - timer should be cancelled
+        #expect(timer.isCancelled == true)
+
+        // When - app becomes active again, wait for new timer
+        await withCheckedContinuation { continuation in
+            timerProvider.onTimerCreated = { continuation.resume() }
+
+            notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        }
+
+        // Then - new timer should be created
         #expect(timerProvider.createdTimers.count == 2)
         #expect(timerProvider.createdTimers.last?.isResumed == true)
     }
@@ -182,6 +224,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
 private final class MockDispatchTimer: DispatchTimerProtocol {
     private(set) var isResumed = false
     private(set) var isCancelled = false
+    var onCancelled: () -> Void = { }
     private var eventHandler: (() -> Void)?
 
     func schedule(deadline: DispatchTime, repeating: Double, leeway: DispatchTimeInterval) {
@@ -198,6 +241,7 @@ private final class MockDispatchTimer: DispatchTimerProtocol {
 
     func cancel() {
         isCancelled = true
+        onCancelled()
     }
 
     /// Test helper to manually fire the timer
@@ -208,10 +252,12 @@ private final class MockDispatchTimer: DispatchTimerProtocol {
 
 private final class MockDispatchTimerProvider: DispatchTimerProviding {
     private(set) var createdTimers: [MockDispatchTimer] = []
+    var onTimerCreated: () -> Void = { }
 
     func makeTimer(queue: DispatchQueue) -> DispatchTimerProtocol {
         let timer = MockDispatchTimer()
         createdTimers.append(timer)
+        onTimerCreated()
         return timer
     }
 }

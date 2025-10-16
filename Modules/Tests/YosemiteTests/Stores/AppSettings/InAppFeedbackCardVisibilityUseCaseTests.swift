@@ -245,7 +245,9 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
             isCustomFieldsTopBannerDismissed: false,
-            isPOSSurveyNotificationScheduled: false)
+            isPOSSurveyPotentialMerchantNotificationScheduled: false,
+            isPOSSurveyCurrentMerchantNotificationScheduled: false,
+            hasPOSBeenOpenedAtLeastOnce: false)
         return settings
     }
 }

@@ -281,7 +281,7 @@ private extension BookingStore {
 
             if let associatedOrder = readOnlyOrders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
                 let readOnlyOrderInfo = BookingOrderInfo(booking: readOnlyBooking, order: associatedOrder)
-    
+
                 let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
 
                 let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)

@@ -72,10 +72,9 @@ struct LocalNotification {
         static let surveyURL = "surveyURL"
     }
 
-    // periphery:ignore - real survey links to be added in WOOMOB-1497
     enum SurveyURL {
-        static let pointOfSalePotentialMerchant = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
-        static let pointOfSaleCurrentMerchant = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
+        static let pointOfSalePotentialMerchant = "https://automattic.survey.fm/pos-survey-potential-users"
+        static let pointOfSaleCurrentMerchant = "https://automattic.survey.fm/pos-survey-existing-users"
     }
 }
 

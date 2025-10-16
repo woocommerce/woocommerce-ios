@@ -16,17 +16,7 @@ extension BookingDetailsViewModel {
                 timeZone: BookingListTab.utcTimeZone
             )
 
-            /// Temporary hardcode for service name
-            let serviceName = "Women's Haircut"
-            if let customerName = customerName, !customerName.isEmpty {
-                serviceAndCustomerLine = [
-                    serviceName,
-                    customerName
-                ].joined(separator: Constants.dotSeparator)
-            } else {
-                serviceAndCustomerLine = serviceName
-            }
-
+            serviceAndCustomerLine = booking.summaryText
             status = [.booked, .payAtLocation]
         }
 

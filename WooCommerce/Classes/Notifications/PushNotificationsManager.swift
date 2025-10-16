@@ -287,7 +287,7 @@ extension PushNotificationsManager {
                     guard let self = self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    self.analytics.track(.viewInAppPushNotificationPressed, //
+                    self.analytics.track(.viewInAppPushNotificationPressed,
                                                    withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 

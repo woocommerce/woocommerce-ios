@@ -24,7 +24,6 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let currency: String
     public let orderInfo: BookingOrderInfo?
 
-    // periphery: ignore - to be used later
     public var bookingStatus: BookingStatus {
         return BookingStatus(rawValue: statusKey) ?? .unknown
     }

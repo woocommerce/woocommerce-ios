@@ -128,8 +128,11 @@ private extension BookingListView {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.primary)
 
-                // TODO: fetch bookable products & customer to get names or wait for API update
-                Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
+                Text([booking.orderInfo?.productInfo?.name,
+                      booking.orderInfo?.customerInfo?.billingAddress.fullName]
+                    .compactMap { $0 }
+                    .filter { $0.isNotEmpty }
+                    .joined(separator: "  •  "))
                     .font(.footnote)
                     .fontWeight(.medium)
                     .foregroundStyle(Color.secondary)

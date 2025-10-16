@@ -264,6 +264,9 @@ extension PushNotificationsManager {
             // Check if this is a local notification
             if !content.isRemoteNotification {
                 // Display local notifications with banner and sound when app is in foreground
+                let identifier = notification.request.identifier
+                analytics.track(event: .LocalNotification.displayed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                                     userInfo: content.userInfo))
                 return [.banner, .sound, .list]
             }
         }
@@ -284,7 +287,7 @@ extension PushNotificationsManager {
                     guard let self = self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    self.analytics.track(.viewInAppPushNotificationPressed,
+                    self.analytics.track(.viewInAppPushNotificationPressed, //
                                                    withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 

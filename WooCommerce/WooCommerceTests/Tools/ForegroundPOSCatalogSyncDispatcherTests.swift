@@ -9,20 +9,19 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     private let timerProvider = MockDispatchTimerProvider()
     private let featureFlags = MockFeatureFlagService()
     private let notificationCenter = NotificationCenter()
-    private let sessionManager: SessionManager
-    private let stores: MockStoresManager
+    private let storeProvider = MockPOSCatalogStoreProvider()
     private let sut: ForegroundPOSCatalogSyncDispatcher
+    private let coordinator = MockPOSCatalogSyncCoordinator()
 
     init() {
         featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = true
-        sessionManager = SessionManager.testingInstance
-        sessionManager.setStoreId(123)
-        stores = MockStoresManager(sessionManager: sessionManager)
+        storeProvider.defaultStoreID = 123
+        storeProvider.posCatalogSyncCoordinator = coordinator
         sut = ForegroundPOSCatalogSyncDispatcher(
             notificationCenter: notificationCenter,
             timerProvider: timerProvider,
             featureFlagService: featureFlags,
-            stores: stores,
+            storeProvider: storeProvider,
             isAppActive: { true }
         )
     }
@@ -52,9 +51,6 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func timerFires_whenRequirementsMet_triggersSync() async throws {
         // Given
-        let coordinator = MockPOSCatalogSyncCoordinator()
-        stores.testPOSCatalogSyncCoordinator = coordinator
-
         await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
 
@@ -74,9 +70,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func timerFires_whenNoDefaultStore_skipsSync() async throws {
         // Given
-        let coordinator = MockPOSCatalogSyncCoordinator()
-        sessionManager.setStoreId(nil)
-        stores.testPOSCatalogSyncCoordinator = coordinator
+        storeProvider.defaultStoreID = nil
 
         await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
@@ -91,9 +85,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     @Test
     func coordinatorError_whenSyncAlreadyInProgress_logsButDoesNotCrash() async throws {
         // Given
-        let coordinator = MockPOSCatalogSyncCoordinator()
         coordinator.performSmartSyncResult = .failure(POSCatalogSyncError.syncAlreadyInProgress(siteID: 123))
-        stores.testPOSCatalogSyncCoordinator = coordinator
 
         await sut.start()
         let timer = try #require(timerProvider.createdTimers.first)
@@ -118,7 +110,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         #expect(timerProvider.createdTimers.count == 1)
 
         // When - change site to 456 and start again
-        sessionManager.setStoreId(456)
+        storeProvider.defaultStoreID = 456
         await sut.start()
 
         // Then - old timer cancelled, new timer created
@@ -127,18 +119,18 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         #expect(timerProvider.createdTimers.last?.isResumed == true)
 
         // Verify sync uses new site ID
-        let coordinator = MockPOSCatalogSyncCoordinator()
-        stores.testPOSCatalogSyncCoordinator = coordinator
+        let newCoordinator = MockPOSCatalogSyncCoordinator()
+        storeProvider.posCatalogSyncCoordinator = newCoordinator
         let newTimer = try #require(timerProvider.createdTimers.last)
 
         await withCheckedContinuation { continuation in
-            coordinator.onPerformSmartSyncCalled = {
+            newCoordinator.onPerformSmartSyncCalled = {
                 continuation.resume()
             }
             newTimer.fire()
         }
 
-        #expect(coordinator.performSmartSyncSiteID == 456)
+        #expect(newCoordinator.performSmartSyncSiteID == 456)
     }
 
     @Test
@@ -168,7 +160,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
             notificationCenter: notificationCenter,
             timerProvider: timerProvider,
             featureFlagService: featureFlags,
-            stores: stores,
+            storeProvider: storeProvider,
             isAppActive: { false }
         )
         await inactiveDispatcher.start()
@@ -176,9 +168,9 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         // Then - no timer created yet
         #expect(timerProvider.createdTimers.isEmpty)
 
-        // When - app becomes active, wait for timer to be created
+        // When - app becomes active, wait for timer to be created and resume
         await withCheckedContinuation { continuation in
-            timerProvider.onTimerCreated = { continuation.resume() }
+            timerProvider.onTimerCreated = { $0.onResume = { continuation.resume() } }
 
             notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
         }
@@ -206,9 +198,9 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         // Then - timer should be cancelled
         #expect(timer.isCancelled == true)
 
-        // When - app becomes active again, wait for new timer
+        // When - app becomes active again, wait for new timer to be resumed
         await withCheckedContinuation { continuation in
-            timerProvider.onTimerCreated = { continuation.resume() }
+            timerProvider.onTimerCreated = { $0.onResume = { continuation.resume() } }
 
             notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
         }
@@ -225,6 +217,7 @@ private final class MockDispatchTimer: DispatchTimerProtocol {
     private(set) var isResumed = false
     private(set) var isCancelled = false
     var onCancelled: () -> Void = { }
+    var onResume: () -> Void = { }
     private var eventHandler: (() -> Void)?
 
     func schedule(deadline: DispatchTime, repeating: Double, leeway: DispatchTimeInterval) {
@@ -237,6 +230,7 @@ private final class MockDispatchTimer: DispatchTimerProtocol {
 
     func resume() {
         isResumed = true
+        onResume()
     }
 
     func cancel() {
@@ -252,14 +246,21 @@ private final class MockDispatchTimer: DispatchTimerProtocol {
 
 private final class MockDispatchTimerProvider: DispatchTimerProviding {
     private(set) var createdTimers: [MockDispatchTimer] = []
-    var onTimerCreated: () -> Void = { }
+    var onTimerCreated: (MockDispatchTimer) -> Void = { _ in }
 
     func makeTimer(queue: DispatchQueue) -> DispatchTimerProtocol {
         let timer = MockDispatchTimer()
         createdTimers.append(timer)
-        onTimerCreated()
+        onTimerCreated(timer)
         return timer
     }
+}
+
+// MARK: - Mock Store Provider
+
+private final class MockPOSCatalogStoreProvider: POSCatalogStoreProviding {
+    var defaultStoreID: Int64?
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 }
 
 // MARK: - Mock Coordinator

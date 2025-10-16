@@ -18,7 +18,7 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     private let notificationCenter: NotificationCenter
     private let timerProvider: DispatchTimerProviding
     private let featureFlagService: FeatureFlagService
-    private let stores: StoresManager
+    private let storeProvider: POSCatalogStoreProviding
     private let isAppActive: () async -> Bool
     private var observers: [NSObjectProtocol] = []
     private var timer: DispatchTimerProtocol?
@@ -32,13 +32,13 @@ final actor ForegroundPOSCatalogSyncDispatcher {
          notificationCenter: NotificationCenter = .default,
          timerProvider: DispatchTimerProviding = DefaultDispatchTimerProvider(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores,
+         storeProvider: POSCatalogStoreProviding = DefaultPOSCatalogStoreProvider(),
          isAppActive: @escaping () async -> Bool = UIApplication.isApplicationActive) {
         self.interval = interval
         self.notificationCenter = notificationCenter
         self.timerProvider = timerProvider
         self.featureFlagService = featureFlagService
-        self.stores = stores
+        self.storeProvider = storeProvider
         self.isAppActive = isAppActive
     }
 
@@ -47,14 +47,14 @@ final actor ForegroundPOSCatalogSyncDispatcher {
             return
         }
 
-        if syncSiteID != stores.sessionManager.defaultStoreID {
+        if syncSiteID != nil, syncSiteID != storeProvider.defaultStoreID {
             DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Site has changed, resetting the sync")
             stop()
         }
 
         guard !isRunning else { return }
 
-        DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Starting foreground sync dispatcher for site \(stores.sessionManager.defaultStoreID ?? 0)")
+        DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Starting foreground sync dispatcher for site \(storeProvider.defaultStoreID ?? 0)")
 
         let activeObserver = notificationCenter.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
@@ -92,7 +92,7 @@ final actor ForegroundPOSCatalogSyncDispatcher {
             startTimer()
         }
 
-        syncSiteID = stores.sessionManager.defaultStoreID
+        syncSiteID = storeProvider.defaultStoreID
     }
 
     func stop() {
@@ -136,13 +136,13 @@ final actor ForegroundPOSCatalogSyncDispatcher {
             return
         }
 
-        guard let siteID = stores.sessionManager.defaultStoreID else {
+        guard let siteID = storeProvider.defaultStoreID else {
             DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: No default store, skipping sync")
             stop()
             return
         }
 
-        guard let coordinator = stores.posCatalogSyncCoordinator else {
+        guard let coordinator = storeProvider.posCatalogSyncCoordinator else {
             DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: Coordinator unavailable, skipping sync")
             stop()
             return
@@ -219,5 +219,28 @@ struct DefaultDispatchTimerProvider: DispatchTimerProviding {
 extension UIApplication {
     static func isApplicationActive() async -> Bool {
         shared.applicationState == .active
+    }
+}
+
+/// Protocol for accessing store ID and POS catalog sync coordinator.
+protocol POSCatalogStoreProviding {
+    var defaultStoreID: Int64? { get }
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? { get }
+}
+
+/// Default implementation using StoresManager.
+struct DefaultPOSCatalogStoreProvider: POSCatalogStoreProviding {
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
+
+    var defaultStoreID: Int64? {
+        stores.sessionManager.defaultStoreID
+    }
+
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        stores.posCatalogSyncCoordinator
     }
 }

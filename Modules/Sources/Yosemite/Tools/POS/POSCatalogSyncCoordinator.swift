@@ -104,12 +104,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
+        let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
 
         if Date().timeIntervalSince(lastFullSync) >= fullSyncMaxAge {
-            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSync))")
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
             try await performFullSync(for: siteID)
         } else {
-            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSync))")
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
             try await performIncrementalSync(for: siteID)
         }
     }

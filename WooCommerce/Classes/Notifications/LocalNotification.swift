@@ -35,9 +35,9 @@ struct LocalNotification {
             case .productImageBackgroundUpload:
                 return "product_image_background_upload"
             case .pointOfSalePotentialMerchant:
-                return "point_of_sale_potential_merchant"
+                return "woo_pos_survey_potential_user_survey"
             case .pointOfSaleCurrentMerchant:
-                return "point_of_sale_current_merchant"
+                return "woo_pos_survey_current_user_survey"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }

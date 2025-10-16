@@ -344,6 +344,23 @@ extension Networking.Booking {
         )
     }
 }
+extension Networking.BookingResource {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BookingResource {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            qty: .fake(),
+            role: .fake(),
+            email: .fake(),
+            phoneNumber: .fake(),
+            imageID: .fake(),
+            imageURL: .fake(),
+            description: .fake()
+        )
+    }
+}
 extension Networking.CompositeComponentOptionType {
     /// Returns a "ready to use" type filled with fake values.
     ///

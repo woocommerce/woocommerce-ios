@@ -16,6 +16,9 @@ public protocol BookingsRemoteProtocol {
 
     func loadBooking(bookingID: Int64,
                      siteID: Int64) async throws -> Booking?
+
+    func fetchResource(resourceID: Int64,
+                       siteID: Int64) async throws -> BookingResource?
 }
 
 /// Booking: Remote Endpoints
@@ -84,6 +87,24 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func fetchResource(
+        resourceID: Int64,
+        siteID: Int64
+    ) async throws -> BookingResource? {
+        let path = "\(Path.resources)/\(resourceID)"
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = BookingResourceMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 // MARK: - Constants
@@ -101,6 +122,7 @@ public extension BookingsRemote {
 
     private enum Path {
         static let bookings = "bookings"
+        static let resources = "resources"
     }
 
     private enum ParameterKey {

@@ -1222,7 +1222,6 @@ private extension ProductsViewController {
             }
             return
         }
-        // TODO: Replace with ProductDetailRouter
         navigateToContent(.productForm(product: product))
     }
 }

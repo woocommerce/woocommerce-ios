@@ -122,15 +122,15 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
-        // TODO: Replace with ProductDetailRouter
-        ProductDetailsFactory.productDetails(product: product,
-                                             presentationStyle: .navigationStack,
-                                             forceReadOnly: false,
-                                             onDeleteCompletion: { [weak self] in
+        let viewController = ProductDetailRouter.shared.viewController(product: product,
+                                                                       forceReadOnly: false,
+                                                                       onDeleteCompletion: { [weak self] in
             self?.onSecondaryProductFormDeletion()
-        }) { [weak self] viewController in
-            self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
-        }
+        })
+
+        showSecondaryView(contentType: .productForm(product: product),
+                          viewController: viewController,
+                          replacesNavigationStack: true)
     }
 
     func startProductCreationIfNoUnsavedChanges(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {

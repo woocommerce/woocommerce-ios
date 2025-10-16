@@ -227,12 +227,10 @@ private extension ProductLoaderViewController {
     /// Presents the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        // TODO: Replace with ProductDetailRouter
-        ProductDetailsFactory.productDetails(product: product,
-                                             presentationStyle: .contained(containerViewController: { [weak self] in self }),
-                                             forceReadOnly: forceReadOnly) { [weak self] viewController in
-            self?.attachProductDetailsChildViewController(viewController)
-        }
+        let viewController = ProductDetailRouter.shared.viewController(product: product,
+                                                                       presentationStyle: .contained(containerViewController: { [weak self] in self }),
+                                                                       forceReadOnly: forceReadOnly)
+        attachProductDetailsChildViewController(viewController)
     }
 
     /// Presents the product variation details for a given ProductVariation and its parent Product.

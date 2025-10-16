@@ -26,6 +26,21 @@ struct ProductDetailsFactory {
                                 onDeleteCompletion: onDeleteCompletion)
         onCompletion(vc)
     }
+
+    static func productDetails(product: Product,
+                               presentationStyle: ProductFormPresentationStyle,
+                               currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                               forceReadOnly: Bool,
+                               productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+                               onDeleteCompletion: @escaping () -> Void = {}) -> UIViewController {
+        let vc = productDetails(product: product,
+                                presentationStyle: presentationStyle,
+                                currencySettings: currencySettings,
+                                isEditProductsEnabled: forceReadOnly ? false: true,
+                                productImageUploader: productImageUploader,
+                                onDeleteCompletion: onDeleteCompletion)
+        return vc
+    }
 }
 
 private extension ProductDetailsFactory {

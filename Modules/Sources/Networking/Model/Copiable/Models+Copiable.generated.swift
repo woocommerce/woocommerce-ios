@@ -497,7 +497,7 @@ extension Networking.Booking {
 extension Networking.BookingResource {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        bookingID: CopiableProp<Int64> = .copy,
+        resourceID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         quantity: CopiableProp<Int64> = .copy,
         role: CopiableProp<String> = .copy,
@@ -508,7 +508,7 @@ extension Networking.BookingResource {
         description: NullableCopiableProp<String> = .copy
     ) -> Networking.BookingResource {
         let siteID = siteID ?? self.siteID
-        let bookingID = bookingID ?? self.bookingID
+        let resourceID = resourceID ?? self.resourceID
         let name = name ?? self.name
         let quantity = quantity ?? self.quantity
         let role = role ?? self.role
@@ -520,7 +520,7 @@ extension Networking.BookingResource {
 
         return Networking.BookingResource(
             siteID: siteID,
-            bookingID: bookingID,
+            resourceID: resourceID,
             name: name,
             quantity: quantity,
             role: role,

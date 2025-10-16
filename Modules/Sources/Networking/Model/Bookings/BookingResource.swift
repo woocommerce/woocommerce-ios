@@ -3,7 +3,7 @@ import Foundation
 
 public struct BookingResource: Hashable, Decodable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
-    public let bookingID: Int64
+    public let resourceID: Int64
     public let name: String
     public let quantity: Int64
     public let role: String
@@ -14,7 +14,7 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
     public let description: String?
 
     public init(siteID: Int64,
-                bookingID: Int64,
+                resourceID: Int64,
                 name: String,
                 quantity: Int64,
                 role: String,
@@ -24,7 +24,7 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
                 imageURL: String?,
                 description: String?) {
         self.siteID = siteID
-        self.bookingID = bookingID
+        self.resourceID = resourceID
         self.name = name
         self.quantity = quantity
         self.role = role
@@ -42,7 +42,7 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let bookingID = try container.decode(Int64.self, forKey: .bookingID)
+        let resourceID = try container.decode(Int64.self, forKey: .resourceID)
         let name = try container.decode(String.self, forKey: .name)
         let quantity = try container.decode(Int64.self, forKey: .quantity)
         let role = try container.decode(String.self, forKey: .role)
@@ -53,7 +53,7 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
         let description = try container.decodeIfPresent(String.self, forKey: .description)
 
         self.init(siteID: siteID,
-                  bookingID: bookingID,
+                  resourceID: resourceID,
                   name: name,
                   quantity: quantity,
                   role: role,
@@ -67,7 +67,7 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
 
 private extension BookingResource {
     enum CodingKeys: String, CodingKey {
-        case bookingID = "id"
+        case resourceID = "id"
         case name
         case quantity = "qty"
         case role

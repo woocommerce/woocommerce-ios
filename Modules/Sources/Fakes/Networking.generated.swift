@@ -350,7 +350,7 @@ extension Networking.BookingResource {
     public static func fake() -> Networking.BookingResource {
         .init(
             siteID: .fake(),
-            bookingID: .fake(),
+            resourceID: .fake(),
             name: .fake(),
             quantity: .fake(),
             role: .fake(),

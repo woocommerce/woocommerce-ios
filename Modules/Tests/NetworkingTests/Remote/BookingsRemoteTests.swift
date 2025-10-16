@@ -102,9 +102,9 @@ struct BookingsRemoteTests {
 
         // Then
         let unwrappedResource = try #require(resource)
-        #expect(unwrappedResource.id == 22)
+        #expect(unwrappedResource.resourceID == 22)
         #expect(unwrappedResource.name == "Joel (Sample resource)")
-        #expect(unwrappedResource.qty == 1)
+        #expect(unwrappedResource.quantity == 1)
         #expect(unwrappedResource.role == "")
         #expect(unwrappedResource.email == "")
         #expect(unwrappedResource.phoneNumber == "")

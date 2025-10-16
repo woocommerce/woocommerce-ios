@@ -3258,7 +3258,7 @@ private extension MigrationTests {
     func insertBookingResource(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "BookingResource", properties: [
             "siteID": 1,
-            "bookingID": 22,
+            "resourceID": 22,
             "name": "Joel (Sample resource)",
             "quantity": 1
         ])

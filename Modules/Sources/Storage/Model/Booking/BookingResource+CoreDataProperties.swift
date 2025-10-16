@@ -3,7 +3,7 @@ import CoreData
 
 extension BookingResource {
     @NSManaged public var siteID: Int64
-    @NSManaged public var bookingID: Int64
+    @NSManaged public var resourceID: Int64
     @NSManaged public var name: String?
     @NSManaged public var quantity: Int64
     @NSManaged public var role: String?

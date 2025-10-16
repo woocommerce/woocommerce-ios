@@ -118,7 +118,6 @@
         <relationship name="orderInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookingOrderInfo" inverseName="productInfo" inverseEntity="BookingOrderInfo"/>
     </entity>
     <entity name="BookingResource" representedClassName="BookingResource" syncable="YES">
-        <attribute name="bookingID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="descriptionText" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="imageID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -126,6 +125,7 @@
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="phoneNumber" optional="YES" attributeType="String"/>
         <attribute name="quantity" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="resourceID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="role" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>

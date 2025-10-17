@@ -126,6 +126,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         errorHandler.flagSiteAsUnsupported(for: siteID, flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
+        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -139,6 +140,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         errorHandler.flagSiteAsUnsupported(for: newSiteID, flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
+        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(existingSiteID)))
@@ -267,6 +269,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // Then - no crashes should occur and all sites should be flagged
         wait(for: [expectation], timeout: 3.0)
+        waitForUserDefaultsOperations()
 
         // Verify all sites were added (though order may vary due to concurrency)
         let unsupportedList = userDefaults.applicationPasswordUnsupportedList
@@ -387,6 +390,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
+        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertFalse(isFlagged)
@@ -415,6 +419,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
+        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertFalse(isFlagged)
@@ -441,6 +446,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID1, unsupportedList: list))
         XCTAssertFalse(errorHandler.siteFlaggedAsUnsupported(siteID: siteID2, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
         XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID3, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
+        waitForUserDefaultsOperations()
 
         // Verify expired flag was cleared but others remain
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID1)))
@@ -525,6 +531,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             originalRequest: jetpackRequest,
             failure: nil
         )
+        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -556,6 +563,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             originalRequest: jetpackRequest,
             failure: nil
         )
+        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -606,10 +614,126 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         // Then - no crashes should occur (especially no EXC_BREAKPOINT from array index out of bounds)
         wait(for: [expectation], timeout: 5.0)
     }
+
+    // MARK: - Deadlock Regression Test
+
+    func test_no_deadlock_when_kvo_observer_triggers_during_flagSiteAsUnsupported() {
+        // This test reproduces the exact deadlock scenario from the production crash:
+        // 1. flagSiteAsUnsupported writes to UserDefaults
+        // 2. UserDefaults triggers KVO notification synchronously
+        // 3. KVO observer calls prepareAppPasswordSupport
+        // 4. prepareAppPasswordSupport accesses appPasswordFailures
+        //
+        // BEFORE FIX: This would deadlock because:
+        // - flagSiteAsUnsupported used queue.sync(flags: .barrier) around UserDefaults write
+        // - KVO fired synchronously during the barrier
+        // - prepareAppPasswordSupport tried queue.sync while barrier was still active
+        //
+        // AFTER FIX: No deadlock because:
+        // - flagSiteAsUnsupported uses userDefaultsQueue.async for UserDefaults write
+        // - KVO fires on userDefaultsQueue, not the main queue
+        // - prepareAppPasswordSupport can safely use queue.sync on the main queue
+
+        // Given - Set up KVO observer to simulate the production scenario
+        let siteID: Int64 = 12345
+        let kvoTriggered = XCTestExpectation(description: "KVO observer triggered")
+        let preparePasswordSupportCalled = XCTestExpectation(description: "prepareAppPasswordSupport called from KVO")
+        let operationCompleted = XCTestExpectation(description: "Operation completed without deadlock")
+
+        var kvoObservation: NSKeyValueObservation?
+        kvoObservation = userDefaults.observe(\.applicationPasswordUnsupportedList, options: [.new]) { [weak self] _, _ in
+            kvoTriggered.fulfill()
+
+            // Simulate what happens in production:
+            // AlamofireNetwork.observeSelectedSite gets triggered by KVO
+            // and calls prepareAppPasswordSupport
+            self?.errorHandler.prepareAppPasswordSupport(for: siteID)
+            preparePasswordSupportCalled.fulfill()
+        }
+
+        // When - Trigger the scenario that caused the deadlock
+        DispatchQueue.global().async {
+            // This will write to UserDefaults, triggering KVO
+            self.errorHandler.flagSiteAsUnsupported(
+                for: siteID,
+                flow: .apiRequest,
+                cause: .majorError,
+                error: NetworkError.notFound(response: nil)
+            )
+            operationCompleted.fulfill()
+        }
+
+        // Then - All expectations should complete without timing out (no deadlock)
+        // The timeout of 2 seconds is generous - if there's a deadlock, this will timeout
+        let result = XCTWaiter.wait(
+            for: [kvoTriggered, preparePasswordSupportCalled, operationCompleted],
+            timeout: 2.0,
+            enforceOrder: false
+        )
+
+        XCTAssertEqual(result, .completed, "Test should complete without deadlock. If this times out, the deadlock bug has returned!")
+
+        // Cleanup
+        kvoObservation?.invalidate()
+        waitForUserDefaultsOperations()
+    }
+
+    func test_no_deadlock_with_concurrent_kvo_observers_and_flag_operations() {
+        // This test creates even more stress by having multiple KVO observers
+        // and concurrent flag operations to ensure the fix is robust
+
+        let completionExpectation = XCTestExpectation(description: "All operations complete")
+        completionExpectation.expectedFulfillmentCount = 10 // 10 flag operations
+
+        var observations: [NSKeyValueObservation] = []
+
+        // Set up multiple KVO observers (simulating multiple parts of the app observing)
+        for i in 1...3 {
+            let observation = userDefaults.observe(\.applicationPasswordUnsupportedList, options: [.new]) { [weak self] _, _ in
+                let siteID = Int64(1000 + i)
+                // Each observer tries to access the error handler
+                self?.errorHandler.prepareAppPasswordSupport(for: siteID)
+            }
+            observations.append(observation)
+        }
+
+        // When - Perform multiple concurrent operations that trigger KVO
+        for i in 0..<10 {
+            DispatchQueue.global().async {
+                let siteID = Int64(i)
+                self.errorHandler.flagSiteAsUnsupported(
+                    for: siteID,
+                    flow: .apiRequest,
+                    cause: .majorError,
+                    error: NetworkError.notFound(response: nil)
+                )
+                completionExpectation.fulfill()
+            }
+        }
+
+        // Then - Should complete without deadlock
+        let result = XCTWaiter.wait(for: [completionExpectation], timeout: 3.0)
+        XCTAssertEqual(result, .completed, "Concurrent operations with multiple KVO observers should not deadlock")
+
+        // Cleanup
+        observations.forEach { $0.invalidate() }
+        waitForUserDefaultsOperations()
+    }
 }
 
 // MARK: - Helper Methods
 private extension AlamofireNetworkErrorHandlerTests {
+    /// Waits briefly for async UserDefaults operations to complete
+    /// Since flagSiteAsUnsupported and clearUnsupportedFlag use userDefaultsQueue.async,
+    /// tests need to wait for those operations to finish before checking UserDefaults state
+    func waitForUserDefaultsOperations() {
+        let expectation = XCTestExpectation(description: "UserDefaults operations complete")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
     func createWPComCredentials() -> Credentials {
         return Credentials.wpcom(username: "test", authToken: "token", siteAddress: "https://example.com")
     }

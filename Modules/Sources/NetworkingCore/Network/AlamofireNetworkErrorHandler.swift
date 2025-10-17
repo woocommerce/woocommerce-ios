@@ -4,6 +4,8 @@ import Alamofire
 /// Thread-safe handler for network error tracking and retry logic
 final class AlamofireNetworkErrorHandler {
     private let queue = DispatchQueue(label: "com.networkingcore.errorhandler", attributes: .concurrent)
+    /// Serial queue for UserDefaults operations to prevent race conditions while avoiding deadlocks
+    private let userDefaultsQueue = DispatchQueue(label: "com.networkingcore.errorhandler.userdefaults")
     private let userDefaults: UserDefaults
     private let credentials: Credentials?
     private let notificationCenter: NotificationCenter
@@ -162,7 +164,11 @@ final class AlamofireNetworkErrorHandler {
     }
 
     func flagSiteAsUnsupported(for siteID: Int64, flow: RequestFlow, cause: AppPasswordFlagCause, error: Error) {
-        queue.sync(flags: .barrier) {
+        // Use dedicated serial queue for UserDefaults operations to:
+        // 1. Prevent race conditions where concurrent writes overwrite each other
+        // 2. Avoid deadlock by not using the main queue that KVO observers may need
+        userDefaultsQueue.async { [weak self] in
+            guard let self else { return }
             var currentList = userDefaults.applicationPasswordUnsupportedList
             currentList[String(siteID)] = Date()
             userDefaults.applicationPasswordUnsupportedList = currentList
@@ -233,11 +239,16 @@ private extension AlamofireNetworkErrorHandler {
     }
 
     func clearUnsupportedFlag(for siteID: Int64) {
-        queue.sync(flags: .barrier) {
+        // Use dedicated serial queue for UserDefaults operations to:
+        // 1. Prevent race conditions where concurrent writes overwrite each other
+        // 2. Avoid deadlock by not using the main queue that KVO observers may need
+        userDefaultsQueue.async { [weak self] in
+            guard let self else { return }
             let currentList = userDefaults.applicationPasswordUnsupportedList
-            userDefaults.applicationPasswordUnsupportedList = currentList.filter { flag in
+            let filteredList = currentList.filter { flag in
                 flag.key != String(siteID)
             }
+            userDefaults.applicationPasswordUnsupportedList = filteredList
         }
     }
 

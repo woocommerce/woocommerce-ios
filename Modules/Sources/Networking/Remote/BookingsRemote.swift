@@ -122,7 +122,7 @@ public extension BookingsRemote {
 
     private enum Path {
         static let bookings = "bookings"
-        static let resources = "resources"
+        static let resources = "resources/team-members"
     }
 
     private enum ParameterKey {

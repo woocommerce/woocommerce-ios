@@ -127,6 +127,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                   resourceID: resourceID,
                   startDate: startDate,
                   statusKey: statusKey,
+                  attendanceStatusKey: attendanceStatusKey,
                   localTimezone: localTimezone,
                   currency: currency,
                   orderInfo: orderInfo)

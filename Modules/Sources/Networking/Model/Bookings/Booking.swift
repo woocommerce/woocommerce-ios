@@ -22,7 +22,6 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let statusKey: String
     public let localTimezone: String
     public let currency: String
-    // periphery: ignore - to be used later
     public let orderInfo: BookingOrderInfo?
 
     public var bookingStatus: BookingStatus {

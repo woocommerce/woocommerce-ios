@@ -2384,6 +2384,7 @@
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
 		DE4B3B5626A68DD000EEF2D8 /* View+InsetPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */; };
 		DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B5726A7041800EEF2D8 /* EdgeInsets+Woo.swift */; };
+		DE4C23B92EA09B090079240D /* Booking+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4C23B82EA09AFA0079240D /* Booking+Helpers.swift */; };
 		DE4D239829ADF8E3003A4B5D /* WordPressAuthenticator+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D239729ADF8E3003A4B5D /* WordPressAuthenticator+Woo.swift */; };
 		DE4D239C29B06642003A4B5D /* WPComMagicLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D239B29B06642003A4B5D /* WPComMagicLinkView.swift */; };
 		DE4D239E29B073B1003A4B5D /* WPComMagicLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */; };
@@ -5327,6 +5328,7 @@
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
 		DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+InsetPaddings.swift"; sourceTree = "<group>"; };
 		DE4B3B5726A7041800EEF2D8 /* EdgeInsets+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EdgeInsets+Woo.swift"; sourceTree = "<group>"; };
+		DE4C23B82EA09AFA0079240D /* Booking+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Booking+Helpers.swift"; sourceTree = "<group>"; };
 		DE4D239729ADF8E3003A4B5D /* WordPressAuthenticator+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressAuthenticator+Woo.swift"; sourceTree = "<group>"; };
 		DE4D239B29B06642003A4B5D /* WPComMagicLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComMagicLinkView.swift; sourceTree = "<group>"; };
 		DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComMagicLinkViewModel.swift; sourceTree = "<group>"; };
@@ -11004,6 +11006,7 @@
 		CE1CCB4C20572444000EE3AC /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				DE4C23B82EA09AFA0079240D /* Booking+Helpers.swift */,
 				02A239732E811A690067AB38 /* SiteAddress+ServiceLocator.swift */,
 				010F7D8C2E7A8447002B02EA /* ProductImageThumbnail+Extensions.swift */,
 				016582EC2E7897B3001DBB6F /* String+Helpers.swift */,
@@ -15430,6 +15433,7 @@
 				3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */,
 				02A239742E811A920067AB38 /* SiteAddress+ServiceLocator.swift in Sources */,
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
+				DE4C23B92EA09B090079240D /* Booking+Helpers.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				B99B87A72AEFCF0A006B8AB1 /* Order+Empty.swift in Sources */,
 				CE6A8FB62B725A690063564D /* AnalyticsReportLinkViewModel.swift in Sources */,

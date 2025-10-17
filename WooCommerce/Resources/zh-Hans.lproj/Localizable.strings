@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-10-17 03:55:47+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -544,23 +544,14 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Advertise on Google" = "在 Google 上投放广告";
 
-/* Country option for a site address. */
-"Afghanistan" = "阿富汗";
-
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "符合空气条件的乙醇包装 —（获授权的芳香剂及洗手液装运）";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Country option for a site address. */
-"Albania" = "阿尔巴尼亚";
-
 /* Description of albums in the photo libraries */
 "Albums" = "相册";
-
-/* Country option for a site address. */
-"Algeria" = "阿尔及利亚";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "所有订单";
@@ -610,9 +601,6 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "其他方式：";
 
-/* Country option for a site address. */
-"American Samoa" = "美属萨摩亚";
-
 /* Title above the amount field on the add custom amount view in orders.
    Title of the Amount label on Coupon Details screen */
 "Amount" = "金额";
@@ -656,23 +644,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "已成功启用分析。";
 
-/* Country option for a site address. */
-"Andorra" = "安道尔";
-
-/* Country option for a site address. */
-"Angola" = "安哥拉";
-
-/* Country option for a site address. */
-"Anguilla" = "安圭拉";
-
 /* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
 "Annually (Save 35%)" = "每年 （节省 35%）";
-
-/* Country option for a site address. */
-"Antarctica" = "南极洲";
-
-/* Country option for a site address. */
-"Antigua and Barbuda" = "安提瓜和巴布达";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
@@ -757,15 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "是否确定？ 收件箱中的消息将被永久删除。";
 
-/* Country option for a site address. */
-"Argentina" = "阿根廷";
-
-/* Country option for a site address. */
-"Armenia" = "亚美尼亚";
-
-/* Country option for a site address. */
-"Aruba" = "阿鲁巴";
-
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "属性名";
 
@@ -778,12 +742,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "音频，%@";
-
-/* Country option for a site address. */
-"Australia" = "澳大利亚";
-
-/* Country option for a site address. */
-"Austria" = "奥地利";
 
 /* No comment provided by engineer. */
 "Authenticating" = "正在验证";
@@ -825,9 +783,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "等待通过 %@ 支付";
 
-/* Country option for a site address. */
-"Azerbaijan" = "阿塞拜疆";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -855,44 +810,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "缺货";
 
-/* Country option for a site address. */
-"Bahamas" = "巴哈马";
-
-/* Country option for a site address. */
-"Bahrain" = "巴林";
-
-/* Country option for a site address. */
-"Bangladesh" = "孟加拉国";
-
-/* Country option for a site address. */
-"Barbados" = "巴巴多斯";
-
 /* Title for the instructions on the Woo payments setup instructions screen. */
 "Before you start setup" = "在开始设置前";
 
 /* Title on the action button on the Woo payments setup instructions screen. */
 "Begin Setup" = "开始设置";
-
-/* Country option for a site address. */
-"Belarus" = "白俄罗斯";
-
-/* Country option for a site address. */
-"Belau" = "贝劳";
-
-/* Country option for a site address. */
-"Belgium" = "比利时";
-
-/* Country option for a site address. */
-"Belize" = "伯利兹";
-
-/* Country option for a site address. */
-"Benin" = "贝宁";
-
-/* Country option for a site address. */
-"Bermuda" = "百慕大";
-
-/* Country option for a site address. */
-"Bhutan" = "不丹";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data */
@@ -922,11 +844,95 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "粗体";
 
-/* Country option for a site address. */
-"Bolivia" = "玻利维亚";
+/* Assigned staff row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.assignedStaff.title" = "已指派的工作人员";
 
-/* Country option for a site address. */
-"Bonaire, Saint Eustatius and Saba" = "博内尔岛，圣尤斯特修斯和萨巴";
+/* Date row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.dateRow.title" = "日期";
+
+/* Duration row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.durationRow.title" = "时长";
+
+/* Header title for the 'Appointment Details' section in the booking details screen. */
+"BookingDetailsView.appointmentDetails.headerTitle" = "预约详情";
+
+/* Location row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.locationRow.title" = "位置";
+
+/* Price row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.priceRow.title" = "价格";
+
+/* Time row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.timeRow.title" = "时间";
+
+/* Footer text for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.footerText" = "标记出席情况，以确保报告准确性并发现预约趋势。";
+
+/* Header title for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.headerTitle" = "出席情况";
+
+/* Add a note row title in booking notes section in booking details view. */
+"BookingDetailsView.bookingNotes.addANoteRow.title" = "添加说明";
+
+/* Header title for the 'Booking notes' section in the booking details screen. */
+"BookingDetailsView.bookingNotes.headerTitle" = "预订说明";
+
+/* Billing address row title in customer section in booking details view. */
+"BookingDetailsView.customer.billingAddress.title" = "账单地址";
+
+/* 'Cancel booking' button title in appointment details section in booking details view. */
+"BookingDetailsView.customer.cancelBookingButton.title" = "取消预订";
+
+/* Header title for the 'Customer' section in the booking details screen. */
+"BookingDetailsView.customer.headerTitle" = "客户";
+
+/* 'Status' row title in attendance section in booking details view. */
+"BookingDetailsView.customer.status.title" = "状态";
+
+/* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
+"BookingDetailsView.navTitle" = "预订编号：%1$d";
+
+/* Action sheet option to cancel a booking. */
+"BookingDetailsView.options.cancelBooking" = "取消预订";
+
+/* Action sheet option to mark a booking as paid. */
+"BookingDetailsView.options.markAsPaid" = "标记为已付款";
+
+/* Action sheet option to view the order for a booking. */
+"BookingDetailsView.options.viewOrder" = "查看订单";
+
+/* Discount row title in payment section in booking details view. */
+"BookingDetailsView.payment.discountRow.title" = "折扣";
+
+/* Header title for the 'Payment' section in the booking details screen. */
+"BookingDetailsView.payment.headerTitle" = "付款";
+
+/* Title for 'Mark as paid' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsPaid.title" = "标记为已付款";
+
+/* Title for 'Mark as refunded' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsRefunded.title" = "标记为已退款";
+
+/* Service row title in payment section in booking details view. */
+"BookingDetailsView.payment.serviceRow.title" = "服务";
+
+/* Tax row title in payment section in booking details view. */
+"BookingDetailsView.payment.taxRow.title" = "税费";
+
+/* Total row title in payment section in booking details view. */
+"BookingDetailsView.payment.totalRow.title" = "总计";
+
+/* Title for 'View order' button in payment section in booking details view. */
+"BookingDetailsView.payment.viewOrder.title" = "查看订单";
+
+/* Title for the 'Booked' status label in the header view. */
+"BookingDetailsView.statusLabel.booked" = "已预订";
+
+/* Title for the 'Paid' status label in the header view. */
+"BookingDetailsView.statusLabel.paid" = "已付款";
+
+/* Title for the 'Pay at location' status label in the header view. */
+"BookingDetailsView.statusLabel.payAtLocation" = "现场付款";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "使用特别优惠来提高销售额";
@@ -937,32 +943,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "借助链接的产品提高您的销售额";
 
-/* Country option for a site address. */
-"Bosnia and Herzegovina" = "波斯尼亚和黑塞哥维那";
-
-/* Country option for a site address. */
-"Botswana" = "博茨瓦纳";
-
-/* Country option for a site address. */
-"Bouvet Island" = "布维岛";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "包装箱";
-
-/* Country option for a site address. */
-"Brazil" = "巴西";
-
-/* Country option for a site address. */
-"British Indian Ocean Territory" = "英属印度洋领地";
-
-/* Country option for a site address. */
-"British Virgin Islands" = "英属维尔京群岛";
-
-/* Country option for a site address. */
-"Brunei" = "文莱";
-
-/* Country option for a site address. */
-"Bulgaria" = "保加利亚";
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
@@ -982,12 +964,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
 "Bundles Sold" = "已售捆绑";
-
-/* Country option for a site address. */
-"Burkina Faso" = "布基纳法索";
-
-/* Country option for a site address. */
-"Burundi" = "布隆迪";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "按钮文本";
@@ -1023,9 +999,6 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "致电";
 
-/* Country option for a site address. */
-"Cambodia" = "柬埔寨";
-
 /* Accessibility label for the camera tile in the collection view */
 "Camera" = "照相机";
 
@@ -1041,9 +1014,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action sheet button that links to settings for camera access */
 "Camera permissions" = "相机权限";
 
-/* Country option for a site address. */
-"Cameroon" = "喀麦隆";
-
 /* Title of the Blaze campaign details view. */
 "Campaign Details" = "广告活动详细信息";
 
@@ -1055,9 +1025,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "可使用 %1$d 次";
-
-/* Country option for a site address. */
-"Canada" = "加拿大";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
@@ -1183,9 +1150,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "无法验证您站点的 WooCommerce 安装信息。";
 
-/* Country option for a site address. */
-"Cape Verde" = "佛得角";
-
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "为您的店铺获取高质量的产品评论。";
@@ -1234,20 +1198,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "分类";
 
-/* Country option for a site address. */
-"Cayman Islands" = "开曼群岛";
-
-/* Country option for a site address. */
-"Central African Republic" = "中非共和国";
-
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "需要注意某些必填字段。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "证书错误";
-
-/* Country option for a site address. */
-"Chad" = "乍得";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "更改产品类型";
@@ -1280,12 +1235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Bottom title of the alert presented with a spinner while the order is being validated */
 "Checking order" = "检查订单";
 
-/* Country option for a site address. */
-"Chile" = "智利";
-
-/* Country option for a site address. */
-"China" = "中国";
-
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "选择纸张尺寸";
 
@@ -1312,9 +1261,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "选择付款方式";
-
-/* Country option for a site address. */
-"Christmas Island" = "圣诞岛";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -1400,9 +1346,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "正在关闭账户…";
 
-/* Country option for a site address. */
-"Cocos (Keeling) Islands" = "科科斯（基林）群岛";
-
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "已折叠";
 
@@ -1446,14 +1389,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "收款、设置点按付款、订单读卡器等。";
 
-/* Country option for a site address. */
-"Colombia" = "哥伦比亚";
-
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "稍后回来获取更多关于发展您商店的贴士和数据分析";
-
-/* Country option for a site address. */
-"Comoros" = "科摩罗";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1493,12 +1430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "确认付款方式";
-
-/* Country option for a site address. */
-"Congo (Brazzaville)" = "刚果（布）";
-
-/* Country option for a site address. */
-"Congo (Kinshasa)" = "刚果（金）";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "恭喜您，已全部阅读！";
@@ -1651,9 +1582,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "转化率";
 
-/* Country option for a site address. */
-"Cook Islands" = "库克群岛";
-
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookie 政策";
 
@@ -1675,9 +1603,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "复制跟踪编号";
-
-/* Country option for a site address. */
-"Costa Rica" = "哥斯达黎加";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "无法连接到 WordPress 站点。此地址下没有任何有效的 WordPress 站点。请检查您输入的站点地址 (URL)。";
@@ -1814,18 +1739,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "从以下 WordPress.com 帐户检索信用卡：%1$@ <%2$@>";
 
-/* Country option for a site address. */
-"Croatia" = "克罗地亚";
-
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "交叉销售";
-
-/* Country option for a site address. */
-"Cuba" = "古巴";
-
-/* Country option for a site address. */
-"Curacao" = "库拉索";
 
 /* Cell title: the current date. */
 "Current" = "当前";
@@ -1926,12 +1842,6 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "必须打印报关单并将其随附在这些国际配送中";
 
-/* Country option for a site address. */
-"Cyprus" = "塞浦路斯";
-
-/* Country option for a site address. */
-"Czech Republic" = "捷克共和国";
-
 /* Details section title in the Edit Address Form */
 "DETAILS" = "详细信息";
 
@@ -1971,9 +1881,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Delete tracking button title */
 "Delete Tracking" = "删除跟踪信息";
-
-/* Country option for a site address. */
-"Denmark" = "丹麦";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "描述您的产品";
@@ -2089,9 +1996,6 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "类别 6.2 — 危险物质 — 生物材料（如实验室检测试剂盒、获授权的 COVID 检测试剂盒返回包）";
 
-/* Country option for a site address. */
-"Djibouti" = "吉布提";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "您想在结账页面中添加现场付款功能吗？";
 
@@ -2109,12 +2013,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "文档";
-
-/* Country option for a site address. */
-"Dominica" = "多米尼加";
-
-/* Country option for a site address. */
-"Dominican Republic" = "多米尼加共和国";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "还没有帐户？_注册_";
@@ -2213,9 +2111,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代码轻松识别您的产品";
 
-/* Country option for a site address. */
-"Ecuador" = "厄瓜多尔";
-
 /* Button to edit a product category
    Button to edit an order on Order Details screen
    Title text of the button that edits a note when creating a simple payment */
@@ -2272,12 +2167,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "一次编辑多个商品的状态或价格";
-
-/* Country option for a site address. */
-"Egypt" = "埃及";
-
-/* Country option for a site address. */
-"El Salvador" = "萨尔瓦多";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "适用于免费自提";
@@ -2488,12 +2377,6 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "信封";
 
-/* Country option for a site address. */
-"Equatorial Guinea" = "赤道几内亚";
-
-/* Country option for a site address. */
-"Eritrea" = "厄立特里亚";
-
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "错误";
 
@@ -2568,12 +2451,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "预计设置时间";
-
-/* Country option for a site address. */
-"Estonia" = "爱沙尼亚";
-
-/* Country option for a site address. */
-"Ethiopia" = "埃塞俄比亚";
 
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
@@ -2689,12 +2566,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "未能撤销订单 #%1$d 的履约";
 
-/* Country option for a site address. */
-"Falkland Islands" = "福克兰群岛";
-
-/* Country option for a site address. */
-"Faroe Islands" = "法罗群岛";
-
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -2712,9 +2583,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Your Site Orders connectivity tool card */
 "Fetching your site orders" = "获取您的站点订单";
-
-/* Country option for a site address. */
-"Fiji" = "斐济";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2769,9 +2637,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "在您的商店管理中完成 %1$@ 设置";
 
-/* Country option for a site address. */
-"Finland" = "芬兰";
-
 /* Text field name in Edit Address Form */
 "First name" = "名字";
 
@@ -2802,23 +2667,11 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "转发";
 
-/* Country option for a site address. */
-"France" = "法国";
-
 /* No comment provided by engineer. */
 "Free SSL certificate" = "免费 SSL 证书";
 
 /* Plan name for an active free trial */
 "Free Trial" = "免费试用版";
-
-/* Country option for a site address. */
-"French Guiana" = "法属圭亚那";
-
-/* Country option for a site address. */
-"French Polynesia" = "法属波利尼西亚";
-
-/* Country option for a site address. */
-"French Southern Territories" = "法国南部领土";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "开始日期";
@@ -2840,12 +2693,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
 "GTIN, UPC, EAN, ISBN: %@" = "GTIN、UPC、EAN、ISBN：%@";
-
-/* Country option for a site address. */
-"Gabon" = "加蓬";
-
-/* Country option for a site address. */
-"Gambia" = "冈比亚";
 
 /* General section title in the hub menu */
 "General" = "常规";
@@ -2876,12 +2723,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Generous storage" = "海量存储空间";
-
-/* Country option for a site address. */
-"Georgia" = "格鲁吉亚";
-
-/* Country option for a site address. */
-"Germany" = "德国";
 
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
@@ -2931,12 +2772,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "准备收款";
-
-/* Country option for a site address. */
-"Ghana" = "加纳";
-
-/* Country option for a site address. */
-"Gibraltar" = "直布罗陀";
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "礼品";
@@ -2988,15 +2823,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title in AI product description celebration screen. */
 "Great start!" = "不错的开局！";
 
-/* Country option for a site address. */
-"Greece" = "希腊";
-
-/* Country option for a site address. */
-"Greenland" = "格陵兰";
-
-/* Country option for a site address. */
-"Grenada" = "格林纳达";
-
 /* A hazardous material description stating when a package can fit into this category */
 "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "仅适用于基础包装的危险物质（仅适用于未列出但仅限用于表面的物品)";
 
@@ -3012,27 +2838,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "分组产品";
 
-/* Country option for a site address. */
-"Guadeloupe" = "瓜德罗普岛";
-
-/* Country option for a site address. */
-"Guam" = "关岛";
-
-/* Country option for a site address. */
-"Guatemala" = "危地马拉";
-
-/* Country option for a site address. */
-"Guernsey" = "根西岛";
-
-/* Country option for a site address. */
-"Guinea" = "几内亚";
-
-/* Country option for a site address. */
-"Guinea-Bissau" = "几内亚比绍";
-
-/* Country option for a site address. */
-"Guyana" = "圭亚那";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "您希望我们如何为您提供帮助？";
 
@@ -3047,9 +2852,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 内容";
-
-/* Country option for a site address. */
-"Haiti" = "海地";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "准备好您的商店凭据。";
@@ -3093,9 +2895,6 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "六级标题";
 
-/* Country option for a site address. */
-"Heard Island and McDonald Islands" = "赫德岛和麦克唐纳群岛";
-
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "高度";
@@ -3131,17 +2930,8 @@ which should be translated separately and considered part of this sentence. */
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "通过关键字突出显示产品的独特特点和受众，以便提供量身定制的描述。";
 
-/* Country option for a site address. */
-"Honduras" = "洪都拉斯";
-
-/* Country option for a site address. */
-"Hong Kong" = "中国香港";
-
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我们应该如何改善？";
-
-/* Country option for a site address. */
-"Hungary" = "匈牙利";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "我需要帮助";
@@ -3160,9 +2950,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "运输每个关税编号价值超过 2500 美元的物品需要 ITN";
-
-/* Country option for a site address. */
-"Iceland" = "冰岛";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
@@ -3241,9 +3028,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "通过追加销售和交叉销售增加销售额";
 
-/* Country option for a site address. */
-"India" = "印度";
-
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "仅限单独使用";
 
@@ -3252,9 +3036,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "单独发运的商品";
-
-/* Country option for a site address. */
-"Indonesia" = "印度尼西亚";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "插入";
@@ -3377,26 +3158,11 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments isn't available for this store" = "此商店不支持现场付款";
 
-/* Country option for a site address. */
-"Iran" = "伊朗";
-
-/* Country option for a site address. */
-"Iraq" = "伊拉克";
-
-/* Country option for a site address. */
-"Ireland" = "爱尔兰";
-
 /* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
 "Is the generated description helpful?" = "生成的描述对您是否有用？";
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "生成的信息对您是否有用？";
-
-/* Country option for a site address. */
-"Isle of Man" = "马恩岛";
-
-/* Country option for a site address. */
-"Israel" = "以色列";
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "发放退款";
@@ -3438,9 +3204,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
 
-/* Country option for a site address. */
-"Italy" = "意大利";
-
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "项目描述是必填项";
 
@@ -3457,18 +3220,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "已售项目";
 
-/* Country option for a site address. */
-"Ivory Coast" = "象牙海岸";
-
-/* Country option for a site address. */
-"Jamaica" = "牙买加";
-
-/* Country option for a site address. */
-"Japan" = "日本";
-
-/* Country option for a site address. */
-"Jersey" = "泽西岛";
-
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack 设置";
 
@@ -3481,12 +3232,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "随时随地加入";
 
-/* Country option for a site address. */
-"Jordan" = "约旦";
-
-/* Country option for a site address. */
-"Kazakhstan" = "哈萨克斯坦";
-
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "继续编辑";
 
@@ -3496,26 +3241,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "请注意，这不是支持请求，我们将无法处理个人反馈";
 
-/* Country option for a site address. */
-"Kenya" = "肯尼亚";
-
-/* Country option for a site address. */
-"Kiribati" = "基里巴斯";
-
-/* Country option for a site address. */
-"Kuwait" = "科威特";
-
-/* Country option for a site address. */
-"Kyrgyzstan" = "吉尔吉斯斯坦";
-
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "标签（4 x 6 英寸）";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "标签格式选项";
-
-/* Country option for a site address. */
-"Laos" = "老挝";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "最近 2 天";
@@ -3554,9 +3284,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text field name in Edit Address Form */
 "Last name" = "姓氏";
-
-/* Country option for a site address. */
-"Latvia" = "拉脱维亚";
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "启动 Wormholy 调试";
@@ -3600,9 +3327,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "详细了解我们收集的有关您商店的数据，以及您用于控制此数据共享的选项。";
 
-/* Country option for a site address. */
-"Lebanon" = "黎巴嫩";
-
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
 
@@ -3613,23 +3337,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "长度";
 
-/* Country option for a site address. */
-"Lesotho" = "莱索托";
-
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter（8.5 x 11 英寸）";
 
 /* Title to let the user know what do we want on the support screen. */
 "Let’s get this sorted" = "我们来把一切准备就绪";
-
-/* Country option for a site address. */
-"Liberia" = "利比里亚";
-
-/* Country option for a site address. */
-"Libya" = "利比亚";
-
-/* Country option for a site address. */
-"Liechtenstein" = "列支敦士登";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Lighters Package - Authorized Lighters" = "打火机包装 — 获授权的打火机";
@@ -3671,9 +3383,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "List unlimited products" = "列出不受限的产品";
-
-/* Country option for a site address. */
-"Lithuania" = "立陶宛";
 
 /* No comment provided by engineer. */
 "Live chat support" = "实时聊天支持";
@@ -3787,18 +3496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Loyalty points programs" = "忠诚度积分计划";
 
-/* Country option for a site address. */
-"Luxembourg" = "卢森堡";
-
-/* Country option for a site address. */
-"Macao S.A.R., China" = "中国澳门";
-
-/* Country option for a site address. */
-"Macedonia" = "马其顿";
-
-/* Country option for a site address. */
-"Madagascar" = "马达加斯加";
-
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic 用爱心打造。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我们正在招贤纳士！<\/a>";
 
@@ -3813,21 +3510,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "通过标签让您的产品更容易查找";
-
-/* Country option for a site address. */
-"Malawi" = "马拉维";
-
-/* Country option for a site address. */
-"Malaysia" = "马来西亚";
-
-/* Country option for a site address. */
-"Maldives" = "马尔代夫";
-
-/* Country option for a site address. */
-"Mali" = "马里";
-
-/* Country option for a site address. */
-"Malta" = "马耳他";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3895,18 +3577,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Marketing automation" = "市场营销自动化";
 
-/* Country option for a site address. */
-"Marshall Islands" = "马绍尔群岛";
-
-/* Country option for a site address. */
-"Martinique" = "马提尼克";
-
-/* Country option for a site address. */
-"Mauritania" = "毛里塔尼亚";
-
-/* Country option for a site address. */
-"Mauritius" = "毛里求斯";
-
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "最高 消费 (%1$@)";
 
@@ -3921,9 +3591,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dismiss button title for modally presented Just in Time Messages */
 "Maybe Later" = "稍后再说";
-
-/* Country option for a site address. */
-"Mayotte" = "马约特岛";
 
 /* Title for alert when access to media capture is not granted */
 "Media Capture" = "媒体捕获";
@@ -3955,12 +3622,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message phone number button title */
 "Message" = "邮件";
 
-/* Country option for a site address. */
-"Mexico" = "墨西哥";
-
-/* Country option for a site address. */
-"Micronesia" = "密克罗尼西亚";
-
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3985,26 +3646,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the mobile app support area option */
 "Mobile App" = "移动应用程序";
 
-/* Country option for a site address. */
-"Moldova" = "摩尔多瓦";
-
-/* Country option for a site address. */
-"Monaco" = "摩纳哥";
-
-/* Country option for a site address. */
-"Mongolia" = "蒙古";
-
-/* Country option for a site address. */
-"Montenegro" = "黑山共和国";
-
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "月初至今";
 
 /* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
 "Monthly" = "每月";
-
-/* Country option for a site address. */
-"Montserrat" = "蒙特塞拉特";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -4026,9 +3672,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* More Privacy toggle section in the privacy screen. */
 "More privacy options available for woocommerce.com users. Check here to learn more." = "WooCommerce.com 用户可获得更多隐私选项。 点击此处了解更多详情。";
 
-/* Country option for a site address. */
-"Morocco" = "摩洛哥";
-
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "移动";
 
@@ -4044,9 +3687,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "将评论移动至回收站";
 
-/* Country option for a site address. */
-"Mozambique" = "莫桑比克";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "多个商店";
 
@@ -4054,9 +3694,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "我的商店";
-
-/* Country option for a site address. */
-"Myanmar" = "缅甸";
 
 /* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "不适用";
@@ -4069,12 +3706,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "缺少名称";
-
-/* Country option for a site address. */
-"Namibia" = "纳米比亚";
-
-/* Country option for a site address. */
-"Nauru" = "瑙鲁";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "是否需要货运标签？";
@@ -4099,9 +3730,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "需要帮助？%1$@";
 
-/* Country option for a site address. */
-"Nepal" = "尼泊尔";
-
 /* The title for the net amount paid cell */
 "Net Payment" = "净付款";
 
@@ -4110,9 +3738,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "净销售额：%@";
-
-/* Country option for a site address. */
-"Netherlands" = "荷兰";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "永不过期";
@@ -4123,14 +3748,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新属性名称";
 
-/* Country option for a site address. */
-"New Caledonia" = "新喀里多尼亚";
-
 /* Title for the order creation screen */
 "New Order" = "新订单";
-
-/* Country option for a site address. */
-"New Zealand" = "新西兰";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新的分析视图，让您可查看访客、报告等。";
@@ -4152,18 +3771,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "下一步";
-
-/* Country option for a site address. */
-"Nicaragua" = "尼加拉瓜";
-
-/* Country option for a site address. */
-"Niger" = "尼日尔";
-
-/* Country option for a site address. */
-"Nigeria" = "尼日利亚";
-
-/* Country option for a site address. */
-"Niue" = "纽埃";
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "没有（已批准的）评论";
@@ -4284,18 +3891,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "无";
 
-/* Country option for a site address. */
-"Norfolk Island" = "诺福克岛";
-
-/* Country option for a site address. */
-"North Korea" = "朝鲜";
-
-/* Country option for a site address. */
-"Northern Mariana Islands" = "北马里亚纳群岛";
-
-/* Country option for a site address. */
-"Norway" = "挪威";
-
 /* Description when no 'group of' quantity is set in quantity rules. */
 "Not grouped" = "未分组";
 
@@ -4357,9 +3952,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Weeks Section Header */
 "Older than a Week" = "超过 1 周";
-
-/* Country option for a site address. */
-"Oman" = "阿曼";
 
 /* Display label for the subscription status type */
 "On Hold" = "保留";
@@ -4617,23 +4209,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Rich order notification text, will read as: Paid with Visa credit card */
 "Paid with %@" = "通过 %@ 付款";
 
-/* Country option for a site address. */
-"Pakistan" = "巴基斯坦";
-
-/* Country option for a site address. */
-"Palestinian Territory" = "巴勒斯坦领土";
-
-/* Country option for a site address. */
-"Panama" = "巴拿马";
-
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "纸张尺寸";
-
-/* Country option for a site address. */
-"Papua New Guinea" = "巴布亚新几内亚";
-
-/* Country option for a site address. */
-"Paraguay" = "巴拉圭";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "父级分类目录";
@@ -4725,12 +4302,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "永久关闭账户";
 
-/* Country option for a site address. */
-"Peru" = "秘鲁";
-
-/* Country option for a site address. */
-"Philippines" = "菲律宾";
-
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "电话";
@@ -4752,9 +4323,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "选择订单，然后只需付款，打印，包装和邮寄。";
-
-/* Country option for a site address. */
-"Pitcairn" = "皮特凯恩";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "将产品放入回收站...";
@@ -4964,15 +4532,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation title for the help settings list. */
 "PointOfSaleSettingsHelpDetailView.help.title" = "帮助";
 
-/* Country option for a site address. */
-"Poland" = "波兰";
-
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
 "Popular" = "热门";
-
-/* Country option for a site address. */
-"Portugal" = "葡萄牙";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -5241,9 +4803,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "正在发布您的产品…";
 
-/* Country option for a site address. */
-"Puerto Rico" = "波多黎各";
-
 /* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
 "Purchase %1$@" = "购买 %1$@";
 
@@ -5268,9 +4827,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
-
-/* Country option for a site address. */
-"Qatar" = "卡塔尔";
 
 /* Quantity abbreviation for section title */
 "Qty" = "数量";
@@ -5565,9 +5121,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "如果包裹无法送达，请退回给寄件人";
 
-/* Country option for a site address. */
-"Reunion" = "留尼旺岛";
-
 /* Title of Review Order screen */
 "Review Order" = "检查订单";
 
@@ -5585,17 +5138,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Post Rich content */
 "Rich Content" = "丰富的内容";
 
-/* Country option for a site address. */
-"Romania" = "罗马尼亚";
-
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "运行测试订单，确保您的 WooCommerce 流程提供无缝的客户体验。";
-
-/* Country option for a site address. */
-"Russia" = "俄罗斯";
-
-/* Country option for a site address. */
-"Rwanda" = "卢旺达";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "会话";
@@ -5618,30 +5162,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
-/* Country option for a site address. */
-"Saint Barthélemy" = "圣巴泰勒米";
-
-/* Country option for a site address. */
-"Saint Helena" = "圣赫勒拿";
-
-/* Country option for a site address. */
-"Saint Kitts and Nevis" = "圣基茨和尼维斯";
-
-/* Country option for a site address. */
-"Saint Lucia" = "圣卢西亚";
-
-/* Country option for a site address. */
-"Saint Martin (Dutch part)" = "圣马丁（荷兰部分）";
-
-/* Country option for a site address. */
-"Saint Martin (French part)" = "圣马丁（法国部分）";
-
-/* Country option for a site address. */
-"Saint Pierre and Miquelon" = "圣皮埃尔和密克隆";
-
-/* Country option for a site address. */
-"Saint Vincent and the Grenadines" = "圣文森特和格林纳丁斯";
-
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "促销日期：%@";
 
@@ -5657,20 +5177,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Sales reports" = "销售报表";
 
-/* Country option for a site address. */
-"Samoa" = "萨摩亚";
-
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "样品";
 
-/* Country option for a site address. */
-"San Marino" = "圣马力诺";
-
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "卫生\/植物检疫检查";
-
-/* Country option for a site address. */
-"Saudi Arabia" = "沙特阿拉伯";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -5886,12 +5397,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "发送电子邮件验证链接";
 
-/* Country option for a site address. */
-"Senegal" = "塞内加尔";
-
-/* Country option for a site address. */
-"Serbia" = "塞尔维亚";
-
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "服务包";
 
@@ -5943,9 +5448,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "找到多个读卡器";
-
-/* Country option for a site address. */
-"Seychelles" = "塞舌尔";
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
@@ -6086,9 +5588,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "显示更多选项。";
 
-/* Country option for a site address. */
-"Sierra Leone" = "塞拉利昂";
-
 /* View title during the sign up process. */
 "Sign Up" = "注册";
 
@@ -6113,9 +5612,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "登录用户为 @%1$@";
 
-/* Country option for a site address. */
-"Singapore" = "新加坡";
-
 /* Site Address title on the support form */
 "Site Address" = "站点地址";
 
@@ -6135,12 +5631,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "暂时跳过";
 
-/* Country option for a site address. */
-"Slovakia" = "斯洛伐克";
-
-/* Country option for a site address. */
-"Slovenia" = "斯洛文尼亚";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
@@ -6151,12 +5641,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "软件已更新";
-
-/* Country option for a site address. */
-"Solomon Islands" = "所罗门群岛";
-
-/* Country option for a site address. */
-"Somalia" = "索马里";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "某些电子邮件地址无效。";
@@ -6250,29 +5734,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "排序方式";
 
-/* Country option for a site address. */
-"South Africa" = "南非";
-
-/* Country option for a site address. */
-"South Georgia\/Sandwich Islands" = "南乔治亚\/南桑威奇群岛";
-
-/* Country option for a site address. */
-"South Korea" = "韩国";
-
-/* Country option for a site address. */
-"South Sudan" = "南苏丹";
-
-/* Country option for a site address. */
-"Spain" = "西班牙";
-
 /* Verb, spam a comment */
 "Spam" = "发表垃圾评论";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
-
-/* Country option for a site address. */
-"Sri Lanka" = "斯里兰卡";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "标准税率";
@@ -6367,26 +5833,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice text after updating the order successfully */
 "Successfully updated" = "更新成功";
 
-/* Country option for a site address. */
-"Sudan" = "苏丹";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "产品和包裹的总重量";
 
 /* In Order Details, the name of the billed person when there are no name and last name. */
 "SummaryTableViewCellViewModel.guestName" = "访客";
-
-/* Country option for a site address. */
-"Suriname" = "苏里南";
-
-/* Country option for a site address. */
-"Svalbard and Jan Mayen" = "斯瓦尔巴岛和扬马延岛";
-
-/* Country option for a site address. */
-"Swaziland" = "斯威士兰";
-
-/* Country option for a site address. */
-"Sweden" = "瑞典";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "切换商店";
@@ -6415,17 +5866,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切换为默认字体大小";
 
-/* Country option for a site address. */
-"Switzerland" = "瑞士";
-
 /* No comment provided by engineer. */
 "Sync with Pinterest" = "与 Pinterest 同步";
 
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "正在同步数据";
-
-/* Country option for a site address. */
-"Syria" = "叙利亚";
 
 /* View system status report cell title on Help screen */
 "System Status Report" = "系统状态报告";
@@ -6433,19 +5878,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "已将系统状态报告复制到剪贴板";
 
-/* Country option for a site address. */
-"São Tomé and Príncipe" = "圣多美和普林西比";
-
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "标签";
-
-/* Country option for a site address. */
-"Taiwan" = "中国台湾";
-
-/* Country option for a site address. */
-"Tajikistan" = "塔吉克斯坦";
 
 /* Title for the simple payments screen */
 "Take Payment" = "收款";
@@ -6462,9 +5898,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "返回收取付款";
-
-/* Country option for a site address. */
-"Tanzania" = "坦桑尼亚";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "点击卡以付款";
@@ -6614,9 +6047,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button's title text to send a 2FA code via SMS text message. */
 "Text me a code via SMS" = "通过短信将代码发送给我";
-
-/* Country option for a site address. */
-"Thailand" = "泰国";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "感谢您与我们分享您的想法";
@@ -6956,9 +6386,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "时间到了，请别担心，我们会优先保证您的安全。 请重试！";
 
-/* Country option for a site address. */
-"Timor-Leste" = "东帝汶";
-
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "提示";
 
@@ -7039,15 +6466,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "切换无序的列表样式";
 
-/* Country option for a site address. */
-"Togo" = "多哥";
-
-/* Country option for a site address. */
-"Tokelau" = "托克劳";
-
-/* Country option for a site address. */
-"Tonga" = "汤加";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "订单总数";
 
@@ -7089,9 +6507,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Plan name for an expired free trial */
 "Trial ended" = "试用已结束";
-
-/* Country option for a site address. */
-"Trinidad and Tobago" = "特里尼达和多巴哥";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "故障排除";
@@ -7170,18 +6585,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "试试站点地址";
 
-/* Country option for a site address. */
-"Tunisia" = "突尼斯";
-
-/* Country option for a site address. */
-"Turkey" = "土耳其";
-
-/* Country option for a site address. */
-"Turkmenistan" = "土库曼斯坦";
-
-/* Country option for a site address. */
-"Turks and Caicos Islands" = "特克斯和凯科斯群岛";
-
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "打开读卡器并将其放在移动设备旁边";
 
@@ -7193,9 +6596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "如果优惠券不适用于促销商品，请开启此选项。 基于商品应用的优惠券仅在该商品不促销时可用。 基于购物车应用的优惠券仅在购物车内无促销商品时可用。";
-
-/* Country option for a site address. */
-"Tuvalu" = "图瓦卢";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "内容类型";
@@ -7209,12 +6609,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A clickable text link that willredirect the user to a website */
 "USPS HAZMAT Search Tool" = "USPS 危险品搜索工具";
-
-/* Country option for a site address. */
-"Uganda" = "乌干达";
-
-/* Country option for a site address. */
-"Ukraine" = "乌克兰";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "无法连接";
@@ -7381,21 +6775,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "意外错误";
 
-/* Country option for a site address. */
-"United Arab Emirates" = "阿拉伯联合酋长国";
-
-/* Country option for a site address. */
-"United Kingdom" = "英国";
-
-/* Country option for a site address. */
-"United States" = "美国";
-
-/* Country option for a site address. */
-"United States Minor Outlying Islands" = "美国本土外小岛屿";
-
-/* Country option for a site address. */
-"United States Virgin Islands" = "美属维尔京群岛";
-
 /* Unknown Application State
    Unknown product name, displayed in a review */
 "Unknown" = "未知";
@@ -7405,9 +6784,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "未知软件版本";
-
-/* Fallback country option for a site address. */
-"Unknown country" = "未知国家";
 
 /* Label to use when creation date from media asset is not know. */
 "Unknown creation date" = "创建日期未知";
@@ -7492,6 +6868,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "更新您的偏好设置";
 
+/* Description for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.description" = "预约已排定，但尚未进行。";
+
+/* Title for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.title" = "已预订";
+
+/* Description for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.description" = "客户已到达，会议按计划举行。";
+
+/* Title for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.title" = "已签到";
+
+/* Description for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.description" = "客户未提前取消就错过了预约。";
+
+/* Title for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.title" = "失约";
+
+/* Title of the update attendance status bottom sheet. */
+"UpdateAttendanceStatusView.title" = "更新出席状态";
+
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "正在更新软件";
 
@@ -7510,9 +6907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "追加销售";
-
-/* Country option for a site address. */
-"Uruguay" = "乌拉圭";
 
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "使用详情";
@@ -7573,17 +6967,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "用户名至少要求4位。";
 
-/* Country option for a site address. */
-"Uzbekistan" = "乌兹别克斯坦";
-
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "正在验证";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "值（每单位 %1$@）";
-
-/* Country option for a site address. */
-"Vanuatu" = "瓦努阿图";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "变体 #%1$@";
@@ -7605,12 +6993,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "有关您站点的各种系统信息";
 
-/* Country option for a site address. */
-"Vatican" = "梵蒂冈";
-
-/* Country option for a site address. */
-"Venezuela" = "委内瑞拉";
-
 /* two factor code placeholder */
 "Verification code" = "验证码";
 
@@ -7628,9 +7010,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
 "Video, %@" = "视频，%@";
-
-/* Country option for a site address. */
-"Vietnam" = "越南";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -7714,9 +7093,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* View title during the Google auth process. */
 "Waiting..." = "正在等待…";
-
-/* Country option for a site address. */
-"Wallis and Futuna" = "瓦利斯群岛和富图纳群岛";
 
 /* Error message when the merchant's payment account has been rejected
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -7881,9 +7257,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
 
-/* Country option for a site address. */
-"Western Sahara" = "西撒哈拉";
-
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "我们将使用此信息抢先开始设置运费、税费和付款。";
 
@@ -8016,9 +7389,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "年初至今";
-
-/* Country option for a site address. */
-"Yemen" = "也门";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "是的，更改";
@@ -8215,12 +7585,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "您即将大功告成！ 请完成 %1$@ 设置，然后才能进行现场付款。";
-
-/* Country option for a site address. */
-"Zambia" = "赞比亚";
-
-/* Country option for a site address. */
-"Zimbabwe" = "津巴布韦";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "取消";
@@ -9263,6 +8627,48 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "重试";
+
+/* Tab title for all bookings */
+"bookingListView.all" = "全部";
+
+/* Button to filter the booking list */
+"bookingListView.filter" = "筛选";
+
+/* Button to select the order of the booking list */
+"bookingListView.sortBy" = "排序方式";
+
+/* Tab title for today's bookings */
+"bookingListView.today" = "今天";
+
+/* Tab title for upcoming bookings */
+"bookingListView.upcoming" = "即将到来";
+
+/* Title of the booking list view */
+"bookingListView.view.title" = "预订";
+
+/* Status of a canceled booking */
+"bookingStatus.title.canceled" = "已取消";
+
+/* Status of a complete booking */
+"bookingStatus.title.complete" = "已完成";
+
+/* Status of a confirmed booking */
+"bookingStatus.title.confirmed" = "已确认";
+
+/* Status of a paid booking */
+"bookingStatus.title.paid" = "已付款";
+
+/* Status of a pending confirmation booking */
+"bookingStatus.title.pendingConfirmation" = "待确认";
+
+/* Status of a booking with unexpected status */
+"bookingStatus.title.unknown" = "未知";
+
+/* Status of an unpaid booking */
+"bookingStatus.title.unpaid" = "未付款";
+
+/* Title of the Bookings tab */
+"bookingsTabViewHostingController.tab.title" = "预订";
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "bottomSheetProductType.affiliate.description" = "将产品链接到外部网站";
@@ -11663,9 +11069,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "清空购物车";
 
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "返回";
-
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "未连接互联网";
 
@@ -11704,9 +11107,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
 "pos.ineligible.suggestion.unsupportedCurrency.1" = "POS 系统暂不支持您的商店所使用的货币。 在 %1$@，它目前仅支持 %2$@。 请检查您的商店货币设置或联系支持人员寻求帮助。";
-
-/* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "POS 系统需要 iOS 17 或更高版本。 请将您的设备更新至 iOS 17+ 以使用此功能。";
 
 /* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
 "pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "您的 WooCommerce 版本不受支持。 POS 系统需要 WooCommerce %1$@ 或更高版本。 请将 WooCommerce 更新到最新版本。";
@@ -11789,6 +11189,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "忽略";
 
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "订单状态：%1$@";
+
 /* Text appearing in the order details pane when there are no orders available. */
 "pos.orderDetailsEmptyView.noOrderToDisplay" = "没有要显示的订单";
 
@@ -11798,26 +11201,44 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "产品";
 
-/* Title for the order details screen when no specific order is selected */
-"pos.orderDetailsLoadingView.title" = "订单";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "总计";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "折扣总额：%1$@";
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "折扣总额";
 
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "轻点以通过电子邮件发送订单收据";
+
 /* Label for email receipt action on order details view */
 "pos.orderDetailsView.emailReceiptAction.title" = "电子邮件收据";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "订单日期：%1$@，状态：%2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "客户电子邮件：%1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "净付款：%1$@";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "净付款";
 
-/* Order title with order number. %1$@ is the order number. */
-"pos.orderDetailsView.orderTitle" = "订单号 %1$@";
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "实收总额：%1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "付款方式：%1$@";
 
 /* Label for the paid amount */
-"pos.orderDetailsView.paidLabel" = "已支付";
+"pos.orderDetailsView.paidLabel2" = "实收总额";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "数量：%1$@，每个 %2$@，总计 %3$@";
 
 /* Label for products subtotal in the totals section */
 "pos.orderDetailsView.productsLabel" = "产品";
@@ -11831,11 +11252,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label for refund reason. %1$@ is the reason text. */
 "pos.orderDetailsView.reasonLabel" = "原因：%1$@";
 
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "已退款：%1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "原因：%1$@";
+
 /* Label for a refund entry. %1$lld is the refund ID. */
 "pos.orderDetailsView.refundLabel" = "已退款";
 
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "产品小计：%1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "税费：%1$@";
+
 /* Label for taxes in the totals section */
 "pos.orderDetailsView.taxesLabel" = "税费";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "订单总计：%1$@";
 
 /* Label for the order total */
 "pos.orderDetailsView.totalLabel" = "总计";
@@ -11867,8 +11303,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "暂无订单";
 
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "轻点以查看订单详细信息";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "订单 #%1$@，总计 %2$@，%3$@，状态：%4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "电子邮件地址：%1$@";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "#%1$@";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "订单";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "搜索订单";
 
 /* Placeholder for a search field in the Orders view. */
 "pos.orderListView.searchFieldPlaceholder" = "搜索订单";
@@ -11936,9 +11387,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "POS 目前仅可用于简单和可变的不可下载产品。";
 
-/* Title for the OK button on the simple products information modal in POS */
-"pos.simpleProductsModal.ok.button.title" = "确定";
-
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "为何看不到我的产品？";
 
@@ -11979,7 +11427,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.unsupportedWidth.title" = "此屏幕宽度不支持销售点模式。";
 
 /* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "允许通过移动数据完全同步";
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "允许通过移动数据进行完整更新";
 
 /* Label for catalog size field in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.catalogSize" = "目录大小";
@@ -11988,13 +11436,13 @@ which should be translated separately and considered part of this sentence. */
 "posSettingsLocalCatalogDetailView.catalogStatus" = "目录状态";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync" = "上次完全同步";
+"posSettingsLocalCatalogDetailView.lastFullSync.1" = "上次完整更新";
 
 /* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "上次增量更新";
+"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "上次更新时间";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage" = "管理数据使用情况";
+"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "管理数据使用";
 
 /* Section title for manual catalog update in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "手动目录更新";
@@ -12007,6 +11455,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the local catalog details in POS settings. */
 "posSettingsLocalCatalogDetailView.title" = "目录设置";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d 款产品，%2$ld 种变体";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "目录大小不可用";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "未更新";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "更新日期不可用";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "关闭";
@@ -14065,9 +13525,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 使用 Google 登录。";
-
-/* Country option for a site address. */
-"Åland Islands" = "奥兰群岛";
 
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 新税率已设置";

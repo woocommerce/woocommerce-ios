@@ -23,6 +23,11 @@ extension WooAnalyticsEvent {
                                      properties: getTracksProperties(type: type, userInfo: userInfo))
         }
 
+        static func displayed(type: String, userInfo: [AnyHashable: Any]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .localNotificationDisplayed,
+                              properties: getTracksProperties(type: type, userInfo: userInfo))
+        }
+
         static func canceled(type: String, userInfo: [AnyHashable: Any]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .localNotificationCanceled,
                                      properties: getTracksProperties(type: type, userInfo: userInfo))

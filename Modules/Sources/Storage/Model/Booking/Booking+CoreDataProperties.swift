@@ -19,6 +19,7 @@ extension Booking {
     @NSManaged public var googleCalendarEventID: String?
     @NSManaged public var orderItemID: Int64
     @NSManaged public var statusKey: String?
+    @NSManaged public var attendanceStatusKey: String?
     @NSManaged public var localTimezone: String?
     @NSManaged public var currency: String?
     @NSManaged public var orderInfo: BookingOrderInfo?

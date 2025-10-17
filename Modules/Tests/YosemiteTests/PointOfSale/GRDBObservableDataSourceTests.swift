@@ -274,6 +274,111 @@ struct GRDBObservableDataSourceTests {
         #expect(sut.variationItems.count == 2)
     }
 
+    @Test("Variation pagination only counts variations for specific parent and excludes downloadable")
+    func test_variation_pagination_counts_only_parent_variations_and_excludes_downloadable() async throws {
+        // Given: Multiple parents with different variation counts, including downloadable variations
+        let parent1 = createPersistedProduct(id: 100, name: "Parent 1", type: "variable")
+        let parent2 = createPersistedProduct(id: 200, name: "Parent 2", type: "variable")
+        try await insertProducts([parent1, parent2])
+
+        // Insert 3 non-downloadable variations for parent 1
+        try await insertTestVariations(parentID: 100, count: 3)
+
+        // Insert 5 non-downloadable variations for parent 2
+        try await insertTestVariations(parentID: 200, count: 5)
+
+        // Insert 2 downloadable variations for parent 1 (should be excluded from count)
+        try await insertDownloadableVariations(parentID: 100, count: 2, startID: 1000)
+
+        // Insert 3 downloadable variations for parent 2 (should be excluded from count)
+        try await insertDownloadableVariations(parentID: 200, count: 3, startID: 2000)
+
+        let posParent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let posParent2 = POSVariableParentProduct(id: UUID(), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+
+        // When: Load parent 1 variations (first page of 5)
+        await waitForVariationLoad {
+            sut.loadVariations(for: posParent1)
+        }
+
+        // Then: Should show 3 variations for parent 1 (excluding downloadable)
+        #expect(sut.variationItems.count == 3)
+
+        // Then: hasMoreVariations should be false because there are only 3 non-downloadable variations total
+        #expect(sut.hasMoreVariations == false, "Should not have more variations - only 3 exist for this parent")
+
+        // When: Load parent 2 variations
+        await waitForVariationLoad {
+            sut.loadVariations(for: posParent2)
+        }
+
+        // Then: Should show 5 variations for parent 2 (first page, excluding downloadable)
+        #expect(sut.variationItems.count == 5)
+
+        // Then: hasMoreVariations should be false because we loaded all 5 variations
+        #expect(sut.hasMoreVariations == false)
+
+        // When: Load more for parent 2
+        let hasMoreBefore = sut.hasMoreVariations
+        sut.loadMoreVariations()
+
+        // Then: Should still not have more (no second page to load)
+        #expect(hasMoreBefore == false)
+
+        // Then: Verify downloadable variations were excluded from the items
+        // Total variations in DB: 3 + 5 + 2 + 3 = 13, but only 5 non-downloadable for parent 2 should be loaded
+        #expect(sut.variationItems.count == 5, "Should only show non-downloadable variations for current parent")
+    }
+
+    @Test("Variation statistics are scoped to parent product only")
+    func test_variation_statistics_are_scoped_to_parent_product() async throws {
+        // Given: Two parents with vastly different variation counts
+        let parent1 = createPersistedProduct(id: 100, name: "Parent 1", type: "variable")
+        let parent2 = createPersistedProduct(id: 200, name: "Parent 2", type: "variable")
+        try await insertProducts([parent1, parent2])
+
+        // Parent 1: 2 variations (less than page size of 5)
+        try await insertTestVariations(parentID: 100, count: 2)
+
+        // Parent 2: 8 variations (more than page size of 5)
+        try await insertTestVariations(parentID: 200, count: 8)
+
+        let posParent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let posParent2 = POSVariableParentProduct(id: UUID(), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+
+        // When: Load parent 1 variations
+        await waitForVariationLoad {
+            sut.loadVariations(for: posParent1)
+        }
+
+        // Then: Should load 2 variations
+        #expect(sut.variationItems.count == 2)
+
+        #expect(sut.hasMoreVariations == false, "Parent 1 has only 2 variations, should not indicate more pages")
+
+        // When: Load parent 2 variations
+        await waitForVariationLoad {
+            sut.loadVariations(for: posParent2)
+        }
+
+        // Then: Should load first page (5 variations)
+        #expect(sut.variationItems.count == 5)
+
+        // Then: Should have more variations (3 more on page 2)
+        #expect(sut.hasMoreVariations == true, "Parent 2 has 8 variations total, first page shows 5, should indicate more")
+
+        // When: Load more variations for parent 2
+        await waitForVariationLoad {
+            sut.loadMoreVariations()
+        }
+
+        // Then: Should load all 8 variations
+        #expect(sut.variationItems.count == 8)
+
+        // Then: Should not have more variations
+        #expect(sut.hasMoreVariations == false, "All 8 variations loaded, no more pages")
+    }
+
     // MARK: - Helper Methods
 
     private func waitForProductLoad(expectedCount: Int? = nil, action: () -> Void) async {
@@ -375,6 +480,27 @@ struct GRDBObservableDataSourceTests {
                     globalUniqueID: nil,
                     price: "10.00",
                     downloadable: false,
+                    fullDescription: nil,
+                    manageStock: false,
+                    stockQuantity: nil,
+                    stockStatusKey: "instock"
+                )
+                try variation.insert(db)
+            }
+        }
+    }
+
+    private func insertDownloadableVariations(parentID: Int64, count: Int, startID: Int64) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            for index in 0..<count {
+                let variation = PersistedProductVariation(
+                    id: startID + Int64(index),
+                    siteID: siteID,
+                    productID: parentID,
+                    sku: nil,
+                    globalUniqueID: nil,
+                    price: "10.00",
+                    downloadable: true,
                     fullDescription: nil,
                     manageStock: false,
                     stockQuantity: nil,

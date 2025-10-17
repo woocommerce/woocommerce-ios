@@ -43,6 +43,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     private var productObservationCancellable: AnyCancellable?
     private var variationObservationCancellable: AnyCancellable?
     private var statisticsObservationCancellable: AnyCancellable?
+    private var variationStatisticsObservationCancellable: AnyCancellable?
 
     // MARK: - Initialization
 
@@ -63,6 +64,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         productObservationCancellable?.cancel()
         variationObservationCancellable?.cancel()
         statisticsObservationCancellable?.cancel()
+        variationStatisticsObservationCancellable?.cancel()
     }
 
     // MARK: - POSObservableDataSourceProtocol
@@ -92,6 +94,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         variationItems = []
 
         setupVariationObservation(parentProduct: parentProduct)
+        setupVariationStatisticsObservation(parentProduct: parentProduct)
     }
 
     public func loadMoreVariations() {
@@ -152,8 +155,6 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     }
 
     private func setupVariationObservation(parentProduct: POSVariableParentProduct) {
-        variationObservationCancellable?.cancel()
-
         let currentPage = currentVariationPage
         let observation = ValueObservation
             .tracking { [weak self] database -> [POSProductVariation] in
@@ -201,17 +202,13 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     private func setupStatisticsObservation() {
         let observation = ValueObservation
             .tracking { [weak self] database in
-                guard let self else { return (0, 0) }
+                guard let self else { return 0 }
 
                 let productCount = try PersistedProduct
                     .posProductsRequest(siteID: siteID)
                     .fetchCount(database)
 
-                let variationCount = try PersistedProductVariation
-                    .filter(PersistedProductVariation.Columns.siteID == siteID)
-                    .fetchCount(database)
-
-                return (productCount, variationCount)
+                return productCount
             }
 
         statisticsObservationCancellable = observation
@@ -223,8 +220,32 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                         // Silently ignore - statistics are not critical
                     }
                 },
-                receiveValue: { [weak self] (productCount, variationCount) in
+                receiveValue: { [weak self] productCount in
                     self?.totalProductCount = productCount
+                }
+            )
+    }
+
+    private func setupVariationStatisticsObservation(parentProduct: POSVariableParentProduct) {
+        let observation = ValueObservation
+            .tracking { [weak self] database in
+                guard let self else { return 0 }
+
+                return try PersistedProductVariation
+                    .posVariationsRequest(siteID: siteID, parentProductID: parentProduct.productID)
+                    .fetchCount(database)
+            }
+
+        variationStatisticsObservationCancellable = observation
+            .publisher(in: grdbManager.databaseConnection)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure = completion {
+                        // Silently ignore - statistics are not critical
+                    }
+                },
+                receiveValue: { [weak self] variationCount in
                     self?.totalVariationCount = variationCount
                 }
             )

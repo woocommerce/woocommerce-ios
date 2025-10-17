@@ -84,9 +84,22 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
                                        using: PersistedProductImage.image)
 
     public static let attributes = hasMany(PersistedProductAttribute.self,
+                                           key: "attributes",
                                            using: ForeignKey([PersistedProductAttribute.CodingKeys.siteID.stringValue,
                                                               PersistedProductAttribute.CodingKeys.productID.stringValue],
                                                              to: primaryKey))
+}
+
+// MARK: - Point of Sale Requests
+public extension PersistedProduct {
+    /// Returns a request for POS-supported products (simple and variable, non-downloadable) for a given site, ordered by name
+    static func posProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        return PersistedProduct
+            .filter(Columns.siteID == siteID)
+            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
+            .filter(Columns.downloadable == false)
+            .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
+    }
 }
 
 // periphery:ignore - TODO: remove ignore when populating database
@@ -106,5 +119,10 @@ private extension PersistedProduct {
         case manageStock
         case stockQuantity
         case stockStatusKey
+    }
+
+    enum ProductType: String {
+        case simple
+        case variable
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Booking Entity.
 ///
-public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable {
+public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let siteID: Int64
     public let bookingID: Int64
     public let allDay: Bool
@@ -21,8 +21,9 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     public let startDate: Date
     public let statusKey: String
     public let localTimezone: String
+    public let currency: String
+    public let orderInfo: BookingOrderInfo?
 
-    // periphery: ignore - to be used later
     public var bookingStatus: BookingStatus {
         return BookingStatus(rawValue: statusKey) ?? .unknown
     }
@@ -45,7 +46,9 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 resourceID: Int64,
                 startDate: Date,
                 statusKey: String,
-                localTimezone: String) {
+                localTimezone: String,
+                currency: String,
+                orderInfo: BookingOrderInfo?) {
         self.siteID = siteID
         self.bookingID = bookingID
         self.allDay = allDay
@@ -63,6 +66,8 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.startDate = startDate
         self.statusKey = statusKey
         self.localTimezone = localTimezone
+        self.currency = currency
+        self.orderInfo = orderInfo
     }
 
     /// The public initializer for Booking.
@@ -95,6 +100,8 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let startDate = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .startDate))
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let localTimezone = try container.decode(String.self, forKey: .localTimezone)
+        let currency = try container.decode(String.self, forKey: .currency)
+        let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
 
         self.init(siteID: siteID,
                   bookingID: bookingID,
@@ -112,7 +119,9 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   resourceID: resourceID,
                   startDate: startDate,
                   statusKey: statusKey,
-                  localTimezone: localTimezone)
+                  localTimezone: localTimezone,
+                  currency: currency,
+                  orderInfo: orderInfo)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -163,6 +172,7 @@ private extension Booking {
         case startDate = "start"
         case statusKey = "status"
         case localTimezone = "local_timezone"
+        case currency
     }
 }
 

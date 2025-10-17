@@ -56,6 +56,18 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isCustomFieldsTopBannerDismissed: Bool
 
+    /// Whether the Point of Sale survey notification has been scheduled for potential merchants
+    ///
+    public var isPOSSurveyPotentialMerchantNotificationScheduled: Bool
+
+    /// Whether the Point of Sale survey notification has been scheduled for current merchants
+    ///
+    public var isPOSSurveyCurrentMerchantNotificationScheduled: Bool
+
+    /// Whether POS mode has been opened at least once
+    ///
+    public var hasPOSBeenOpenedAtLeastOnce: Bool
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -66,7 +78,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
                 sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>,
                 isEUShippingNoticeDismissed: Bool,
-                isCustomFieldsTopBannerDismissed: Bool) {
+                isCustomFieldsTopBannerDismissed: Bool,
+                isPOSSurveyPotentialMerchantNotificationScheduled: Bool,
+                isPOSSurveyCurrentMerchantNotificationScheduled: Bool,
+                hasPOSBeenOpenedAtLeastOnce: Bool) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -78,6 +93,9 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
         self.isEUShippingNoticeDismissed = isEUShippingNoticeDismissed
         self.isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed
+        self.isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled
+        self.isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled
+        self.hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce
     }
 
     public static var `default`: Self {
@@ -90,7 +108,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               featureAnnouncementCampaignSettings: [:],
               sitesWithAtLeastOneIPPTransactionFinished: [],
               isEUShippingNoticeDismissed: false,
-              isCustomFieldsTopBannerDismissed: false)
+              isCustomFieldsTopBannerDismissed: false,
+              isPOSSurveyPotentialMerchantNotificationScheduled: false,
+              isPOSSurveyCurrentMerchantNotificationScheduled: false,
+              hasPOSBeenOpenedAtLeastOnce: false)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -120,7 +141,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
             isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+            isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
+            isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
         )
     }
 
@@ -141,7 +165,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             featureAnnouncementCampaignSettings: updatedSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
             isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+            isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
+            isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
         )
     }
 }
@@ -167,7 +194,11 @@ extension GeneralAppSettings {
                                                                                         forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
         self.isEUShippingNoticeDismissed = try container.decodeIfPresent(Bool.self, forKey: .isEUShippingNoticeDismissed) ?? false
         self.isCustomFieldsTopBannerDismissed = try container.decodeIfPresent(Bool.self, forKey: .isCustomFieldsTopBannerDismissed) ?? false
-
+        //swiftlint:disable:next line_length
+        self.isPOSSurveyPotentialMerchantNotificationScheduled = try container.decodeIfPresent(Bool.self, forKey: .isPOSSurveyPotentialMerchantNotificationScheduled) ?? false
+        //swiftlint:disable:next line_length
+        self.isPOSSurveyCurrentMerchantNotificationScheduled = try container.decodeIfPresent(Bool.self, forKey: .isPOSSurveyCurrentMerchantNotificationScheduled) ?? false
+        self.hasPOSBeenOpenedAtLeastOnce = try container.decodeIfPresent(Bool.self, forKey: .hasPOSBeenOpenedAtLeastOnce) ?? false
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }
 }

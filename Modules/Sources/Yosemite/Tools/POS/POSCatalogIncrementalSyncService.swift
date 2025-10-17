@@ -20,7 +20,6 @@ public protocol POSCatalogIncrementalSyncServiceProtocol {
 // periphery:ignore
 public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServiceProtocol {
     private let syncRemote: POSCatalogSyncRemoteProtocol
-    private let batchSize: Int
     private let persistenceService: POSCatalogPersistenceServiceProtocol
     private let batchedLoader: BatchedRequestLoader
 
@@ -41,11 +40,15 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
         self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)
     }
 
-    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int, persistenceService: POSCatalogPersistenceServiceProtocol) {
+    init(
+        syncRemote: POSCatalogSyncRemoteProtocol,
+        batchSize: Int,
+        retryDelay: TimeInterval = 2.0,
+        persistenceService: POSCatalogPersistenceServiceProtocol
+    ) {
         self.syncRemote = syncRemote
-        self.batchSize = batchSize
         self.persistenceService = persistenceService
-        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize)
+        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize, retryDelay: retryDelay)
     }
 
     // MARK: - Protocol Conformance
@@ -57,10 +60,10 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 
         do {
             let catalog = try await loadCatalog(for: siteID, modifiedAfter: modifiedAfter, syncRemote: syncRemote)
-            DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+            DDLogInfo("✅ Loaded \(catalog.products.count) updated products and \(catalog.variations.count) updated variations for siteID \(siteID)")
 
             try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
-            DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+            DDLogInfo("✅ Persisted \(catalog.products.count) updated products and \(catalog.variations.count) updated variations to database for siteID \(siteID)")
 
         } catch {
             DDLogError("❌ Failed to sync and persist catalog incrementally: \(error)")

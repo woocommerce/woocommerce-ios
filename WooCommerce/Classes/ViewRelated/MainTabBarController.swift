@@ -5,6 +5,7 @@ import WordPressUI
 import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 
 
 /// Enum representing the individual tabs
@@ -150,7 +151,7 @@ final class MainTabBarController: UITabBarController {
 
     private var posTabVisibilityChecker: POSTabVisibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
-    private var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
@@ -322,7 +323,7 @@ final class MainTabBarController: UITabBarController {
     private func fixTabBarTraitCollectionOnIpadForiOS18() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             traitOverrides.horizontalSizeClass = .compact
-            if let rootHorizontalSizeClass = AppDelegate.shared.window?.traitCollection.horizontalSizeClass {
+            if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
                 tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
                 if let viewControllers {
                     for vc in viewControllers {
@@ -720,10 +721,8 @@ private extension MainTabBarController {
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
 
-            // Trigger POS catalog sync if tab is visible and feature flag is enabled
-            if isPOSTabVisible, ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-                await triggerPOSCatalogSyncIfNeeded(for: siteID)
-            }
+            // Begin foreground synchronization if POS tab becomes visible
+            await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
         }
     }
 
@@ -816,10 +815,6 @@ private extension MainTabBarController {
                                                                                    navigateToContent: { _ in })]
         }
 
-        // Configure POS catalog sync coordinator for local catalog syncing
-        // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
-        posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
-
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {
             let hubTabCoordinator = createHubMenuTabCoordinator()
@@ -849,29 +844,6 @@ private extension MainTabBarController {
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
         OrdersSplitViewWrapperController(siteID: siteID)
-    }
-
-    func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
-        guard let coordinator = posCatalogSyncCoordinator else {
-            return
-        }
-
-        // Check if sync is needed (older than 24 hours)
-        let maxAge: TimeInterval = 24 * 60 * 60
-        guard await coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
-            return
-        }
-
-        // Perform background sync
-        Task.detached {
-            do {
-                _ = try await coordinator.performFullSync(for: siteID)
-            } catch POSCatalogSyncError.syncAlreadyInProgress {
-                DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
-            } catch {
-                DDLogError("⚠️ POS catalog sync failed: \(error)")
-            }
-        }
     }
 
     func createBookingsViewController(siteID: Int64) -> UIViewController {
@@ -931,9 +903,20 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
+        let isLiquidGlassDesignDisabled = Bundle.main.infoDictionary?["UIDesignRequiresCompatibility"] as? Bool ?? false
 
-        self.notificationsBadge.updateBadge(with: input)
+        guard !isLiquidGlassDesignDisabled else {
+            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
+            notificationsBadge.updateBadge(with: input)
+            return
+        }
+
+        switch action {
+        case .show:
+            tabBar.items?[tabIndex].badgeValue = "•"
+        case .hide:
+            tabBar.items?[tabIndex].badgeValue = nil
+        }
     }
 }
 

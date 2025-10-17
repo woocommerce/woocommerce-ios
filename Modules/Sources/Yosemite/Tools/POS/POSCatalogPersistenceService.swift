@@ -38,20 +38,26 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                 try product.insert(db, onConflict: .replace)
             }
 
-            for image in catalog.productImagesToPersist {
-                try image.insert(db, onConflict: .replace)
-            }
-
-            for var attribute in catalog.productAttributesToPersist {
-                try attribute.insert(db)
-            }
-
             for variation in catalog.variationsToPersist {
                 try variation.insert(db, onConflict: .replace)
             }
 
-            for image in catalog.variationImagesToPersist {
+            // Insert actual image data first (shared by products and variations)
+            for image in catalog.imagesToPersist {
                 try image.insert(db, onConflict: .replace)
+            }
+
+            // Then insert join table entries
+            for productImage in catalog.productImagesToPersist {
+                try productImage.insert(db, onConflict: .replace)
+            }
+
+            for variationImage in catalog.variationImagesToPersist {
+                try variationImage.insert(db, onConflict: .replace)
+            }
+
+            for var attribute in catalog.productAttributesToPersist {
+                try attribute.insert(db)
             }
 
             for var attribute in catalog.variationAttributesToPersist {
@@ -62,12 +68,12 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("✅ Catalog persistence complete")
 
         try await grdbManager.databaseConnection.read { db in
-            let productCount = try PersistedProduct.fetchCount(db)
-            let productImageCount = try PersistedProductImage.fetchCount(db)
-            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
-            let variationCount = try PersistedProductVariation.fetchCount(db)
-            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
-            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
 
             DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
@@ -76,12 +82,13 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     }
 
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
+        DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) updated products and \(catalog.variations.count) updated variations")
 
         try await grdbManager.databaseConnection.write { db in
             for product in catalog.productsToPersist {
                 try product.insert(db, onConflict: .replace)
 
+                // Delete old join table entries for this product
                 try PersistedProductImage
                     .filter { $0.siteID == siteID && $0.productID == product.id }
                     .deleteAll(db)
@@ -91,17 +98,10 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                     .deleteAll(db)
             }
 
-            for image in catalog.productImagesToPersist {
-                try image.insert(db, onConflict: .replace)
-            }
-
-            for var attribute in catalog.productAttributesToPersist {
-                try attribute.insert(db, onConflict: .replace)
-            }
-
             for variation in catalog.variationsToPersist {
                 try variation.insert(db, onConflict: .replace)
 
+                // Delete old join table entries for this variation
                 try PersistedProductVariationImage
                     .filter { $0.siteID == siteID && $0.productVariationID == variation.id }
                     .deleteAll(db)
@@ -111,8 +111,22 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                     .deleteAll(db)
             }
 
+            // Insert/update actual image data (shared by products and variations)
+            for image in catalog.imagesToPersist {
+                try image.insert(db, onConflict: .replace)
+            }
+
+            // Insert new join table entries
+            for image in catalog.productImagesToPersist {
+                try image.insert(db, onConflict: .replace)
+            }
+
             for image in catalog.variationImagesToPersist {
                 try image.insert(db, onConflict: .replace)
+            }
+
+            for var attribute in catalog.productAttributesToPersist {
+                try attribute.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.variationAttributesToPersist {
@@ -126,12 +140,12 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("✅ Incremental catalog persistence complete")
 
         try await grdbManager.databaseConnection.read { db in
-            let productCount = try PersistedProduct.fetchCount(db)
-            let productImageCount = try PersistedProductImage.fetchCount(db)
-            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
-            let variationCount = try PersistedProductVariation.fetchCount(db)
-            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
-            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
 
             DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
@@ -145,11 +159,37 @@ private extension POSCatalog {
         products.map { PersistedProduct(from: $0) }
     }
 
+    var imagesToPersist: [PersistedImage] {
+        let productImages = products.flatMap { product in
+            product.images.map { PersistedImage.make(from: $0, siteID: product.siteID) }
+        }
+
+        let variationImages = variations.compactMap { variation -> PersistedImage? in
+            guard let image = variation.image else { return nil }
+            return PersistedImage.make(from: image, siteID: variation.siteID)
+        }
+
+        return deduplicateImages(productImages + variationImages)
+    }
+
+    func deduplicateImages(_ images: [PersistedImage]) -> [PersistedImage] {
+        // Deduplicate by imageID since multiple products/variations can share the same image
+        // (siteID is the same for all images in a catalog)
+        var imageDict = [Int64: PersistedImage]()
+
+        for image in images {
+            imageDict[image.id] = image
+        }
+
+        return Array(imageDict.values)
+    }
+
+    // Join table entries for product-image relationships
     var productImagesToPersist: [PersistedProductImage] {
         products.flatMap { product in
-            product.images.map { PersistedProductImage(from: $0,
-                                                       siteID: product.siteID,
-                                                       productID: product.productID) }
+            product.images.map { PersistedProductImage(siteID: product.siteID,
+                                                       productID: product.productID,
+                                                       imageID: $0.imageID) }
         }
     }
 
@@ -165,11 +205,12 @@ private extension POSCatalog {
         variations.map { PersistedProductVariation(from: $0) }
     }
 
+    // Join table entries for variation-image relationships
     var variationImagesToPersist: [PersistedProductVariationImage] {
         variations.compactMap { variation in
-            variation.image.map { PersistedProductVariationImage(from: $0,
-                                                                 siteID: variation.siteID,
-                                                                 productVariationID: variation.productVariationID) }
+            variation.image.map { PersistedProductVariationImage(siteID: variation.siteID,
+                                                                 productVariationID: variation.productVariationID,
+                                                                 imageID: $0.imageID) }
         }
     }
 

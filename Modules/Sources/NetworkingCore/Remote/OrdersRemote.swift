@@ -1,8 +1,15 @@
 import Foundation
 
+public protocol OrdersRemoteProtocol {
+    func loadOrders(
+        for siteID: Int64,
+        orderIDs: [Int64]
+    ) async throws -> [Order]
+}
+
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote {
+public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement
@@ -109,6 +116,41 @@ public class OrdersRemote: Remote {
         let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves specific `Order`s.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - orderIDs: The IDs of the orders to fetch.
+    /// - Returns: Array of orders.
+    /// - Throws: Network or parsing errors.
+    ///
+    public func loadOrders(
+        for siteID: Int64,
+        orderIDs: [Int64]
+    ) async throws -> [Order] {
+        guard !orderIDs.isEmpty else {
+            return []
+        }
+
+        let parameters: [String: Any] = [
+            ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
+            ParameterKeys.fields: ParameterValues.fieldValues
+        ]
+
+        let path = Constants.ordersPath
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+        let mapper = OrderListMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves the notes for a specific `Order`
@@ -534,6 +576,7 @@ public extension OrdersRemote {
         static let addedByUser: String      = "added_by_user"
         static let customerNote: String     = "customer_note"
         static let keyword: String          = "search"
+        static let include: String          = "include"
         static let note: String             = "note"
         static let page: String             = "page"
         static let perPage: String          = "per_page"

@@ -4,36 +4,55 @@ import Storage
 import GRDB
 
 public protocol POSCatalogSyncCoordinatorProtocol {
-    /// Performs a full catalog sync for the specified site
-    /// - Parameter siteID: The site ID to sync catalog for
-    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    func performFullSync(for siteID: Int64) async throws
-
-    /// Determines if a full sync should be performed based on the age of the last sync
+    /// Performs a full catalog sync if applicable for the specified site
     /// - Parameters:
-    ///   - siteID: The site ID to check
+    ///   - siteID: The site ID to sync catalog for
     ///   - maxAge: Maximum age before a sync is considered stale
-    /// - Returns: True if a sync should be performed
-    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool
+    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws
 
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
-    ///   - forceSync: Whether to bypass age checks and always sync
+    ///   - maxAge: Maximum age before a sync is considered stale
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
-    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws
+    func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws
+
+    /// Performs a smart sync that decides between full and incremental sync based on the last full sync date
+    /// - Parameters:
+    ///   - siteID: The site ID to sync catalog for
+    ///   - fullSyncMaxAge: Maximum age before a full sync is triggered. If the last full sync is older than this,
+    ///                     performs full sync; otherwise, performs incremental sync
+    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
+}
+
+public extension POSCatalogSyncCoordinatorProtocol {
+    func performFullSync(for siteID: Int64) async throws {
+        try await performFullSyncIfApplicable(for: siteID, maxAge: .zero)
+    }
+
+    func performIncrementalSync(for siteID: Int64) async throws {
+        try await performIncrementalSyncIfApplicable(for: siteID, maxAge: .zero)
+    }
+
+    /// Performs a smart sync with a default 24-hour threshold for full sync
+    func performSmartSync(for siteID: Int64) async throws {
+        let twentyFourHours: TimeInterval = 24 * 60 * 60
+        try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours)
+    }
 }
 
 public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
+    case negativeMaxAge
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
-    private let maxIncrementalSyncAge: TimeInterval
     private let catalogSizeLimit: Int
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
 
@@ -45,18 +64,24 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
-                maxIncrementalSyncAge: TimeInterval = 300,
                 catalogSizeLimit: Int? = nil,
                 catalogSizeChecker: POSCatalogSizeCheckerProtocol) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
-        self.maxIncrementalSyncAge = maxIncrementalSyncAge
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultSizeLimitForPOSCatalog
         self.catalogSizeChecker = catalogSizeChecker
     }
 
-    public func performFullSync(for siteID: Int64) async throws {
+    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+        guard maxAge >= 0 else {
+            throw POSCatalogSyncError.negativeMaxAge
+        }
+
+        guard await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+            return
+        }
+
         if ongoingSyncs.contains(siteID) {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
@@ -77,13 +102,26 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
 
+    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+        let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
+        let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
+
+        if Date().timeIntervalSince(lastFullSync) >= fullSyncMaxAge {
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
+            try await performFullSync(for: siteID)
+        } else {
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
+            try await performIncrementalSync(for: siteID)
+        }
+    }
+
     /// Determines if a full sync should be performed based on the age of the last sync
     /// - Parameters:
     ///   - siteID: The site ID to check
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
-    public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
-        return await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
+    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+        await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
     }
 
     private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
@@ -118,33 +156,28 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
-    ///   - forceSync: Whether to bypass age checks and always sync
+    ///   - maxAge: Maximum age before a sync is considered stale
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    public func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
-        try await performIncrementalSyncIfApplicable(for: siteID, forceSync: forceSync, maxCatalogSize: catalogSizeLimit)
+    public func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+        try await performIncrementalSyncIfApplicable(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
     }
 
-    private func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool, maxCatalogSize: Int) async throws {
+    private func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async throws {
+        guard maxAge >= 0 else {
+            throw POSCatalogSyncError.negativeMaxAge
+        }
+
+        guard await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge, maxCatalogSize: maxCatalogSize) else {
+            return
+        }
+
         if ongoingIncrementalSyncs.contains(siteID) {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Incremental sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
         }
 
-        guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
-            return
-        }
-
         guard let lastFullSyncDate = await lastFullSyncDate(for: siteID) else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: No full sync performed yet for site \(siteID), skipping incremental sync")
             return
-        }
-
-        if !forceSync, let lastIncrementalSyncDate = await lastIncrementalSyncDate(for: siteID) {
-            let age = Date().timeIntervalSince(lastIncrementalSyncDate)
-
-            if age <= maxIncrementalSyncAge {
-                return DDLogInfo("📋 POSCatalogSyncCoordinator: Last incremental sync for site \(siteID) was \(Int(age))s ago, sync not needed")
-            }
         }
 
         ongoingIncrementalSyncs.insert(siteID)
@@ -160,6 +193,28 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                               lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
+    }
+
+    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
+        guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
+            return false
+        }
+
+        guard await lastFullSyncDate(for: siteID) != nil else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: No full sync performed yet for site \(siteID), skipping incremental sync")
+            return false
+        }
+
+        if maxAge > 0, let lastIncrementalSyncDate = await lastIncrementalSyncDate(for: siteID) {
+            let age = Date().timeIntervalSince(lastIncrementalSyncDate)
+
+            if age <= maxAge {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Last incremental sync for site \(siteID) was \(Int(age))s ago, sync not needed")
+                return false
+            }
+        }
+
+        return true
     }
 
     // MARK: - Private

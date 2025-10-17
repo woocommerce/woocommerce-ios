@@ -66,10 +66,10 @@ struct OrderListCellViewModel {
         return order.status.localizedName
     }
 
-    /// Textual representation of the sales channel
+    /// Sales channel
     ///
-    var salesChannel: String? {
-        order.salesChannel?.description
+    var salesChannel: OrderSalesChannel? {
+        order.salesChannel
     }
 
     /// The localized unabbreviated total for a given order item, which includes the currency.

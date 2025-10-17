@@ -268,7 +268,7 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
         case .salesChannel:
-            let salesChannelOptions: [SalesChannelFilter] = [.any, .pointOfSale]
+            let salesChannelOptions: [SalesChannelFilter] = [.any, .pointOfSale, .webCheckout, .wpAdmin]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: salesChannelOptions),
                                        selectedValue: filters.salesChannel)
@@ -387,6 +387,16 @@ extension SalesChannelFilter: FilterType {
                 "salesChannelFilter.row.pos.description",
                 value: "Point of Sale",
                 comment: "Description for the Sales channel filter option, when selecting 'Point of Sale' orders")
+        case .webCheckout:
+            return NSLocalizedString(
+                "salesChannelFilter.row.webCheckout.description",
+                value: "Web Checkout",
+                comment: "Description for the Sales channel filter option, when selecting 'Web Checkout' orders")
+        case .wpAdmin:
+            return NSLocalizedString(
+                "salesChannelFilter.row.wpAdmin.description",
+                value: "WP-Admin",
+                comment: "Description for the Sales channel filter option, when selecting 'WP-Admin' orders")
         case .any:
             return NSLocalizedString(
                 "salesChannelFilter.row.any.description",
@@ -397,7 +407,7 @@ extension SalesChannelFilter: FilterType {
 
     var isActive: Bool {
         switch self {
-        case .pointOfSale:
+        case .pointOfSale, .webCheckout, .wpAdmin:
             return true
         case .any:
             return false

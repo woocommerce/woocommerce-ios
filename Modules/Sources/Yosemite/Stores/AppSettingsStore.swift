@@ -293,6 +293,20 @@ public class AppSettingsStore: Store {
             setAppPasswordsExperimentSettingEnabled(isOn: value, onCompletion: onCompletion)
         case .getAppPasswordsExperimentSettingState(let onCompletion):
             getAppPasswordsExperimentSettingEnabled(onCompletion: onCompletion)
+        case .setPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: let onCompletion):
+            setPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: onCompletion)
+        case .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: let onCompletion):
+            getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: onCompletion)
+        case .setPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: let onCompletion):
+            setPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: onCompletion)
+        case .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: let onCompletion):
+            getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: onCompletion)
+        case .setHasPOSBeenOpenedAtLeastOnce(onCompletion: let onCompletion):
+            setHasPOSBeenOpenedAtLeastOnce(onCompletion: onCompletion)
+        case .getHasPOSBeenOpenedAtLeastOnce(onCompletion: let onCompletion):
+            getHasPOSBeenOpenedAtLeastOnce(onCompletion: onCompletion)
+        case .resetPOSSurveyNotificationScheduled(onCompletion: let onCompletion):
+            resetPOSSurveyNotificationScheduled(onCompletion: onCompletion)
         }
     }
 }
@@ -1287,6 +1301,61 @@ private extension AppSettingsStore {
 
     func getAppPasswordsExperimentSettingEnabled(onCompletion: (Bool) -> Void) {
         onCompletion(generalAppSettings.value(for: \.isApplicationPasswordsSwitchEnabled))
+    }
+}
+
+// MARK: - Point of Sale surveys
+//
+private extension AppSettingsStore {
+    func setPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(true, for: \.isPOSSurveyPotentialMerchantNotificationScheduled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    func getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.isPOSSurveyPotentialMerchantNotificationScheduled))
+    }
+
+    func setPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(true, for: \.isPOSSurveyCurrentMerchantNotificationScheduled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    func getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.isPOSSurveyCurrentMerchantNotificationScheduled))
+    }
+
+    func setHasPOSBeenOpenedAtLeastOnce(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(true, for: \.hasPOSBeenOpenedAtLeastOnce)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    func getHasPOSBeenOpenedAtLeastOnce(onCompletion: (Bool) -> Void) {
+        onCompletion(generalAppSettings.value(for: \.hasPOSBeenOpenedAtLeastOnce))
+    }
+
+    // Resets all saved values for POS surveys for easier testing. To be removed in WOOMOB-1480
+    func resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(false, for: \.isPOSSurveyPotentialMerchantNotificationScheduled)
+            try generalAppSettings.setValue(false, for: \.isPOSSurveyCurrentMerchantNotificationScheduled)
+            try generalAppSettings.setValue(false, for: \.hasPOSBeenOpenedAtLeastOnce)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
     }
 }
 

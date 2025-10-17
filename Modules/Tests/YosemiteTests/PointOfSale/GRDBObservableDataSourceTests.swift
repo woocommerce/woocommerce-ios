@@ -92,6 +92,11 @@ struct GRDBObservableDataSourceTests {
             sut.loadProducts()
         }
 
+        // Wait for statistics to indicate more pages
+        await waitForCondition {
+            sut.hasMoreProducts == true
+        } performAction: {}
+
         // Then: First page loaded
         #expect(sut.productItems.count == 5)
         #expect(sut.hasMoreProducts == true)
@@ -100,6 +105,11 @@ struct GRDBObservableDataSourceTests {
         await waitForProductLoad {
             sut.loadMoreProducts()
         }
+
+        // Wait for statistics to indicate no more pages
+        await waitForCondition {
+            sut.hasMoreProducts == false
+        } performAction: {}
 
         // Then: Both pages loaded
         #expect(sut.productItems.count == 8)
@@ -301,6 +311,11 @@ struct GRDBObservableDataSourceTests {
             sut.loadVariations(for: posParent1)
         }
 
+        // Wait for statistics showing no more pages
+        await waitForCondition {
+            sut.hasMoreVariations == false
+        } performAction: {}
+
         // Then: Should show 3 variations for parent 1 (excluding downloadable)
         #expect(sut.variationItems.count == 3)
 
@@ -311,6 +326,11 @@ struct GRDBObservableDataSourceTests {
         await waitForVariationLoad {
             sut.loadVariations(for: posParent2)
         }
+
+        // Wait for statistics showing no more pages
+        await waitForCondition {
+            sut.hasMoreVariations == false
+        } performAction: {}
 
         // Then: Should show 5 variations for parent 2 (first page, excluding downloadable)
         #expect(sut.variationItems.count == 5)
@@ -344,6 +364,11 @@ struct GRDBObservableDataSourceTests {
             sut.loadVariations(for: posParent1)
         }
 
+        // Wait for statistics showing no more pages
+        await waitForCondition {
+            sut.hasMoreVariations == false
+        } performAction: {}
+
         // Then: Should load 2 variations
         #expect(sut.variationItems.count == 2)
 
@@ -353,6 +378,11 @@ struct GRDBObservableDataSourceTests {
         await waitForVariationLoad {
             sut.loadVariations(for: posParent2)
         }
+
+        // Wait for statistics showing more pages available
+        await waitForCondition {
+            sut.hasMoreVariations == true
+        } performAction: {}
 
         // Then: Should load first page (5 variations)
         #expect(sut.variationItems.count == 5)
@@ -364,6 +394,11 @@ struct GRDBObservableDataSourceTests {
         await waitForVariationLoad {
             sut.loadMoreVariations()
         }
+
+        // Wait for statistics showing no more pages
+        await waitForCondition {
+            sut.hasMoreVariations == false
+        } performAction: {}
 
         // Then: Should load all 8 variations
         #expect(sut.variationItems.count == 8)
@@ -617,6 +652,8 @@ struct GRDBObservableDataSourceTests {
                     _ = sut.variationItems
                     _ = sut.isLoadingProducts
                     _ = sut.isLoadingVariations
+                    _ = sut.hasMoreProducts
+                    _ = sut.hasMoreVariations
 
                     return condition()
                 } onChange: {

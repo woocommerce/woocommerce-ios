@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v23.4-whats-new"
+msgctxt "v23.5-whats-new"
 msgid ""
-"This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.\n"
+"This update brings smoother store management and better control. You can now filter orders by source, and manage all POS orders directly within the POS interface. Plus, we fixed a scrolling issue on the Create Coupon screen for a more seamless experience.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

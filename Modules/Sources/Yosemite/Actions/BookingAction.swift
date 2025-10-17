@@ -15,12 +15,41 @@ public enum BookingAction: Action {
                              pageSize: Int = BookingsRemote.Default.pageSize,
                              startDateBefore: String? = nil,
                              startDateAfter: String? = nil,
+                             order: BookingsRemote.Order = .descending,
                              shouldClearCache: Bool = false,
                              onCompletion: (Result<Bool, Error>) -> Void)
+    /// Synchronizes the Booking matching the specified criteria.
+    ///
+    /// - Parameter onCompletion: called when sync completes, returns an error in case of a failure or empty in case of success.
+    ///
+    case synchronizeBooking(siteID: Int64,
+                            bookingID: Int64,
+                            onCompletion: (Result<Void, Error>) -> Void)
 
     /// Checks if the store already has any bookings.
     /// Returns `false` if the store has no bookings.
     ///
     case checkIfStoreHasBookings(siteID: Int64,
                                  onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Searches for bookings matching the specified criteria and search query.
+    ///
+    /// - Parameter onCompletion: called when search completes, returns an error or an array of bookings.
+    ///
+    case searchBookings(siteID: Int64,
+                        searchQuery: String,
+                        pageNumber: Int,
+                        pageSize: Int = BookingsRemote.Default.pageSize,
+                        startDateBefore: String? = nil,
+                        startDateAfter: String? = nil,
+                        order: BookingsRemote.Order = .descending,
+                        onCompletion: (Result<[Booking], Error>) -> Void)
+
+    /// Fetches a booking resource by resource ID.
+    ///
+    /// - Parameter onCompletion: called when fetch completes, returns an error or the booking resource.
+    ///
+    case fetchResource(siteID: Int64,
+                       resourceID: Int64,
+                       onCompletion: (Result<BookingResource, Error>) -> Void)
 }

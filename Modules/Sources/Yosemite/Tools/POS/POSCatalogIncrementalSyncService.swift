@@ -60,10 +60,10 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 
         do {
             let catalog = try await loadCatalog(for: siteID, modifiedAfter: modifiedAfter, syncRemote: syncRemote)
-            DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+            DDLogInfo("✅ Loaded \(catalog.products.count) updated products and \(catalog.variations.count) updated variations for siteID \(siteID)")
 
             try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
-            DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+            DDLogInfo("✅ Persisted \(catalog.products.count) updated products and \(catalog.variations.count) updated variations to database for siteID \(siteID)")
 
         } catch {
             DDLogError("❌ Failed to sync and persist catalog incrementally: \(error)")

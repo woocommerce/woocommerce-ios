@@ -6,17 +6,21 @@ import Storage
 //
 public class BookingStore: Store {
     private let remote: BookingsRemoteProtocol
+    private let ordersRemote: OrdersRemoteProtocol
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let ordersRemote = OrdersRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, ordersRemote: ordersRemote)
     }
 
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 network: Network,
-                remote: BookingsRemoteProtocol) {
+                remote: BookingsRemoteProtocol,
+                ordersRemote: OrdersRemoteProtocol) {
         self.remote = remote
+        self.ordersRemote = ordersRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -35,16 +39,30 @@ public class BookingStore: Store {
         }
 
         switch action {
-        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, shouldClearCache, onCompletion):
+        case let .synchronizeBookings(siteID, pageNumber, pageSize, startDateBefore, startDateAfter, order, shouldClearCache, onCompletion):
             synchronizeBookings(siteID: siteID,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize,
                                 startDateBefore: startDateBefore,
                                 startDateAfter: startDateAfter,
+                                order: order,
                                 shouldClearCache: shouldClearCache,
                                 onCompletion: onCompletion)
+        case .synchronizeBooking(siteID: let siteID, bookingID: let bookingID, onCompletion: let onCompletion):
+            synchronizeBooking(siteID: siteID, bookingID: bookingID, onCompletion: onCompletion)
         case let .checkIfStoreHasBookings(siteID, onCompletion):
             checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
+        case let .searchBookings(siteID, searchQuery, pageNumber, pageSize, startDateBefore, startDateAfter, order, onCompletion):
+            searchBookings(siteID: siteID,
+                           searchQuery: searchQuery,
+                           pageNumber: pageNumber,
+                           pageSize: pageSize,
+                           startDateBefore: startDateBefore,
+                           startDateAfter: startDateAfter,
+                           order: order,
+                           onCompletion: onCompletion)
+        case let .fetchResource(siteID, resourceID, onCompletion):
+            fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
         }
     }
 }
@@ -61,6 +79,7 @@ private extension BookingStore {
                              pageSize: Int,
                              startDateBefore: String?,
                              startDateAfter: String?,
+                             order: BookingsRemote.Order,
                              shouldClearCache: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
@@ -69,14 +88,62 @@ private extension BookingStore {
                                                                 pageNumber: pageNumber,
                                                                 pageSize: pageSize,
                                                                 startDateBefore: startDateBefore,
-                                                                startDateAfter: startDateAfter)
+                                                                startDateAfter: startDateAfter,
+                                                                searchQuery: nil,
+                                                                order: order)
+
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: bookings.map { $0.orderID }
+                )
+
                 await upsertStoredBookingsInBackground(
                     readOnlyBookings: bookings,
+                    readOnlyOrders: orders,
                     siteID: siteID,
                     shouldDeleteExistingBookings: shouldClearCache
                 )
                 let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func synchronizeBooking(
+        siteID: Int64,
+        bookingID: Int64,
+        onCompletion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        enum SynchronizeBookingError: Error {
+            case bookingIsMissing
+        }
+
+        Task { @MainActor in
+            do {
+                let booking = try await remote.loadBooking(
+                    bookingID: bookingID,
+                    siteID: siteID
+                )
+
+                guard let booking else {
+                    onCompletion(.failure(SynchronizeBookingError.bookingIsMissing))
+                    return
+                }
+
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: [booking.orderID]
+                )
+
+                await upsertStoredBookingsInBackground(
+                    readOnlyBookings: [booking],
+                    readOnlyOrders: orders,
+                    siteID: siteID
+                )
+
+                onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -101,9 +168,79 @@ private extension BookingStore {
                                                                 pageNumber: 1,
                                                                 pageSize: 1,
                                                                 startDateBefore: nil,
-                                                                startDateAfter: nil)
+                                                                startDateAfter: nil,
+                                                                searchQuery: nil,
+                                                                order: .descending)
                 let hasRemoteBookings = !bookings.isEmpty
                 onCompletion(.success(hasRemoteBookings))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Searches for bookings matching the specified criteria and search query.
+    /// Returns results immediately without saving to storage.
+    ///
+    func searchBookings(siteID: Int64,
+                       searchQuery: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       startDateBefore: String?,
+                       startDateAfter: String?,
+                       order: BookingsRemote.Order,
+                       onCompletion: @escaping (Result<[Booking], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let bookings = try await remote.loadAllBookings(for: siteID,
+                                                                pageNumber: pageNumber,
+                                                                pageSize: pageSize,
+                                                                startDateBefore: startDateBefore,
+                                                                startDateAfter: startDateAfter,
+                                                                searchQuery: searchQuery,
+                                                                order: order)
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: bookings.map { $0.orderID }
+                )
+                let updatedBookings = bookings.map { booking in
+                    guard let order = orders.first(where: { booking.orderID == $0.orderID }) else {
+                        return booking
+                    }
+                    let orderInfo = BookingOrderInfo(booking: booking, order: order)
+                    return booking.copy(orderInfo: orderInfo)
+                }
+                onCompletion(.success(updatedBookings))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Fetches a booking resource by resource ID and saves it to storage.
+    ///
+    func fetchResource(siteID: Int64,
+                       resourceID: Int64,
+                       onCompletion: @escaping (Result<BookingResource, Error>) -> Void) {
+        enum FetchResourceError: Error {
+            case resourceIsMissing
+        }
+
+        Task { @MainActor in
+            do {
+                let resource = try await remote.fetchResource(
+                    resourceID: resourceID,
+                    siteID: siteID
+                )
+
+                guard let resource else {
+                    onCompletion(.failure(FetchResourceError.resourceIsMissing))
+                    return
+                }
+
+                await upsertBookingResourceInBackground(readOnlyBookingResource: resource)
+
+                onCompletion(.success(resource))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -114,18 +251,21 @@ private extension BookingStore {
 
 // MARK: - Storage: Booking
 //
-extension BookingStore {
+private extension BookingStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread* async.
     /// Also deletes existing bookings if requested.
     func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
+                                          readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false) async {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume()
             }
+
             upsertStoredBookingsInBackground(readOnlyBookings: readOnlyBookings,
+                                             readOnlyOrders: readOnlyOrders,
                                              siteID: siteID,
                                              shouldDeleteExistingBookings: shouldDeleteExistingBookings) {
                 continuation.resume()
@@ -138,6 +278,7 @@ extension BookingStore {
     /// `onCompletion` will be called on the main thread!
     ///
     func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
+                                          readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false,
                                           onCompletion: @escaping () -> Void) {
@@ -148,7 +289,7 @@ extension BookingStore {
             if shouldDeleteExistingBookings {
                 storage.deleteBookings(siteID: siteID)
             }
-            upsertStoredBookings(readOnlyBookings: readOnlyBookings, in: storage)
+            upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -156,9 +297,10 @@ extension BookingStore {
     ///
     /// - Parameters:
     ///     - readOnlyBookings: Remote Bookings to be persisted.
+    ///     - readOnlyOrders: Remote Orders associated with bookings.
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredBookings(readOnlyBookings: [Networking.Booking], in storage: StorageType) {
+    func upsertStoredBookings(readOnlyBookings: [Yosemite.Booking], readOnlyOrders: [Yosemite.Order], in storage: StorageType) {
         // Fetch all existing bookings for the site at once
         let bookingIDs = readOnlyBookings.map { $0.bookingID }
         let siteID = readOnlyBookings.first?.siteID ?? 0
@@ -169,7 +311,51 @@ extension BookingStore {
             let storageBooking = storedBookings.first { $0.bookingID == readOnlyBooking.bookingID } ??
                 storage.insertNewObject(ofType: StorageBooking.self)
 
+            if let associatedOrder = readOnlyOrders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
+                let readOnlyOrderInfo = BookingOrderInfo(booking: readOnlyBooking, order: associatedOrder)
+
+                let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
+
+                let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
+                if let readOnlyProductInfo = readOnlyOrderInfo.productInfo {
+                    productInfo.update(with: readOnlyProductInfo)
+                }
+                orderInfo.productInfo = productInfo
+
+                let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
+                if let readOnlyCustomerInfo = readOnlyOrderInfo.customerInfo {
+                    customerInfo.update(with: readOnlyCustomerInfo)
+                }
+                orderInfo.customerInfo = customerInfo
+
+                let paymentInfo = orderInfo.paymentInfo ?? storage.insertNewObject(ofType: Storage.BookingPaymentInfo.self)
+                if let readOnlyPaymentInfo = readOnlyOrderInfo.paymentInfo {
+                    paymentInfo.update(with: readOnlyPaymentInfo)
+                }
+                orderInfo.paymentInfo = paymentInfo
+
+                orderInfo.statusKey = associatedOrder.status.rawValue
+                storageBooking.orderInfo = orderInfo
+            }
+
             storageBooking.update(with: readOnlyBooking)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly BookingResource Entities *in a background thread* async.
+    func upsertBookingResourceInBackground(readOnlyBookingResource: BookingResource) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume()
+            }
+
+            storageManager.performAndSave({ storage in
+                let storedItem = storage.loadBookingResource(siteID: readOnlyBookingResource.siteID, resourceID: readOnlyBookingResource.resourceID)
+                let storageResource = storedItem ?? storage.insertNewObject(ofType: Storage.BookingResource.self)
+                storageResource.update(with: readOnlyBookingResource)
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

@@ -29,9 +29,6 @@ struct BookingDetailsView: View {
     init(_ viewModel: BookingDetailsViewModel) {
         self.viewModel = viewModel
 
-        /// Trigger local data load
-        viewModel.loadLocalData()
-
         /// Trigger remote data sync
         Task {
             await viewModel.syncData()
@@ -47,6 +44,9 @@ struct BookingDetailsView: View {
             }
         }
         .refreshable {
+            await viewModel.syncData()
+        }
+        .task {
             await viewModel.syncData()
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -330,7 +330,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             startDate: now,
             statusKey: "paid",
             localTimezone: "America/New_York",
-            currency: "USD"
+            currency: "USD",
+            orderInfo: nil
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

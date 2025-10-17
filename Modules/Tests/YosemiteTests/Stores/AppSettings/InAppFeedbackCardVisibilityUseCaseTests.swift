@@ -244,7 +244,10 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false)
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyPotentialMerchantNotificationScheduled: false,
+            isPOSSurveyCurrentMerchantNotificationScheduled: false,
+            hasPOSBeenOpenedAtLeastOnce: false)
         return settings
     }
 }

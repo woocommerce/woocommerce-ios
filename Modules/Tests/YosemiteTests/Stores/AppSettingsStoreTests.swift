@@ -1506,6 +1506,236 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(loadedOrderStatus)
     }
+
+    // MARK: - Point of Sale Survey Notification
+
+    func test_getPOSSurveyPotentialMerchantNotificationScheduled_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_getPOSSurveyPotentialMerchantNotificationScheduled_returns_true_after_setting_as_scheduled() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let setAction = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in }
+        subject?.onAction(setAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_setPOSSurveyPotentialMerchantNotificationScheduled_stores_value_correctly() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertTrue(savedSettings.isPOSSurveyPotentialMerchantNotificationScheduled)
+    }
+
+    func test_getPOSSurveyCurrentMerchantNotificationScheduled_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_getPOSSurveyCurrentMerchantNotificationScheduled_returns_true_after_setting_as_scheduled() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let setAction = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in }
+        subject?.onAction(setAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_setPOSSurveyCurrentMerchantNotificationScheduled_stores_value_correctly() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertTrue(savedSettings.isPOSSurveyCurrentMerchantNotificationScheduled)
+    }
+
+    func test_getHasPOSBeenOpenedAtLeastOnce_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+                promise(hasOpened)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_getHasPOSBeenOpenedAtLeastOnce_returns_true_after_setting() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let setAction = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
+        subject?.onAction(setAction)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+                promise(hasOpened)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_setHasPOSBeenOpenedAtLeastOnce_stores_value_correctly() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertTrue(savedSettings.hasPOSBeenOpenedAtLeastOnce)
+    }
+
+    func test_resetPOSSurveyNotificationScheduled_resets_all_flags_to_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // 1. Set all to true
+        let setPotentialAction = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in }
+        subject?.onAction(setPotentialAction)
+        let setCurrentAction = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in }
+        subject?.onAction(setCurrentAction)
+        let setPOSOpenedAction = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
+        subject?.onAction(setPOSOpenedAction)
+
+        // 2. Verify all are true
+        let checkPotentialBeforeReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertTrue(checkPotentialBeforeReset)
+
+        let checkCurrentBeforeReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertTrue(checkCurrentBeforeReset)
+
+        let checkPOSOpenedBeforeReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+                promise(hasOpened)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertTrue(checkPOSOpenedBeforeReset)
+
+        // When - 3. Reset all
+        var resetResult: Result<Void, Error>?
+        let resetAction = AppSettingsAction.resetPOSSurveyNotificationScheduled { aResult in
+            resetResult = aResult
+        }
+        subject?.onAction(resetAction)
+
+        // Then - 4. Verify all are false
+        XCTAssertTrue(try XCTUnwrap(resetResult).isSuccess)
+
+        let checkPotentialAfterReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertFalse(checkPotentialAfterReset)
+
+        let checkCurrentAfterReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
+                promise(isScheduled)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertFalse(checkCurrentAfterReset)
+
+        let checkPOSOpenedAfterReset: Bool = waitFor { promise in
+            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+                promise(hasOpened)
+            }
+            self.subject?.onAction(action)
+        }
+        XCTAssertFalse(checkPOSOpenedAfterReset)
+    }
 }
 
 // MARK: - Utils
@@ -1527,7 +1757,10 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyPotentialMerchantNotificationScheduled: false,
+            isPOSSurveyCurrentMerchantNotificationScheduled: false,
+            hasPOSBeenOpenedAtLeastOnce: false
         )
         return (settings, feedback)
     }
@@ -1542,7 +1775,10 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyPotentialMerchantNotificationScheduled: false,
+            isPOSSurveyCurrentMerchantNotificationScheduled: false,
+            hasPOSBeenOpenedAtLeastOnce: false
         )
         return settings
     }

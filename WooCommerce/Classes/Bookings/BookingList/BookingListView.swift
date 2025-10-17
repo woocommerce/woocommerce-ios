@@ -3,44 +3,102 @@ import struct Yosemite.Booking
 
 struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
+    @ObservedObject private var searchViewModel: BookingSearchViewModel
+
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
     @ScaledMetric private var scale: CGFloat = 1.0
+
     @Binding var selectedBooking: Booking?
 
-    init(viewModel: BookingListViewModel, selectedBooking: Binding<Booking?>) {
+    init(viewModel: BookingListViewModel,
+         searchViewModel: BookingSearchViewModel,
+         selectedBooking: Binding<Booking?>) {
         self.viewModel = viewModel
+        self.searchViewModel = searchViewModel
         self._selectedBooking = selectedBooking
     }
 
     var body: some View {
-        VStack {
-            switch viewModel.syncState {
-            case .empty:
-                emptyStateView
-            case .syncingFirstPage:
-                Spacer()
-                ProgressView().progressViewStyle(.circular)
-                Spacer()
-            case .results:
-                bookingList
+        mainContentView
+            .task {
+                viewModel.loadBookings()
             }
-        }
-        .task {
-            viewModel.loadBookings()
-        }
-        .overlay(alignment: .bottom) {
-            if viewModel.errorFetching {
-                errorSnackBar
-                    .transition(.move(edge: .bottom))
+            .overlay {
+                searchContentView
+                    .renderedIf(searchViewModel.currentSearchQuery.isNotEmpty)
             }
-        }
     }
 }
 
 private extension BookingListView {
-    var bookingList: some View {
+    var mainContentView: some View {
+        VStack {
+            switch viewModel.syncState {
+            case .empty:
+                emptyStateView(isSearching: false) {
+                    await viewModel.onRefreshAction()
+                }
+            case .syncingFirstPage:
+                loadingView
+            case .results:
+                bookingList(with: viewModel.bookings,
+                            onNextPage: { viewModel.onLoadNextPageAction() },
+                            onRefresh: { await viewModel.onRefreshAction() })
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if viewModel.errorFetching {
+                errorSnackBar(onTap: {
+                    withAnimation {
+                        viewModel.errorFetching = false
+                    }
+                })
+                .transition(.move(edge: .bottom))
+            }
+        }
+    }
+
+    var searchContentView: some View {
+        VStack {
+            if searchViewModel.isSearching {
+                loadingView
+            } else if searchViewModel.searchResults.isEmpty {
+                emptyStateView(isSearching: true) {
+                    await searchViewModel.onRefreshAction()
+                }
+            } else {
+                bookingList(with: searchViewModel.searchResults,
+                            onNextPage: { searchViewModel.onLoadNextPageAction() },
+                            onRefresh: { await searchViewModel.onRefreshAction() })
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if searchViewModel.errorFetching {
+                errorSnackBar(onTap: {
+                    withAnimation {
+                        searchViewModel.errorFetching = false
+                    }
+                })
+                .transition(.move(edge: .bottom))
+            }
+        }
+    }
+
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            ProgressView().progressViewStyle(.circular)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemBackground))
+    }
+
+    func bookingList(with bookings: [Booking],
+                     onNextPage: @escaping () -> Void,
+                     onRefresh: @escaping () async -> Void) -> some View {
         List(selection: $selectedBooking) {
-            ForEach(viewModel.bookings) { item in
+            ForEach(bookings) { item in
                 bookingItem(item)
                     .tag(item)
             }
@@ -48,14 +106,14 @@ private extension BookingListView {
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
                 .padding(.top, Layout.viewPadding)
                 .onAppear {
-                    viewModel.onLoadNextPageAction()
+                    onNextPage()
                 }
         }
         .listStyle(.plain)
         .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
         .refreshable {
-            await viewModel.onRefreshAction()
+            await onRefresh()
         }
     }
 
@@ -70,8 +128,7 @@ private extension BookingListView {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.primary)
 
-                // TODO: fetch bookable products & customer to get names or wait for API update
-                Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
+                Text(booking.summaryText)
                     .font(.footnote)
                     .fontWeight(.medium)
                     .foregroundStyle(Color.secondary)
@@ -96,35 +153,41 @@ private extension BookingListView {
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
 
-    var emptyStateView: some View {
+    func emptyStateView(isSearching: Bool, onRefresh: @escaping () async -> Void) -> some View {
         GeometryReader { proxy in
             ScrollView {
                 VStack(spacing: Layout.emptyStatePadding) {
                     Spacer()
-                    Image(uiImage: .noBookings)
+                    Image(uiImage: isSearching ? .magnifyingGlassNotFound : .noBookings)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: Layout.emptyStateImageWidth * scale)
                         .padding(.bottom, Layout.viewPadding)
-                    VStack(spacing: Layout.textVerticalPadding) {
-                        Text(viewModel.emptyStateTitle)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.primary)
-                        Text(viewModel.emptyStateDescription)
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
-                    }
-                    if viewModel.hasFilters {
+                    if isSearching {
+                        Text(Localization.emptySearchText)
+                            .font(.body)
+                            .foregroundStyle(Color.secondary)
+                    } else {
                         VStack(spacing: Layout.textVerticalPadding) {
-                            Button("Change filters") {
-                                // TODO
+                            Text(viewModel.emptyStateTitle)
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.primary)
+                            Text(viewModel.emptyStateDescription)
+                                .font(.title3)
+                                .foregroundStyle(.secondary)
+                        }
+                        if viewModel.hasFilters {
+                            VStack(spacing: Layout.textVerticalPadding) {
+                                Button("Change filters") {
+                                    // TODO
+                                }
+                                .buttonStyle(PrimaryButtonStyle())
+                                Button("Clear filters") {
+                                    // TODO
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
                             }
-                            .buttonStyle(PrimaryButtonStyle())
-                            Button("Clear filters") {
-                                // TODO
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
                         }
                     }
                     Spacer()
@@ -134,12 +197,13 @@ private extension BookingListView {
                 .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
             }
             .refreshable {
-                await viewModel.onRefreshAction()
+                await onRefresh()
             }
         }
+        .background(Color(.systemBackground))
     }
 
-    var errorSnackBar: some View {
+    func errorSnackBar(onTap: @escaping () -> Void) -> some View {
         Text(Localization.errorMessage)
             .foregroundStyle(Color(.listForeground(modal: false)))
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -151,11 +215,7 @@ private extension BookingListView {
             .padding(Layout.viewPadding)
             .padding(.bottom, connectivityMonitor.isOffline ? OfflineBannerView.height : 0)
             .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation {
-                    viewModel.errorFetching = false
-                }
-            }
+            .onTapGesture { onTap() }
     }
 }
 
@@ -174,6 +234,11 @@ private extension BookingListView {
             "bookingList.errorMessage",
             value: "Error fetching bookings",
             comment: "Error message when fetching bookings fails"
+        )
+        static let emptySearchText = NSLocalizedString(
+            "bookingList.emptySearchText",
+            value: "We couldn’t find any bookings with that name — try adjusting your search term to see more results.",
+            comment: "Message displayed when searching bookings by keyword yields no results."
         )
     }
 }

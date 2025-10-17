@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 @testable import WooCommerce
+@testable import Networking
 
 @MainActor
 struct BookingListViewModelTests {
@@ -92,7 +93,7 @@ struct BookingListViewModelTests {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let booking = createBooking(id: 1, startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             self.insertBookings([booking])
@@ -130,7 +131,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -170,7 +171,7 @@ struct BookingListViewModelTests {
         let firstPageItems = (1...2).map { createBooking(id: Int64($0), startDate: Date()) }
         let secondPageItems = [createBooking(id: 3, startDate: Date())]
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, pageNumber, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, pageNumber, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadBookings += 1
@@ -218,7 +219,7 @@ struct BookingListViewModelTests {
         let booking1 = createBooking(id: 9, startDate: Date())
         let booking2 = createBooking(id: 10, startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             self.insertBookings([booking1, booking2])
@@ -243,7 +244,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -266,7 +267,7 @@ struct BookingListViewModelTests {
         let olderBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, dateCreated: Date(timeIntervalSince1970: 1000), startDate: Date())
         let newerBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 3, dateCreated: Date(timeIntervalSince1970: 2000), startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             let items = [olderBooking, newerBooking]
@@ -295,7 +296,7 @@ struct BookingListViewModelTests {
         var invocationCountOfLoadBookings = 0
         var skip: Int?
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, pageNumber, pageSize, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, pageNumber, pageSize, _, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadBookings += 1
@@ -323,7 +324,7 @@ struct BookingListViewModelTests {
         var capturedStartDateAfter: String?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, _, onCompletion) = action else {
                 return
             }
             capturedStartDateBefore = startDateBefore
@@ -349,7 +350,7 @@ struct BookingListViewModelTests {
         var capturedStartDateAfter: String?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, _, onCompletion) = action else {
                 return
             }
             capturedStartDateBefore = startDateBefore
@@ -357,7 +358,10 @@ struct BookingListViewModelTests {
             onCompletion(.success(false))
         }
 
-        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .upcoming, stores: stores, currentDate: testDate)
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .upcoming,
+                                             stores: stores,
+                                             currentDate: testDate)
 
         // When
         viewModel.loadBookings()
@@ -375,7 +379,7 @@ struct BookingListViewModelTests {
         var capturedStartDateAfter: String?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, _, onCompletion) = action else {
                 return
             }
             capturedStartDateBefore = startDateBefore
@@ -401,7 +405,7 @@ struct BookingListViewModelTests {
         var capturedShouldClearCache: Bool?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, shouldClearCache, onCompletion) = action else {
                 return
             }
             capturedShouldClearCache = shouldClearCache
@@ -424,7 +428,7 @@ struct BookingListViewModelTests {
         var actionCallCount = 0
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, shouldClearCache, onCompletion) = action else {
                 return
             }
             actionCallCount += 1
@@ -449,7 +453,7 @@ struct BookingListViewModelTests {
         var capturedShouldClearCache: Bool?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, shouldClearCache, onCompletion) = action else {
                 return
             }
             capturedShouldClearCache = shouldClearCache
@@ -573,6 +577,134 @@ struct BookingListViewModelTests {
         #expect(viewModel.bookings.count == 1, "Should only show bookings for the correct site")
         #expect(viewModel.bookings.first?.bookingID == correctSiteBooking.bookingID, "Should contain only the booking for the correct site")
         #expect(viewModel.bookings.first?.siteID == sampleSiteID, "Booking should have the correct site ID")
+    }
+
+    // MARK: - Sort order
+
+    @Test func update_sort_order_sorts_bookings_from_oldest_to_newest() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(false))
+        }
+
+        let olderBooking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            dateCreated: Date(timeIntervalSince1970: 1000),
+            startDate: Date(timeIntervalSince1970: 1000)
+        )
+        let newerBooking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 2,
+            dateCreated: Date(timeIntervalSince1970: 2000),
+            startDate: Date(timeIntervalSince1970: 2000)
+        )
+        insertBookings([olderBooking, newerBooking])
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
+
+        // Initial state - should be sorted newest to oldest (default)
+        #expect(viewModel.bookings[0].bookingID == newerBooking.bookingID)
+        #expect(viewModel.bookings[1].bookingID == olderBooking.bookingID)
+
+        // When
+        viewModel.updateSortOrder(.oldestToNewest)
+
+        // Then - should be sorted oldest to newest
+        #expect(viewModel.bookings[0].bookingID == olderBooking.bookingID)
+        #expect(viewModel.bookings[1].bookingID == newerBooking.bookingID)
+    }
+
+    @Test func update_sort_order_sorts_bookings_from_newest_to_oldest() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(false))
+        }
+
+        let olderBooking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            dateCreated: Date(timeIntervalSince1970: 1000),
+            startDate: Date(timeIntervalSince1970: 1000)
+        )
+        let newerBooking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 2,
+            dateCreated: Date(timeIntervalSince1970: 2000),
+            startDate: Date(timeIntervalSince1970: 2000)
+        )
+        insertBookings([olderBooking, newerBooking])
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager)
+
+        // Change to oldest first
+        viewModel.updateSortOrder(.oldestToNewest)
+        #expect(viewModel.bookings[0].bookingID == olderBooking.bookingID)
+
+        // When - change back to newest first
+        viewModel.updateSortOrder(.newestToOldest)
+
+        // Then - should be sorted newest to oldest
+        #expect(viewModel.bookings[0].bookingID == newerBooking.bookingID)
+        #expect(viewModel.bookings[1].bookingID == olderBooking.bookingID)
+    }
+
+    @Test func update_sort_order_triggers_resync_with_correct_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedOrder: BookingsRemote.Order?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, _, _, order, _, onCompletion) = action else {
+                return
+            }
+            capturedOrder = order
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+
+        // When
+        viewModel.updateSortOrder(.oldestToNewest)
+
+        // Then
+        #expect(capturedOrder == .ascending, "Should dispatch action with ascending order")
+    }
+
+    @Test func update_sort_order_to_newest_first_triggers_resync_with_descending_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedOrder: BookingsRemote.Order?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, _, _, order, _, onCompletion) = action else {
+                return
+            }
+            capturedOrder = order
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+
+        // When
+        viewModel.updateSortOrder(.newestToOldest)
+
+        // Then
+        #expect(capturedOrder == .descending, "Should dispatch action with descending order")
     }
 }
 

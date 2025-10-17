@@ -447,7 +447,8 @@ extension Networking.Booking {
         startDate: CopiableProp<Date> = .copy,
         statusKey: CopiableProp<String> = .copy,
         localTimezone: CopiableProp<String> = .copy,
-        currency: CopiableProp<String> = .copy
+        currency: CopiableProp<String> = .copy,
+        orderInfo: NullableCopiableProp<BookingOrderInfo> = .copy
     ) -> Networking.Booking {
         let siteID = siteID ?? self.siteID
         let bookingID = bookingID ?? self.bookingID
@@ -467,6 +468,7 @@ extension Networking.Booking {
         let statusKey = statusKey ?? self.statusKey
         let localTimezone = localTimezone ?? self.localTimezone
         let currency = currency ?? self.currency
+        let orderInfo = orderInfo ?? self.orderInfo
 
         return Networking.Booking(
             siteID: siteID,
@@ -486,7 +488,47 @@ extension Networking.Booking {
             startDate: startDate,
             statusKey: statusKey,
             localTimezone: localTimezone,
-            currency: currency
+            currency: currency,
+            orderInfo: orderInfo
+        )
+    }
+}
+
+extension Networking.BookingResource {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        resourceID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        quantity: CopiableProp<Int64> = .copy,
+        role: CopiableProp<String> = .copy,
+        email: NullableCopiableProp<String> = .copy,
+        phoneNumber: NullableCopiableProp<String> = .copy,
+        imageID: CopiableProp<Int64> = .copy,
+        imageURL: NullableCopiableProp<String> = .copy,
+        description: NullableCopiableProp<String> = .copy
+    ) -> Networking.BookingResource {
+        let siteID = siteID ?? self.siteID
+        let resourceID = resourceID ?? self.resourceID
+        let name = name ?? self.name
+        let quantity = quantity ?? self.quantity
+        let role = role ?? self.role
+        let email = email ?? self.email
+        let phoneNumber = phoneNumber ?? self.phoneNumber
+        let imageID = imageID ?? self.imageID
+        let imageURL = imageURL ?? self.imageURL
+        let description = description ?? self.description
+
+        return Networking.BookingResource(
+            siteID: siteID,
+            resourceID: resourceID,
+            name: name,
+            quantity: quantity,
+            role: role,
+            email: email,
+            phoneNumber: phoneNumber,
+            imageID: imageID,
+            imageURL: imageURL,
+            description: description
         )
     }
 }

@@ -3,7 +3,6 @@ import Combine
 import Storage
 import class Networking.UserAgent
 import Experiments
-import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
@@ -31,34 +30,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UIApplication.shared.delegate as! AppDelegate
     }
 
-    /// Main Window
-    ///
-    var window: UIWindow?
-
-    /// Coordinates app navigation based on authentication state.
-    ///
-    private var appCoordinator: AppCoordinator?
-
-    /// Initializes storage manager along with AppDelegate
-    private let storageManager = ServiceLocator.storageManager
-
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
-        appCoordinator?.tabBarController
+        return UIApplication.sceneDelegate?.tabBarController
     }
 
     /// Coordinates the Jetpack setup flow for users authenticated without Jetpack.
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    private var universalLinkRouter: UniversalLinkRouter?
-
-    private lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
+    private(set) lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
     /// Handles events to background refresh the app.
     ///
-    private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+    let appRefreshHandler = BackgroundTaskRefreshDispatcher()
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -104,17 +90,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForUpgrades()
 
         // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
+        refreshCardPresentPaymentsOnboardingIfNeeded()
 
         return true
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Setup the Interface!
-        setupMainWindow()
+        // Global UIAppearance that doesn't require a WindowScene
         setupComponentsAppearance()
-        setupNoticePresenter()
-        setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
 
         // Don't track startup waiting time if user starts logged out
@@ -122,26 +105,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             cancelStartupWaitingTimeTracker()
         }
 
-        // Start app navigation.
-        appCoordinator?.start()
-
-        // Register for background app refresh events.
+        // Register for background app refresh events (scene will schedule actual refreshes)
         appRefreshHandler.registerSystemTaskIdentifier()
 
         return true
-    }
-
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        guard let rootViewController = window?.rootViewController else {
-            fatalError()
-        }
-
-        if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
-            universalLinkRouter.handle(url: url)
-            return true
-        }
-
-        return handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -164,97 +131,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         await ServiceLocator.pushNotesManager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Simulate push notification for capturing snapshot.
-        // This is supposed to be called only by the WooCommerceScreenshots target.
-        if ProcessConfiguration.shouldSimulatePushNotification {
-            let content = UNMutableNotificationContent()
-            content.title = NSLocalizedString(
-                "You have a new order! 🎉",
-                comment: "Title for the mocked order notification needed for the AppStore listing screenshot"
-            )
-            content.body = NSLocalizedString(
-                "New order for $13.98 on Your WooCommerce Store",
-                comment: "Message for the mocked order notification needed for the AppStore listing screenshot. " +
-                "'Your WooCommerce Store' is the name of the mocked store."
-            )
-
-            // show this notification seconds from now
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
-
-            // choose a random identifier
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-            // add our notification request
-            UNUserNotificationCenter.current().add(request)
-        }
-    }
-
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        guard let quickAction = QuickAction(rawValue: shortcutItem.type),
-            let tabBarController else {
-            completionHandler(false)
-            return
-        }
-        switch quickAction {
-        case QuickAction.addProduct:
-            MainTabBarController.presentAddProductFlow()
-            completionHandler(true)
-        case QuickAction.addOrder:
-            tabBarController.navigate(to: OrdersDestination.createOrder)
-            completionHandler(true)
-        case QuickAction.openOrders:
-            tabBarController.navigate(to: OrdersDestination.orderList)
-            completionHandler(true)
-        case QuickAction.collectPayment:
-            tabBarController.navigate(to: OrdersDestination.createOrder)
-            completionHandler(true)
-        }
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers,
-        // and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-
-        // Don't track startup waiting time if app is backgrounded before everything is loaded
-        cancelStartupWaitingTimeTracker()
-
-        // Schedule the background app refresh when sending the app to the background.
-        // The OS is in charge of determining when these tasks will run based on app usage patterns.
-        appRefreshHandler.scheduleAppRefresh()
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-
-        // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
-        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive.
-        // If the application was previously in the background, optionally refresh the user interface.
-
-        requirementsChecker.checkEligibilityForDefaultStore()
-    }
-
     func applicationWillTerminate(_ application: UIApplication) {
         DDLogVerbose("👀 Application terminating...")
         NotificationCenter.default.post(name: .applicationTerminating, object: nil)
-    }
-
-    func application(_ application: UIApplication,
-                     continue userActivity: NSUserActivity,
-                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            handleWebActivity(userActivity)
-        }
-
-        SpotlightManager.handleUserActivity(userActivity)
-        trackWidgetTappedIfNeeded(userActivity: userActivity)
-
-        return true
     }
 
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
@@ -266,17 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - Initialization Methods
 //
-private extension AppDelegate {
-
-    /// Sets up the main UIWindow instance.
-    ///
-    func setupMainWindow() {
-        let window = UIWindow()
-        window.makeKeyAndVisible()
-        self.window = window
-
-        appCoordinator = AppCoordinator(window: window)
-    }
+extension AppDelegate {
 
     /// Sets up all of the component(s) Appearance.
     ///
@@ -292,9 +161,6 @@ private extension AppDelegate {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
         UITabBar.applyWooAppearance()
-
-        // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        window?.tintColor = .primary
     }
 
     /// Sets up FancyAlert's UIAppearance.
@@ -368,15 +234,9 @@ private extension AppDelegate {
         CocoaLumberjackSwift.dynamicLogLevel = level
     }
 
-    /// Setup: Notice Presenter
-    ///
-    func setupNoticePresenter() {
-        var noticePresenter = ServiceLocator.noticePresenter
-        noticePresenter.presentingViewController = appCoordinator?.tabBarController
-    }
-
     /// Push Notifications: Authorization + Registration!
     ///
+    // periphery: ignore - Fails when build on simulator
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
@@ -389,11 +249,6 @@ private extension AppDelegate {
 
     func setupUserNotificationCenter() {
         UNUserNotificationCenter.current().delegate = self
-    }
-
-    func setupUniversalLinkRouter() {
-        guard let tabBarController = tabBarController else { return }
-        universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter(tabBarController: tabBarController)
     }
 
     /// Set up app review prompt
@@ -445,7 +300,7 @@ private extension AppDelegate {
         }
 
         if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
-            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: storageManager))
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
         if ProcessConfiguration.shouldSimulatePushNotification {
@@ -470,26 +325,14 @@ private extension AppDelegate {
             }
     }
 
-    func refreshCardPresentPaymentsOnboardingIfNeeded(completion: @escaping (() -> Void)) {
-        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState(completion: completion)
+    func refreshCardPresentPaymentsOnboardingIfNeeded() {
+        ServiceLocator
+            .cardPresentPaymentsOnboardingIPPUsersRefresher
+            .refreshIPPUsersOnboardingState(completion: reconnectToTapToPayReaderIfNeeded)
     }
 
     func reconnectToTapToPayReaderIfNeeded() {
         ServiceLocator.tapToPayReconnectionController.reconnectIfNeeded()
-    }
-
-    /// Tracks if the application was opened via a widget tap.
-    ///
-    func trackWidgetTappedIfNeeded(userActivity: NSUserActivity) {
-        switch userActivity.activityType {
-        case WooConstants.storeInfoWidgetKind:
-            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
-            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
-        case WooConstants.appLinkWidgetKind:
-            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
-        default:
-            break
-        }
     }
 }
 
@@ -560,20 +403,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
-// MARK: - Universal Links
-
-private extension AppDelegate {
-    func handleWebActivity(_ activity: NSUserActivity) {
-        guard let linkURL = activity.webpageURL else {
-            return
-        }
-
-        universalLinkRouter?.handle(url: linkURL)
-    }
-}
-
 // MARK: - Magic link
-private extension AppDelegate {
+extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
         return if ServiceLocator.stores.isAuthenticated {
             handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)

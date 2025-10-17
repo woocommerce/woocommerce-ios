@@ -1,45 +1,59 @@
 import Foundation
-import struct Networking.Booking
+import Yosemite
+import protocol Storage.StorageManagerType
 
 final class BookingDetailsViewModel: ObservableObject {
-    let sections: [Section]
+    private let stores: StoresManager
+
+    private var booking: Booking
+    private var bookingResource: BookingResource?
+
+    // EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Booking> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: booking)
+    }()
+
     let navigationTitle: String
+    @Published private(set) var sections: [Section] = []
 
-    private let booking: Booking
-
-    init(booking: Booking) {
+    init(booking: Booking,
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.booking = booking
+        self.stores = stores
 
         navigationTitle = Self.navigationTitle(for: booking)
+        let resource = storage.viewStorage.loadBookingResource(siteID: booking.siteID, resourceID: booking.resourceID)?.toReadOnly()
+        self.bookingResource = resource
+        setupSections(with: booking, resource: resource)
+        configureEntityListener()
+    }
 
-        let headerSection = Section.init(
-            content: .header(HeaderContent(booking))
+    private func setupSections(with booking: Booking, resource: BookingResource?) {
+        let headerContent = HeaderContent(booking)
+        let headerSection = Section(
+            content: .header(headerContent)
         )
 
         let appointmentDetailsSection = Section(
             header: .title(Localization.appointmentDetailsSectionHeaderTitle.uppercased()),
-            content: .appointmentDetails(AppointmentDetailsContent(booking))
+            content: .appointmentDetails(AppointmentDetailsContent(booking, resource: resource))
         )
+
+        let customerSection: Section? = {
+            guard let billingAddress = booking.orderInfo?.customerInfo?.billingAddress else { return nil }
+            let customerContent = CustomerContent(billingAddress: billingAddress)
+            return Section(
+                header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+                content: .customer(customerContent)
+            )
+        }()
 
         let attendanceSection = Section(
             header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
             footerText: Localization.attendanceSectionFooterText,
             content: .attendance(AttendanceContent())
-        )
-
-        let customerSection = Section(
-            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
-            content: .customer(
-                /// Temporary hardcode
-                CustomerContent(
-                    nameText: "Margarita Nikolaevna",
-                    emailText: "margarita.n@mail.com",
-                    phoneText: "+1 742582943798",
-                    billingAddressText: """
-                        238 Willow Creek Drive Montgomery AL 36109
-                        """
-                )
-            )
         )
 
         let paymentSection = Section(
@@ -59,7 +73,68 @@ final class BookingDetailsViewModel: ObservableObject {
             attendanceSection,
             paymentSection,
             bookingNotes
-        ]
+        ].compactMap { $0 }
+    }
+}
+
+// MARK: Syncing
+
+extension BookingDetailsViewModel {
+    func syncData() async {
+        if let resource = await fetchResource() {
+            self.bookingResource = resource // only update resource if fetching succeeds
+        }
+        await syncBooking()
+    }
+}
+
+private extension BookingDetailsViewModel {
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] booking in
+            guard let self else { return }
+            self.booking = booking
+            self.setupSections(with: booking, resource: bookingResource)
+        }
+    }
+
+    func syncBooking() async {
+        do {
+            try await retrieveBooking()
+        } catch {
+            DDLogError("⛔️ Error synchronizing Customer for Booking: \(error)")
+        }
+    }
+
+    @MainActor
+    func fetchResource() async -> BookingResource? {
+        do {
+            return try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(BookingAction.fetchResource(siteID: booking.siteID, resourceID: booking.resourceID) { result in
+                    switch result {
+                    case .success(let resource):
+                        continuation.resume(returning: resource)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                })
+            }
+        } catch {
+            DDLogError("⛔️ Error fetching resource for Booking: \(error)")
+            return nil
+        }
+    }
+
+    @MainActor
+    func retrieveBooking() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = BookingAction.synchronizeBooking(
+                siteID: booking.siteID,
+                bookingID: booking.bookingID
+            ) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

@@ -19,7 +19,7 @@ struct POSListInlineErrorView: View {
     @ViewBuilder
     private var largerView: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSErrorExclamationMark(size: .small)
+            POSErrorXMark(size: .small)
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                        height: Constants.productCardSize * scale)
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
@@ -48,7 +48,7 @@ struct POSListInlineErrorView: View {
     @ViewBuilder
     private var compactView: some View {
         HStack(spacing: POSSpacing.small) {
-            POSErrorExclamationMark(size: .small)
+            POSErrorXMark(size: .small)
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: Constants.textSpacing) {
                     Text(errorState.title)

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-25 10:54:13+0000 */
+/* Translation-Revision-Date: 2025-10-08 09:54:09+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -544,23 +544,14 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Advertise on Google" = "Google'da reklam verin";
 
-/* Country option for a site address. */
-"Afghanistan" = "Afganistan";
-
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Hava Yoluna Uygun Etanol Paketi - (onaylı parfüm ve el dezenfektanı gönderileri)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Country option for a site address. */
-"Albania" = "Arnavutluk";
-
 /* Description of albums in the photo libraries */
 "Albums" = "Albümler";
-
-/* Country option for a site address. */
-"Algeria" = "Cezayir";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Tüm Siparişler";
@@ -610,9 +601,6 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternatif olarak:";
 
-/* Country option for a site address. */
-"American Samoa" = "Amerikan Samoası";
-
 /* Title above the amount field on the add custom amount view in orders.
    Title of the Amount label on Coupon Details screen */
 "Amount" = "Miktar";
@@ -656,23 +644,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "Analytics başarıyla etkinleştirildi.";
 
-/* Country option for a site address. */
-"Andorra" = "Andora";
-
-/* Country option for a site address. */
-"Angola" = "Angola";
-
-/* Country option for a site address. */
-"Anguilla" = "Anguilla";
-
 /* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
 "Annually (Save 35%)" = "Yıllık (%35 tasarruf edin)";
-
-/* Country option for a site address. */
-"Antarctica" = "Antarktika";
-
-/* Country option for a site address. */
-"Antigua and Barbuda" = "Antigua ve Barbuda";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
@@ -757,15 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "Emin misiniz? Gelen kutusu mesajları artık her zaman kapatılacak.";
 
-/* Country option for a site address. */
-"Argentina" = "Arjantin";
-
-/* Country option for a site address. */
-"Armenia" = "Ermenistan";
-
-/* Country option for a site address. */
-"Aruba" = "Aruba";
-
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nitelik ismi";
 
@@ -778,12 +742,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "Ses, %@";
-
-/* Country option for a site address. */
-"Australia" = "Avustralya";
-
-/* Country option for a site address. */
-"Austria" = "Avusturya";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Doğrulanıyor";
@@ -825,9 +783,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "%@ üzerinden ödeme bekleniyor";
 
-/* Country option for a site address. */
-"Azerbaijan" = "Azerbaycan";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -855,44 +810,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Geri dönen siparişler";
 
-/* Country option for a site address. */
-"Bahamas" = "Bahamalar";
-
-/* Country option for a site address. */
-"Bahrain" = "Bahreyn";
-
-/* Country option for a site address. */
-"Bangladesh" = "Bangladeş";
-
-/* Country option for a site address. */
-"Barbados" = "Barbados";
-
 /* Title for the instructions on the Woo payments setup instructions screen. */
 "Before you start setup" = "Kurulumu başlatmadan önce";
 
 /* Title on the action button on the Woo payments setup instructions screen. */
 "Begin Setup" = "Kurulumu Başlat";
-
-/* Country option for a site address. */
-"Belarus" = "Beyaz Rusya";
-
-/* Country option for a site address. */
-"Belau" = "Belau";
-
-/* Country option for a site address. */
-"Belgium" = "Belçika";
-
-/* Country option for a site address. */
-"Belize" = "Belize";
-
-/* Country option for a site address. */
-"Benin" = "Benin";
-
-/* Country option for a site address. */
-"Bermuda" = "Bermuda";
-
-/* Country option for a site address. */
-"Bhutan" = "Butan";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data */
@@ -922,11 +844,95 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Kalın";
 
-/* Country option for a site address. */
-"Bolivia" = "Bolivya";
+/* Assigned staff row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.assignedStaff.title" = "Atanan personel";
 
-/* Country option for a site address. */
-"Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius and Saba";
+/* Date row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.dateRow.title" = "Tarih";
+
+/* Duration row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.durationRow.title" = "Süre";
+
+/* Header title for the 'Appointment Details' section in the booking details screen. */
+"BookingDetailsView.appointmentDetails.headerTitle" = "Randevu Ayrıntıları";
+
+/* Location row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.locationRow.title" = "Konum";
+
+/* Price row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.priceRow.title" = "Fiyat";
+
+/* Time row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.timeRow.title" = "Zaman";
+
+/* Footer text for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.footerText" = "Raporlarınızı doğru tutmak ve rezervasyon trendlerini tespit etmek için katılımı işaretleyin.";
+
+/* Header title for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.headerTitle" = "Katılım";
+
+/* Add a note row title in booking notes section in booking details view. */
+"BookingDetailsView.bookingNotes.addANoteRow.title" = "Not ekle";
+
+/* Header title for the 'Booking notes' section in the booking details screen. */
+"BookingDetailsView.bookingNotes.headerTitle" = "Rezervasyon notları";
+
+/* Billing address row title in customer section in booking details view. */
+"BookingDetailsView.customer.billingAddress.title" = "Fatura adresi";
+
+/* 'Cancel booking' button title in appointment details section in booking details view. */
+"BookingDetailsView.customer.cancelBookingButton.title" = "Rezervasyonu iptal et";
+
+/* Header title for the 'Customer' section in the booking details screen. */
+"BookingDetailsView.customer.headerTitle" = "Müşteri";
+
+/* 'Status' row title in attendance section in booking details view. */
+"BookingDetailsView.customer.status.title" = "Durum";
+
+/* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
+"BookingDetailsView.navTitle" = "Rezervasyon No.%1$d";
+
+/* Action sheet option to cancel a booking. */
+"BookingDetailsView.options.cancelBooking" = "Rezervasyonu iptal et";
+
+/* Action sheet option to mark a booking as paid. */
+"BookingDetailsView.options.markAsPaid" = "Ödendi olarak işaretle";
+
+/* Action sheet option to view the order for a booking. */
+"BookingDetailsView.options.viewOrder" = "Siparişi görüntüle";
+
+/* Discount row title in payment section in booking details view. */
+"BookingDetailsView.payment.discountRow.title" = "İndirim";
+
+/* Header title for the 'Payment' section in the booking details screen. */
+"BookingDetailsView.payment.headerTitle" = "Ödeme";
+
+/* Title for 'Mark as paid' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsPaid.title" = "Ödendi olarak işaretle";
+
+/* Title for 'Mark as refunded' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsRefunded.title" = "İade edildi olarak işaretle";
+
+/* Service row title in payment section in booking details view. */
+"BookingDetailsView.payment.serviceRow.title" = "Hizmet";
+
+/* Tax row title in payment section in booking details view. */
+"BookingDetailsView.payment.taxRow.title" = "Vergi";
+
+/* Total row title in payment section in booking details view. */
+"BookingDetailsView.payment.totalRow.title" = "Toplam";
+
+/* Title for 'View order' button in payment section in booking details view. */
+"BookingDetailsView.payment.viewOrder.title" = "Siparişi görüntüle";
+
+/* Title for the 'Booked' status label in the header view. */
+"BookingDetailsView.statusLabel.booked" = "Rezerve Edildi";
+
+/* Title for the 'Paid' status label in the header view. */
+"BookingDetailsView.statusLabel.paid" = "Ödendi";
+
+/* Title for the 'Pay at location' status label in the header view. */
+"BookingDetailsView.statusLabel.payAtLocation" = "Konumda öde";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Özel tekliflerle satışları artırın";
@@ -937,32 +943,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "Bağlantılı ürünlerle satışlarınızı artırın";
 
-/* Country option for a site address. */
-"Bosnia and Herzegovina" = "Bosna Hersek";
-
-/* Country option for a site address. */
-"Botswana" = "Botsvana";
-
-/* Country option for a site address. */
-"Bouvet Island" = "Bouvet Adası";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kutu";
-
-/* Country option for a site address. */
-"Brazil" = "Brezilya";
-
-/* Country option for a site address. */
-"British Indian Ocean Territory" = "İngiliz Hint Okyanusu Bölgesi";
-
-/* Country option for a site address. */
-"British Virgin Islands" = "Britanya Virjin Adaları";
-
-/* Country option for a site address. */
-"Brunei" = "Brunei";
-
-/* Country option for a site address. */
-"Bulgaria" = "Bulgaristan";
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
@@ -982,12 +964,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
 "Bundles Sold" = "Satılan Paketler";
-
-/* Country option for a site address. */
-"Burkina Faso" = "Burkina Faso";
-
-/* Country option for a site address. */
-"Burundi" = "Burundi";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Düğme Metni";
@@ -1023,9 +999,6 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "Ara";
 
-/* Country option for a site address. */
-"Cambodia" = "Kamboçya";
-
 /* Accessibility label for the camera tile in the collection view */
 "Camera" = "Kamera";
 
@@ -1041,9 +1014,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action sheet button that links to settings for camera access */
 "Camera permissions" = "Kamera izinleri";
 
-/* Country option for a site address. */
-"Cameroon" = "Kamerun";
-
 /* Title of the Blaze campaign details view. */
 "Campaign Details" = "Kampanya Ayrıntıları";
 
@@ -1055,9 +1025,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "%1$d kez kullanılabilir";
-
-/* Country option for a site address. */
-"Canada" = "Kanada";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
@@ -1183,9 +1150,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Sitenizin WooCommerce kurulumu doğrulanamıyor.";
 
-/* Country option for a site address. */
-"Cape Verde" = "Kapo Verde";
-
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Mağazanız için yüksek kalitede ürün yorumları alın.";
@@ -1234,20 +1198,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Kategoriler";
 
-/* Country option for a site address. */
-"Cayman Islands" = "Cayman Adaları";
-
-/* Country option for a site address. */
-"Central African Republic" = "Orta Afrika Cumhuriyeti";
-
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "Bazı zorunlu alanlara dikkat edilmesi gerekiyor.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Sertifika hatası";
-
-/* Country option for a site address. */
-"Chad" = "Çad";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "Ürün türünü değiştir";
@@ -1280,12 +1235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Bottom title of the alert presented with a spinner while the order is being validated */
 "Checking order" = "Sipariş kontrol ediliyor";
 
-/* Country option for a site address. */
-"Chile" = "Şili";
-
-/* Country option for a site address. */
-"China" = "Çin";
-
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Kağıt Boyutu Seç";
 
@@ -1312,9 +1261,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Ödeme yönteminizi seçin";
-
-/* Country option for a site address. */
-"Christmas Island" = "Christmas Adaları";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -1400,9 +1346,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Hesap kapatılıyor…";
 
-/* Country option for a site address. */
-"Cocos (Keeling) Islands" = "Kokos (Keeling) Adaları";
-
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Daraltılmış";
 
@@ -1446,14 +1389,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Ödemeleri alın, Tap to Pay'i kurun, kart okuyucu sipariş edin ve daha fazlasını yapın.";
 
-/* Country option for a site address. */
-"Colombia" = "Kolombiya";
-
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "Mağazanızı büyütmekle ilgili daha fazla ipucu ve bilgi için kısa süre sonra tekrar gelin";
-
-/* Country option for a site address. */
-"Comoros" = "Komorlar";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1493,12 +1430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Ödeme Yöntemini onaylayın";
-
-/* Country option for a site address. */
-"Congo (Brazzaville)" = "Kongo (Brazzaville)";
-
-/* Country option for a site address. */
-"Congo (Kinshasa)" = "Kongo (Kinshasa)";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Tebrikler, her şeyi okudunuz!";
@@ -1651,9 +1582,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Dönüşüm Oranı";
 
-/* Country option for a site address. */
-"Cook Islands" = "Cook Adaları";
-
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Tanımlama Bilgisi Politikası";
 
@@ -1675,9 +1603,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "Takip numarasını kopyala";
-
-/* Country option for a site address. */
-"Costa Rica" = "Kostarika";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "WordPress sitesine bağlanılamadı. Bu adreste geçerli WordPress sitesi yok. Girdiğiniz site adresini (URL) kontrol edin.";
@@ -1814,18 +1739,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Kredi kartları şu WordPress.com hesabından alınır: %1$@ <%2$@>";
 
-/* Country option for a site address. */
-"Croatia" = "Hırvatistan";
-
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Çapraz satışlar";
-
-/* Country option for a site address. */
-"Cuba" = "Küba";
-
-/* Country option for a site address. */
-"Curacao" = "Kurasao";
 
 /* Cell title: the current date. */
 "Current" = "Geçerli";
@@ -1926,12 +1842,6 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "Gümrük formları yazdırılmalı ve bu uluslararası gönderilere eklenmelidir.";
 
-/* Country option for a site address. */
-"Cyprus" = "Kıbrıs";
-
-/* Country option for a site address. */
-"Czech Republic" = "Çek Cumhuriyeti";
-
 /* Details section title in the Edit Address Form */
 "DETAILS" = "AYRINTILAR";
 
@@ -1971,9 +1881,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Delete tracking button title */
 "Delete Tracking" = "Takibi Sil";
-
-/* Country option for a site address. */
-"Denmark" = "Danimarka";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Ürününü tanımla";
@@ -2089,9 +1996,6 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Bölüm 6.2 - Tehlikeli Maddeler - Biyolojik Maddeler (ör. laboratuvar test kitleri, onaylı COVID test kiti iadeleri)";
 
-/* Country option for a site address. */
-"Djibouti" = "Cibuti";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "Web ödemenize Şahsen Ödeme özelliğini eklemek istiyor musunuz?";
 
@@ -2109,12 +2013,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Belgeler";
-
-/* Country option for a site address. */
-"Dominica" = "Dominika";
-
-/* Country option for a site address. */
-"Dominican Republic" = "Dominik Cumhuriyeti";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
@@ -2213,9 +2111,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Ürünlerinizi benzersiz kodlarla kolayca tanımlayın";
 
-/* Country option for a site address. */
-"Ecuador" = "Ekvador";
-
 /* Button to edit a product category
    Button to edit an order on Order Details screen
    Title text of the button that edits a note when creating a simple payment */
@@ -2272,12 +2167,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Tek seferde birden fazla ürün için durum veya fiyat düzenle";
-
-/* Country option for a site address. */
-"Egypt" = "Mısır";
-
-/* Country option for a site address. */
-"El Salvador" = "El Salvador";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Ücretsiz teslim almaya uygun";
@@ -2488,12 +2377,6 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Zarf";
 
-/* Country option for a site address. */
-"Equatorial Guinea" = "Ekvator Ginesi";
-
-/* Country option for a site address. */
-"Eritrea" = "Eritre";
-
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Hata";
 
@@ -2568,12 +2451,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "Tahmini kurulum süresi";
-
-/* Country option for a site address. */
-"Estonia" = "Estonya";
-
-/* Country option for a site address. */
-"Ethiopia" = "Etiyopya";
 
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
@@ -2689,12 +2566,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "%1$d numaralı siparişin yerine getirilmesi geri alınamadı";
 
-/* Country option for a site address. */
-"Falkland Islands" = "Falkland Adaları";
-
-/* Country option for a site address. */
-"Faroe Islands" = "Faroe Adaları";
-
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -2712,9 +2583,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Your Site Orders connectivity tool card */
 "Fetching your site orders" = "Site siparişleriniz alınıyor";
-
-/* Country option for a site address. */
-"Fiji" = "Fiji";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2769,9 +2637,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Mağaza yöneticinizde %1$@ kurulumunu tamamlayın";
 
-/* Country option for a site address. */
-"Finland" = "Finlandiya";
-
 /* Text field name in Edit Address Form */
 "First name" = "İsim";
 
@@ -2802,23 +2667,11 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "Yönlendir";
 
-/* Country option for a site address. */
-"France" = "Fransa";
-
 /* No comment provided by engineer. */
 "Free SSL certificate" = "Ücretsiz SSL Sertifikası";
 
 /* Plan name for an active free trial */
 "Free Trial" = "Ücretsiz Deneme Süresi";
-
-/* Country option for a site address. */
-"French Guiana" = "Fransız Guyanası";
-
-/* Country option for a site address. */
-"French Polynesia" = "Fransız Polinezyası";
-
-/* Country option for a site address. */
-"French Southern Territories" = "Fransız Güney Toprakları";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Kimden";
@@ -2840,12 +2693,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
 "GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
-
-/* Country option for a site address. */
-"Gabon" = "Gabon";
-
-/* Country option for a site address. */
-"Gambia" = "Gambiya";
 
 /* General section title in the hub menu */
 "General" = "Genel";
@@ -2876,12 +2723,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Generous storage" = "Bol depolama alanı";
-
-/* Country option for a site address. */
-"Georgia" = "Gürcistan";
-
-/* Country option for a site address. */
-"Germany" = "Almanya";
 
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
@@ -2931,12 +2772,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "Ödeme almaya hazırlanıyor";
-
-/* Country option for a site address. */
-"Ghana" = "Gana";
-
-/* Country option for a site address. */
-"Gibraltar" = "Cebelitarık";
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Hediye";
@@ -2988,15 +2823,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title in AI product description celebration screen. */
 "Great start!" = "Mükemmel başlangıç!";
 
-/* Country option for a site address. */
-"Greece" = "Yunanistan";
-
-/* Country option for a site address. */
-"Greenland" = "Grönland";
-
-/* Country option for a site address. */
-"Grenada" = "Grenada";
-
 /* A hazardous material description stating when a package can fit into this category */
 "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Yalnızca Karaya Uygun Tehlikeli Maddeler (Listede yer almayan ancak yalnızca yüzeyle sınırlı olan maddeler için)";
 
@@ -3012,27 +2838,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gruplanmış ürünler";
 
-/* Country option for a site address. */
-"Guadeloupe" = "Guadeloupe";
-
-/* Country option for a site address. */
-"Guam" = "Guam";
-
-/* Country option for a site address. */
-"Guatemala" = "Guatemala";
-
-/* Country option for a site address. */
-"Guernsey" = "Guernsey";
-
-/* Country option for a site address. */
-"Guinea" = "Gine";
-
-/* Country option for a site address. */
-"Guinea-Bissau" = "Gine-Bissau";
-
-/* Country option for a site address. */
-"Guyana" = "Guyana";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "NASIL YARDIMCI OLABİLİRİZ?";
 
@@ -3047,9 +2852,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML içerik";
-
-/* Country option for a site address. */
-"Haiti" = "Haiti";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Mağaza kimlik bilgilerinizi hazırlayın.";
@@ -3093,9 +2895,6 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "Başlık 6";
 
-/* Country option for a site address. */
-"Heard Island and McDonald Islands" = "Heard Adası ve McDonald Adaları";
-
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "Yükseklik";
@@ -3131,17 +2930,8 @@ which should be translated separately and considered part of this sentence. */
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Özelleştirilmiş bir açıklama için ürününüzün benzersiz özelliklerini ve hedef kitlenizi anahtar sözcüklerle vurgulayın.";
 
-/* Country option for a site address. */
-"Honduras" = "Honduras";
-
-/* Country option for a site address. */
-"Hong Kong" = "Hong Kong";
-
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Nasıl iyileştirebiliriz?";
-
-/* Country option for a site address. */
-"Hungary" = "Macaristan";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Şu konuda yardıma ihtiyacım var";
@@ -3160,9 +2950,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "Tarife numarasına göre değeri 2.500 ABD Dolarının üzerindeki gönderiler için ITN gereklidir";
-
-/* Country option for a site address. */
-"Iceland" = "İzlanda";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Devre dışıysa not gizli olur";
@@ -3241,9 +3028,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Yukarı satış ve çapraz satış ile satışları artırın";
 
-/* Country option for a site address. */
-"India" = "Hindistan";
-
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "Sadece Bireysel Kullanım";
 
@@ -3252,9 +3036,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Tek başına gönderilen öğe";
-
-/* Country option for a site address. */
-"Indonesia" = "Endonezya";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Ekle";
@@ -3377,26 +3158,11 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments isn't available for this store" = "Bu mağazada Şahsen Ödemeler kullanılamıyor";
 
-/* Country option for a site address. */
-"Iran" = "İran";
-
-/* Country option for a site address. */
-"Iraq" = "Irak";
-
-/* Country option for a site address. */
-"Ireland" = "İrlanda";
-
 /* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
 "Is the generated description helpful?" = "Oluşturulan açıklama faydalı oldu mu?";
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Oluşturulan mesaj faydalı oldu mu?";
-
-/* Country option for a site address. */
-"Isle of Man" = "Man Adası";
-
-/* Country option for a site address. */
-"Israel" = "İsrail";
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Geri Ödeme Yap";
@@ -3438,9 +3204,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "İtalik";
 
-/* Country option for a site address. */
-"Italy" = "İtalya";
-
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "Öğe açıklaması gereklidir";
 
@@ -3457,18 +3220,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "Satılan ürünler";
 
-/* Country option for a site address. */
-"Ivory Coast" = "Fildişi Sahilleri";
-
-/* Country option for a site address. */
-"Jamaica" = "Jamaika";
-
-/* Country option for a site address. */
-"Japan" = "Japonya";
-
-/* Country option for a site address. */
-"Jersey" = "Jersey";
-
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack Kurulumu";
 
@@ -3481,12 +3232,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "İstediğiniz yerden katılın";
 
-/* Country option for a site address. */
-"Jordan" = "Ürdün";
-
-/* Country option for a site address. */
-"Kazakhstan" = "Kazakistan";
-
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Düzenlemeye Devam Et";
 
@@ -3496,26 +3241,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Bunun bir destek bileti olmadığını ve bireysel geri bildirimleri ele alamayacağımızı unutmayın";
 
-/* Country option for a site address. */
-"Kenya" = "Kenya";
-
-/* Country option for a site address. */
-"Kiribati" = "Kiribati";
-
-/* Country option for a site address. */
-"Kuwait" = "Kuveyt";
-
-/* Country option for a site address. */
-"Kyrgyzstan" = "Kırgızistan";
-
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etiket (4 x 6 inç)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Etiket Biçimi Seçenekleri";
-
-/* Country option for a site address. */
-"Laos" = "Laos";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = " Son 2 Gün";
@@ -3554,9 +3284,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text field name in Edit Address Form */
 "Last name" = "Soyad";
-
-/* Country option for a site address. */
-"Latvia" = "Letonya";
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy hata bulmayı başlat";
@@ -3600,9 +3327,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Mağazanız hakkında topladığımız veriler ve bu verilerin paylaşımını kontrol etme seçenekleriniz hakkında daha fazla bilgi edinin.";
 
-/* Country option for a site address. */
-"Lebanon" = "Lübnan";
-
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inç)";
 
@@ -3613,23 +3337,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Uzunluk";
 
-/* Country option for a site address. */
-"Lesotho" = "Lesoto";
-
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inç)";
 
 /* Title to let the user know what do we want on the support screen. */
 "Let’s get this sorted" = "Bunu sıralayalım";
-
-/* Country option for a site address. */
-"Liberia" = "Liberya";
-
-/* Country option for a site address. */
-"Libya" = "Libya";
-
-/* Country option for a site address. */
-"Liechtenstein" = "Lihtenştayn";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Lighters Package - Authorized Lighters" = "Çakmak Paketi - Onaylı Çakmaklar";
@@ -3671,9 +3383,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "List unlimited products" = "Sınırsız ürünleri listele";
-
-/* Country option for a site address. */
-"Lithuania" = "Litvanya";
 
 /* No comment provided by engineer. */
 "Live chat support" = "Canlı sohbet ile destek";
@@ -3787,18 +3496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Loyalty points programs" = "Sadakat puanı programları";
 
-/* Country option for a site address. */
-"Luxembourg" = "Lüksemburg";
-
-/* Country option for a site address. */
-"Macao S.A.R., China" = "Makao, Çin";
-
-/* Country option for a site address. */
-"Macedonia" = "Makedonya";
-
-/* Country option for a site address. */
-"Madagascar" = "Madagaskar";
-
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic tarafından sevgiyle yapıldı. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Yeni çalışma arkadaşları arıyoruz!<\/a>";
 
@@ -3813,21 +3510,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Etiket kullanarak ürünlerinizin bulunmasını kolaylaştırın";
-
-/* Country option for a site address. */
-"Malawi" = "Malavi";
-
-/* Country option for a site address. */
-"Malaysia" = "Malezya";
-
-/* Country option for a site address. */
-"Maldives" = "Maldivler";
-
-/* Country option for a site address. */
-"Mali" = "Mali";
-
-/* Country option for a site address. */
-"Malta" = "Malta";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3895,18 +3577,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Marketing automation" = "Pazarlama otomasyonu";
 
-/* Country option for a site address. */
-"Marshall Islands" = "Marshall Adaları";
-
-/* Country option for a site address. */
-"Martinique" = "Martinik";
-
-/* Country option for a site address. */
-"Mauritania" = "Moritanya";
-
-/* Country option for a site address. */
-"Mauritius" = "Morityus";
-
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Maks. Harcama (%1$@)";
 
@@ -3921,9 +3591,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dismiss button title for modally presented Just in Time Messages */
 "Maybe Later" = "Daha Sonra";
-
-/* Country option for a site address. */
-"Mayotte" = "Mayotte";
 
 /* Title for alert when access to media capture is not granted */
 "Media Capture" = "Görsel Yakalama";
@@ -3955,12 +3622,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message phone number button title */
 "Message" = "Mesaj";
 
-/* Country option for a site address. */
-"Mexico" = "Meksika";
-
-/* Country option for a site address. */
-"Micronesia" = "Mikronezya";
-
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3985,26 +3646,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the mobile app support area option */
 "Mobile App" = "Mobil Uygulama";
 
-/* Country option for a site address. */
-"Moldova" = "Moldova";
-
-/* Country option for a site address. */
-"Monaco" = "Monako";
-
-/* Country option for a site address. */
-"Mongolia" = "Moğolistan";
-
-/* Country option for a site address. */
-"Montenegro" = "Karadağ";
-
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Aydan tarihe";
 
 /* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
 "Monthly" = "Aylık";
-
-/* Country option for a site address. */
-"Montserrat" = "Montserat";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -4026,9 +3672,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* More Privacy toggle section in the privacy screen. */
 "More privacy options available for woocommerce.com users. Check here to learn more." = "woocommerce.com kullanıcıları için daha fazla gizlilik seçeneği mevcut. Daha fazla bilgi edinmek için burayı kontrol edin.";
 
-/* Country option for a site address. */
-"Morocco" = "Fas";
-
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Taşı";
 
@@ -4044,9 +3687,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Yorumu Çöp Kutusu'na taşır";
 
-/* Country option for a site address. */
-"Mozambique" = "Mozambik";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Birden Fazla Mağaza";
 
@@ -4054,9 +3694,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Mağazam";
-
-/* Country option for a site address. */
-"Myanmar" = "Myanmar";
 
 /* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "Yok";
@@ -4069,12 +3706,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Ad eksik";
-
-/* Country option for a site address. */
-"Namibia" = "Namibya";
-
-/* Country option for a site address. */
-"Nauru" = "Nauru";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Bir gönderim etiketine mi ihtiyacınız var?";
@@ -4099,9 +3730,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "Biraz yardıma mı ihtiyacınız var? %1$@";
 
-/* Country option for a site address. */
-"Nepal" = "Nepal";
-
 /* The title for the net amount paid cell */
 "Net Payment" = "Net ödeme";
 
@@ -4110,9 +3738,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "Net satışlar: %@";
-
-/* Country option for a site address. */
-"Netherlands" = "Hollanda";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Asla sona ermez";
@@ -4123,14 +3748,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Yeni Özellik Adı";
 
-/* Country option for a site address. */
-"New Caledonia" = "Yeni Kaledonya";
-
 /* Title for the order creation screen */
 "New Order" = "Yeni Sipariş";
-
-/* Country option for a site address. */
-"New Zealand" = "Yeni Zelanda";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Yeni analiz görünümleri, ziyaretçileri, raporları ve daha fazlasını görmenizi sağlar.";
@@ -4152,18 +3771,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "Sonraki";
-
-/* Country option for a site address. */
-"Nicaragua" = "Nikaragua";
-
-/* Country option for a site address. */
-"Niger" = "Nijer";
-
-/* Country option for a site address. */
-"Nigeria" = "Nijerya";
-
-/* Country option for a site address. */
-"Niue" = "Niue";
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "(Onaylanmış) yorum yok";
@@ -4284,18 +3891,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "Hiçbiri";
 
-/* Country option for a site address. */
-"Norfolk Island" = "Norfolk Adası";
-
-/* Country option for a site address. */
-"North Korea" = "Kuzey Kore";
-
-/* Country option for a site address. */
-"Northern Mariana Islands" = "Kuzey Mariana Adaları";
-
-/* Country option for a site address. */
-"Norway" = "Norveç";
-
 /* Description when no 'group of' quantity is set in quantity rules. */
 "Not grouped" = "Gruplandırılmamış";
 
@@ -4357,9 +3952,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Weeks Section Header */
 "Older than a Week" = "Bir haftadan daha eski";
-
-/* Country option for a site address. */
-"Oman" = "Umman";
 
 /* Display label for the subscription status type */
 "On Hold" = "Beklemede";
@@ -4617,23 +4209,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Rich order notification text, will read as: Paid with Visa credit card */
 "Paid with %@" = "%@ ile ödendi";
 
-/* Country option for a site address. */
-"Pakistan" = "Pakistan";
-
-/* Country option for a site address. */
-"Palestinian Territory" = "Filistin";
-
-/* Country option for a site address. */
-"Panama" = "Panama";
-
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Kağıt Boyutu";
-
-/* Country option for a site address. */
-"Papua New Guinea" = "Papua Yeni Gine";
-
-/* Country option for a site address. */
-"Paraguay" = "Paraguay";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Üst kategori";
@@ -4725,12 +4302,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Hesabı Kalıcı Olarak Kapat";
 
-/* Country option for a site address. */
-"Peru" = "Peru";
-
-/* Country option for a site address. */
-"Philippines" = "Filipinler";
-
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Telefon";
@@ -4752,9 +4323,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "Bir sipariş alın, ardından ödeme yapın, yazdırın, paketleyin ve gönderin.";
-
-/* Country option for a site address. */
-"Pitcairn" = "Pitcairn";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Ürününüz çöp kutusuna atılıyor... ";
@@ -4964,15 +4532,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation title for the help settings list. */
 "PointOfSaleSettingsHelpDetailView.help.title" = "Yardım";
 
-/* Country option for a site address. */
-"Poland" = "Polonya";
-
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
 "Popular" = "En çok tutulan";
-
-/* Country option for a site address. */
-"Portugal" = "Portekiz";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -5241,9 +4803,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Ürününüz yayımlanıyor...";
 
-/* Country option for a site address. */
-"Puerto Rico" = "Porto Riko";
-
 /* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
 "Purchase %1$@" = "%1$@ Satın Al";
 
@@ -5268,9 +4827,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
-
-/* Country option for a site address. */
-"Qatar" = "Katar";
 
 /* Quantity abbreviation for section title */
 "Qty" = "Qty";
@@ -5565,9 +5121,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Paket teslim edilemezse gönderene iade et";
 
-/* Country option for a site address. */
-"Reunion" = "Reunion Adası";
-
 /* Title of Review Order screen */
 "Review Order" = "Siparişi İncele";
 
@@ -5585,17 +5138,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Post Rich content */
 "Rich Content" = "Zengin içerik";
 
-/* Country option for a site address. */
-"Romania" = "Romanya";
-
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "WooCommerce işleminizin kusursuz bir müşteri deneyimi sağladığından emin olmak için bir test siparişi gerçekleştirin.";
-
-/* Country option for a site address. */
-"Russia" = "Rusya";
-
-/* Country option for a site address. */
-"Rwanda" = "Ruanda";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "OTURUMLAR";
@@ -5618,30 +5162,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
-/* Country option for a site address. */
-"Saint Barthélemy" = "Saint Barthélemy";
-
-/* Country option for a site address. */
-"Saint Helena" = "Santa Helena";
-
-/* Country option for a site address. */
-"Saint Kitts and Nevis" = "Saint Kitts ve Nevis";
-
-/* Country option for a site address. */
-"Saint Lucia" = "Santa Luçia";
-
-/* Country option for a site address. */
-"Saint Martin (Dutch part)" = "Santa Martin (Hollanda bölümü)";
-
-/* Country option for a site address. */
-"Saint Martin (French part)" = "Santa Martin (Fransa bölümü)";
-
-/* Country option for a site address. */
-"Saint Pierre and Miquelon" = "Saint Pierre ve Miquelon";
-
-/* Country option for a site address. */
-"Saint Vincent and the Grenadines" = "Saint Vincent ve Grenadines";
-
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "İndirim tarihleri: %@";
 
@@ -5657,20 +5177,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Sales reports" = "Satış raporları";
 
-/* Country option for a site address. */
-"Samoa" = "Samoa";
-
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "Örnek";
 
-/* Country option for a site address. */
-"San Marino" = "San Marino";
-
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "Sağlık\/Bitki Sağlığı denetimi";
-
-/* Country option for a site address. */
-"Saudi Arabia" = "Suudi Arabistan";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -5886,12 +5397,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "E-posta doğrulama bağlantısı gönder";
 
-/* Country option for a site address. */
-"Senegal" = "Senegal";
-
-/* Country option for a site address. */
-"Serbia" = "Sırbistan";
-
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Hizmet Paketi";
 
@@ -5943,9 +5448,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Birkaç okuyucu bulundu";
-
-/* Country option for a site address. */
-"Seychelles" = "Seyşeller";
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
@@ -6086,9 +5588,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Diğer seçenekleri gösterir.";
 
-/* Country option for a site address. */
-"Sierra Leone" = "Sierra Leone";
-
 /* View title during the sign up process. */
 "Sign Up" = "Üye ol";
 
@@ -6113,9 +5612,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@ olarak oturum açıldı";
 
-/* Country option for a site address. */
-"Singapore" = "Singapur";
-
 /* Site Address title on the support form */
 "Site Address" = "Site Adresi";
 
@@ -6135,12 +5631,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "Şimdilik atla";
 
-/* Country option for a site address. */
-"Slovakia" = "Slovakya";
-
-/* Country option for a site address. */
-"Slovenia" = "Slovenya";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
@@ -6151,12 +5641,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "Yazılım güncellendi";
-
-/* Country option for a site address. */
-"Solomon Islands" = "Solomon Adaları";
-
-/* Country option for a site address. */
-"Somalia" = "Somali";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Bir e-posta adresi geçerli değil.";
@@ -6250,29 +5734,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "Sırala";
 
-/* Country option for a site address. */
-"South Africa" = "Güney Afrika";
-
-/* Country option for a site address. */
-"South Georgia\/Sandwich Islands" = "Güney Georgia\/Sandviç Adaları";
-
-/* Country option for a site address. */
-"South Korea" = "Güney Kore";
-
-/* Country option for a site address. */
-"South Sudan" = "Güney Sudan";
-
-/* Country option for a site address. */
-"Spain" = "İspanya";
-
 /* Verb, spam a comment */
 "Spam" = "İstenmeyen";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
-
-/* Country option for a site address. */
-"Sri Lanka" = "Sri Lanka";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standart oran";
@@ -6367,26 +5833,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice text after updating the order successfully */
 "Successfully updated" = "Başarıyla güncellendi";
 
-/* Country option for a site address. */
-"Sudan" = "Sudan";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Ürünlerin toplamı ve paket ağırlığı";
 
 /* In Order Details, the name of the billed person when there are no name and last name. */
 "SummaryTableViewCellViewModel.guestName" = "Misafir";
-
-/* Country option for a site address. */
-"Suriname" = "Surinam";
-
-/* Country option for a site address. */
-"Svalbard and Jan Mayen" = "Svalbard ve Jan Mayen";
-
-/* Country option for a site address. */
-"Swaziland" = "Svaziland";
-
-/* Country option for a site address. */
-"Sweden" = "İsveç";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Mağaza Değiştir";
@@ -6415,17 +5866,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Varsayılan Yazı Tipi Boyutuna geçer";
 
-/* Country option for a site address. */
-"Switzerland" = "İsviçre";
-
 /* No comment provided by engineer. */
 "Sync with Pinterest" = "Pinterest ile senkronizasyon";
 
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "Veriler senkronize ediliyor";
-
-/* Country option for a site address. */
-"Syria" = "Suriye";
 
 /* View system status report cell title on Help screen */
 "System Status Report" = "Sistem Durum Raporu";
@@ -6433,19 +5878,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "Sistem durum raporu panoya kopyalandı";
 
-/* Country option for a site address. */
-"São Tomé and Príncipe" = "São Tomé ve Príncipe";
-
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "Etiketler";
-
-/* Country option for a site address. */
-"Taiwan" = "Tayvan";
-
-/* Country option for a site address. */
-"Tajikistan" = "Tacikistan";
 
 /* Title for the simple payments screen */
 "Take Payment" = "Ödeme Al";
@@ -6462,9 +5898,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Bir ödeme almak için sizi geri yönlendiriliyorsunuz";
-
-/* Country option for a site address. */
-"Tanzania" = "Tanzanya";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "Ödemek için karta dokunun";
@@ -6614,9 +6047,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button's title text to send a 2FA code via SMS text message. */
 "Text me a code via SMS" = "Bana SMS ile kod gönder";
-
-/* Country option for a site address. */
-"Thailand" = "Tayland";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Düşüncelerinizi bizimle paylaştığınız için teşekkür ederiz";
@@ -6956,9 +6386,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Süre doldu, ancak endişelenmenize gerek yok. Güvenliğiniz önceliğimizdir. Lütfen yeniden deneyin!";
 
-/* Country option for a site address. */
-"Timor-Leste" = "Doğu Timor";
-
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "İpucu";
 
@@ -7039,15 +6466,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "Sıralanmamış liste stilini değiştirir";
 
-/* Country option for a site address. */
-"Togo" = "Togo";
-
-/* Country option for a site address. */
-"Tokelau" = "Tokelau";
-
-/* Country option for a site address. */
-"Tonga" = "Tonga";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Toplam Sipariş";
 
@@ -7089,9 +6507,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Plan name for an expired free trial */
 "Trial ended" = "Deneme süresi sonu";
-
-/* Country option for a site address. */
-"Trinidad and Tobago" = "Trinidad ve Tobago";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Sorun giderme";
@@ -7170,18 +6585,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Site adresi ile deneyin";
 
-/* Country option for a site address. */
-"Tunisia" = "Tunus";
-
-/* Country option for a site address. */
-"Turkey" = "Türkiye";
-
-/* Country option for a site address. */
-"Turkmenistan" = "Türkmenistan";
-
-/* Country option for a site address. */
-"Turks and Caicos Islands" = "Turks ve Caicos Adaları";
-
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Kart okuyucuyu çalıştırın ve mobil cihazın yanına koyun";
 
@@ -7193,9 +6596,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Kupon indirimdeki ürünler için geçerli değilse bunu açın. Ürün kuponları yalnızca ürün satışta değilse çalışır. Sepet kuponları yalnızca sepette satışta olmayan ürünler varsa çalışır.";
-
-/* Country option for a site address. */
-"Tuvalu" = "Tuvalu";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "İçerik türü";
@@ -7209,12 +6609,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A clickable text link that willredirect the user to a website */
 "USPS HAZMAT Search Tool" = "USPS Tehlikeli Madde Arama Aracı";
-
-/* Country option for a site address. */
-"Uganda" = "Uganda";
-
-/* Country option for a site address. */
-"Ukraine" = "Ukrayna";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Bağlanılamıyor";
@@ -7381,21 +6775,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "Beklenmedik hata";
 
-/* Country option for a site address. */
-"United Arab Emirates" = "Birleşik Arap Emirlikleri";
-
-/* Country option for a site address. */
-"United Kingdom" = "Birleşik Krallık";
-
-/* Country option for a site address. */
-"United States" = "Amerika Birleşik Devletleri";
-
-/* Country option for a site address. */
-"United States Minor Outlying Islands" = "Amerika Birleşik Devletleri Küçük Dış Adaları";
-
-/* Country option for a site address. */
-"United States Virgin Islands" = "Amerika Birleşik Devletleri Virjin Adaları";
-
 /* Unknown Application State
    Unknown product name, displayed in a review */
 "Unknown" = "Bilinmiyor";
@@ -7405,9 +6784,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Bilinmeyen Yazılım Sürümü";
-
-/* Fallback country option for a site address. */
-"Unknown country" = "Bilinmeyen ülke";
 
 /* Label to use when creation date from media asset is not know. */
 "Unknown creation date" = "Bilinmeyen oluşturma tarihi";
@@ -7492,6 +6868,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Tercihlerinizi güncelleyin";
 
+/* Description for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.description" = "Randevu planlandı ama henüz gerçekleşmedi.";
+
+/* Title for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.title" = "Rezerve Edildi";
+
+/* Description for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.description" = "Müşteri geldi ve oturum planlandığı gibi gerçekleşti.";
+
+/* Title for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.title" = "Giriş yaptı";
+
+/* Description for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.description" = "Müşteri önceden iptal etmeden randevuyu kaçırdı.";
+
+/* Title for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.title" = "Gelmedi";
+
+/* Title of the update attendance status bottom sheet. */
+"UpdateAttendanceStatusView.title" = "Katılım durumunu güncelle";
+
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Yazılım güncelleniyor";
 
@@ -7510,9 +6907,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Yukarı satışlar";
-
-/* Country option for a site address. */
-"Uruguay" = "Uruguay";
 
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "Kullanım Bilgileri";
@@ -7573,17 +6967,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Kullanıcı adı en az dört karakter olmalıdır. ";
 
-/* Country option for a site address. */
-"Uzbekistan" = "Özbekistan";
-
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "Doğrulanıyor";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Değer (birim başına %1$@)";
-
-/* Country option for a site address. */
-"Vanuatu" = "Vanuatu";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Varyasyon #%1$@";
@@ -7605,12 +6993,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Sitenizle ilgili çeşitli sistem bilgileri";
 
-/* Country option for a site address. */
-"Vatican" = "Vatikan";
-
-/* Country option for a site address. */
-"Venezuela" = "Venezuela";
-
 /* two factor code placeholder */
 "Verification code" = "Doğrulama kodu";
 
@@ -7628,9 +7010,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
 "Video, %@" = "Video, %@";
-
-/* Country option for a site address. */
-"Vietnam" = "Vietnam";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -7714,9 +7093,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* View title during the Google auth process. */
 "Waiting..." = "Bekliyor...";
-
-/* Country option for a site address. */
-"Wallis and Futuna" = "Wallis ve Futuna";
 
 /* Error message when the merchant's payment account has been rejected
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -7881,9 +7257,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Ağırlık: %1$@%2$@";
 
-/* Country option for a site address. */
-"Western Sahara" = "Batı Sahra";
-
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Gönderim, vergi ve ödeme ayarlarınıza bir adım önde başlamak için bu bilgileri kullanacağız.";
 
@@ -8016,9 +7389,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "Sene başından tarihe";
-
-/* Country option for a site address. */
-"Yemen" = "Yemen";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Evet, değiştir";
@@ -8215,12 +7585,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "Çok az kaldı! Şahsen Ödemeleri kabul etmeye başlamak için lütfen %1$@ kurulumunu tamamlayın.";
-
-/* Country option for a site address. */
-"Zambia" = "Zambiya";
-
-/* Country option for a site address. */
-"Zimbabwe" = "Zimbabve";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "İptal Et";
@@ -9260,6 +8624,48 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Yeniden Dene";
+
+/* Tab title for all bookings */
+"bookingListView.all" = "Tümü";
+
+/* Button to filter the booking list */
+"bookingListView.filter" = "Filtrele";
+
+/* Button to select the order of the booking list */
+"bookingListView.sortBy" = "Şuna göre sırala:";
+
+/* Tab title for today's bookings */
+"bookingListView.today" = "Bugün";
+
+/* Tab title for upcoming bookings */
+"bookingListView.upcoming" = "Yaklaşan";
+
+/* Title of the booking list view */
+"bookingListView.view.title" = "Rezervasyonlar";
+
+/* Status of a canceled booking */
+"bookingStatus.title.canceled" = "İptal edildi";
+
+/* Status of a complete booking */
+"bookingStatus.title.complete" = "Tamamlandı";
+
+/* Status of a confirmed booking */
+"bookingStatus.title.confirmed" = "Onaylandı";
+
+/* Status of a paid booking */
+"bookingStatus.title.paid" = "Ödendi";
+
+/* Status of a pending confirmation booking */
+"bookingStatus.title.pendingConfirmation" = "Onay bekleniyor";
+
+/* Status of a booking with unexpected status */
+"bookingStatus.title.unknown" = "Bilinmiyor";
+
+/* Status of an unpaid booking */
+"bookingStatus.title.unpaid" = "Ödenmemiş";
+
+/* Title of the Bookings tab */
+"bookingsTabViewHostingController.tab.title" = "Rezervasyonlar";
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "bottomSheetProductType.affiliate.description" = "Bir ürünü harici bir web sitesine bağlayın";
@@ -11660,9 +11066,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "Sepeti temizle";
 
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "Geri";
-
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "İnternet bağlantısı yok";
 
@@ -11701,9 +11104,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
 "pos.ineligible.suggestion.unsupportedCurrency.1" = "POS sistemi, mağazanızın para biriminde kullanılamıyor. %1$@ içinde şu anda yalnızca %2$@ desteklemektedir. Lütfen mağaza para birimi ayarlarınızı kontrol edin veya yardım için destek birimine başvurun.";
-
-/* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "POS sistemi iOS 17 veya daha yeni bir sürümünü gerektirir. Bu özelliği kullanmak için lütfen cihazınızı iOS 17 veya üzeri bir sürüme güncelleyin.";
 
 /* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
 "pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "WooCommerce sürümünüz desteklenmiyor. POS sistemi için WooCommerce %1$@ sürümü veya üzeri gerekiyor. Lütfen WooCommerce'ün en son sürümüne güncelleyin.";
@@ -11786,6 +11186,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Kapat";
 
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "Sipariş durumu: %1$@";
+
 /* Text appearing in the order details pane when there are no orders available. */
 "pos.orderDetailsEmptyView.noOrderToDisplay" = "Görüntülenecek sipariş yok";
 
@@ -11795,26 +11198,44 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "Ürünler";
 
-/* Title for the order details screen when no specific order is selected */
-"pos.orderDetailsLoadingView.title" = "Sipariş";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Toplamlar";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "İndirim toplamı: %1$@";
 
 /* Label for discount total in the totals section */
 "pos.orderDetailsView.discountTotalLabel" = "İndirim toplamı";
 
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Sipariş makbuzunu e-posta ile göndermek için dokunun";
+
 /* Label for email receipt action on order details view */
 "pos.orderDetailsView.emailReceiptAction.title" = "Faturayı e-posta ile gönderin";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Sipariş tarihi: %1$@, Durum: %2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Müşteri e-postası: %1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "Net ödeme: %1$@";
 
 /* Label for net payment amount after refunds */
 "pos.orderDetailsView.netPaymentLabel" = "Net Ödeme";
 
-/* Order title with order number. %1$@ is the order number. */
-"pos.orderDetailsView.orderTitle" = "Sipariş no: %1$@";
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "Toplam ödenen: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "Ödeme yöntemi: %1$@";
 
 /* Label for the paid amount */
-"pos.orderDetailsView.paidLabel" = "Ödenen Tutar";
+"pos.orderDetailsView.paidLabel2" = "Toplam ödenen";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "Miktar: %1$@ her biri %2$@, Toplam %3$@";
 
 /* Label for products subtotal in the totals section */
 "pos.orderDetailsView.productsLabel" = "Ürünler";
@@ -11828,11 +11249,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label for refund reason. %1$@ is the reason text. */
 "pos.orderDetailsView.reasonLabel" = "Neden: %1$@";
 
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "Geri ödeme yapıldı: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Neden: %1$@";
+
 /* Label for a refund entry. %1$lld is the refund ID. */
 "pos.orderDetailsView.refundLabel" = "Geri ödeme yapıldı";
 
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "Ürün ara toplamı: %1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "Vergiler: %1$@";
+
 /* Label for taxes in the totals section */
 "pos.orderDetailsView.taxesLabel" = "Vergiler";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "Sipariş toplamı: %1$@";
 
 /* Label for the order total */
 "pos.orderDetailsView.totalLabel" = "Toplam";
@@ -11864,8 +11300,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Henüz sipariş yok";
 
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "Sipariş ayrıntılarını görüntülemek için dokunun";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "Sipariş #%1$@, Toplam %2$@, %3$@, Durum: %4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "E-posta: %1$@";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "#%1$@";
+
 /* Title at the header for the Orders view. */
 "pos.orderListView.ordersTitle" = "Siparişler";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "Siparişleri ara";
 
 /* Placeholder for a search field in the Orders view. */
 "pos.orderListView.searchFieldPlaceholder" = "Siparişleri ara";
@@ -11933,9 +11384,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "Şu anda POS ile yalnızca basit ürünler ve varyasyonlu indirilemeyen ürünler kullanılabiliyor.";
 
-/* Title for the OK button on the simple products information modal in POS */
-"pos.simpleProductsModal.ok.button.title" = "Tamam";
-
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Ürünlerimi neden göremiyorum?";
 
@@ -11976,7 +11424,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.unsupportedWidth.title" = "Satış Noktası bu ekran genişliğinde desteklenmiyor.";
 
 /* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular" = "Hücresel verilerde tam senkronizasyona izin ver";
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Hücresel veri kullanılırken tam güncellemeye izin ver";
 
 /* Label for catalog size field in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.catalogSize" = "Katalog boyutu";
@@ -11985,13 +11433,13 @@ which should be translated separately and considered part of this sentence. */
 "posSettingsLocalCatalogDetailView.catalogStatus" = "Katalog Durumu";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync" = "Son tam eşleme";
+"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Son tam güncelleme";
 
 /* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalUpdate" = "Son artımlı güncelleme";
+"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Son güncelleme";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage" = "Veri kullanımını yönetme";
+"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Veri Kullanımını Yönetme";
 
 /* Section title for manual catalog update in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Manuel Katalog Güncellemesi";
@@ -12004,6 +11452,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the local catalog details in POS settings. */
 "posSettingsLocalCatalogDetailView.title" = "Katalog Ayarları";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d ürün, %2$ld varyasyon";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Katalog boyutu mevcut değil";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "Güncellenmedi";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Güncelleme tarihi mevcut değil";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Kapat";
@@ -14062,9 +13522,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google ile giriş yap.";
-
-/* Country option for a site address. */
-"Åland Islands" = "Åland Adaları";
 
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 Yeni vergi oranı ayarlama";

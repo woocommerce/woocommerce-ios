@@ -339,7 +339,26 @@ extension Networking.Booking {
             startDate: .fake(),
             statusKey: .fake(),
             localTimezone: .fake(),
-            currency: .fake()
+            currency: .fake(),
+            orderInfo: .fake()
+        )
+    }
+}
+extension Networking.BookingResource {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BookingResource {
+        .init(
+            siteID: .fake(),
+            resourceID: .fake(),
+            name: .fake(),
+            quantity: .fake(),
+            role: .fake(),
+            email: .fake(),
+            phoneNumber: .fake(),
+            imageID: .fake(),
+            imageURL: .fake(),
+            description: .fake()
         )
     }
 }

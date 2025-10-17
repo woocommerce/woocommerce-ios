@@ -1,31 +1,23 @@
 import Foundation
-import struct Networking.Booking
+import struct Yosemite.Booking
+import struct Yosemite.Customer
 
 extension BookingDetailsViewModel {
-    struct HeaderContent: Hashable {
+    final class HeaderContent: ObservableObject {
         let bookingDate: String
-        let serviceAndCustomerLine: String
         let status: [Status]
 
+        @Published var serviceAndCustomerLine: String
+
         init(_ booking: Booking) {
-            bookingDate = booking.startDate.formatted(
-                date: .numeric,
-                time: .shortened
+            bookingDate = booking.startDate.toString(
+                dateStyle: .short,
+                timeStyle: .short,
+                timeZone: BookingListTab.utcTimeZone
             )
 
-            /// Temporary hardcode
-            serviceAndCustomerLine = [
-                "Women's Haircut",
-                "Margarita Nikolaevna"
-            ].joined(separator: Constants.dotSeparator)
-
+            serviceAndCustomerLine = booking.summaryText
             status = [.booked, .payAtLocation]
         }
-    }
-}
-
-private extension BookingDetailsViewModel {
-    enum Constants {
-        static let dotSeparator: String = " • "
     }
 }

@@ -64,7 +64,10 @@ extension Storage.GeneralAppSettings {
         featureAnnouncementCampaignSettings: CopiableProp<[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]> = .copy,
         sitesWithAtLeastOneIPPTransactionFinished: CopiableProp<Set<Int64>> = .copy,
         isEUShippingNoticeDismissed: CopiableProp<Bool> = .copy,
-        isCustomFieldsTopBannerDismissed: CopiableProp<Bool> = .copy
+        isCustomFieldsTopBannerDismissed: CopiableProp<Bool> = .copy,
+        isPOSSurveyPotentialMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
+        isPOSSurveyCurrentMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
+        hasPOSBeenOpenedAtLeastOnce: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
@@ -77,6 +80,11 @@ extension Storage.GeneralAppSettings {
         let sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished ?? self.sitesWithAtLeastOneIPPTransactionFinished
         let isEUShippingNoticeDismissed = isEUShippingNoticeDismissed ?? self.isEUShippingNoticeDismissed
         let isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed ?? self.isCustomFieldsTopBannerDismissed
+        let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ??
+        self.isPOSSurveyPotentialMerchantNotificationScheduled
+        let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ??
+        self.isPOSSurveyCurrentMerchantNotificationScheduled
+        let hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce ?? self.hasPOSBeenOpenedAtLeastOnce
 
         return Storage.GeneralAppSettings(
             installationDate: installationDate,
@@ -89,7 +97,10 @@ extension Storage.GeneralAppSettings {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
             isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+            isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
+            isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
         )
     }
 }

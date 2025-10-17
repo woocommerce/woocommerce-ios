@@ -45,7 +45,7 @@ struct POSCouponImageView: View {
             .foregroundColor(foregroundColor)
             .overlay {
                 Image(systemName: "tag")
-                    .font(.posBodyXLarge)
+                    .font(.posBodyXLargeRegular)
                     .foregroundColor(tagColor)
             }
             .frame(width: size)

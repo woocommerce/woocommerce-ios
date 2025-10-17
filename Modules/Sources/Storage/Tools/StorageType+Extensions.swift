@@ -966,4 +966,10 @@ public extension StorageType {
         let objects = allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
         return objects.isEmpty ? nil : objects
     }
+
+    /// Retrieves the store booking resource
+    func loadBookingResource(siteID: Int64, resourceID: Int64) -> BookingResource? {
+        let predicate = \BookingResource.resourceID == resourceID && \BookingResource.siteID == siteID
+        return firstObject(ofType: BookingResource.self, matching: predicate)
+    }
 }

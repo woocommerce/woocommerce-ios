@@ -1,7 +1,6 @@
 import Foundation
 import Storage
 
-
 // MARK: - Storage.Booking: ReadOnlyConvertible
 //
 extension Storage.Booking: ReadOnlyConvertible {
@@ -49,6 +48,19 @@ extension Storage.Booking: ReadOnlyConvertible {
                 startDate: startDate ?? Date(),
                 statusKey: statusKey ?? "",
                 localTimezone: localTimezone ?? "",
-                currency: currency ?? "USD")
+                currency: currency ?? "USD",
+                orderInfo: orderInfo?.toReadOnly())
+    }
+}
+
+extension Yosemite.Booking: ReadOnlyType {
+    /// Indicates if the receiver is a representation of a specified Storage.Entity instance.
+    ///
+    public func isReadOnlyRepresentation(of storageEntity: Any) -> Bool {
+        guard let storageBooking = storageEntity as? Storage.Booking else {
+            return false
+        }
+
+        return siteID == Int(storageBooking.siteID) && bookingID == Int(storageBooking.bookingID)
     }
 }

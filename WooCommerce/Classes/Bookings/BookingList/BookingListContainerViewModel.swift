@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
@@ -6,12 +7,65 @@ final class BookingListContainerViewModel: ObservableObject {
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
 
+    private let todaySearchViewModel: BookingSearchViewModel
+    private let upcomingSearchViewModel: BookingSearchViewModel
+    private let allSearchViewModel: BookingSearchViewModel
+
     @Published var selectedTab: BookingListTab = .today
+    @Published var searchQuery: String = ""
+    @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
+
+    private let searchQuerySubject = PassthroughSubject<String, Never>()
+    private var searchQuerySubscription: AnyCancellable?
+    private var sortBySubscription: AnyCancellable?
 
     init(siteID: Int64) {
-        self.todayListViewModel = BookingListViewModel(siteID: siteID, type: .today)
-        self.upcomingListViewModel = BookingListViewModel(siteID: siteID, type: .upcoming)
-        self.allListViewModel = BookingListViewModel(siteID: siteID, type: .all)
+        let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
+        self.todayListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .today,
+        )
+        self.upcomingListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .upcoming,
+        )
+        self.allListViewModel = BookingListViewModel(
+            siteID: siteID,
+            type: .all,
+        )
+
+        self.todaySearchViewModel = BookingSearchViewModel(
+            siteID: siteID,
+            type: .today,
+            searchQueryPublisher: searchQueryPublisher
+        )
+        self.upcomingSearchViewModel = BookingSearchViewModel(
+            siteID: siteID,
+            type: .upcoming,
+            searchQueryPublisher: searchQueryPublisher
+        )
+        self.allSearchViewModel = BookingSearchViewModel(
+            siteID: siteID,
+            type: .all,
+            searchQueryPublisher: searchQueryPublisher
+        )
+
+        searchQuerySubscription = $searchQuery
+            .sink { [weak self] query in
+                self?.searchQuerySubject.send(query)
+            }
+
+        sortBySubscription = $sortBy
+            .removeDuplicates()
+            .sink { [weak self] sortBy in
+                guard let self else { return }
+                todayListViewModel.updateSortOrder(sortBy)
+                upcomingListViewModel.updateSortOrder(sortBy)
+                allListViewModel.updateSortOrder(sortBy)
+                todaySearchViewModel.updateSortOrder(sortBy)
+                upcomingSearchViewModel.updateSortOrder(sortBy)
+                allSearchViewModel.updateSortOrder(sortBy)
+            }
     }
 
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {
@@ -22,6 +76,17 @@ final class BookingListContainerViewModel: ObservableObject {
             upcomingListViewModel
         case .all:
             allListViewModel
+        }
+    }
+
+    func searchViewModel(for tab: BookingListTab) -> BookingSearchViewModel {
+        switch tab {
+        case .today:
+            todaySearchViewModel
+        case .upcoming:
+            upcomingSearchViewModel
+        case .all:
+            allSearchViewModel
         }
     }
 }

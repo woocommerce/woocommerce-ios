@@ -8,11 +8,21 @@ extension BookingDetailsViewModel {
         let actions: [Action]
 
         init(booking: Booking) {
+            let total = booking.orderInfo?.paymentInfo?.total ?? booking.cost
+            let totalTax = booking.orderInfo?.paymentInfo?.totalTax ?? "0"
+            let subtotal = booking.orderInfo?.paymentInfo?.subtotal ?? "0"
+            let discount: String = {
+                guard let totalDecimal = Decimal(string: total),
+                      let subtotalDecimal = Decimal(string: subtotal) else {
+                    return "-"
+                }
+                return (totalDecimal - subtotalDecimal).description
+            }()
             amounts = [
-                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost), type: .service),
-                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: "0"), type: .tax),
-                .init(value: "-", type: .discount),
-                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost), type: .total, emphasized: true),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: subtotal), type: .service),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: totalTax), type: .tax),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: discount), type: .discount),
+                .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: total), type: .total, emphasized: true),
             ]
 
             actions = [

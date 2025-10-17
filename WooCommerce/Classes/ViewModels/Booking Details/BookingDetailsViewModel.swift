@@ -1,10 +1,12 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
 
     private var booking: Booking
+    private var bookingResource: BookingResource?
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -15,16 +17,20 @@ final class BookingDetailsViewModel: ObservableObject {
     let navigationTitle: String
     @Published private(set) var sections: [Section] = []
 
-    init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
+    init(booking: Booking,
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.booking = booking
         self.stores = stores
 
         navigationTitle = Self.navigationTitle(for: booking)
-        setupSections(with: booking)
+        let resource = storage.viewStorage.loadBookingResource(siteID: booking.siteID, resourceID: booking.resourceID)?.toReadOnly()
+        self.bookingResource = resource
+        setupSections(with: booking, resource: resource)
         configureEntityListener()
     }
 
-    private func setupSections(with booking: Booking) {
+    private func setupSections(with booking: Booking, resource: BookingResource?) {
         let headerContent = HeaderContent(booking)
         let headerSection = Section(
             content: .header(headerContent)
@@ -32,7 +38,7 @@ final class BookingDetailsViewModel: ObservableObject {
 
         let appointmentDetailsSection = Section(
             header: .title(Localization.appointmentDetailsSectionHeaderTitle.uppercased()),
-            content: .appointmentDetails(AppointmentDetailsContent(booking))
+            content: .appointmentDetails(AppointmentDetailsContent(booking, resource: resource))
         )
 
         let customerSection: Section? = {
@@ -75,6 +81,9 @@ final class BookingDetailsViewModel: ObservableObject {
 
 extension BookingDetailsViewModel {
     func syncData() async {
+        if let resource = await fetchResource() {
+            self.bookingResource = resource // only update resource if fetching succeeds
+        }
         await syncBooking()
     }
 }
@@ -84,7 +93,7 @@ private extension BookingDetailsViewModel {
         entityListener.onUpsert = { [weak self] booking in
             guard let self else { return }
             self.booking = booking
-            self.setupSections(with: booking)
+            self.setupSections(with: booking, resource: bookingResource)
         }
     }
 
@@ -93,6 +102,25 @@ private extension BookingDetailsViewModel {
             try await retrieveBooking()
         } catch {
             DDLogError("⛔️ Error synchronizing Customer for Booking: \(error)")
+        }
+    }
+
+    @MainActor
+    func fetchResource() async -> BookingResource? {
+        do {
+            return try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(BookingAction.fetchResource(siteID: booking.siteID, resourceID: booking.resourceID) { result in
+                    switch result {
+                    case .success(let resource):
+                        continuation.resume(returning: resource)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                })
+            }
+        } catch {
+            DDLogError("⛔️ Error fetching resource for Booking: \(error)")
+            return nil
         }
     }
 

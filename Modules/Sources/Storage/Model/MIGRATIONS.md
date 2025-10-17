@@ -9,6 +9,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
   - Added `BookingProductInfo` entity.
   - Added `BookingPaymentInfo` entity.
   - Added `orderInfo` relationship to `Booking` entity.
+- @itsmeichigo 2025-10-16
+  - Added `BookingResource` entity.
 
 ## Model 127 (Release 23.4.0.0)
 - @itsmeichigo 2025-09-23

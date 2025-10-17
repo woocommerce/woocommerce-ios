@@ -44,4 +44,12 @@ public enum BookingAction: Action {
                         startDateAfter: String? = nil,
                         order: BookingsRemote.Order = .descending,
                         onCompletion: (Result<[Booking], Error>) -> Void)
+
+    /// Fetches a booking resource by resource ID.
+    ///
+    /// - Parameter onCompletion: called when fetch completes, returns an error or the booking resource.
+    ///
+    case fetchResource(siteID: Int64,
+                       resourceID: Int64,
+                       onCompletion: (Result<BookingResource, Error>) -> Void)
 }

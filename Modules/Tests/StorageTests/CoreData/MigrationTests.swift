@@ -2256,6 +2256,31 @@ final class MigrationTests: XCTestCase {
         let updatedOrderInfo = migratedBooking.value(forKey: "orderInfo") as? NSManagedObject
         XCTAssertEqual(updatedOrderInfo, orderInfo)
     }
+
+    func test_migrating_127_to_128_adds_new_bookingResource_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingResource should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingResource", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingResource"), 0)
+
+        let resource = insertBookingResource(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingResource"), 1)
+        let insertedResource = try XCTUnwrap(targetContext.first(entityName: "BookingResource"))
+        XCTAssertEqual(insertedResource, resource)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3226,6 +3251,16 @@ private extension MigrationTests {
             "subtotalTax": "10.00",
             "total": "110.00",
             "totalTax": "10.00"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingResource(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingResource", properties: [
+            "siteID": 1,
+            "resourceID": 22,
+            "name": "Joel (Sample resource)",
+            "quantity": 1
         ])
     }
 }

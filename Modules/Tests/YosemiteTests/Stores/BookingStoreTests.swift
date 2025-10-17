@@ -762,6 +762,13 @@ private extension BookingStoreTests {
         storedProduct.update(with: product)
         return storedProduct
     }
+
+    @discardableResult
+    func storeBookingResource(_ resource: Networking.BookingResource) -> Storage.BookingResource {
+        let storedResource = storage.insertNewObject(ofType: Storage.BookingResource.self)
+        storedResource.update(with: resource)
+        return storedResource
+    }
 }
 
 private class MockOrdersRemote: OrdersRemoteProtocol {

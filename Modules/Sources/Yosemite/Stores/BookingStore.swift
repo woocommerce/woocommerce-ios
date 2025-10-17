@@ -61,6 +61,8 @@ public class BookingStore: Store {
                            startDateAfter: startDateAfter,
                            order: order,
                            onCompletion: onCompletion)
+        case let .fetchResource(siteID, resourceID, onCompletion):
+            fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
         }
     }
 }
@@ -214,6 +216,36 @@ private extension BookingStore {
             }
         }
     }
+
+    /// Fetches a booking resource by resource ID and saves it to storage.
+    ///
+    func fetchResource(siteID: Int64,
+                       resourceID: Int64,
+                       onCompletion: @escaping (Result<BookingResource, Error>) -> Void) {
+        enum FetchResourceError: Error {
+            case resourceIsMissing
+        }
+
+        Task { @MainActor in
+            do {
+                let resource = try await remote.fetchResource(
+                    resourceID: resourceID,
+                    siteID: siteID
+                )
+
+                guard let resource else {
+                    onCompletion(.failure(FetchResourceError.resourceIsMissing))
+                    return
+                }
+
+                await upsertBookingResourceInBackground(readOnlyBookingResource: resource)
+
+                onCompletion(.success(resource))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 
@@ -307,6 +339,23 @@ private extension BookingStore {
             }
 
             storageBooking.update(with: readOnlyBooking)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly BookingResource Entities *in a background thread* async.
+    func upsertBookingResourceInBackground(readOnlyBookingResource: BookingResource) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume()
+            }
+
+            storageManager.performAndSave({ storage in
+                let storedItem = storage.loadBookingResource(siteID: readOnlyBookingResource.siteID, resourceID: readOnlyBookingResource.resourceID)
+                let storageResource = storedItem ?? storage.insertNewObject(ofType: Storage.BookingResource.self)
+                storageResource.update(with: readOnlyBookingResource)
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

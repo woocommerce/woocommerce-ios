@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.5
+This update brings smoother store management and better control. You can now filter orders by source, and manage all POS orders directly within the POS interface. Plus, we fixed a scrolling issue on the Create Coupon screen for a more seamless experience.
+
 ## 23.4
 This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.
 

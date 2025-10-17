@@ -118,18 +118,24 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
             .tracking { [weak self] database -> [POSProduct] in
                 guard let self else { return [] }
 
-                let persistedProducts = try PersistedProduct
+                struct ProductWithRelations: Decodable, FetchableRecord {
+                    let product: PersistedProduct
+                    let images: [PersistedImage]?
+                    let attributes: [PersistedProductAttribute]?
+                }
+
+                let productsWithRelations = try PersistedProduct
                     .posProductsRequest(siteID: siteID)
                     .limit(pageSize * currentPage)
+                    .including(all: PersistedProduct.images)
+                    .including(all: PersistedProduct.attributes)
+                    .asRequest(of: ProductWithRelations.self)
                     .fetchAll(database)
 
-                return try persistedProducts.map { persistedProduct in
-                    let images = try persistedProduct.request(for: PersistedProduct.images).fetchAll(database)
-                    let attributes = try persistedProduct.request(for: PersistedProduct.attributes).fetchAll(database)
-
-                    return persistedProduct.toPOSProduct(
-                        images: images.map { $0.toProductImage() },
-                        attributes: attributes.map { $0.toProductAttribute(siteID: persistedProduct.siteID) }
+                return productsWithRelations.map { record in
+                    record.product.toPOSProduct(
+                        images: (record.images ?? []).map { $0.toProductImage() },
+                        attributes: (record.attributes ?? []).map { $0.toProductAttribute(siteID: record.product.siteID) }
                     )
                 }
             }
@@ -160,18 +166,24 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
             .tracking { [weak self] database -> [POSProductVariation] in
                 guard let self else { return [] }
 
-                let persistedVariations = try PersistedProductVariation
+                struct VariationWithRelations: Decodable, FetchableRecord {
+                    let persistedProductVariation: PersistedProductVariation
+                    let attributes: [PersistedProductVariationAttribute]?
+                    let image: PersistedImage?
+                }
+
+                let variationsWithRelations = try PersistedProductVariation
                     .posVariationsRequest(siteID: self.siteID, parentProductID: parentProduct.productID)
                     .limit(self.pageSize * currentPage)
+                    .including(all: PersistedProductVariation.attributes)
+                    .including(optional: PersistedProductVariation.image)
+                    .asRequest(of: VariationWithRelations.self)
                     .fetchAll(database)
 
-                return try persistedVariations.map { persistedVariation in
-                    let attributes = try persistedVariation.request(for: PersistedProductVariation.attributes).fetchAll(database)
-                    let image = try persistedVariation.request(for: PersistedProductVariation.image).fetchOne(database)
-
-                    return persistedVariation.toPOSProductVariation(
-                        attributes: attributes.map { $0.toProductVariationAttribute() },
-                        image: image?.toProductImage()
+                return variationsWithRelations.map { record in
+                    record.persistedProductVariation.toPOSProductVariation(
+                        attributes: (record.attributes ?? []).map { $0.toProductVariationAttribute() },
+                        image: record.image?.toProductImage()
                     )
                 }
             }

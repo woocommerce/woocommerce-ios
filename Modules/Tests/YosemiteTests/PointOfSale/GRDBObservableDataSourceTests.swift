@@ -315,15 +315,8 @@ struct GRDBObservableDataSourceTests {
         // Then: Should show 5 variations for parent 2 (first page, excluding downloadable)
         #expect(sut.variationItems.count == 5)
 
-        // Then: hasMoreVariations should be false because we loaded all 5 variations
-        #expect(sut.hasMoreVariations == false)
-
-        // When: Load more for parent 2
-        let hasMoreBefore = sut.hasMoreVariations
-        sut.loadMoreVariations()
-
-        // Then: Should still not have more (no second page to load)
-        #expect(hasMoreBefore == false)
+        // Then: hasMoreVariations should be false because we loaded all 5 variations (exactly one page)
+        #expect(sut.hasMoreVariations == false, "Parent 2 has exactly 5 variations, should fit in one page")
 
         // Then: Verify downloadable variations were excluded from the items
         // Total variations in DB: 3 + 5 + 2 + 3 = 13, but only 5 non-downloadable for parent 2 should be loaded
@@ -377,6 +370,197 @@ struct GRDBObservableDataSourceTests {
 
         // Then: Should not have more variations
         #expect(sut.hasMoreVariations == false, "All 8 variations loaded, no more pages")
+    }
+
+    @Test("Products load with associated images and attributes")
+    func test_products_load_with_images_and_attributes() async throws {
+        // Given: Products with images and attributes
+        // Note: Products are ordered alphabetically by name, so "Hoodie" comes before "T-Shirt"
+        let hoodie = createPersistedProduct(id: 1, name: "Hoodie", type: "variable")
+        let tshirt = createPersistedProduct(id: 2, name: "T-Shirt", type: "simple")
+        try await insertProducts([hoodie, tshirt])
+
+        // Create images for products
+        try await insertImage(id: 100, src: "https://example.com/hoodie.jpg", name: "Hoodie Main")
+        try await insertImage(id: 200, src: "https://example.com/tshirt-front.jpg", name: "T-Shirt Front")
+        try await insertImage(id: 201, src: "https://example.com/tshirt-back.jpg", name: "T-Shirt Back")
+
+        // Link images to products
+        try await linkImageToProduct(imageID: 100, productID: 1)
+        try await linkImageToProduct(imageID: 200, productID: 2)
+        try await linkImageToProduct(imageID: 201, productID: 2)
+
+        // Create attributes for products
+        try await insertProductAttribute(
+            productID: 1,
+            remoteAttributeID: 1,
+            name: "Material",
+            position: 0,
+            variation: true,
+            options: ["Cotton", "Polyester"]
+        )
+        try await insertProductAttribute(
+            productID: 2,
+            remoteAttributeID: 2,
+            name: "Color",
+            position: 0,
+            options: ["Red", "Blue", "Green"]
+        )
+        try await insertProductAttribute(
+            productID: 2,
+            remoteAttributeID: 3,
+            name: "Size",
+            position: 1,
+            options: ["S", "M", "L", "XL"]
+        )
+
+        // When: Load products
+        await waitForProductLoad(expectedCount: 2) {
+            sut.loadProducts()
+        }
+
+        // Then: Products loaded with correct count
+        #expect(sut.productItems.count == 2)
+
+        // Then: Verify first product (Hoodie - alphabetically first) loads with image
+        guard case .variableParentProduct(let hoodieItem) = sut.productItems[0] else {
+            Issue.record("First item should be variable product (Hoodie)")
+            return
+        }
+
+        #expect(hoodieItem.name == "Hoodie")
+        #expect(hoodieItem.productImageSource == "https://example.com/hoodie.jpg",
+                "Should load image via .including()")
+        #expect(hoodieItem.allAttributes.count == 1, "Should load attributes via .including()")
+        #expect(hoodieItem.allAttributes.first?.name == "Material")
+        #expect(hoodieItem.allAttributes.first?.options == ["Cotton", "Polyester"])
+
+        // Then: Verify second product (T-Shirt - alphabetically second) loads with image and attributes
+        guard case .simpleProduct(let tshirtItem) = sut.productItems[1] else {
+            Issue.record("Second item should be simple product (T-Shirt)")
+            return
+        }
+
+        #expect(tshirtItem.name == "T-Shirt")
+        #expect(tshirtItem.productImageSource == "https://example.com/tshirt-front.jpg",
+                "Should load first image via .including()")
+    }
+
+    @Test("Variations load with associated images")
+    func test_variations_load_with_images() async throws {
+        // Given: Variable product with variations that have images
+        let parent = createPersistedProduct(id: 100, name: "Variable Hoodie", type: "variable")
+        try await insertProducts([parent])
+
+        // Create variations
+        try await grdbManager.databaseConnection.write { db in
+            // Variation 1: Red, Small
+            let variation1 = PersistedProductVariation(
+                id: 1001,
+                siteID: siteID,
+                productID: 100,
+                sku: "VAR-RED-S",
+                globalUniqueID: nil,
+                price: "29.99",
+                downloadable: false,
+                fullDescription: nil,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try variation1.insert(db)
+
+            // Variation 2: Blue, Large
+            let variation2 = PersistedProductVariation(
+                id: 1002,
+                siteID: siteID,
+                productID: 100,
+                sku: "VAR-BLUE-L",
+                globalUniqueID: nil,
+                price: "34.99",
+                downloadable: false,
+                fullDescription: nil,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try variation2.insert(db)
+        }
+
+        // Create and link images for variations
+        try await insertImage(id: 1001, src: "https://example.com/red-small.jpg", name: "Red Small")
+        try await insertImage(id: 1002, src: "https://example.com/blue-large.jpg", name: "Blue Large")
+        try await linkImageToVariation(imageID: 1001, variationID: 1001)
+        try await linkImageToVariation(imageID: 1002, variationID: 1002)
+
+        // Create parent product attributes (for variation name generation)
+        // Note: variation: true is required for attributes to be included in allAttributes
+        try await insertProductAttribute(
+            productID: 100,
+            remoteAttributeID: 1,
+            name: "Color",
+            position: 0,
+            variation: true,
+            options: ["Red", "Blue"]
+        )
+        try await insertProductAttribute(
+            productID: 100,
+            remoteAttributeID: 2,
+            name: "Size",
+            position: 1,
+            variation: true,
+            options: ["Small", "Large"]
+        )
+
+        // Create attributes for variations
+        try await insertVariationAttribute(variationID: 1001, remoteAttributeID: 1, name: "Color", option: "Red")
+        try await insertVariationAttribute(variationID: 1001, remoteAttributeID: 2, name: "Size", option: "Small")
+        try await insertVariationAttribute(variationID: 1002, remoteAttributeID: 1, name: "Color", option: "Blue")
+        try await insertVariationAttribute(variationID: 1002, remoteAttributeID: 2, name: "Size", option: "Large")
+
+        // Load the parent product first to get its attributes
+        await waitForProductLoad(expectedCount: 1) {
+            sut.loadProducts()
+        }
+
+        guard case .variableParentProduct(let loadedParent) = sut.productItems.first else {
+            Issue.record("Expected variable parent product")
+            return
+        }
+
+        let posParent = loadedParent
+
+        // When: Load variations
+        await waitForVariationLoad {
+            sut.loadVariations(for: posParent)
+        }
+
+        // Then: Variations loaded with correct count
+        #expect(sut.variationItems.count == 2)
+
+        // Then: Verify first variation has image and attributes
+        guard case .variation(let variation1) = sut.variationItems[0] else {
+            Issue.record("First item should be variation")
+            return
+        }
+
+        #expect(variation1.price == "29.99")
+        #expect(variation1.productImageSource == "https://example.com/red-small.jpg",
+                "Should load variation-specific image via .including()")
+        #expect(variation1.name.contains("Red"), "Variation name should include 'Red' from attributes loaded via .including()")
+        #expect(variation1.name.contains("Small"), "Variation name should include 'Small' from attributes loaded via .including()")
+
+        // Then: Verify second variation has image and attributes
+        guard case .variation(let variation2) = sut.variationItems[1] else {
+            Issue.record("Second item should be variation")
+            return
+        }
+
+        #expect(variation2.price == "34.99")
+        #expect(variation2.productImageSource == "https://example.com/blue-large.jpg",
+                "Should load variation-specific image via .including()")
+        #expect(variation2.name.contains("Blue"), "Variation name should include 'Blue' from attributes loaded via .including()")
+        #expect(variation2.name.contains("Large"), "Variation name should include 'Large' from attributes loaded via .including()")
     }
 
     // MARK: - Helper Methods
@@ -528,5 +712,89 @@ struct GRDBObservableDataSourceTests {
             stockQuantity: nil,
             stockStatusKey: "instock"
         )
+    }
+
+    // MARK: - Image Helpers
+
+    private func insertImage(id: Int64, src: String, name: String?) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            let image = PersistedImage(
+                siteID: siteID,
+                id: id,
+                dateCreated: Date(),
+                dateModified: nil,
+                src: src,
+                name: name,
+                alt: nil
+            )
+            try image.insert(db)
+        }
+    }
+
+    private func linkImageToProduct(imageID: Int64, productID: Int64) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            let link = PersistedProductImage(
+                siteID: siteID,
+                productID: productID,
+                imageID: imageID
+            )
+            try link.insert(db)
+        }
+    }
+
+    private func linkImageToVariation(imageID: Int64, variationID: Int64) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            let link = PersistedProductVariationImage(
+                siteID: siteID,
+                productVariationID: variationID,
+                imageID: imageID
+            )
+            try link.insert(db)
+        }
+    }
+
+    // MARK: - Attribute Helpers
+
+    private func insertProductAttribute(
+        productID: Int64,
+        remoteAttributeID: Int64,
+        name: String,
+        position: Int64,
+        variation: Bool = false,
+        options: [String]
+    ) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            var attribute = PersistedProductAttribute(
+                id: nil,
+                siteID: siteID,
+                productID: productID,
+                remoteAttributeID: remoteAttributeID,
+                name: name,
+                position: position,
+                visible: true,
+                variation: variation,
+                options: options
+            )
+            try attribute.insert(db)
+        }
+    }
+
+    private func insertVariationAttribute(
+        variationID: Int64,
+        remoteAttributeID: Int64,
+        name: String,
+        option: String
+    ) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            var attribute = PersistedProductVariationAttribute(
+                id: nil,
+                siteID: siteID,
+                productVariationID: variationID,
+                remoteAttributeID: remoteAttributeID,
+                name: name,
+                option: option
+            )
+            try attribute.insert(db)
+        }
     }
 }

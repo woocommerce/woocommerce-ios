@@ -675,7 +675,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // Cleanup
         kvoObservation?.invalidate()
-        waitForUserDefaultsOperations()
     }
 
     func test_no_deadlock_with_concurrent_kvo_observers_and_flag_operations() {
@@ -717,7 +716,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // Cleanup
         observations.forEach { $0.invalidate() }
-        waitForUserDefaultsOperations()
     }
 }
 

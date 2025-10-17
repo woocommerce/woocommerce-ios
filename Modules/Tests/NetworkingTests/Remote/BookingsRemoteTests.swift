@@ -95,7 +95,7 @@ struct BookingsRemoteTests {
         // Given
         let remote = BookingsRemote(network: network)
         let resourceID: Int64 = 22
-        network.simulateResponse(requestUrlSuffix: "resources/\(resourceID)", filename: "booking-resource")
+        network.simulateResponse(requestUrlSuffix: "resources/team-members/\(resourceID)", filename: "booking-resource")
 
         // When
         let resource = try await remote.fetchResource(resourceID: resourceID, siteID: sampleSiteID)

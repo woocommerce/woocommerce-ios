@@ -1,6 +1,7 @@
 import Testing
 import GameController
 @testable import PointOfSale
+import WooFoundation
 
 struct GameControllerBarcodeParserTests {
 

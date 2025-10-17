@@ -618,6 +618,11 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         // Simulates an incremental sync operation with a 0.5 second delay.
         try await Task.sleep(nanoseconds: 500_000_000)
     }
+
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+        // Simulates a smart sync operation with a 1 second delay.
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+    }
 }
 
 #endif

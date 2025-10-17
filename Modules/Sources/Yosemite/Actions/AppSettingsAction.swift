@@ -369,15 +369,31 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Point of Sale Surveys
 
-    /// Sets the POS survey notification as scheduled
+    /// Sets the POS survey notification as scheduled for potential merchants
     ///
-    case setPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+    case setPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Gets whether the POS survey notification has been scheduled
+    /// Gets whether the POS survey notification has been scheduled for potential merchants
     ///
-    case getPOSSurveyNotificationScheduled(onCompletion: (Bool) -> Void)
+    case getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: (Bool) -> Void)
 
-    /// Resets the POS survey notification scheduled state
+    /// Sets the POS survey notification as scheduled for current merchants
+    ///
+    case setPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether the POS survey notification has been scheduled for current merchants
+    ///
+    case getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: (Bool) -> Void)
+
+    /// Sets that POS mode has been opened at least once
+    ///
+    case setHasPOSBeenOpenedAtLeastOnce(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether POS mode has been opened at least once
+    ///
+    case getHasPOSBeenOpenedAtLeastOnce(onCompletion: (Bool) -> Void)
+
+    /// Resets all POS survey notification scheduled states
     /// At the moment this one is used for testing only. To remove in WOOMOB-1480
     case resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
 }

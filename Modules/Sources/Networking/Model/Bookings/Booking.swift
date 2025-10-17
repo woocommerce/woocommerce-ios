@@ -20,12 +20,17 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let resourceID: Int64
     public let startDate: Date
     public let statusKey: String
+    public let attendanceStatusKey: String
     public let localTimezone: String
     public let currency: String
     public let orderInfo: BookingOrderInfo?
 
     public var bookingStatus: BookingStatus {
         return BookingStatus(rawValue: statusKey) ?? .unknown
+    }
+
+    public var attendanceStatus: BookingAttendanceStatus {
+        return BookingAttendanceStatus(rawValue: attendanceStatusKey) ?? .unknown
     }
 
     /// Booking struct initializer.
@@ -46,6 +51,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                 resourceID: Int64,
                 startDate: Date,
                 statusKey: String,
+                attendanceStatusKey: String,
                 localTimezone: String,
                 currency: String,
                 orderInfo: BookingOrderInfo?) {
@@ -65,6 +71,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         self.resourceID = resourceID
         self.startDate = startDate
         self.statusKey = statusKey
+        self.attendanceStatusKey = attendanceStatusKey
         self.localTimezone = localTimezone
         self.currency = currency
         self.orderInfo = orderInfo
@@ -99,6 +106,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         let resourceID = try container.decode(Int64.self, forKey: .resourceID)
         let startDate = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .startDate))
         let statusKey = try container.decode(String.self, forKey: .statusKey)
+        let attendanceStatusKey = try container.decode(String.self, forKey: .attendanceStatusKey)
         let localTimezone = try container.decode(String.self, forKey: .localTimezone)
         let currency = try container.decode(String.self, forKey: .currency)
         let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
@@ -142,6 +150,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         try container.encode(resourceID, forKey: .resourceID)
         try container.encode(startDate, forKey: .startDate)
         try container.encode(statusKey, forKey: .statusKey)
+        try container.encode(attendanceStatusKey, forKey: .attendanceStatusKey)
         try container.encode(localTimezone, forKey: .localTimezone)
     }
 }
@@ -171,6 +180,7 @@ private extension Booking {
         case resourceID = "resource_id"
         case startDate = "start"
         case statusKey = "status"
+        case attendanceStatusKey = "attendance_status"
         case localTimezone = "local_timezone"
         case currency
     }
@@ -185,7 +195,6 @@ enum BookingDecodingError: Error {
 // MARK: - Supporting Types
 //
 
-// periphery: ignore
 /// Represents a Booking Status.
 public enum BookingStatus: String, CaseIterable {
     case complete
@@ -194,5 +203,13 @@ public enum BookingStatus: String, CaseIterable {
     case cancelled
     case pendingConfirmation = "pending-confirmation"
     case confirmed
+    case unknown
+}
+
+public enum BookingAttendanceStatus: String, CaseIterable {
+    case booked
+    case checkedIn = "checked_in"
+    case cancelled
+    case noShow = "no_show"
     case unknown
 }

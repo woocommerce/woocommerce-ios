@@ -101,17 +101,6 @@ struct PaymentMethodsView: View {
                     ) {
                         AttributedText(viewModel.learnMoreViewModel.learnMoreAttributedString)
                     }.padding(.horizontal)
-
-                    NavigationLink(isActive: $showingCashAlert) {
-                        CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total, formattedTotal: viewModel.formattedTotal) { info in
-                            Task { @MainActor in
-                                await viewModel.markOrderAsPaidByCash(with: info)
-                                dismiss()
-                            }
-                        })
-                    } label: {
-                        EmptyView()
-                    }.hidden()
                 }
 
                 // Pushes content to the top
@@ -144,6 +133,15 @@ struct PaymentMethodsView: View {
                 viewModel.performScanToPayFinishedTasks()
             }
                 .background(FullScreenCoverClearBackgroundView())
+        }
+        .navigationDestination(isPresented: $showingCashAlert) {
+            CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total,
+                                                                        formattedTotal: viewModel.formattedTotal) { info in
+                Task { @MainActor in
+                    await viewModel.markOrderAsPaidByCash(with: info)
+                    dismiss()
+                }
+            })
         }
         .onAppear {
             guard rootViewController != nil else {
@@ -252,28 +250,16 @@ extension PaymentMethodsView {
     }
 }
 
-// MARK: Previews
-struct PaymentMethodsView_Preview: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
-                .navigationBarTitleDisplayMode(.inline)
-        }
-        .environment(\.colorScheme, .light)
-        .previewDisplayName("Light")
-
-        NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
-                .navigationBarTitleDisplayMode(.inline)
-        }
-        .environment(\.colorScheme, .dark)
-        .previewDisplayName("Dark")
-
-        NavigationView {
-            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment, channel: .storeManagement))
-                .navigationBarTitleDisplayMode(.inline)
-        }
-        .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
-        .previewDisplayName("Accessibility")
+#Preview {
+    @Previewable @State var rootViewController = UIViewController()
+    NavigationStack {
+        PaymentMethodsView(
+            rootViewController: rootViewController,
+            viewModel: PaymentMethodsViewModel(total: "15.99",
+                                                formattedTotal: "$15.99",
+                                                flow: .orderPayment,
+                                                channel: .storeManagement)
+        )
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

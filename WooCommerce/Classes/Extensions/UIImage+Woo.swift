@@ -717,12 +717,6 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Shopping cart Purple
-    ///
-    static var shoppingCartFilled: UIImage {
-        return UIImage(named: "icon-shopping-cart-filled")!
-    }
-
     /// Bordered Custom Amount
     ///
     static var borderedCustomAmount: UIImage {

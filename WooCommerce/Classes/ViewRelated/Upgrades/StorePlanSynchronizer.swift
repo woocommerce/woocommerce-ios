@@ -5,6 +5,7 @@ import Experiments
 
 /// Protocol for used to mock `StorePlanSynchronizer`.
 ///
+// periphery:ignore
 protocol StorePlanSynchronizing {
     /// Publisher for the current synced plan.
     var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> { get }
@@ -55,13 +56,8 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
-
-    init(stores: StoresManager = ServiceLocator.stores,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.inAppPurchaseManager = inAppPurchaseManager
 
         stores.site.sink { [weak self] site in
             guard let self else { return }

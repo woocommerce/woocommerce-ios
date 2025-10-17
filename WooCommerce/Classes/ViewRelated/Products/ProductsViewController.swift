@@ -195,10 +195,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @Published private var dataLoadingError: Error?
 
-    /// Store plan banner presentation handler.
-    ///
-    private var storePlanBannerPresenter: StorePlanBannerPresenter?
-
     private var subscriptions: Set<AnyCancellable> = []
 
     private var addProductCoordinator: AddProductCoordinator?
@@ -250,7 +246,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureToolbar()
         configureScrollWatcher()
         configurePaginationTracker()
-        configureStorePlanBannerPresenter()
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
@@ -802,14 +797,6 @@ private extension ProductsViewController {
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
-
-    func configureStorePlanBannerPresenter() {
-        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
-                                                                  containerView: view,
-                                                                  siteID: siteID) { [weak self] bannerHeight in
-            self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
-        }
-    }
 }
 
 // MARK: - Updates
@@ -1314,9 +1301,6 @@ private extension ProductsViewController {
         let config = createFilterConfig()
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
-
-        // Make sure the banner is on top of the empty state view
-        storePlanBannerPresenter?.bringBannerToFront()
     }
 
     func createFilterConfig() ->  EmptyStateViewController.Config {

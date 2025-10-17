@@ -13,6 +13,4 @@ public enum WooConstants {
     /// Slug of the free plan
     public static let freePlanSlug = "free_plan"
 
-    /// Slug of the free trial WooExpress plan
-    public static let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
 }

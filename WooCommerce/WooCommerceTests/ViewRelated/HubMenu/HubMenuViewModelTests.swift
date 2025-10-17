@@ -536,61 +536,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_menuElements_include_subscriptions_on_wp_com_sites_if_not_free_trial() {
-        // Given
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_does_not_include_subscriptions_on_wp_com_free_trial_sites() {
-        // Given
-        let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
-        // Given
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
     func test_menuElements_include_customers() {
         // Given
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -653,7 +598,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
             .settings: HubMenuViewModel.Settings(),
             .payments: HubMenuViewModel.Payments(),
-            .subscriptions: HubMenuViewModel.Subscriptions(),
             .blaze: HubMenuViewModel.Blaze(),
             .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
             .viewStore: HubMenuViewModel.ViewStore(),
@@ -799,7 +743,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let otherMenuItems: [HubMenuItem] = [
             HubMenuViewModel.Settings(),
             HubMenuViewModel.Payments(),
-            HubMenuViewModel.Subscriptions(),
             HubMenuViewModel.Blaze(),
             HubMenuViewModel.WoocommerceAdmin(),
             HubMenuViewModel.ViewStore(),

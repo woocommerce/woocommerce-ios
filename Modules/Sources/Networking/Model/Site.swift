@@ -265,12 +265,6 @@ public extension Site {
     var isSimpleSite: Bool {
         plan == WooConstants.freePlanSlug
     }
-
-    /// Whether the site is running a free trial WooExpress plan
-    ///
-    var isFreeTrialSite: Bool {
-        plan == WooConstants.freeTrialPlanSlug
-    }
 }
 
 /// Defines all of the Site CodingKeys.

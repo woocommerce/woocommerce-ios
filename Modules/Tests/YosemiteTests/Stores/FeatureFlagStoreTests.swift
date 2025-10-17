@@ -67,20 +67,4 @@ final class FeatureFlagStoreTests: XCTestCase {
         // Then
         XCTAssertFalse(isEnabled)
     }
-
-    func test_isRemoteFeatureFlagEnabled_returns_default_value_when_remote_response_does_not_include_input_flag() throws {
-        // Given
-        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.hardcodedPlanUpgradeDetailsMilestone1AreAccurate: true]))
-
-        // When
-        let isEnabled = waitFor { promise in
-            self.store.onAction(FeatureFlagAction
-                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false) { result in
-                    promise(result)
-                })
-        }
-
-        // Then
-        XCTAssertFalse(isEnabled)
-    }
 }

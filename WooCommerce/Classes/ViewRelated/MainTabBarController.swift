@@ -151,7 +151,7 @@ final class MainTabBarController: UITabBarController {
 
     private var posTabVisibilityChecker: POSTabVisibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
-    private var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
@@ -721,10 +721,8 @@ private extension MainTabBarController {
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
 
-            // Trigger POS catalog sync if tab is visible and feature flag is enabled
-            if isPOSTabVisible, ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-                await triggerPOSCatalogSyncIfNeeded(for: siteID)
-            }
+            // Begin foreground synchronization if POS tab becomes visible
+            await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
         }
     }
 
@@ -817,10 +815,6 @@ private extension MainTabBarController {
                                                                                    navigateToContent: { _ in })]
         }
 
-        // Configure POS catalog sync coordinator for local catalog syncing
-        // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
-        posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
-
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {
             let hubTabCoordinator = createHubMenuTabCoordinator()
@@ -850,26 +844,6 @@ private extension MainTabBarController {
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
         OrdersSplitViewWrapperController(siteID: siteID)
-    }
-
-    func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
-        guard let coordinator = posCatalogSyncCoordinator else {
-            return
-        }
-
-        // Check if sync is needed (older than 24 hours)
-        let maxAge: TimeInterval = 24 * 60 * 60
-
-        // Perform background sync
-        Task.detached {
-            do {
-                _ = try await coordinator.performFullSyncIfApplicable(for: siteID, maxAge: maxAge)
-            } catch POSCatalogSyncError.syncAlreadyInProgress {
-                DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
-            } catch {
-                DDLogError("⚠️ POS catalog sync failed: \(error)")
-            }
-        }
     }
 
     func createBookingsViewController(siteID: Int64) -> UIViewController {

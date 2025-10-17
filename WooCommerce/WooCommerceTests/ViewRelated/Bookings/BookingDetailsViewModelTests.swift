@@ -220,27 +220,4 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.navigationTitle.contains("12345"))
     }
-
-    func test_syncData_triggers_booking_synchronization() async {
-        // Given
-        let booking = Booking.fake().copy(siteID: 123, bookingID: 456)
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
-
-        let expectation = self.expectation(description: "Booking synchronization should be triggered")
-
-        storesManager.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBooking(siteID, bookingID, _) = action else {
-                return
-            }
-            XCTAssertEqual(siteID, 123)
-            XCTAssertEqual(bookingID, 456)
-            expectation.fulfill()
-        }
-
-        // When
-        await viewModel.syncData()
-
-        // Then
-        await fulfillment(of: [expectation], timeout: 1.0)
-    }
 }

@@ -4,14 +4,16 @@ import struct Yosemite.Booking
 extension Booking {
 
     var summaryText: String {
-        let productName = orderInfo?.productInfo?.name ?? "-"
+        let productName = orderInfo?.productInfo?.name
         let customerName: String = {
             guard let name = orderInfo?.customerInfo?.billingAddress.fullName else {
                 return Localization.guest
             }
             return name.isEmpty ? Localization.guest : name
         }()
-        return [productName, customerName].joined(separator: "  •  ")
+        return [productName, customerName]
+            .compactMap { $0 }
+            .joined(separator: "  •  ")
     }
 
     private enum Localization {

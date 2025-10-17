@@ -90,4 +90,37 @@ struct BookingsRemoteTests {
         #expect(parameters["per_page"] != nil)
         #expect(parameters["order"] != nil)
     }
+
+    @Test func test_fetchResource_properly_returns_parsed_resource() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let resourceID: Int64 = 22
+        network.simulateResponse(requestUrlSuffix: "resources/team-members/\(resourceID)", filename: "booking-resource")
+
+        // When
+        let resource = try await remote.fetchResource(resourceID: resourceID, siteID: sampleSiteID)
+
+        // Then
+        let unwrappedResource = try #require(resource)
+        #expect(unwrappedResource.resourceID == 22)
+        #expect(unwrappedResource.name == "Joel (Sample resource)")
+        #expect(unwrappedResource.quantity == 1)
+        #expect(unwrappedResource.role == "")
+        #expect(unwrappedResource.email == "")
+        #expect(unwrappedResource.phoneNumber == "")
+        #expect(unwrappedResource.imageID == 0)
+        #expect(unwrappedResource.imageURL == "")
+        #expect(unwrappedResource.description == "")
+        #expect(unwrappedResource.siteID == sampleSiteID)
+    }
+
+    @Test func test_fetchResource_properly_relays_networking_errors() async {
+        // Given
+        let remote = BookingsRemote(network: network)
+
+        // Then
+        await #expect(throws: NetworkError.notFound()) {
+            _ = try await remote.fetchResource(resourceID: 22, siteID: sampleSiteID)
+        }
+    }
 }

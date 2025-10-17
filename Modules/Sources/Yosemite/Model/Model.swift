@@ -30,6 +30,7 @@ public typealias BookingOrderInfo = Networking.BookingOrderInfo
 public typealias BookingCustomerInfo = Networking.BookingCustomerInfo
 public typealias BookingPaymentInfo = Networking.BookingPaymentInfo
 public typealias BookingProductInfo = Networking.BookingProductInfo
+public typealias BookingResource = Networking.BookingResource
 public typealias CreateBlazeCampaign = Networking.CreateBlazeCampaign
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus

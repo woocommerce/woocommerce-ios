@@ -52,3 +52,15 @@ extension Storage.Booking: ReadOnlyConvertible {
                 orderInfo: orderInfo?.toReadOnly())
     }
 }
+
+extension Yosemite.Booking: ReadOnlyType {
+    /// Indicates if the receiver is a representation of a specified Storage.Entity instance.
+    ///
+    public func isReadOnlyRepresentation(of storageEntity: Any) -> Bool {
+        guard let storageBooking = storageEntity as? Storage.Booking else {
+            return false
+        }
+
+        return siteID == Int(storageBooking.siteID) && bookingID == Int(storageBooking.bookingID)
+    }
+}

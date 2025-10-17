@@ -6,6 +6,7 @@ import Foundation
 final class MockBookingsRemote: BookingsRemoteProtocol {
     private var loadAllBookingsResult: Result<[Booking], Error>?
     private var loadBookingResult: Result<Booking?, Error>?
+    private var fetchResourceResult: Result<BookingResource?, Error>?
 
     func whenLoadingAllBookings(thenReturn result: Result<[Booking], Error>) {
         loadAllBookingsResult = result
@@ -13,6 +14,10 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
 
     func whenLoadingBooking(thenReturn result: Result<Booking?, Error>) {
         loadBookingResult = result
+    }
+
+    func whenFetchingResource(thenReturn result: Result<BookingResource?, Error>) {
+        fetchResourceResult = result
     }
 
     func loadAllBookings(for siteID: Int64,
@@ -30,6 +35,13 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
 
     func loadBooking(bookingID: Int64, siteID: Int64) async throws -> Networking.Booking? {
         guard let result = loadBookingResult else {
+            throw NetworkError.timeout()
+        }
+        return try result.get()
+    }
+
+    func fetchResource(resourceID: Int64, siteID: Int64) async throws -> Networking.BookingResource? {
+        guard let result = fetchResourceResult else {
             throw NetworkError.timeout()
         }
         return try result.get()

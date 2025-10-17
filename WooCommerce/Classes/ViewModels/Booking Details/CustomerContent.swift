@@ -8,21 +8,11 @@ extension BookingDetailsViewModel {
         @Published var phoneText: String?
         @Published var billingAddressText: String?
 
-        func update(with address: Address) {
-            let name = [
-                address.firstName,
-                address.lastName
-            ]
-            .compactMap { $0 }
-            .filter { !$0.isEmpty }
-            .joined(separator: " ")
-
-            let billingAddress = formatAddress(address)
-
-            nameText = name
-            emailText = address.email
-            phoneText = address.phone ?? ""
-            billingAddressText = billingAddress
+        func update(with billingAddress: Address) {
+            nameText = billingAddress.fullName
+            emailText = billingAddress.email ?? ""
+            phoneText = billingAddress.phone ?? ""
+            billingAddressText = formatAddress(billingAddress)
         }
 
         private func formatAddress(_ address: Address) -> String {

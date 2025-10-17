@@ -35,9 +35,9 @@ struct LocalNotification {
             case .productImageBackgroundUpload:
                 return "product_image_background_upload"
             case .pointOfSalePotentialMerchant:
-                return "point_of_sale_potential_merchant"
+                return "woo_pos_survey_potential_user_survey"
             case .pointOfSaleCurrentMerchant:
-                return "point_of_sale_current_merchant"
+                return "woo_pos_survey_current_user_survey"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -72,10 +72,9 @@ struct LocalNotification {
         static let surveyURL = "surveyURL"
     }
 
-    // periphery:ignore - real survey links to be added in WOOMOB-1497
     enum SurveyURL {
-        static let pointOfSalePotentialMerchant = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
-        static let pointOfSaleCurrentMerchant = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
+        static let pointOfSalePotentialMerchant = "https://automattic.survey.fm/pos-survey-potential-users"
+        static let pointOfSaleCurrentMerchant = "https://automattic.survey.fm/pos-survey-existing-users"
     }
 }
 

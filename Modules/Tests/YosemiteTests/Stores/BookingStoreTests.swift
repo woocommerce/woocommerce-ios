@@ -455,9 +455,14 @@ struct BookingStoreTests {
 
     @Test func searchBookings_returns_bookings_on_success() async throws {
         // Given
-        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
-        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456)
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 1)
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456, orderID: 2)
         remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+
+        let order1 = Order.fake().copy(orderID: 1)
+        let order2 = Order.fake().copy(orderID: 2)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order1, order2]))
+
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
@@ -510,8 +515,12 @@ struct BookingStoreTests {
 
     @Test func searchBookings_does_not_save_results_to_storage() async throws {
         // Given
-        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 1)
         remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+
+        let order = Order.fake().copy(orderID: 1)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order]))
+
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
                                  network: network,
@@ -533,6 +542,80 @@ struct BookingStoreTests {
         // Then
         #expect(result.isSuccess)
         #expect(storedBookingCount == 0)
+    }
+
+    @Test func searchBookings_fetches_orders_for_bookings() async throws {
+        // Given
+        let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123, orderID: 10)
+        let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 456, orderID: 20)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking1, booking2]))
+
+        let order1 = Order.fake().copy(orderID: 10)
+        let order2 = Order.fake().copy(orderID: 20)
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order1, order2]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(ordersRemote.invokedLoadOrders)
+        #expect(ordersRemote.invokedLoadOrdersParameters?.orderIDs == [10, 20])
+    }
+
+    @Test func searchBookings_returns_bookings_with_orderInfo_when_orders_are_available() async throws {
+        // Given
+        let productID: Int64 = 100
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 123,
+            orderID: 1,
+            productID: productID
+        )
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Test Product", productID: productID)
+        let order = Order.fake().copy(orderID: 1, status: .processing, items: [orderItem])
+        ordersRemote.whenLoadingOrders(thenReturn: .success([order]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.searchBookings(siteID: sampleSiteID,
+                                                        searchQuery: "test",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let bookings = try result.get()
+        #expect(bookings.count == 1)
+        let returnedBooking = try #require(bookings.first)
+        let orderInfo = try #require(returnedBooking.orderInfo)
+        #expect(orderInfo.productInfo?.name == "Test Product")
+        #expect(orderInfo.statusKey == "processing")
     }
 
     // MARK: - orderInfo Storage Tests
@@ -671,6 +754,20 @@ private extension BookingStoreTests {
         let storedBooking = storage.insertNewObject(ofType: Storage.Booking.self)
         storedBooking.update(with: booking)
         return storedBooking
+    }
+
+    @discardableResult
+    func storeProduct(_ product: Networking.Product) -> Storage.Product {
+        let storedProduct = storage.insertNewObject(ofType: Storage.Product.self)
+        storedProduct.update(with: product)
+        return storedProduct
+    }
+
+    @discardableResult
+    func storeBookingResource(_ resource: Networking.BookingResource) -> Storage.BookingResource {
+        let storedResource = storage.insertNewObject(ofType: Storage.BookingResource.self)
+        storedResource.update(with: resource)
+        return storedResource
     }
 }
 

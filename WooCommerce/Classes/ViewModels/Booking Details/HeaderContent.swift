@@ -6,13 +6,9 @@ import struct Yosemite.Address
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
-        @Published var bookingDate: String = ""
-        @Published var status: [Status] = []
-        @Published var serviceAndCustomerLine: String = ""
-
-        init(_ booking: Booking) {
-            update(with: booking)
-        }
+        @Published private(set) var bookingDate: String = ""
+        @Published private(set) var status: [Status] = []
+        @Published private(set) var serviceAndCustomerLine: String = ""
 
         func update(with booking: Booking) {
             bookingDate = booking.startDate.toString(
@@ -20,32 +16,8 @@ extension BookingDetailsViewModel {
                 timeStyle: .short,
                 timeZone: BookingListTab.utcTimeZone
             )
-
-            let serviceName = booking.orderInfo?.productInfo?.name ?? ""
-            let customerName = [
-                booking.orderInfo?.customerInfo?.billingAddress.firstName,
-                booking.orderInfo?.customerInfo?.billingAddress.lastName
-            ]
-            .compactMap { $0 }
-            .filter { !$0.isEmpty }
-            .joined(separator: " ")
-
-            if !customerName.isEmpty {
-                serviceAndCustomerLine = [
-                    serviceName,
-                    customerName
-                ].joined(separator: Constants.dotSeparator)
-            } else {
-                serviceAndCustomerLine = serviceName
-            }
-
+            serviceAndCustomerLine = booking.summaryText
             status = [.booked, .payAtLocation]
         }
-    }
-}
-
-private extension BookingDetailsViewModel {
-    enum Constants {
-        static let dotSeparator: String = " • "
     }
 }

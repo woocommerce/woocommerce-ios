@@ -61,6 +61,8 @@ public class BookingStore: Store {
                            startDateAfter: startDateAfter,
                            order: order,
                            onCompletion: onCompletion)
+        case let .fetchResource(siteID, resourceID, onCompletion):
+            fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
         }
     }
 }
@@ -197,7 +199,48 @@ private extension BookingStore {
                                                                 startDateAfter: startDateAfter,
                                                                 searchQuery: searchQuery,
                                                                 order: order)
-                onCompletion(.success(bookings))
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: bookings.map { $0.orderID }
+                )
+                let updatedBookings = bookings.map { booking in
+                    guard let order = orders.first(where: { booking.orderID == $0.orderID }) else {
+                        return booking
+                    }
+                    let orderInfo = BookingOrderInfo(booking: booking, order: order)
+                    return booking.copy(orderInfo: orderInfo)
+                }
+                onCompletion(.success(updatedBookings))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Fetches a booking resource by resource ID and saves it to storage.
+    ///
+    func fetchResource(siteID: Int64,
+                       resourceID: Int64,
+                       onCompletion: @escaping (Result<BookingResource, Error>) -> Void) {
+        enum FetchResourceError: Error {
+            case resourceIsMissing
+        }
+
+        Task { @MainActor in
+            do {
+                let resource = try await remote.fetchResource(
+                    resourceID: resourceID,
+                    siteID: siteID
+                )
+
+                guard let resource else {
+                    onCompletion(.failure(FetchResourceError.resourceIsMissing))
+                    return
+                }
+
+                await upsertBookingResourceInBackground(readOnlyBookingResource: resource)
+
+                onCompletion(.success(resource))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -269,31 +312,26 @@ private extension BookingStore {
                 storage.insertNewObject(ofType: StorageBooking.self)
 
             if let associatedOrder = readOnlyOrders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
+                let readOnlyOrderInfo = BookingOrderInfo(booking: readOnlyBooking, order: associatedOrder)
+
                 let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
 
                 let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
-                let productName = associatedOrder.items.first(where: { $0.productID == readOnlyBooking.productID })?.name
-                productInfo.update(with: .init(name: productName ?? ""))
+                if let readOnlyProductInfo = readOnlyOrderInfo.productInfo {
+                    productInfo.update(with: readOnlyProductInfo)
+                }
                 orderInfo.productInfo = productInfo
 
-                if let billingAddress = associatedOrder.billingAddress {
-                    let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
-                    customerInfo.update(with: .init(billingAddress: billingAddress))
-                    orderInfo.customerInfo = customerInfo
+                let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
+                if let readOnlyCustomerInfo = readOnlyOrderInfo.customerInfo {
+                    customerInfo.update(with: readOnlyCustomerInfo)
                 }
+                orderInfo.customerInfo = customerInfo
 
                 let paymentInfo = orderInfo.paymentInfo ?? storage.insertNewObject(ofType: Storage.BookingPaymentInfo.self)
-                paymentInfo.update(with:
-                        BookingPaymentInfo(
-                            paymentMethodID: associatedOrder.paymentMethodID,
-                            paymentMethodTitle: associatedOrder.paymentMethodTitle,
-                            subtotal: associatedOrder.items.map({ Double($0.subtotal) ?? 0 }).reduce(0, +).description,
-                            subtotalTax: associatedOrder.items.map({ Double($0.subtotalTax) ?? 0 }).reduce(0, +).description,
-                            total: associatedOrder.total,
-                            totalTax: associatedOrder.totalTax
-                        )
-                )
-
+                if let readOnlyPaymentInfo = readOnlyOrderInfo.paymentInfo {
+                    paymentInfo.update(with: readOnlyPaymentInfo)
+                }
                 orderInfo.paymentInfo = paymentInfo
 
                 orderInfo.statusKey = associatedOrder.status.rawValue
@@ -301,6 +339,23 @@ private extension BookingStore {
             }
 
             storageBooking.update(with: readOnlyBooking)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly BookingResource Entities *in a background thread* async.
+    func upsertBookingResourceInBackground(readOnlyBookingResource: BookingResource) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume()
+            }
+
+            storageManager.performAndSave({ storage in
+                let storedItem = storage.loadBookingResource(siteID: readOnlyBookingResource.siteID, resourceID: readOnlyBookingResource.resourceID)
+                let storageResource = storedItem ?? storage.insertNewObject(ofType: Storage.BookingResource.self)
+                storageResource.update(with: readOnlyBookingResource)
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
     }
 }

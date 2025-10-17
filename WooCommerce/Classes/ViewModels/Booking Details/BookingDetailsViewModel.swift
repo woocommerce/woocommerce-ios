@@ -1,41 +1,46 @@
 import Foundation
 import Yosemite
-import SwiftUI // Added for withAnimation
+import protocol Storage.StorageManagerType
+import SwiftUI
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
-    private let resultsController: BookingDetailsResultsController
 
+    private var bookingResource: BookingResource?
     private var booking: Booking {
         didSet {
             updateDisplayProperties(from: booking)
         }
     }
-    private let headerContent: HeaderContent
-    private let customerContent: CustomerContent
-    private let appointmentDetailsContent: AppointmentDetailsContent
-    private let attendanceContent: AttendanceContent
-    private let paymentContent: PaymentContent
 
-    let navigationTitle: String
+    private let headerContent = HeaderContent()
+    private let customerContent = CustomerContent()
+    private let appointmentDetailsContent = AppointmentDetailsContent()
+    private let attendanceContent = AttendanceContent()
+    private let paymentContent = PaymentContent()
+
+    // EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Booking> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: booking)
+    }()
+
+    @Published private(set) var navigationTitle = ""
     @Published private(set) var sections: [Section] = []
 
-    init(booking: Booking, stores: StoresManager = ServiceLocator.stores) {
+    init(booking: Booking,
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.booking = booking
         self.stores = stores
-
-        resultsController = BookingDetailsResultsController(booking: booking)
-
-        customerContent = CustomerContent()
-        attendanceContent = AttendanceContent()
-        headerContent = HeaderContent(booking)
-        appointmentDetailsContent = AppointmentDetailsContent(booking)
-        paymentContent = PaymentContent(booking: booking)
-
-        navigationTitle = Self.navigationTitle(for: booking)
+        self.bookingResource = storage.viewStorage.loadBookingResource(
+            siteID: booking.siteID,
+            resourceID: booking.resourceID
+        )?.toReadOnly()
 
         setupSections()
-        configureResultsController()
+        configureEntityListener()
+
         updateDisplayProperties(from: booking)
     }
 }
@@ -78,24 +83,15 @@ private extension BookingDetailsViewModel {
         ]
     }
 
-    func configureResultsController() {
-        resultsController.configure { [weak self] in
-            if let newBooking = self?.resultsController.booking {
-                self?.booking = newBooking
-            }
-        }
-        if let newBooking = resultsController.booking {
-            self.booking = newBooking
-        }
-    }
-
     func updateDisplayProperties(from booking: Booking) {
+        navigationTitle = Self.navigationTitle(for: booking)
+
         if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
             customerContent.update(with: billingAddress)
             insertCustomerSectionIfAbsent()
         }
         headerContent.update(with: booking)
-        appointmentDetailsContent.update(with: booking)
+        appointmentDetailsContent.update(with: booking, resource: bookingResource)
         paymentContent.update(with: booking)
     }
 
@@ -121,44 +117,60 @@ private extension BookingDetailsViewModel {
             sections.insert(customerSection, at: 2)
         }
     }
+
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] booking in
+            guard let self else { return }
+            self.booking = booking
+        }
+    }
 }
 
 // MARK: Syncing
 
 extension BookingDetailsViewModel {
     func syncData() async {
-        await syncBooking()
+        if let resource = await fetchResource() {
+            self.bookingResource = resource // only update resource if fetching succeeds
+        }
+        await fetchBooking()
     }
 }
 
 private extension BookingDetailsViewModel {
-    func syncBooking() async {
-        guard booking.bookingID > 0 else {
-            return
-        }
-
+    @MainActor
+    func fetchResource() async -> BookingResource? {
         do {
-            try await fetchRemoteBooking()
+            return try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(BookingAction.fetchResource(siteID: booking.siteID, resourceID: booking.resourceID) { result in
+                    switch result {
+                    case .success(let resource):
+                        continuation.resume(returning: resource)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                })
+            }
         } catch {
-            DDLogError("⛔️ Error synchronizing Booking: \(error)")
+            DDLogError("⛔️ Error fetching resource for Booking: \(error)")
+            return nil
         }
     }
 
     @MainActor
-    func fetchRemoteBooking() async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            let action = BookingAction.synchronizeBooking(
-                siteID: booking.siteID,
-                bookingID: booking.bookingID
-            ) { result in
-                switch result {
-                case .success:
-                    continuation.resume(returning: ())
-                case .failure(let error):
-                    continuation.resume(throwing: error)
+    func fetchBooking() async {
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                let action = BookingAction.synchronizeBooking(
+                    siteID: booking.siteID,
+                    bookingID: booking.bookingID
+                ) { result in
+                    continuation.resume(with: result)
                 }
+                stores.dispatch(action)
             }
-            stores.dispatch(action)
+        } catch {
+            DDLogError("⛔️ Error synchronizing Booking: \(error)")
         }
     }
 }

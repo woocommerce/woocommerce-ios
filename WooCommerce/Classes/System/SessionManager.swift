@@ -54,6 +54,10 @@ final class SessionManager: SessionManagerProtocol {
     ///
     private let imageCache: ImageCache
 
+    /// Serial queue for thread-safe credentials access
+    ///
+    private let credentialsQueue = DispatchQueue(label: "com.woocommerce.session.credentials", qos: .userInitiated)
+
     /// Makes sure the credentials are in sync with the watch session.
     ///
     private lazy var watchDependenciesSynchronizer = {
@@ -76,20 +80,25 @@ final class SessionManager: SessionManagerProtocol {
     ///
     var defaultCredentials: Credentials? {
         get {
-            return loadCredentials()
+            credentialsQueue.sync {
+                loadCredentials()
+            }
         }
         set {
-            guard newValue != defaultCredentials else {
-                return
+            credentialsQueue.sync {
+                let currentCredentials = loadCredentials()
+                guard newValue != currentCredentials else {
+                    return
+                }
+
+                removeCredentials()
+
+                if let credentials = newValue {
+                    saveCredentials(credentials)
+                }
+
+                watchDependenciesSynchronizer.credentials = newValue
             }
-
-            removeCredentials()
-
-            if let credentials = newValue {
-                saveCredentials(credentials)
-            }
-
-            watchDependenciesSynchronizer.credentials = newValue
         }
     }
 
@@ -235,7 +244,7 @@ final class SessionManager: SessionManagerProtocol {
     /// Deletes application password
     ///
     func deleteApplicationPassword(using creds: Credentials?, locally: Bool) {
-        let useCase: ApplicationPasswordUseCase? = {
+        let useCase: ApplicationPasswordUseCase? = credentialsQueue.sync {
             let credentials = creds ?? loadCredentials()
             switch credentials {
             case let .wporg(username, password, siteAddress):
@@ -253,7 +262,7 @@ final class SessionManager: SessionManagerProtocol {
             case .none:
                 return nil
             }
-        }()
+        }
         guard let useCase else {
             return
         }

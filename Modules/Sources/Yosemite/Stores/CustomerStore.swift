@@ -429,9 +429,3 @@ private extension CustomerStore {
         storageCustomer.update(with: readOnlyCustomer)
     }
 }
-
-// MARK: - Errors
-
-enum CustomerStoreError: Error {
-    case notFound
-}

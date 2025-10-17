@@ -997,7 +997,6 @@
 		2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A12E82D233004111FD /* HeaderContent.swift */; };
 		2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */; };
 		2D05D1A52E82D3F6004111FD /* BookingDetailsViewModel+SectionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */; };
-		2D05D1A72E82D49F004111FD /* BookingDetailsViewModel+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */; };
 		2D05E80F2E86BE50004111FD /* AttendanceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */; };
 		2D05E8112E8A9905004111FD /* CustomerContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E8102E8A98FE004111FD /* CustomerContent.swift */; };
 		2D05E8132E8AADB9004111FD /* PaymentContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E8122E8AADB2004111FD /* PaymentContent.swift */; };
@@ -3906,7 +3905,6 @@
 		2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+SectionContent.swift"; sourceTree = "<group>"; };
 		2D05D1A12E82D233004111FD /* HeaderContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContent.swift; sourceTree = "<group>"; };
 		2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentDetailsContent.swift; sourceTree = "<group>"; };
-		2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Status.swift"; sourceTree = "<group>"; };
 		2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceContent.swift; sourceTree = "<group>"; };
 		2D05E8102E8A98FE004111FD /* CustomerContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerContent.swift; sourceTree = "<group>"; };
 		2D05E8122E8AADB2004111FD /* PaymentContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentContent.swift; sourceTree = "<group>"; };
@@ -7976,7 +7974,6 @@
 				2D05D1A12E82D233004111FD /* HeaderContent.swift */,
 				2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */,
 				2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */,
-				2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */,
 				2D05D19E2E82D1A3004111FD /* BookingDetailsViewModel+Section.swift */,
 				2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */,
 				2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */,
@@ -15071,7 +15068,6 @@
 				010F7D8D2E7A8447002B02EA /* ProductImageThumbnail+Extensions.swift in Sources */,
 				26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
-				2D05D1A72E82D49F004111FD /* BookingDetailsViewModel+Status.swift in Sources */,
 				DEE215342D1297CD004A11F3 /* UserDefaults+EditStoreList.swift in Sources */,
 				CE63024E2BAC664900E3325C /* EmailView.swift in Sources */,
 				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,

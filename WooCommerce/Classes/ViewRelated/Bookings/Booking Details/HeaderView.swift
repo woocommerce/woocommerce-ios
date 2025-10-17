@@ -17,12 +17,14 @@ extension BookingDetailsView {
                         .foregroundColor(.secondary)
                 }
                 HStack {
-                    ForEach(content.status, id: \.self) { status in
-                        Text(status.labelText)
+                    ForEach(content.status, id: \.self) { statusString in
+                        Text(statusString)
                             .font(.caption2)
                             .padding(.vertical, 4.5)
                             .padding(.horizontal, 8)
-                            .background(status.labelColor)
+                            .background(
+                                BookingDetailsView.Layout.defaultBadgeColor
+                            )
                             .cornerRadius(4)
                     }
                 }

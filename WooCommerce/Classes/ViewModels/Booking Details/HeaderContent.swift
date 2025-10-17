@@ -7,7 +7,7 @@ import struct Yosemite.Address
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
         @Published private(set) var bookingDate: String = ""
-        @Published private(set) var status: [Status] = []
+        @Published private(set) var status: [String] = []
         @Published private(set) var serviceAndCustomerLine: String = ""
 
         func update(with booking: Booking) {
@@ -17,7 +17,12 @@ extension BookingDetailsViewModel {
                 timeZone: BookingListTab.utcTimeZone
             )
             serviceAndCustomerLine = booking.summaryText
-            status = [.booked, .payAtLocation]
+
+            let bookingStatus = booking.bookingStatus
+            status = [
+                "Booked",
+                booking.bookingStatus.localizedTitle
+            ]
         }
     }
 }

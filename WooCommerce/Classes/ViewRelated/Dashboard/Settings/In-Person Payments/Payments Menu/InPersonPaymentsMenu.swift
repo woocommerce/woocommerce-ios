@@ -179,8 +179,10 @@ struct InPersonPaymentsMenu: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
-                                  style: .medium)
+                if viewModel.backgroundOnboardingInProgress {
+                    ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
+                                      style: .medium)
+                }
             }
         }
         .navigationTitle(CardPresentPaymentsOnboardingView.Localization.title)

@@ -190,16 +190,17 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
 
-    @Test func performFullSyncIfApplicable_skips_sync_when_catalog_size_check_fails() async throws {
-        // Given - catalog size check throws an error
+    @Test func performFullSyncIfApplicable_throws_error_when_catalog_size_check_fails() async throws {
+        // Given
         let sizeCheckError = NSError(domain: "size_check", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
         mockCatalogSizeChecker.checkCatalogSizeResult = .failure(sizeCheckError)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
-        // When
-        let _ = try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        // When/Then
+        await #expect(throws: POSCatalogSyncError.catalogSizeCheckFailed(siteID: sampleSiteID)) {
+            try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        }
 
-        // Then
         #expect(mockSyncService.startFullSyncCallCount == 0)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
@@ -550,17 +551,18 @@ struct POSCatalogSyncCoordinatorTests {
     }
 
     @Test(arguments: [.zero, 60 * 60])
-    func performIncrementalSyncIfApplicable_skips_sync_when_catalog_size_check_fails(maxAge: TimeInterval) async throws {
-        // Given - catalog size check throws an error
+    func performIncrementalSyncIfApplicable_throws_error_when_catalog_size_check_fails(maxAge: TimeInterval) async throws {
+        // Given
         let sizeCheckError = NSError(domain: "size_check", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
         mockCatalogSizeChecker.checkCatalogSizeResult = .failure(sizeCheckError)
         let fullSyncDate = Date().addingTimeInterval(-3600)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
 
-        // When
-        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: maxAge)
+        // When / Then
+        await #expect(throws: POSCatalogSyncError.catalogSizeCheckFailed(siteID: sampleSiteID)) {
+            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: maxAge)
+        }
 
-        // Then - should skip sync when size check fails
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
         #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
         #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)

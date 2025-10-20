@@ -48,6 +48,7 @@ public extension POSCatalogSyncCoordinatorProtocol {
 public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
+    case catalogSizeCheckFailed(siteID: Int64)
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
@@ -79,7 +80,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.negativeMaxAge
         }
 
-        guard await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+        guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
             return
         }
 
@@ -121,12 +122,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     ///   - siteID: The site ID to check
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
-    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
-        await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
+    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async throws -> Bool {
+        try await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
     }
 
-    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
-        guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
+    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async throws -> Bool {
+        guard try await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
             return false
         }
 
@@ -168,7 +169,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.negativeMaxAge
         }
 
-        guard await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge, maxCatalogSize: maxCatalogSize) else {
+        guard try await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge, maxCatalogSize: maxCatalogSize) else {
             return
         }
 
@@ -196,8 +197,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
     }
 
-    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
-        guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
+    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async throws -> Bool {
+        guard try await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
             return false
         }
 
@@ -224,11 +225,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to check
     ///   - maxCatalogSize: Maximum allowed catalog size for syncing
-    /// - Returns: True if catalog size is within limit or if size cannot be determined
-    private func isCatalogSizeWithinLimit(for siteID: Int64, maxCatalogSize: Int) async -> Bool {
+    /// - Returns: True if catalog size is within limit
+    /// - Throws: POSCatalogSyncError.catalogSizeCheckFailed if the size check fails
+    private func isCatalogSizeWithinLimit(for siteID: Int64, maxCatalogSize: Int) async throws -> Bool {
         guard let catalogSize = try? await catalogSizeChecker.checkCatalogSize(for: siteID) else {
-            DDLogError("📋 POSCatalogSyncCoordinator: Could not get catalog size for site \(siteID)")
-            return false
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Could not get catalog size for site \(siteID)")
+            throw POSCatalogSyncError.catalogSizeCheckFailed(siteID: siteID)
         }
 
         guard catalogSize.totalCount <= maxCatalogSize else {

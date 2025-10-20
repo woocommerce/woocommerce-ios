@@ -635,9 +635,10 @@ struct POSCatalogSyncCoordinatorTests {
         let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo)
 
-        // When - using custom threshold of 1 hour
+        // When - using custom threshold of 1 hour for full sync and 30 minutes for incremental sync
         let oneHour: TimeInterval = 60 * 60
-        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour)
+        let thirtyMinutes: TimeInterval = 30 * 60
+        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour, incrementalSyncMaxAge: thirtyMinutes)
 
         // Then - should perform full sync because last sync is older than 1 hour
         #expect(mockSyncService.startFullSyncCallCount == 1)
@@ -649,9 +650,10 @@ struct POSCatalogSyncCoordinatorTests {
         let thirtyMinutesAgo = Date().addingTimeInterval(-30 * 60)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: thirtyMinutesAgo)
 
-        // When - using custom threshold of 1 hour
+        // When - using custom threshold of 1 hour for full sync and 15 minutes for incremental sync
         let oneHour: TimeInterval = 60 * 60
-        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour)
+        let fifteenMinutes: TimeInterval = 15 * 60
+        try await sut.performSmartSync(for: sampleSiteID, fullSyncMaxAge: oneHour, incrementalSyncMaxAge: fifteenMinutes)
 
         // Then - should perform incremental sync because last sync is within 1 hour
         #expect(mockSyncService.startFullSyncCallCount == 0)

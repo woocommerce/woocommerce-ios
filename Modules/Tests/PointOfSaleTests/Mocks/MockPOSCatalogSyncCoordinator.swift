@@ -10,6 +10,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     var performSmartSyncInvocationCount = 0
     var performSmartSyncSiteID: Int64?
     var performSmartSyncFullSyncMaxAge: TimeInterval?
+    var performSmartSyncIncrementalSyncMaxAge: TimeInterval?
     var performSmartSyncResult: Result<Void, Error> = .success(())
 
     var onPerformFullSyncCalled: (() -> Void)?
@@ -30,10 +31,11 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {}
 
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
         performSmartSyncInvocationCount += 1
         performSmartSyncSiteID = siteID
         performSmartSyncFullSyncMaxAge = fullSyncMaxAge
+        performSmartSyncIncrementalSyncMaxAge = incrementalSyncMaxAge
 
         switch performSmartSyncResult {
         case .success:

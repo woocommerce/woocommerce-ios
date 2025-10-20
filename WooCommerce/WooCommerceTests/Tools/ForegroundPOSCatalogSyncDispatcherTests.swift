@@ -271,7 +271,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     var performSmartSyncResult: Result<Void, Error> = .success(())
     var onPerformSmartSyncCalled: (() -> Void)?
 
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
         performSmartSyncInvocationCount += 1
         performSmartSyncSiteID = siteID
         onPerformSmartSyncCalled?()

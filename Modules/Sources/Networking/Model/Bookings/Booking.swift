@@ -29,6 +29,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         return BookingStatus(rawValue: statusKey) ?? .unknown
     }
 
+    /// periphery: ignore - will be used in UI in upcoming PRs
     public var attendanceStatus: BookingAttendanceStatus {
         return BookingAttendanceStatus(rawValue: attendanceStatusKey) ?? .unknown
     }
@@ -207,6 +208,7 @@ public enum BookingStatus: String, CaseIterable {
     case unknown
 }
 
+/// periphery: ignore - will be used in UI in upcoming PRs
 public enum BookingAttendanceStatus: String, CaseIterable {
     case booked
     case checkedIn = "checked_in"

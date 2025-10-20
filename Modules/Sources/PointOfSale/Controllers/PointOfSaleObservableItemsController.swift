@@ -48,8 +48,8 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
-            hasLoadedProducts = true
             dataSource.loadProducts()
+            hasLoadedProducts = true
         case .parent(let parent):
             guard case .variableParentProduct(let parentProduct) = parent else {
                 assertionFailure("Unsupported parent type for loading items: \(parent)")
@@ -62,8 +62,8 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
                 hasLoadedVariationsForCurrentParent = false
             }
 
-            hasLoadedVariationsForCurrentParent = true
             dataSource.loadVariations(for: parentProduct)
+            hasLoadedVariationsForCurrentParent = true
         }
     }
 

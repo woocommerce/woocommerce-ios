@@ -6,12 +6,15 @@ import protocol Yosemite.POSObservableDataSourceProtocol
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.GRDBObservableDataSource
 import protocol Storage.GRDBManagerProtocol
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 
 /// Controller that wraps an observable data source for POS items
 /// Uses computed state based on data source observations for automatic UI updates
 @Observable
 final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProtocol {
     private let dataSource: POSObservableDataSourceProtocol
+    private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol
+    private let siteID: Int64
 
     // Track which items have been loaded at least once
     private var hasLoadedProducts = false
@@ -32,17 +35,24 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 
     init(siteID: Int64,
          grdbManager: GRDBManagerProtocol,
-         currencySettings: CurrencySettings) {
+         currencySettings: CurrencySettings,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol) {
+        self.siteID = siteID
         self.dataSource = GRDBObservableDataSource(
             siteID: siteID,
             grdbManager: grdbManager,
             currencySettings: currencySettings
         )
+        self.catalogSyncCoordinator = catalogSyncCoordinator
     }
 
     // periphery:ignore - used by tests
-    init(dataSource: POSObservableDataSourceProtocol) {
+    init(siteID: Int64,
+         dataSource: POSObservableDataSourceProtocol,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol) {
+        self.siteID = siteID
         self.dataSource = dataSource
+        self.catalogSyncCoordinator = catalogSyncCoordinator
     }
 
     func loadItems(base: ItemListBaseItem) async {
@@ -68,16 +78,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     }
 
     func refreshItems(base: ItemListBaseItem) async {
-        switch base {
-        case .root:
-            dataSource.refresh()
-        case .parent(let parent):
-            guard case .variableParentProduct(let parentProduct) = parent else {
-                assertionFailure("Unsupported parent type for refreshing items: \(parent)")
-                return
-            }
-            dataSource.loadVariations(for: parentProduct)
-        }
+        try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
     }
 
     func loadNextItems(base: ItemListBaseItem) async {

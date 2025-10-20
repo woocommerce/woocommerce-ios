@@ -70,11 +70,12 @@ public struct PointOfSaleEntryPointView: View {
         // Note: We check feature flag here for eligibility. Once eligibility checking is
         // refactored to be more centralized, this check can be simplified.
         let isGRDBEnabled = services.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
-        if let grdbManager = grdbManager, catalogSyncCoordinator != nil, isGRDBEnabled {
+        if let grdbManager = grdbManager, let catalogSyncCoordinator, isGRDBEnabled {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
-                currencySettings: services.currency.currencySettings
+                currencySettings: services.currency.currencySettings,
+                catalogSyncCoordinator: catalogSyncCoordinator
             )
         } else {
             self.itemsController = PointOfSaleItemsController(

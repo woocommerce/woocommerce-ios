@@ -21,8 +21,11 @@ public protocol POSObservableDataSourceProtocol {
     /// Whether more variations are available for current parent
     var hasMoreVariations: Bool { get }
 
-    /// Current error, if any
-    var error: Error? { get }
+    /// Error from product loading, if any
+    var productError: Error? { get }
+
+    /// Error from variation loading, if any
+    var variationError: Error? { get }
 
     /// Loads the first page of products
     func loadProducts()

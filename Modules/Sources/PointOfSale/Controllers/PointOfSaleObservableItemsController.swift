@@ -114,7 +114,7 @@ private extension PointOfSaleObservableItemsController {
         }
 
         // Error state
-        if let error = dataSource.error, items.isEmpty {
+        if let error = dataSource.productError, items.isEmpty {
             return .error(.errorOnLoadingProducts(error: error))
         }
 
@@ -145,7 +145,7 @@ private extension PointOfSaleObservableItemsController {
         }
 
         // Error state
-        if let error = dataSource.error, items.isEmpty {
+        if let error = dataSource.variationError, items.isEmpty {
             return [parentItem: .error(.errorOnLoadingVariations(error: error))]
         }
 

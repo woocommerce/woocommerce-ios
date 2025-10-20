@@ -1,6 +1,7 @@
 import enum Yosemite.POSItem
 
 enum ItemListState {
+    case initial
     case loading(_ currentItems: [POSItem])
     case loaded(_ items: [POSItem], hasMoreItems: Bool)
     case inlineError(_ items: [POSItem], error: PointOfSaleErrorState, context: InlineErrorContext)
@@ -38,7 +39,7 @@ extension ItemListState {
                 .loaded(let items, _),
                 .inlineError(let items, _, _):
             return items
-        case .error, .empty:
+        case .initial, .error, .empty:
             return []
         }
     }

@@ -11,7 +11,8 @@ final class MockPOSObservableDataSource: POSObservableDataSourceProtocol {
     var isLoadingVariations: Bool = false
     var hasMoreProducts: Bool = false
     var hasMoreVariations: Bool = false
-    var error: Error? = nil
+    var productError: Error? = nil
+    var variationError: Error? = nil
 
     init() {}
 

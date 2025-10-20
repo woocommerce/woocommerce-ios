@@ -35,7 +35,8 @@ struct GRDBObservableDataSourceTests {
         #expect(sut.isLoadingVariations == false)
         #expect(sut.hasMoreProducts == false)
         #expect(sut.hasMoreVariations == false)
-        #expect(sut.error == nil)
+        #expect(sut.productError == nil)
+        #expect(sut.variationError == nil)
     }
 
     @Test("Load products sets loading state and fetches items from database")
@@ -51,7 +52,7 @@ struct GRDBObservableDataSourceTests {
         // Then
         #expect(sut.productItems.count == 3)
         #expect(sut.isLoadingProducts == false)
-        #expect(sut.error == nil)
+        #expect(sut.productError == nil)
     }
 
     @Test("Load products maps database products to POSItems correctly")

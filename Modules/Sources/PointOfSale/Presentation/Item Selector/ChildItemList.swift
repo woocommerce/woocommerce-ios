@@ -34,7 +34,7 @@ struct ChildItemList: View {
     var body: some View {
         VStack {
             switch state {
-            case .loaded([], _):
+            case .initial, .loaded([], _):
                 emptyView
             case .loading, .loaded, .inlineError:
                 listView

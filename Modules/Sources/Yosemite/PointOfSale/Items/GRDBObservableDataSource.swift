@@ -16,7 +16,8 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     public private(set) var variationItems: [POSItem] = []
     public private(set) var isLoadingProducts: Bool = false
     public private(set) var isLoadingVariations: Bool = false
-    public private(set) var error: Error? = nil
+    public private(set) var productError: Error? = nil
+    public private(set) var variationError: Error? = nil
 
     public var hasMoreProducts: Bool {
         productItems.count >= (pageSize * currentProductPage) && totalProductCount > productItems.count
@@ -92,6 +93,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         currentVariationPage = 1
         isLoadingVariations = true
         variationItems = []
+        variationError = nil
 
         setupVariationObservation(parentProduct: parentProduct)
         setupVariationStatisticsObservation(parentProduct: parentProduct)
@@ -146,7 +148,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        self?.error = error
+                        self?.productError = error
                         self?.isLoadingProducts = false
                     }
                 },
@@ -154,7 +156,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                     guard let self else { return }
                     let posItems = itemMapper.mapProductsToPOSItems(products: observedProducts)
                     productItems = posItems
-                    error = nil
+                    productError = nil
                     isLoadingProducts = false
                 }
             )
@@ -194,7 +196,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        self?.error = error
+                        self?.variationError = error
                         self?.isLoadingVariations = false
                     }
                 },
@@ -205,7 +207,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                         parentProduct: parentProduct
                     )
                     variationItems = posItems
-                    error = nil
+                    variationError = nil
                     isLoadingVariations = false
                 }
             )

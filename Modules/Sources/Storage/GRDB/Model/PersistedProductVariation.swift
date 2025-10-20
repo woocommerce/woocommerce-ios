@@ -78,6 +78,11 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
                                      through: productVariationImage,
                                      using: PersistedProductVariationImage.image,
                                      key: "image")
+
+    // Relationship to parent product
+    public static let parentProduct = belongsTo(PersistedProduct.self,
+                                                using: ForeignKey([Columns.siteID, Columns.productID],
+                                                                 to: [PersistedProduct.Columns.siteID, PersistedProduct.Columns.id]))
 }
 
 // MARK: - Point of Sale Requests

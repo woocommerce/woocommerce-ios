@@ -116,21 +116,11 @@ final class POSTabCoordinator {
     }
 
     func onTabSelected() {
-        schedulePOSSurveyNotificationIfNeeded()
         presentPOSView(siteID: siteID)
     }
 }
 
 private extension POSTabCoordinator {
-    func schedulePOSSurveyNotificationIfNeeded() {
-        Task { @MainActor in
-            await POSNotificationScheduler().scheduleLocalNotificationIfEligible(for: .currentMerchant)
-
-            let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
-            storesManager.dispatch(action)
-        }
-    }
-
     func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }

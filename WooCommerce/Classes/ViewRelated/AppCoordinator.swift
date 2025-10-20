@@ -65,6 +65,8 @@ final class AppCoordinator {
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
+
+        schedulePOSSurveyNotificationIfNeeded()
     }
 
     func start() {
@@ -98,6 +100,17 @@ final class AppCoordinator {
             self?.handleLocalNotificationResponse(response)
         }
         updateSitePropertiesIfNeeded()
+    }
+}
+
+private extension AppCoordinator {
+    func schedulePOSSurveyNotificationIfNeeded() {
+        Task { @MainActor in
+            await POSNotificationScheduler(stores: stores).scheduleLocalNotificationIfEligible(for: .currentMerchant)
+
+            let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
+            stores.dispatch(action)
+        }
     }
 }
 

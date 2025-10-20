@@ -142,6 +142,24 @@ extension BookingDetailsViewModel {
     }
 }
 
+// MARK: Attendance status
+
+extension BookingDetailsViewModel {
+    func updateAttendanceStatus(to newStatus: BookingAttendanceStatus) {
+        let action = BookingAction.updateBookingAttendanceStatus(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID,
+            status: newStatus
+        ) { error in
+            if let error {
+                DDLogError("⛔️ Error updating booking attendance status: \(error)")
+                // TODO: Show an error notice to the user
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
 private extension BookingDetailsViewModel {
     @MainActor
     func fetchResource() async -> BookingResource? {

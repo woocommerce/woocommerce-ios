@@ -85,7 +85,7 @@ struct BookingDetailsView: View {
         }
         .sheet(isPresented: $showingStatusSheet) {
             UpdateAttendanceStatusView(selectedStatus: viewModel.bookingAttendanceStatus) { selectedStatus in
-                print("Selected status: \(selectedStatus)")
+                viewModel.updateAttendanceStatus(to: selectedStatus)
             }
             .padding(.top)
             .presentationDetents([.medium, .large])

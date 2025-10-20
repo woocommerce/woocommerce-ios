@@ -28,6 +28,10 @@ final class BookingDetailsViewModel: ObservableObject {
     @Published private(set) var navigationTitle = ""
     @Published private(set) var sections: [Section] = []
 
+    var bookingAttendanceStatus: BookingAttendanceStatus {
+        booking.attendanceStatus
+    }
+
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {

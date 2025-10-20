@@ -84,7 +84,7 @@ struct BookingDetailsView: View {
             $0.toolbarRole(.editor)
         }
         .sheet(isPresented: $showingStatusSheet) {
-            UpdateAttendanceStatusView { selectedStatus in
+            UpdateAttendanceStatusView(selectedStatus: viewModel.bookingAttendanceStatus) { selectedStatus in
                 print("Selected status: \(selectedStatus)")
             }
             .padding(.top)

@@ -211,8 +211,8 @@ public enum BookingStatus: String, CaseIterable {
 /// periphery: ignore - will be used in UI in upcoming PRs
 public enum BookingAttendanceStatus: String, CaseIterable {
     case booked
-    case checkedIn = "checked_in"
+    case checkedIn = "checked-in"
     case cancelled
-    case noShow = "no_show"
+    case noShow = "no-show"
     case unknown
 }

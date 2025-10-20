@@ -24,6 +24,7 @@ extension Storage.Booking: ReadOnlyConvertible {
         resourceID = booking.resourceID
         startDate = booking.startDate
         statusKey = booking.statusKey
+        attendanceStatusKey = booking.attendanceStatusKey
         localTimezone = booking.localTimezone
         currency = booking.currency
     }

@@ -105,6 +105,15 @@ final class NativeProductDetailCoordinator {
 
 final class ProductURLProvider {
     func adminURL(for product: Product, site: Site) -> URL? {
-        return site.adminURLWithFallback()?.appendingPathComponent("?page=next-admin&p=/woocommerce/products/edit/\(product.productID)")
+        guard let base = site.adminURLWithFallback() else { return nil }
+        let admin = base.appendingPathComponent("wp-admin")
+
+        var components = URLComponents(url: admin, resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "page", value: "next-admin"),
+            URLQueryItem(name: "p", value: "/woocommerce/products/edit/\(product.productID)")
+        ]
+
+        return components.url
     }
 }

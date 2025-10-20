@@ -85,10 +85,10 @@ final class SessionManager: SessionManagerProtocol {
             }
         }
         set {
-            credentialsQueue.sync {
+            let shouldUpdateWatchSync = credentialsQueue.sync { () -> Bool in
                 let currentCredentials = loadCredentials()
                 guard newValue != currentCredentials else {
-                    return
+                    return false
                 }
 
                 removeCredentials()
@@ -97,6 +97,12 @@ final class SessionManager: SessionManagerProtocol {
                     saveCredentials(credentials)
                 }
 
+                return true
+            }
+
+            // Update watch synchronizer outside the sync block to avoid potential deadlocks
+            // from @Published property triggering Combine subscribers that might read credentials
+            if shouldUpdateWatchSync {
                 watchDependenciesSynchronizer.credentials = newValue
             }
         }

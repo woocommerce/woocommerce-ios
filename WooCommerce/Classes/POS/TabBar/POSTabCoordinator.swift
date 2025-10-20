@@ -71,13 +71,23 @@ final class POSTabCoordinator {
                                         storage: storageManager)
     }()
 
-    private lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
-        PointOfSaleBarcodeScanService(siteID: siteID,
-                                      credentials: credentials,
-                                      selectedSite: defaultSitePublisher,
-                                      appPasswordSupportState: isAppPasswordSupported,
-                                      currencySettings: currencySettings)
-    }()
+    /// Creates the appropriate barcode scan service based on local catalog availability
+    private func createBarcodeScanService(grdbManager: GRDBManagerProtocol?, catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
+        // Use local barcode scanning if both GRDB manager and catalog sync coordinator are available
+        // This indicates the local catalog feature is properly initialized and can be used
+        if let grdbManager, catalogSyncCoordinator != nil {
+            return PointOfSaleLocalBarcodeScanService(siteID: siteID,
+                                                     grdbManager: grdbManager,
+                                                     currencySettings: currencySettings)
+        } else {
+            // Fall back to remote barcode scanning
+            return PointOfSaleBarcodeScanService(siteID: siteID,
+                                                credentials: credentials,
+                                                selectedSite: defaultSitePublisher,
+                                                appPasswordSupportState: isAppPasswordSupported,
+                                                currencySettings: currencySettings)
+        }
+    }
 
     /// Publisher to send to `AlamofireNetwork` for request authentication mode switching.
     private let defaultSitePublisher: AnyPublisher<JetpackSite?, Never>
@@ -149,6 +159,11 @@ private extension POSTabCoordinator {
 
             let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
             let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
+
+            // Create appropriate barcode scan service based on local catalog availability
+            // Will use local GRDB-based scanning if both grdbManager and catalogSyncCoordinator are available,
+            // otherwise falls back to remote API-based scanning
+            let barcodeScanService = createBarcodeScanService(grdbManager: grdbManager, catalogSyncCoordinator: catalogSyncCoordinator)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,

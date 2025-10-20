@@ -1,23 +1,28 @@
 import Foundation
 import struct Yosemite.Booking
+import struct Yosemite.BookingProductInfo
 import struct Yosemite.Customer
+import struct Yosemite.Address
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
-        let bookingDate: String
-        let status: [Status]
+        @Published private(set) var bookingDate: String = ""
+        @Published private(set) var status: [String] = []
+        @Published private(set) var serviceAndCustomerLine: String = ""
 
-        @Published var serviceAndCustomerLine: String
-
-        init(_ booking: Booking) {
+        func update(with booking: Booking) {
             bookingDate = booking.startDate.toString(
                 dateStyle: .short,
                 timeStyle: .short,
                 timeZone: BookingListTab.utcTimeZone
             )
-
             serviceAndCustomerLine = booking.summaryText
-            status = [.booked, .payAtLocation]
+
+            let bookingStatus = booking.bookingStatus
+            status = [
+                "Booked",
+                booking.bookingStatus.localizedTitle
+            ]
         }
     }
 }

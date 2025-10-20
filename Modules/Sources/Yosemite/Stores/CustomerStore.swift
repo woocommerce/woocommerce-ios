@@ -80,8 +80,6 @@ public final class CustomerStore: Store {
             synchronizeAllCustomers(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .deleteAllCustomers(siteID: let siteID, onCompletion: let onCompletion):
             deleteAllCustomers(from: siteID, onCompletion: onCompletion)
-        case let .loadCustomer(siteID, customerID, onCompletion):
-            loadCustomer(siteID: siteID, customerID: customerID, onCompletion: onCompletion)
         }
     }
 
@@ -251,16 +249,6 @@ public final class CustomerStore: Store {
         storageManager.performAndSave({ storage in
             storage.deleteCustomers(siteID: siteID)
         }, completion: onCompletion, on: .main)
-    }
-
-    private func loadCustomer(siteID: Int64, customerID: Int64, onCompletion: @escaping (Result<Networking.Customer, Error>) -> Void) {
-        let customers = storageManager.viewStorage.loadCustomers(siteID: siteID, matching: [customerID])
-        if let storageCustomer = customers.first {
-            let customer = storageCustomer.toReadOnly()
-            onCompletion(.success(customer))
-        } else {
-            onCompletion(.failure(CustomerStoreError.notFound))
-        }
     }
 
     /// Maps CustomerSearchResult to Customer objects
@@ -440,10 +428,4 @@ private extension CustomerStore {
         storedSearchResult?.addToCustomers(storageCustomer)
         storageCustomer.update(with: readOnlyCustomer)
     }
-}
-
-// MARK: - Errors
-
-enum CustomerStoreError: Error {
-    case notFound
 }

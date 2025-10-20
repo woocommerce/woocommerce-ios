@@ -2,7 +2,6 @@ import Foundation
 import struct Yosemite.Booking
 
 extension Booking {
-
     var summaryText: String {
         let productName = orderInfo?.productInfo?.name
         let customerName: String = {

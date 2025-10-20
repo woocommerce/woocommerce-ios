@@ -3,11 +3,11 @@ import struct Networking.Booking
 import class WooFoundationCore.CurrencyFormatter
 
 extension BookingDetailsViewModel {
-    struct PaymentContent {
-        let amounts: [Amount]
-        let actions: [Action]
+    final class PaymentContent: ObservableObject {
+        @Published var amounts: [Amount] = []
+        @Published var actions: [Action] = []
 
-        init(booking: Booking) {
+        func update(with booking: Booking) {
             let total = booking.orderInfo?.paymentInfo?.total ?? booking.cost
             let totalTax = booking.orderInfo?.paymentInfo?.totalTax ?? "0"
             let subtotal = booking.orderInfo?.paymentInfo?.subtotal ?? "0"
@@ -18,6 +18,7 @@ extension BookingDetailsViewModel {
                 }
                 return (totalDecimal - subtotalDecimal).description
             }()
+
             amounts = [
                 .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: subtotal), type: .service),
                 .init(value: BookingDetailsViewModel.formatPrice(for: booking, priceString: totalTax), type: .tax),

@@ -7,6 +7,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.GRDBObservableDataSource
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import enum Yosemite.POSCatalogSyncError
 
 /// Controller that wraps an observable data source for POS items
 /// Uses computed state based on data source observations for automatic UI updates
@@ -22,6 +23,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 
     // Track current parent for variation state mapping
     private var currentParentItem: POSItem?
+    private var refreshError: Error?
 
     var itemsViewState: ItemsViewState {
         ItemsViewState(
@@ -75,10 +77,27 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
             dataSource.loadVariations(for: parentProduct)
             hasLoadedVariationsForCurrentParent = true
         }
+
+        if refreshError != nil {
+            await refreshItems(base: base)
+        }
     }
 
     func refreshItems(base: ItemListBaseItem) async {
-        try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        refreshError = nil
+
+        do {
+            try await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        } catch let error as POSCatalogSyncError {
+            switch error {
+            case .syncAlreadyInProgress:
+                break
+            default:
+                refreshError = error
+            }
+        } catch {
+            refreshError = error
+        }
     }
 
     func loadNextItems(base: ItemListBaseItem) async {
@@ -114,7 +133,16 @@ private extension PointOfSaleObservableItemsController {
             return .loading(items)
         }
 
-        // Error state
+        // Error state for refresh
+        if let error = refreshError {
+            if items.isEmpty {
+                return .error(.errorOnLoadingProducts(error: error))
+            } else {
+                return .inlineError(items, error: .errorOnLoadingProducts(error: error), context: .refresh)
+            }
+        }
+
+        // Error state for data source observation
         if let error = dataSource.productError, items.isEmpty {
             return .error(.errorOnLoadingProducts(error: error))
         }
@@ -145,7 +173,16 @@ private extension PointOfSaleObservableItemsController {
             return [parentItem: .loading(items)]
         }
 
-        // Error state
+        // Error state for refresh
+        if let error = refreshError {
+            if items.isEmpty {
+                return [parentItem: .error(.errorOnLoadingVariations(error: error))]
+            } else {
+                return [parentItem: .inlineError(items, error: .errorOnLoadingVariations(error: error), context: .refresh)]
+            }
+        }
+
+        // Error state for data source observation
         if let error = dataSource.variationError, items.isEmpty {
             return [parentItem: .error(.errorOnLoadingVariations(error: error))]
         }

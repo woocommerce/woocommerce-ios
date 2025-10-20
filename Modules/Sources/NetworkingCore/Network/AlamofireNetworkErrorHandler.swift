@@ -167,7 +167,7 @@ final class AlamofireNetworkErrorHandler {
         // Use dedicated serial queue for UserDefaults operations to:
         // 1. Prevent race conditions where concurrent writes overwrite each other
         // 2. Avoid deadlock by not using the main queue that KVO observers may need
-        userDefaultsQueue.async { [weak self] in
+        userDefaultsQueue.sync { [weak self] in
             guard let self else { return }
             var currentList = userDefaults.applicationPasswordUnsupportedList
             currentList[String(siteID)] = Date()
@@ -242,7 +242,7 @@ private extension AlamofireNetworkErrorHandler {
         // Use dedicated serial queue for UserDefaults operations to:
         // 1. Prevent race conditions where concurrent writes overwrite each other
         // 2. Avoid deadlock by not using the main queue that KVO observers may need
-        userDefaultsQueue.async { [weak self] in
+        userDefaultsQueue.sync { [weak self] in
             guard let self else { return }
             let currentList = userDefaults.applicationPasswordUnsupportedList
             let filteredList = currentList.filter { flag in

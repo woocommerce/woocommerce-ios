@@ -126,7 +126,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         errorHandler.flagSiteAsUnsupported(for: siteID, flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
-        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -140,7 +139,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         errorHandler.flagSiteAsUnsupported(for: newSiteID, flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
-        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(existingSiteID)))
@@ -269,7 +267,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // Then - no crashes should occur and all sites should be flagged
         wait(for: [expectation], timeout: 3.0)
-        waitForUserDefaultsOperations()
 
         // Verify all sites were added (though order may vary due to concurrency)
         let unsupportedList = userDefaults.applicationPasswordUnsupportedList
@@ -390,7 +387,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
-        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertFalse(isFlagged)
@@ -419,7 +415,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
-        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertFalse(isFlagged)
@@ -446,7 +441,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID1, unsupportedList: list))
         XCTAssertFalse(errorHandler.siteFlaggedAsUnsupported(siteID: siteID2, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
         XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID3, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
-        waitForUserDefaultsOperations()
 
         // Verify expired flag was cleared but others remain
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID1)))
@@ -531,7 +525,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             originalRequest: jetpackRequest,
             failure: nil
         )
-        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -563,7 +556,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             originalRequest: jetpackRequest,
             failure: nil
         )
-        waitForUserDefaultsOperations()
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -721,17 +713,6 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
 // MARK: - Helper Methods
 private extension AlamofireNetworkErrorHandlerTests {
-    /// Waits briefly for async UserDefaults operations to complete
-    /// Since flagSiteAsUnsupported and clearUnsupportedFlag use userDefaultsQueue.async,
-    /// tests need to wait for those operations to finish before checking UserDefaults state
-    func waitForUserDefaultsOperations() {
-        let expectation = XCTestExpectation(description: "UserDefaults operations complete")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
-    }
-
     func createWPComCredentials() -> Credentials {
         return Credentials.wpcom(username: "test", authToken: "token", siteAddress: "https://example.com")
     }

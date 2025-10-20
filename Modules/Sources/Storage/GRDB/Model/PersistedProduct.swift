@@ -100,6 +100,28 @@ public extension PersistedProduct {
             .filter(Columns.downloadable == false)
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }
+
+    /// Searches for a POS-supported product by global unique ID
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - globalUniqueID: The global unique ID (barcode) to search for
+    /// - Returns: A query request that matches products with the given global unique ID
+    static func posProductByGlobalUniqueID(siteID: Int64, globalUniqueID: String) -> QueryInterfaceRequest<PersistedProduct> {
+        return PersistedProduct
+            .posProductsRequest(siteID: siteID)
+            .filter(Columns.globalUniqueID == globalUniqueID)
+    }
+
+    /// Searches for a POS-supported product by SKU
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - sku: The SKU to search for
+    /// - Returns: A query request that matches products with the given SKU
+    static func posProductBySKU(siteID: Int64, sku: String) -> QueryInterfaceRequest<PersistedProduct> {
+        return PersistedProduct
+            .posProductsRequest(siteID: siteID)
+            .filter(Columns.sku == sku)
+    }
 }
 
 // periphery:ignore - TODO: remove ignore when populating database

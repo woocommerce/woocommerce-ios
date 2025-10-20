@@ -89,6 +89,30 @@ public extension PersistedProductVariation {
             .filter(Columns.downloadable == false)
             .order(Columns.id)
     }
+
+    /// Searches for a POS-supported variation by global unique ID
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - globalUniqueID: The global unique ID (barcode) to search for
+    /// - Returns: A query request that matches variations with the given global unique ID
+    static func posVariationByGlobalUniqueID(siteID: Int64, globalUniqueID: String) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return PersistedProductVariation
+            .filter(Columns.siteID == siteID)
+            .filter(Columns.downloadable == false)
+            .filter(Columns.globalUniqueID == globalUniqueID)
+    }
+
+    /// Searches for a POS-supported variation by SKU
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - sku: The SKU to search for
+    /// - Returns: A query request that matches variations with the given SKU
+    static func posVariationBySKU(siteID: Int64, sku: String) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return PersistedProductVariation
+            .filter(Columns.siteID == siteID)
+            .filter(Columns.downloadable == false)
+            .filter(Columns.sku == sku)
+    }
 }
 
 // periphery:ignore - TODO: remove ignore when populating database

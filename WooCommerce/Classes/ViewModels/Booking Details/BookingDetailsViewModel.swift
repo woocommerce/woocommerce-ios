@@ -92,6 +92,7 @@ private extension BookingDetailsViewModel {
         }
         headerContent.update(with: booking)
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
+        attendanceContent.update(with: booking)
         paymentContent.update(with: booking)
     }
 

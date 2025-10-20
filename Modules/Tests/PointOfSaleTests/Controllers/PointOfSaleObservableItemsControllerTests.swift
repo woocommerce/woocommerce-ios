@@ -252,7 +252,7 @@ final class PointOfSaleObservableItemsControllerTests {
 
         dataSource.productItems = []
         dataSource.isLoadingProducts = false
-        dataSource.error = NSError(domain: "test", code: 1)
+        dataSource.productError = NSError(domain: "test", code: 1)
 
         // When
         await sut.loadItems(base: .root)

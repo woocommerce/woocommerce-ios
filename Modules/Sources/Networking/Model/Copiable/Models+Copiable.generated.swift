@@ -446,6 +446,7 @@ extension Networking.Booking {
         resourceID: CopiableProp<Int64> = .copy,
         startDate: CopiableProp<Date> = .copy,
         statusKey: CopiableProp<String> = .copy,
+        attendanceStatusKey: CopiableProp<String> = .copy,
         localTimezone: CopiableProp<String> = .copy,
         currency: CopiableProp<String> = .copy,
         orderInfo: NullableCopiableProp<BookingOrderInfo> = .copy
@@ -466,6 +467,7 @@ extension Networking.Booking {
         let resourceID = resourceID ?? self.resourceID
         let startDate = startDate ?? self.startDate
         let statusKey = statusKey ?? self.statusKey
+        let attendanceStatusKey = attendanceStatusKey ?? self.attendanceStatusKey
         let localTimezone = localTimezone ?? self.localTimezone
         let currency = currency ?? self.currency
         let orderInfo = orderInfo ?? self.orderInfo
@@ -487,6 +489,7 @@ extension Networking.Booking {
             resourceID: resourceID,
             startDate: startDate,
             statusKey: statusKey,
+            attendanceStatusKey: attendanceStatusKey,
             localTimezone: localTimezone,
             currency: currency,
             orderInfo: orderInfo

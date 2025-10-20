@@ -3362,6 +3362,56 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.canBeDismissed)
     }
+
+    func test_onCreateOrderTapped_schedules_potential_merchant_notification() {
+        // Given
+        let mockScheduler = MockPOSNotificationScheduler()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               posNotificationScheduler: mockScheduler)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        viewModel.onCreateOrderTapped()
+
+        // Then
+        waitUntil {
+            mockScheduler.scheduleCallCount > 0
+        }
+        XCTAssertEqual(mockScheduler.scheduleCallCount, 1)
+        XCTAssertEqual(mockScheduler.lastMerchantType, .potentialMerchant)
+    }
+
+    func test_onCreateOrderTapped_does_not_schedule_notification_on_failure() {
+        // Given
+        let mockScheduler = MockPOSNotificationScheduler()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               posNotificationScheduler: mockScheduler)
+        let error = NSError(domain: "Error", code: 0)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, _, _, onCompletion):
+                onCompletion(.failure(error))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        viewModel.onCreateOrderTapped()
+
+        // Then
+        XCTAssertEqual(mockScheduler.scheduleCallCount, 0)
+        XCTAssertNil(mockScheduler.lastMerchantType)
+    }
 }
 
 private extension EditableOrderViewModelTests {
@@ -3456,5 +3506,18 @@ private extension EditableOrderViewModelTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "")
+    }
+}
+
+// MARK: - POS Notification Tests & MockPOSNotificationScheduler
+private extension EditableOrderViewModelTests {
+    final class MockPOSNotificationScheduler: POSNotificationScheduling {
+        private(set) var scheduleCallCount = 0
+        private(set) var lastMerchantType: POSNotificationScheduler.MerchantType?
+
+        func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
+            scheduleCallCount += 1
+            lastMerchantType = merchantType
+        }
     }
 }

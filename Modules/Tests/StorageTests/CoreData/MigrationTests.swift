@@ -2302,9 +2302,9 @@ final class MigrationTests: XCTestCase {
         // `attendanceStatusKey` should be present in `migratedBooking`
         XCTAssertNotNil(migratedBooking.entity.attributesByName["attendanceStatusKey"])
 
-        // `attendanceStatusKey` value should default as nil in model 129
+        // `attendanceStatusKey` value should default as "" in model 129
         let value = migratedBooking.value(forKey: "attendanceStatusKey") as? String
-        XCTAssertNil(value)
+        XCTAssertEqual(value, "")
 
         // `attendanceStatusKey` must be settable
         migratedBooking.setValue("checked_in", forKey: "attendanceStatusKey")

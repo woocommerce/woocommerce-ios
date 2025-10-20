@@ -19,9 +19,15 @@ final class ProductDetailRouter {
     static var shared = ProductDetailRouter(productURLProvider: ProductURLProvider())
 
     private let productURLProvider: ProductURLProvider
+    private let ciabChecker: CIABEligibilityCheckerProtocol
+    private let stores: StoresManager
 
-    init(productURLProvider: ProductURLProvider) {
+    init(productURLProvider: ProductURLProvider,
+         ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         stores: StoresManager = ServiceLocator.stores) {
         self.productURLProvider = productURLProvider
+        self.ciabChecker = ciabChecker
+        self.stores = stores
     }
 
     func viewController(product: Product,
@@ -30,35 +36,39 @@ final class ProductDetailRouter {
                         onDeleteCompletion: (() -> Void)? = nil) -> UIViewController {
 
         let viewController: UIViewController
-        if  product.productType == .booking {
-            let coordinator = WebViewProductDetailCoordinator(product: product,
-                                                              productURLProvider: productURLProvider)
-            viewController = coordinator.viewController()
+        if shouldOpenInWeb(product: product) {
+            let coordinator = WebViewProductDetailCoordinator(productURLProvider: productURLProvider)
+            viewController = coordinator.viewController(product: product,
+                                                        site: stores.sessionManager.defaultSite!)
 
         } else {
             let coordinator = NativeProductDetailCoordinator(product: product)
             viewController = coordinator.viewController(presentationStyle: presentationStyle,
-                                              forceReadOnly: forceReadOnly)
+                                                        forceReadOnly: forceReadOnly)
         }
 
         return viewController
     }
+
+    private func shouldOpenInWeb(product: Product) -> Bool {
+        return ciabChecker.isCurrentSiteCIAB && product.productType == .booking
+    }
 }
 
 final class WebViewProductDetailCoordinator: NSObject {
-    private let product: Product
     private let productURLProvider: ProductURLProvider
 
     private var onDismiss: (() -> Void)?
 
-    init(product: Product, productURLProvider: ProductURLProvider) {
-        self.product = product
+    init(productURLProvider: ProductURLProvider) {
         self.productURLProvider = productURLProvider
     }
 
-    func viewController(onDeleteCompletion: (() -> Void)? = nil) -> UIViewController {
-        guard let url = productURLProvider.adminURL(for: product) else {
-            return UIViewController() // TODO: What do we do in this case?
+    func viewController(product: Product,
+                        site: Site,
+                        onDeleteCompletion: (() -> Void)? = nil) -> UIViewController {
+        guard let url = productURLProvider.adminURL(for: product, site: site) else {
+            return UIViewController()
         }
 
         let viewModel = WPAdminWebViewModel(title: product.name, initialURL: url)
@@ -94,7 +104,7 @@ final class NativeProductDetailCoordinator {
 }
 
 final class ProductURLProvider {
-    func adminURL(for product: Product) -> URL? {
-        return URL(string: "https://wordpress.com")
+    func adminURL(for product: Product, site: Site) -> URL? {
+        return site.adminURLWithFallback()?.appendingPathComponent("?page=next-admin&p=/woocommerce/products/edit/\(product.productID)")
     }
 }

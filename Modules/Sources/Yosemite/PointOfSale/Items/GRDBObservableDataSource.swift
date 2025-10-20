@@ -93,6 +93,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         currentVariationPage = 1
         isLoadingVariations = true
         variationItems = []
+        variationError = nil
 
         setupVariationObservation(parentProduct: parentProduct)
         setupVariationStatisticsObservation(parentProduct: parentProduct)

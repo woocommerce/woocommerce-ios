@@ -90,8 +90,8 @@ public extension PersistedProductVariation {
     /// Returns a request for non-downloadable variations of a parent product, ordered by ID
     static func posVariationsRequest(siteID: Int64, parentProductID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation
-            .filter(Columns.siteID == siteID && Columns.productID == parentProductID)
-            .filter(Columns.downloadable == false)
+            .basePOSVariationsRequest(siteID: siteID)
+            .filter(Columns.productID == parentProductID)
             .order(Columns.id)
     }
 
@@ -102,9 +102,16 @@ public extension PersistedProductVariation {
     /// - Returns: A query request that matches variations with the given global unique ID
     static func posVariationByGlobalUniqueID(siteID: Int64, globalUniqueID: String) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation
+            .basePOSVariationsRequest(siteID: siteID)
+            .filter(Columns.globalUniqueID == globalUniqueID)
+    }
+}
+
+private extension PersistedProductVariation {
+    static func basePOSVariationsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return PersistedProductVariation
             .filter(Columns.siteID == siteID)
             .filter(Columns.downloadable == false)
-            .filter(Columns.globalUniqueID == globalUniqueID)
     }
 }
 

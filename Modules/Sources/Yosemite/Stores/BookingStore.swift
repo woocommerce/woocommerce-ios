@@ -267,37 +267,9 @@ private extension BookingStore {
             siteID: siteID,
             bookingID: bookingID,
             statusKey: status
-        ) { [weak self] previousStatusKey in
-            guard let self else {
-                return onCompletion(UpdateBookingStatusError.undefinedState)
-            }
-
-            Task {
-                do {
-                    if let remoteBooking = try await self.remote.updateBooking(
-                        from: siteID,
-                        bookingID: bookingID,
-                        attendanceStatus: status
-                    ) {
-                        await self.upsertStoredBookingsInBackground(
-                            readOnlyBookings: [remoteBooking],
-                            readOnlyOrders: [],
-                            siteID: siteID
-                        )
-                    } else {
-                        onCompletion(nil)
-                    }
-                } catch {
-                    /// Revert Optimistic Update
-                    self.updateBookingAttendanceStatusLocally(
-                        siteID: siteID,
-                        bookingID: bookingID,
-                        statusKey: previousStatusKey
-                    ) { _ in
-                        onCompletion(error)
-                    }
-                }
-            }
+        ) { _ in
+            //TODO: - booking status remote update + rollback status in case of error
+            onCompletion(nil)
         }
     }
 

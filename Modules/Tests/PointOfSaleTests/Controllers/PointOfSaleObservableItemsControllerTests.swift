@@ -84,7 +84,7 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.root == .loaded(mockItems, hasMoreItems: true))
     }
 
-    @Test func test_load_products_when_empty_results_in_empty_state() async {
+    @Test func test_load_products_when_empty_triggers_refresh_on_subsequent_load() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
@@ -92,11 +92,17 @@ final class PointOfSaleObservableItemsControllerTests {
 
         dataSource.productItems = []
         dataSource.isLoadingProducts = false
+        coordinator.performIncrementalSyncResult = .success(())
 
-        // When
+        // When: First load (initial load, no refresh triggered)
+        await sut.loadItems(base: .root)
+        #expect(coordinator.performIncrementalSyncInvocationCount == 0)
+
+        // When: Second load while still empty (should trigger refresh)
         await sut.loadItems(base: .root)
 
-        // Then
+        // Then: Should trigger refresh when empty after initial load
+        #expect(coordinator.performIncrementalSyncInvocationCount == 1)
         #expect(sut.itemsViewState.containerState == .content)
         #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
@@ -128,7 +134,7 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .loaded(mockVariations, hasMoreItems: false))
     }
 
-    @Test func test_load_variations_when_empty_results_in_empty_state() async {
+    @Test func test_load_variations_when_empty_triggers_refresh_on_subsequent_load() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
@@ -145,11 +151,17 @@ final class PointOfSaleObservableItemsControllerTests {
 
         dataSource.variationItems = []
         dataSource.isLoadingVariations = false
+        coordinator.performIncrementalSyncResult = .success(())
 
-        // When
+        // When: First load (initial load, no refresh triggered)
+        await sut.loadItems(base: .parent(parentItem))
+        #expect(coordinator.performIncrementalSyncInvocationCount == 0)
+
+        // When: Second load while still empty (should trigger refresh)
         await sut.loadItems(base: .parent(parentItem))
 
-        // Then
+        // Then: Should trigger refresh when empty after initial load
+        #expect(coordinator.performIncrementalSyncInvocationCount == 1)
         #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .empty)
     }
 

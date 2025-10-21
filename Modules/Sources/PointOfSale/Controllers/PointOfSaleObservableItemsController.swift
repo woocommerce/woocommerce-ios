@@ -23,7 +23,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 
     // Track current parent for variation state mapping
     private var currentParentItem: POSItem?
-    private var refreshError: Error?
+    private var refreshState: RefreshState = .idle
 
     var itemsViewState: ItemsViewState {
         ItemsViewState(
@@ -60,6 +60,18 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
+            // Refresh if there's an error or if items are empty after initial load
+            let shouldRefresh = {
+                if case .error = refreshState {
+                    return true
+                }
+                return hasLoadedProducts && dataSource.productItems.isEmpty
+            }()
+
+            if shouldRefresh {
+                await refreshItems(base: base)
+            }
+
             dataSource.loadProducts()
             hasLoadedProducts = true
         case .parent(let parent):
@@ -74,29 +86,38 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
                 hasLoadedVariationsForCurrentParent = false
             }
 
+            // Refresh if there's an error or if variations are empty after initial load
+            let shouldRefresh = {
+                if case .error = refreshState {
+                    return true
+                }
+                return hasLoadedVariationsForCurrentParent && dataSource.variationItems.isEmpty
+            }()
+
+            if shouldRefresh {
+                await refreshItems(base: base)
+            }
+
             dataSource.loadVariations(for: parentProduct)
             hasLoadedVariationsForCurrentParent = true
-        }
-
-        if refreshError != nil {
-            await refreshItems(base: base)
         }
     }
 
     func refreshItems(base: ItemListBaseItem) async {
-        refreshError = nil
+        refreshState = .loading
 
         do {
             try await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+            refreshState = .idle
         } catch let error as POSCatalogSyncError {
             switch error {
             case .syncAlreadyInProgress:
-                break
+                refreshState = .idle
             default:
-                refreshError = error
+                refreshState = .error(error)
             }
         } catch {
-            refreshError = error
+            refreshState = .error(error)
         }
     }
 
@@ -128,13 +149,13 @@ private extension PointOfSaleObservableItemsController {
             return .initial
         }
 
-        // Loading state - preserve existing items
-        if dataSource.isLoadingProducts {
+        // Loading state - preserve existing items (both for data loading and refresh)
+        if dataSource.isLoadingProducts || refreshState == .loading {
             return .loading(items)
         }
 
         // Error state for refresh
-        if let error = refreshError {
+        if case .error(let error) = refreshState {
             if items.isEmpty {
                 return .error(.errorOnLoadingProducts(error: error))
             } else {
@@ -168,13 +189,13 @@ private extension PointOfSaleObservableItemsController {
             return [parentItem: .initial]
         }
 
-        // Loading state - preserve existing items
-        if dataSource.isLoadingVariations {
+        // Loading state - preserve existing items (both for data loading and refresh)
+        if dataSource.isLoadingVariations || refreshState == .loading {
             return [parentItem: .loading(items)]
         }
 
         // Error state for refresh
-        if let error = refreshError {
+        if case .error(let error) = refreshState {
             if items.isEmpty {
                 return [parentItem: .error(.errorOnLoadingVariations(error: error))]
             } else {
@@ -194,5 +215,27 @@ private extension PointOfSaleObservableItemsController {
 
         // Loaded state
         return [parentItem: .loaded(items, hasMoreItems: dataSource.hasMoreVariations)]
+    }
+}
+
+private extension PointOfSaleObservableItemsController {
+    /// Represents the state of a refresh operation
+    enum RefreshState: Equatable {
+        case idle
+        case loading
+        case error(Error)
+
+        static func == (lhs: RefreshState, rhs: RefreshState) -> Bool {
+            switch (lhs, rhs) {
+            case (.idle, .idle):
+                return true
+            case (.loading, .loading):
+                return true
+            case (.error(let lhsError), .error(let rhsError)):
+                return lhsError.localizedDescription == rhsError.localizedDescription
+            default:
+                return false
+            }
+        }
     }
 }

@@ -100,8 +100,9 @@ enum SiteCredentialLoginError: LocalizedError {
 /// This use case handles site credential login without the need to use XMLRPC API.
 /// Steps for login:
 /// - Make a request to the site wp-login.php with a redirect to the nonce retrieval URL.
-/// - Upon redirect, cancel the request and verify if the redirect URL is the nonce retrieval URL.
-/// - If it is, make a request to retrieve nonce at that URL, the login succeeds if this is successful.
+/// - If the redirect succeeds with a nonce in the response, login is successful.
+/// - If the request does not redirect or the redirect fails, login fails.
+/// Ref: pe5sF9-1iQ-p2
 ///
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
@@ -161,32 +162,31 @@ private extension SiteCredentialLoginUseCase {
 
         let isNonceUrl = response.url?.absoluteString.hasSuffix(Constants.wporgNoncePath) == true
 
-        switch response.statusCode {
-        case 404:
-            if isNonceUrl {
-                throw SiteCredentialLoginError.inaccessibleAdminPage
-            } else {
-                throw SiteCredentialLoginError.inaccessibleLoginPage
-            }
-        case 200:
-            if isNonceUrl,
-               let nonceString = String(data: data, encoding: .utf8),
+        switch (isNonceUrl, response.statusCode) {
+        case (true, 200):
+            if let nonceString = String(data: data, encoding: .utf8),
                nonceString.isValidNonce() {
                 // success!
                 return
             } else {
-                // 200 for the login URL, which means a failure
-                guard let html = String(data: data, encoding: .utf8) else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
-                if html.hasInvalidCredentialsPattern() {
-                    throw SiteCredentialLoginError.invalidCredentials
-                }
-                if let errorMessage = html.findLoginErrorMessage() {
-                    throw SiteCredentialLoginError.loginFailed(message: errorMessage)
-                } else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+        case (true, 404):
+            throw SiteCredentialLoginError.inaccessibleAdminPage
+        case (false, 404):
+            throw SiteCredentialLoginError.inaccessibleLoginPage
+        case (false, 200):
+            // 200 for the login URL, which means a failure
+            guard let html = String(data: data, encoding: .utf8) else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+            if html.hasInvalidCredentialsPattern() {
+                throw SiteCredentialLoginError.invalidCredentials
+            }
+            if let errorMessage = html.findLoginErrorMessage() {
+                throw SiteCredentialLoginError.loginFailed(message: errorMessage)
+            } else {
+                throw SiteCredentialLoginError.invalidLoginResponse
             }
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)

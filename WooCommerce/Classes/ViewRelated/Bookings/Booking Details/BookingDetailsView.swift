@@ -335,6 +335,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             resourceID: 113,
             startDate: now,
             statusKey: "paid",
+            attendanceStatusKey: "booked",
             localTimezone: "America/New_York",
             currency: "USD",
             orderInfo: nil

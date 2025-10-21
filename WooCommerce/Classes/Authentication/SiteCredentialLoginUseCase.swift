@@ -138,6 +138,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                 errorHandler?(error)
             } catch let nsError as NSError where nsError.domain == NSURLErrorDomain && nsError.code == -999 {
                 /// login request is cancelled upon redirect, ignore this error
+                DDLogDebug("Cancelling auto redirect...")
             } catch {
                 errorHandler?(.genericFailure(underlyingError: error as NSError))
             }
@@ -187,6 +188,8 @@ private extension SiteCredentialLoginUseCase {
             errorHandler?(.invalidLoginResponse)
             return
         }
+
+        // Handling redirect to nonce retrieval URL manually
         do {
             let nonceRequest = try URLRequest(url: nonceRetrievalURL, method: .get)
             try await checkAdminPageAccess(with: nonceRequest)
@@ -199,7 +202,9 @@ private extension SiteCredentialLoginUseCase {
     }
 
     func checkAdminPageAccess(with nonceRequest: URLRequest) async throws {
-        let (_, response) = try await session.data(for: nonceRequest)
+        // Use a separate session without delegate to avoid triggering redirect interception
+        let sessionWithoutDelegate = URLSession(configuration: .default)
+        let (_, response) = try await sessionWithoutDelegate.data(for: nonceRequest)
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.invalidLoginResponse
         }

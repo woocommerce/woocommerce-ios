@@ -159,7 +159,7 @@ private extension SiteCredentialLoginUseCase {
             throw SiteCredentialLoginError.invalidLoginResponse
         }
 
-        let isNonceUrl = response.url?.absoluteString.contains(Constants.wporgNoncePath) == true
+        let isNonceUrl = response.url?.absoluteString.hasSuffix(Constants.wporgNoncePath) == true
 
         switch response.statusCode {
         case 404:
@@ -169,9 +169,10 @@ private extension SiteCredentialLoginUseCase {
                 throw SiteCredentialLoginError.inaccessibleLoginPage
             }
         case 200:
-            if isNonceUrl {
-                // Means success
-                // But maybe we can also validate the nonce format like Android https://github.com/woocommerce/woocommerce-android/blob/ea4a48355b5ca4d49dc27e91566aaed304ab5916/libs/fluxc/src/main/java/org/wordpress/android/fluxc/network/rest/wpapi/NonceRestClient.kt#L120
+            if isNonceUrl,
+               let nonceString = String(data: data, encoding: .utf8),
+               nonceString.isValidNonce() {
+                // success!
                 return
             } else {
                 // 200 for the login URL, which means a failure
@@ -276,5 +277,16 @@ private extension String {
     ///
     func hasInvalidCredentialsPattern() -> Bool {
         contains("document.querySelector('form').classList.add('shake')")
+    }
+
+    /// Validates if the string matches the expected nonce format.
+    /// A valid nonce should contain at least 2 alphanumeric characters.
+    ///
+    func isValidNonce() -> Bool {
+        guard let regex = try? Regex("^[0-9a-zA-Z]{2,}$") else {
+            DDLogError("⚠️ Invalid regex pattern")
+            return false
+        }
+        return wholeMatch(of: regex) != nil
     }
 }

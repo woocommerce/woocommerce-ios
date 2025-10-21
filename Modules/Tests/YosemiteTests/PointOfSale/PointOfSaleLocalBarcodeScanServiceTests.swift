@@ -154,7 +154,7 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         try await insertProduct(downloadableProduct)
 
         // When/Then - Should not find the downloadable product
-        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+        await #expect(throws: PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: barcode, productName: "Downloadable Product")) {
             _ = try await sut.getItem(barcode: barcode)
         }
     }

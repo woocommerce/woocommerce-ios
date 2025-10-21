@@ -1,0 +1,64 @@
+import UIKit
+import Yosemite
+
+/// Decides between **native** and **admin web** product detail flows and builds the destination VC.
+final class ProductDetailNavigator {
+
+    /// Describes how the **native** destination should be presented.
+    enum Presentation {
+        case push
+        case contained(in: () -> UIViewController?)
+
+        var asProductFormPresentationStyle: ProductFormPresentationStyle {
+            switch self {
+            case .contained(let inVC):
+                    .contained(containerViewController: inVC)
+            case .push:
+                    .navigationStack
+            }
+        }
+    }
+
+    /// Convenience singleton for places that cannot inject dependencies easily.
+    static var shared = ProductDetailNavigator()
+
+    init(ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default) {
+        self.ciabChecker = ciabChecker
+        self.coordinatorFactory = coordinatorFactory
+    }
+
+    /// Builds the destination `UIViewController` for the given product.
+    /// - Parameters:
+    ///   - product: The product to display.
+    ///   - presentationStyle: How to present **native** detail (ignored for web).
+    ///   - isReadOnly: Whether the native screen should be read-only.
+    ///   - onDelete: Optional callback invoked after a successful product delete.
+    /// - Returns: A ready-to-present view controller (native or web).
+    func makeDestination(product: Product,
+                         presentationStyle: Presentation = .push,
+                         isReadOnly: Bool,
+                         onDelete: (() -> Void)? = nil) -> UIViewController {
+
+        let coordinator: ProductDetailCoordinator
+        if shouldOpenInWeb(product: product) {
+            coordinator = coordinatorFactory.webCoordinator()
+        } else {
+            coordinator = coordinatorFactory.nativeCoordinator()
+        }
+
+        let viewController = coordinator.viewController(product: product,
+                                                        presentationStyle: presentationStyle,
+                                                        isReadOnly: isReadOnly,
+                                                        onDelete: onDelete)
+
+        return viewController
+    }
+
+    private func shouldOpenInWeb(product: Product) -> Bool {
+        return ciabChecker.isCurrentSiteCIAB && product.productType == .booking
+    }
+
+    private let ciabChecker: CIABEligibilityCheckerProtocol
+    private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
+}

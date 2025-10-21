@@ -1,8 +1,10 @@
 import Yosemite
 import Foundation
 
-enum ProductURLProvider {
-    static func editAdminURL(for product: Product, site: Site) -> URL? {
+/// Builds canonical admin edit URLs for products. Treat returned URLs as opaque.
+enum ProductAdminURLProvider {
+
+    static func editURL(for product: Product, site: Site) -> URL? {
         guard let base = site.adminURLWithFallback() else { return nil }
 
         var components = URLComponents(url: base, resolvingAgainstBaseURL: false)!

@@ -1,7 +1,8 @@
 import UIKit
 import Yosemite
 
-final class WebViewProductDetailCoordinator: NSObject, ProductDetailCoordinator {
+/// Coordinator for the **admin web** product detail/editor flow.
+final class ProductDetailWebCoordinator: NSObject, ProductDetailCoordinator {
     private var onDismiss: (() -> Void)?
 
     private let site: Site
@@ -11,10 +12,10 @@ final class WebViewProductDetailCoordinator: NSObject, ProductDetailCoordinator 
     }
 
     func viewController(product: Product,
-                        presentationStyle: ProductDetailPresenter.PresentationStyle,
-                        forceReadOnly: Bool,
-                        onDeleteCompletion: (() -> Void)? = nil) -> UIViewController {
-        guard let url = ProductURLProvider.editAdminURL(for: product, site: site) else {
+                        presentationStyle: ProductDetailNavigator.Presentation,
+                        isReadOnly: Bool,
+                        onDelete: (() -> Void)? = nil) -> UIViewController {
+        guard let url = ProductAdminURLProvider.editURL(for: product, site: site) else {
             return UIViewController()
         }
 

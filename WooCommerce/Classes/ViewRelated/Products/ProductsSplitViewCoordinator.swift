@@ -122,9 +122,9 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
-        let viewController = ProductDetailPresenter.shared.viewController(product: product,
-                                                                       forceReadOnly: false,
-                                                                       onDeleteCompletion: { [weak self] in
+        let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
+                                                                           isReadOnly: false,
+                                                                           onDelete: { [weak self] in
             self?.onSecondaryProductFormDeletion()
         })
 

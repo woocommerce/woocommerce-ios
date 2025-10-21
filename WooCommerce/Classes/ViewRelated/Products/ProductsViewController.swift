@@ -1214,8 +1214,8 @@ extension ProductsViewController: UITableViewDelegate {
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
         guard isSplitViewEnabled else {
-            let viewController = ProductDetailPresenter.shared.viewController(product: product,
-                                                                           forceReadOnly: false)
+            let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
+                                                                               isReadOnly: false)
             navigationController?.pushViewController(viewController, animated: true)
             return
         }

@@ -74,10 +74,6 @@ public class BookingStore: Store {
     }
 }
 
-private enum UpdateBookingStatusError: Error {
-    case undefinedState
-}
-
 // MARK: - Services
 //
 private extension BookingStore {

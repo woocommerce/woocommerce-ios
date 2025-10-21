@@ -125,115 +125,6 @@ struct PersistedProductBarcodeQueryTests {
         #expect(result == nil)
     }
 
-    // MARK: - SKU Query Tests
-
-    @Test("posProductBySKU finds product with matching SKU")
-    func test_finds_product_by_sku() async throws {
-        // Given
-        let sku = "SKU-ABC-123"
-        let product = PersistedProduct(
-            id: 4,
-            siteID: siteID,
-            name: "Product with SKU",
-            productTypeKey: "simple",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: sku,
-            globalUniqueID: nil,
-            price: "15.00",
-            downloadable: false,
-            parentID: 0,
-            manageStock: true,
-            stockQuantity: 10,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(product)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductBySKU(siteID: siteID, sku: sku).fetchOne(db)
-        }
-
-        // Then
-        #expect(result != nil)
-        #expect(result?.id == 4)
-        #expect(result?.sku == sku)
-    }
-
-    @Test("posProductBySKU returns nil when no match")
-    func test_returns_nil_when_no_sku_match() async throws {
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductBySKU(siteID: siteID, sku: "NONEXISTENT-SKU").fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test("posProductBySKU filters out downloadable products")
-    func test_sku_query_filters_downloadable() async throws {
-        // Given
-        let sku = "SKU-DOWNLOADABLE"
-        let downloadableProduct = PersistedProduct(
-            id: 5,
-            siteID: siteID,
-            name: "Downloadable Product",
-            productTypeKey: "simple",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: sku,
-            globalUniqueID: nil,
-            price: "5.00",
-            downloadable: true,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(downloadableProduct)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductBySKU(siteID: siteID, sku: sku).fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test("posProductBySKU accepts variable products")
-    func test_sku_query_accepts_variable_products() async throws {
-        // Given
-        let sku = "SKU-VARIABLE"
-        let variableProduct = PersistedProduct(
-            id: 6,
-            siteID: siteID,
-            name: "Variable Product",
-            productTypeKey: "variable",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: sku,
-            globalUniqueID: nil,
-            price: "0.00",
-            downloadable: false,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(variableProduct)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductBySKU(siteID: siteID, sku: sku).fetchOne(db)
-        }
-
-        // Then
-        #expect(result != nil)
-        #expect(result?.productTypeKey == "variable")
-    }
-
     // MARK: - Site Isolation Tests
 
     @Test("Queries only return products from specified site")
@@ -287,16 +178,11 @@ struct PersistedProductBarcodeQueryTests {
         try await insertProduct(otherProduct)
 
         // When
-        let resultBySKU = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductBySKU(siteID: siteID, sku: barcode).fetchOne(db)
-        }
         let resultByGlobalID = try await grdbManager.databaseConnection.read { db in
             try PersistedProduct.posProductByGlobalUniqueID(siteID: siteID, globalUniqueID: barcode).fetchOne(db)
         }
 
         // Then
-        #expect(resultBySKU?.siteID == siteID)
-        #expect(resultBySKU?.id == 7)
         #expect(resultByGlobalID?.siteID == siteID)
         #expect(resultByGlobalID?.id == 7)
     }

@@ -128,117 +128,6 @@ struct PersistedProductVariationBarcodeQueryTests {
         #expect(result == nil)
     }
 
-    // MARK: - SKU Query Tests
-
-    @Test("posVariationBySKU finds variation with matching SKU")
-    func test_finds_variation_by_sku() async throws {
-        // Given
-        let sku = "VAR-SKU-XYZ"
-
-        // Insert parent product first
-        let parentProduct = PersistedProduct(
-            id: 11,
-            siteID: siteID,
-            name: "Parent Product",
-            productTypeKey: "variable",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: nil,
-            globalUniqueID: nil,
-            price: "0.00",
-            downloadable: false,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(parentProduct)
-
-        let variation = PersistedProductVariation(
-            id: 102,
-            siteID: siteID,
-            productID: 11,
-            sku: sku,
-            globalUniqueID: nil,
-            price: "18.00",
-            downloadable: false,
-            fullDescription: "Test variation",
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertVariation(variation)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProductVariation.posVariationBySKU(siteID: siteID, sku: sku).fetchOne(db)
-        }
-
-        // Then
-        #expect(result != nil)
-        #expect(result?.id == 102)
-        #expect(result?.sku == sku)
-    }
-
-    @Test("posVariationBySKU returns nil when no match")
-    func test_returns_nil_when_no_sku_match() async throws {
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProductVariation.posVariationBySKU(siteID: siteID, sku: "NONEXISTENT-SKU").fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test("posVariationBySKU filters out downloadable variations")
-    func test_sku_query_filters_downloadable() async throws {
-        // Given
-        let sku = "VAR-SKU-DOWNLOADABLE"
-
-        // Insert parent product first
-        let parentProduct = PersistedProduct(
-            id: 12,
-            siteID: siteID,
-            name: "Parent Product",
-            productTypeKey: "variable",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: nil,
-            globalUniqueID: nil,
-            price: "0.00",
-            downloadable: false,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(parentProduct)
-
-        let downloadableVariation = PersistedProductVariation(
-            id: 103,
-            siteID: siteID,
-            productID: 12,
-            sku: sku,
-            globalUniqueID: nil,
-            price: "7.00",
-            downloadable: true,
-            fullDescription: nil,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertVariation(downloadableVariation)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProductVariation.posVariationBySKU(siteID: siteID, sku: sku).fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
     // MARK: - Site Isolation Tests
 
     @Test("Queries only return variations from specified site")
@@ -322,16 +211,11 @@ struct PersistedProductVariationBarcodeQueryTests {
         try await insertVariation(otherVariation)
 
         // When
-        let resultBySKU = try await grdbManager.databaseConnection.read { db in
-            try PersistedProductVariation.posVariationBySKU(siteID: siteID, sku: barcode).fetchOne(db)
-        }
         let resultByGlobalID = try await grdbManager.databaseConnection.read { db in
             try PersistedProductVariation.posVariationByGlobalUniqueID(siteID: siteID, globalUniqueID: barcode).fetchOne(db)
         }
 
         // Then
-        #expect(resultBySKU?.siteID == siteID)
-        #expect(resultBySKU?.id == 104)
         #expect(resultByGlobalID?.siteID == siteID)
         #expect(resultByGlobalID?.id == 104)
     }

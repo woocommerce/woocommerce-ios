@@ -19,25 +19,16 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
     }
 
     /// Looks up a POSItem using a barcode scan string from the local GRDB catalog
-    /// - Parameter barcode: The barcode string from a scan (global unique identifier or SKU)
+    /// - Parameter barcode: The barcode string from a scan (global unique identifier)
     /// - Returns: A POSItem if found, or throws an error
     public func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
-        // Search for product or variation by barcode
-        // Try globalUniqueID first, then fall back to SKU
+        // Search for product or variation by global unique ID
         do {
             if let product = try searchProductByGlobalUniqueID(barcode) {
                 return try convertProductToItem(product, scannedCode: barcode)
             }
 
             if let variationAndParent = try searchVariationByGlobalUniqueID(barcode) {
-                return try await convertVariationToItem(variationAndParent.variation, parentProduct: variationAndParent.parentProduct, scannedCode: barcode)
-            }
-
-            if let product = try searchProductBySKU(barcode) {
-                return try convertProductToItem(product, scannedCode: barcode)
-            }
-
-            if let variationAndParent = try searchVariationBySKU(barcode) {
                 return try await convertVariationToItem(variationAndParent.variation, parentProduct: variationAndParent.parentProduct, scannedCode: barcode)
             }
 
@@ -58,30 +49,11 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         }
     }
 
-    private func searchProductBySKU(_ sku: String) throws -> PersistedProduct? {
-        try grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductBySKU(siteID: siteID, sku: sku).fetchOne(db)
-        }
-    }
-
     // MARK: - Variation Search
 
     private func searchVariationByGlobalUniqueID(_ globalUniqueID: String) throws -> (variation: PersistedProductVariation, parentProduct: PersistedProduct)? {
         try grdbManager.databaseConnection.read { db in
             guard let variation = try PersistedProductVariation.posVariationByGlobalUniqueID(siteID: siteID, globalUniqueID: globalUniqueID).fetchOne(db) else {
-                return nil
-            }
-            // Fetch parent product using the relationship
-            guard let parentProduct = try variation.request(for: PersistedProductVariation.parentProduct).fetchOne(db) else {
-                return nil
-            }
-            return (variation, parentProduct)
-        }
-    }
-
-    private func searchVariationBySKU(_ sku: String) throws -> (variation: PersistedProductVariation, parentProduct: PersistedProduct)? {
-        try grdbManager.databaseConnection.read { db in
-            guard let variation = try PersistedProductVariation.posVariationBySKU(siteID: siteID, sku: sku).fetchOne(db) else {
                 return nil
             }
             // Fetch parent product using the relationship

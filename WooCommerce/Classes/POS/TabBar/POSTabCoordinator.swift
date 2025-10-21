@@ -72,7 +72,8 @@ final class POSTabCoordinator {
     }()
 
     /// Creates the appropriate barcode scan service based on local catalog availability
-    private func createBarcodeScanService(grdbManager: GRDBManagerProtocol?, catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
+    private func createBarcodeScanService(grdbManager: GRDBManagerProtocol?,
+                                          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
         // Use local barcode scanning if both GRDB manager and catalog sync coordinator are available
         // This indicates the local catalog feature is properly initialized and can be used
         if let grdbManager, catalogSyncCoordinator != nil {

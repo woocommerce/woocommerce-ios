@@ -1,6 +1,5 @@
 import Foundation
 import protocol Storage.GRDBManagerProtocol
-import Storage
 import class WooFoundation.CurrencySettings
 
 /// Service for handling barcode scanning using local GRDB catalog
@@ -99,7 +98,9 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         }
     }
 
-    private func convertVariationToItem(_ persistedVariation: PersistedProductVariation, parentProduct: PersistedProduct, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+    private func convertVariationToItem(_ persistedVariation: PersistedProductVariation,
+                                        parentProduct: PersistedProduct,
+                                        scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
             // Validate variation is not downloadable (should already be filtered by query, but double-check)
             guard !persistedVariation.downloadable else {

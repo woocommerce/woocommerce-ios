@@ -49,6 +49,7 @@ public enum POSCatalogSyncError: Error, Equatable {
     case negativeMaxAge
     case invalidData
     case timeout
+    case generationFailed
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {

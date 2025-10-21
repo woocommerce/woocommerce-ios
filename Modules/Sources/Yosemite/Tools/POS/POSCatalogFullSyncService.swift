@@ -65,7 +65,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     public func startFullSync(for siteID: Int64) async throws -> POSCatalog {
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
 
-        let usesCatalogEndpoint = false
+        let usesCatalogEndpoint = true
 
         do {
             // Sync from network
@@ -126,13 +126,22 @@ private extension POSCatalogFullSyncService {
 
         // 1. Generate catalog and get job ID
         let jobResponse = try await syncRemote.generateCatalog(for: siteID)
-        print("🟣 Catalog generation started - Job ID: \(jobResponse.jobID)")
-
-        // 2. Poll for completion
-        let downloadURL = try await pollForCatalogCompletion(jobID: jobResponse.jobID, siteID: siteID, syncRemote: syncRemote)
-        print("🟣 Catalog ready for download: \(downloadURL)")
+        let downloadURL: String?
+        if let url = jobResponse.downloadURL {
+            downloadURL = url
+            print("🟣 Catalog ready for download: \(url)")
+        } else if let jobID = jobResponse.jobID {
+            // 2. Poll for completion
+            downloadURL = try await pollForCatalogCompletion(jobID: jobID, siteID: siteID, syncRemote: syncRemote)
+            print("🟣 Catalog generation started")
+        } else {
+            downloadURL = nil
+        }
 
         // 3. Download using the provided URL
+        guard let downloadURL else {
+            throw POSCatalogSyncError.invalidData
+        }
         return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL)
     }
 
@@ -149,11 +158,12 @@ private extension POSCatalogFullSyncService {
                     throw POSCatalogSyncError.invalidData
                 }
                 return downloadURL
-
             case .pending, .processing:
-                print("🟣 Catalog generation \(statusResponse.status) at \(statusResponse.progress)%... (attempt \(attempts + 1)/\(maxAttempts))")
+                print("🟣 Catalog generation \(statusResponse.status)... (attempt \(attempts + 1)/\(maxAttempts))")
                 try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 attempts += 1
+            case .failed:
+                throw POSCatalogSyncError.generationFailed
             }
         }
 

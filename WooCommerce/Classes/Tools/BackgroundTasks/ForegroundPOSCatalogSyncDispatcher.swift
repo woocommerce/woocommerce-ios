@@ -160,6 +160,12 @@ final actor ForegroundPOSCatalogSyncDispatcher {
                     DDLogInfo("ℹ️ ForegroundPOSCatalogSyncDispatcher: Sync already in progress for site \(siteID)")
                 case .negativeMaxAge:
                     DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Invalid max age for site \(siteID)")
+                case .invalidData:
+                    DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Invalid data encountered during sync for site \(siteID)")
+                case .timeout:
+                    DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Sync timed out for site \(siteID)")
+                case .generationFailed:
+                    DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Sync generation failed for site \(siteID)")
                 }
             } catch {
                 DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Sync failed for site \(siteID): \(error)")

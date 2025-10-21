@@ -114,6 +114,7 @@ protocol PointOfSaleAggregateModelProtocol {
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
+        performIncrementalSync()
     }
 }
 

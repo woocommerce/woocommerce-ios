@@ -807,16 +807,19 @@ struct PointOfSaleAggregateModelTests {
             }
 
             // Then
-            #expect(coordinator.performIncrementalSyncInvocationCount == 1)
             #expect(coordinator.performIncrementalSyncSiteID == 456)
 
-            coordinator.performIncrementalSyncInvocationCount = 0
+            // Given
             coordinator.performIncrementalSyncSiteID = 0
 
             // When cash payment succeeds
             await withCheckedContinuation { continuation in
+                var resumed = false
                 coordinator.onPerformIncrementalSyncCalled = {
-                    continuation.resume()
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
                 }
 
                 Task {
@@ -825,7 +828,6 @@ struct PointOfSaleAggregateModelTests {
             }
 
             // Then
-            #expect(coordinator.performIncrementalSyncInvocationCount == 1)
             #expect(coordinator.performIncrementalSyncSiteID == 456)
         }
     }

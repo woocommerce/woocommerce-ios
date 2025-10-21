@@ -187,6 +187,43 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         }
     }
 
+    @Test("Throws unsupportedProductType when scanning variable parent product barcode")
+    func test_throws_unsupported_product_type_for_variable_parent() async throws {
+        // Given
+        let barcode = "VARIABLE-PARENT-123"
+        let variableParentProduct = PersistedProduct(
+            id: 22,
+            siteID: siteID,
+            name: "Variable Parent Product",
+            productTypeKey: "variable",  // Variable parent cannot be added to cart
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "0.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock"
+        )
+        try await insertProduct(variableParentProduct)
+
+        // When/Then - Should throw unsupportedProductType error
+        do {
+            _ = try await sut.getItem(barcode: barcode)
+            Issue.record("Expected unsupportedProductType error but none was thrown")
+        } catch let error as PointOfSaleBarcodeScanError {
+            guard case .unsupportedProductType(let scannedCode, let productName, let productType) = error else {
+                Issue.record("Expected unsupportedProductType error, got \(error)")
+                return
+            }
+            #expect(scannedCode == barcode)
+            #expect(productName == "Variable Parent Product")
+            #expect(productType == .variable)
+        }
+    }
+
     // MARK: - Helper Methods
 
     private func insertProduct(_ product: PersistedProduct) async throws {

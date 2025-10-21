@@ -75,8 +75,9 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
                 throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: posProduct.name)
             }
 
-            // Validate product type
-            guard [.simple, .variable].contains(posProduct.productType) else {
+            // Validate product type - only simple products can be scanned directly
+            // Variable parent products cannot be added to cart (only their variations can)
+            guard posProduct.productType == .simple else {
                 throw PointOfSaleBarcodeScanError.unsupportedProductType(
                     scannedCode: scannedCode,
                     productName: posProduct.name,

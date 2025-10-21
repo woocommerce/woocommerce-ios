@@ -95,8 +95,7 @@ public extension PersistedProduct {
     /// Returns a request for POS-supported products (simple and variable, non-downloadable) for a given site, ordered by name
     static func posProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
         return PersistedProduct
-            .filter(Columns.siteID == siteID)
-            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
+            .basePOSProductsRequest(siteID: siteID)
             .filter(Columns.downloadable == false)
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }
@@ -108,8 +107,16 @@ public extension PersistedProduct {
     /// - Returns: A query request that matches products with the given global unique ID
     static func posProductByGlobalUniqueID(siteID: Int64, globalUniqueID: String) -> QueryInterfaceRequest<PersistedProduct> {
         return PersistedProduct
-            .posProductsRequest(siteID: siteID)
+            .basePOSProductsRequest(siteID: siteID)
             .filter(Columns.globalUniqueID == globalUniqueID)
+    }
+}
+
+private extension PersistedProduct {
+    static func basePOSProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        return PersistedProduct
+            .filter(Columns.siteID == siteID)
+            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
     }
 }
 

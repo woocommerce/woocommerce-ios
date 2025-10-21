@@ -92,6 +92,7 @@ public extension PersistedProductVariation {
         return PersistedProductVariation
             .basePOSVariationsRequest(siteID: siteID)
             .filter(Columns.productID == parentProductID)
+            .filter(Columns.downloadable == false)
             .order(Columns.id)
     }
 
@@ -111,7 +112,6 @@ private extension PersistedProductVariation {
     static func basePOSVariationsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation
             .filter(Columns.siteID == siteID)
-            .filter(Columns.downloadable == false)
     }
 }
 

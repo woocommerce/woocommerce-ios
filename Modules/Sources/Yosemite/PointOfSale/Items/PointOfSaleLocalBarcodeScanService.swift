@@ -21,7 +21,6 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
     /// - Parameter barcode: The barcode string from a scan (global unique identifier)
     /// - Returns: A POSItem if found, or throws an error
     public func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
-        // Search for product or variation by global unique ID
         do {
             if let product = try searchProductByGlobalUniqueID(barcode) {
                 return try convertProductToItem(product, scannedCode: barcode)
@@ -31,7 +30,6 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
                 return try await convertVariationToItem(variationAndParent.variation, parentProduct: variationAndParent.parentProduct, scannedCode: barcode)
             }
 
-            // No match found
             throw PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)
         } catch let error as PointOfSaleBarcodeScanError {
             throw error
@@ -69,7 +67,6 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         do {
             let posProduct = try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
 
-            // Validate product is not downloadable (should already be filtered by query, but double-check)
             guard !posProduct.downloadable else {
                 throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: posProduct.name)
             }
@@ -102,27 +99,20 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
                                         parentProduct: PersistedProduct,
                                         scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
-            // Validate variation is not downloadable (should already be filtered by query, but double-check)
-            guard !persistedVariation.downloadable else {
-                // We don't have the product name for variations, so use a generic message
-                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: "Product variation")
-            }
-
             // Convert both variation and parent to POS models
             let posVariation = try persistedVariation.toPOSProductVariation(db: grdbManager.databaseConnection)
             let parentPOSProduct = try parentProduct.toPOSProduct(db: grdbManager.databaseConnection)
 
-            // Map parent to POSVariableParentProduct
-            let mappedParents = itemMapper.mapProductsToPOSItems(products: [parentPOSProduct])
-            guard let mappedParent = mappedParents.first,
-                  case .variableParentProduct(let variableParentProduct) = mappedParent else {
+            // Map to POSItem
+            guard let mappedParent = itemMapper.mapProductsToPOSItems(products: [parentPOSProduct]).first,
+                  case .variableParentProduct(let variableParentProduct) = mappedParent,
+                  let item = itemMapper.mapVariationsToPOSItems(variations: [posVariation], parentProduct: variableParentProduct).first else {
                 throw PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)
             }
 
-            // Convert to POSItem
-            let items = itemMapper.mapVariationsToPOSItems(variations: [posVariation], parentProduct: variableParentProduct)
-            guard let item = items.first else {
-                throw PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)
+            guard !persistedVariation.downloadable else {
+                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode,
+                                                                      productName: variationName(for: item))
             }
 
             return item
@@ -131,5 +121,21 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         } catch {
             throw PointOfSaleBarcodeScanError.mappingError(scannedCode: scannedCode, underlyingError: error)
         }
+    }
+
+    private func variationName(for item: POSItem) -> String {
+        guard case .variation(let posVariation) = item else {
+            return Localization.unknownVariationName
+        }
+        return posVariation.name
+    }
+}
+
+private extension PointOfSaleLocalBarcodeScanService {
+    enum Localization {
+        static let unknownVariationName = NSLocalizedString(
+            "pointOfSale.barcodeScanning.unresolved.variation.name",
+            value: "Unknown",
+            comment: "A placeholder name when we can't determine the name of a variation for an error message")
     }
 }

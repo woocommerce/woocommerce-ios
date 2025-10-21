@@ -1340,7 +1340,6 @@
 		640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */; };
 		64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */; };
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
-		680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680BA5992A4C377900F5559D /* UpgradeViewState.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
 		680E36B72BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */; };
 		682140AF2E125437005E86AB /* UILabel+SalesChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */; };
@@ -5779,6 +5778,7 @@
 		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
 		646A2C682E9FCD7E003A32A1 /* Routing */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Routing; sourceTree = "<group>"; };
+		6489D8522EA667AC00D96802 /* Routing */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Routing; sourceTree = "<group>"; };
 		DEDB5D342E7A68950022E5A1 /* Bookings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Bookings; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -9649,6 +9649,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				6489D8522EA667AC00D96802 /* Routing */,
 				DEB387962C2E80060025256E /* GoogleAds */,
 				DABF35242C11B40C006AF826 /* POS */,
 				B958A7CF28B527FB00823EEF /* Universal Links */,
@@ -13275,6 +13276,9 @@
 			);
 			dependencies = (
 				B56DB3DF2049BFAA00D4AA8E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6489D8522EA667AC00D96802 /* Routing */,
 			);
 			name = WooCommerceTests;
 			packageProductDependencies = (

@@ -122,7 +122,7 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
-        let viewController = ProductDetailRouter.shared.viewController(product: product,
+        let viewController = ProductDetailPresenter.shared.viewController(product: product,
                                                                        forceReadOnly: false,
                                                                        onDeleteCompletion: { [weak self] in
             self?.onSecondaryProductFormDeletion()

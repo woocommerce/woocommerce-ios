@@ -108,7 +108,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
-    private lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+    private lazy var session = URLSession(configuration: .default)
 
     init(siteURL: String,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
@@ -134,11 +134,9 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         Task { @MainActor in
             do {
                 try await startLogin(with: loginRequest)
+                successHandler?()
             } catch let error as SiteCredentialLoginError {
                 errorHandler?(error)
-            } catch let nsError as NSError where nsError.domain == NSURLErrorDomain && nsError.code == -999 {
-                /// login request is cancelled upon redirect, ignore this error
-                DDLogDebug("Cancelling auto redirect...")
             } catch {
                 errorHandler?(.genericFailure(underlyingError: error as NSError))
             }
@@ -173,46 +171,7 @@ private extension SiteCredentialLoginUseCase {
             }
             if let errorMessage = html.findLoginErrorMessage() {
                 throw SiteCredentialLoginError.loginFailed(message: errorMessage)
-            } else {
-                throw SiteCredentialLoginError.invalidLoginResponse
             }
-        default:
-            throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
-        }
-    }
-
-    @MainActor
-    func checkRedirect(url: URL?) async {
-        guard let url, url.absoluteString.hasSuffix(Constants.wporgNoncePath),
-              let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
-            errorHandler?(.invalidLoginResponse)
-            return
-        }
-
-        // Handling redirect to nonce retrieval URL manually
-        do {
-            let nonceRequest = try URLRequest(url: nonceRetrievalURL, method: .get)
-            try await checkAdminPageAccess(with: nonceRequest)
-            successHandler?()
-        } catch let error as SiteCredentialLoginError {
-            errorHandler?(error)
-        } catch {
-            errorHandler?(.genericFailure(underlyingError: error as NSError))
-        }
-    }
-
-    func checkAdminPageAccess(with nonceRequest: URLRequest) async throws {
-        // Use a separate session without delegate to avoid triggering redirect interception
-        let sessionWithoutDelegate = URLSession(configuration: .default)
-        let (_, response) = try await sessionWithoutDelegate.data(for: nonceRequest)
-        guard let response = response as? HTTPURLResponse else {
-            throw SiteCredentialLoginError.invalidLoginResponse
-        }
-        switch response.statusCode {
-        case 200:
-            return // success 🎉
-        case 404:
-            throw SiteCredentialLoginError.inaccessibleAdminPage
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
         }
@@ -241,18 +200,6 @@ private extension SiteCredentialLoginUseCase {
         let characterSet = CharacterSet(charactersIn: "+").inverted
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
         return request
-    }
-}
-
-extension SiteCredentialLoginUseCase: URLSessionDataDelegate {
-    func urlSession(_ session: URLSession,
-                    task: URLSessionTask,
-                    willPerformHTTPRedirection response: HTTPURLResponse,
-                    newRequest request: URLRequest) async -> URLRequest? {
-        // Disables redirect and check if the redirect is correct
-        task.cancel()
-        await checkRedirect(url: request.url)
-        return nil
     }
 }
 

@@ -1,7 +1,7 @@
 import Yosemite
 import Foundation
 
-/// Builds canonical admin edit URLs for products. Treat returned URLs as opaque.
+/// Builds canonical admin edit URLs for products.
 enum ProductAdminURLProvider {
 
     static func editURL(for product: Product, site: Site) -> URL? {

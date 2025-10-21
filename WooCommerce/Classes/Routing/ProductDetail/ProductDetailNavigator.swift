@@ -3,7 +3,6 @@ import Yosemite
 
 /// Decides between **native** and **admin web** product detail flows and builds the destination VC.
 final class ProductDetailNavigator {
-
     /// Describes how the **native** destination should be presented.
     enum Presentation {
         case push
@@ -19,8 +18,10 @@ final class ProductDetailNavigator {
         }
     }
 
-    /// Convenience singleton for places that cannot inject dependencies easily.
     static var shared = ProductDetailNavigator()
+
+    private let ciabChecker: CIABEligibilityCheckerProtocol
+    private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
 
     init(ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default) {
@@ -58,7 +59,4 @@ final class ProductDetailNavigator {
     private func shouldOpenInWeb(product: Product) -> Bool {
         return ciabChecker.isCurrentSiteCIAB && product.productType == .booking
     }
-
-    private let ciabChecker: CIABEligibilityCheckerProtocol
-    private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
 }

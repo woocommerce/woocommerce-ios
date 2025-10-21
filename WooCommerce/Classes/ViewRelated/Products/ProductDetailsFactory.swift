@@ -10,30 +10,6 @@ struct ProductDetailsFactory {
     ///   - currencySettings: site currency settings.
     ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onDeleteCompletion: called when the product deletion completes in the product form.
-    ///   - onCompletion: called when the view controller is created and ready for display.
-    static func productDetails(product: Product,
-                               presentationStyle: ProductFormPresentationStyle,
-                               currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-                               forceReadOnly: Bool,
-                               productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-                               onDeleteCompletion: @escaping () -> Void = {},
-                               onCompletion: @escaping (UIViewController) -> Void) {
-        let vc = productDetails(product: product,
-                                presentationStyle: presentationStyle,
-                                currencySettings: currencySettings,
-                                isEditProductsEnabled: forceReadOnly ? false: true,
-                                productImageUploader: productImageUploader,
-                                onDeleteCompletion: onDeleteCompletion)
-        onCompletion(vc)
-    }
-
-    /// Creates a product details view controller asynchronously based on the app settings.
-    /// - Parameters:
-    ///   - product: product model.
-    ///   - presentationStyle: how the product details are presented.
-    ///   - currencySettings: site currency settings.
-    ///   - forceReadOnly: force the product detail to be presented in read only mode
-    ///   - onDeleteCompletion: called when the product deletion completes in the product form.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,

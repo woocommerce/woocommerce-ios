@@ -213,7 +213,9 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
-        analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
+        siteID: Int64 = 1,
+        catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -228,7 +230,9 @@ struct POSPreviewHelpers {
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
-            barcodeScanService: barcodeScanService
+            barcodeScanService: barcodeScanService,
+            siteID: siteID,
+            catalogSyncCoordinator: catalogSyncCoordinator
         )
     }
 

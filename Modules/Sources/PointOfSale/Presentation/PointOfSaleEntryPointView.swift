@@ -40,6 +40,8 @@ public struct PointOfSaleEntryPointView: View {
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
+    private let siteID: Int64
+    private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -128,6 +130,8 @@ public struct PointOfSaleEntryPointView: View {
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services
+        self.siteID = siteID
+        self.catalogSyncCoordinator = catalogSyncCoordinator
     }
 
     public var body: some View {
@@ -156,7 +160,9 @@ public struct PointOfSaleEntryPointView: View {
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
-                barcodeScanService: barcodeScanService)
+                barcodeScanService: barcodeScanService,
+                siteID: siteID,
+                catalogSyncCoordinator: catalogSyncCoordinator)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

@@ -159,18 +159,33 @@ private extension SiteCredentialLoginUseCase {
             throw SiteCredentialLoginError.invalidLoginResponse
         }
 
+        let isNonceUrl = response.url?.absoluteString.contains(Constants.wporgNoncePath) == true
+
         switch response.statusCode {
         case 404:
-            throw SiteCredentialLoginError.inaccessibleLoginPage
+            if isNonceUrl {
+                throw SiteCredentialLoginError.inaccessibleAdminPage
+            } else {
+                throw SiteCredentialLoginError.inaccessibleLoginPage
+            }
         case 200:
-            guard let html = String(data: data, encoding: .utf8) else {
-                throw SiteCredentialLoginError.invalidLoginResponse
-            }
-            if html.hasInvalidCredentialsPattern() {
-                throw SiteCredentialLoginError.invalidCredentials
-            }
-            if let errorMessage = html.findLoginErrorMessage() {
-                throw SiteCredentialLoginError.loginFailed(message: errorMessage)
+            if isNonceUrl {
+                // Means success
+                // But maybe we can also validate the nonce format like Android https://github.com/woocommerce/woocommerce-android/blob/ea4a48355b5ca4d49dc27e91566aaed304ab5916/libs/fluxc/src/main/java/org/wordpress/android/fluxc/network/rest/wpapi/NonceRestClient.kt#L120
+                return
+            } else {
+                // 200 for the login URL, which means a failure
+                guard let html = String(data: data, encoding: .utf8) else {
+                    throw SiteCredentialLoginError.invalidLoginResponse
+                }
+                if html.hasInvalidCredentialsPattern() {
+                    throw SiteCredentialLoginError.invalidCredentials
+                }
+                if let errorMessage = html.findLoginErrorMessage() {
+                    throw SiteCredentialLoginError.loginFailed(message: errorMessage)
+                } else {
+                    throw SiteCredentialLoginError.invalidLoginResponse
+                }
             }
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)

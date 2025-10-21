@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 129 (Release X.X.X.X)
+- @rafaelkayumov 2025-10-17
+  - Added `attendanceStatusKey` attribute to `Booking` entity.
+
 ## Model 128 (Release 23.5.0.0)
 - @itsmeichigo 2025-10-14
   - Added `BookingOrderInfo` entity.

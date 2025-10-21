@@ -8,6 +8,7 @@ import enum Yosemite.POSItem
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import protocol Yosemite.POSSearchHistoryProviding
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSItemType
 import Combine
 
@@ -775,6 +776,58 @@ struct PointOfSaleAggregateModelTests {
                 return
             }
         }
+
+        @Test func when_payment_succeeds_then_triggers_incremental_sync() async throws {
+            // Given
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                siteID: 456,
+                catalogSyncCoordinator: coordinator)
+            sut.addToCart(makePurchasableItem())
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
+
+            // When card payment succeeds
+            await withCheckedContinuation { continuation in
+                var resumed = false
+                coordinator.onPerformIncrementalSyncCalled = {
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
+                }
+
+                Task {
+                    await sut.checkOut()
+                }
+            }
+
+            // Then
+            #expect(coordinator.performIncrementalSyncInvocationCount == 1)
+            #expect(coordinator.performIncrementalSyncSiteID == 456)
+
+            coordinator.performIncrementalSyncInvocationCount = 0
+            coordinator.performIncrementalSyncSiteID = 0
+
+            // When cash payment succeeds
+            await withCheckedContinuation { continuation in
+                coordinator.onPerformIncrementalSyncCalled = {
+                    continuation.resume()
+                }
+
+                Task {
+                    try await sut.collectCashPayment(changeDueAmount: "0.00")
+                }
+            }
+
+            // Then
+            #expect(coordinator.performIncrementalSyncInvocationCount == 1)
+            #expect(coordinator.performIncrementalSyncSiteID == 456)
+        }
     }
 
     struct AnalyticsTests {
@@ -981,7 +1034,9 @@ private func makePointOfSaleAggregateModel(
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService(),
     soundPlayer: PointOfSaleSoundPlayerProtocol = MockPointOfSaleSoundPlayer(),
-    paymentState: PointOfSalePaymentState = .idle
+    paymentState: PointOfSalePaymentState = .idle,
+    siteID: Int64 = 123,
+    catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
         entryPointController: entryPointController,
@@ -998,6 +1053,8 @@ private func makePointOfSaleAggregateModel(
         popularPurchasableItemsController: popularPurchasableItemsController,
         barcodeScanService: barcodeScanService,
         soundPlayer: soundPlayer,
-        paymentState: paymentState
+        paymentState: paymentState,
+        siteID: siteID,
+        catalogSyncCoordinator: catalogSyncCoordinator
     )
 }

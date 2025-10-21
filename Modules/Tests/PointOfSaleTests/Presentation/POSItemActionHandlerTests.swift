@@ -125,6 +125,7 @@ private func makePointOfSaleAggregateModel(
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,
-        barcodeScanService: barcodeScanService
+        barcodeScanService: barcodeScanService,
+        siteID: 0
     )
 }

@@ -22,10 +22,10 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     var onPerformFullSyncCalled: (() -> Void)?
 
     func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
-        onPerformFullSyncCalled?()
-
         performFullSyncInvocationCount += 1
         performFullSyncSiteID = siteID
+
+        onPerformFullSyncCalled?()
 
         switch performFullSyncResult {
         case .success:
@@ -36,11 +36,10 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
-        onPerformIncrementalSyncCalled?()
-
         performIncrementalSyncInvocationCount += 1
         performIncrementalSyncSiteID = siteID
         performIncrementalSyncMaxAge = maxAge
+        onPerformIncrementalSyncCalled?()
 
         switch performIncrementalSyncResult {
         case .success:

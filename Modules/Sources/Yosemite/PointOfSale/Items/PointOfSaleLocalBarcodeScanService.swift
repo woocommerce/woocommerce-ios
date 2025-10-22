@@ -55,7 +55,7 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
             }
             // Fetch parent product using the relationship
             guard let parentProduct = try variation.request(for: PersistedProductVariation.parentProduct).fetchOne(db) else {
-                return nil
+                throw PointOfSaleBarcodeScanError.noParentProductForVariation(scannedCode: globalUniqueID)
             }
             return (variation, parentProduct)
         }

@@ -12,7 +12,7 @@ class ProductDetailNativeCoordinator {
         onDelete: (() -> Void)? = nil) -> UIViewController {
             return ProductDetailsFactory.productDetails(product: product,
                                                         presentationStyle: presentationStyle.asProductFormPresentationStyle,
-                                                        forceReadOnly: false,
+                                                        forceReadOnly: isReadOnly,
                                                         onDeleteCompletion: onDelete ?? {})
         }
 }

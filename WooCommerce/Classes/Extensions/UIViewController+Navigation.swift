@@ -6,9 +6,7 @@ extension UIViewController {
     /// A VC added to an existing navigation controller is dismissed when `isMovingFromParent` is `true`.
     /// For any other scenario `isBeingDismissed` will do.
     var isBeingDismissedInAnyWay: Bool {
-        isMovingFromParent ||
-        isBeingDismissed ||
-        navigationController?.isBeingDismissed == true
+        isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true
     }
 
     /// Async/await version of the UIKit `dismiss(animated:)`.

@@ -1,1 +1,1 @@
-Deze update biedt belangrijke oplossingen voor een soepelere winkelbeheerervaring. We hebben navigatieproblemen met bestelgegevens opgelost en de weergave van de winkelwidget op iOS 26 gecorrigeerd. Update nu voor een strakkere en betrouwbare appervaring.
+Deze update zorgt voor een soepeler winkelbeheer en betere controle. Je kan nu bestellingen filteren op bron en alle POS-bestellingen rechtstreeks beheren in de POS-interface. Bovendien hebben we een scrolprobleem opgelost op het scherm Coupon aanmaken voor een vloeiendere ervaring.

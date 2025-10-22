@@ -1,1 +1,1 @@
-Den här uppdateringen innehåller viktiga korrigeringar för en smidigare butikshanteringsupplevelse. Vi har löst navigeringsproblemen i beställningsinformationen och korrigerat visningen av butikswidgeten i iOS 26. Uppdatera nu för en mer polerad och tillförlitlig appupplevelse.
+Denna uppdatering ger smidigare butikshantering och bättre kontroll. Du kan nu filtrera beställningar efter källa och hantera alla POS-beställningar direkt i POS-gränssnittet. Dessutom har vi åtgärdat ett bläddringsproblem på skärmen Skapa rabattkod för en mer sömlös upplevelse.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-17 04:15:32+0000 */
+/* Translation-Revision-Date: 2025-10-20 19:54:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -877,11 +877,26 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Booking notes' section in the booking details screen. */
 "BookingDetailsView.bookingNotes.headerTitle" = "ملاحظات الحجز";
 
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "لا، الاحتفاظ بالحجز";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "نعم، إلغاء الحجز";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "لن يتمكن %1$@ من حضور \"%2$@\" في %3$@ بعد الآن.";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "إلغاء الحجز";
+
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "عنوان الفوترة";
 
 /* 'Cancel booking' button title in appointment details section in booking details view. */
 "BookingDetailsView.customer.cancelBookingButton.title" = "إلغاء الحجز";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "تم نسخ عنوان البريد الإلكتروني";
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "العميل";
@@ -907,11 +922,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "الدفع";
 
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "نشر مبلغ الاسترداد";
+
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "وضع علامة كـ \"مدفوع\"";
-
-/* Title for 'Mark as refunded' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsRefunded.title" = "وضع علامة كـ \"مسترد\"";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "الخدمة";
@@ -924,6 +939,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for 'View order' button in payment section in booking details view. */
 "BookingDetailsView.payment.viewOrder.title" = "عرض الطلب";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "اتصال";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "تم نسخ رقم الهاتف";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "نسخ";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "يتعذر إجراء مكالمة على هذا الرقم.";
 
 /* Title for the 'Booked' status label in the header view. */
 "BookingDetailsView.statusLabel.booked" = "محجوز";
@@ -3285,9 +3312,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text field name in Edit Address Form */
 "Last name" = "اسم العائلة";
 
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "بدء تتبع الأخطاء في Wormholy";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "بدء متجرك";
 
@@ -4511,26 +4535,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "الإضافات";
-
-/* The subtitle of the menu button to view documentation, shown in settings.
-   The title of the menu button to view documentation, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "الوثائق";
-
-/* The subtitle of the menu button to contact support, shown in settings.
-   The title of the menu button to contact support, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "الحصول على الدعم";
-
-/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "تعرف على المنتجات المدعومة في نقطة البيع (POS)";
-
-/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "أين منتجاتي؟";
-
-/* Button to dismiss the support form from the POS settings. */
-"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "إلغاء";
-
-/* Navigation title for the help settings list. */
-"PointOfSaleSettingsHelpDetailView.help.title" = "المساعدة";
 
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
@@ -6141,9 +6145,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "لا تدعم طريقة الدفع عمليات استرداد الأموال التلقائية. أكمل عملية استرداد الأموال عن طريق تحويل الأموال إلى العميل يدويًا.";
 
-/* Message shown if a payment cancellation is shown as an error. */
-"The payment was cancelled." = "تم إلغاء الدفع.";
-
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "تمت مقاطعة الدفع ويتعذر الاستمرار. يمكنك إعادة محاولة الدفع من شاشة الطلب.";
 
@@ -6708,21 +6709,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
-
-/* Error message when the order amount is below the minimum amount allowed. */
-"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "تتعذر معالجة الدفع. إجمالي مبلغ الطلب أقل من الحد الأدنى للمبلغ الذي يمكنك دفعه الذي يبلغ %1$@";
-
-/* Error message when the order amount is not valid. */
-"Unable to process payment. Order total amount is not valid." = "تتعذر معالجة الدفع. إجمالي مبلغ الطلب غير صالح.";
-
-/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
-"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "تتعذر معالجة الدفع. تم دفع هذا الطلب بالفعل، وسيؤدي الحصول على دفعة أخرى إلى فرض رسوم مضاعفة على العميل مقابل طلبه.";
-
-/* Error message shown during In-Person Payments when the payment gateway is not available. */
-"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "تتعذر معالجة الدفع. يتعذر علينا الاتصال بنظام الدفع. يرجى الاتصال بالدعم إذا استمر هذا الخطأ.";
-
-/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "تتعذر معالجة الدفع. يتعذر علينا إحضار أحدث تفاصيل للطلب. يرجى التحقق من اتصال شبكتك والمحاولة لاحقًا. الخطأ الأساسي: %1$@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "يتعذر قراءة موقع WordPress على معرف URL ذلك. انقر على \"هل تحتاج إلى مساعدة إضافية\" لعرض الأسئلة المتداولة.";
@@ -8628,11 +8614,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "المحاولة مجددًا";
 
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "لم نتمكن من العثور على أي حجوزات بهذا الاسم — حاول تعديل مصطلح البحث للحصول على المزيد من النتائج.";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "حدث خطأ في أثناء إحضار الحجوزات";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "التاريخ: الأحدث إلى الأقدم";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "التاريخ: الأقدم إلى الأحدث";
+
 /* Tab title for all bookings */
 "bookingListView.all" = "الكل";
 
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "لا توجد حجوزات تطابق عوامل التصفية الخاصة بك. حاول تعديلها لرؤية المزيد من النتائج.";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "لم يتم العثور على أي حجوزات";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "ليس لديك أي مواعيد أو أحداث مجدولة اليوم.";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "لا توجد حجوزات اليوم";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "ليس لديك أي مواعيد أو أحداث مستقبلية مجدولة حتى الآن.";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "لا توجد حجوزات مقبلة";
+
 /* Button to filter the booking list */
 "bookingListView.filter" = "تصفية";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "البحث في الحجوزات";
 
 /* Button to select the order of the booking list */
 "bookingListView.sortBy" = "فرز حسب";
@@ -8666,6 +8685,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "غير مدفوع";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "ضيف";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "الحجوزات";
@@ -8717,9 +8739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "اشتراك متغير";
-
-/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
-"card.waves.progressView.accessibilityLabel" = "قيد التقدم";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "إلغاء";
@@ -8848,12 +8867,6 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
-"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "شهد إجمالي الطلبات تغييرًا منذ بداية الدفع. يرجى الرجوع والتحقق من أن الطلب صحيح، ثم محاولة الدفع مجددًا.";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "التغيير المستحق: %1$@";
-
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "يُحدِّد المنتج لحملة Blaze.";
 
@@ -8946,9 +8959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "حل مشكلات الاتصال";
-
-/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
-"couponCardView.expirationText" = "انتهت الصلاحية في %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "العنوان";
@@ -9692,6 +9702,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "تعزيز مبيعاتك";
 
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "شاركنا تجربتك في استطلاع رأي سريع مدته دقيقتان وساعدنا على التحسن.";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "كيف أداء نظام نقاط البيع لديك؟";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "شارك في استطلاع رأي سريع مدته دقيقتان لمساعدتنا على تشكيل الميزات التي ستعجبك.";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "هل تفكر في البيع مباشرةً للعملاء؟";
+
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "لا تزال صور المنتج الخاص بك قيد الرفع في الخلفية. قد تكون سرعة الرفع أبطأ، وقد تحدث أخطاء. للحصول على أفضل النتائج، يرجى إبقاء التطبيق مفتوحًا حتى تكتمل عمليات الرفع.";
 
@@ -10310,1163 +10332,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "إضافات";
 
-/* Error message shown when scan is too short. */
-"pointOfSale.barcodeScan.error.barcodeTooShort" = "الرمز الشريطي قصير جدًا";
-
-/* Error message shown when scanner times out without sending end-of-line character. */
-"pointOfSale.barcodeScan.error.incompleteScan.2" = "لم يرسل الماسح الضوئي حرف نهاية السطر";
-
-/* Error message shown when there is an unknown networking error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.network" = "فشل طلب الشبكة";
-
-/* Error message shown when there is an internet connection error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.noInternetConnection" = "لا يوجد اتصال بالإنترنت";
-
-/* Error message shown when parent product is not found for a variation. */
-"pointOfSale.barcodeScan.error.noParentProduct" = "لم نعثُر على المنتج الأصلي للتباين";
-
-/* Error message shown when a scanned item is not found in the store. */
-"pointOfSale.barcodeScan.error.notFound" = "عنصر ممسوح ضوئيا غير معروف";
-
-/* Error message shown when parsing barcode data fails. */
-"pointOfSale.barcodeScan.error.parsingError" = "تعذّر قراءة الرمز الشريطي";
-
-/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
-"pointOfSale.barcodeScan.error.scanFailed" = "فشل عملية المسح";
-
-/* Error message shown when a scanned item is of an unsupported type. */
-"pointOfSale.barcodeScan.error.unsupportedProductType" = "نوع عنصر غير مدعوم";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "تم إلغاء عملية الدفع على القارئ";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "محاولة الدفع مجددًا";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.subtitle" = "تم إدراج البطاقة";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.title" = "مستعد للدفع";
-
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.connectReader.button.title" = "اتصال القارئ الخاص بك";
-
-/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
-"pointOfSale.cardPresent.displayReaderMessage.message" = "معالجة الدفع";
-
-/* Label for a cancel button */
-"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "إلغاء";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.instruction" = "لتشغيل قارئ البطاقات لديك، اضغط لفترة وجيزة على زر التشغيل لديك.";
-
-/* Title label for modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.title" = "الفحص بحثًا عن قارئ";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "طلب جديد";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "محاولة الدفع مجددًا";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "بسبب خطأ في الشبكة، تعذر علينا تأكيد أن الدفع نجح. تحقق من الدفع على جهاز يتضمن اتصال شبكة فعالاً. إذا لم ينجح الأمر، فأعد محاولة الدفع. إذا نجح الأمر، فابدأ طلبًا جديدًا.";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "خطأ في السداد";
-
-/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "الانتقال إلى إجراءات السداد";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.title" = "فشلت عملية الدفع";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
-"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "تجربة طريقة دفع أخرى";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "محاولة الدفع مجددًا";
-
-/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "إذا كنت ترغب في مواصلة معالجة هذه المعاملة، فيرجى إعادة محاولة الدفع.";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "فشلت عملية الدفع";
-
-/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "تجربة طريقة دفع أخرى";
-
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "تحرير الطلب";
-
-/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.title" = "خطأ في تحضير الدفع";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "محاولة الدفع مجددًا";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.title" = "معالجة الدفع";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.title" = "الاستعداد";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingReaderForPayment.message" = "تحضير القارئ للدفع";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "إدراج بطاقة";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "تقديم بطاقة";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "النقر على البطاقة";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "النقر على البطاقة أو إدراجها";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "النقر على بطاقة أو تمريرها أو إدراجها";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "مستعد للدفع";
-
-/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerNotConnected.title" = "لم يتم ربط القارئ";
-
-/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
-"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "لمعالجة هذا الدفع، يرجى الاتصال بالقارئ الخاص بك أو اختيار الدفع نقدًا.";
-
-/* Message shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.message" = "التحقق من الطلب";
-
-/* Title shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.title" = "الاستعداد";
-
-/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "إجمالي الطلبات أقل من الحد الأدنى للمبلغ الذي يمكنك شحن البطاقة به، وهو %1$@. يمكنك قبول الدفع نقدًا بدلاً من ذلك.";
-
-/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "يتعذر قبول الدفع بالبطاقة";
-
-/* Title shown on the Point of Sale checkout while the order validation fails. */
-"pointOfSale.cardPresent.validatingOrderError.title" = "خطأ في أثناء التحقق من الطلب";
-
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "المحاولة مجددًا";
-
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "يرجى الانتظار";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "تجاهل";
-
-/* Opens iOS's Device Settings for the app */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "فتح إعدادات الجهاز";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "يلزم الحصول على صلاحية البلوتوث";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "إلغاء";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "تعذر علينا ربط قارئك";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "المحاولة مجددًا";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "إلغاء";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "بطارية القارئ منخفضة للغاية. يرجى شحن القارئ أو جرب قارئًا مختلفًا.";
-
-/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "المحاولة مجددًا";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "تعذر علينا ربط قارئك";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "إلغاء";
-
-/* Opens iOS's Device Settings for the app to access location services */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "فتح إعدادات الجهاز";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "صلاحية خدمات الموقع مطلوبة للحد من الاحتيال ومنع النزاعات وضمان المدفوعات الآمنة.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "تمكين خدمات الموقع للسماح بالمدفوعات.";
-
-/* Button to dismiss. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "تجاهل";
-
-/* Error message. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "فشل الاتصال";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "إلغاء";
-
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "إدخال العنوان";
-
-/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "إعادة المحاولة بعد التحديث";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "يرجى تصحيح عنوان متجرك للمتابعة";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "إلغاء";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "يمكنك تعيين الرمز البريدي\/ZIP الخاص بمتجرك في مسؤول ووردبريس > WooCommerce > الإعدادات (عام)";
-
-/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "إعادة المحاولة بعد التحديث";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "يرجى تصحيح الرمز البريدي\/ZIP الخاص بمتجرك";
-
-/* A title for CTA to present native location permission alert */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "متابعة";
-
-/* A notice at the bottom explaining that location services can be changed in the Settings app later */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "يمكنك تغيير هذا الخيار لاحقًا ضمن تطبيق الإعدادات.";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "صلاحية خدمات الموقع مطلوبة للحد من الاحتيال ومنع النزاعات وضمان المدفوعات الآمنة.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "تمكين خدمات الموقع للسماح بالمدفوعات.";
-
-/* Label within the modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "يرجى الانتظار...";
-
-/* Title label for modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "الربط بالقارئ";
-
-/* Button to dismiss the alert presented when successfully connected to a reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "تم";
-
-/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "تم ربط القارئ";
-
-/* Button to allow the user to close the modal without connecting. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "إلغاء";
-
-/* Button in a cell to allow the user to connect to that reader for that cell */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "الاتصال";
-
-/* Title of a modal presenting a list of readers to choose from. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "تم العثور على عدة قراء";
-
-/* Label for a cell informing the user that reader scanning is ongoing. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "الفحص بحثًا عن القراء";
-
-/* Label for a button that when tapped, cancels the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "إلغاء";
-
-/* Label for a button that when tapped, starts the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "الربط بالقارئ";
-
-/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
-"pointOfSale.cardPresentPayment.alert.foundReader.description" = "هل تريد الربط بهذا القارئ؟";
-
-/* Label for a button that when tapped, continues searching for card readers */
-"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "الاستمرار في البحث";
-
-/* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "تم العثور على %1$@";
-
-/* Label for a cancel button when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "إلغاء";
-
-/* Label that displays when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "سيقوم القارئ الخاص بك بإعادة التشغيل وإعادة الاتصال تلقائيًا بعد انتهاء التحديث";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "مكتمل بنسبة %.0f%%";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "تحديث البرنامج";
-
-/* Button to dismiss the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "فهمت";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "مكتمل بنسبة %.0f%%";
-
-/* Dialog title that displays when a software update just finished installing */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "تم تحديث البرنامج";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "إلغاء";
-
-/* Button to retry a software update. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "المحاولة مجددًا";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "يتعذر علينا تحديث برنامج القارئ الخاص بك";
-
-/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "فشل تحديث القارئ لأن البطارية مشحونة بنسبة %.0f%%. يرجى شحن القارئ ثم المحاولة مجددًا.";
-
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "إلغاء";
-
-/* Message presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "فشل تحديث القارئ بسبب انخفاض مستوى البطارية. يرجى شحن القارئ ثم المحاولة مجددًا.";
-
-/* Button to retry the reader search when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "المحاولة مجددًا";
-
-/* Title of the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "يرجى شحن القارئ";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "تجاهل";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "يتعذر علينا تحديث برنامج القارئ الخاص بك";
-
-/* Label for a cancel button when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "إلغاء على أي حال";
-
-/* Label that displays when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "يتعين تحديث برنامج قارئ البطاقة الخاص بك لتحصيل المدفوعات. سيؤدي الإلغاء إلى حظر اتصال القارئ الخاص بك.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "مكتمل بنسبة %.0f%%";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "تحديث البرنامج";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "تجاهل";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "فشل ربط القارئ";
-
-/* The default accessibility label for an `x` close button on a card reader connection modal. */
-"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "إغلاق";
-
-/* Message drawing attention to issue of payment capture maybe failing. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "بسبب خطأ في الشبكة، لا نعرف ما إذا كانت عملية الدفع ناجحة.";
-
-/* No comment provided by engineer. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "يرجى التحقق مجددًا من الطلب على جهاز متصل بالشبكة قبل المتابعة.";
-
-/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "قد يفشل هذا الطلب";
-
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "الإجمالي: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "المدفوعات النقدية";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "وسم المدفوعات بأنها مكتملة";
-
-/* Error message when the system fails to collect a cash payment. */
-"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "خطأ في أثناء محاولة معالجة المدفوعات. حاول مرة أخرى.";
-
-/* A message shown on the coupon if's not valid after attempting to apply it */
-"pointOfSale.couponRow.invalidCoupon" = "لم يتم تطبيق القسيمة";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "إعداد الماسح الضوئي للرمز الشريطي";
-
-/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
-"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "يرجى الانتظار";
-
-/* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "فصل ربط القارئ";
-
-/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
-"pointOfSale.floatingButtons.exit.button.title" = "إنهاء POS";
-
-/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
-"pointOfSale.floatingButtons.getSupport.button.title" = "الحصول على الدعم";
-
-/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.orders.button.title" = "الطلبات";
-
-/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "أين منتجاتي؟";
-
-/* The title of the floating button to indicate that reader is connected. */
-"pointOfSale.floatingButtons.readerConnected.title" = "تم اتصال القارئ";
-
-/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
-"pointOfSale.floatingButtons.readerDisconnected.title" = "اتصال القارئ الخاص بك";
-
-/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
-"pointOfSale.floatingButtons.readerDisconnecting.title" = "فصل الربط";
-
-/* The title of the menu button to access Point of Sale settings. */
-"pointOfSale.floatingButtons.settings.button.title" = "الإعدادات";
-
-/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.viewDocumentation.button.title" = "الوثائق";
-
-/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "إزالة";
-
-/* Loading item accessibility label in POS */
-"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "جارٍ التحميل";
-
-/* Button to come back to order editing when coupon validation fails. */
-"pointOfSale.orderSync.couponsError.editOrder" = "تحرير الطلب";
-
-/* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle.2" = "يتعذر تطبيق القسيمة";
-
-/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupon" = "إزالة القسيمة";
-
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupons" = "إزالة القسائم";
-
-/* Title of the error when failing to synchronize order and calculate order totals */
-"pointOfSale.orderSync.error.title" = "تعذر تحميل الإجماليات";
-
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.tryAgain" = "المحاولة مجددًا";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "تم سداد الدفع بالبطاقة قدره %1$@ بنجاح.";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "تم سداد دفع نقدي قدره %1$@ بنجاح.";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.paymentSuccessful.title" = "نجح الدفع";
-
-/* Button title for sending a receipt */
-"pointOfSale.sendreceipt.button.title" = "إرسال";
-
-/* Text that shows at the top of the receipts screen along the back button. */
-"pointOfSale.sendreceipt.emailReceiptNavigationText" = "إرسال إيصال في رسالة عبر البريد الإلكتروني";
-
-/* Error message that is displayed when an invalid email is used when emailing a receipt. */
-"pointOfSale.sendreceipt.emailValidationErrorText" = "يرجى إدخال بريد إلكتروني صالح.";
-
-/* Generic error message that is displayed when there's an error emailing a receipt. */
-"pointOfSale.sendreceipt.sendReceiptErrorText" = "خطأ في أثناء إرسال هذه الرسالة عبر البريد الإلكتروني. حاول مرة أخرى.";
-
-/* Placeholder for the view where an email address should be entered when sending receipts */
-"pointOfSale.sendreceipt.textfield.placeholder" = "كتابة رسالة عبر البريد الإلكتروني";
-
-/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
-"pointOfSaleDashboard.payments.onboarding.cancel" = "إلغاء";
-
-/* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.cancel" = "إلغاء";
-
-/* Text displayed on Point of Sale settings when card reader battery is unknown. */
-"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "غير معروف";
-
-/* Subtitle describing card reader documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "تعرف على المزيد حول قبول المدفوعات باستخدام الهاتف المحمول";
-
-/* Title for card reader documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "الوثائق";
-
-/* Text displayed on Point of Sale settings when the card reader is not connected. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "القارئ غير متصل";
-
-/* Navigation title for card readers settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "قارئات البطاقات";
-
-/* Description of Barcode scanner settings configuration. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "تكوين إعدادات الماسح الضوئي للرمز الشريطي";
-
-/* Navigation title of Barcode scanner settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "الماسحات الضوئية للرمز الشريطي";
-
-/* Description of Card reader settings for connections. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "إدارة عمليات ربط قارئ البطاقات";
-
-/* Navigation title of Card reader settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "قارئات البطاقات";
-
-/* Navigation title for the hardware settings list. */
-"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "الأجهزة";
-
-/* Text displayed on Point of Sale settings pointing to the card reader battery. */
-"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "البطارية";
-
-/* Text displayed on Point of Sale settings pointing to the card reader model. */
-"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "النموذج";
-
-/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "تعرف على المزيد حول المسح الضوئي للرمز الشريطي في نقطة البيع (POS)";
-
-/* Title for barcode scanner documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "الوثائق";
-
-/* Subtitle describing scanner setup in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "قم بتكوين الماسح الضوئي للرمز الشريطي الخاص بك واختباره";
-
-/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "إعداد الماسح الضوئي";
-
-/* Navigation title for barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "الماسحات الضوئية للرمز الشريطي";
-
-/* Text displayed on Point of Sale settings when store has not been provided. */
-"pointOfSaleSettingsService.storeNameNotSet" = "لم يتم التعيين";
-
-/* Label for address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.address" = "العنوان";
-
-/* Label for email field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.email" = "البريد الإلكتروني";
-
-/* Text displayed on Point of Sale settings when any setting has not been provided. */
-"pointOfSaleSettingsStoreDetailView.notSet" = "لم يتم التعيين";
-
-/* Label for phone number field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.phoneNumber" = "رقم الهاتف";
-
-/* Label for physical address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.physicalAddress" = "العنوان الفعلي";
-
-/* Section title for receipt information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptInformation" = "معلومات الإيصال";
-
-/* Label for receipt store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "اسم المتجر";
-
-/* Label for refund and returns policy field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "سياسة الاسترداد والإرجاع";
-
-/* Section title for store information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeInformation" = "معلومات المتجر";
-
-/* Label for store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeName" = "اسم المتجر";
-
-/* Navigation title for the store details in POS settings. */
-"pointOfSaleSettingsStoreDetailView.storeTitle" = "المتجر";
-
-/* Title of the Point of Sale settings view. */
-"pointOfSaleSettingsView.navigationTitle" = "الإعدادات";
-
-/* Description of the settings to be found within the Hardware section. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "إدارة عمليات ربط الأجهزة";
-
-/* Title of the Hardware section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "الأجهزة";
-
-/* Description of the Help section in Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "احصل على المساعدة والدعم";
-
-/* Title of the Help section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "المساعدة";
-
-/* Description of the settings to be found within the Local catalog section. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "إدارة إعدادات الكتالوج";
-
-/* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "الكتالوج";
-
-/* Description of the settings to be found within the Store section. */
-"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "تكوين المتجر والإعدادات";
-
-/* Title of the Store section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "المتجر";
-
-/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
-"pos.barcodeInfoModal.heading" = "مسح الرمز الشريطي";
-
-/* New message about Bluetooth barcode scanner settings */
-"pos.barcodeInfoModal.i2.bluetoothMessage" = "• وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";
-
-/* Accessible version of Bluetooth message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "أولًا: وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";
-
-/* New introductory message for barcode scanner information */
-"pos.barcodeInfoModal.i2.introMessage" = "يمكنك مسح الرموز الشريطية ضوئيًا باستخدام ماسح ضوئي خارجي لإعداد عربة التسوق سريعًا.";
-
-/* New message about scanning barcodes on item list */
-"pos.barcodeInfoModal.i2.scanMessage" = "• امسح الرموز الشريطية ضوئيًا أثناء وجودك في قائمة العناصر لإضافة المنتجات إلى عربة التسوق.";
-
-/* Accessible version of scan message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.scanMessage.accessible" = "ثانيًا: امسح الرموز الشريطية ضوئيًا أثناء وجودك في قائمة العناصر لإضافة المنتجات إلى عربة التسوق.";
-
-/* New message about ensuring search field is disabled during scanning */
-"pos.barcodeInfoModal.i2.searchMessage" = "• تأكد من أن حقل البحث غير مُمكن أثناء فحص الرموز الشريطية.";
-
-/* Accessible version of search message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.searchMessage.accessible" = "تأكد من أن حقل البحث غير مُمكن أثناء فحص الرموز الشريطية.";
-
-/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
-"pos.barcodeInfoModal.introMessage" = "يمكنك مسح الرموز الشريطية ضوئيًا باستخدام ماسح ضوئي خارجي لإعداد عربة التسوق سريعًا.";
-
-/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
-"pos.barcodeInfoModal.moreDetailsLink" = "المزيد من التفاصيل.";
-
-/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
-"pos.barcodeInfoModal.moreDetailsLink.accessible" = "المزيد من التفاصيل، الرابط.";
-
-/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
-"pos.barcodeInfoModal.primaryMessage" = "• قم بإعداد الرموز الشريطية في حقول \"GTIN، UPC، EAN، ISBN\" في المنتجات > تفاصيل المنتج > المخزون. ";
-
-/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.primaryMessage.accessible" = "أولاً: قم بإعداد الرموز الشريطية في حقول \"G-T-I-N, U-P-C, E-A-N, I-S-B-N\" بالانتقال إلى المنتجات، ثم تفاصيل المنتج، ثم المخزون.";
-
-/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
-"pos.barcodeInfoModal.productSetup.linkText" = "تفضَّل بزيارة الوثائق.";
-
-/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
-"pos.barcodeInfoModal.productSetup.message" = "يمكنك إعداد الرموز الشريطية في حقول \"GTIN، UPC، EAN، ISBN\" من خلال علامة تبويب مخزون المنتج. للحصول على مزيد من التفاصيل %1$@.";
-
-/* Accessible version of product setup message, announcing link for screen readers */
-"pos.barcodeInfoModal.productSetup.message.accessible" = "يمكنك إعداد الرموز الشريطية في حقول G-T-I-N, U-P-C, E-A-N, I-S-B-N من خلال علامة تبويب مخزون المنتج. للحصول على مزيد من التفاصيل، تفضَّل بزيارة الوثائق، الرابط.";
-
-/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
-"pos.barcodeInfoModal.quaternaryMessage" = "• امسح الرموز الشريطية ضوئيًا أثناء وجودك في قائمة العناصر لإضافة المنتجات إلى عربة التسوق.";
-
-/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.quaternaryMessage.accessible" = "امسح الرموز الشريطية ضوئيًا أثناء وجودك في قائمة العناصر لإضافة المنتجات إلى عربة التسوق.";
-
-/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
-"pos.barcodeInfoModal.quinaryMessage" = "يُحاكي جهاز المسح الضوئي لوحة المفاتيح، لذا ستمنع لوحة مفاتيح البرنامج من الظهور في بعض الأحيان، على سبيل المثال في البحث. انقر على أيقونة لوحة المفاتيح لإظهارها مرة أخرى.";
-
-/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage.2" = "• راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع HID. يتطلب هذا عادة فحص رمز شريطي خاص في الدليل.";
-
-/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "ثانيًا: راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع H-I-D. يتطلب هذا عادة فحص رمز شريطي خاص في الدليل.";
-
-/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
-"pos.barcodeInfoModal.tertiaryMessage" = "• وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";
-
-/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.tertiaryMessage.accessible" = "ثالثًا: وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";
-
-/* Title for the back button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.back.button.title" = "رجوع";
-
-/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
-"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "صورة كود مطلوب مسحه ضوئيًا بواسطة ماسح الرمز الشريطي.";
-
-/* Message shown when scanner setup is complete */
-"pos.barcodeScannerSetup.complete.instruction.2" = "أنت مستعد لبدء المسح الضوئي للمنتجات. في المرة القادمة التي تحتاج فيها إلى توصيل الماسح الضوئي، ما عليك سوى تشغيله وسيتم إعادة توصيله تلقائيًا.";
-
-/* Title shown when scanner setup is successfully completed */
-"pos.barcodeScannerSetup.complete.title" = "انتهى إعداد الماسح الضوئي!";
-
-/* Title for the done button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.done.button.title" = "تم";
-
-/* Title for the back button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.back.button.title" = "الرجوع";
-
-/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.error.instruction" = "يُرجى التحقق من دليل الماسح الضوئي وإعادة ضبطه إلى إعدادات المصنع، ثم إعادة محاولة ضبط إعدادات التدفق.";
-
-/* Title for the retry button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.retry.button.title" = "إعادة المحاولة";
-
-/* Title shown when there's an error during scanner setup */
-"pos.barcodeScannerSetup.error.title" = "تم العثور على مشكلة في المسح الضوئي";
-
-/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
-"pos.barcodeScannerSetup.hidSetup.instruction" = "أستخدم ماسحك الضوئي للرمز الشريطي لمسح الرمز أدناه لتمكين وضع بلوتوث HID.";
-
-/* Title for Netum 1228BC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
-
-/* Title for the next button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.next.button.title" = "التالي";
-
-/* Title for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.title" = "أخرى";
-
-/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
-"pos.barcodeScannerSetup.pairSetup.instruction" = "أستخدم ماسحك الضوئي للرمز الشريطي لمسح الكود أدناه لدخول وضع الاقتران.";
-
-/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
-"pos.barcodeScannerSetup.pairing.instruction.format" = "مكّن تقنية بلوتوث وحدد ماسحك الضوئي %1$@ في إعدادات تقنية بلوتوث في نظام التشغيل iOS. سيصدر الماسح الضوئي صوت صفير ويعرض مؤشر LED إضاءة ثابتة عند الاقتران.";
-
-/* Button title to open device Settings for scanner pairing */
-"pos.barcodeScannerSetup.pairing.settingsButton.title" = "انتقل إلى إعدادات جهازك";
-
-/* Title for the scanner pairing step */
-"pos.barcodeScannerSetup.pairing.title" = "إقران ماسحك الضوئي";
-
-/* Title format for a product barcode setup step */
-"pos.barcodeScannerSetup.productBarcodeInfo.title" = "كيفية إعداد الرمز الشريطي للمنتجات";
-
-/* Button title for accessing product barcode setup information */
-"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "كيفية إعداد الرمز الشريطي للمنتجات";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scanner.setup.title.format" = "إعداد الماسح الضوئي";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scannerInfo.title" = "إعداد الماسح الضوئي";
-
-/* Display name for Netum 1228BC barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
-
-/* Display name for other/unspecified barcode scanner models */
-"pos.barcodeScannerSetup.scannerType.other.name" = "ماسح ضوئي آخر";
-
-/* Display name for Star BSH-20B barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
-
-/* Display name for Tera 1200 2D barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
-
-/* Heading for the barcode scanner setup selection screen */
-"pos.barcodeScannerSetup.selection.heading" = "قم بإعداد ماسح الرمز الشريطي";
-
-/* Instruction message for selecting a barcode scanner model from the list */
-"pos.barcodeScannerSetup.selection.introMessage" = "حدد نموذجًا من القائمة:";
-
-/* Title for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.title" = "ستار بي إس إتش-20B";
-
-/* Title for Tera 1200 2D scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
-
-/* Instruction for testing the scanner by scanning a barcode */
-"pos.barcodeScannerSetup.test.instruction" = "امسح الرمز الشريطي ضوئيًا لاختبار ماسحك الضوئي.";
-
-/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.test.timeout.instruction" = "امسح الرمز الشريطي ضوئيا لاختبار ماسحك الضوئي. إذا استمرت المشكلة، فيُرجى التحقق من إعدادات البلوتوث وإعادة المحاولة.";
-
-/* Title shown when scanner test times out without detecting a scan */
-"pos.barcodeScannerSetup.test.timeout.title" = "لم نعثر على بيانات الفحص حتى الآن";
-
-/* Title for the scanner testing step */
-"pos.barcodeScannerSetup.test.title" = "اختبر ماسحك الضوئي";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartHint" = "النقر على منتج إلى \n إضافته إلى عربة التسوق";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartOrScanHint" = "النقر على منتج من أجل \n إضافته إلى عربة التسوق، أو ";
-
-/* Title at the header for the Cart view. */
-"pos.cartView.cartTitle" = "عربة التسوق";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pos.cartView.cartTitle.barcodeScanningSetup.button" = "مسح الكود الشريطي ضوئيًا";
-
-/* Title for the 'Checkout' button to process the Order. */
-"pos.cartView.checkoutButtonTitle" = "السداد";
-
-/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle.1" = "مسح عربة التسوق";
-
-/* Title shown on a toast view that appears when there's no internet connection */
-"pos.connectivity.title" = "لا يوجد اتصال بالإنترنت";
-
-/* A button that dismisses coupon creation sheet */
-"pos.couponCreationSheet.selectCoupon.cancel" = "إلغاء";
-
-/* A title for the view that selects the type of coupon to create */
-"pos.couponCreationSheet.selectCoupon.title" = "إنشاء قسيمة";
-
-/* Body text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitBody" = "سيتم فقدان أي طلبات قيد التقدم.";
-
-/* Button text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitButtom" = "إنهاء";
-
-/* Title of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitTitle" = "هل تريد إنهاء وضع نقطة البيع؟";
-
-/* Button title to dismiss POS ineligible view */
-"pos.ineligible.dismiss.button.title" = "إنهاء POS";
-
-/* Button title to enable the POS feature switch and refresh POS eligibility check */
-"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "تمكين ميزة نقاط البيع";
-
-/* Button title to refresh POS eligibility check */
-"pos.ineligible.refresh.button.title" = "إعادة المحاولة";
-
-/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled.3" = "يجب تمكين نقطة البيع للمتابعة. يُرجى تمكين ميزة نقطة البيع من مشرفك في WordPress ضمن إعدادات WooCommerce > الإعدادات المتقدمة > الميزات وإعادة المحاولة.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "حاول إعادة تشغيل التطبيق لحل هذه المشكلة.";
-
-/* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "تعذر تحميل معلومات إعدادات الموقع. يُرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى. إذا استمرت المشكلة، تواصل مع الدعم للحصول على المساعدة.";
-
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency.1" = "لا يتوافر نظام نقطة البيع لعملة متجرك. في %1$@, لا يدعم حاليًا سوى %2$@. يُرجى التحقق من إعدادات عملة متجرك أو الاتصال بالدعم للحصول على المساعدة.";
-
-/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
-"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "إصدار WooCommerce الخاص بك غير مدعوم. يتطلب نظام نقطة البيع الإصدار %1$@ من WooCommerce أو إصدار أحدث. يُرجى التحديث إلى آخر إصدار من WooCommerce.";
-
-/* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "تعذر تحميل معلومات إضافة WooCommerce. يُرجى التأكد من تثبيت إضافة WooCommerce وتفعيلها من مشرفك في WordPress. إذا إستمرت المشكلة، تواصل مع الدعم للحصول على المساعدة.";
-
-/* Title shown in POS ineligible view */
-"pos.ineligible.title" = "يتعذر التحميل";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "يُرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.";
-
-/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle.2" = "يتعذر تمكين القسائم";
-
-/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "يتعذر تحميل المزيد من القسائم";
-
-/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle.2" = "يتعذر تحميل المزيد من المنتجات";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle.2" = "يتعذر تحميل المنتجات";
-
-/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "يتعذر تحميل المزيد من التباينات";
-
-/* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle.2" = "يتعذر تحميل التباينات";
-
-/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle.2" = "يتعذر تحديث القسائم";
-
-/* Generic subtitle appearing on error screens when there's an error. */
-"pos.itemList.genericErrorSubtitle" = "يُرجى المحاولة مجددًا.";
-
-/* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction.2" = "تمكين القسائم";
-
-/* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle.2" = "قم بتمكين أكواد القسائم في متجرك لبدء إنشائها لعملائك.";
-
-/* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle.2" = "البدء في قبول القسائم";
-
-/* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle.2" = "يتعذر تحميل القسائم";
-
-/* Generic text for retry buttons appearing on error screens. */
-"pos.itemList.retryButtonTitle" = "إعادة المحاولة";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "المنتجات";
-
-/* Label/placeholder text for the search field for Coupons in Point of Sale. */
-"pos.itemListView.coupons.searchField.label" = "البحث عن القسائم";
-
-/* Label/placeholder text for the search field for Products in Point of Sale. */
-"pos.itemListView.products.searchField.label.1" = "البحث عن المنتجات";
-
-/* Fallback label/placeholder text for the search field in Point of Sale. */
-"pos.itemListView.searchField.label" = "البحث";
-
-/* Title of the button at the top of Point of Sale to switch to Coupons list. */
-"pos.itemlistview.couponsTitle" = "القسائم";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "المنتجات";
-
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.emptyListText" = "البحث في متجرك";
-
-/* Title for the list of popular products shown before a search term is typed in POS */
-"pos.itemsearch.before.search.popularProducts.title" = "المنتجات الرائجة";
-
-/* Title for the list of recent searches shown before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.title" = "عمليات البحث الحديثة";
-
-/* Accessibility label for button to dismiss a notice banner */
-"pos.noticeView.dismiss.button.accessibiltyLabel" = "تجاهل";
-
-/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
-"pos.orderBadgeView.accessibilityLabel" = "حالة الطلب: %1$@";
-
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "لا يوجد طلب للعرض";
-
-/* Title at the header for the Order Details empty view. */
-"pos.orderDetailsEmptyView.ordersTitle" = "طلب";
-
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "المنتجات";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsLoadingView.totalsTitle" = "الإجماليات";
-
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "إجمالي الخصم: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "إجمالي الخصم";
-
-/* Accessibility hint for email receipt button on order details view */
-"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "اضغط لإرسال إيصال الطلب عبر البريد الإلكتروني";
-
-/* Label for email receipt action on order details view */
-"pos.orderDetailsView.emailReceiptAction.title" = "إرسال الإيصال في رسالة عبر البريد الإلكتروني";
-
-/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "تاريخ الطلب: %1$@، الحالة: %2$@";
-
-/* Email portion of order header accessibility label. %1$@ is customer email address. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "البريد الإلكتروني للعميل: %1$@";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "صافي المدفوعات: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "المبلغ الصافي للمدفوعات";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "إجمالي المبلغ المدفوع: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "طريقة الدفع: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "إجمالي المبلغ المدفوع";
-
-/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
-"pos.orderDetailsView.productRow.accessibilityLabel" = "الكمية: %1$@ بالسعر %2$@ لكل وحدة، إجمالي السعر %3$@";
-
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "المنتجات";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "المنتجات";
-
-/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
-"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "السبب: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "المبلغ المسترد: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "السبب: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "المبلغ المسترد";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "الإجمالي الفرعي للمنتجات: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "الضرائب: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "الضرائب";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "إجمالي الطلبات: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "الإجمالي";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsView.totalsTitle" = "الإجماليات";
-
-/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
-"pos.orderList.failedToLoadOrdersNextPageTitle" = "يتعذر تحميل طلبات إضافية";
-
-/* Text appearing on the order list screen when there's an error loading orders. */
-"pos.orderList.failedToLoadOrdersTitle" = "يتعذر تحميل الطلبات";
-
-/* Button text for refreshing orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle" = "تحديث";
-
-/* Hint text suggesting to modify search terms when no orders are found. */
-"pos.orderListView.emptyOrdersSearchHint" = "حاول تعديل مصطلح البحث.";
-
-/* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "لم نتمكن من العثور على أي شيء يطابق بحثك.";
-
-/* Title appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchTitle" = "لم يتم العثور على طلبات";
-
-/* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle" = "ستظهر الطلبات هنا بمجرد بدء معالجة المبيعات على POS.";
-
-/* Title appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersTitle" = "لا توجد طلبات حتى الآن";
-
-/* Accessibility hint for order row indicating the action when tapped. */
-"pos.orderListView.orderRow.accessibilityHint" = "اضغط لعرض تفاصيل الطلب";
-
-/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
-"pos.orderListView.orderRow.accessibilityLabel" = "الطلب رقم #%1$@، الإجمالي %2$@، %3$@، الحالة: %4$@";
-
-/* Email portion of order row accessibility label. %1$@ is customer email address. */
-"pos.orderListView.orderRow.accessibilityLabel.email" = "البريد الإلكتروني: %1$@";
-
-/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
-"pos.orderListView.orderTitle" = "#%1$@";
-
-/* Title at the header for the Orders view. */
-"pos.orderListView.ordersTitle" = "الطلبات";
-
-/* Accessibility label for the search button in orders list. */
-"pos.orderListView.searchButton.accessibilityLabel" = "بحث عن الطلبات";
-
-/* Placeholder for a search field in the Orders view. */
-"pos.orderListView.searchFieldPlaceholder" = "البحث في الطلبات";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "خيارات متوفرة";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "لم نتمكن من العثور على أي قسائم بهذا الاسم — حاول ضبط مصطلح البحث.";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "يمكن أن تكون القسائم طريقة فعالة لتعزيز الأعمال التجارية. هل ترغب في إنشاء واحدة؟";
-
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "لم يتم العثور على قسائم";
-
-/* Text for the button appearing on the products list screen when there are no products found. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "تحديث";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "لإضافة نقطة بيع، اخرج منها وانتقل إلى المنتجات.";
-
-/* Text providing additional search tips when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "يتعذر البحث في أسماء الأشكال، لذا استخدم اسم المنتج الأصلي.";
-
-/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "لم نتمكن من العثور على أي منتجات مطابقة - حاول ضبط مصطلح البحث.";
-
-/* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "لم يتم العثور على منتجات";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "لا تدعم نقطة البيع حاليًا سوى المنتجات البسيطة والمتغيرة.";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "لم يتم العثور على منتجات مدعومة";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "لإضافة نقطة بيع، اخرج منها وحرر هذا المنتج في علامة تبويب المنتجات.";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "لا تدعم نقطة البيع إلا الأشكال الممكَّنة غير القابلة للتنزيل.";
-
-/* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "لم يتم العثور على تباينات مدعومة";
-
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "إنشاء قسيمة";
-
-/* Title for the OK button on the pos information modal */
-"pos.posInformationModal.ok.button.title" = "موافق";
-
-/* Accessibility label for the clear button in the Point of Sale search screen. */
-"pos.searchview.searchField.clearButton.accessibilityLabel" = "مسح البحث";
-
-/* Action text in the simple products information modal in POS */
-"pos.simpleProductsModal.action" = "إنشاء طلب في إدارة المتجر";
-
-/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.hint.variableAndSimple" = "لتلقي دفعة مقابل منتج غير مدعوم، اخرج من نقطة البيع وأنشئ طلبًا جديدًا من علامة تبويب الطلبات.";
-
-/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.message.future.variableAndSimple" = "أما أنواع المنتجات الأخرى، فستتوفر في التحديثات المستقبلية.";
-
-/* Message in the simple products information modal in POS when variable products are supported */
-"pos.simpleProductsModal.message.issue.variableAndSimple" = "لا يمكن استخدام سوى المنتجات غير القابلة للتنزيل البسيطة والمتغيرة التي تتضمن نقطة بيع الآن.";
-
-/* Title of the simple products information modal in POS */
-"pos.simpleProductsModal.title" = "لماذا يتعذر علي رؤية منتجاتي؟";
-
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ متوفر في المخزون";
-
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "غير متوفر في المخزون";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
-
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "طلب جديد";
-
-/* Button title for the receipt button */
-"pos.totalsView.button.sendReceipt" = "إرسال إيصال في رسالة عبر البريد الإلكتروني";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "المدفوعات النقدية";
-
-/* Title for discount total amount field */
-"pos.totalsView.discountTotal2" = "إجمالي الخصم";
-
-/* Title for subtotal amount field */
-"pos.totalsView.subtotal" = "الإجمالي الفرعي";
-
-/* Title for taxes amount field */
-"pos.totalsView.taxes" = "الضرائب";
-
-/* Title for total amount field */
-"pos.totalsView.total" = "الإجمالي";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "يرجى ضبط تقسيم الشاشة لديك لإعطاء نقطة البيع مساحة أكبر.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "نقطة البيع غير مدعومة في عرض الشاشة هذا.";
-
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "السماح بالتحديث الكامل عبر بيانات الهاتف الخلوي";
-
-/* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "حجم الكتالوج";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "حالة الكتالوج";
-
-/* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "آخر تحديث كامل";
-
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "آخر تحديث";
-
-/* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "إدارة استخدام البيانات";
-
-/* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "تحديث الكتالوج يدويًا";
-
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "لا تستخدم هذا التحديث إلا عندما يبدو أن شيئًا ما متوقفًا عن التشغيل - يحافظ POS على تحديث البيانات تلقائيًا.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "تحديث الكتالوج";
-
-/* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "إعدادات الكتالوج";
-
-/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "⁦%1$d⁩ من المنتجات، ⁦%2$ld⁩ من المجموعات";
-
-/* Text shown when catalog size cannot be determined. */
-"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "حجم الكتالوج غير متوفر";
-
-/* Text shown when no update has been performed yet. */
-"posSettingsLocalCatalogViewModel.neverSynced" = "لا يتم التحديث";
-
-/* Text shown when update date cannot be determined. */
-"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "تاريخ التحديث غير متوفر";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "إغلاق";
@@ -11908,6 +10775,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "نقطة البيع";
+
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "السداد عبر الويب";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "مشرف WP";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "إلغاء";

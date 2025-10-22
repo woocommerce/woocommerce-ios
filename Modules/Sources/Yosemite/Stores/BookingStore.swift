@@ -63,10 +63,16 @@ public class BookingStore: Store {
                            onCompletion: onCompletion)
         case let .fetchResource(siteID, resourceID, onCompletion):
             fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
+        case .updateBookingAttendanceStatus(let siteID, let bookingID, let status, let onCompletion):
+            performUpdateBookingAttendanceStatus(
+                siteID: siteID,
+                bookingID: bookingID,
+                status: status,
+                onCompletion: onCompletion
+            )
         }
     }
 }
-
 
 // MARK: - Services
 //
@@ -245,6 +251,50 @@ private extension BookingStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    func performUpdateBookingAttendanceStatus(
+        siteID: Int64,
+        bookingID: Int64,
+        status: BookingAttendanceStatus,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        updateBookingAttendanceStatusLocally(
+            siteID: siteID,
+            bookingID: bookingID,
+            statusKey: status
+        ) { _ in
+            //TODO: - booking status remote update + rollback status in case of error
+            onCompletion(nil)
+        }
+    }
+
+    /// Updates local (Storage) Booking attendance status
+    func updateBookingAttendanceStatusLocally(
+        siteID: Int64,
+        bookingID: Int64,
+        statusKey: BookingAttendanceStatus,
+        onCompletion: @escaping (BookingAttendanceStatus) -> Void
+    ) {
+        storageManager.performAndSave({ storage -> BookingAttendanceStatus in
+            guard let booking = storage.loadBooking(
+                siteID: siteID,
+                bookingID: bookingID
+            ) else {
+                return statusKey
+            }
+
+            let oldStatus = booking.attendanceStatusKey
+            booking.attendanceStatusKey = statusKey.rawValue
+            return BookingAttendanceStatus(rawValue: oldStatus ?? "") ?? .unknown
+        }, completion: { result in
+            switch result {
+            case .success(let status):
+                onCompletion(status)
+            case .failure:
+                onCompletion(statusKey)
+            }
+        }, on: .main)
     }
 }
 

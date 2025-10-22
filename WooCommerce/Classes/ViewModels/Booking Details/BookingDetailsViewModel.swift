@@ -28,6 +28,10 @@ final class BookingDetailsViewModel: ObservableObject {
     @Published private(set) var navigationTitle = ""
     @Published private(set) var sections: [Section] = []
 
+    var bookingAttendanceStatus: BookingAttendanceStatus {
+        booking.attendanceStatus
+    }
+
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {
@@ -92,6 +96,7 @@ private extension BookingDetailsViewModel {
         }
         headerContent.update(with: booking)
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
+        attendanceContent.update(with: booking)
         paymentContent.update(with: booking)
     }
 
@@ -134,6 +139,24 @@ extension BookingDetailsViewModel {
             self.bookingResource = resource // only update resource if fetching succeeds
         }
         await fetchBooking()
+    }
+}
+
+// MARK: Attendance status
+
+extension BookingDetailsViewModel {
+    func updateAttendanceStatus(to newStatus: BookingAttendanceStatus) {
+        let action = BookingAction.updateBookingAttendanceStatus(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID,
+            status: newStatus
+        ) { error in
+            if let error {
+                DDLogError("⛔️ Error updating booking attendance status: \(error)")
+                // TODO: Show an error notice to the user
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

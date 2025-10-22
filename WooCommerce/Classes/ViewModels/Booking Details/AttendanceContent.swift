@@ -1,9 +1,12 @@
 import Foundation
+import Networking
 
 extension BookingDetailsViewModel {
-    struct AttendanceContent {
-        /// Hardcoded attendance value
-        /// Will be replaced with model value or binding
-        let value = "Booked"
+    final class AttendanceContent {
+        private(set) var value = ""
+
+        func update(with booking: Booking) {
+            value = booking.attendanceStatus.localizedTitle
+        }
     }
 }

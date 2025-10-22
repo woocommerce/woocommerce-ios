@@ -104,7 +104,6 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let customer: CustomerFilter?
         let dateRange: BookingDateRangeFilter?
 
-        // periphery:ignore - used by FilterListViewController
         let numberOfActiveFilters: Int
 
         init() {

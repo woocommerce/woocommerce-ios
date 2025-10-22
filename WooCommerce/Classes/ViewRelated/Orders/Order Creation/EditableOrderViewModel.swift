@@ -19,6 +19,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
+    private let posNotificationScheduler: POSNotificationScheduling
 
     @Published var syncRequired: Bool = false
 
@@ -460,6 +461,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
+         posNotificationScheduler: POSNotificationScheduling = POSNotificationScheduler(),
          initialItem: OrderBaseItem? = nil,
          initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
@@ -473,6 +475,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
+        self.posNotificationScheduler = posNotificationScheduler
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
@@ -1026,7 +1029,7 @@ final class EditableOrderViewModel: ObservableObject {
             self.onFinished(order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
             Task {
-                await POSNotificationScheduler().scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+                await self.posNotificationScheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
             }
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }

@@ -27,7 +27,7 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
             }
 
             if let variationAndParent = try searchVariationByGlobalUniqueID(barcode) {
-                return try await convertVariationToItem(variationAndParent.variation, parentProduct: variationAndParent.parentProduct, scannedCode: barcode)
+                return try convertVariationToItem(variationAndParent.variation, parentProduct: variationAndParent.parentProduct, scannedCode: barcode)
             }
 
             throw PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)
@@ -97,7 +97,7 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
 
     private func convertVariationToItem(_ persistedVariation: PersistedProductVariation,
                                         parentProduct: PersistedProduct,
-                                        scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+                                        scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
             // Convert both variation and parent to POS models
             let posVariation = try persistedVariation.toPOSProductVariation(db: grdbManager.databaseConnection)

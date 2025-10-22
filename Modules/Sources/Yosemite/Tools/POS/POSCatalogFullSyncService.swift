@@ -125,17 +125,15 @@ private extension POSCatalogFullSyncService {
         print("🟣 Starting catalog generation...")
 
         // 1. Generate catalog and get job ID
-        let jobResponse = try await syncRemote.generateCatalog(for: siteID)
+        let response = try await syncRemote.requestCatalogGeneration(for: siteID)
         let downloadURL: String?
-        if let url = jobResponse.downloadURL {
+        if let url = response.downloadURL {
             downloadURL = url
             print("🟣 Catalog ready for download: \(url)")
-        } else if let jobID = jobResponse.jobID {
-            // 2. Poll for completion
-            downloadURL = try await pollForCatalogCompletion(jobID: jobID, siteID: siteID, syncRemote: syncRemote)
-            print("🟣 Catalog generation started")
         } else {
-            downloadURL = nil
+            // 2. Poll for completion
+            downloadURL = try await pollForCatalogCompletion(siteID: siteID, syncRemote: syncRemote)
+            print("🟣 Catalog generation started")
         }
 
         // 3. Download using the provided URL
@@ -145,21 +143,21 @@ private extension POSCatalogFullSyncService {
         return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL)
     }
 
-    func pollForCatalogCompletion(jobID: String, siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> String {
+    func pollForCatalogCompletion(siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> String {
         let maxAttempts = 1000 // each attempt is made 1 second after the last one completes
         var attempts = 0
 
         while attempts < maxAttempts {
-            let statusResponse = try await syncRemote.checkCatalogStatus(for: siteID, jobID: jobID)
+            let response = try await syncRemote.requestCatalogGeneration(for: siteID)
 
-            switch statusResponse.status {
+            switch response.status {
             case .complete:
-                guard let downloadURL = statusResponse.downloadURL else {
+                guard let downloadURL = response.downloadURL else {
                     throw POSCatalogSyncError.invalidData
                 }
                 return downloadURL
             case .pending, .processing:
-                print("🟣 Catalog generation \(statusResponse.status)... (attempt \(attempts + 1)/\(maxAttempts))")
+                print("🟣 Catalog generation \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
                 try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 attempts += 1
             case .failed:

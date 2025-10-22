@@ -24,26 +24,15 @@ public protocol POSCatalogSyncRemoteProtocol {
     // periphery:ignore
     func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 
-    /// Generates a POS catalog. The catalog is generated asynchronously and a download URL is returned in the
-    /// status response endpoint associated with a job ID.
+    /// Starts generation of a POS catalog.
+    /// The catalog is generated asynchronously and a download URL may be returned when the file is ready.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
-    ///   - fields: Optional array of fields to include in catalog.
     /// - Returns: Catalog job response with job ID.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    func generateCatalog(for siteID: Int64) async throws -> POSCatalogGenerationResponse
-
-    /// Checks the status of a catalog generation job. A download URL is returned when the job is complete.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site ID for the catalog job.
-    ///   - jobID: Job ID to check status for.
-    /// - Returns: Catalog status response.
-    ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    func checkCatalogStatus(for siteID: Int64, jobID: String) async throws -> POSCatalogStatusResponse
+    func requestCatalogGeneration(for siteID: Int64) async throws -> POSCatalogRequestResponse
 
     /// Downloads the generated catalog at the specified download URL.
     /// - Parameters:
@@ -156,42 +145,30 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
 
     // MARK: - Full Sync Endpoints
 
-    /// Generates a POS catalog. The catalog is generated asynchronously and a download URL is returned in the
-    /// status response endpoint associated with a job ID.
+    /// Starts generation of a POS catalog.
+    /// The catalog is generated asynchronously and a download URL may be returned immediately or via the status response endpoint associated with a job ID.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
-    ///   - fields: Optional array of fields to include in catalog.
     /// - Returns: Catalog job response with job ID.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func generateCatalog(for siteID: Int64) async throws -> POSCatalogGenerationResponse {
-        let path = "products/catalog/generate"
+    public func requestCatalogGeneration(for siteID: Int64) async throws -> POSCatalogRequestResponse {
+        let path = "products/catalog"
         let parameters: [String: Any] = [
             ParameterKey.fullSyncFields: POSProduct.requestFields,
             // TODO: make it a parameter
             "force_generate": true
         ]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = SingleItemMapper<POSCatalogGenerationResponse>(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
-    }
-
-    /// Checks the status of a catalog generation job. A download URL is returned when the job is complete.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site ID for the catalog job.
-    ///   - jobID: Job ID to check status for.
-    /// - Returns: Catalog status response.
-    ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func checkCatalogStatus(for siteID: Int64, jobID: String) async throws -> POSCatalogStatusResponse {
-        let path = "products/catalog/status"
-        let parameters: [String: Any] = [
-            "job_id": jobID
-        ]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = SingleItemMapper<POSCatalogStatusResponse>(siteID: siteID)
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .post,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+        let mapper = SingleItemMapper<POSCatalogRequestResponse>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -354,30 +331,13 @@ private extension POSCatalogSyncRemote {
 
 /// Response from catalog generation request.
 // periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct POSCatalogGenerationResponse: Decodable {
-    /// Unique identifier for tracking the catalog generation job.
-    public let jobID: String?
+public struct POSCatalogRequestResponse: Decodable {
+    /// Current status of the catalog generation job.
+    public let status: POSCatalogStatus
     /// Download URL when it is already available.
     public let downloadURL: String?
 
     private enum CodingKeys: String, CodingKey {
-        case jobID = "job_id"
-        case downloadURL = "download_url"
-    }
-}
-
-/// Response from catalog status check.
-// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct POSCatalogStatusResponse: Decodable {
-    /// Unique identifier for tracking the catalog generation job.
-    public let jobID: String
-    /// Current status of the catalog generation job.
-    public let status: POSCatalogStatus
-    /// Download URL for the completed catalog (available when status is complete).
-    public let downloadURL: String?
-
-    private enum CodingKeys: String, CodingKey {
-        case jobID = "job_id"
         case status
         case downloadURL = "download_url"
     }

@@ -84,15 +84,9 @@ private extension BookingListContainerView {
                 Button {
                     showingFilters = true
                 } label: {
-                    if viewModel.numberOfActiveFilters > 0 {
-                        Text(Localization.filterWithCount(viewModel.numberOfActiveFilters))
-                            .font(.body)
-                            .foregroundStyle(Color.accentColor)
-                    } else {
-                        Text(Localization.filter)
-                            .font(.body)
-                            .foregroundStyle(Color.accentColor)
-                    }
+                    Text(viewModel.filterText)
+                        .font(.body)
+                        .foregroundStyle(Color.accentColor)
                 }
                 .renderedIf(viewModel.selectedTab == .all)
             }
@@ -209,21 +203,6 @@ private extension BookingListContainerView {
             value: "Sort by",
             comment: "Button to select the order of the booking list"
         )
-        static let filter = NSLocalizedString(
-            "bookingListView.filter",
-            value: "Filter",
-            comment: "Button to filter the booking list"
-        )
-        static func filterWithCount(_ count: Int) -> String {
-            String.localizedStringWithFormat(
-                NSLocalizedString(
-                    "bookingListView.filter.withCount",
-                    value: "Filter (%d)",
-                    comment: "Button to filter the booking list with number of active filters"
-                ),
-                count
-            )
-        }
         static let searchPrompt = NSLocalizedString(
             "bookingListView.search.prompt",
             value: "Search bookings",

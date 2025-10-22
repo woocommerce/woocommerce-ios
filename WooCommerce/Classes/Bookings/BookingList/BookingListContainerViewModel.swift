@@ -24,6 +24,10 @@ final class BookingListContainerViewModel: ObservableObject {
 
     private var filters = BookingFiltersViewModel.Filters()
 
+    var filterText: String {
+        numberOfActiveFilters == 0 ? Localization.filter : String.localizedStringWithFormat(Localization.filterWithCount, numberOfActiveFilters)
+    }
+
     var filterViewModel: BookingFiltersViewModel {
         BookingFiltersViewModel(filter: filters, siteID: siteID)
     }
@@ -105,6 +109,21 @@ final class BookingListContainerViewModel: ObservableObject {
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
         // TODO: Apply filters to All tab
+    }
+}
+
+private extension BookingListContainerViewModel {
+    enum Localization {
+        static let filter = NSLocalizedString(
+            "bookingListView.filter",
+            value: "Filter",
+            comment: "Button to filter the booking list"
+        )
+        static let filterWithCount = NSLocalizedString(
+            "bookingListView.filter.withCount",
+            value: "Filter (%1$d)",
+            comment: "Button to filter the booking list with number of active filters"
+        )
     }
 }
 

@@ -1012,9 +1012,7 @@
 		2DB8916B2E27F6D90001B175 /* OrderListCellViewModel+Localizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */; };
 		2DB8916E2E27F7840001B175 /* OrderListCellViewModel+Localizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */; };
 		2DCB54FA2E6AE8E100621F90 /* CIABEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCB54F92E6AE8D800621F90 /* CIABEligibilityChecker.swift */; };
-		2DCB54FC2E6AFE6A00621F90 /* CIABAffectedFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCB54FB2E6AFE6900621F90 /* CIABAffectedFeature.swift */; };
 		2DE9DDFB2E6EF4A500155408 /* MockCIABEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE9DDFA2E6EF4A300155408 /* MockCIABEligibilityChecker.swift */; };
-		2DE9DDFD2E6EF53C00155408 /* CIABEligibilityCheckerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE9DDFC2E6EF52E00155408 /* CIABEligibilityCheckerProtocol.swift */; };
 		2DF0D1BC2E2907C100F8995C /* MarkOrderAsReadUseCase+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */; };
 		310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */; };
 		311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */; };
@@ -3893,9 +3891,7 @@
 		2DB891682E27F61C0001B175 /* OrderListCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCellViewModel.swift; sourceTree = "<group>"; };
 		2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderListCellViewModel+Localizations.swift"; sourceTree = "<group>"; };
 		2DCB54F92E6AE8D800621F90 /* CIABEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityChecker.swift; sourceTree = "<group>"; };
-		2DCB54FB2E6AFE6900621F90 /* CIABAffectedFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABAffectedFeature.swift; sourceTree = "<group>"; };
 		2DE9DDFA2E6EF4A300155408 /* MockCIABEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCIABEligibilityChecker.swift; sourceTree = "<group>"; };
-		2DE9DDFC2E6EF52E00155408 /* CIABEligibilityCheckerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerProtocol.swift; sourceTree = "<group>"; };
 		310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLiveSiteInTestModeView.swift; sourceTree = "<group>"; };
 		311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessage.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
@@ -7936,8 +7932,6 @@
 		2DCB54F82E6AE8C900621F90 /* CIAB */ = {
 			isa = PBXGroup;
 			children = (
-				2DE9DDFC2E6EF52E00155408 /* CIABEligibilityCheckerProtocol.swift */,
-				2DCB54FB2E6AFE6900621F90 /* CIABAffectedFeature.swift */,
 				2DCB54F92E6AE8D800621F90 /* CIABEligibilityChecker.swift */,
 			);
 			path = CIAB;
@@ -14149,7 +14143,6 @@
 				CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */,
 				B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
-				2DCB54FC2E6AFE6A00621F90 /* CIABAffectedFeature.swift in Sources */,
 				EE1B07F32C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift in Sources */,
 				DE02ABBE2B578D0E008E0AC4 /* CreditCardType.swift in Sources */,
 				020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */,
@@ -14915,7 +14908,6 @@
 				B626C71B287659D60083820C /* CustomFieldsListView.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
 				260520F42B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift in Sources */,
-				2DE9DDFD2E6EF53C00155408 /* CIABEligibilityCheckerProtocol.swift in Sources */,
 				579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */,
 				CEDBDA472B6BEF2E002047D4 /* AnalyticsWebReport.swift in Sources */,
 				314DC4BD268D158F00444C9E /* CardReaderSettingsKnownReadersProvider.swift in Sources */,

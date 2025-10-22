@@ -11,6 +11,8 @@ import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
 import enum Yosemite.FeatureFlagAction
 import class Yosemite.SiteAddress
+import protocol Yosemite.CIABEligibilityCheckerProtocol
+import class Yosemite.CIABEligibilityChecker
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site

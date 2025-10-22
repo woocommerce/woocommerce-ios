@@ -1,8 +1,7 @@
 /// Describes the feature set affected by CIAB sites
 /// By the moment of introduction the features aren't supported by CIAB sites
 
-/// periphery: ignore:all - Used through `.allCases`
-enum CIABAffectedFeature: CaseIterable {
+public enum CIABAffectedFeature: CaseIterable {
     case blaze
     case payments
     case splitShipments

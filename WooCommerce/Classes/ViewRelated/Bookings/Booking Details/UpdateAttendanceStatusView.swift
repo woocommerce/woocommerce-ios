@@ -90,7 +90,7 @@ private extension BookingAttendanceStatus {
         case .booked:
             return "calendar.badge.checkmark"
         case .checkedIn:
-            return "person.fill.checkmark"
+            return "calendar.and.person"
         case .noShow:
             return "calendar.badge.exclamationmark"
         case .cancelled, .unknown:

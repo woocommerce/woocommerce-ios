@@ -3,7 +3,7 @@ import UIKit
 
 /// Coordinator for the **native** product detail/editor flow.
 /// Delegates VC construction to `ProductDetailsFactory` and applies the requested presentation style.
-class ProductDetailNativeCoordinator: ProductDetailCoordinator {
+class ProductDetailNativeCoordinator {
 
     func viewController(
         product: Product,

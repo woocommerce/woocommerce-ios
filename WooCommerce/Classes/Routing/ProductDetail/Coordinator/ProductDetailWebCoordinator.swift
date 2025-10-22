@@ -2,24 +2,20 @@ import UIKit
 import Yosemite
 
 /// Coordinator for the **admin web** product detail/editor flow.
-final class ProductDetailWebCoordinator: NSObject, ProductDetailCoordinator {
-    var onDismiss: (() -> Void)?
-    private let site: Site
+class ProductDetailWebCoordinator: NSObject {
+    private let site: Site?
 
-    init(site: Site) {
+    init(site: Site?) {
         self.site = site
     }
 
-    func viewController(product: Product,
-                        presentationStyle: ProductDetailNavigator.Presentation,
-                        isReadOnly: Bool,
-                        onDelete: (() -> Void)? = nil) -> UIViewController {
+    func viewController(product: Product, onDismiss: @escaping () -> Void) -> UIViewController {
         guard let url = ProductAdminURLProvider.editURL(for: product, site: site) else {
             return UIViewController()
         }
 
         let viewModel = AdminWebViewModel(title: product.name, initialURL: url) { [onDismiss] in
-            onDismiss?()
+            onDismiss()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
 
@@ -28,15 +24,15 @@ final class ProductDetailWebCoordinator: NSObject, ProductDetailCoordinator {
 }
 
 fileprivate class AdminWebViewModel: WPAdminWebViewModel {
-    var onDismiss: (() -> Void)?
+    let onDismiss: (() -> Void)
 
-    init(title: String, initialURL: URL, onDismiss: (() -> Void)?) {
+    init(title: String, initialURL: URL, onDismiss: @escaping () -> Void) {
         self.onDismiss = onDismiss
         super.init(title: title, initialURL: initialURL)
     }
 
     override func handleDismissal() {
-        onDismiss?()
+        onDismiss()
         super.handleDismissal()
     }
 }

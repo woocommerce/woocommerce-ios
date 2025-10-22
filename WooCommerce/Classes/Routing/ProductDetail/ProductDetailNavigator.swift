@@ -46,24 +46,25 @@ final class ProductDetailNavigator {
                          onDismissWeb: (() -> Void)? = nil,
                          onDelete: (() -> Void)? = nil) -> UIViewController {
 
-        let coordinator: ProductDetailCoordinator
+        let viewController: UIViewController
         if shouldOpenInWeb(product: product) {
-            let webCoordinator = coordinatorFactory.webCoordinator(site: stores.sessionManager.defaultSite!)
-            webCoordinator.onDismiss = onDismissWeb
-            coordinator = webCoordinator
-        } else {
-            coordinator = coordinatorFactory.nativeCoordinator()
-        }
+            let coordinator = coordinatorFactory.webCoordinator(site: stores.sessionManager.defaultSite)
+            viewController = coordinator.viewController(product: product) {
+                onDismissWeb?()
+            }
 
-        let viewController = coordinator.viewController(product: product,
+        } else {
+            let coordinator = coordinatorFactory.nativeCoordinator()
+            viewController = coordinator.viewController(product: product,
                                                         presentationStyle: presentationStyle,
                                                         isReadOnly: isReadOnly,
                                                         onDelete: onDelete)
+        }
 
         return viewController
     }
 
     private func shouldOpenInWeb(product: Product) -> Bool {
-        return /*ciabChecker.isCurrentSiteCIAB &&*/ product.productType == .booking
+        return ciabChecker.isCurrentSiteCIAB && product.productType == .booking
     }
 }

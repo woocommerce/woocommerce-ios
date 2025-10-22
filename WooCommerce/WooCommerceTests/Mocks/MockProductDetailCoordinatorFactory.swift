@@ -1,16 +1,17 @@
 @testable import WooCommerce
+import Yosemite
 
 class MockProductDetailCoordinatorFactory: ProductDetailCoordinatorFactoryProtocol {
     private(set) var createdWebCoordiantor = false
     private(set) var createdNativeCoordiantor = false
 
-    func webCoordinator() -> ProductDetailCoordinator {
+    func webCoordinator(site: Site?) -> ProductDetailWebCoordinator {
         createdWebCoordiantor = true
-        return MockProductDetailCoordinator()
+        return MockProductDetailWebCoordinator(site: Site.fake())
     }
 
-    func nativeCoordinator() -> ProductDetailCoordinator {
+    func nativeCoordinator() -> ProductDetailNativeCoordinator {
         createdNativeCoordiantor = true
-        return MockProductDetailCoordinator()
+        return MockProductDetailNativeCoordinator()
     }
 }

@@ -1,3 +1,4 @@
+// periphery:ignore:all - will be used for booking filters
 import Foundation
 
 /// Used to filter bookings by product

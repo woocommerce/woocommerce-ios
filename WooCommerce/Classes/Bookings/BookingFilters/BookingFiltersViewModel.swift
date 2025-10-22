@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import WooFoundation
 
 final class BookingFiltersViewModel: FilterListViewModel {
     let filterActionTitle = Localization.filterActionTitle
@@ -15,18 +14,9 @@ final class BookingFiltersViewModel: FilterListViewModel {
     private let paymentStatusFilterViewModel: FilterTypeViewModel
     private let dateTimeFilterViewModel: FilterTypeViewModel
 
-    private let siteID: Int64
-    private let stores: StoresManager
-    private let analytics: Analytics
 
     init(filter: Filters,
-         siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
-        self.siteID = siteID
-        self.stores = stores
-        self.analytics = analytics
-
+         siteID: Int64) {
         teamMemberFilterViewModel = BookingListFilter.teamMember(siteID: siteID).createViewModel(filters: filter)
         productFilterViewModel = BookingListFilter.product(siteID: siteID).createViewModel(filters: filter)
         customerFilterViewModel = BookingListFilter.customer(siteID: siteID).createViewModel(filters: filter)
@@ -68,13 +58,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     }
 
     func applyPastFilter(_ filter: Filters) {
-        teamMemberFilterViewModel.selectedValue = filter.teamMember
-        productFilterViewModel.selectedValue = filter.product
-        customerFilterViewModel.selectedValue = filter.customer
-        attendanceStatusFilterViewModel.selectedValue = filter.attendanceStatus
-        paymentStatusFilterViewModel.selectedValue = filter.paymentStatus
-        dateTimeFilterViewModel.selectedValue = filter.dateRange
-        analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
+        // TODO: Implement when booking filter history is available
     }
 
     func saveSelectedFilterToHistory(_ filter: Filters) {
@@ -120,6 +104,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let customer: CustomerFilter?
         let dateRange: BookingDateRangeFilter?
 
+        // periphery:ignore - used by FilterListViewController
         let numberOfActiveFilters: Int
 
         init() {
@@ -180,9 +165,9 @@ extension BookingFiltersViewModel {
     enum BookingListFilter {
         case teamMember(siteID: Int64)
         case product(siteID: Int64)
-        case customer(siteID: Int64)
         case attendanceStatus
         case paymentStatus
+        case customer(siteID: Int64)
         case dateTime
     }
 }
@@ -209,7 +194,7 @@ private extension BookingFiltersViewModel.BookingListFilter {
 extension BookingFiltersViewModel.BookingListFilter {
     func createViewModel(filters: BookingFiltersViewModel.Filters) -> FilterTypeViewModel {
         switch self {
-        case .teamMember(let siteID):
+        case .teamMember:
             // TODO: Implement team member selector when available
             // For now, using static options with nil (Any option)
             let options: [BookingResource?] = [nil]
@@ -344,7 +329,7 @@ private extension BookingFiltersViewModel.BookingListFilter {
 
         static let rowTitleCustomer = NSLocalizedString(
             "bookingFilters.rowTitleCustomer",
-            value: "Customer",
+            value: "Customer name",
             comment: "Row title for filtering bookings by customer.")
 
         static let rowTitleAttendanceStatus = NSLocalizedString(

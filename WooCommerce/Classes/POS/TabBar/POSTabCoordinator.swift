@@ -72,11 +72,10 @@ final class POSTabCoordinator {
     }()
 
     /// Creates the appropriate barcode scan service based on local catalog availability
-    private func createBarcodeScanService(grdbManager: GRDBManagerProtocol?,
-                                          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
-        // Use local barcode scanning if both GRDB manager and catalog sync coordinator are available
-        // This indicates the local catalog feature is properly initialized and can be used
-        if let grdbManager, catalogSyncCoordinator != nil {
+    private func createBarcodeScanService(isLocalCatalogEligible: Bool,
+                                          grdbManager: GRDBManagerProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
+        if isLocalCatalogEligible,
+           let grdbManager {
             return PointOfSaleLocalBarcodeScanService(siteID: siteID,
                                                      grdbManager: grdbManager,
                                                      currencySettings: currencySettings)
@@ -156,13 +155,28 @@ private extension POSTabCoordinator {
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
-            let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
-            let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
+            // Check local catalog eligibility before initializing infrastructure
+            let localFeatureFlagEnabled = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+            let eligibilityService = POSLocalCatalogEligibilityService(
+                siteID: siteID,
+                catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
+                                                          selectedSite: defaultSitePublisher,
+                                                          appPasswordSupportState: isAppPasswordSupported
+                ),
+                isFeatureFlagEnabled: localFeatureFlagEnabled
+            )
+            let eligibilityState = await eligibilityService.getEligibilityState()
+            let isLocalCatalogEligible = eligibilityState == .eligible
 
-            // Create appropriate barcode scan service based on local catalog availability
-            // Will use local GRDB-based scanning if both grdbManager and catalogSyncCoordinator are available,
+            // Only initialize local catalog infrastructure if eligible
+            let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
+
+            // Create appropriate barcode scan service based on local catalog eligibility
+            // Will use local GRDB-based scanning if eligible and infrastructure is available,
             // otherwise falls back to remote API-based scanning
-            let barcodeScanService = createBarcodeScanService(grdbManager: grdbManager, catalogSyncCoordinator: catalogSyncCoordinator)
+            let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
+                                                              grdbManager: grdbManager)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -203,6 +217,7 @@ private extension POSTabCoordinator {
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
+                    localCatalogEligibilityService: eligibilityService,
                     services: serviceAdaptor
                 )
 

@@ -15,6 +15,8 @@ import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
+import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
+import enum Yosemite.POSLocalCatalogEligibilityState
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -63,6 +65,7 @@ public struct PointOfSaleEntryPointView: View {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
@@ -113,7 +116,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 defaultSiteName: defaultSiteName,
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
-                                                                catalogSyncCoordinator: catalogSyncCoordinator)
+                                                                catalogSyncCoordinator: catalogSyncCoordinator,
+                                                                eligibilityService: localCatalogEligibilityService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -203,8 +207,19 @@ public struct PointOfSaleEntryPointView: View {
         siteSettings: [],
         grdbManager: nil,
         catalogSyncCoordinator: nil,
+        localCatalogEligibilityService: POSLocalCatalogEligibilityServicePreview(),
         services: POSPreviewServices()
     )
+}
+
+actor POSLocalCatalogEligibilityServicePreview: POSLocalCatalogEligibilityServiceProtocol {
+    func getEligibilityState() async -> Yosemite.POSLocalCatalogEligibilityState {
+        .eligible
+    }
+
+    func refreshEligibilityState() async -> Yosemite.POSLocalCatalogEligibilityState {
+        .eligible
+    }
 }
 
 #endif

@@ -55,8 +55,7 @@ extension PointOfSaleSettingsView {
                     }
                 )
 
-                // TODO: WOOMOB-1287 - integrate with local catalog feature eligibility
-                if featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) && settingsController.localCatalogViewModel != nil {
+                if settingsController.isLocalCatalogEligible {
                     PointOfSaleSettingsCard(
                         item: .localCatalog,
                         isSelected: selection == .localCatalog,

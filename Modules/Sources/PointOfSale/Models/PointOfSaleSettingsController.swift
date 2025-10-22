@@ -10,11 +10,14 @@ import Observation
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSettingsService
+import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
+import enum Yosemite.POSLocalCatalogEligibilityState
 
 protocol PointOfSaleSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
+    var isLocalCatalogEligible: Bool { get }
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
@@ -23,6 +26,9 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     let storeViewModel: POSSettingsStoreViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+    private let eligibilityService: POSLocalCatalogEligibilityServiceProtocol
+
+    var isLocalCatalogEligible: Bool = false
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -31,12 +37,15 @@ protocol PointOfSaleSettingsControllerProtocol {
          defaultSiteName: String?,
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) {
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         eligibilityService: POSLocalCatalogEligibilityServiceProtocol) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings)
+        self.eligibilityService = eligibilityService
+
         if let catalogSyncCoordinator, let grdbManager {
             self.localCatalogViewModel = POSSettingsLocalCatalogViewModel(
                 siteID: siteID,
@@ -48,6 +57,8 @@ protocol PointOfSaleSettingsControllerProtocol {
         }
 
         observeCardReader(from: cardPresentPaymentService)
+
+        checkLocalCatalogEligibility()
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {
@@ -63,6 +74,12 @@ protocol PointOfSaleSettingsControllerProtocol {
                 }
                 connectedCardReader = cardReader
             })
+    }
+
+    private func checkLocalCatalogEligibility() {
+        Task {
+            isLocalCatalogEligible = await eligibilityService.getEligibilityState() == .eligible
+        }
     }
 }
 
@@ -80,6 +97,10 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
                                                                               siteSettings: [])
 
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+
+    var isLocalCatalogEligible: Bool {
+        localCatalogViewModel != nil
+    }
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

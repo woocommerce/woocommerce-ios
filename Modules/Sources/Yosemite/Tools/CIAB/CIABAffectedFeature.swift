@@ -10,6 +10,7 @@ public enum CIABAffectedFeature: CaseIterable {
     case giftCardEditing
     case productsStockDashboardCard
     case pointOfSale
+    case cardReader
 }
 
 extension CIABAffectedFeature {

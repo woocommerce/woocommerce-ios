@@ -182,7 +182,9 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         try await insertProduct(groupedProduct)
 
         // When/Then - Should not find unsupported product type
-        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: barcode,
+                                                                                 productName: "Grouped Product",
+                                                                                 productType: .grouped)) {
             _ = try await sut.getItem(barcode: barcode)
         }
     }
@@ -210,17 +212,10 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         try await insertProduct(variableParentProduct)
 
         // When/Then - Should throw unsupportedProductType error
-        do {
+        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: barcode,
+                                                                                 productName: "Variable Parent Product",
+                                                                                 productType: .variable)) {
             _ = try await sut.getItem(barcode: barcode)
-            Issue.record("Expected unsupportedProductType error but none was thrown")
-        } catch let error as PointOfSaleBarcodeScanError {
-            guard case .unsupportedProductType(let scannedCode, let productName, let productType) = error else {
-                Issue.record("Expected unsupportedProductType error, got \(error)")
-                return
-            }
-            #expect(scannedCode == barcode)
-            #expect(productName == "Variable Parent Product")
-            #expect(productType == .variable)
         }
     }
 

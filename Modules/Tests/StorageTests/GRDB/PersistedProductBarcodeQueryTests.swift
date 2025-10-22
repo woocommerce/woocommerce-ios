@@ -63,68 +63,6 @@ struct PersistedProductBarcodeQueryTests {
         #expect(result == nil)
     }
 
-    @Test("posProductByGlobalUniqueID filters out downloadable products")
-    func test_global_unique_id_query_filters_downloadable() async throws {
-        // Given
-        let globalUniqueID = "UPC-DOWNLOADABLE"
-        let downloadableProduct = PersistedProduct(
-            id: 2,
-            siteID: siteID,
-            name: "Downloadable Product",
-            productTypeKey: "simple",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: nil,
-            globalUniqueID: globalUniqueID,
-            price: "5.00",
-            downloadable: true,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(downloadableProduct)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductByGlobalUniqueID(siteID: siteID, globalUniqueID: globalUniqueID).fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test("posProductByGlobalUniqueID filters out unsupported product types")
-    func test_global_unique_id_query_filters_unsupported_types() async throws {
-        // Given
-        let globalUniqueID = "UPC-GROUPED"
-        let groupedProduct = PersistedProduct(
-            id: 3,
-            siteID: siteID,
-            name: "Grouped Product",
-            productTypeKey: "grouped",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: nil,
-            globalUniqueID: globalUniqueID,
-            price: "0.00",
-            downloadable: false,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(groupedProduct)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProduct.posProductByGlobalUniqueID(siteID: siteID, globalUniqueID: globalUniqueID).fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
     // MARK: - Site Isolation Tests
 
     @Test("Queries only return products from specified site")

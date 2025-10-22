@@ -80,54 +80,6 @@ struct PersistedProductVariationBarcodeQueryTests {
         #expect(result == nil)
     }
 
-    @Test("posVariationByGlobalUniqueID filters out downloadable variations")
-    func test_global_unique_id_query_filters_downloadable() async throws {
-        // Given
-        let globalUniqueID = "VAR-DOWNLOADABLE"
-
-        // Insert parent product first
-        let parentProduct = PersistedProduct(
-            id: 10,
-            siteID: siteID,
-            name: "Parent Product",
-            productTypeKey: "variable",
-            fullDescription: nil,
-            shortDescription: nil,
-            sku: nil,
-            globalUniqueID: nil,
-            price: "0.00",
-            downloadable: false,
-            parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertProduct(parentProduct)
-
-        let downloadableVariation = PersistedProductVariation(
-            id: 101,
-            siteID: siteID,
-            productID: 10,
-            sku: nil,
-            globalUniqueID: globalUniqueID,
-            price: "5.00",
-            downloadable: true,
-            fullDescription: nil,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-        try await insertVariation(downloadableVariation)
-
-        // When
-        let result = try await grdbManager.databaseConnection.read { db in
-            try PersistedProductVariation.posVariationByGlobalUniqueID(siteID: siteID, globalUniqueID: globalUniqueID).fetchOne(db)
-        }
-
-        // Then
-        #expect(result == nil)
-    }
-
     // MARK: - Site Isolation Tests
 
     @Test("Queries only return variations from specified site")

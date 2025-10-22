@@ -5,6 +5,7 @@ struct BookingListContainerView: View {
     @ObservedObject private var viewModel: BookingListContainerViewModel
     @State private var isSearching = false
     @State private var showingSortOptions = false
+    @State private var showingFilters = false
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding var selectedBooking: Booking?
@@ -54,6 +55,15 @@ struct BookingListContainerView: View {
             sortingOptions
                 .presentationDetents([.fraction(0.25), .medium, .large])
         }
+        .sheet(isPresented: $showingFilters) {
+            FilterListView(viewModel: viewModel.filterViewModel) { filters in
+                // to-do
+            } onClearAction: {
+                // no-op
+            } onDismissAction: {
+                // no-op
+            }
+        }
     }
 }
 
@@ -72,7 +82,7 @@ private extension BookingListContainerView {
                 }
                 Spacer()
                 Button {
-                    // TODO
+                    showingFilters = true
                 } label: {
                     Text(Localization.filter)
                         .font(.body)

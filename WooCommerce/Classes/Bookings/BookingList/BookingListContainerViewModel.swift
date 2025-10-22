@@ -3,6 +3,7 @@ import Combine
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
+    private let siteID: Int64
     private let todayListViewModel: BookingListViewModel
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
@@ -19,7 +20,16 @@ final class BookingListContainerViewModel: ObservableObject {
     private var searchQuerySubscription: AnyCancellable?
     private var sortBySubscription: AnyCancellable?
 
+
+    private var filters = BookingFiltersViewModel.Filters()
+
+    var filterViewModel: BookingFiltersViewModel {
+        BookingFiltersViewModel(filter: filters, siteID: siteID)
+    }
+
     init(siteID: Int64) {
+        self.siteID = siteID
+
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
         self.todayListViewModel = BookingListViewModel(
             siteID: siteID,

@@ -5,6 +5,7 @@ import Yosemite
 enum FilterSource: String {
     case orders
     case products
+    case booking
 }
 
 protocol HumanReadable {

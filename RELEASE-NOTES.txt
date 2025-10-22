@@ -3,7 +3,7 @@
 
 23.6
 -----
-
+- [*] Adds in-app feedback surveys to gauge POS potential interest, and current usage [https://github.com/woocommerce/woocommerce-ios/pull/16267]
 
 23.5
 -----

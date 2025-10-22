@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import UIKit
 import Vision
 
@@ -36,6 +37,8 @@ final class CodeScannerViewController: UIViewController {
     private let sessionQueue = DispatchQueue(label: "qrlogincamerasession.queue.serial")
     private let session = AVCaptureSession()
     private var requests = [VNRequest]()
+    private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
+    private var cancellables = Set<AnyCancellable>()
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
 
@@ -187,6 +190,15 @@ private extension CodeScannerViewController {
         previewLayer.videoGravity = .resizeAspectFill
         previewLayer.frame = videoOutputImageView.bounds
         videoOutputImageView.layer.addSublayer(previewLayer)
+        rotationCoordinator = AVCaptureDevice.RotationCoordinator(device: captureDevice, previewLayer: previewLayer)
+
+        rotationCoordinator?.publisher(for: \.videoRotationAngleForHorizonLevelPreview)
+            .sink { [weak self] angle in
+                guard let self = self,
+                      let connection = self.previewLayer?.connection else { return }
+                connection.videoRotationAngle = angle
+            }
+            .store(in: &cancellables)
 
         sessionQueue.async { [weak self] in
             self?.session.startRunning()
@@ -290,27 +302,27 @@ private extension CodeScannerViewController {
 //
 private extension CodeScannerViewController {
     func updatePreviewLayerOrientation() {
-        if let connection = previewLayer?.connection, connection.isVideoOrientationSupported {
+        if let connection = previewLayer?.connection {
             let orientation = view.window?.windowScene?.interfaceOrientation
-            let videoOrientation: AVCaptureVideoOrientation
+            let videoRotationAngle: CGFloat
             switch orientation {
             case .portrait:
-                videoOrientation = .portrait
+                videoRotationAngle = 90
             case .landscapeRight:
-                videoOrientation = .landscapeRight
+                videoRotationAngle = 0
             case .landscapeLeft:
-                videoOrientation = .landscapeLeft
+                videoRotationAngle = 180
             case .portraitUpsideDown:
-                videoOrientation = .portraitUpsideDown
+                videoRotationAngle = 270
             default:
-                videoOrientation = .portrait
+                videoRotationAngle = 90
             }
-            updatePreviewLayerVideoOrientation(connection: connection, orientation: videoOrientation)
+            updatePreviewLayerVideoRotationAngle(connection: connection, angle: videoRotationAngle)
         }
     }
 
-    func updatePreviewLayerVideoOrientation(connection: AVCaptureConnection, orientation: AVCaptureVideoOrientation) {
-        connection.videoOrientation = orientation
+    func updatePreviewLayerVideoRotationAngle(connection: AVCaptureConnection, angle: CGFloat) {
+        connection.videoRotationAngle = angle
     }
 }
 

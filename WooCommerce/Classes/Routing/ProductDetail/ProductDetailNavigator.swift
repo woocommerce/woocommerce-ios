@@ -22,11 +22,15 @@ final class ProductDetailNavigator {
 
     private let ciabChecker: CIABEligibilityCheckerProtocol
     private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
+    private let stores: StoresManager
 
     init(ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
-         coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default) {
+         coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default,
+         stores: StoresManager = ServiceLocator.stores,
+    ) {
         self.ciabChecker = ciabChecker
         self.coordinatorFactory = coordinatorFactory
+        self.stores = stores
     }
 
     /// Builds the destination `UIViewController` for the given product.
@@ -39,11 +43,14 @@ final class ProductDetailNavigator {
     func makeDestination(product: Product,
                          presentationStyle: Presentation = .push,
                          isReadOnly: Bool,
+                         onDismissWeb: (() -> Void)? = nil,
                          onDelete: (() -> Void)? = nil) -> UIViewController {
 
         let coordinator: ProductDetailCoordinator
         if shouldOpenInWeb(product: product) {
-            coordinator = coordinatorFactory.webCoordinator()
+            let webCoordinator = coordinatorFactory.webCoordinator(site: stores.sessionManager.defaultSite!)
+            webCoordinator.onDismiss = onDismissWeb
+            coordinator = webCoordinator
         } else {
             coordinator = coordinatorFactory.nativeCoordinator()
         }
@@ -57,6 +64,6 @@ final class ProductDetailNavigator {
     }
 
     private func shouldOpenInWeb(product: Product) -> Bool {
-        return ciabChecker.isCurrentSiteCIAB && product.productType == .booking
+        return /*ciabChecker.isCurrentSiteCIAB &&*/ product.productType == .booking
     }
 }

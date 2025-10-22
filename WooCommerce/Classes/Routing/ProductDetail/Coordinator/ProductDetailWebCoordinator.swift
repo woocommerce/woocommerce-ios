@@ -3,8 +3,7 @@ import Yosemite
 
 /// Coordinator for the **admin web** product detail/editor flow.
 final class ProductDetailWebCoordinator: NSObject, ProductDetailCoordinator {
-    private var onDismiss: (() -> Void)?
-
+    var onDismiss: (() -> Void)?
     private let site: Site
 
     init(site: Site) {
@@ -19,16 +18,25 @@ final class ProductDetailWebCoordinator: NSObject, ProductDetailCoordinator {
             return UIViewController()
         }
 
-        let viewModel = WPAdminWebViewModel(title: product.name, initialURL: url)
+        let viewModel = AdminWebViewModel(title: product.name, initialURL: url) { [onDismiss] in
+            onDismiss?()
+        }
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
 
         return webViewController
     }
+}
 
-    @objc
-    private func dismissWebView() {
-        let completion = onDismiss
-        onDismiss = nil
-        completion?()
+fileprivate class AdminWebViewModel: WPAdminWebViewModel {
+    var onDismiss: (() -> Void)?
+
+    init(title: String, initialURL: URL, onDismiss: (() -> Void)?) {
+        self.onDismiss = onDismiss
+        super.init(title: title, initialURL: initialURL)
+    }
+
+    override func handleDismissal() {
+        onDismiss?()
+        super.handleDismissal()
     }
 }

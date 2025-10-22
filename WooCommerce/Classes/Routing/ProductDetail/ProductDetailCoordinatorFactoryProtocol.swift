@@ -2,25 +2,19 @@ import Yosemite
 
 /// Factory for producing coordinators used by the navigator.
 protocol ProductDetailCoordinatorFactoryProtocol {
-    func webCoordinator() -> ProductDetailCoordinator
-    func nativeCoordinator() -> ProductDetailCoordinator
+    func webCoordinator(site: Site) -> ProductDetailWebCoordinator
+    func nativeCoordinator() -> ProductDetailNativeCoordinator
 }
 
 /// Default coordinator factory that wires production dependencies.
 class ProductDetailCoordinatorFactory: ProductDetailCoordinatorFactoryProtocol {
     static let `default` = ProductDetailCoordinatorFactory()
 
-    private let stores: StoresManager
-
-    init(stores: StoresManager = ServiceLocator.stores) {
-        self.stores = stores
+    func webCoordinator(site: Site) -> ProductDetailWebCoordinator {
+        return ProductDetailWebCoordinator(site: site)
     }
 
-    func webCoordinator() -> ProductDetailCoordinator {
-        return ProductDetailWebCoordinator(site: stores.sessionManager.defaultSite!)
-    }
-
-    func nativeCoordinator() -> ProductDetailCoordinator {
+    func nativeCoordinator() -> ProductDetailNativeCoordinator {
         return ProductDetailNativeCoordinator()
     }
 }

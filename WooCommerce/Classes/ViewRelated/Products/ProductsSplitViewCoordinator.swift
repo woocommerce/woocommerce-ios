@@ -122,11 +122,15 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
-        let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
-                                                                           isReadOnly: false,
-                                                                           onDelete: { [weak self] in
-            self?.onSecondaryProductFormDeletion()
-        })
+        let viewController = ProductDetailNavigator.shared.makeDestination(
+            product: product,
+            isReadOnly: false,
+            onDismissWeb: { [weak self] in
+                self?.resyncProducts()
+            },
+            onDelete: { [weak self] in
+                self?.onSecondaryProductFormDeletion()
+            })
 
         showSecondaryView(contentType: .productForm(product: product),
                           viewController: viewController,
@@ -193,6 +197,11 @@ private extension ProductsSplitViewCoordinator {
         if !splitViewController.isCollapsed {
             showEmptyViewOrFirstProduct()
         }
+    }
+
+    func resyncProducts() {
+        guard let productsViewController = primaryNavigationController.topViewController as? ProductsViewController else { return }
+        productsViewController.resync()
     }
 
     func showEmptyViewOrFirstProduct() {

@@ -303,6 +303,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     func startProductCreation() {
         addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
     }
+
+    func resync() {
+        tableView.reloadData()
+        paginationTracker.resync()
+    }
 }
 
 // MARK: - Navigation Bar Actions

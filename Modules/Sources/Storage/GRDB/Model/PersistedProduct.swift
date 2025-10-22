@@ -100,6 +100,17 @@ public extension PersistedProduct {
             .filter(Columns.downloadable == false)
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }
+
+    /// Searches for a POS-supported product by global unique ID
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - globalUniqueID: The global unique ID (barcode) to search for
+    /// - Returns: A query request that matches products with the given global unique ID
+    static func posProductByGlobalUniqueID(siteID: Int64, globalUniqueID: String) -> QueryInterfaceRequest<PersistedProduct> {
+        return PersistedProduct
+            .filter(Columns.siteID == siteID)
+            .filter(Columns.globalUniqueID == globalUniqueID)
+    }
 }
 
 // periphery:ignore - TODO: remove ignore when populating database

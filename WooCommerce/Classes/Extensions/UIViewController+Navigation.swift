@@ -8,8 +8,7 @@ extension UIViewController {
     var isBeingDismissedInAnyWay: Bool {
         isMovingFromParent ||
         isBeingDismissed ||
-        navigationController?.isBeingDismissed == true ||
-        navigationController?.isMovingFromParent == true
+        navigationController?.isBeingDismissed == true
     }
 
     /// Async/await version of the UIKit `dismiss(animated:)`.

@@ -18,7 +18,6 @@ class ProductDetailWebCoordinator: NSObject {
             onDismiss()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-
         return webViewController
     }
 }
@@ -31,8 +30,8 @@ fileprivate class AdminWebViewModel: WPAdminWebViewModel {
         super.init(title: title, initialURL: initialURL)
     }
 
-    override func handleDismissal() {
+    override func handleDisappear() {
         onDismiss()
-        super.handleDismissal()
+        super.handleDisappear()
     }
 }

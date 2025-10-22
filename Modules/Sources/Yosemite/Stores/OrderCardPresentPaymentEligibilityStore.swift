@@ -1,9 +1,27 @@
-
 import Foundation
+import protocol Storage.StorageManagerType
+import protocol NetworkingCore.Network
 
 /// Determines whether an order is eligible for card present payment or not
 ///
 public final class OrderCardPresentPaymentEligibilityStore: Store {
+    private let stores: () -> StoresManager
+    private lazy var siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(stores: stores())
+
+    public init(
+        dispatcher: Dispatcher,
+        storageManager: StorageManagerType,
+        network: Network,
+        stores: @escaping () -> StoresManager
+    ) {
+        self.stores = stores
+        super.init(
+            dispatcher: dispatcher,
+            storageManager: storageManager,
+            network: network
+        )
+    }
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {

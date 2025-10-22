@@ -219,6 +219,67 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         }
     }
 
+    @Test("Foreign key constraint prevents orphaned variations")
+    func test_variations_cannot_be_orphaned() async throws {
+        // Given
+        let barcode = "ORPHAN-VAR-123"
+
+        // Insert a parent product
+        let parentProduct = PersistedProduct(
+            id: 888,
+            siteID: siteID,
+            name: "Parent Product",
+            productTypeKey: "variable",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "0.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock"
+        )
+        try await insertProduct(parentProduct)
+
+        // Insert the variation
+        let variation = PersistedProductVariation(
+            id: 999,
+            siteID: siteID,
+            productID: 888,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "20.00",
+            downloadable: false,
+            fullDescription: nil,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock"
+        )
+        try await insertVariation(variation)
+
+        // Verify the variation exists
+        let variationExists = try await grdbManager.databaseConnection.read { db in
+            try PersistedProductVariation.fetchOne(db, key: ["siteID": siteID, "id": 999]) != nil
+        }
+        #expect(variationExists, "Variation should exist after insertion")
+
+        // When - Delete the parent product (with foreign keys enabled)
+        try await grdbManager.databaseConnection.write { db in
+            try db.execute(sql: "DELETE FROM product WHERE id = ? AND siteID = ?", arguments: [888, siteID])
+        }
+
+        // Then - Variation should be automatically deleted by CASCADE
+        let variationStillExists = try await grdbManager.databaseConnection.read { db in
+            try PersistedProductVariation.fetchOne(db, key: ["siteID": siteID, "id": 999]) != nil
+        }
+        #expect(!variationStillExists, "Variation should be automatically deleted by CASCADE when parent is deleted")
+
+        // This means the noParentProductForVariation error is defensive code that won't be triggered
+        // in normal operation due to foreign key constraints with CASCADE delete
+    }
+
     // MARK: - Helper Methods
 
     private func insertProduct(_ product: PersistedProduct) async throws {

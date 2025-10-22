@@ -65,15 +65,14 @@ public struct PointOfSaleEntryPointView: View {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         isLocalCatalogEligible: Bool,
          localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        // Use observable controller with GRDB if available and feature flag is enabled, otherwise fall back to standard controller
-        // Note: We check feature flag here for eligibility. Once eligibility checking is
-        // refactored to be more centralized, this check can be simplified.
-        let isGRDBEnabled = services.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
-        if let grdbManager = grdbManager, catalogSyncCoordinator != nil, isGRDBEnabled {
+        // Use observable controller with GRDB if local catalog is eligible,
+        // otherwise fall back to standard controller.
+        if isLocalCatalogEligible, let grdbManager = grdbManager {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
@@ -207,6 +206,7 @@ public struct PointOfSaleEntryPointView: View {
         siteSettings: [],
         grdbManager: nil,
         catalogSyncCoordinator: nil,
+        isLocalCatalogEligible: false,
         localCatalogEligibilityService: POSLocalCatalogEligibilityServicePreview(),
         services: POSPreviewServices()
     )

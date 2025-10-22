@@ -217,6 +217,7 @@ private extension POSTabCoordinator {
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
+                    isLocalCatalogEligible: isLocalCatalogEligible,
                     localCatalogEligibilityService: eligibilityService,
                     services: serviceAdaptor
                 )

@@ -15,6 +15,7 @@ final class BookingListContainerViewModel: ObservableObject {
     @Published var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
+    @Published var numberOfActiveFilters: Int = 0
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
@@ -98,6 +99,12 @@ final class BookingListContainerViewModel: ObservableObject {
         case .all:
             allSearchViewModel
         }
+    }
+
+    func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
+        self.filters = filters
+        self.numberOfActiveFilters = filters.numberOfActiveFilters
+        // TODO: Apply filters to list view models
     }
 }
 

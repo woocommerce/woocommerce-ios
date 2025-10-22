@@ -57,7 +57,7 @@ struct BookingListContainerView: View {
         }
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterViewModel) { filters in
-                // to-do
+                viewModel.updateFilters(filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {
@@ -84,9 +84,15 @@ private extension BookingListContainerView {
                 Button {
                     showingFilters = true
                 } label: {
-                    Text(Localization.filter)
-                        .font(.body)
-                        .foregroundStyle(Color.accentColor)
+                    if viewModel.numberOfActiveFilters > 0 {
+                        Text(Localization.filterWithCount(viewModel.numberOfActiveFilters))
+                            .font(.body)
+                            .foregroundStyle(Color.accentColor)
+                    } else {
+                        Text(Localization.filter)
+                            .font(.body)
+                            .foregroundStyle(Color.accentColor)
+                    }
                 }
                 .renderedIf(viewModel.selectedTab == .all)
             }
@@ -208,6 +214,16 @@ private extension BookingListContainerView {
             value: "Filter",
             comment: "Button to filter the booking list"
         )
+        static func filterWithCount(_ count: Int) -> String {
+            String.localizedStringWithFormat(
+                NSLocalizedString(
+                    "bookingListView.filter.withCount",
+                    value: "Filter (%d)",
+                    comment: "Button to filter the booking list with number of active filters"
+                ),
+                count
+            )
+        }
         static let searchPrompt = NSLocalizedString(
             "bookingListView.search.prompt",
             value: "Search bookings",

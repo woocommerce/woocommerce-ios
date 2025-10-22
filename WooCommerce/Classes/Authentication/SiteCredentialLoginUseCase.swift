@@ -160,6 +160,9 @@ private extension SiteCredentialLoginUseCase {
             throw SiteCredentialLoginError.invalidLoginResponse
         }
 
+        /// The login request comes with a redirect header to nonce retrieval URL.
+        /// If we get a response from this URL, that means the redirect is successful.
+        /// We need to check the result of this redirect first to determine if login is successful.
         let isNonceUrl = response.url?.absoluteString.hasSuffix(Constants.wporgNoncePath) == true
 
         switch (isNonceUrl, response.statusCode) {

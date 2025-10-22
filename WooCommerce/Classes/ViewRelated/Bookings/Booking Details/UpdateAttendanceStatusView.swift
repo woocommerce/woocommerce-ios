@@ -44,8 +44,12 @@ struct UpdateAttendanceStatusView: View {
                     .padding(.horizontal)
                     .contentShape(Rectangle())
                     .tappable {
-                        onStatusSelected(status)
-                        dismiss()
+                        DispatchQueue.main.asyncAfter(
+                            deadline: .now() + Constants.statusSelectionDelay
+                        ) {
+                            onStatusSelected(status)
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -98,6 +102,7 @@ private extension BookingAttendanceStatus {
 private extension UpdateAttendanceStatusView {
     enum Constants {
         static let statuses: [BookingAttendanceStatus] = [.booked, .checkedIn, .noShow]
+        static let statusSelectionDelay: TimeInterval = 0.2
     }
 
     enum Localization {

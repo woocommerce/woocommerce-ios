@@ -116,11 +116,19 @@ final class POSTabCoordinator {
     }
 
     func onTabSelected() {
+        setPOSHasBeenOpened()
         presentPOSView(siteID: siteID)
     }
 }
 
 private extension POSTabCoordinator {
+    func setPOSHasBeenOpened() {
+        Task { @MainActor in
+            let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
+            storesManager.dispatch(action)
+        }
+    }
+
     func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }

@@ -107,9 +107,6 @@ private extension AppCoordinator {
     func schedulePOSSurveyNotificationIfNeeded() {
         Task { @MainActor in
             await POSNotificationScheduler(stores: stores).scheduleLocalNotificationIfEligible(for: .currentMerchant)
-
-            let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
-            stores.dispatch(action)
         }
     }
 }

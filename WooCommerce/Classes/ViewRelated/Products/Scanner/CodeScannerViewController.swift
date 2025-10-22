@@ -301,21 +301,28 @@ private extension CodeScannerViewController {
 // MARK: Orientation Handling
 //
 private extension CodeScannerViewController {
+    enum VideoRotationAngle {
+        static let portrait: CGFloat = 90
+        static let landscapeRight: CGFloat = 0
+        static let landscapeLeft: CGFloat = 180
+        static let portraitUpsideDown: CGFloat = 270
+    }
+
     func updatePreviewLayerOrientation() {
         if let connection = previewLayer?.connection {
             let orientation = view.window?.windowScene?.interfaceOrientation
             let videoRotationAngle: CGFloat
             switch orientation {
             case .portrait:
-                videoRotationAngle = 90
+                videoRotationAngle = VideoRotationAngle.portrait
             case .landscapeRight:
-                videoRotationAngle = 0
+                videoRotationAngle = VideoRotationAngle.landscapeRight
             case .landscapeLeft:
-                videoRotationAngle = 180
+                videoRotationAngle = VideoRotationAngle.landscapeLeft
             case .portraitUpsideDown:
-                videoRotationAngle = 270
+                videoRotationAngle = VideoRotationAngle.portraitUpsideDown
             default:
-                videoRotationAngle = 90
+                videoRotationAngle = VideoRotationAngle.portrait
             }
             updatePreviewLayerVideoRotationAngle(connection: connection, angle: videoRotationAngle)
         }

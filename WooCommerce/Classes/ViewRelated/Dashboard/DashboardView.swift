@@ -344,10 +344,14 @@ private extension DashboardView {
     }
 
     var currencyMismatchBanner: some View {
-        CurrencyMismatchBanner(
-            siteCurrency: viewModel.siteCurrency,
-            accountCurrency: viewModel.accountCurrency,
-            dismissAction: {
+        let message = String(
+            format: Localization.currencyMismatchMessage,
+            viewModel.siteCurrency,
+            viewModel.accountCurrency
+        )
+        return DismissableWarningBanner(
+            message: message,
+            onDismiss: {
                 viewModel.dismissCurrencyMismatchBanner()
             }
         )
@@ -436,6 +440,11 @@ private extension DashboardView {
             "dashboardView.edit",
             value: "Edit",
             comment: "Title of the button to edit the layout of the Dashboard screen."
+        )
+        static let currencyMismatchMessage = NSLocalizedString(
+            "dashboardView.currencyMismatch.message",
+            value: "Your site uses %1$@ but your payment account uses %2$@. This may cause payment issues. Please update your account currency in your payment gateway settings.",
+            comment: "Warning message shown when site currency and payment account currency don't match. %1$@ is the site currency code (e.g. USD), %2$@ is the account currency code (e.g. GBP)."
         )
 
         enum ShareStoreCard {

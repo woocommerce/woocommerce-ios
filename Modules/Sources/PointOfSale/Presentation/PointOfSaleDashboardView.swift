@@ -6,12 +6,15 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.dismiss) private var dismiss
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
+
+    let animation: POSLoadingAnimation
 
     @State private var floatingSize: CGSize = .zero
 
@@ -42,6 +45,7 @@ struct PointOfSaleDashboardView: View {
         case loading
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
+        case catalogSyncing
         case content
         case unsupportedWidth
     }
@@ -50,7 +54,8 @@ struct PointOfSaleDashboardView: View {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: posModel.catalogSyncState
         )
     }
 
@@ -59,7 +64,7 @@ struct PointOfSaleDashboardView: View {
         ZStack(alignment: .bottomLeading) {
             switch viewState {
             case .loading:
-                PointOfSaleLoadingView()
+                PointOfSaleLoadingView(animation: animation)
                     .transition(.opacity)
                     .ignoresSafeArea()
             case .ineligible(let reason):
@@ -82,6 +87,12 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 })
+            case .catalogSyncing:
+                POSCatalogLoadingView(animation: animation) {
+                    dismiss()
+                }
+                    .transition(.opacity)
+                    .ignoresSafeArea()
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
@@ -273,19 +284,21 @@ private extension PointOfSaleDashboardView {
 #if DEBUG
 
 #Preview("Container loading state") {
+    @Previewable @Namespace var namespace
     return NavigationStack {
-        PointOfSaleDashboardView()
+        PointOfSaleDashboardView(animation: .init(namespace: namespace))
             .environment(POSPreviewHelpers.makePreviewAggregateModel())
             .environmentObject(POSModalManager())
     }
 }
 
 #Preview("Content loading state") {
+    @Previewable @Namespace var namespace
     let itemsController = PointOfSalePreviewItemsController()
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
     return NavigationStack {
-        PointOfSaleDashboardView()
+        PointOfSaleDashboardView(animation: .init(namespace: namespace))
             .environment(posModel)
             .environmentObject(POSModalManager())
     }

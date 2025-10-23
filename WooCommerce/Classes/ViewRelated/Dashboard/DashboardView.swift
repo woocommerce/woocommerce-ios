@@ -157,6 +157,9 @@ struct DashboardView: View {
             viewModel.onPullToRefresh()
         }
         .safeAreaInset(edge: .bottom) {
+            currencyMismatchBanner
+                .renderedIf(viewModel.showCurrencyMismatchBanner)
+
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
 
@@ -338,6 +341,16 @@ private extension DashboardView {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
+    }
+
+    var currencyMismatchBanner: some View {
+        CurrencyMismatchBanner(
+            siteCurrency: viewModel.siteCurrency,
+            accountCurrency: viewModel.accountCurrency,
+            dismissAction: {
+                viewModel.dismissCurrencyMismatchBanner()
+            }
+        )
     }
 
     var jetpackBenefitBanner: some View {

@@ -76,6 +76,9 @@ extension UserDefaults {
 
         // CIAB Bookings tab availability
         case ciabBookingsTabAvailable
+
+        // Currency mismatch banner dismissal
+        case currencyMismatchBannerDismissed
     }
 }
 

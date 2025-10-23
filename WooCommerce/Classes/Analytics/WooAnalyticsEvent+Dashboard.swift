@@ -44,6 +44,9 @@ extension WooAnalyticsEvent {
                                      properties: [Keys.storeTimezone: storeTimezoneText,
                                                   Keys.localTimezone: localTimezoneText])
         }
+
+        /// Tracked when the currency mismatch banner is dismissed.
+        static let currencyMismatchBannerDismissed = WooAnalyticsEvent(statName: .dashboardCurrencyMismatchBannerDismissed, properties: [:])
     }
 }
 

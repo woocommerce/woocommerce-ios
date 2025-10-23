@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import CocoaLumberjack
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
@@ -64,6 +65,12 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
+
+    @Published private(set) var showCurrencyMismatchBanner = false
+
+    @Published private(set) var siteCurrency: String = ""
+
+    @Published private(set) var accountCurrency: String = ""
 
     @Published private var hasOrders = false
 
@@ -199,6 +206,8 @@ final class DashboardViewModel: ObservableObject {
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
 
         await blazeLocalNotificationScheduler.scheduleNoCampaignReminder()
+        
+        await checkCurrencyMismatch()
     }
 
     func handleCustomizationDismissal() {
@@ -777,6 +786,68 @@ private extension DashboardViewModel {
     @MainActor
     func updateJetpackBannerVisibilityFromAppSettings() async {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
+    }
+
+    @MainActor
+    func checkCurrencyMismatch() async {
+        // Check if banner was previously dismissed
+        let isDismissed = userDefaults.bool(forKey: UserDefaults.Key.currencyMismatchBannerDismissed.rawValue)
+        guard !isDismissed else {
+            showCurrencyMismatchBanner = false
+            return
+        }
+
+        let siteCurrencyCode = ServiceLocator.currencySettings.currencyCode.rawValue
+        
+        // Try to get payment gateway account currency
+        guard let accountCurrencyCode = await loadPaymentGatewayAccountCurrency() else {
+            showCurrencyMismatchBanner = false
+            return
+        }
+
+        // Check if currencies mismatch
+        if siteCurrencyCode != accountCurrencyCode {
+            siteCurrency = siteCurrencyCode
+            accountCurrency = accountCurrencyCode
+            showCurrencyMismatchBanner = true
+            
+            // Log the mismatch for analytics/debugging
+            DDLogWarn("⚠️ Currency mismatch detected: Site currency \(siteCurrencyCode) differs from payment account currency \(accountCurrencyCode)")
+        } else {
+            showCurrencyMismatchBanner = false
+        }
+    }
+
+    func dismissCurrencyMismatchBanner() {
+        showCurrencyMismatchBanner = false
+        userDefaults.set(true, forKey: UserDefaults.Key.currencyMismatchBannerDismissed.rawValue)
+        ServiceLocator.analytics.track(event: .Dashboard.currencyMismatchBannerDismissed)
+    }
+
+    @MainActor
+    private func loadPaymentGatewayAccountCurrency() async -> String? {
+        await withCheckedContinuation { continuation in
+            // Load payment gateway accounts
+            let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
+                guard let self = self else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                
+                // Try to get the selected payment gateway account
+                let selectedAccountAction = CardPresentPaymentAction.selectedPaymentGatewayAccount { account in
+                    if let account = account {
+                        continuation.resume(returning: account.defaultCurrency)
+                    } else {
+                        // If no account is selected, try to load from storage
+                        let accounts = self.storageManager.viewStorage.loadPaymentGatewayAccounts(siteID: self.siteID)
+                        continuation.resume(returning: accounts.first?.defaultCurrency)
+                    }
+                }
+                self.stores.dispatch(selectedAccountAction)
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

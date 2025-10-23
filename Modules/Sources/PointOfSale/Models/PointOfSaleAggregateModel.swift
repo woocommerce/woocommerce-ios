@@ -15,6 +15,7 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import enum Yosemite.POSCatalogSyncState
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -54,6 +55,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    var catalogSyncState: POSCatalogSyncState?
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -115,6 +117,7 @@ protocol PointOfSaleAggregateModelProtocol {
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
         performIncrementalSync()
+        publishCatalogSyncState()
     }
 }
 
@@ -620,6 +623,24 @@ private extension PointOfSaleAggregateModel {
         guard let catalogSyncCoordinator else { return }
         Task {
             try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        }
+    }
+}
+
+// MARK: - Catalog Sync State Observation
+
+private extension PointOfSaleAggregateModel {
+    private func publishCatalogSyncState() {
+        guard let coordinator = catalogSyncCoordinator else { return }
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            catalogSyncState = await coordinator.lastFullSyncState(for: siteID)
+
+            for await state in coordinator.fullSyncStateStream {
+                catalogSyncState = state
+            }
         }
     }
 }

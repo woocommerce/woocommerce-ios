@@ -4,6 +4,7 @@ import Foundation
 @testable import Yosemite
 import Storage
 
+@MainActor
 struct PointOfSaleSettingsControllerTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockCardPresentPaymentService = MockCardPresentPaymentService()
@@ -20,7 +21,7 @@ struct PointOfSaleSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                eligibilityService: MockPOSLocalCatalogEligibilityService())
+                                                localCatalogEligibilityService: MockPOSLocalCatalogEligibilityService())
 
         // When
         let cardReader = sut.connectedCardReader
@@ -40,7 +41,7 @@ struct PointOfSaleSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                eligibilityService: MockPOSLocalCatalogEligibilityService())
+                                                localCatalogEligibilityService: MockPOSLocalCatalogEligibilityService())
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)

@@ -26,7 +26,7 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     let storeViewModel: POSSettingsStoreViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
-    private let eligibilityService: POSLocalCatalogEligibilityServiceProtocol
+    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol
 
     var isLocalCatalogEligible: Bool = false
 
@@ -38,13 +38,13 @@ protocol PointOfSaleSettingsControllerProtocol {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
-         eligibilityService: POSLocalCatalogEligibilityServiceProtocol) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings)
-        self.eligibilityService = eligibilityService
+        self.localCatalogEligibilityService = localCatalogEligibilityService
 
         if let catalogSyncCoordinator, let grdbManager {
             self.localCatalogViewModel = POSSettingsLocalCatalogViewModel(
@@ -77,9 +77,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     }
 
     private func checkLocalCatalogEligibility() {
-        Task {
-            isLocalCatalogEligible = await eligibilityService.getEligibilityState() == .eligible
-        }
+        isLocalCatalogEligible = localCatalogEligibilityService.eligibilityState == .eligible
     }
 }
 

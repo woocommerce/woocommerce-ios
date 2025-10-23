@@ -157,7 +157,7 @@ private extension POSTabCoordinator {
 
             // Check local catalog eligibility before initializing infrastructure
             let localFeatureFlagEnabled = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
-            let eligibilityService = POSLocalCatalogEligibilityService(
+            let eligibilityService = await POSLocalCatalogEligibilityService(
                 siteID: siteID,
                 catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
                                                           selectedSite: defaultSitePublisher,
@@ -165,8 +165,7 @@ private extension POSTabCoordinator {
                 ),
                 isFeatureFlagEnabled: localFeatureFlagEnabled
             )
-            let eligibilityState = await eligibilityService.getEligibilityState()
-            let isLocalCatalogEligible = eligibilityState == .eligible
+            let isLocalCatalogEligible = eligibilityService.eligibilityState == .eligible
 
             // Only initialize local catalog infrastructure if eligible
             let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
@@ -217,7 +216,6 @@ private extension POSTabCoordinator {
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
-                    isLocalCatalogEligible: isLocalCatalogEligible,
                     localCatalogEligibilityService: eligibilityService,
                     services: serviceAdaptor
                 )

@@ -2,22 +2,17 @@ import Foundation
 @testable import Yosemite
 
 /// Mock implementation of POSLocalCatalogEligibilityServiceProtocol for testing
-public actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    public var stateToReturn: POSLocalCatalogEligibilityState
-    public var getCallCount = 0
+@MainActor
+public final class MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
+    public var eligibilityState: POSLocalCatalogEligibilityState
     public var refreshCallCount = 0
 
-    public init(stateToReturn: POSLocalCatalogEligibilityState = .eligible) {
-        self.stateToReturn = stateToReturn
-    }
-
-    public func getEligibilityState() async -> POSLocalCatalogEligibilityState {
-        getCallCount += 1
-        return stateToReturn
+    public init(eligibilityState: POSLocalCatalogEligibilityState = .eligible) {
+        self.eligibilityState = eligibilityState
     }
 
     public func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
         refreshCallCount += 1
-        return stateToReturn
+        return eligibilityState
     }
 }

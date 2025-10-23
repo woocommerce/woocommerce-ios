@@ -3,6 +3,7 @@ import Testing
 @testable import Yosemite
 
 @Suite("POSLocalCatalogEligibilityService Tests")
+@MainActor
 struct POSLocalCatalogEligibilityServiceTests {
     private let siteID: Int64 = 123
 
@@ -13,16 +14,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
-        let state = await service.getEligibilityState()
-
-        #expect(state == .eligible)
+        #expect(service.eligibilityState == .eligible)
     }
 
     @Test("Exactly at size limit returns eligible")
@@ -30,16 +29,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 600, variationCount: 400))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
-        let state = await service.getEligibilityState()
-
-        #expect(state == .eligible)
+        #expect(service.eligibilityState == .eligible)
     }
 
     // MARK: - Catalog Size Exceeds Limit
@@ -49,16 +46,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 800, variationCount: 300))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
-        let state = await service.getEligibilityState()
-
-        guard case .ineligible(let reason) = state else {
+        guard case .ineligible(let reason) = service.eligibilityState else {
             Issue.record("Expected ineligible state")
             return
         }
@@ -77,14 +72,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 501, variationCount: 500))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
-        let state = await service.getEligibilityState()
+        let state = service.eligibilityState
 
         guard case .ineligible(let reason) = state else {
             Issue.record("Expected ineligible state")
@@ -108,14 +103,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .failure(expectedError)
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
-        let state = await service.getEligibilityState()
+        let state = service.eligibilityState
 
         guard case .ineligible(let reason) = state else {
             Issue.record("Expected ineligible state")
@@ -137,7 +132,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
@@ -145,12 +140,12 @@ struct POSLocalCatalogEligibilityServiceTests {
         )
 
         // First call
-        let firstState = await service.getEligibilityState()
+        let firstState = service.eligibilityState
         #expect(firstState == .eligible)
         #expect(sizeChecker.checkCatalogSizeCallCount == 1)
 
         // Second call should use cache
-        let secondState = await service.getEligibilityState()
+        let secondState = service.eligibilityState
         #expect(secondState == .eligible)
         #expect(sizeChecker.checkCatalogSizeCallCount == 1) // Should not increment
     }
@@ -160,7 +155,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
@@ -168,7 +163,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         )
 
         // First call
-        let firstState = await service.getEligibilityState()
+        let firstState = service.eligibilityState
         #expect(firstState == .eligible)
         #expect(sizeChecker.checkCatalogSizeCallCount == 1)
 
@@ -183,7 +178,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
@@ -191,7 +186,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         )
 
         // First call caches eligible state
-        _ = await service.getEligibilityState()
+        _ = service.eligibilityState
         #expect(sizeChecker.checkCatalogSizeCallCount == 1)
 
         // Change the size checker to return ineligible
@@ -206,7 +201,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(sizeChecker.checkCatalogSizeCallCount == 2)
 
         // Next get should return cached ineligible
-        let cachedState = await service.getEligibilityState()
+        let cachedState = service.eligibilityState
         guard case .ineligible = cachedState else {
             Issue.record("Expected cached ineligible state")
             return
@@ -221,14 +216,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: false,
             catalogSizeLimit: 1000
         )
 
-        let state = await service.getEligibilityState()
+        let state = service.eligibilityState
 
         guard case .ineligible(let reason) = state else {
             Issue.record("Expected ineligible state")
@@ -251,14 +246,14 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 100, variationCount: 50))
         )
-        let service = POSLocalCatalogEligibilityService(
+        let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             isFeatureFlagEnabled: true,
             catalogSizeLimit: 100 // Custom lower limit
         )
 
-        let state = await service.getEligibilityState()
+        let state = service.eligibilityState
 
         guard case .ineligible(let reason) = state else {
             Issue.record("Expected ineligible state")

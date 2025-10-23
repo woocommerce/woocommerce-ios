@@ -118,9 +118,7 @@ struct ItemList<HeaderView: View>: View {
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
-                Task { @MainActor in
-                    await itemsController.loadNextItems(base: node)
-                }
+                await itemsController.loadNextItems(base: node)
             })
         case .initial, .loaded, .error, .empty, .none, .inlineError(_, _, .refresh):
             EmptyView()
@@ -132,9 +130,7 @@ struct ItemList<HeaderView: View>: View {
         case .inlineError(_, let errorState, .refresh):
             POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
-                Task { @MainActor in
-                    await itemsController.loadItems(base: .root)
-                }
+                await itemsController.loadItems(base: .root)
             })
         case .initial, .loaded, .error, .empty, .none, .loading, .inlineError(_, _, .pagination):
             EmptyView()

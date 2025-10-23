@@ -9,7 +9,7 @@ import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
 
 @MainActor
-final class POSLocalCatalogEligibilityService: @MainActor POSLocalCatalogEligibilityServiceProtocol {
+final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let siteID: Int64
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int

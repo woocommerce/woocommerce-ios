@@ -93,6 +93,8 @@ enum FilterListValueSelectorConfig {
     case products(siteID: Int64)
     // Filter list selector for customer
     case customer(siteID: Int64)
+    // Filter list selector for booking team member
+    case bookingResource(siteID: Int64)
 
 }
 
@@ -358,6 +360,16 @@ private extension FilterListViewController {
                     WooNavigationController(rootViewController: controller),
                     animated: true
                 )
+            case .bookingResource(let siteID):
+                let selectedMember = selected.selectedValue as? BookingResource
+                let viewModel = BookingTeamMemberSelectorViewModel(siteID: siteID)
+                let hostingController = BookingTeamMemberSelectorHostingController(viewModel: viewModel, selectedMember: selectedMember) { [weak self] resource in
+                    selected.selectedValue = resource
+                    self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                    self?.listSelector.reloadData()
+                    self?.listSelector.navigationController?.popViewController(animated: true)
+                }
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }
     }

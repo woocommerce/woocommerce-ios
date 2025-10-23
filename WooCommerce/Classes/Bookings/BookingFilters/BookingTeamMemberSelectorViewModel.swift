@@ -2,8 +2,8 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-// View model for `BookingResourceListView`
-final class BookingResourceListViewModel: ObservableObject {
+// View model for `BookingTeamMemberSelectorView`
+final class BookingTeamMemberSelectorViewModel: ObservableObject {
     @Published private(set) var resources: [BookingResource] = []
 
     /// Keeps track of the current state of the syncing
@@ -37,7 +37,7 @@ final class BookingResourceListViewModel: ObservableObject {
         self.stores = stores
         self.storage = storage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
-        
+
         configureResultsController()
         configurePaginationTracker()
     }
@@ -53,7 +53,7 @@ final class BookingResourceListViewModel: ObservableObject {
     }
 }
 
-private extension BookingResourceListViewModel {
+private extension BookingTeamMemberSelectorViewModel {
     func configurePaginationTracker() {
         paginationTracker.delegate = self
     }
@@ -81,7 +81,7 @@ private extension BookingResourceListViewModel {
     }
 }
 
-extension BookingResourceListViewModel: PaginationTrackerDelegate {
+extension BookingTeamMemberSelectorViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
         let action = BookingAction.synchronizeResources(
@@ -106,7 +106,7 @@ extension BookingResourceListViewModel: PaginationTrackerDelegate {
 
 // MARK: State Machine
 
-extension BookingResourceListViewModel {
+extension BookingTeamMemberSelectorViewModel {
     /// Represents possible states for syncing bookings.
     enum SyncState: Equatable {
         case syncingFirstPage

@@ -75,7 +75,14 @@ class AuthenticatedState: StoresManagerState {
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
-            OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network, currentSite: { ServiceLocator.stores.sessionManager.defaultSite }),
+            OrderCardPresentPaymentEligibilityStore(
+                dispatcher: dispatcher,
+                storageManager: storageManager,
+                network: network,
+                currentSite: {
+                    ServiceLocator.stores.sessionManager.defaultSite
+                }
+            ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

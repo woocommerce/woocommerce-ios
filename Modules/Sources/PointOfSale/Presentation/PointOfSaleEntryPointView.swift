@@ -15,8 +15,6 @@ import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
-import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
-import enum Yosemite.POSLocalCatalogEligibilityState
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -65,13 +63,12 @@ public struct PointOfSaleEntryPointView: View {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
-         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
-        let isLocalCatalogEligible = localCatalogEligibilityService.eligibilityState == .eligible
+        let isLocalCatalogEligible = services.localCatalogEligibility.localCatalogEligibilityService?.eligibilityState == .eligible
         if isLocalCatalogEligible, let grdbManager = grdbManager {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
@@ -116,7 +113,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
-                                                                localCatalogEligibilityService: localCatalogEligibilityService)
+                                                                localCatalogEligibilityService: services.localCatalogEligibility.localCatalogEligibilityService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -206,18 +203,17 @@ public struct PointOfSaleEntryPointView: View {
         siteSettings: [],
         grdbManager: nil,
         catalogSyncCoordinator: nil,
-        localCatalogEligibilityService: POSLocalCatalogEligibilityServicePreview(),
         services: POSPreviewServices()
     )
 }
 
 @MainActor
 final class POSLocalCatalogEligibilityServicePreview: POSLocalCatalogEligibilityServiceProtocol {
-    var eligibilityState: Yosemite.POSLocalCatalogEligibilityState {
+    var eligibilityState: POSLocalCatalogEligibilityState {
         .eligible
     }
 
-    func refreshEligibilityState() async -> Yosemite.POSLocalCatalogEligibilityState {
+    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
         .eligible
     }
 }

@@ -10,8 +10,6 @@ import Observation
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSettingsService
-import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
-import enum Yosemite.POSLocalCatalogEligibilityState
 
 protocol PointOfSaleSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
@@ -26,7 +24,7 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     let storeViewModel: POSSettingsStoreViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
-    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol
+    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
     var isLocalCatalogEligible: Bool = false
 
@@ -38,7 +36,7 @@ protocol PointOfSaleSettingsControllerProtocol {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
-         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -77,7 +75,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     }
 
     private func checkLocalCatalogEligibility() {
-        isLocalCatalogEligible = localCatalogEligibilityService.eligibilityState == .eligible
+        isLocalCatalogEligible = localCatalogEligibilityService?.eligibilityState == .eligible
     }
 }
 

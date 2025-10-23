@@ -12,8 +12,16 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
+import protocol PointOfSale.POSLocalCatalogEligibilityProviding
+import protocol PointOfSale.POSLocalCatalogEligibilityServiceProtocol
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
+    private let _localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+
+    init(localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
+        self._localCatalogEligibilityService = localCatalogEligibilityService
+    }
+
     var analytics: POSAnalyticsProviding {
         POSAnalyticsAdaptor()
     }
@@ -36,6 +44,10 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
+    }
+
+    var localCatalogEligibility: POSLocalCatalogEligibilityProviding {
+        POSLocalCatalogEligibilityAdaptor(service: _localCatalogEligibilityService)
     }
 }
 
@@ -127,5 +139,13 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
 
     func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView {
         AnyView(WCSettingsWebView(adminUrl: adminUrl, completion: completion))
+    }
+}
+
+private struct POSLocalCatalogEligibilityAdaptor: POSLocalCatalogEligibilityProviding {
+    let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+
+    init(service: POSLocalCatalogEligibilityServiceProtocol?) {
+        self.localCatalogEligibilityService = service
     }
 }

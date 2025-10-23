@@ -142,18 +142,6 @@ private extension POSTabCoordinator {
     func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let serviceAdaptor = POSServiceLocatorAdaptor()
-            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
-            let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
-                                                                            stores: storesManager,
-                                                                            collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor)
-            let settingsService = PointOfSaleSettingsService(siteID: siteID,
-                                                             credentials: credentials,
-                                                             selectedSite: defaultSitePublisher,
-                                                             appPasswordSupportState: isAppPasswordSupported,
-                                                             storage: storageManager)
-            let pluginsService = PluginsService(storageManager: storageManager)
-            let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
             // Check local catalog eligibility before initializing infrastructure
             // Try to use pre-created service from eligibility checker, otherwise create it now
@@ -161,14 +149,12 @@ private extension POSTabCoordinator {
             if let preCreatedService = (eligibilityChecker as? POSTabEligibilityChecker)?.localCatalogEligibilityService {
                 eligibilityService = preCreatedService
             } else {
-                let localFeatureFlagEnabled = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
                 eligibilityService = await POSLocalCatalogEligibilityService(
                     siteID: siteID,
                     catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
                                                               selectedSite: defaultSitePublisher,
                                                               appPasswordSupportState: isAppPasswordSupported
-                    ),
-                    isFeatureFlagEnabled: localFeatureFlagEnabled
+                    )
                 )
             }
 
@@ -182,6 +168,20 @@ private extension POSTabCoordinator {
             }
 
             let isLocalCatalogEligible = eligibilityState == .eligible
+
+            // Create service adaptor with eligibility service
+            let serviceAdaptor = POSServiceLocatorAdaptor(localCatalogEligibilityService: eligibilityService)
+            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
+            let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                            stores: storesManager,
+                                                                            collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor)
+            let settingsService = PointOfSaleSettingsService(siteID: siteID,
+                                                             credentials: credentials,
+                                                             selectedSite: defaultSitePublisher,
+                                                             appPasswordSupportState: isAppPasswordSupported,
+                                                             storage: storageManager)
+            let pluginsService = PluginsService(storageManager: storageManager)
+            let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
             // Only initialize local catalog infrastructure if eligible
             let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
@@ -232,7 +232,6 @@ private extension POSTabCoordinator {
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
-                    localCatalogEligibilityService: eligibilityService,
                     services: serviceAdaptor
                 )
 

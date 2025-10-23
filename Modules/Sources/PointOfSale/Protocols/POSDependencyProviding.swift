@@ -64,6 +64,11 @@ public protocol POSExternalViewProviding {
     func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView
 }
 
+/// Protocol that provides local catalog eligibility service for POS
+public protocol POSLocalCatalogEligibilityProviding {
+    var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? { get }
+}
+
 /// Main protocol that combines all POS dependency providers
 /// This enables dependency injection for POS code while maintaining clean separation from ServiceLocator
 public protocol POSDependencyProviding {
@@ -73,4 +78,5 @@ public protocol POSDependencyProviding {
     var connectivity: POSConnectivityProviding { get }
     var externalNavigation: POSExternalNavigationProviding { get }
     var externalViews: POSExternalViewProviding { get }
+    var localCatalogEligibility: POSLocalCatalogEligibilityProviding { get }
 }

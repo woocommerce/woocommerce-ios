@@ -1,45 +1,31 @@
 import Foundation
 import CocoaLumberjackSwift
-
-/// Service that provides eligibility information for local catalog feature
-///
-/// Other services can query this for eligibility state and reasons:
-/// - Sync coordinator can check if catalog is eligible
-/// - Settings UI can display eligibility status and reasons
-/// - Analytics can track why stores are ineligible
-///
-/// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
-/// Feature flag value is captured at initialization and won't change during service lifetime.
-/// The service performs an initial eligibility check during initialization.
-public protocol POSLocalCatalogEligibilityServiceProtocol {
-    /// Current eligibility state (synchronously accessible on main thread)
-    var eligibilityState: POSLocalCatalogEligibilityState { get }
-
-    /// Force refresh eligibility (bypasses cache and updates eligibilityState)
-    /// - Returns: Fresh eligibility state with reason if ineligible
-    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState
-}
+import Yosemite
+import Experiments
+import protocol PointOfSale.POSLocalCatalogEligibilityServiceProtocol
+import enum PointOfSale.POSLocalCatalogEligibilityState
+import enum PointOfSale.POSLocalCatalogIneligibleReason
 
 @MainActor
-public final class POSLocalCatalogEligibilityService: @MainActor POSLocalCatalogEligibilityServiceProtocol {
+final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let siteID: Int64
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
-    private let isFeatureFlagEnabled: Bool
+    private let featureFlagService: FeatureFlagService
 
     // Current eligibility state
-    public private(set) var eligibilityState: POSLocalCatalogEligibilityState
+    private(set) var eligibilityState: POSLocalCatalogEligibilityState
 
     /// Initialize eligibility service and perform initial eligibility check
-    public init(
+    init(
         siteID: Int64,
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
-        isFeatureFlagEnabled: Bool,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
         catalogSizeLimit: Int? = nil
     ) async {
         self.siteID = siteID
         self.catalogSizeChecker = catalogSizeChecker
-        self.isFeatureFlagEnabled = isFeatureFlagEnabled
+        self.featureFlagService = featureFlagService
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
 
         // Perform initial check
@@ -47,8 +33,9 @@ public final class POSLocalCatalogEligibilityService: @MainActor POSLocalCatalog
         _ = await self.refreshEligibilityState()
     }
 
-    public func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
+    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
         // Check feature flag first - if disabled, no need to check catalog size
+        let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
         guard isFeatureFlagEnabled else {
             eligibilityState = .ineligible(reason: .featureFlagDisabled)
             return eligibilityState

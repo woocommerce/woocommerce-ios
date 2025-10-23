@@ -20,9 +20,8 @@ import class WooFoundation.VersionHelpers
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
+import protocol PointOfSale.POSLocalCatalogEligibilityServiceProtocol
 import enum Yosemite.POSCountryCurrencyValidator
-import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
-import class Yosemite.POSLocalCatalogEligibilityService
 import struct Yosemite.POSCatalogSizeChecker
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
@@ -63,15 +62,13 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
         // Create local catalog eligibility service asynchronously in the background
         Task { @MainActor in
-            let localFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
             let eligibilityService = await POSLocalCatalogEligibilityService(
                 siteID: siteID,
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: selectedSite,
                     appPasswordSupportState: appPasswordSupport
-                ),
-                isFeatureFlagEnabled: localFeatureFlagEnabled
+                )
             )
             self.localCatalogEligibilityService = eligibilityService
         }

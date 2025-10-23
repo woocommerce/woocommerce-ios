@@ -626,6 +626,55 @@ struct BookingStoreTests {
 
     // MARK: - synchronizeResources
 
+    @Test func synchronizeResources_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() async throws {
+        // Given
+        remote.whenFetchingResources(thenReturn: .success([]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasNextPage = try result.get()
+        #expect(hasNextPage == false)
+    }
+
+    @Test func synchronizeResources_returns_true_for_hasNextPage_when_number_of_retrieved_results_equals_pageSize() async throws {
+        // Given
+        let resources = Array(repeating: BookingResource.fake(), count: defaultPageSize)
+        remote.whenFetchingResources(thenReturn: .success(resources))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasNextPage = try result.get()
+        #expect(hasNextPage == true)
+    }
+
     @Test func synchronizeResources_stores_resources_upon_success() async throws {
         // Given
         let resource = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 123)

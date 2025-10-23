@@ -973,7 +973,7 @@ public extension StorageType {
         let descriptor = NSSortDescriptor(keyPath: \BookingResource.resourceID, ascending: false)
         return allObjects(ofType: BookingResource.self, matching: predicate, sortedBy: [descriptor])
     }
-    
+
     /// Retrieves the store booking resource
     func loadBookingResource(siteID: Int64, resourceID: Int64) -> BookingResource? {
         let predicate = \BookingResource.resourceID == resourceID && \BookingResource.siteID == siteID

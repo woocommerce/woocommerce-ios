@@ -277,6 +277,7 @@ public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
 public typealias StorageBlazeTargetTopic = Storage.BlazeTargetTopic
 // periphery: ignore
 public typealias StorageBooking = Storage.Booking
+public typealias StorageBookingResource = Storage.BookingResource
 public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer

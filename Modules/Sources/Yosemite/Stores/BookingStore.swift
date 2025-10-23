@@ -261,7 +261,7 @@ private extension BookingStore {
     func synchronizeResources(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int,
-                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let resources = try await remote.fetchResources(
@@ -273,7 +273,8 @@ private extension BookingStore {
                 await upsertBookingResourcesInBackground(siteID: siteID,
                                                          readOnlyBookingResources: resources)
 
-                onCompletion(.success(()))
+                let hasNextPage = resources.count == pageSize
+                onCompletion(.success(hasNextPage))
             } catch {
                 onCompletion(.failure(error))
             }

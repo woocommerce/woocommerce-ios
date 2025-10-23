@@ -5,16 +5,18 @@ import protocol NetworkingCore.Network
 /// Determines whether an order is eligible for card present payment or not
 ///
 public final class OrderCardPresentPaymentEligibilityStore: Store {
-    private let stores: () -> StoresManager
-    private lazy var siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(stores: stores())
+    private let currentSite: () -> Site?
+    private lazy var siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(
+        currentSite: currentSite
+    )
 
     public init(
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
         network: Network,
-        stores: @escaping () -> StoresManager
+        currentSite: @escaping () -> Site?
     ) {
-        self.stores = stores
+        self.currentSite = currentSite
         super.init(
             dispatcher: dispatcher,
             storageManager: storageManager,

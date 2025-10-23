@@ -5,6 +5,10 @@ import Yosemite
 
 extension CIABEligibilityChecker {
     convenience init() {
-        self.init(stores: ServiceLocator.stores)
+        self.init(
+            currentSite: {
+                return ServiceLocator.stores.sessionManager.defaultSite
+            }
+        )
     }
 }

@@ -1,16 +1,18 @@
 import Foundation
 
 public final class CIABEligibilityChecker {
-    public let stores: StoresManager
+    public typealias ObtainSiteClosure = () -> Site?
 
-    public init(stores: StoresManager) {
-        self.stores = stores
+    public let currentSite: ObtainSiteClosure
+
+    public init(currentSite: @escaping ObtainSiteClosure) {
+        self.currentSite = currentSite
     }
 }
 
 extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     public var isCurrentSiteCIAB: Bool {
-        guard let currentSite = stores.sessionManager.defaultSite else {
+        guard let currentSite = currentSite() else {
             return false
         }
         return isSiteCIAB(currentSite)

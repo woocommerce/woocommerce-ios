@@ -25,6 +25,10 @@ public protocol BookingsRemoteProtocol {
 
     func fetchResource(resourceID: Int64,
                        siteID: Int64) async throws -> BookingResource?
+
+    func fetchResources(for siteID: Int64,
+                        pageNumber: Int,
+                        pageSize: Int) async throws -> [BookingResource]
 }
 
 /// Booking: Remote Endpoints
@@ -130,6 +134,37 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         )
 
         let mapper = BookingResourceMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Retrieves all of the `BookingResources` available.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote booking resources.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of resources to be retrieved per page.
+    ///
+    public func fetchResources(
+        for siteID: Int64,
+        pageNumber: Int = Default.pageNumber,
+        pageSize: Int = Default.pageSize
+    ) async throws -> [BookingResource] {
+        let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+
+        let path = Path.resources
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+        let mapper = ListMapper<BookingResource>(siteID: siteID)
 
         return try await enqueue(request, mapper: mapper)
     }

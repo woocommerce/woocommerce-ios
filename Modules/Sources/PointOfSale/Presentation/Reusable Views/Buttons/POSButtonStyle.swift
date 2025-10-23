@@ -38,13 +38,21 @@ struct POSFilledButtonStyle: ButtonStyle {
 /// Outlined button style in POS.
 struct POSOutlinedButtonStyle: ButtonStyle {
     private let size: POSButtonSize
+    private let state: POSButtonState
 
-    init(size: POSButtonSize) {
+    init(size: POSButtonSize, isLoading: Bool = false) {
         self.size = size
+        self.state = isLoading ? .loading : .idle
+    }
+
+    init(size: POSButtonSize, state: POSButtonState) {
+        self.size = size
+        self.state = state
     }
 
     func makeBody(configuration: Configuration) -> some View {
-        POSButtonStyleInternal(configuration: configuration, variant: .outlined, size: size, state: .idle)
+        POSButtonStyleInternal(configuration: configuration, variant: .outlined, size: size, state: state)
+            .disabled(state != .idle)
     }
 }
 

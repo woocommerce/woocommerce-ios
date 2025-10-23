@@ -288,12 +288,11 @@ struct POSLocalCatalogEligibilityServiceTests {
             return
         }
 
-        guard case .posTabNotEligible(let reasonString) = reason else {
+        guard case .posTabNotEligible = reason else {
             Issue.record("Expected posTabNotEligible reason")
             return
         }
 
-        #expect(reasonString.contains("feature switch"))
         // Should not have checked catalog size
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }

@@ -36,7 +36,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
 
     var criteria: Filters {
         let teamMember = teamMemberFilterViewModel.selectedValue as? BookingResource ?? nil
-        let product = productFilterViewModel.selectedValue as? FilterBookingsByProduct ?? nil
+        let product = productFilterViewModel.selectedValue as? BookingProductFilter ?? nil
         let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
         let attendanceStatus = attendanceStatusFilterViewModel.selectedValue as? BookingAttendanceStatus ?? nil
         let paymentStatus = paymentStatusFilterViewModel.selectedValue as? BookingStatus ?? nil
@@ -77,7 +77,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let clearedTeamMember: BookingResource? = nil
         teamMemberFilterViewModel.selectedValue = clearedTeamMember
 
-        let clearedProduct: FilterBookingsByProduct? = nil
+        let clearedProduct: BookingProductFilter? = nil
         productFilterViewModel.selectedValue = clearedProduct
 
         let clearedCustomer: CustomerFilter? = nil
@@ -98,7 +98,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     struct Filters: Equatable, HumanReadable {
 
         let teamMember: BookingResource?
-        let product: FilterBookingsByProduct?
+        let product: BookingProductFilter?
         let attendanceStatus: BookingAttendanceStatus?
         let paymentStatus: BookingStatus?
         let customer: CustomerFilter?
@@ -117,7 +117,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         }
 
         init(teamMember: BookingResource?,
-             product: FilterBookingsByProduct?,
+             product: BookingProductFilter?,
              attendanceStatus: BookingAttendanceStatus?,
              paymentStatus: BookingStatus?,
              customer: CustomerFilter?,
@@ -260,7 +260,7 @@ extension BookingStatus: FilterType {
     }
 }
 
-extension FilterBookingsByProduct: FilterType {
+extension BookingProductFilter: FilterType {
     /// The user-facing description of the filter value.
     var description: String { name }
 

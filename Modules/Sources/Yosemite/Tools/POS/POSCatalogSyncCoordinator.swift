@@ -325,15 +325,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
 private extension POSCatalogSyncCoordinator {
     func emitSyncState(_ state: POSCatalogSyncState) {
-        // Extract siteID from state for caching
         let siteID: Int64 = switch state {
-        case .syncStarted(let id, _):
-            id
-        case .syncCompleted(let id):
-            id
-        case .syncFailed(let id, _):
-            id
-        case .syncNeverDone(let id):
+        case .syncStarted(let id, _), .syncCompleted(let id), .syncFailed(let id, _), .syncNeverDone(let id):
             id
         }
 

@@ -270,6 +270,10 @@ struct POSCatalogSyncCoordinatorTests {
             #expect(error == POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
         }
 
+        let currentState = await sut.lastFullSyncState(for: sampleSiteID)
+        let isSyncStarted: Bool = if case .syncStarted = currentState { true } else { false }
+        #expect(isSyncStarted)
+
         // Cleanup - resume the first sync and wait for it to complete
         mockSyncService.resumeBlockedSync()
         _ = try await firstSyncTask.value
@@ -688,6 +692,56 @@ struct POSCatalogSyncCoordinatorTests {
         await #expect(throws: expectedError) {
             try await sut.performSmartSync(for: sampleSiteID)
         }
+    }
+
+    // MARK: - Full Sync State Monitoring Tests
+
+    @Test func lastFullSyncState_returns_syncNeverDone_when_never_synced() async throws {
+        // Given - no previous sync for this site
+        // When - query state
+        let state = await sut.lastFullSyncState(for: sampleSiteID)
+
+        // Then - should return syncNeverDone
+        #expect(state == .syncNeverDone(siteID: sampleSiteID))
+    }
+
+    @Test func lastFullSyncState_returns_syncCompleted_when_synced_before() async throws {
+        // Given - previous sync exists
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-3600))
+
+        // When - query state
+        let state = await sut.lastFullSyncState(for: sampleSiteID)
+
+        // Then - should return syncCompleted
+        #expect(state == .syncCompleted(siteID: sampleSiteID))
+    }
+
+    @Test func fullSyncStateStream_emits_events_during_sync() async throws {
+        // Given
+        let expectedCatalog = POSCatalog(products: [], variations: [], syncDate: .now)
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
+
+        // When - start sync and stream collection concurrently
+        async let syncResult: Void = sut.performFullSync(for: sampleSiteID)
+
+        var receivedEvents: [POSCatalogSyncState] = []
+        let collectTask = Task {
+            for await state in sut.fullSyncStateStream {
+                receivedEvents.append(state)
+                // Stop after getting completion
+                if case .syncCompleted(let id) = state, id == self.sampleSiteID {
+                    break
+                }
+            }
+        }
+
+        // Wait for sync and stream collection
+        try await syncResult
+        _ = await collectTask.value
+
+        // Then - should emit syncStarted and syncCompleted with correct siteID
+        #expect(receivedEvents.contains(where: { if case .syncStarted(let id, _) = $0 { return id == self.sampleSiteID } else { return false } }))
+        #expect(receivedEvents.contains { $0 == .syncCompleted(siteID: self.sampleSiteID) })
     }
 
     // MARK: - Helper Methods

@@ -29,6 +29,7 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import enum Yosemite.POSCatalogSyncState
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
@@ -626,6 +627,15 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
         // Simulates a smart sync operation with a 1 second delay.
         try await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+
+    let fullSyncStateStream: AsyncStream<POSCatalogSyncState> = {
+        let (stream, _) = AsyncStream<POSCatalogSyncState>.makeStream()
+        return stream
+    }()
+
+    func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+        return .syncCompleted(siteID: siteID)
     }
 }
 

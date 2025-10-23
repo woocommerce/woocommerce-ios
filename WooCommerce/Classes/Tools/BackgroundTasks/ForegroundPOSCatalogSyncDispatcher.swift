@@ -162,6 +162,8 @@ final actor ForegroundPOSCatalogSyncDispatcher {
                     DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Invalid max age for site \(siteID)")
                 case .catalogSizeCheckFailed(siteID: let siteID):
                     DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Catalog size check failed for site \(siteID)")
+                case .requestCancelled:
+                    DDLogInfo("ℹ️ ForegroundPOSCatalogSyncDispatcher: Sync request was cancelled for site \(siteID)")
                 }
             } catch {
                 DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Sync failed for site \(siteID): \(error)")

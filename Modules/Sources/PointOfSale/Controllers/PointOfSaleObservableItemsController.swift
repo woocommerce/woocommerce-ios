@@ -94,7 +94,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
             refreshState = .idle
         } catch let error as POSCatalogSyncError {
             switch error {
-            case .syncAlreadyInProgress:
+            case .syncAlreadyInProgress, .requestCancelled:
                 refreshState = .idle
             default:
                 refreshState = .error(error)

@@ -2,6 +2,7 @@
 import Foundation
 import Storage
 import GRDB
+import Alamofire
 
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync if applicable for the specified site
@@ -49,6 +50,7 @@ public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
     case catalogSizeCheckFailed(siteID: Int64)
+    case requestCancelled
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
@@ -99,7 +101,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
-        _ = try await fullSyncService.startFullSync(for: siteID)
+        do {
+            _ = try await fullSyncService.startFullSync(for: siteID)
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        }
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
@@ -190,9 +196,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting incremental sync for site \(siteID)")
 
-        try await incrementalSyncService.startIncrementalSync(for: siteID,
-                                                              lastFullSyncDate: lastFullSyncDate,
-                                                              lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
+        do {
+            try await incrementalSyncService.startIncrementalSync(for: siteID,
+                                                                  lastFullSyncDate: lastFullSyncDate,
+                                                                  lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        }
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
     }
@@ -226,22 +236,26 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     ///   - siteID: The site ID to check
     ///   - maxCatalogSize: Maximum allowed catalog size for syncing
     /// - Returns: True if catalog size is within limit
-    /// - Throws: POSCatalogSyncError.catalogSizeCheckFailed if the size check fails
+    /// - Throws: POSCatalogSyncError.catalogSizeCheckFailed if the size check fails, or requestCancelled if
+    ///           the request was explicitly cancelled
     private func isCatalogSizeWithinLimit(for siteID: Int64, maxCatalogSize: Int) async throws -> Bool {
-        guard let catalogSize = try? await catalogSizeChecker.checkCatalogSize(for: siteID) else {
+        do {
+            let catalogSize = try await catalogSizeChecker.checkCatalogSize(for: siteID)
+            guard catalogSize.totalCount <= maxCatalogSize else {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), " +
+                          "greater than \(maxCatalogSize), should not sync.")
+                return false
+            }
+
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), with " +
+                      "\(catalogSize.productCount) products and \(catalogSize.variationCount) variations")
+            return true
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator: Could not get catalog size for site \(siteID)")
             throw POSCatalogSyncError.catalogSizeCheckFailed(siteID: siteID)
         }
-
-        guard catalogSize.totalCount <= maxCatalogSize else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), " +
-                      "greater than \(maxCatalogSize), should not sync.")
-            return false
-        }
-
-        DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), with " +
-                  "\(catalogSize.productCount) products and \(catalogSize.variationCount) variations")
-        return true
     }
 
     private func lastFullSyncDate(for siteID: Int64) async -> Date? {

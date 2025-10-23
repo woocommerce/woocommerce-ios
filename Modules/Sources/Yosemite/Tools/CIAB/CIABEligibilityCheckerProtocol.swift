@@ -1,5 +1,6 @@
 import Foundation
 
+/// periphery: ignore
 public protocol CIABEligibilityCheckerProtocol {
     var isCurrentSiteCIAB: Bool { get }
 

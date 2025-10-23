@@ -53,6 +53,15 @@ public enum BookingAction: Action {
                        resourceID: Int64,
                        onCompletion: (Result<BookingResource, Error>) -> Void)
 
+    /// Synchronizes booking resources matching the specified criteria.
+    ///
+    /// - Parameter onCompletion: called when sync completes, returns an error in case of a failure or empty in case of success.
+    ///
+    case synchronizeResources(siteID: Int64,
+                             pageNumber: Int,
+                             pageSize: Int = BookingsRemote.Default.pageSize,
+                             onCompletion: (Result<Void, Error>) -> Void)
+
     /// Updates a booking attendance status.
     ///
     /// - Parameter siteID: The site ID of the booking.

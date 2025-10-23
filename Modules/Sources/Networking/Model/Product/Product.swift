@@ -136,6 +136,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Applicable with variable products and Min/Max Quantities extension only.
     public let combineVariationQuantities: Bool?
 
+    /// Whether the product is allowed to be sold in POS
+    public let posAllowed: Bool?
+
     public let customFields: [MetaData]
 
     /// Computed Properties
@@ -267,6 +270,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
                 combineVariationQuantities: Bool?,
+                posAllowed: Bool?,
                 customFields: [MetaData]) {
         self.siteID = siteID
         self.productID = productID
@@ -345,6 +349,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
+        self.posAllowed = posAllowed
         self.customFields = customFields
     }
 
@@ -565,6 +570,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // Subscription properties
         let subscription = try? metaDataExtractor.extractProductSubscription()
 
+        // POS properties
+        let posAllowed = metaDataExtractor.extractPOSAllowed()
+        if let posAllowed = posAllowed {
+            DDLogInfo("🍍 POS Metadata: Product [\(productID) - \(name)] posAllowed=\(posAllowed)")
+        }
+
         // Min/Max Quantities properties
         let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
         let maxAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .maxAllowedQuantity)
@@ -652,6 +663,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   maxAllowedQuantity: maxAllowedQuantity,
                   groupOfQuantity: groupOfQuantity,
                   combineVariationQuantities: combineVariationQuantities,
+                  posAllowed: posAllowed,
                   customFields: customFields)
     }
 

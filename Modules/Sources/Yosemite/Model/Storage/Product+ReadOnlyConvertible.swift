@@ -197,6 +197,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
                        combineVariationQuantities: combineVariationQuantities?.boolValue,
+                       posAllowed: nil,
                        customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID })
     }
 

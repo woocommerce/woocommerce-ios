@@ -973,6 +973,7 @@ extension Networking.Product {
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
             combineVariationQuantities: .fake(),
+            posAllowed: .fake(),
             customFields: .fake()
         )
     }

@@ -59,6 +59,24 @@ struct ProductMetadataExtractor {
         return keyValueMetadata.valueAsString(forKey: key)
     }
 
+    /// Extracts the POS allowed status from product metadata.
+    /// Returns `true` if "yes", `false` if "no", `nil` if not present or invalid.
+    ///
+    func extractPOSAllowed() -> Bool? {
+        guard let value = extractStringValue(forKey: Constants.posAllowedKey) else {
+            return nil
+        }
+
+        switch value.lowercased() {
+        case "yes":
+            return true
+        case "no":
+            return false
+        default:
+            return nil
+        }
+    }
+
     /// Filters product metadata using the provided prefix.
     ///
     private func filterMetadata(with prefix: String) -> [MetaData] {
@@ -100,6 +118,7 @@ struct ProductMetadataExtractor {
 private extension ProductMetadataExtractor {
     enum Constants {
         static let subscriptionPrefix = "_subscription"
+        static let posAllowedKey = "_wc_pos_allowed"
     }
 }
 

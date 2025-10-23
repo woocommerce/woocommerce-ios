@@ -30,11 +30,11 @@ struct POSConnectivityView: View {
         HStack(spacing: Constants.spacing) {
             Image(systemName: "wifi.exclamationmark")
                 .foregroundColor(Color.posOnSecondaryContainer)
-                .font(.posBodySmallBold)
+                .font(.posBodySmallBold())
 
             Text(Localization.title)
                 .foregroundColor(Color.posOnSecondaryContainer)
-                .font(.posBodySmallBold)
+                .font(.posBodySmallBold())
         }
         .padding(.vertical, Constants.verticalPadding)
         .padding(.horizontal, Constants.horizontalPadding)

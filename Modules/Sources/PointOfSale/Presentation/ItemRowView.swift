@@ -131,7 +131,7 @@ private extension ItemRowView {
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
         static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
-        static let itemTitleFont: POSFontStyle = .posBodySmallBold
+        static let itemTitleFont: POSFontStyle = .posBodySmallBold()
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
         static let titleSubtitleLineLimit: Int = 4

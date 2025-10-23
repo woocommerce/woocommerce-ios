@@ -234,7 +234,7 @@ private struct POSOrderRowView: View {
     private var orderHeaderRow: some View {
         HStack(alignment: .center) {
             Text(POSOrderListView.Localization.orderTitle(order.number))
-                .font(.posBodySmallBold)
+                .font(.posBodySmallBold())
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 

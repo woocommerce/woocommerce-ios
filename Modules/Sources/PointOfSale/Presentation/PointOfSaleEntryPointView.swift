@@ -207,15 +207,4 @@ public struct PointOfSaleEntryPointView: View {
     )
 }
 
-@MainActor
-final class POSLocalCatalogEligibilityServicePreview: POSLocalCatalogEligibilityServiceProtocol {
-    var eligibilityState: POSLocalCatalogEligibilityState {
-        .eligible
-    }
-
-    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
-        .eligible
-    }
-}
-
 #endif

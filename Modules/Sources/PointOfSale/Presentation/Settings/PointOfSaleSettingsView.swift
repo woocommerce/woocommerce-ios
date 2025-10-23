@@ -3,7 +3,6 @@ import SwiftUI
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posFeatureFlags) private var featureFlags
     @State private var selection: SidebarNavigation? = .store
 
     let settingsController: PointOfSaleSettingsControllerProtocol

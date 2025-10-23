@@ -11,6 +11,7 @@ import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
 import enum Yosemite.FeatureFlagAction
 import class Yosemite.SiteAddress
+import enum Yosemite.POSCountryCurrencyValidator
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
@@ -106,20 +107,19 @@ private extension POSTabVisibilityChecker {
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
-        let supportedCountries: [CountryCode] = [.US, .GB]
-        let supportedCurrencies: [CountryCode: [CurrencyCode]] = [.US: [.USD],
-                                                                  .GB: [.GBP]]
+        let validationResult = POSCountryCurrencyValidator.validate(countryCode: countryCode, currencyCode: currencyCode)
 
-        // Checks country first.
-        guard supportedCountries.contains(countryCode) else {
-            return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
+        switch validationResult {
+        case .eligible:
+            return .eligible
+        case .ineligible(let reason):
+            switch reason {
+            case .unsupportedCountry(let supportedCountries):
+                return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
+            case .unsupportedCurrency(let countryCode, let supportedCurrencies):
+                return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrencies))
+            }
         }
-
-        let supportedCurrenciesForCountry = supportedCurrencies[countryCode] ?? []
-        guard supportedCurrenciesForCountry.contains(currencyCode) else {
-            return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrenciesForCountry))
-        }
-        return .eligible
     }
 }
 

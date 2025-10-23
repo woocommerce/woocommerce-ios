@@ -4,13 +4,13 @@ import SwiftUI
 struct CurrencyMismatchBanner: View {
     let siteCurrency: String
     let accountCurrency: String
-    
+
     /// Closure invoked when the dismiss button is tapped
     var dismissAction: () -> Void = {}
-    
+
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
-    
+
     var body: some View {
         Group {
             HStack(alignment: .top, spacing: Layout.horizontalSpacing) {
@@ -49,11 +49,14 @@ private extension CurrencyMismatchBanner {
         )
         static let message = NSLocalizedString(
             "currencyMismatchBanner.message",
-            value: "Your site uses %1$@ but your payment account uses %2$@. This may cause issues with payments. Please update your account currency to match your site's currency in your payment gateway settings.",
+            value: """
+                Your site uses %1$@ but your payment account uses %2$@. This may cause issues with payments. \
+                Please update your account currency to match your site's currency in your payment gateway settings.
+                """,
             comment: "Message of the currency mismatch warning banner. %1$@ is the site currency code (e.g. USD), %2$@ is the account currency code (e.g. GBP)."
         )
     }
-    
+
     enum Layout {
         static let padding = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let iconDimension = CGFloat(20)

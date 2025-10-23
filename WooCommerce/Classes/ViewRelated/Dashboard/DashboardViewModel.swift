@@ -206,7 +206,7 @@ final class DashboardViewModel: ObservableObject {
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
 
         await blazeLocalNotificationScheduler.scheduleNoCampaignReminder()
-        
+
         await checkCurrencyMismatch()
     }
 
@@ -798,7 +798,7 @@ private extension DashboardViewModel {
         }
 
         let siteCurrencyCode = ServiceLocator.currencySettings.currencyCode.rawValue
-        
+
         // Try to get payment gateway account currency
         guard let accountCurrencyCode = await loadPaymentGatewayAccountCurrency() else {
             showCurrencyMismatchBanner = false
@@ -810,7 +810,7 @@ private extension DashboardViewModel {
             siteCurrency = siteCurrencyCode
             accountCurrency = accountCurrencyCode
             showCurrencyMismatchBanner = true
-            
+
             // Log the mismatch for analytics/debugging
             DDLogWarn("⚠️ Currency mismatch detected: Site currency \(siteCurrencyCode) differs from payment account currency \(accountCurrencyCode)")
         } else {
@@ -833,7 +833,7 @@ private extension DashboardViewModel {
                     continuation.resume(returning: nil)
                     return
                 }
-                
+
                 // Try to get the selected payment gateway account
                 let selectedAccountAction = CardPresentPaymentAction.selectedPaymentGatewayAccount { account in
                     if let account = account {

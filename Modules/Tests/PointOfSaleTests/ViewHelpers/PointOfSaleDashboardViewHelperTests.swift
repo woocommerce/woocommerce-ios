@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Testing
 import enum WooFoundationCore.CurrencyCode
+import Yosemite
 @testable import PointOfSale
 
 struct PointOfSaleDashboardViewHelperTests {
@@ -17,7 +18,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -34,7 +36,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -53,7 +56,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -78,7 +82,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -97,7 +102,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -114,7 +120,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -144,7 +151,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -152,6 +160,25 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     // MARK: - Priority Tests
+
+    @Test func determineViewState_catalogSync_takes_priority_over_all() async throws {
+        // Given - initial sync should return catalogSyncing regardless of other states
+        let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .compact
+        let catalogSyncState: POSCatalogSyncState = .syncStarted(siteID: 1, isInitialSync: true)
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: catalogSyncState
+        )
+
+        // Then
+        #expect(result == .catalogSyncing)
+    }
 
     @Test func determineViewState_horizontalSizeClass_takes_priority_over_eligibility_state() async throws {
         // Given - compact size class should return unsupportedWidth regardless of eligibility
@@ -163,7 +190,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -180,7 +208,8 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
@@ -197,11 +226,111 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: nil
         )
 
         // Then
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
+    }
+
+    // MARK: - Catalog Sync State Tests
+
+    @Test func determineViewState_when_catalogSync_with_initialSync_returns_catalogSyncing() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .regular
+        let catalogSyncState: POSCatalogSyncState = .syncStarted(siteID: 1, isInitialSync: true)
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: catalogSyncState
+        )
+
+        // Then
+        #expect(result == .catalogSyncing)
+    }
+
+    @Test func determineViewState_when_catalogSync_without_initialSync_continues_to_items() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .regular
+        let catalogSyncState: POSCatalogSyncState = .syncStarted(siteID: 1, isInitialSync: false)
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: catalogSyncState
+        )
+
+        // Then
+        #expect(result == .content)
+    }
+
+    @Test func determineViewState_when_syncNeverDone_returns_catalogSyncing() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .regular
+        let catalogSyncState: POSCatalogSyncState = .syncNeverDone(siteID: 1)
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: catalogSyncState
+        )
+
+        // Then
+        #expect(result == .catalogSyncing)
+    }
+
+    @Test func determineViewState_when_syncCompleted_checks_items_state() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .regular
+        let catalogSyncState: POSCatalogSyncState = .syncCompleted(siteID: 1)
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: catalogSyncState
+        )
+
+        // Then
+        #expect(result == .content)
+    }
+
+    @Test func determineViewState_when_syncFailed_returns_error() async throws {
+        // Given
+        let eligibilityState: POSEligibilityState = .eligible
+        let itemsContainerState: ItemsContainerState = .content
+        let horizontalSizeClass: UserInterfaceSizeClass = .regular
+        let testError = NSError(domain: "test", code: 1)
+        let catalogSyncState: POSCatalogSyncState = .syncFailed(siteID: 1, error: testError)
+
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: eligibilityState,
+            itemsContainerState: itemsContainerState,
+            horizontalSizeClass: horizontalSizeClass,
+            catalogSyncState: catalogSyncState
+        )
+
+        // Then
+        let isError: Bool = if case .error = result { true } else { false }
+        #expect(isError)
     }
 
     // MARK: - Floating Control Tests
@@ -218,9 +347,10 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test(arguments: [
         (PointOfSaleDashboardView.ViewState.loading, false),
-        (PointOfSaleDashboardView.ViewState.ineligible(reason: .featureSwitchDisabled), false)
+        (PointOfSaleDashboardView.ViewState.ineligible(reason: .featureSwitchDisabled), false),
+        (PointOfSaleDashboardView.ViewState.catalogSyncing, false)
     ])
-    func showsFloatingControl_when_loading_or_ineligible_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
+    func showsFloatingControl_when_loading_ineligible_or_catalogSyncing_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
         // When & Then
         #expect(viewState.showsFloatingControl == expected)
     }

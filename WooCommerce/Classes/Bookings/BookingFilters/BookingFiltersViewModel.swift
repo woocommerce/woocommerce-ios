@@ -35,12 +35,12 @@ final class BookingFiltersViewModel: FilterListViewModel {
     }
 
     var criteria: Filters {
-        let teamMember = teamMemberFilterViewModel.selectedValue as? BookingResource ?? nil
-        let product = productFilterViewModel.selectedValue as? FilterBookingsByProduct ?? nil
-        let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
-        let attendanceStatus = attendanceStatusFilterViewModel.selectedValue as? BookingAttendanceStatus ?? nil
-        let paymentStatus = paymentStatusFilterViewModel.selectedValue as? BookingStatus ?? nil
-        let dateRange = dateTimeFilterViewModel.selectedValue as? BookingDateRangeFilter ?? nil
+        let teamMember = teamMemberFilterViewModel.selectedValue as? BookingResource
+        let product = productFilterViewModel.selectedValue as? BookingProductFilter
+        let customer = customerFilterViewModel.selectedValue as? CustomerFilter
+        let attendanceStatus = attendanceStatusFilterViewModel.selectedValue as? BookingAttendanceStatus
+        let paymentStatus = paymentStatusFilterViewModel.selectedValue as? BookingStatus
+        let dateRange = dateTimeFilterViewModel.selectedValue as? BookingDateRangeFilter
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
         return Filters(teamMember: teamMember,
@@ -74,23 +74,12 @@ final class BookingFiltersViewModel: FilterListViewModel {
     }
 
     func clearAll() {
-        let clearedTeamMember: BookingResource? = nil
-        teamMemberFilterViewModel.selectedValue = clearedTeamMember
-
-        let clearedProduct: FilterBookingsByProduct? = nil
-        productFilterViewModel.selectedValue = clearedProduct
-
-        let clearedCustomer: CustomerFilter? = nil
-        customerFilterViewModel.selectedValue = clearedCustomer
-
-        let clearedAttendanceStatus: BookingAttendanceStatus? = nil
-        attendanceStatusFilterViewModel.selectedValue = clearedAttendanceStatus
-
-        let clearedPaymentStatus: BookingStatus? = nil
-        paymentStatusFilterViewModel.selectedValue = clearedPaymentStatus
-
-        let clearedDateRange: BookingDateRangeFilter? = nil
-        dateTimeFilterViewModel.selectedValue = clearedDateRange
+        teamMemberFilterViewModel.selectedValue = BookingResource?.none
+        productFilterViewModel.selectedValue = BookingProductFilter?.none
+        customerFilterViewModel.selectedValue = CustomerFilter?.none
+        attendanceStatusFilterViewModel.selectedValue = BookingAttendanceStatus?.none
+        paymentStatusFilterViewModel.selectedValue = BookingStatus?.none
+        dateTimeFilterViewModel.selectedValue = BookingDateRangeFilter?.none
     }
 
     typealias Criteria = Filters
@@ -98,7 +87,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     struct Filters: Equatable, HumanReadable {
 
         let teamMember: BookingResource?
-        let product: FilterBookingsByProduct?
+        let product: BookingProductFilter?
         let attendanceStatus: BookingAttendanceStatus?
         let paymentStatus: BookingStatus?
         let customer: CustomerFilter?
@@ -117,7 +106,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         }
 
         init(teamMember: BookingResource?,
-             product: FilterBookingsByProduct?,
+             product: BookingProductFilter?,
              attendanceStatus: BookingAttendanceStatus?,
              paymentStatus: BookingStatus?,
              customer: CustomerFilter?,
@@ -260,7 +249,7 @@ extension BookingStatus: FilterType {
     }
 }
 
-extension FilterBookingsByProduct: FilterType {
+extension BookingProductFilter: FilterType {
     /// The user-facing description of the filter value.
     var description: String { name }
 

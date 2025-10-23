@@ -156,15 +156,21 @@ private extension POSTabCoordinator {
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
             // Check local catalog eligibility before initializing infrastructure
-            let localFeatureFlagEnabled = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
-            let eligibilityService = await POSLocalCatalogEligibilityService(
-                siteID: siteID,
-                catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
-                                                          selectedSite: defaultSitePublisher,
-                                                          appPasswordSupportState: isAppPasswordSupported
-                ),
-                isFeatureFlagEnabled: localFeatureFlagEnabled
-            )
+            // Try to use pre-created service from eligibility checker, otherwise create it now
+            let eligibilityService: POSLocalCatalogEligibilityServiceProtocol
+            if let preCreatedService = (eligibilityChecker as? POSTabEligibilityChecker)?.localCatalogEligibilityService {
+                eligibilityService = preCreatedService
+            } else {
+                let localFeatureFlagEnabled = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+                eligibilityService = await POSLocalCatalogEligibilityService(
+                    siteID: siteID,
+                    catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
+                                                              selectedSite: defaultSitePublisher,
+                                                              appPasswordSupportState: isAppPasswordSupported
+                    ),
+                    isFeatureFlagEnabled: localFeatureFlagEnabled
+                )
+            }
             let isLocalCatalogEligible = eligibilityService.eligibilityState == .eligible
 
             // Only initialize local catalog infrastructure if eligible

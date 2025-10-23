@@ -1,7 +1,14 @@
 import SwiftUI
 
 struct POSCatalogLoadingView: View {
-    let onExit: () -> Void
+    private let animation: POSLoadingAnimation
+    private let onExit: () -> Void
+
+    init(animation: POSLoadingAnimation,
+         onExit: @escaping () -> Void) {
+        self.animation = animation
+        self.onExit = onExit
+    }
 
     var body: some View {
         HStack(alignment: .center) {
@@ -10,6 +17,7 @@ struct POSCatalogLoadingView: View {
                 Spacer()
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle())
+                    .matchedGeometryEffect(id: animation.progressTransitionId, in: animation.namespace, properties: .position)
                 Spacer().frame(height: POSSpacing.large * 2)
                 Text(Localization.title)
                     .font(.posHeadingBold)
@@ -38,7 +46,8 @@ struct POSCatalogLoadingView: View {
 }
 
 #Preview {
-    POSCatalogLoadingView {}
+    @Previewable @Namespace var namespace
+    POSCatalogLoadingView(animation: .init(namespace: namespace)) {}
 }
 
 

@@ -837,4 +837,47 @@ private extension DashboardViewModelTests {
         newOrder.update(with: readOnlyOrder)
         storage.saveIfNeeded()
     }
+
+    // MARK: - Currency Mismatch Tests
+
+    @MainActor
+    func test_dismissing_currency_mismatch_banner_persists_dismissal() {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           analytics: analytics)
+        
+        // When
+        viewModel.dismissCurrencyMismatchBanner()
+        
+        // Then
+        XCTAssertFalse(viewModel.showCurrencyMismatchBanner)
+        XCTAssertTrue(userDefaults.bool(forKey: UserDefaults.Key.currencyMismatchBannerDismissed.rawValue))
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "dashboard_currency_mismatch_banner_dismissed")
+    }
+    
+    @MainActor
+    func test_currency_mismatch_banner_does_not_show_when_previously_dismissed() async {
+        // Given
+        userDefaults.set(true, forKey: .currencyMismatchBannerDismissed)
+        
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults)
+        
+        // When
+        await viewModel.checkCurrencyMismatch()
+        
+        // Then
+        XCTAssertFalse(viewModel.showCurrencyMismatchBanner)
+    }
+    
+    func insertPaymentGatewayAccount(_ account: PaymentGatewayAccount) {
+        let newAccount = storage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.update(with: account)
+        storage.saveIfNeeded()
+    }
 }

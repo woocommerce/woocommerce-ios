@@ -149,12 +149,14 @@ private extension POSTabCoordinator {
             if let preCreatedService = (eligibilityChecker as? POSTabEligibilityChecker)?.localCatalogEligibilityService {
                 eligibilityService = preCreatedService
             } else {
+                // Fallback: assume we're POS eligible and create service
                 eligibilityService = await POSLocalCatalogEligibilityService(
                     siteID: siteID,
                     catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
                                                               selectedSite: defaultSitePublisher,
                                                               appPasswordSupportState: isAppPasswordSupported
-                    )
+                    ),
+                    posTabEligibilityState: .eligible
                 )
             }
 

@@ -208,7 +208,7 @@ public struct PointOfSaleEntryPointView: View {
 }
 
 @MainActor
-final class POSLocalCatalogEligibilityServicePreview: POSLocalCatalogEligibilityServiceProtocol {
+final class POSLocalCatalogEligibilityServicePreview: @MainActor POSLocalCatalogEligibilityServiceProtocol {
     var eligibilityState: POSLocalCatalogEligibilityState {
         .eligible
     }

@@ -61,14 +61,18 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         )
 
         // Create local catalog eligibility service asynchronously in the background
+        // First check POS tab eligibility, then create the catalog eligibility service with that state
         Task { @MainActor in
+            let posEligibility = await self.checkEligibility()
+
             let eligibilityService = await POSLocalCatalogEligibilityService(
                 siteID: siteID,
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: selectedSite,
                     appPasswordSupportState: appPasswordSupport
-                )
+                ),
+                posTabEligibilityState: posEligibility
             )
             self.localCatalogEligibilityService = eligibilityService
         }

@@ -12,6 +12,7 @@ public enum POSLocalCatalogEligibilityState: Equatable {
 
 /// Reasons why local catalog is ineligible
 public enum POSLocalCatalogIneligibleReason: Equatable {
+    case posTabNotEligible
     case featureFlagDisabled
     case catalogSizeTooLarge(totalCount: Int, limit: Int)
     case catalogSizeCheckFailed(underlyingError: String)

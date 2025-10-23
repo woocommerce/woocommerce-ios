@@ -5,13 +5,16 @@ import Experiments
 import protocol PointOfSale.POSLocalCatalogEligibilityServiceProtocol
 import enum PointOfSale.POSLocalCatalogEligibilityState
 import enum PointOfSale.POSLocalCatalogIneligibleReason
+import enum PointOfSale.POSEligibilityState
+import enum PointOfSale.POSIneligibleReason
 
 @MainActor
-final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
+final class POSLocalCatalogEligibilityService: @MainActor POSLocalCatalogEligibilityServiceProtocol {
     private let siteID: Int64
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
     private let featureFlagService: FeatureFlagService
+    private let posTabEligibilityState: POSEligibilityState
 
     // Current eligibility state
     private(set) var eligibilityState: POSLocalCatalogEligibilityState
@@ -21,11 +24,13 @@ final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityService
         siteID: Int64,
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        posTabEligibilityState: POSEligibilityState,
         catalogSizeLimit: Int? = nil
     ) async {
         self.siteID = siteID
         self.catalogSizeChecker = catalogSizeChecker
         self.featureFlagService = featureFlagService
+        self.posTabEligibilityState = posTabEligibilityState
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
 
         // Perform initial check
@@ -34,10 +39,18 @@ final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityService
     }
 
     func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
-        // Check feature flag first - if disabled, no need to check catalog size
+        // Check POS tab eligibility FIRST - no point in checking catalog if POS tab isn't eligible
+        if case .ineligible = posTabEligibilityState {
+            eligibilityState = .ineligible(reason: .posTabNotEligible)
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS tab not eligible for site \(siteID)")
+            return eligibilityState
+        }
+
+        // Check feature flag - if disabled, no need to check catalog size
         let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
         guard isFeatureFlagEnabled else {
             eligibilityState = .ineligible(reason: .featureFlagDisabled)
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flag disabled for site \(siteID)")
             return eligibilityState
         }
 

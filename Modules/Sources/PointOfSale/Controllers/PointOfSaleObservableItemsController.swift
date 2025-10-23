@@ -17,13 +17,12 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol
     private let siteID: Int64
 
-    // Track which items have been loaded at least once
-    private var hasLoadedProducts = false
-    private var hasLoadedVariationsForCurrentParent = false
+    // Track loading and refresh for products and variations
+    private var loadingState: LoadingState = LoadingState()
+    private var refreshState: RefreshState = .idle
 
     // Track current parent for variation state mapping
     private var currentParentItem: POSItem?
-    private var refreshState: RefreshState = .idle
 
     var itemsViewState: ItemsViewState {
         ItemsViewState(
@@ -60,51 +59,35 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
-            // Refresh if there's an error or if items are empty after initial load
-            let shouldRefresh = {
-                if case .error = refreshState {
-                    return true
-                }
-                return hasLoadedProducts && dataSource.productItems.isEmpty
-            }()
-
-            if shouldRefresh {
+            if shouldRefresh(for: base) {
                 await refreshItems(base: base)
             }
-
             dataSource.loadProducts()
-            hasLoadedProducts = true
+            loadingState.productsLoaded = true
+
         case .parent(let parent):
             guard case .variableParentProduct(let parentProduct) = parent else {
                 assertionFailure("Unsupported parent type for loading items: \(parent)")
                 return
             }
 
-            // If switching to a different parent, reset the loaded flag
             if currentParentItem != parent {
                 currentParentItem = parent
-                hasLoadedVariationsForCurrentParent = false
+                loadingState.variationsLoaded = false
             }
 
-            // Refresh if there's an error or if variations are empty after initial load
-            let shouldRefresh = {
-                if case .error = refreshState {
-                    return true
-                }
-                return hasLoadedVariationsForCurrentParent && dataSource.variationItems.isEmpty
-            }()
-
-            if shouldRefresh {
+            if shouldRefresh(for: base) {
                 await refreshItems(base: base)
             }
-
             dataSource.loadVariations(for: parentProduct)
-            hasLoadedVariationsForCurrentParent = true
+            loadingState.variationsLoaded = true
         }
     }
 
     func refreshItems(base: ItemListBaseItem) async {
-        refreshState = .loading
+        if itemsEmpty(for: base) {
+            refreshState = .loading
+        }
 
         do {
             try await catalogSyncCoordinator.performIncrementalSync(for: siteID)
@@ -135,37 +118,93 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 private extension PointOfSaleObservableItemsController {
     var containerState: ItemsContainerState {
         // Use .loading during initial load, .content otherwise
-        if !hasLoadedProducts && dataSource.isLoadingProducts {
+        if !loadingState.productsLoaded && dataSource.isLoadingProducts {
             return .loading
         }
         return .content
     }
 
     var rootState: ItemListState {
-        let items = dataSource.productItems
+        computeItemListState(
+            items: dataSource.productItems,
+            hasLoaded: loadingState.productsLoaded,
+            isLoading: dataSource.isLoadingProducts,
+            error: dataSource.productError,
+            hasMoreItems: dataSource.hasMoreProducts,
+            errorType: PointOfSaleErrorState.errorOnLoadingProducts
+        )
+    }
 
+    var variationStates: [POSItem: ItemListState] {
+        guard let parentItem = currentParentItem else {
+            return [:]
+        }
+
+        let state = computeItemListState(
+            items: dataSource.variationItems,
+            hasLoaded: loadingState.variationsLoaded,
+            isLoading: dataSource.isLoadingVariations,
+            error: dataSource.variationError,
+            hasMoreItems: dataSource.hasMoreVariations,
+            errorType: PointOfSaleErrorState.errorOnLoadingVariations
+        )
+        return [parentItem: state]
+    }
+}
+
+private extension PointOfSaleObservableItemsController {
+    /// Determines if a refresh should be triggered
+    func shouldRefresh(for type: ItemListBaseItem) -> Bool {
+        if case .error = refreshState {
+            return true
+        }
+        return itemsEmpty(for: type)
+    }
+
+    /// Checks if items are loaded but empty
+    func itemsEmpty(for type: ItemListBaseItem) -> Bool {
+        switch type {
+        case .root:
+            return loadingState.productsLoaded && dataSource.productItems.isEmpty
+        case .parent:
+            return loadingState.variationsLoaded && dataSource.variationItems.isEmpty
+        }
+    }
+
+    /// Computes the item list state based on current conditions
+    func computeItemListState(
+        items: [POSItem],
+        hasLoaded: Bool,
+        isLoading: Bool,
+        error: Error?,
+        hasMoreItems: Bool,
+        errorType: (Error) -> PointOfSaleErrorState
+    ) -> ItemListState {
         // Initial state - not yet loaded
-        if !hasLoadedProducts {
+        if !hasLoaded {
             return .initial
         }
 
-        // Loading state - preserve existing items (both for data loading and refresh)
-        if dataSource.isLoadingProducts || refreshState == .loading {
+        // Loading state - preserve existing items
+        if isLoading {
             return .loading(items)
         }
 
+        // Refresh loading with empty items
+        if refreshState == .loading && items.isEmpty {
+            return .loading([])
+        }
+
         // Error state for refresh
-        if case .error(let error) = refreshState {
-            if items.isEmpty {
-                return .error(.errorOnLoadingProducts(error: error))
-            } else {
-                return .inlineError(items, error: .errorOnLoadingProducts(error: error), context: .refresh)
-            }
+        if case .error(let refreshError) = refreshState {
+            return items.isEmpty
+                ? .error(errorType(refreshError))
+                : .inlineError(items, error: errorType(refreshError), context: .refresh)
         }
 
         // Error state for data source observation
-        if let error = dataSource.productError, items.isEmpty {
-            return .error(.errorOnLoadingProducts(error: error))
+        if let error = error, items.isEmpty {
+            return .error(errorType(error))
         }
 
         // Empty state
@@ -174,51 +213,9 @@ private extension PointOfSaleObservableItemsController {
         }
 
         // Loaded state
-        return .loaded(items, hasMoreItems: dataSource.hasMoreProducts)
+        return .loaded(items, hasMoreItems: hasMoreItems)
     }
 
-    var variationStates: [POSItem: ItemListState] {
-        guard let parentItem = currentParentItem else {
-            return [:]
-        }
-
-        let items = dataSource.variationItems
-
-        // Initial state - not yet loaded
-        if !hasLoadedVariationsForCurrentParent {
-            return [parentItem: .initial]
-        }
-
-        // Loading state - preserve existing items (both for data loading and refresh)
-        if dataSource.isLoadingVariations || refreshState == .loading {
-            return [parentItem: .loading(items)]
-        }
-
-        // Error state for refresh
-        if case .error(let error) = refreshState {
-            if items.isEmpty {
-                return [parentItem: .error(.errorOnLoadingVariations(error: error))]
-            } else {
-                return [parentItem: .inlineError(items, error: .errorOnLoadingVariations(error: error), context: .refresh)]
-            }
-        }
-
-        // Error state for data source observation
-        if let error = dataSource.variationError, items.isEmpty {
-            return [parentItem: .error(.errorOnLoadingVariations(error: error))]
-        }
-
-        // Empty state
-        if items.isEmpty {
-            return [parentItem: .empty]
-        }
-
-        // Loaded state
-        return [parentItem: .loaded(items, hasMoreItems: dataSource.hasMoreVariations)]
-    }
-}
-
-private extension PointOfSaleObservableItemsController {
     /// Represents the state of a refresh operation
     enum RefreshState: Equatable {
         case idle
@@ -237,5 +234,11 @@ private extension PointOfSaleObservableItemsController {
                 return false
             }
         }
+    }
+
+    /// Encapsulates loading state for products and variations
+    struct LoadingState {
+        var productsLoaded = false
+        var variationsLoaded = false
     }
 }

@@ -347,8 +347,8 @@ public enum POSCatalogSyncState: Equatable {
             return lhsSiteID == rhsSiteID && lhsInitial == rhsInitial
         case (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
-        case (.syncFailed(let lhsSiteID, _), .syncFailed(let rhsSiteID, _)):
-            return lhsSiteID == rhsSiteID
+        case (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
+            return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
         case (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
         default:

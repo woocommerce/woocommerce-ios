@@ -171,7 +171,17 @@ private extension POSTabCoordinator {
                     isFeatureFlagEnabled: localFeatureFlagEnabled
                 )
             }
-            let isLocalCatalogEligible = eligibilityService.eligibilityState == .eligible
+
+            // Check eligibility state - if it previously failed due to a transient error (like network), retry
+            let eligibilityState: POSLocalCatalogEligibilityState
+            if eligibilityService.eligibilityState != .eligible {
+                // Retry the check in case the initial failure was due to transient network issues
+                eligibilityState = await eligibilityService.refreshEligibilityState()
+            } else {
+                eligibilityState = eligibilityService.eligibilityState
+            }
+
+            let isLocalCatalogEligible = eligibilityState == .eligible
 
             // Only initialize local catalog infrastructure if eligible
             let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil

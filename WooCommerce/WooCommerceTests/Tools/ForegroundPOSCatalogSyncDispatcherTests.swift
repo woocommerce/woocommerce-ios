@@ -291,4 +291,13 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         // Not used
     }
+
+    let fullSyncStateStream: AsyncStream<POSCatalogSyncState> = {
+        let (stream, _) = AsyncStream<POSCatalogSyncState>.makeStream()
+        return stream
+    }()
+
+    func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+        return .syncNeverDone(siteID: siteID)
+    }
 }

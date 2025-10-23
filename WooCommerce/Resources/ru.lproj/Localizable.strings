@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-17 04:03:27+0000 */
+/* Translation-Revision-Date: 2025-10-21 13:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -877,11 +877,26 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Booking notes' section in the booking details screen. */
 "BookingDetailsView.bookingNotes.headerTitle" = "Примечания к бронированию";
 
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "Нет, не отменять";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "Да, отменить";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "%1$@ больше не сможет участвовать в мероприятии «%2$@» в %3$@. @@@@@ХОРОШО БЫ УТОЧНИТЬ, О ЧЁМ РЕЧЬ";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "Отменить бронирование";
+
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Платёжный адрес";
 
 /* 'Cancel booking' button title in appointment details section in booking details view. */
 "BookingDetailsView.customer.cancelBookingButton.title" = "Отменить бронирование";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "Адрес эл. почты скопирован";
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Клиент";
@@ -907,11 +922,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Оплата";
 
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "Оформить возврат";
+
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "Отметить как оплаченное";
-
-/* Title for 'Mark as refunded' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsRefunded.title" = "Отметить как возвращённое";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Сервис";
@@ -924,6 +939,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for 'View order' button in payment section in booking details view. */
 "BookingDetailsView.payment.viewOrder.title" = "Просмотреть заказ";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "Вызов";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "Номер телефона скопирован";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "Копировать";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "Не удалось позвонить по этому номеру.";
 
 /* Title for the 'Booked' status label in the header view. */
 "BookingDetailsView.statusLabel.booked" = "Забронировано";
@@ -3285,9 +3312,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text field name in Edit Address Form */
 "Last name" = "Фамилия";
 
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "Запустить отладчик Wormholy";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Запустите собственный магазин";
 
@@ -4511,26 +4535,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "Плагины";
-
-/* The subtitle of the menu button to view documentation, shown in settings.
-   The title of the menu button to view documentation, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Документация";
-
-/* The subtitle of the menu button to contact support, shown in settings.
-   The title of the menu button to contact support, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Поддержка";
-
-/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Товары, поддерживаемые в POS";
-
-/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Где мои товары?";
-
-/* Button to dismiss the support form from the POS settings. */
-"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Отмена";
-
-/* Navigation title for the help settings list. */
-"PointOfSaleSettingsHelpDetailView.help.title" = "Справка";
 
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
@@ -6141,9 +6145,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Этот способ оплаты не поддерживает автоматический возврат средств. Верните средства, отправив деньги покупателю вручную.";
 
-/* Message shown if a payment cancellation is shown as an error. */
-"The payment was cancelled." = "Платёж был отменён.";
-
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Оплата была прервана и не может быть продолжена. Повторите попытку оплаты на экране заказа.";
 
@@ -6708,21 +6709,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Не удалось пометить обзор %@";
-
-/* Error message when the order amount is below the minimum amount allowed. */
-"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Не удалось обработать платеж. Общая сумма заказа ниже минимальной взимаемой суммы (%1$@)";
-
-/* Error message when the order amount is not valid. */
-"Unable to process payment. Order total amount is not valid." = "Не удалось обработать платеж. Недопустимая общая сумма заказа.";
-
-/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
-"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Не удалось обработать платёж. Этот заказ уже оплачен. Дальнейшие платёжные действия могут привести к тому, что с клиента будет дважды списана плата за заказ.";
-
-/* Error message shown during In-Person Payments when the payment gateway is not available. */
-"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Не удалось обработать платёж. Не удалось подключиться к платёжной системе. Повторите попытку или обратитесь в службу поддержки, если эта ошибка произойдёт снова.";
-
-/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Не удалось обработать платёж. Не удалось получить сведения о последнем заказе. Проверьте подключение к сети и повторите попытку. Основная ошибка: %1$@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку \"Нужна помощь?\", чтобы просмотреть ответы на часто задаваемые вопросы.";
@@ -8628,11 +8614,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Повторить попытку";
 
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "Не удалось найти бронирования под этим названием. Уточните поисковый запрос, чтобы увидеть другие результаты.";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "Ошибка при получении бронирований";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "Дата: от новых к старым";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "Дата: от старых к новым";
+
 /* Tab title for all bookings */
 "bookingListView.all" = "Все";
 
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "Нет бронирований, соответствующих этим фильтрам. Настройте фильтры, чтобы увидеть другие результаты.";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "Бронирований не найдено";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "Нет запланированных на сегодня встреч или мероприятий.";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "Нет бронирований на сегодня";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "У вас ещё нет запланированных встреч или мероприятий.";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "Нет бронирований на предстоящие дни";
+
 /* Button to filter the booking list */
 "bookingListView.filter" = "Фильтр";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "Поиск бронирований";
 
 /* Button to select the order of the booking list */
 "bookingListView.sortBy" = "Сортировать по";
@@ -8666,6 +8685,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "Не оплачено";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "Гость";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "Бронирование";
@@ -8717,9 +8739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Подписка с вариантами";
-
-/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
-"card.waves.progressView.accessibilityLabel" = "Выполняется";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
@@ -8848,12 +8867,6 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
-"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "С момента начала оплаты изменилась общая сумма заказа. Вернитесь назад и проверьте сведения о заказе, а затем начните заново процесс оплаты.";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Сумма сдачи: %1$@";
-
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Отбирает товары для кампании Blaze.";
 
@@ -8946,9 +8959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Устранение неполадок при подключении";
-
-/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
-"couponCardView.expirationText" = "Срок действия истёк %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Адрес";
@@ -9692,6 +9702,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Повышайте продажи";
 
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "Поделитесь мнением в ходе двухминутного опроса, чтобы мы могли помочь вам в работе.";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "Устраивает ли вас работа POS?";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "Пройдите двухминутный опрос, чтобы мы знали, какие функции вам необходимы.";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "Планируете очные продажи?";
+
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "Изображения товаров по-прежнему загружаются в фоновом режиме. Скорость загрузки может быть низкой, возможны ошибки. Чтобы получить лучшие результаты, не закрывайте приложение до завершения загрузки.";
 
@@ -10310,1161 +10332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Плагины";
 
-/* Error message shown when scan is too short. */
-"pointOfSale.barcodeScan.error.barcodeTooShort" = "Слишком короткий штрихкод";
-
-/* Error message shown when scanner times out without sending end-of-line character. */
-"pointOfSale.barcodeScan.error.incompleteScan.2" = "Сканер не отправил символ конца строки";
-
-/* Error message shown when there is an unknown networking error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.network" = "Не удалось выполнить запрос к сети";
-
-/* Error message shown when there is an internet connection error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.noInternetConnection" = "Отсутствует подключение к Интернету";
-
-/* Error message shown when parent product is not found for a variation. */
-"pointOfSale.barcodeScan.error.noParentProduct" = "Не найден родительский товар для варианта";
-
-/* Error message shown when a scanned item is not found in the store. */
-"pointOfSale.barcodeScan.error.notFound" = "Сканирован неизвестный товар";
-
-/* Error message shown when parsing barcode data fails. */
-"pointOfSale.barcodeScan.error.parsingError" = "Не удалось прочитать штрихкод";
-
-/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
-"pointOfSale.barcodeScan.error.scanFailed" = "Сбой сканирования";
-
-/* Error message shown when a scanned item is of an unsupported type. */
-"pointOfSale.barcodeScan.error.unsupportedProductType" = "Неподдерживаемый тип товара";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "Платёж отменён на устройстве";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Повторить платёж";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.subtitle" = "Карта вставлена";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.title" = "Готово к оплате";
-
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.connectReader.button.title" = "Подключите платёжный терминал";
-
-/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
-"pointOfSale.cardPresent.displayReaderMessage.message" = "Обработка платежа";
-
-/* Label for a cancel button */
-"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Отмена";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.instruction" = "Чтобы включить платёжный терминал, нажмите кнопку питания.";
-
-/* Title label for modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.title" = "Поиск платёжного терминала";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Новый заказ";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Повторить платёж";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Из-за ошибки подключения не удалось подтвердить выполнение платежа. Проверьте платёж на устройстве, подключённом к Интернету. Если платёж не был выполнен, повторите его. Если платёж был выполнен, создайте новый заказ.";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Ошибка платежа";
-
-/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Назад к оформлению заказа";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.title" = "Платёж отменён";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
-"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Попробуйте другой способ оплаты";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Повторить платёж";
-
-/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Чтобы продолжить обработку этой транзакции, попробуйте повторить платёж.";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Платёж отменён";
-
-/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Попробуйте другой способ оплаты";
-
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Изменить заказ";
-
-/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Ошибка при подготовке платежа";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Повторить платёж";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.title" = "Обработка платежа";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.title" = "Подготовка";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Подготовка платёжного терминала к оплате";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "Вставьте карту";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "Предъявите карту";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "Приложите карту";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "Приложите или вставьте карту";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Проведите пальцем, приложите или вставьте карту";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "Готово к оплате";
-
-/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerNotConnected.title" = "Устройство чтения не подключено";
-
-/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
-"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Для обработки этого платежа подключите платёжный терминал или выберите вариант «Наличными».";
-
-/* Message shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.message" = "Проверка заказа";
-
-/* Title shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.title" = "Подготовка";
-
-/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Общая сумма заказа меньше минимально допустимой суммы оплаты картой (%1$@) Можно оплатить заказ наличными.";
-
-/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Оплата банковскими картами не принимается";
-
-/* Title shown on the Point of Sale checkout while the order validation fails. */
-"pointOfSale.cardPresent.validatingOrderError.title" = "Ошибка при проверке заказа";
-
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Повторить попытку";
-
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Подождите немного";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Закрыть";
-
-/* Opens iOS's Device Settings for the app */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Открыть настройки устройства";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Требуются права доступа к Bluetooth";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Отмена";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "Не удалось подключиться к платёжному терминалу";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Повторить попытку";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Отмена";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "Уровень заряда аккумулятора платёжного терминала слишком низок. Зарядите платёжный терминал или воспользуйтесь другим устройством.";
-
-/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Повторить попытку";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Не удалось подключиться к платёжному терминалу";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Отмена";
-
-/* Opens iOS's Device Settings for the app to access location services */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Открыть настройки устройства";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Необходимо разрешить службам определять местоположение, чтобы исключить мошенничество, предотвратить возникновение споров и обеспечить безопасность платежей.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Включите службы определения местоположения, чтобы разрешить платежи.";
-
-/* Button to dismiss. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Закрыть";
-
-/* Error message. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Подключение отменено";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Отмена";
-
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Введите адрес";
-
-/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Повторите попытку после обновления";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Укажите действительный адрес магазина, чтобы продолжить";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Отмена";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Вы можете указать почтовый индекс магазина в меню wp-admin > WooCommerce > Настройки (общие)";
-
-/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Повторите попытку после обновления";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Укажите действительный почтовый индекс магазина";
-
-/* A title for CTA to present native location permission alert */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Продолжить";
-
-/* A notice at the bottom explaining that location services can be changed in the Settings app later */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Вы можете изменить эту опцию позднее в приложении «Настройки».";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Необходимо разрешить службам определять местоположение, чтобы исключить мошенничество, предотвратить возникновение споров и обеспечить безопасность платежей.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Включите службы определения местоположения, чтобы разрешить платежи.";
-
-/* Label within the modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Подождите…";
-
-/* Title label for modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Подключение к платёжному терминалу";
-
-/* Button to dismiss the alert presented when successfully connected to a reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Готово";
-
-/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Устройство чтения подключено";
-
-/* Button to allow the user to close the modal without connecting. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Отмена";
-
-/* Button in a cell to allow the user to connect to that reader for that cell */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Подключить";
-
-/* Title of a modal presenting a list of readers to choose from. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Найдено несколько платёжных терминалов";
-
-/* Label for a cell informing the user that reader scanning is ongoing. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Поиск платёжных терминалов";
-
-/* Label for a button that when tapped, cancels the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Отмена";
-
-/* Label for a button that when tapped, starts the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Подключиться к платёжному терминалу";
-
-/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
-"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Подключить это устройство чтения?";
-
-/* Label for a button that when tapped, continues searching for card readers */
-"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Продолжить поиск";
-
-/* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "Найдено %1$@";
-
-/* Label for a cancel button when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Отмена";
-
-/* Label that displays when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Платёжный терминал автоматически перезапустится и повторно подключится по завершении обновления.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% выполнено";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Обновление программного обеспечения";
-
-/* Button to dismiss the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Понятно";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% выполнено";
-
-/* Dialog title that displays when a software update just finished installing */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "ПО обновлено";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Отмена";
-
-/* Button to retry a software update. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Повторить попытку";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Не удалось обновить ПО вашего платёжного терминала";
-
-/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "Не удалось обновить платёжный терминал, так как уровень заряда аккумулятора составляет %.0f%%. Зарядите аккумулятор платёжного терминала и повторите попытку.";
-
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Отмена";
-
-/* Message presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Не удалось обновить платёжный терминал из-за низкого заряда аккумулятора. Зарядите аккумулятор платёжного терминала и повторите попытку.";
-
-/* Button to retry the reader search when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Повторите попытку";
-
-/* Title of the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Необходимо зарядить платёжный терминал";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Закрыть";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "Не удалось обновить ПО вашего платёжного терминала";
-
-/* Label for a cancel button when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Всё равно отменить";
-
-/* Label that displays when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Для сбора платежей требуется обновить ПО вашего платёжного терминала. В случае отмены подключение платёжного терминала будет заблокировано.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% выполнено";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Обновление программного обеспечения";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Закрыть";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Сбой подключения к платёжному терминалу";
-
-/* The default accessibility label for an `x` close button on a card reader connection modal. */
-"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Закрыть";
-
-/* Message drawing attention to issue of payment capture maybe failing. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Из-за ошибки подключения не удалось установить, был ли выполнен платёж.";
-
-/* No comment provided by engineer. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Перед тем как продолжить, ещё раз проверьте заказ на устройстве, подключённом к Интернету.";
-
-/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Возможно, этот заказ не был выполнен";
-
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "Итого: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "Оплата наличными";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "Отметить платёж как выполненный";
-
-/* Error message when the system fails to collect a cash payment. */
-"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Ошибка при попытке обработать платёж. Повторите попытку.";
-
-/* A message shown on the coupon if's not valid after attempting to apply it */
-"pointOfSale.couponRow.invalidCoupon" = "Купон не применён";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Начальная настройка сканера штрихкодов";
-
-/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
-"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Подождите немного";
-
-/* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Отключить устройство чтения";
-
-/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
-"pointOfSale.floatingButtons.exit.button.title" = "Закрыть POS";
-
-/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
-"pointOfSale.floatingButtons.getSupport.button.title" = "Поддержка";
-
-/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.orders.button.title" = "Заказы";
-
-/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Где мои товары?";
-
-/* The title of the floating button to indicate that reader is connected. */
-"pointOfSale.floatingButtons.readerConnected.title" = "Платёжный терминал подключён";
-
-/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
-"pointOfSale.floatingButtons.readerDisconnected.title" = "Подключите платёжный терминал";
-
-/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
-"pointOfSale.floatingButtons.readerDisconnecting.title" = "Отключение";
-
-/* The title of the menu button to access Point of Sale settings. */
-"pointOfSale.floatingButtons.settings.button.title" = "Настройки";
-
-/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.viewDocumentation.button.title" = "Документация";
-
-/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Удалить";
-
-/* Loading item accessibility label in POS */
-"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Загрузка";
-
-/* Button to come back to order editing when coupon validation fails. */
-"pointOfSale.orderSync.couponsError.editOrder" = "Изменить заказ";
-
-/* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle.2" = "Не удалось применить купон";
-
-/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupon" = "Удалить купон";
-
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupons" = "Удалить купоны";
-
-/* Title of the error when failing to synchronize order and calculate order totals */
-"pointOfSale.orderSync.error.title" = "Ошибка при загрузке итоговой суммы";
-
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.tryAgain" = "Повторить попытку";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "Платёж банковской картой на сумму %1$@ выполнен успешно.";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "Платёж наличными на сумму %1$@ выполнен успешно.";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.paymentSuccessful.title" = "Платёж выполнен";
-
-/* Button title for sending a receipt */
-"pointOfSale.sendreceipt.button.title" = "Отправить";
-
-/* Text that shows at the top of the receipts screen along the back button. */
-"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Отправить чек по эл. почте";
-
-/* Error message that is displayed when an invalid email is used when emailing a receipt. */
-"pointOfSale.sendreceipt.emailValidationErrorText" = "Введите правильный адрес эл. почты.";
-
-/* Generic error message that is displayed when there's an error emailing a receipt. */
-"pointOfSale.sendreceipt.sendReceiptErrorText" = "Ошибка при отправке сообщения по эл. почте. Попробуйте ещё раз.";
-
-/* Placeholder for the view where an email address should be entered when sending receipts */
-"pointOfSale.sendreceipt.textfield.placeholder" = "Введите адрес эл. почты";
-
-/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
-"pointOfSaleDashboard.payments.onboarding.cancel" = "Отмена";
-
-/* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.cancel" = "Отмена";
-
-/* Text displayed on Point of Sale settings when card reader battery is unknown. */
-"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Неизвестно";
-
-/* Subtitle describing card reader documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Подробнее о приёме мобильных платежей";
-
-/* Title for card reader documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Документация";
-
-/* Text displayed on Point of Sale settings when the card reader is not connected. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Платёжный терминал не подключён";
-
-/* Navigation title for card readers settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Платёжные терминалы";
-
-/* Description of Barcode scanner settings configuration. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Настроить параметры сканера штрихкодов";
-
-/* Navigation title of Barcode scanner settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Сканеры штрихкодов";
-
-/* Description of Card reader settings for connections. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Управление подключениями платёжного терминала";
-
-/* Navigation title of Card reader settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Платёжные терминалы";
-
-/* Navigation title for the hardware settings list. */
-"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Оборудование";
-
-/* Text displayed on Point of Sale settings pointing to the card reader battery. */
-"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Аккумулятор";
-
-/* Text displayed on Point of Sale settings pointing to the card reader model. */
-"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "Модель";
-
-/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Подробнее о сканировании штрихкодов в POS";
-
-/* Title for barcode scanner documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Документация";
-
-/* Subtitle describing scanner setup in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Настройте и протестируйте сканер штрихкодов";
-
-/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Настройка сканера";
-
-/* Navigation title for barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Сканеры штрихкодов";
-
-/* Text displayed on Point of Sale settings when store has not been provided. */
-"pointOfSaleSettingsService.storeNameNotSet" = "Не указано";
-
-/* Label for address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.address" = "Адрес";
-
-/* Label for email field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.email" = "Адрес эл. почты";
-
-/* Text displayed on Point of Sale settings when any setting has not been provided. */
-"pointOfSaleSettingsStoreDetailView.notSet" = "Не указано";
-
-/* Label for phone number field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Номер телефона";
-
-/* Label for physical address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Физический адрес";
-
-/* Section title for receipt information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Данные чека";
-
-/* Label for receipt store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Название магазина";
-
-/* Label for refund and returns policy field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Правила возмещения средств и возврата товаров";
-
-/* Section title for store information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeInformation" = "Сведения о магазине";
-
-/* Label for store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeName" = "Название магазина";
-
-/* Navigation title for the store details in POS settings. */
-"pointOfSaleSettingsStoreDetailView.storeTitle" = "Магазин";
-
-/* Title of the Point of Sale settings view. */
-"pointOfSaleSettingsView.navigationTitle" = "Настройки";
-
-/* Description of the settings to be found within the Hardware section. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Управление подключениями оборудования";
-
-/* Title of the Hardware section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Оборудование";
-
-/* Description of the Help section in Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Помощь и техническая поддержка";
-
-/* Title of the Help section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Справка";
-
-/* Description of the settings to be found within the Local catalog section. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Управление настройками каталога";
-
-/* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Каталог";
-
-/* Description of the settings to be found within the Store section. */
-"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Конфигурация и настройки магазина";
-
-/* Title of the Store section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Магазин";
-
-/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
-"pos.barcodeInfoModal.heading" = "Сканирование штрихкодов";
-
-/* New message about Bluetooth barcode scanner settings */
-"pos.barcodeInfoModal.i2.bluetoothMessage" = "• Подключите сканер штрихкодов в настройках Bluetooth iOS.";
-
-/* Accessible version of Bluetooth message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "Первое. Подключите сканер штрихкодов в настройках Bluetooth iOS.";
-
-/* New introductory message for barcode scanner information */
-"pos.barcodeInfoModal.i2.introMessage" = "Чтобы быстро сформировать корзину, можно сканировать штрихкоды внешним сканером.";
-
-/* New message about scanning barcodes on item list */
-"pos.barcodeInfoModal.i2.scanMessage" = "• Сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
-
-/* Accessible version of scan message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.scanMessage.accessible" = "Второе. Сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
-
-/* New message about ensuring search field is disabled during scanning */
-"pos.barcodeInfoModal.i2.searchMessage" = "• Убедитесь, что поле поиска не включено при сканировании штрихкодов.";
-
-/* Accessible version of search message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.searchMessage.accessible" = "Третье. Убедитесь, что поле поиска не включено при сканировании штрихкодов.";
-
-/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
-"pos.barcodeInfoModal.introMessage" = "Чтобы быстро сформировать корзину, можно сканировать штрихкоды внешним сканером.";
-
-/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
-"pos.barcodeInfoModal.moreDetailsLink" = "Подробнее.";
-
-/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
-"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Подробнее, ссылка.";
-
-/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
-"pos.barcodeInfoModal.primaryMessage" = "• Настройте штрихкоды в поле «GTIN, UPC, EAN, ISBN» в разделе «Товары > Сведения о товаре > Запасы». ";
-
-/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.primaryMessage.accessible" = "Первое: настройте штрихкоды в поле «G-T-I-N, U-P-C, E-A-N, I-S-B-N», перейдя в раздел «Товары», затем в «Сведения о товаре» и «Запасы».";
-
-/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
-"pos.barcodeInfoModal.productSetup.linkText" = "сверьтесь с документацией";
-
-/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
-"pos.barcodeInfoModal.productSetup.message" = "Можно настроить штрихкоды в поле «GTIN, UPC, EAN, ISBN» на вкладке запасов товара. Дополнительные сведения: %1$@.";
-
-/* Accessible version of product setup message, announcing link for screen readers */
-"pos.barcodeInfoModal.productSetup.message.accessible" = "Можно настроить штрихкоды в поле «G-T-I-N, U-P-C, E-A-N, I-S-B-N» на вкладке запасов товара. Дополнительные сведения см. в документации по ссылке.";
-
-/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
-"pos.barcodeInfoModal.quaternaryMessage" = "• Сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
-
-/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Четвёртое: сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
-
-/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
-"pos.barcodeInfoModal.quinaryMessage" = "Сканер эмулирует клавиатуру, поэтому время от времени он препятствует отображению программной клавиатуры, например при поиске. Коснитесь значка клавиатуры, чтобы она снова отображалась.";
-
-/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage.2" = "• Чтобы установить режим HID, обратитесь к инструкциям по эксплуатации сканера штрихкодов Bluetooth. Обычно для этого требуется отсканировать специальный штрихкод в руководстве.";
-
-/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Второе: чтобы установить режим H-I-D, обратитесь к инструкциям по эксплуатации сканера штрихкодов Bluetooth. Обычно для этого требуется отсканировать специальный штрихкод в руководстве.";
-
-/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
-"pos.barcodeInfoModal.tertiaryMessage" = "• Подключите сканер штрихкодов в настройках Bluetooth iOS.";
-
-/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Третье: подключите сканер штрихкодов в настройках Bluetooth iOS.";
-
-/* Title for the back button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.back.button.title" = "Назад";
-
-/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
-"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Изображение: код для чтения сканером штрихкодов.";
-
-/* Message shown when scanner setup is complete */
-"pos.barcodeScannerSetup.complete.instruction.2" = "Вы можете начинать сканировать товары. В следующий раз, когда вам потребуется сканер, просто включите его и он подключится автоматически.";
-
-/* Title shown when scanner setup is successfully completed */
-"pos.barcodeScannerSetup.complete.title" = "Сканер настроен!";
-
-/* Title for the done button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.done.button.title" = "Готово";
-
-/* Title for the back button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.back.button.title" = "Назад";
-
-/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.error.instruction" = "Сверьтесь с инструкцией по эксплуатации сканера и верните его к заводским параметрам, а затем повторите процедуру настройки.";
-
-/* Title for the retry button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.retry.button.title" = "Повторить";
-
-/* Title shown when there's an error during scanner setup */
-"pos.barcodeScannerSetup.error.title" = "Обнаружена ошибка сканирования";
-
-/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
-"pos.barcodeScannerSetup.hidSetup.instruction" = "Чтобы активировать режим Bluetooth HID, отсканируйте код ниже своим сканером штрихкодов.";
-
-/* Title for Netum 1228BC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
-
-/* Title for the next button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.next.button.title" = "Далее";
-
-/* Title for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.title" = "Другой";
-
-/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
-"pos.barcodeScannerSetup.pairSetup.instruction" = "Чтобы войти в режим подключения, отсканируйте код ниже своим сканером штрихкодов.";
-
-/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
-"pos.barcodeScannerSetup.pairing.instruction.format" = "Включите Bluetooth и выберите свой сканер %1$@ в настройках iOS Bluetooth. При подключении сканер издаёт звуковой сигнал и постоянно горит светодиод.";
-
-/* Button title to open device Settings for scanner pairing */
-"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Открыть настройки устройства";
-
-/* Title for the scanner pairing step */
-"pos.barcodeScannerSetup.pairing.title" = "Подключение сканера";
-
-/* Title format for a product barcode setup step */
-"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Настройка штрихкодов товаров";
-
-/* Button title for accessing product barcode setup information */
-"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Настройка штрихкодов товаров";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scanner.setup.title.format" = "Настройка сканера";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scannerInfo.title" = "Настройка сканера";
-
-/* Display name for Netum 1228BC barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
-
-/* Display name for other/unspecified barcode scanner models */
-"pos.barcodeScannerSetup.scannerType.other.name" = "Другой сканер";
-
-/* Display name for Star BSH-20B barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
-
-/* Display name for Tera 1200 2D barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
-
-/* Heading for the barcode scanner setup selection screen */
-"pos.barcodeScannerSetup.selection.heading" = "Настройка сканера штрихкодов";
-
-/* Instruction message for selecting a barcode scanner model from the list */
-"pos.barcodeScannerSetup.selection.introMessage" = "Выберите модель из списка.";
-
-/* Title for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
-
-/* Title for Tera 1200 2D scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
-
-/* Instruction for testing the scanner by scanning a barcode */
-"pos.barcodeScannerSetup.test.instruction" = "Отсканируйте штрихкод, чтобы проверить работу сканера.";
-
-/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.test.timeout.instruction" = "Отсканируйте штрихкод, чтобы проверить работу сканера. Если проблема не решена, проверьте настройки Bluetooth и повторите попытку.";
-
-/* Title shown when scanner test times out without detecting a scan */
-"pos.barcodeScannerSetup.test.timeout.title" = "Данных сканирования не найдено";
-
-/* Title for the scanner testing step */
-"pos.barcodeScannerSetup.test.title" = "Проверить сканер";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartHint" = "Нажмите на товар, чтобы \n добавить его в корзину";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartOrScanHint" = "Нажмите на товар, чтобы \n добавить его в корзину, или ";
-
-/* Title at the header for the Cart view. */
-"pos.cartView.cartTitle" = "Корзина";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Сканировать штрихкод";
-
-/* Title for the 'Checkout' button to process the Order. */
-"pos.cartView.checkoutButtonTitle" = "Оформить";
-
-/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle.1" = "Очистить корзину";
-
-/* Title shown on a toast view that appears when there's no internet connection */
-"pos.connectivity.title" = "Отсутствует подключение к Интернету";
-
-/* A button that dismisses coupon creation sheet */
-"pos.couponCreationSheet.selectCoupon.cancel" = "Отмена";
-
-/* A title for the view that selects the type of coupon to create */
-"pos.couponCreationSheet.selectCoupon.title" = "Создать купон";
-
-/* Body text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitBody" = "Все заказы, которые находятся в процессе выполнения, будут потеряны.";
-
-/* Button text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitButtom" = "Выход";
-
-/* Title of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitTitle" = "Выйти из режима «Пункт продажи»?";
-
-/* Button title to dismiss POS ineligible view */
-"pos.ineligible.dismiss.button.title" = "Выйти из режима POS";
-
-/* Button title to enable the POS feature switch and refresh POS eligibility check */
-"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Включить функцию POS";
-
-/* Button title to refresh POS eligibility check */
-"pos.ineligible.refresh.button.title" = "Повторить";
-
-/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled.3" = "Чтобы продолжить, необходимо активировать режим Point of Sale (Пункт продажи). Включите режим POS ниже или в консоли WordPress в разделе «Настройки WooCommerce > Расширенные > Функции» и повторите попытку.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Попробуйте перезапустить приложение, чтобы решить эту проблему.";
-
-/* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Не удалось загрузить сведения о настройках сайта. Проверьте подключение к Интернету и повторите попытку. Если решить проблему не удалось, обратитесь в службу поддержки.";
-
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency.1" = "Система POS не поддерживает валюту вашего магазина. В %1$@ сейчас поддерживается только %2$@. Проверьте настройки валюты магазина или обратитесь за помощью в службу поддержки.";
-
-/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
-"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Ваша версия WooCommerce не поддерживается. Для работы системы POS требуется WooCommerce версии %1$@ или более поздней. Обновите WooCommerce до последней версии.";
-
-/* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "Не удалось загрузить сведения о плагине WooCommerce. Необходимо установить плагин WooCommerce и активировать его через учётную запись администратора WordPress. Если решить проблему не удалось, обратитесь в службу поддержки.";
-
-/* Title shown in POS ineligible view */
-"pos.ineligible.title" = "Не удалось загрузить";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "Проверьте подключение к Интернету и повторите попытку.";
-
-/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle.2" = "Не удалось активировать купоны";
-
-/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "Не удалось загрузить дополнительные купоны";
-
-/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle.2" = "Не удалось загрузить дополнительные товары";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle.2" = "Не удалось загрузить товары";
-
-/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "Не удалось создать дополнительные варианты";
-
-/* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle.2" = "Не удалось загрузить варианты";
-
-/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle.2" = "Не удалось обновить купоны";
-
-/* Generic subtitle appearing on error screens when there's an error. */
-"pos.itemList.genericErrorSubtitle" = "Повторите попытку.";
-
-/* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction.2" = "Активировать купоны";
-
-/* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle.2" = "Активируйте коды купонов в вашем магазине, чтобы создавать их для клиентов.";
-
-/* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle.2" = "Начать принимать купоны";
-
-/* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle.2" = "Не удалось загрузить купоны";
-
-/* Generic text for retry buttons appearing on error screens. */
-"pos.itemList.retryButtonTitle" = "Повторить";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "Товары";
-
-/* Label/placeholder text for the search field for Coupons in Point of Sale. */
-"pos.itemListView.coupons.searchField.label" = "Поиск купонов";
-
-/* Label/placeholder text for the search field for Products in Point of Sale. */
-"pos.itemListView.products.searchField.label.1" = "Поиск товаров";
-
-/* Fallback label/placeholder text for the search field in Point of Sale. */
-"pos.itemListView.searchField.label" = "Поиск";
-
-/* Title of the button at the top of Point of Sale to switch to Coupons list. */
-"pos.itemlistview.couponsTitle" = "Купоны";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "Товары";
-
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.emptyListText" = "Поиск по магазину";
-
-/* Title for the list of popular products shown before a search term is typed in POS */
-"pos.itemsearch.before.search.popularProducts.title" = "Популярные товары";
-
-/* Title for the list of recent searches shown before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.title" = "Недавние запросы поиска";
-
-/* Accessibility label for button to dismiss a notice banner */
-"pos.noticeView.dismiss.button.accessibiltyLabel" = "Закрыть";
-
-/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
-"pos.orderBadgeView.accessibilityLabel" = "Статус заказа: %1$@";
-
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "Нет заказов для отображения";
-
-/* Title at the header for the Order Details empty view. */
-"pos.orderDetailsEmptyView.ordersTitle" = "Заказ";
-
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Товары";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsLoadingView.totalsTitle" = "Итого";
-
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "Итоговая скидка: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "Итоговая скидка";
-
-/* Accessibility hint for email receipt button on order details view */
-"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Нажмите, чтобы отправить чек заказа по электронной почте";
-
-/* Label for email receipt action on order details view */
-"pos.orderDetailsView.emailReceiptAction.title" = "Отправить чек по эл. почте";
-
-/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Дата заказа: %1$@, статус: %2$@";
-
-/* Email portion of order header accessibility label. %1$@ is customer email address. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Адрес электронной почты клиента: %1$@";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "Платёж нетто: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "Платёж нетто";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "Уплачено: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "Способ оплаты: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "Уплачено";
-
-/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
-"pos.orderDetailsView.productRow.accessibilityLabel" = "Количество: %1$@ по %2$@ за шт., итого %3$@";
-
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Товары";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Товары";
-
-/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
-"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "Причина: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "Сумма возврата: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Причина: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "Возвращённые средства";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "Подытог по товарам: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "Налоги: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "Налоги";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "Общая сумма заказа: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "Итого";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsView.totalsTitle" = "Итого";
-
-/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
-"pos.orderList.failedToLoadOrdersNextPageTitle" = "Не удалось загрузить другие заказы";
-
-/* Text appearing on the order list screen when there's an error loading orders. */
-"pos.orderList.failedToLoadOrdersTitle" = "Не удалось загрузить заказы";
-
-/* Button text for refreshing orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle" = "Обновить";
-
-/* Hint text suggesting to modify search terms when no orders are found. */
-"pos.orderListView.emptyOrdersSearchHint" = "Уточните поисковый запрос.";
-
-/* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "По этому запросу заказов не найдено.";
-
-/* Title appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchTitle" = "Заказов не обнаружено";
-
-/* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle" = "Заказы появятся здесь, как только вы начнёте обрабатывать продажи в POS.";
-
-/* Title appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersTitle" = "Нет заказов";
-
-/* Accessibility hint for order row indicating the action when tapped. */
-"pos.orderListView.orderRow.accessibilityHint" = "Коснитесь, чтобы открыть сведения о заказе";
-
-/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
-"pos.orderListView.orderRow.accessibilityLabel" = "Заказ № %1$@ на сумму %2$@, %3$@, статус: %4$@";
-
-/* Email portion of order row accessibility label. %1$@ is customer email address. */
-"pos.orderListView.orderRow.accessibilityLabel.email" = "Эл. почта: %1$@";
-
-/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
-"pos.orderListView.orderTitle" = "№ %1$@";
-
-/* Title at the header for the Orders view. */
-"pos.orderListView.ordersTitle" = "Заказы";
-
-/* Accessibility label for the search button in orders list. */
-"pos.orderListView.searchButton.accessibilityLabel" = "Поиск по заказам";
-
-/* Placeholder for a search field in the Orders view. */
-"pos.orderListView.searchFieldPlaceholder" = "Поиск по заказам";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "Доступные опции";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "Не удалось найти купоны под этим названием. Попробуйте уточнить поисковый запрос.";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Купоны могут эффективно способствовать развитию бизнеса. Хотите создать купон?";
-
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Купонов не найдено";
-
-/* Text for the button appearing on the products list screen when there are no products found. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Обновить";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Чтобы добавить товар, выйдите из POS и откройте «Товары»";
-
-/* Text providing additional search tips when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Невозможно выполнить поиск по названиям вариантов, воспользуйтесь названием родительского товара.";
-
-/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "Не удалось найти подходящие товары. Попробуйте уточнить поисковый запрос.";
-
-/* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Товаров не найдено";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "В данный момент POS поддерживает только простые товары и товары с вариантами.";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "Нет поддерживаемых товаров";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Чтобы добавить вариант, выйдите из режима POS и отредактируйте товар на вкладке «Товары».";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "В режиме POS поддерживаются только активированные варианты товаров, не подлежащих загрузке.";
-
-/* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "Поддерживаемых вариантов не найдено";
-
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Создать купон";
-
-/* Title for the OK button on the pos information modal */
-"pos.posInformationModal.ok.button.title" = "ОК";
-
-/* Accessibility label for the clear button in the Point of Sale search screen. */
-"pos.searchview.searchField.clearButton.accessibilityLabel" = "Очистить поле поиска";
-
-/* Action text in the simple products information modal in POS */
-"pos.simpleProductsModal.action" = "Создать заказ в разделе «Управление магазином»";
-
-/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.hint.variableAndSimple" = "Чтобы принять платёж за товар, относящийся к неподдерживаемой категории, выйдите из режима POS и создайте новый заказ в таблице заказов.";
-
-/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.message.future.variableAndSimple" = "Другие типы товаров станут доступны в ближайших обновлениях.";
-
-/* Message in the simple products information modal in POS when variable products are supported */
-"pos.simpleProductsModal.message.issue.variableAndSimple" = "В данный момент в режиме POS поддерживаются только товары, не подлежащие загрузке: простые и с вариантами.";
-
-/* Title of the simple products information modal in POS */
-"pos.simpleProductsModal.title" = "Почему я не вижу свои товары?";
-
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ в наличии";
-
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "Нет в наличии";
-
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "Новый заказ";
-
-/* Button title for the receipt button */
-"pos.totalsView.button.sendReceipt" = "Отправить чек по эл. почте";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "Оплата наличными";
-
-/* Title for discount total amount field */
-"pos.totalsView.discountTotal2" = "Итоговая скидка";
-
-/* Title for subtotal amount field */
-"pos.totalsView.subtotal" = "Подытог";
-
-/* Title for taxes amount field */
-"pos.totalsView.taxes" = "Налоги";
-
-/* Title for total amount field */
-"pos.totalsView.total" = "Итого";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "Настройте разделённый экран, чтобы места для режима «Пункт продажи» было больше.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "Режим «Пункт продажи» не поддерживается при данной ширине экрана.";
-
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Разрешить полное обновление по сотовым данным";
-
-/* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "Размер каталога";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "Статус каталога";
-
-/* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Последнее полное обновление";
-
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Последнее обновление";
-
-/* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Управление использованием данных";
-
-/* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Обновление каталога вручную";
-
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Пользуйтесь функцией обновления, только когда замечаете, что что-то не так: POS автоматически поддерживает актуальность данных.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "Обновить каталог";
-
-/* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "Настройки каталога";
-
-/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "Товаров: %1$d, вариантов: %2$ld";
-
-/* Text shown when catalog size cannot be determined. */
-"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Размер каталога неизвестен";
-
-/* Text shown when no update has been performed yet. */
-"posSettingsLocalCatalogViewModel.neverSynced" = "Не обновлена";
-
-/* Text shown when update date cannot be determined. */
-"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Дата обновления неизвестна";
-
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Закрыть";
 
@@ -11905,6 +10772,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "Пункт продажи";
+
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "Онлайн-оформление заказа";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "Консоль WP-Admin";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Отмена";

@@ -17,6 +17,12 @@ public protocol BookingsRemoteProtocol {
     func loadBooking(bookingID: Int64,
                      siteID: Int64) async throws -> Booking?
 
+    func updateBooking(
+        from siteID: Int64,
+        bookingID: Int64,
+        attendanceStatus: BookingAttendanceStatus
+    ) async throws -> Booking?
+
     func fetchResource(resourceID: Int64,
                        siteID: Int64) async throws -> BookingResource?
 }
@@ -88,6 +94,28 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
+    public func updateBooking(
+        from siteID: Int64,
+        bookingID: Int64,
+        attendanceStatus: BookingAttendanceStatus
+    ) async throws -> Booking? {
+        let path = "\(Path.bookings)/\(bookingID)"
+        let parameters = [
+            ParameterKey.attendanceStatus: attendanceStatus.rawValue
+        ]
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .put,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = BookingMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
     public func fetchResource(
         resourceID: Int64,
         siteID: Int64
@@ -132,5 +160,6 @@ public extension BookingsRemote {
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
         static let order: String           = "order"
+        static let attendanceStatus        = "attendance_status"
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-17 03:55:47+0000 */
+/* Translation-Revision-Date: 2025-10-21 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -877,11 +877,26 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Booking notes' section in the booking details screen. */
 "BookingDetailsView.bookingNotes.headerTitle" = "预订说明";
 
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "否，保留";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "是，取消";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "%1$@ 将无法再参加 %3$@ 的“%2$@”。";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "取消预订";
+
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "账单地址";
 
 /* 'Cancel booking' button title in appointment details section in booking details view. */
 "BookingDetailsView.customer.cancelBookingButton.title" = "取消预订";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "电子邮件地址已复制";
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "客户";
@@ -907,11 +922,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "付款";
 
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "发放退款";
+
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "标记为已付款";
-
-/* Title for 'Mark as refunded' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsRefunded.title" = "标记为已退款";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "服务";
@@ -924,6 +939,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for 'View order' button in payment section in booking details view. */
 "BookingDetailsView.payment.viewOrder.title" = "查看订单";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "拨号";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "电话号码已复制";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "复制";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "无法拨打此号码。";
 
 /* Title for the 'Booked' status label in the header view. */
 "BookingDetailsView.statusLabel.booked" = "已预订";
@@ -3285,9 +3312,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text field name in Edit Address Form */
 "Last name" = "姓氏";
 
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "启动 Wormholy 调试";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "开启您的商店";
 
@@ -4511,26 +4535,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "插件";
-
-/* The subtitle of the menu button to view documentation, shown in settings.
-   The title of the menu button to view documentation, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "文档";
-
-/* The subtitle of the menu button to contact support, shown in settings.
-   The title of the menu button to contact support, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "获取支持";
-
-/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "了解 POS 支持哪些产品";
-
-/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "我的产品在哪里？";
-
-/* Button to dismiss the support form from the POS settings. */
-"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "取消";
-
-/* Navigation title for the help settings list. */
-"PointOfSaleSettingsHelpDetailView.help.title" = "帮助";
 
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
@@ -6141,9 +6145,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "此付款方式不支持自动退款。 通过手动向客户转账的方式完成退款。";
 
-/* Message shown if a payment cancellation is shown as an error. */
-"The payment was cancelled." = "付款已取消。";
-
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "付款被中断且无法继续。请从订单屏幕中重试付款。";
 
@@ -6708,21 +6709,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "无法将评论标记为%@";
-
-/* Error message when the order amount is below the minimum amount allowed. */
-"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "无法处理付款。 订单总金额低于您可以收取的最低金额，即 %1$@";
-
-/* Error message when the order amount is not valid. */
-"Unable to process payment. Order total amount is not valid." = "无法处理付款。 订单总额无效。";
-
-/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
-"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "无法处理付款。 此订单已付款，继续付款将导致客户订单重复收费。";
-
-/* Error message shown during In-Person Payments when the payment gateway is not available. */
-"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "无法处理付款。 无法连接到付款系统。 如果此错误仍然存在，请联系支持人员。";
-
-/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "无法处理付款。 无法获取最新订单详细信息。 请检查您的网络连接，然后重试。 潜在错误：%1$@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。 轻点“需要更多帮助？”可查看常见问题解答。";
@@ -8628,11 +8614,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "重试";
 
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "我们未能找到任何使用该名称的预订，请尝试调整您的搜索字词以查看更多结果。";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "获取预订时出错";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "日期：从最近到最早";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "日期：从最早到最近";
+
 /* Tab title for all bookings */
 "bookingListView.all" = "全部";
 
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "没有符合您筛选条件的预订。 尝试调整它们以查看更多结果。";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "暂无预订";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "您今天尚未安排任何预约或活动。";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "今天无预定";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "您尚未安排任何未来的预约或活动。";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "无近期预订";
+
 /* Button to filter the booking list */
 "bookingListView.filter" = "筛选";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "搜索预订";
 
 /* Button to select the order of the booking list */
 "bookingListView.sortBy" = "排序方式";
@@ -8666,6 +8685,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "未付款";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "访客";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "预订";
@@ -8717,9 +8739,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "可变订阅";
-
-/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
-"card.waves.progressView.accessibilityLabel" = "进行中";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
@@ -8848,12 +8867,6 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
-"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "开始付款后，订单总额已发生变化。 请返回检查订单正确与否，然后再次尝试付款。";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "找零：%1$@";
-
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "为 Blaze 广告活动选择产品。";
 
@@ -8946,9 +8959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "排查连接故障";
-
-/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
-"couponCardView.expirationText" = "到期日期：%@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "地址";
@@ -9692,6 +9702,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "提高您的销售额";
 
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "请花两分钟时间快速完成问卷调查，分享您的体验，帮助我们进行改进。";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "POS 的使用体验如何？";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "请花两分钟时间快速完成问卷调查，帮助我们打造您喜爱的功能。";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "考虑开展线下销售？";
+
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "您的产品图片仍在后台上传。 上传速度可能较慢，并且可能会出现错误。 为获得最佳效果，请保持应用程序处于打开状态，直至上传完成。";
 
@@ -10310,1163 +10332,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "插件";
 
-/* Error message shown when scan is too short. */
-"pointOfSale.barcodeScan.error.barcodeTooShort" = "条形码过短";
-
-/* Error message shown when scanner times out without sending end-of-line character. */
-"pointOfSale.barcodeScan.error.incompleteScan.2" = "扫描仪未发送行尾字符";
-
-/* Error message shown when there is an unknown networking error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.network" = "网络请求失败";
-
-/* Error message shown when there is an internet connection error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.noInternetConnection" = "未连接互联网";
-
-/* Error message shown when parent product is not found for a variation. */
-"pointOfSale.barcodeScan.error.noParentProduct" = "未找到变体的父级产品";
-
-/* Error message shown when a scanned item is not found in the store. */
-"pointOfSale.barcodeScan.error.notFound" = "未知扫描商品";
-
-/* Error message shown when parsing barcode data fails. */
-"pointOfSale.barcodeScan.error.parsingError" = "无法读取条形码";
-
-/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
-"pointOfSale.barcodeScan.error.scanFailed" = "扫描失败";
-
-/* Error message shown when a scanned item is of an unsupported type. */
-"pointOfSale.barcodeScan.error.unsupportedProductType" = "不支持的商品类型";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "读卡器付款已取消";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "再次尝试付款";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.subtitle" = "卡片已插入";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.title" = "付款准备就绪";
-
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.connectReader.button.title" = "连接您的读卡器";
-
-/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
-"pointOfSale.cardPresent.displayReaderMessage.message" = "正在处理付款";
-
-/* Label for a cancel button */
-"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "取消";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.instruction" = "要打开读卡器，请短按电源按钮。";
-
-/* Title label for modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.title" = "正在扫描读卡器";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "新订单";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "再次尝试付款";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "由于网络错误，我们无法确认付款是否成功。 在网络连接正常的设备上验证付款。 如果付款未成功，请重新尝试付款。 如果付款成功，则请发起新订单。";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "付款错误";
-
-/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "返回结账页面";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.title" = "付款失败";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
-"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "尝试另一种付款方式";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "再次尝试付款";
-
-/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "如果您想继续处理这笔交易，请尝试重新付款。";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "付款失败";
-
-/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "尝试另一种付款方式";
-
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "编辑订单";
-
-/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.title" = "付款准备工作出错";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "再次尝试付款";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.title" = "正在处理付款";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.title" = "正在准备";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingReaderForPayment.message" = "正在准备付款用读卡器";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "插入银行卡";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "出示银行卡";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "点按银行卡";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "点按或插入银行卡";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "点按、刷卡或插入银行卡";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "付款准备就绪";
-
-/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerNotConnected.title" = "读卡器未连接";
-
-/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
-"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "要处理这笔付款，请连接您的读卡器或选择现金。";
-
-/* Message shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.message" = "正在检查订单";
-
-/* Title shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.title" = "正在准备";
-
-/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "订单总额低于您可以从银行卡中扣除的最低金额，即 %1$@。 您可以改用现金付款。";
-
-/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "无法接受银行卡付款";
-
-/* Title shown on the Point of Sale checkout while the order validation fails. */
-"pointOfSale.cardPresent.validatingOrderError.title" = "检查订单时出错";
-
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "请重试";
-
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "请稍候";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "忽略";
-
-/* Opens iOS's Device Settings for the app */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "打开设备设置";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "需要蓝牙权限";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "取消";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "我们无法连接您的读卡器";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "重试";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "取消";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "读卡器电量严重不足。 请为读卡器充电或更换读卡器。";
-
-/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "重试";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "我们无法连接您的读卡器";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "取消";
-
-/* Opens iOS's Device Settings for the app to access location services */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "打开设备设置";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "需要定位服务权限，以减少欺诈、防止纠纷并确保安全付款。";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "启用定位服务以允许付款";
-
-/* Button to dismiss. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "忽略";
-
-/* Error message. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "连接失败";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "取消";
-
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "输入地址";
-
-/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "请更新后再试";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "请更正您的商店地址以便继续";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "取消";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "您可以在“wp-admin > WooCommerce > 设置（常规）”中设置您商店的邮编";
-
-/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "请更新后再试";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "请更正您商店的邮编";
-
-/* A title for CTA to present native location permission alert */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "继续";
-
-/* A notice at the bottom explaining that location services can be changed in the Settings app later */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "您可以稍后在“设置”应用程序中更改此选项。";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "需要定位服务权限，以减少欺诈、防止纠纷并确保安全付款。";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "启用定位服务以允许付款";
-
-/* Label within the modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "请稍候…";
-
-/* Title label for modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "正在连接读卡器";
-
-/* Button to dismiss the alert presented when successfully connected to a reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "完成";
-
-/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "读卡器已连接";
-
-/* Button to allow the user to close the modal without connecting. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "取消";
-
-/* Button in a cell to allow the user to connect to that reader for that cell */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "连接";
-
-/* Title of a modal presenting a list of readers to choose from. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "找到多个读卡器";
-
-/* Label for a cell informing the user that reader scanning is ongoing. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "正在扫描读卡器";
-
-/* Label for a button that when tapped, cancels the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "取消";
-
-/* Label for a button that when tapped, starts the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "连接读卡器";
-
-/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
-"pointOfSale.cardPresentPayment.alert.foundReader.description" = "是否要连接此读卡器？";
-
-/* Label for a button that when tapped, continues searching for card readers */
-"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "继续搜索";
-
-/* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "找到 %1$@";
-
-/* Label for a cancel button when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "取消";
-
-/* Label that displays when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "更新完成后，您的读卡器将自动重新启动并重新连接。";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "已完成 %.0f%%";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "正在更新软件";
-
-/* Button to dismiss the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "知道了";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "已完成 %.0f%%";
-
-/* Dialog title that displays when a software update just finished installing */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "软件已更新";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "取消";
-
-/* Button to retry a software update. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "重试";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "我们无法更新您的读卡器软件";
-
-/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "由于电量只有 %.0f%%，读卡器更新失败。 请为读卡器充电，然后再试一次。";
-
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "取消";
-
-/* Message presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "由于电量不足，读卡器更新失败。 请为读卡器充电，然后再试一次。";
-
-/* Button to retry the reader search when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "请重试";
-
-/* Title of the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "请为读卡器充电";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "忽略";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "我们无法更新您的读卡器软件";
-
-/* Label for a cancel button when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "仍然取消";
-
-/* Label that displays when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "您需要更新读卡器软件才能进行收款。 取消将阻断您的读卡器连接。";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "已完成 %.0f%%";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "正在更新软件";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "忽略";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "连接读卡器失败";
-
-/* The default accessibility label for an `x` close button on a card reader connection modal. */
-"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "关闭";
-
-/* Message drawing attention to issue of payment capture maybe failing. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "由于网络错误，我们无法得知付款是否成功。";
-
-/* No comment provided by engineer. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "请先在有网络连接的设备上仔细检查订单，然后再继续。";
-
-/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "该订单可能已失败";
-
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "总计：%1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "现金付款";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "将付款标记为已完成";
-
-/* Error message when the system fails to collect a cash payment. */
-"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "尝试处理付款时出错。 请重试。";
-
-/* A message shown on the coupon if's not valid after attempting to apply it */
-"pointOfSale.couponRow.invalidCoupon" = "未应用优惠券";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "条形码扫描仪初始设置";
-
-/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
-"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "请稍候";
-
-/* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "断开读卡器连接";
-
-/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
-"pointOfSale.floatingButtons.exit.button.title" = "退出 POS 机";
-
-/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
-"pointOfSale.floatingButtons.getSupport.button.title" = "获取支持";
-
-/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.orders.button.title" = "订单";
-
-/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "我的产品在哪里？";
-
-/* The title of the floating button to indicate that reader is connected. */
-"pointOfSale.floatingButtons.readerConnected.title" = "读卡器已连接";
-
-/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
-"pointOfSale.floatingButtons.readerDisconnected.title" = "连接您的读卡器";
-
-/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
-"pointOfSale.floatingButtons.readerDisconnecting.title" = "正在断开连接";
-
-/* The title of the menu button to access Point of Sale settings. */
-"pointOfSale.floatingButtons.settings.button.title" = "设置";
-
-/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.viewDocumentation.button.title" = "文档";
-
-/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "移除";
-
-/* Loading item accessibility label in POS */
-"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "正在加载";
-
-/* Button to come back to order editing when coupon validation fails. */
-"pointOfSale.orderSync.couponsError.editOrder" = "编辑订单";
-
-/* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle.2" = "无法应用优惠券";
-
-/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupon" = "删除优惠券";
-
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupons" = "删除优惠券";
-
-/* Title of the error when failing to synchronize order and calculate order totals */
-"pointOfSale.orderSync.error.title" = "无法加载总计";
-
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.tryAgain" = "请重试";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "已成功完成 %1$@ 的银行卡付款。";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "已成功完成 %1$@ 的现金付款。";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.paymentSuccessful.title" = "付款成功";
-
-/* Button title for sending a receipt */
-"pointOfSale.sendreceipt.button.title" = "发送";
-
-/* Text that shows at the top of the receipts screen along the back button. */
-"pointOfSale.sendreceipt.emailReceiptNavigationText" = "电子邮件收据";
-
-/* Error message that is displayed when an invalid email is used when emailing a receipt. */
-"pointOfSale.sendreceipt.emailValidationErrorText" = "请输入有效的电子邮件地址。";
-
-/* Generic error message that is displayed when there's an error emailing a receipt. */
-"pointOfSale.sendreceipt.sendReceiptErrorText" = "尝试发送此电子邮件时出错。 重试。";
-
-/* Placeholder for the view where an email address should be entered when sending receipts */
-"pointOfSale.sendreceipt.textfield.placeholder" = "输入电子邮件地址";
-
-/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
-"pointOfSaleDashboard.payments.onboarding.cancel" = "取消";
-
-/* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.cancel" = "取消";
-
-/* Text displayed on Point of Sale settings when card reader battery is unknown. */
-"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "未知";
-
-/* Subtitle describing card reader documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "详细了解如何接受移动付款";
-
-/* Title for card reader documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "文档";
-
-/* Text displayed on Point of Sale settings when the card reader is not connected. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "读卡器未连接";
-
-/* Navigation title for card readers settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "读卡器";
-
-/* Description of Barcode scanner settings configuration. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "配置条形码扫描仪设置";
-
-/* Navigation title of Barcode scanner settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "条形码扫描仪";
-
-/* Description of Card reader settings for connections. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "管理读卡器连接";
-
-/* Navigation title of Card reader settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "读卡器";
-
-/* Navigation title for the hardware settings list. */
-"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "硬件";
-
-/* Text displayed on Point of Sale settings pointing to the card reader battery. */
-"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "电池";
-
-/* Text displayed on Point of Sale settings pointing to the card reader model. */
-"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "模型";
-
-/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "详细了解 POS 中的条形码扫描功能";
-
-/* Title for barcode scanner documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "文档";
-
-/* Subtitle describing scanner setup in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "配置并测试您的条形码扫描仪";
-
-/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "扫描仪设置";
-
-/* Navigation title for barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "条形码扫描仪";
-
-/* Text displayed on Point of Sale settings when store has not been provided. */
-"pointOfSaleSettingsService.storeNameNotSet" = "未设置";
-
-/* Label for address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.address" = "地址";
-
-/* Label for email field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.email" = "电子邮件地址";
-
-/* Text displayed on Point of Sale settings when any setting has not been provided. */
-"pointOfSaleSettingsStoreDetailView.notSet" = "未设置";
-
-/* Label for phone number field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.phoneNumber" = "电话号码";
-
-/* Label for physical address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.physicalAddress" = "物理地址";
-
-/* Section title for receipt information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptInformation" = "收据信息";
-
-/* Label for receipt store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "商店名称";
-
-/* Label for refund and returns policy field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "退款和退货政策";
-
-/* Section title for store information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeInformation" = "商店信息";
-
-/* Label for store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeName" = "商店名称";
-
-/* Navigation title for the store details in POS settings. */
-"pointOfSaleSettingsStoreDetailView.storeTitle" = "商店";
-
-/* Title of the Point of Sale settings view. */
-"pointOfSaleSettingsView.navigationTitle" = "设置";
-
-/* Description of the settings to be found within the Hardware section. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "管理硬件连接";
-
-/* Title of the Hardware section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "硬件";
-
-/* Description of the Help section in Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "获取帮助与支持";
-
-/* Title of the Help section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "帮助";
-
-/* Description of the settings to be found within the Local catalog section. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "管理目录设置";
-
-/* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "目录";
-
-/* Description of the settings to be found within the Store section. */
-"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "商店配置和设置";
-
-/* Title of the Store section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "商店";
-
-/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
-"pos.barcodeInfoModal.heading" = "条形码扫描";
-
-/* New message about Bluetooth barcode scanner settings */
-"pos.barcodeInfoModal.i2.bluetoothMessage" = "• 参考 iOS 蓝牙设置中的蓝牙条形码扫描仪。";
-
-/* Accessible version of Bluetooth message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "第一：参考 iOS 蓝牙设置中的蓝牙条形码扫描仪。";
-
-/* New introductory message for barcode scanner information */
-"pos.barcodeInfoModal.i2.introMessage" = "您可以使用外部扫描仪扫描条形码，快速创建购物车。";
-
-/* New message about scanning barcodes on item list */
-"pos.barcodeInfoModal.i2.scanMessage" = "• 在商品列表上扫描条形码，将产品添加到购物车。";
-
-/* Accessible version of scan message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.scanMessage.accessible" = "第二：在商品列表上扫描条形码，将产品添加到购物车。";
-
-/* New message about ensuring search field is disabled during scanning */
-"pos.barcodeInfoModal.i2.searchMessage" = "• 确保扫描条形码时未启用搜索字段。";
-
-/* Accessible version of search message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.searchMessage.accessible" = "第三：确保扫描条形码时未启用搜索字段。";
-
-/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
-"pos.barcodeInfoModal.introMessage" = "您可以使用外部扫描程序扫描条形码，快速创建购物车。";
-
-/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
-"pos.barcodeInfoModal.moreDetailsLink" = "更多详细信息。";
-
-/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
-"pos.barcodeInfoModal.moreDetailsLink.accessible" = "有关更多详细信息，请点击此链接。";
-
-/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
-"pos.barcodeInfoModal.primaryMessage" = "• 在“产品 > 产品详细信息 > 库存”中的“GTIN、UPC、EAN、ISBN”字段中设置条形码。 ";
-
-/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.primaryMessage.accessible" = "第一步：依次导航至“产品”、“产品详细信息”和“库存”，在“G-T-I-N、U-P-C、E-A-N、I-S-B-N”字段中设置条形码。";
-
-/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
-"pos.barcodeInfoModal.productSetup.linkText" = "请访问文档";
-
-/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
-"pos.barcodeInfoModal.productSetup.message" = "您可以在产品库存选项卡的 GTIN、UPC、EAN、ISBN 字段中设置条形码。 如需了解更多详情，%1$@。";
-
-/* Accessible version of product setup message, announcing link for screen readers */
-"pos.barcodeInfoModal.productSetup.message.accessible" = "您可以在产品库存选项卡的 G-T-I-N、U-P-C、E-A-N、I-S-B-N 字段中设置条形码。 如需了解更多详情，请访问文档（链接）。";
-
-/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
-"pos.barcodeInfoModal.quaternaryMessage" = "• 在商品列表上扫描条形码，将产品添加到购物车。";
-
-/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.quaternaryMessage.accessible" = "第四步：在商品列表上扫描条形码，将产品添加到购物车。";
-
-/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
-"pos.barcodeInfoModal.quinaryMessage" = "扫描程序使用模拟键盘，因此有时会导致软件键盘无法显示，如在搜索时。 轻点键盘图标即可再次显示键盘。";
-
-/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage.2" = "• 参阅蓝牙条形码扫描仪的使用说明，设置 HID 模式。 这通常需要扫描手册中的专用条形码。";
-
-/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "第二步：参阅蓝牙条形码扫描仪的使用说明，设置 H-I-D 模式。 这通常需要扫描手册中的专用条形码。";
-
-/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
-"pos.barcodeInfoModal.tertiaryMessage" = "• 在 iOS 蓝牙设置中连接条形码扫描程序。";
-
-/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.tertiaryMessage.accessible" = "第三步：在 iOS 蓝牙设置中连接条形码扫描程序。";
-
-/* Title for the back button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.back.button.title" = "返回";
-
-/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
-"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "需要使用条形码扫描仪扫描的代码图片。";
-
-/* Message shown when scanner setup is complete */
-"pos.barcodeScannerSetup.complete.instruction.2" = "您可以开始扫描产品了。 下次需要连接扫描仪时，您只需打开电源，它就会自动重新连接。";
-
-/* Title shown when scanner setup is successfully completed */
-"pos.barcodeScannerSetup.complete.title" = "扫描仪设置完毕！";
-
-/* Title for the done button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.done.button.title" = "完成";
-
-/* Title for the back button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.back.button.title" = "返回";
-
-/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.error.instruction" = "请查阅扫描仪的使用手册，将其恢复出厂设置后，重新尝试设置流程。";
-
-/* Title for the retry button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.retry.button.title" = "重试";
-
-/* Title shown when there's an error during scanner setup */
-"pos.barcodeScannerSetup.error.title" = "发现扫描问题";
-
-/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
-"pos.barcodeScannerSetup.hidSetup.instruction" = "使用您的条形码扫描仪扫描下方的代码，启用蓝牙 HID 模式。";
-
-/* Title for Netum 1228BC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
-
-/* Title for the next button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.next.button.title" = "下一个";
-
-/* Title for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.title" = "其他";
-
-/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
-"pos.barcodeScannerSetup.pairSetup.instruction" = "使用您的条形码扫描仪扫描下方的代码，进入配对模式。";
-
-/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
-"pos.barcodeScannerSetup.pairing.instruction.format" = "在 iOS 蓝牙设置中启用蓝牙并选择您的 %1$@ 扫描仪。 配对成功后，扫描仪将发出蜂鸣音，同时 LED 指示灯变为常亮状态。";
-
-/* Button title to open device Settings for scanner pairing */
-"pos.barcodeScannerSetup.pairing.settingsButton.title" = "转到您的设备设置";
-
-/* Title for the scanner pairing step */
-"pos.barcodeScannerSetup.pairing.title" = "配对您的扫描仪";
-
-/* Title format for a product barcode setup step */
-"pos.barcodeScannerSetup.productBarcodeInfo.title" = "如何在产品上设置条形码";
-
-/* Button title for accessing product barcode setup information */
-"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "如何在产品上设置条形码";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scanner.setup.title.format" = "扫描仪设置";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scannerInfo.title" = "扫描仪设置";
-
-/* Display name for Netum 1228BC barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
-
-/* Display name for other/unspecified barcode scanner models */
-"pos.barcodeScannerSetup.scannerType.other.name" = "其他扫描仪";
-
-/* Display name for Star BSH-20B barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
-
-/* Display name for Tera 1200 2D barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
-
-/* Heading for the barcode scanner setup selection screen */
-"pos.barcodeScannerSetup.selection.heading" = "设置条形码扫描仪";
-
-/* Instruction message for selecting a barcode scanner model from the list */
-"pos.barcodeScannerSetup.selection.introMessage" = "从列表中选择一个型号：";
-
-/* Title for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
-
-/* Title for Tera 1200 2D scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
-
-/* Instruction for testing the scanner by scanning a barcode */
-"pos.barcodeScannerSetup.test.instruction" = "扫描条形码以测试您的扫描仪。";
-
-/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.test.timeout.instruction" = "扫描条形码以测试您的扫描仪。 如果问题仍然存在，请检查蓝牙设置并重试。";
-
-/* Title shown when scanner test times out without detecting a scan */
-"pos.barcodeScannerSetup.test.timeout.title" = "尚未找到扫描数据";
-
-/* Title for the scanner testing step */
-"pos.barcodeScannerSetup.test.title" = "测试您的扫描仪";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartHint" = "点击产品以 \n 将其添加到购物车";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartOrScanHint" = "点击产品以 \n 将其添加到购物车，或者 ";
-
-/* Title at the header for the Cart view. */
-"pos.cartView.cartTitle" = "购物车";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pos.cartView.cartTitle.barcodeScanningSetup.button" = "扫描条形码";
-
-/* Title for the 'Checkout' button to process the Order. */
-"pos.cartView.checkoutButtonTitle" = "结账";
-
-/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle.1" = "清空购物车";
-
-/* Title shown on a toast view that appears when there's no internet connection */
-"pos.connectivity.title" = "未连接互联网";
-
-/* A button that dismisses coupon creation sheet */
-"pos.couponCreationSheet.selectCoupon.cancel" = "取消";
-
-/* A title for the view that selects the type of coupon to create */
-"pos.couponCreationSheet.selectCoupon.title" = "创建优惠券";
-
-/* Body text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitBody" = "任何进行中的订单都将丢失。";
-
-/* Button text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitButtom" = "退出";
-
-/* Title of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitTitle" = "退出销售点模式？";
-
-/* Button title to dismiss POS ineligible view */
-"pos.ineligible.dismiss.button.title" = "退出 POS";
-
-/* Button title to enable the POS feature switch and refresh POS eligibility check */
-"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "启用 POS 功能";
-
-/* Button title to refresh POS eligibility check */
-"pos.ineligible.refresh.button.title" = "重试";
-
-/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled.3" = "必须启用销售点才能继续。 请在下方或通过您的 WordPress 管理员在“WooCommerce 设置 > 高级 > 功能”下启用 POS 功能，然后再试一次。";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "请尝试重新启动应用程序以解决此问题。";
-
-/* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "我们无法加载站点设置信息。 请检查您的互联网连接，然后重试。 如果问题仍然存在，请联系支持人员寻求帮助。";
-
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency.1" = "POS 系统暂不支持您的商店所使用的货币。 在 %1$@，它目前仅支持 %2$@。 请检查您的商店货币设置或联系支持人员寻求帮助。";
-
-/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
-"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "您的 WooCommerce 版本不受支持。 POS 系统需要 WooCommerce %1$@ 或更高版本。 请将 WooCommerce 更新到最新版本。";
-
-/* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "我们无法加载 WooCommerce 插件信息。 请确保您的 WordPress 管理员已安装并激活 WooCommerce 插件。 如果问题仍然存在，请联系支持人员寻求帮助。";
-
-/* Title shown in POS ineligible view */
-"pos.ineligible.title" = "无法加载";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "请检查您的互联网连接，然后重试。";
-
-/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle.2" = "无法启用优惠券";
-
-/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "无法加载更多优惠券";
-
-/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle.2" = "无法加载更多产品";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle.2" = "无法加载产品";
-
-/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "无法加载更多变体";
-
-/* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle.2" = "无法加载变体";
-
-/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle.2" = "无法刷新优惠券";
-
-/* Generic subtitle appearing on error screens when there's an error. */
-"pos.itemList.genericErrorSubtitle" = "请重试。";
-
-/* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction.2" = "启用优惠券";
-
-/* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle.2" = "在您的商店中启用优惠券代码，以开始为客户创建优惠券代码。";
-
-/* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle.2" = "开始接受优惠券";
-
-/* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle.2" = "无法加载优惠券";
-
-/* Generic text for retry buttons appearing on error screens. */
-"pos.itemList.retryButtonTitle" = "重试";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "产品";
-
-/* Label/placeholder text for the search field for Coupons in Point of Sale. */
-"pos.itemListView.coupons.searchField.label" = "搜索优惠券";
-
-/* Label/placeholder text for the search field for Products in Point of Sale. */
-"pos.itemListView.products.searchField.label.1" = "搜索产品";
-
-/* Fallback label/placeholder text for the search field in Point of Sale. */
-"pos.itemListView.searchField.label" = "搜索";
-
-/* Title of the button at the top of Point of Sale to switch to Coupons list. */
-"pos.itemlistview.couponsTitle" = "优惠券";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "产品";
-
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.emptyListText" = "搜索您的商店";
-
-/* Title for the list of popular products shown before a search term is typed in POS */
-"pos.itemsearch.before.search.popularProducts.title" = "热销产品";
-
-/* Title for the list of recent searches shown before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.title" = "最近搜索";
-
-/* Accessibility label for button to dismiss a notice banner */
-"pos.noticeView.dismiss.button.accessibiltyLabel" = "忽略";
-
-/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
-"pos.orderBadgeView.accessibilityLabel" = "订单状态：%1$@";
-
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "没有要显示的订单";
-
-/* Title at the header for the Order Details empty view. */
-"pos.orderDetailsEmptyView.ordersTitle" = "订单";
-
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "产品";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsLoadingView.totalsTitle" = "总计";
-
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "折扣总额：%1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "折扣总额";
-
-/* Accessibility hint for email receipt button on order details view */
-"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "轻点以通过电子邮件发送订单收据";
-
-/* Label for email receipt action on order details view */
-"pos.orderDetailsView.emailReceiptAction.title" = "电子邮件收据";
-
-/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "订单日期：%1$@，状态：%2$@";
-
-/* Email portion of order header accessibility label. %1$@ is customer email address. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "客户电子邮件：%1$@";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "净付款：%1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "净付款";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "实收总额：%1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "付款方式：%1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "实收总额";
-
-/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
-"pos.orderDetailsView.productRow.accessibilityLabel" = "数量：%1$@，每个 %2$@，总计 %3$@";
-
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "产品";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "产品";
-
-/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
-"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "原因：%1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "已退款：%1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "原因：%1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "已退款";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "产品小计：%1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "税费：%1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "税费";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "订单总计：%1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "总计";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsView.totalsTitle" = "总计";
-
-/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
-"pos.orderList.failedToLoadOrdersNextPageTitle" = "无法加载更多订单";
-
-/* Text appearing on the order list screen when there's an error loading orders. */
-"pos.orderList.failedToLoadOrdersTitle" = "无法加载订单";
-
-/* Button text for refreshing orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle" = "刷新";
-
-/* Hint text suggesting to modify search terms when no orders are found. */
-"pos.orderListView.emptyOrdersSearchHint" = "尝试调整您的搜索字词。";
-
-/* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "我们找不到任何符合您搜索条件的订单。";
-
-/* Title appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchTitle" = "没有找到订单";
-
-/* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle" = "当您开始在 POS 上处理销售时，订单将显示在此处。";
-
-/* Title appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersTitle" = "暂无订单";
-
-/* Accessibility hint for order row indicating the action when tapped. */
-"pos.orderListView.orderRow.accessibilityHint" = "轻点以查看订单详细信息";
-
-/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
-"pos.orderListView.orderRow.accessibilityLabel" = "订单 #%1$@，总计 %2$@，%3$@，状态：%4$@";
-
-/* Email portion of order row accessibility label. %1$@ is customer email address. */
-"pos.orderListView.orderRow.accessibilityLabel.email" = "电子邮件地址：%1$@";
-
-/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
-"pos.orderListView.orderTitle" = "#%1$@";
-
-/* Title at the header for the Orders view. */
-"pos.orderListView.ordersTitle" = "订单";
-
-/* Accessibility label for the search button in orders list. */
-"pos.orderListView.searchButton.accessibilityLabel" = "搜索订单";
-
-/* Placeholder for a search field in the Orders view. */
-"pos.orderListView.searchFieldPlaceholder" = "搜索订单";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "可用选项";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "我们找不到任何使用该名称的优惠券，请尝试调整您的搜索字词。";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "优惠券可以成为促进业务发展的有效方式。 想要创建优惠券？";
-
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "未找到优惠券";
-
-/* Text for the button appearing on the products list screen when there are no products found. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "刷新";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "如需添加产品，请退出 POS，然后转到“产品”。";
-
-/* Text providing additional search tips when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "无法搜索变体名称，请使用父产品名称。";
-
-/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "我们找不到任何匹配的产品，请尝试调整您的搜索字词。";
-
-/* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "未找到产品";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS 目前仅支持简单产品和可变产品。";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "未找到受支持的产品";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "要添加产品，请退出 POS，然后在“产品”选项卡中编辑该产品。";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS 仅支持已启用、不可下载的变体。";
-
-/* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "未找到受支持的变体";
-
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "创建优惠券";
-
-/* Title for the OK button on the pos information modal */
-"pos.posInformationModal.ok.button.title" = "确定";
-
-/* Accessibility label for the clear button in the Point of Sale search screen. */
-"pos.searchview.searchField.clearButton.accessibilityLabel" = "清除搜索";
-
-/* Action text in the simple products information modal in POS */
-"pos.simpleProductsModal.action" = "在商店管理中创建订单";
-
-/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.hint.variableAndSimple" = "要为不受支持的产品接受付款，请退出 POS，然后在“订单”选项卡中创建新订单。";
-
-/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.message.future.variableAndSimple" = "其他产品类型将在今后的更新中得到支持。";
-
-/* Message in the simple products information modal in POS when variable products are supported */
-"pos.simpleProductsModal.message.issue.variableAndSimple" = "POS 目前仅可用于简单和可变的不可下载产品。";
-
-/* Title of the simple products information modal in POS */
-"pos.simpleProductsModal.title" = "为何看不到我的产品？";
-
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "库存：%1$@ 件";
-
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "缺货";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "销售点";
-
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "新订单";
-
-/* Button title for the receipt button */
-"pos.totalsView.button.sendReceipt" = "电子邮件收据";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "现金付款";
-
-/* Title for discount total amount field */
-"pos.totalsView.discountTotal2" = "折扣总额";
-
-/* Title for subtotal amount field */
-"pos.totalsView.subtotal" = "小计";
-
-/* Title for taxes amount field */
-"pos.totalsView.taxes" = "税费";
-
-/* Title for total amount field */
-"pos.totalsView.total" = "总计";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "请调整屏幕分割比例，为销售点模式留出更多空间。";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "此屏幕宽度不支持销售点模式。";
-
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "允许通过移动数据进行完整更新";
-
-/* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "目录大小";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "目录状态";
-
-/* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "上次完整更新";
-
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "上次更新时间";
-
-/* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "管理数据使用";
-
-/* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "手动目录更新";
-
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "仅当出现异常时才使用此刷新功能 — POS 会自动实时更新数据。";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "刷新目录";
-
-/* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "目录设置";
-
-/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d 款产品，%2$ld 种变体";
-
-/* Text shown when catalog size cannot be determined. */
-"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "目录大小不可用";
-
-/* Text shown when no update has been performed yet. */
-"posSettingsLocalCatalogViewModel.neverSynced" = "未更新";
-
-/* Text shown when update date cannot be determined. */
-"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "更新日期不可用";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "关闭";
@@ -11908,6 +10775,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "销售点";
+
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "网页结账";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "WP-Admin";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "取消";

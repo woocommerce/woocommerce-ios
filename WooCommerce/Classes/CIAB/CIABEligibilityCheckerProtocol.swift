@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-/// periphery: ignore - Will be used in upcoming changes for app feature gating
 protocol CIABEligibilityCheckerProtocol {
     var isCurrentSiteCIAB: Bool { get }
 

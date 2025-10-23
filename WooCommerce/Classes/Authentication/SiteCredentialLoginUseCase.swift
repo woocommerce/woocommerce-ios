@@ -100,15 +100,16 @@ enum SiteCredentialLoginError: LocalizedError {
 /// This use case handles site credential login without the need to use XMLRPC API.
 /// Steps for login:
 /// - Make a request to the site wp-login.php with a redirect to the nonce retrieval URL.
-/// - Upon redirect, cancel the request and verify if the redirect URL is the nonce retrieval URL.
-/// - If it is, make a request to retrieve nonce at that URL, the login succeeds if this is successful.
+/// - If the redirect succeeds with a nonce in the response, login is successful.
+/// - If the request does not redirect or the redirect fails, login fails.
+/// Ref: pe5sF9-1iQ-p2
 ///
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
     private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
-    private lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+    private lazy var session = URLSession(configuration: .default)
 
     init(siteURL: String,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
@@ -134,10 +135,9 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         Task { @MainActor in
             do {
                 try await startLogin(with: loginRequest)
+                successHandler?()
             } catch let error as SiteCredentialLoginError {
                 errorHandler?(error)
-            } catch let nsError as NSError where nsError.domain == NSURLErrorDomain && nsError.code == -999 {
-                /// login request is cancelled upon redirect, ignore this error
             } catch {
                 errorHandler?(.genericFailure(underlyingError: error as NSError))
             }
@@ -160,10 +160,26 @@ private extension SiteCredentialLoginUseCase {
             throw SiteCredentialLoginError.invalidLoginResponse
         }
 
-        switch response.statusCode {
-        case 404:
+        /// The login request comes with a redirect header to nonce retrieval URL.
+        /// If we get a response from this URL, that means the redirect is successful.
+        /// We need to check the result of this redirect first to determine if login is successful.
+        let isNonceUrl = response.url?.absoluteString.hasSuffix(Constants.wporgNoncePath) == true
+
+        switch (isNonceUrl, response.statusCode) {
+        case (true, 200):
+            if let nonceString = String(data: data, encoding: .utf8),
+               nonceString.isValidNonce() {
+                // success!
+                return
+            } else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+        case (true, 404):
+            throw SiteCredentialLoginError.inaccessibleAdminPage
+        case (false, 404):
             throw SiteCredentialLoginError.inaccessibleLoginPage
-        case 200:
+        case (false, 200):
+            // 200 for the login URL, which means a failure
             guard let html = String(data: data, encoding: .utf8) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
@@ -175,39 +191,6 @@ private extension SiteCredentialLoginUseCase {
             } else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
-        default:
-            throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
-        }
-    }
-
-    @MainActor
-    func checkRedirect(url: URL?) async {
-        guard let url, url.absoluteString.hasSuffix(Constants.wporgNoncePath),
-              let nonceRetrievalURL = URL(string: siteURL + Constants.adminPath + Constants.wporgNoncePath) else {
-            errorHandler?(.invalidLoginResponse)
-            return
-        }
-        do {
-            let nonceRequest = try URLRequest(url: nonceRetrievalURL, method: .get)
-            try await checkAdminPageAccess(with: nonceRequest)
-            successHandler?()
-        } catch let error as SiteCredentialLoginError {
-            errorHandler?(error)
-        } catch {
-            errorHandler?(.genericFailure(underlyingError: error as NSError))
-        }
-    }
-
-    func checkAdminPageAccess(with nonceRequest: URLRequest) async throws {
-        let (_, response) = try await session.data(for: nonceRequest)
-        guard let response = response as? HTTPURLResponse else {
-            throw SiteCredentialLoginError.invalidLoginResponse
-        }
-        switch response.statusCode {
-        case 200:
-            return // success 🎉
-        case 404:
-            throw SiteCredentialLoginError.inaccessibleAdminPage
         default:
             throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
         }
@@ -236,18 +219,6 @@ private extension SiteCredentialLoginUseCase {
         let characterSet = CharacterSet(charactersIn: "+").inverted
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
         return request
-    }
-}
-
-extension SiteCredentialLoginUseCase: URLSessionDataDelegate {
-    func urlSession(_ session: URLSession,
-                    task: URLSessionTask,
-                    willPerformHTTPRedirection response: HTTPURLResponse,
-                    newRequest request: URLRequest) async -> URLRequest? {
-        // Disables redirect and check if the redirect is correct
-        task.cancel()
-        await checkRedirect(url: request.url)
-        return nil
     }
 }
 
@@ -309,5 +280,16 @@ private extension String {
     ///
     func hasInvalidCredentialsPattern() -> Bool {
         contains("document.querySelector('form').classList.add('shake')")
+    }
+
+    /// Validates if the string matches the expected nonce format.
+    /// A valid nonce should contain at least 2 alphanumeric characters.
+    ///
+    func isValidNonce() -> Bool {
+        guard let regex = try? Regex("^[0-9a-zA-Z]{2,}$") else {
+            DDLogError("⚠️ Invalid regex pattern")
+            return false
+        }
+        return wholeMatch(of: regex) != nil
     }
 }

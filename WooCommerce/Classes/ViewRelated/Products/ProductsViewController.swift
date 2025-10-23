@@ -303,6 +303,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     func startProductCreation() {
         addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
     }
+
+    func resync() {
+        tableView.reloadData()
+        paginationTracker.resync()
+    }
 }
 
 // MARK: - Navigation Bar Actions
@@ -1214,11 +1219,9 @@ extension ProductsViewController: UITableViewDelegate {
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
         guard isSplitViewEnabled else {
-            ProductDetailsFactory.productDetails(product: product,
-                                                 presentationStyle: .navigationStack,
-                                                 forceReadOnly: false) { [weak self] viewController in
-                self?.navigationController?.pushViewController(viewController, animated: true)
-            }
+            let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
+                                                                               isReadOnly: false)
+            navigationController?.pushViewController(viewController, animated: true)
             return
         }
         navigateToContent(.productForm(product: product))

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-08 09:54:09+0000 */
+/* Translation-Revision-Date: 2025-10-21 09:54:16+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -877,11 +877,26 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Booking notes' section in the booking details screen. */
 "BookingDetailsView.bookingNotes.headerTitle" = "Catatan pemesanan";
 
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "Tidak, simpan";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "Ya, batalkan";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "%1$@ tidak dapat lagi menghadiri “%2$@” pada %3$@.";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "Batalkan pemesanan";
+
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Alamat penagihan";
 
 /* 'Cancel booking' button title in appointment details section in booking details view. */
 "BookingDetailsView.customer.cancelBookingButton.title" = "Batalkan pemesanan";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "Alamat email disalin";
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Pelanggan";
@@ -907,11 +922,11 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Pembayaran";
 
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "Minta pengembalian dana";
+
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "Tandai sudah dibayar";
-
-/* Title for 'Mark as refunded' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsRefunded.title" = "Tandai telah dikembalikan dananya";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Layanan";
@@ -924,6 +939,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for 'View order' button in payment section in booking details view. */
 "BookingDetailsView.payment.viewOrder.title" = "Lihat pesanan";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "Panggil";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "Nomor telepon disalin";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "Salin";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "Tidak dapat melakukan panggilan ke nomor ini.";
 
 /* Title for the 'Booked' status label in the header view. */
 "BookingDetailsView.statusLabel.booked" = "Dipesan";
@@ -3285,9 +3312,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text field name in Edit Address Form */
 "Last name" = "Nama belakang";
 
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "Luncurkan debug Wormholy";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Luncurkan toko Anda";
 
@@ -4511,26 +4535,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "Plugin";
-
-/* The subtitle of the menu button to view documentation, shown in settings.
-   The title of the menu button to view documentation, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Dokumentasi";
-
-/* The subtitle of the menu button to contact support, shown in settings.
-   The title of the menu button to contact support, shown in settings. */
-"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Dapatkan Dukungan";
-
-/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Pelajari tentang produk yang didukung di POS";
-
-/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Di mana produk saya?";
-
-/* Button to dismiss the support form from the POS settings. */
-"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Batalkan";
-
-/* Navigation title for the help settings list. */
-"PointOfSaleSettingsHelpDetailView.help.title" = "Bantuan";
 
 /* Section title for popular products on the Select Product screen.
    The text of the badge that indicates the most popular choice when purchasing a Plan */
@@ -6141,9 +6145,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Metode pembayaran tidak mendukung pengembalian dana otomatis. Selesaikan pengembalian dana dengan mentransfer uang kepada pelanggan secara manual.";
 
-/* Message shown if a payment cancellation is shown as an error. */
-"The payment was cancelled." = "Pembayaran dibatalkan.";
-
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Proses pembayaran terganggu dan tidak dapat dilanjutkan. Anda dapat mencoba lagi pembayaran dari layar pesanan.";
 
@@ -6708,21 +6709,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Tidak dapat menandai ulasan %@";
-
-/* Error message when the order amount is below the minimum amount allowed. */
-"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Tidak dapat memproses pembayaran. Jumlah total pesanan di bawah jumlah minimal yang dapat Anda tagihkan, yaitu %1$@";
-
-/* Error message when the order amount is not valid. */
-"Unable to process payment. Order total amount is not valid." = "Tidak dapat memproses pembayaran. Jumlah total pesanan tidak valid.";
-
-/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
-"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Tidak dapat memproses pembayaran. Pesanan ini sudah dibayar. Pembayaran lebih lanjut akan menyebabkan pelanggan ditagih dua kali untuk pesanannya.";
-
-/* Error message shown during In-Person Payments when the payment gateway is not available. */
-"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Tidak dapat memproses pembayaran. Kami tidak dapat terhubung dengan sistem pembayaran. Harap hubungi dukungan jika error ini berlanjut.";
-
-/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Tidak dapat memproses pembayaran. Kami tidak dapat mengambil detail pesanan terbaru. Periksa koneksi jaringan Anda dan coba lagi. Error dasar: %1$@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Tidak dapat membaca situs WordPress dalam URL tersebut. Ketuk 'Perlu bantuan?' untuk melihat TJU.";
@@ -8625,11 +8611,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Coba Lagi";
 
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "Kami tidak dapat menemukan pemesanan dengan nama tersebut. Coba sesuaikan istilah pencarian untuk melihat hasil lainnya.";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "Terjadi error saat mengambil pemesanan";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "Tanggal: Terbaru ke Terlama";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "Tanggal: Terlama ke Terbaru";
+
 /* Tab title for all bookings */
 "bookingListView.all" = "Semua";
 
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "Tidak ada pemesanan yang cocok dengan penyaring Anda. Coba sesuaikan untuk melihat hasil lainnya.";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "Pemesanan tidak ditemukan";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "Anda tidak memiliki janji temu atau acara hari ini yang dijadwalkan.";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "Tidak ada pemesanan hari ini";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "Anda belum memiliki janji temu atau acara mendatang yang dijadwalkan.";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "Tidak ada pemesanan mendatang";
+
 /* Button to filter the booking list */
 "bookingListView.filter" = "Filter";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "Cari pemesanan";
 
 /* Button to select the order of the booking list */
 "bookingListView.sortBy" = "Urutkan berdasarkan";
@@ -8663,6 +8682,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "Belum dibayar";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "Tamu";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "Pemesanan";
@@ -8714,9 +8736,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Langganan variabel";
-
-/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
-"card.waves.progressView.accessibilityLabel" = "Sedang berlangsung";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Batal";
@@ -8845,12 +8864,6 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
-"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Total pesanan telah berubah sejak awal pembayaran. Silakan kembali dan periksa apakah pesanan sudah benar, lalu coba pembayaran lagi.";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Kembalian terutang: %1$@";
-
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Pilih produk untuk kampanye Blaze.";
 
@@ -8943,9 +8956,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Memecahkan Masalah Koneksi";
-
-/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
-"couponCardView.expirationText" = "Kedaluwarsa pada %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Alamat";
@@ -9689,6 +9699,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Tingkatkan penjualan Anda";
 
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "Bagikan pengalaman Anda dengan survei cepat 2 menit dan bantu kami menjadi lebih baik.";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "Bagaimana performa POS menurut Anda?";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "Isi survei singkat 2 menit untuk membantu kami mengembangkan fitur yang Anda sukai.";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "Ingin mencoba penjualan langsung?";
+
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "Gambar produk masih diunggah di latar belakang. Kecepatan pengunggahan mungkin menurun, dan error bisa terjadi. Untuk hasil terbaik, tetap buka aplikasi hingga pengunggahan selesai.";
 
@@ -10307,1163 +10329,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Plugin";
 
-/* Error message shown when scan is too short. */
-"pointOfSale.barcodeScan.error.barcodeTooShort" = "Barcode terlalu pendek";
-
-/* Error message shown when scanner times out without sending end-of-line character. */
-"pointOfSale.barcodeScan.error.incompleteScan.2" = "Pemindai tidak mengirimkan karakter akhir baris";
-
-/* Error message shown when there is an unknown networking error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.network" = "Permintaan jaringan gagal";
-
-/* Error message shown when there is an internet connection error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.noInternetConnection" = "Tidak ada koneksi internet";
-
-/* Error message shown when parent product is not found for a variation. */
-"pointOfSale.barcodeScan.error.noParentProduct" = "Produk induk tidak ditemukan untuk variasi";
-
-/* Error message shown when a scanned item is not found in the store. */
-"pointOfSale.barcodeScan.error.notFound" = "Item yang dipindai tidak diketahui";
-
-/* Error message shown when parsing barcode data fails. */
-"pointOfSale.barcodeScan.error.parsingError" = "Tidak dapat membaca barcode";
-
-/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
-"pointOfSale.barcodeScan.error.scanFailed" = "Pemindaian gagal";
-
-/* Error message shown when a scanned item is of an unsupported type. */
-"pointOfSale.barcodeScan.error.unsupportedProductType" = "Jenis item yang tidak didukung";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "Pembayaran dibatalkan pada pembaca kartu";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Coba bayar lagi";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.subtitle" = "Kartu dimasukkan";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.title" = "Siap untuk pembayaran";
-
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.connectReader.button.title" = "Hubungkan ke pembaca";
-
-/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
-"pointOfSale.cardPresent.displayReaderMessage.message" = "Memproses pembayaran";
-
-/* Label for a cancel button */
-"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Batal";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.instruction" = "Untuk mengaktifkan pembaca kartu Anda, tekan tombol dayanya.";
-
-/* Title label for modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.title" = "Memindai pembaca";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Pesanan baru";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Coba lagi pembayaran";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Karena error jaringan, kami tidak dapat mengonfirmasi apakah pembayaran berhasil. Lakukan verifikasi pembayaran di perangkat dengan koneksi jaringan yang aktif. Jika gagal, ulangi pembayaran. JIka berhasil, mulai pesanan baru.";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Error pembayaran";
-
-/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Kembali ke checkout";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.title" = "Pembayaran gagal";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
-"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Coba metode pembayaran lainnya.";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Coba lagi pembayaran";
-
-/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Jika ingin menyelesaikan transaksi, coba lagi pembayaran.";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Pembayaran gagal";
-
-/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Coba metode pembayaran lainnya";
-
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Edit pesanan";
-
-/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Error saat menyiapkan pembayaran";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Coba lagi pembayaran";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.title" = "Memproses pembayaran";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.title" = "Menyiapkan";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Menyiapkan perangkat pembaca kartu untuk pembayaran";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "Masukkan kartu";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "Berikan kartu";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "Ketuk kartu";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "Ketuk atau masukkan kartu";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Ketuk, usap, atau masukkan kartu";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "Siap untuk pembayaran";
-
-/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerNotConnected.title" = "Pembaca tidak terhubung";
-
-/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
-"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Untuk memproses pembayaran ini, hubungkan ke perangkat pembaca kartu atau pilih tunai.";
-
-/* Message shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.message" = "Memeriksa pesanan";
-
-/* Title shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.title" = "Menyiapkan";
-
-/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Total pesanan kurang dari jumlah minimal pembayaran dengan kartu, yaitu %1$@. Sebagai gantinya, Anda dapat menggunakan pembayaran tunai.";
-
-/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Tidak dapat menerima pembayaran kartu";
-
-/* Title shown on the Point of Sale checkout while the order validation fails. */
-"pointOfSale.cardPresent.validatingOrderError.title" = "Terjadi error saat memeriksa pesanan";
-
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Coba lagi";
-
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Harap tunggu";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Tutup";
-
-/* Opens iOS's Device Settings for the app */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Buka Pengaturan Perangkat";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Izin pengaktifan Bluetooth diperlukan";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Batal";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "Tidak dapat menyambungkan pembaca";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Coba lagi";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Batal";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "Daya baterai pembaca sangat rendah. Harap isi daya pembaca atau coba gunakan pembaca lain.";
-
-/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Coba Lagi";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Tidak dapat menyambungkan pembaca";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Batalkan";
-
-/* Opens iOS's Device Settings for the app to access location services */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Buka Pengaturan Perangkat";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Izin layanan lokasi diperlukan untuk mengurangi risiko penipuan, mencegah timbulnya sengketa, dan memastikan keamanan pembayaran.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Aktifkan layanan lokasi untuk mengizinkan pembayaran";
-
-/* Button to dismiss. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Tutup";
-
-/* Error message. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Koneksi gagal";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Batal";
-
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Masukan Alamat";
-
-/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Coba Lagi Setelah Memperbarui";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Mohon koreksi alamat toko Anda untuk melanjutkan";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Batal";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Anda dapat mengatur kode pos toko di wp-admin > WooCommerce > Pengaturan (Umum)";
-
-/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Coba Lagi Setelah Memperbarui";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Mohon koreksi kode pos toko Anda";
-
-/* A title for CTA to present native location permission alert */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Lanjutkan";
-
-/* A notice at the bottom explaining that location services can be changed in the Settings app later */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Anda dapat mengubah pilihan ini di lain waktu melalui aplikasi Pengaturan.";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Izin layanan lokasi diperlukan untuk mengurangi risiko penipuan, mencegah timbulnya sengketa, dan memastikan keamanan pembayaran.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Aktifkan layanan lokasi untuk mengizinkan pembayaran";
-
-/* Label within the modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Harap tunggu...";
-
-/* Title label for modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Menyambungkan ke pembaca";
-
-/* Button to dismiss the alert presented when successfully connected to a reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Selesai";
-
-/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Pembaca terhubung";
-
-/* Button to allow the user to close the modal without connecting. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Batal";
-
-/* Button in a cell to allow the user to connect to that reader for that cell */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Hubungkan";
-
-/* Title of a modal presenting a list of readers to choose from. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Ditemukan beberapa pembaca";
-
-/* Label for a cell informing the user that reader scanning is ongoing. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Memindai pembaca";
-
-/* Label for a button that when tapped, cancels the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Batal";
-
-/* Label for a button that when tapped, starts the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Hubungkan ke Pembaca";
-
-/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
-"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Anda ingin menghubungkan ke pembaca ini?";
-
-/* Label for a button that when tapped, continues searching for card readers */
-"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Terus Mencari";
-
-/* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "Ditemukan %1$@";
-
-/* Label for a cancel button when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Batal";
-
-/* Label that displays when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Pembaca akan otomatis dimulai ulang dan dihubungkan kembali setelah pembaruan selesai.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% selesai";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Memperbarui perangkat lunak";
-
-/* Button to dismiss the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Saya paham";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% selesai";
-
-/* Dialog title that displays when a software update just finished installing */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Perangkat lunak diperbarui";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Batal";
-
-/* Button to retry a software update. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Coba Lagi";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Kami tidak dapat memperbarui perangkat lunak pembaca Anda";
-
-/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "Pembaruan pembaca gagal karena baterai hanya %.0f%%. Isi daya pembaca lalu coba lagi.";
-
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Batal";
-
-/* Message presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Pembaruan pembaca gagal karena baterai lemah. Isi daya pembaca lalu coba lagi.";
-
-/* Button to retry the reader search when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Coba lagi";
-
-/* Title of the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Isi daya pembaca";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Tutup";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "Kami tidak dapat memperbarui perangkat lunak pembaca Anda";
-
-/* Label for a cancel button when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Batalkan saja";
-
-/* Label that displays when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Perangkat lunak pembaca kartu Anda perlu diperbarui untuk menerima pembayaran. Pembatalan akan memblok sambungan pembaca Anda.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% selesai";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Memperbarui perangkat lunak";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Tutup";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Menyambungkan pembaca gagal";
-
-/* The default accessibility label for an `x` close button on a card reader connection modal. */
-"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Tutup";
-
-/* Message drawing attention to issue of payment capture maybe failing. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Karena error jaringan, kami tidak mengetahui apakah pembayaran behasil.";
-
-/* No comment provided by engineer. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Periksa pesanan dua kali di perangkat dengan koneksi jaringan sebelum melanjutkan.";
-
-/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Pesanan ini mungkin gagal";
-
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "Total: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "Pembayaran tunai";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "Tandai pembayaran selesai";
-
-/* Error message when the system fails to collect a cash payment. */
-"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
-
-/* A message shown on the coupon if's not valid after attempting to apply it */
-"pointOfSale.couponRow.invalidCoupon" = "Kupon tidak digunakan";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Penyiapan awal pemindai barcode";
-
-/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
-"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Harap tunggu";
-
-/* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Putus Sambungan Pembaca";
-
-/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
-"pointOfSale.floatingButtons.exit.button.title" = "Keluar dari POS";
-
-/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
-"pointOfSale.floatingButtons.getSupport.button.title" = "Dapatkan Dukungan";
-
-/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.orders.button.title" = "Pesanan";
-
-/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Di mana produk saya?";
-
-/* The title of the floating button to indicate that reader is connected. */
-"pointOfSale.floatingButtons.readerConnected.title" = "Pembaca Terhubung";
-
-/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
-"pointOfSale.floatingButtons.readerDisconnected.title" = "Hubungkan ke pembaca";
-
-/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
-"pointOfSale.floatingButtons.readerDisconnecting.title" = "Memutuskan sambungan";
-
-/* The title of the menu button to access Point of Sale settings. */
-"pointOfSale.floatingButtons.settings.button.title" = "Pengaturan";
-
-/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.viewDocumentation.button.title" = "Dokumentasi";
-
-/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Hapus";
-
-/* Loading item accessibility label in POS */
-"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Memuat";
-
-/* Button to come back to order editing when coupon validation fails. */
-"pointOfSale.orderSync.couponsError.editOrder" = "Sunting pesanan";
-
-/* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle.2" = "Tidak dapat menggunakan kupon";
-
-/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupon" = "Hapus kupon";
-
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupons" = "Hapus kupon";
-
-/* Title of the error when failing to synchronize order and calculate order totals */
-"pointOfSale.orderSync.error.title" = "Tidak bisa memuat total";
-
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.tryAgain" = "Coba lagi";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "Pembayaran dengan kartu senilai %1$@ berhasil dilakukan.";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "Pembayaran tunai senilai %1$@ berhasil dilakukan.";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.paymentSuccessful.title" = "Pembayaran berhasil";
-
-/* Button title for sending a receipt */
-"pointOfSale.sendreceipt.button.title" = "Kirim";
-
-/* Text that shows at the top of the receipts screen along the back button. */
-"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Email tanda terima";
-
-/* Error message that is displayed when an invalid email is used when emailing a receipt. */
-"pointOfSale.sendreceipt.emailValidationErrorText" = "Masukkan email yang valid.";
-
-/* Generic error message that is displayed when there's an error emailing a receipt. */
-"pointOfSale.sendreceipt.sendReceiptErrorText" = "Terjadi error saat mencoba mengirim email ini. Coba lagi.";
-
-/* Placeholder for the view where an email address should be entered when sending receipts */
-"pointOfSale.sendreceipt.textfield.placeholder" = "Ketik email";
-
-/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
-"pointOfSaleDashboard.payments.onboarding.cancel" = "Batal";
-
-/* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.cancel" = "Batal";
-
-/* Text displayed on Point of Sale settings when card reader battery is unknown. */
-"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Tidak diketahui";
-
-/* Subtitle describing card reader documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Pelajari selengkapnya tentang menerima pembayaran dengan perangkat seluler";
-
-/* Title for card reader documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Dokumentasi";
-
-/* Text displayed on Point of Sale settings when the card reader is not connected. */
-"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Perangkat pembaca kartu tidak terhubung";
-
-/* Navigation title for card readers settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Pembaca kartu";
-
-/* Description of Barcode scanner settings configuration. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Konfigurasi pengaturan pemindai barcode";
-
-/* Navigation title of Barcode scanner settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Pemindai barcode";
-
-/* Description of Card reader settings for connections. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Kelola koneksi pembaca kartu";
-
-/* Navigation title of Card reader settings. */
-"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Pembaca kartu";
-
-/* Navigation title for the hardware settings list. */
-"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Perangkat keras";
-
-/* Text displayed on Point of Sale settings pointing to the card reader battery. */
-"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Baterai";
-
-/* Text displayed on Point of Sale settings pointing to the card reader model. */
-"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "Model";
-
-/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Pelajari selengkapnya tentang pemindaian barcode pada POS";
-
-/* Title for barcode scanner documentation option in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Dokumentasi";
-
-/* Subtitle describing scanner setup in Point of Sale settings. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Konfigurasi dan uji pemindai barcode Anda";
-
-/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Pengaturan Pemindai";
-
-/* Navigation title for barcode scanners settings in Point of Sale. */
-"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Pemindai barcode";
-
-/* Text displayed on Point of Sale settings when store has not been provided. */
-"pointOfSaleSettingsService.storeNameNotSet" = "Belum ditentukan";
-
-/* Label for address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.address" = "Alamat";
-
-/* Label for email field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.email" = "Email";
-
-/* Text displayed on Point of Sale settings when any setting has not been provided. */
-"pointOfSaleSettingsStoreDetailView.notSet" = "Tidak ditentukan";
-
-/* Label for phone number field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Nomor telepon";
-
-/* Label for physical address field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Alamat fisik";
-
-/* Section title for receipt information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Informasi Tanda Terima";
-
-/* Label for receipt store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Nama toko";
-
-/* Label for refund and returns policy field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Kebijakan Pengembalian Dana dan Barang";
-
-/* Section title for store information in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeInformation" = "Informasi Toko";
-
-/* Label for store name field in Point of Sale settings. */
-"pointOfSaleSettingsStoreDetailView.storeName" = "Nama toko";
-
-/* Navigation title for the store details in POS settings. */
-"pointOfSaleSettingsStoreDetailView.storeTitle" = "Toko";
-
-/* Title of the Point of Sale settings view. */
-"pointOfSaleSettingsView.navigationTitle" = "Pengaturan";
-
-/* Description of the settings to be found within the Hardware section. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Kelola koneksi perangkat keras";
-
-/* Title of the Hardware section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Perangkat keras";
-
-/* Description of the Help section in Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Dapatkan bantuan dan dukungan";
-
-/* Title of the Help section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "Bantuan";
-
-/* Description of the settings to be found within the Local catalog section. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Kelola pengaturan katalog";
-
-/* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Katalog";
-
-/* Description of the settings to be found within the Store section. */
-"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Konfigurasi dan pengaturan toko";
-
-/* Title of the Store section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Toko";
-
-/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
-"pos.barcodeInfoModal.heading" = "Pemindaian barcode";
-
-/* New message about Bluetooth barcode scanner settings */
-"pos.barcodeInfoModal.i2.bluetoothMessage" = "• Hubungkan ke pemindai barcode Bluetooth Anda di pengaturan Bluetooth pada iOS.";
-
-/* Accessible version of Bluetooth message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "Pertama: Hubungkan ke pemindai barcode Bluetooth Anda di pengaturan Bluetooth pada iOS.";
-
-/* New introductory message for barcode scanner information */
-"pos.barcodeInfoModal.i2.introMessage" = "Anda dapat memindai barcode menggunakan pemindai eksternal untuk mengisi keranjang dengan cepat.";
-
-/* New message about scanning barcodes on item list */
-"pos.barcodeInfoModal.i2.scanMessage" = "• Pindai barcode saat berada di daftar item untuk menambahkan produk ke keranjang.";
-
-/* Accessible version of scan message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.scanMessage.accessible" = "Kedua: Pindai barcode saat berada di daftar item untuk menambahkan produk ke keranjang.";
-
-/* New message about ensuring search field is disabled during scanning */
-"pos.barcodeInfoModal.i2.searchMessage" = "• Pastikan kolom pencarian tidak diaktifkan saat memindai barcode.";
-
-/* Accessible version of search message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.searchMessage.accessible" = "Ketiga: Pastikan kolom pencarian tidak diaktifkan saat memindai barcode.";
-
-/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
-"pos.barcodeInfoModal.introMessage" = "Anda dapat memindai barcode menggunakan pemindai eksternal untuk mengisi keranjang dengan cepat.";
-
-/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
-"pos.barcodeInfoModal.moreDetailsLink" = "Rincian lengkap.";
-
-/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
-"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Rincian lengkap, tautan.";
-
-/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
-"pos.barcodeInfoModal.primaryMessage" = "• Atur barcode pada kolom \"GTIN, UPC, EAN, ISBN\" di Produk > Detail Produk > Inventaris. ";
-
-/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.primaryMessage.accessible" = "Pertama: Atur barcode pada kolom \"G-T-I-N, U-P-C, E-A-N, I-S-B-N\" melalui menu Produk, lalu Detail Produk, kemudian Inventaris.";
-
-/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
-"pos.barcodeInfoModal.productSetup.linkText" = "kunjungi dokumentasi";
-
-/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
-"pos.barcodeInfoModal.productSetup.message" = "Anda dapat mengatur barcode pada kolom GTIN, UPC, EAN, ISBN di tab inventaris produk. Untuk detail selengkapnya %1$@.";
-
-/* Accessible version of product setup message, announcing link for screen readers */
-"pos.barcodeInfoModal.productSetup.message.accessible" = "Anda dapat mengatur barcode pada kolom G-T-I-N, U-P-C, E-A-N, I-S-B-N di tab inventaris produk. Untuk detail selengkapnya kunjungi dokumentasi, tautan.";
-
-/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
-"pos.barcodeInfoModal.quaternaryMessage" = "• Pindai barcode saat berada di daftar item untuk menambahkan produk ke keranjang.";
-
-/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Keempat: Pindai barcode saat berada di daftar item untuk menambahkan produk ke keranjang.";
-
-/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
-"pos.barcodeInfoModal.quinaryMessage" = "Pemindai beroperasi seperti input keyboard, sehingga terkadang kemunculan keyboard perangkat lunak mungkin terhalang, misalnya pada kolom pencarian. Ketuk ikon keyboard untuk menampilkannya lagi.";
-
-/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage.2" = "• Lihat petunjuk pemindai barcode Bluetooth untuk mengatur mode HID. Biasanya, Anda perlu memindai barcode khusus pada buku manual.";
-
-/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Kedua: Lihat petunjuk pemindai barcode Bluetooth untuk mengatur mode H-I-D. Biasanya, Anda perlu memindai barcode khusus pada buku manual.";
-
-/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
-"pos.barcodeInfoModal.tertiaryMessage" = "• Hubungkan pemindai barcode Anda di pengaturan Bluetooth pada iOS.";
-
-/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Ketiga: Hubungkan pemindai barcode Anda di pengaturan Bluetooh pada iOS.";
-
-/* Title for the back button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.back.button.title" = "Kembali";
-
-/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
-"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Gambar kode yang harus dipindai oleh pemindai barcode.";
-
-/* Message shown when scanner setup is complete */
-"pos.barcodeScannerSetup.complete.instruction.2" = "Anda siap untuk mulai memindai produk. Lain kali Anda perlu menghubungkan pemindai, cukup nyalakan dan pemindai akan terhubung kembali secara otomatis.";
-
-/* Title shown when scanner setup is successfully completed */
-"pos.barcodeScannerSetup.complete.title" = "Pemindai sudah siap!";
-
-/* Title for the done button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.done.button.title" = "Selesai";
-
-/* Title for the back button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.back.button.title" = "Kembali";
-
-/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.error.instruction" = "Silahkan periksa manual pemindai dan atur ulang ke pengaturan pabrik, lalu coba lagi alur penyiapan.";
-
-/* Title for the retry button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.retry.button.title" = "Coba lagi";
-
-/* Title shown when there's an error during scanner setup */
-"pos.barcodeScannerSetup.error.title" = "Masalah pemindaian ditemukan";
-
-/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
-"pos.barcodeScannerSetup.hidSetup.instruction" = "Gunakan pemindai barcode untuk memindai kode di bawah ini dan mengaktifkan mode HID Bluetooth.";
-
-/* Title for Netum 1228BC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
-
-/* Title for the next button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.next.button.title" = "Berikutnya";
-
-/* Title for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.title" = "Lainnya";
-
-/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
-"pos.barcodeScannerSetup.pairSetup.instruction" = "Gunakan pemindai barcode untuk memindai kode di bawah ini dan masuk ke mode pemasangan.";
-
-/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
-"pos.barcodeScannerSetup.pairing.instruction.format" = "Aktifkan Bluetooth dan pilih pemindai %1$@ Anda di pengaturan Bluetooth iOS. Pemindai akan berbunyi bip dan lampu LED-nya akan menyala terus saat dipasangkan.";
-
-/* Button title to open device Settings for scanner pairing */
-"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Buka pengaturan perangkat Anda";
-
-/* Title for the scanner pairing step */
-"pos.barcodeScannerSetup.pairing.title" = "Pasangkan pemindai Anda";
-
-/* Title format for a product barcode setup step */
-"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Cara menyiapkan barcode produk";
-
-/* Button title for accessing product barcode setup information */
-"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Cara menyiapkan barcode produk";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scanner.setup.title.format" = "Penyiapan pemindai";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scannerInfo.title" = "Penyiapan pemindai";
-
-/* Display name for Netum 1228BC barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
-
-/* Display name for other/unspecified barcode scanner models */
-"pos.barcodeScannerSetup.scannerType.other.name" = "Pemindai lainnya";
-
-/* Display name for Star BSH-20B barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
-
-/* Display name for Tera 1200 2D barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
-
-/* Heading for the barcode scanner setup selection screen */
-"pos.barcodeScannerSetup.selection.heading" = "Menyiapkan pemindai barcode";
-
-/* Instruction message for selecting a barcode scanner model from the list */
-"pos.barcodeScannerSetup.selection.introMessage" = "Pilih model dari daftar berikut:";
-
-/* Title for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
-
-/* Title for Tera 1200 2D scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
-
-/* Instruction for testing the scanner by scanning a barcode */
-"pos.barcodeScannerSetup.test.instruction" = "Pindai barcode untuk menguji pemindai.";
-
-/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.test.timeout.instruction" = "Pindai barcode untuk menguji pemindai. Jika kendala terus berlanjut, silakan periksa pengaturan Bluetooth dan coba lagi.";
-
-/* Title shown when scanner test times out without detecting a scan */
-"pos.barcodeScannerSetup.test.timeout.title" = "Data pemindaian belum ditemukan";
-
-/* Title for the scanner testing step */
-"pos.barcodeScannerSetup.test.title" = "Uji pemindai Anda";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartHint" = "Ketuk produk ke \n tambahkan ke keranjang";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartOrScanHint" = "Ketuk produk untuk \n menambahkannya ke keranjang, atau ";
-
-/* Title at the header for the Cart view. */
-"pos.cartView.cartTitle" = "Keranjang";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Pindai barcode";
-
-/* Title for the 'Checkout' button to process the Order. */
-"pos.cartView.checkoutButtonTitle" = "Keluar";
-
-/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle.1" = "Hapus keranjang";
-
-/* Title shown on a toast view that appears when there's no internet connection */
-"pos.connectivity.title" = "Tidak ada koneksi internet";
-
-/* A button that dismisses coupon creation sheet */
-"pos.couponCreationSheet.selectCoupon.cancel" = "Batalkan";
-
-/* A title for the view that selects the type of coupon to create */
-"pos.couponCreationSheet.selectCoupon.title" = "Buat kupon";
-
-/* Body text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitBody" = "Semua pesanan yang sedang aktif akan hilang.";
-
-/* Button text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitButtom" = "Keluar";
-
-/* Title of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
-
-/* Button title to dismiss POS ineligible view */
-"pos.ineligible.dismiss.button.title" = "Keluar dari POS";
-
-/* Button title to enable the POS feature switch and refresh POS eligibility check */
-"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Aktifkan fitur POS";
-
-/* Button title to refresh POS eligibility check */
-"pos.ineligible.refresh.button.title" = "Coba lagi";
-
-/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled.3" = "Point of Sale harus diaktifkan untuk melanjutkan. Aktifkan fitur POS dari admin WordPress Anda di pengaturan WooCommerce > Lanjutan > Fitur dan coba lagi.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Coba luncurkan ulang aplikasi untuk mengatasi masalah ini.";
-
-/* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Kami tidak dapat memuat info pengaturan situs. Harap periksa koneksi internet Anda dan coba lagi. Jika masalah berlanjut, hubungi dukungan untuk mendapatkan bantuan.";
-
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency.1" = "Sistem POS tidak tersedia untuk mata uang toko Anda. Di %1$@, saat ini hanya mendukung %2$@. Harap periksa pengaturan mata uang toko Anda atau hubungi bagian dukungan untuk mendapatkan bantuan.";
-
-/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
-"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Versi WooCommerce Anda tidak didukung. Sistem POS memerlukan WooCommerce versi %1$@ atau yang lebih tinggi. Harap perbarui WooCommerce ke versi terbaru.";
-
-/* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "Kami tidak dapat memuat info plugin WooCommerce. Pastikan plugin WooCommerce telah diinstal dan diaktifkan dari admin WordPress Anda. Jika masih terjadi kendala, hubungi dukungan untuk mendapatkan bantuan.";
-
-/* Title shown in POS ineligible view */
-"pos.ineligible.title" = "Tidak dapat memuat";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "Harap periksa koneksi internet Anda dan coba lagi.";
-
-/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle.2" = "Tidak dapat mengaktifkan kupon.";
-
-/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "Gagal memuat kupon lainnya";
-
-/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle.2" = "Tidak dapat memuat lebih banyak produk";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle.2" = "Tidak dapat memuat produk";
-
-/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "Tidak dapat memuat lebih banyak variasi";
-
-/* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle.2" = "Tidak dapat memuat variasi";
-
-/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle.2" = "Tidak dapat menyegarkan kupon";
-
-/* Generic subtitle appearing on error screens when there's an error. */
-"pos.itemList.genericErrorSubtitle" = "Silakan coba lagi.";
-
-/* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction.2" = "Aktifkan kupon";
-
-/* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle.2" = "Aktifkan kode kupon di toko Anda untuk mulai membuat kupon bagi pelanggan Anda.";
-
-/* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle.2" = "Mulai terima kupon";
-
-/* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle.2" = "Tidak dapat memuat kupon";
-
-/* Generic text for retry buttons appearing on error screens. */
-"pos.itemList.retryButtonTitle" = "Coba lagi";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "Produk";
-
-/* Label/placeholder text for the search field for Coupons in Point of Sale. */
-"pos.itemListView.coupons.searchField.label" = "Cari kupon";
-
-/* Label/placeholder text for the search field for Products in Point of Sale. */
-"pos.itemListView.products.searchField.label.1" = "Cari produk";
-
-/* Fallback label/placeholder text for the search field in Point of Sale. */
-"pos.itemListView.searchField.label" = "Cari";
-
-/* Title of the button at the top of Point of Sale to switch to Coupons list. */
-"pos.itemlistview.couponsTitle" = "Kupon";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "Produk";
-
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.emptyListText" = "Cari di toko Anda";
-
-/* Title for the list of popular products shown before a search term is typed in POS */
-"pos.itemsearch.before.search.popularProducts.title" = "Produk populer";
-
-/* Title for the list of recent searches shown before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.title" = "Pencarian terbaru";
-
-/* Accessibility label for button to dismiss a notice banner */
-"pos.noticeView.dismiss.button.accessibiltyLabel" = "Abaikan";
-
-/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
-"pos.orderBadgeView.accessibilityLabel" = "Status pesanan: %1$@";
-
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "Tidak ada pesanan untuk ditampilkan";
-
-/* Title at the header for the Order Details empty view. */
-"pos.orderDetailsEmptyView.ordersTitle" = "Pesanan";
-
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Produk";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsLoadingView.totalsTitle" = "Total";
-
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "Total diskon: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "Total diskon";
-
-/* Accessibility hint for email receipt button on order details view */
-"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Ketuk untuk mengirim tanda terima pesanan melalui email";
-
-/* Label for email receipt action on order details view */
-"pos.orderDetailsView.emailReceiptAction.title" = "Email tanda terima";
-
-/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Tanggal pesanan: %1$@, Status: %2$@";
-
-/* Email portion of order header accessibility label. %1$@ is customer email address. */
-"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Email pembeli: %1$@";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "Pembayaran bersih: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "Pembayaran Bersih";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "Jumlah yang telah dibayarkan: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "Metode pembayaran: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "Jumlah yang telah dibayarkan";
-
-/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
-"pos.orderDetailsView.productRow.accessibilityLabel" = "Jumlah: %1$@ harga satuan %2$@, Total %3$@";
-
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Produk";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Produk";
-
-/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
-"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "Alasan: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "Dana dikembalikan: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Alasan: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "Dana dikembalikan";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "Subtotal produk: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "Pajak: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "Pajak";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "Total pesanan: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "Total";
-
-/* Section title for the order totals breakdown */
-"pos.orderDetailsView.totalsTitle" = "Jumlah";
-
-/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
-"pos.orderList.failedToLoadOrdersNextPageTitle" = "Tidak dapat memuat lebih banyak pesanan";
-
-/* Text appearing on the order list screen when there's an error loading orders. */
-"pos.orderList.failedToLoadOrdersTitle" = "Tidak dapat memuat pesanan";
-
-/* Button text for refreshing orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle" = "Segarkan";
-
-/* Hint text suggesting to modify search terms when no orders are found. */
-"pos.orderListView.emptyOrdersSearchHint" = "Coba ubah istilah pencarian.";
-
-/* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "Kami tidak menemukan hasil yang cocok dengan pencarian.";
-
-/* Title appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchTitle" = "Tidak ada pesanan";
-
-/* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle" = "Pesanan akan muncul di sini setelah Anda mulai memproses penjualan melalui POS.";
-
-/* Title appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersTitle" = "Belum ada pesanan";
-
-/* Accessibility hint for order row indicating the action when tapped. */
-"pos.orderListView.orderRow.accessibilityHint" = "Ketuk untuk melihat rincian pesanan";
-
-/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
-"pos.orderListView.orderRow.accessibilityLabel" = "Pesanan #%1$@, Total %2$@, %3$@, Status: %4$@";
-
-/* Email portion of order row accessibility label. %1$@ is customer email address. */
-"pos.orderListView.orderRow.accessibilityLabel.email" = "Email: %1$@";
-
-/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
-"pos.orderListView.orderTitle" = "#%1$@";
-
-/* Title at the header for the Orders view. */
-"pos.orderListView.ordersTitle" = "Pesanan";
-
-/* Accessibility label for the search button in orders list. */
-"pos.orderListView.searchButton.accessibilityLabel" = "Cari pesanan";
-
-/* Placeholder for a search field in the Orders view. */
-"pos.orderListView.searchFieldPlaceholder" = "Cari pesanan";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "Kami tidak dapat menemukan kupon dengan nama tersebut — coba sesuaikan istilah pencarian.";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Kupon dapat menjadi cara yang efektif untuk meningkatkan bisnis. Ingin membuat kupon?";
-
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Kupon tidak ditemukan";
-
-/* Text for the button appearing on the products list screen when there are no products found. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Segarkan";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
-
-/* Text providing additional search tips when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Nama variasi tidak dapat dicari, maka gunakan nama produk induk.";
-
-/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "Kami tidak dapat menemukan produk yang sesuai — coba sesuaikan istilah pencarian Anda.";
-
-/* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Produk tidak ditemukan";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS saat ini hanya mendukung produk sederhana dan bervariasi.";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "Produk yang didukung tidak ditemukan";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Untuk menambahkan produk, keluar dari POS, kemudian edit produk ini di tab Produk.";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS hanya mendukung variasi bukan unduhan yang sudah diaktifkan.";
-
-/* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "Tidak ada variasi yang didukung";
-
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Buat kupon";
-
-/* Title for the OK button on the pos information modal */
-"pos.posInformationModal.ok.button.title" = "Oke";
-
-/* Accessibility label for the clear button in the Point of Sale search screen. */
-"pos.searchview.searchField.clearButton.accessibilityLabel" = "Hapus Pencarian";
-
-/* Action text in the simple products information modal in POS */
-"pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
-
-/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.hint.variableAndSimple" = "Untuk memproses pembayaran atas produk yang tidak didukung, keluar dari POS, kemudian buat pesanan baru dari tab pesanan.";
-
-/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.message.future.variableAndSimple" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
-
-/* Message in the simple products information modal in POS when variable products are supported */
-"pos.simpleProductsModal.message.issue.variableAndSimple" = "Saat ini, hanya produk sederhana dan bukan unduhan yang dapat menggunakan POS.";
-
-/* Title of the simple products information modal in POS */
-"pos.simpleProductsModal.title" = "Mengapa produk saya tidak muncul?";
-
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ tersedia";
-
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "Stok habis";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
-
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "Pesanan baru";
-
-/* Button title for the receipt button */
-"pos.totalsView.button.sendReceipt" = "Email tanda terima";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "Pembayaran tunai";
-
-/* Title for discount total amount field */
-"pos.totalsView.discountTotal2" = "Total diskon";
-
-/* Title for subtotal amount field */
-"pos.totalsView.subtotal" = "Subtotal";
-
-/* Title for taxes amount field */
-"pos.totalsView.taxes" = "Pajak";
-
-/* Title for total amount field */
-"pos.totalsView.total" = "Total";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "Sesuaikan pemisah layar Anda untuk memberikan lebih banyak ruang bagi Point of Sale.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "Point of Sale tidak didukung pada lebar layar ini.";
-
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Izinkan pembaruan penuh menggunakan koneksi data seluler";
-
-/* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "Ukuran katalog";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "Status Katalog";
-
-/* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Pembaruan penuh terakhir";
-
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Pembaruan terakhir";
-
-/* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Mengelola Penggunaan Data";
-
-/* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Pembaruan Katalog Manual";
-
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Gunakan segarkan ini hanya saat ada masalah - POS menyimpan data terkini secara otomatis.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "Segarkan katalog";
-
-/* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "Pengaturan Katalog";
-
-/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produk, %2$ld variasi";
-
-/* Text shown when catalog size cannot be determined. */
-"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Ukuran katalog tidak tersedia";
-
-/* Text shown when no update has been performed yet. */
-"posSettingsLocalCatalogViewModel.neverSynced" = "Tidak diperbarui";
-
-/* Text shown when update date cannot be determined. */
-"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Tanggal pembaruan tidak tersedia";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Tutup";
@@ -11905,6 +10772,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "Point of Sale";
+
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "Checkout Web";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "WP-Admin";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Batal";

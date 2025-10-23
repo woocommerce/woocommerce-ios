@@ -33,5 +33,5 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
 
     /// Force refresh eligibility (bypasses cache and updates eligibilityState)
     /// - Returns: Fresh eligibility state with reason if ineligible
-    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState
+    @discardableResult func refreshEligibilityState() async -> POSLocalCatalogEligibilityState
 }

@@ -38,7 +38,7 @@ final class POSLocalCatalogEligibilityService: @MainActor POSLocalCatalogEligibi
         _ = await self.refreshEligibilityState()
     }
 
-    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
+    @discardableResult func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
         // Check POS tab eligibility FIRST - no point in checking catalog if POS tab isn't eligible
         if case .ineligible = posTabEligibilityState {
             eligibilityState = .ineligible(reason: .posTabNotEligible)

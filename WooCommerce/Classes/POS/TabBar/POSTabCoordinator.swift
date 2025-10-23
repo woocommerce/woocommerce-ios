@@ -160,16 +160,15 @@ private extension POSTabCoordinator {
                 )
             }
 
-            // Check eligibility state - if it previously failed due to a transient error (like network), retry
-            let eligibilityState: POSLocalCatalogEligibilityState
-            if eligibilityService.eligibilityState != .eligible {
-                // Retry the check in case the initial failure was due to transient network issues
-                eligibilityState = await eligibilityService.refreshEligibilityState()
-            } else {
-                eligibilityState = eligibilityService.eligibilityState
+            switch eligibilityService.eligibilityState {
+            case .ineligible(reason: .catalogSizeCheckFailed):
+                // If we cached a failed check, we can recover by refreshing the value before we next open POS
+                await eligibilityService.refreshEligibilityState()
+            case .eligible, .ineligible:
+                break
             }
 
-            let isLocalCatalogEligible = eligibilityState == .eligible
+            let isLocalCatalogEligible = eligibilityService.eligibilityState == .eligible
 
             // Create service adaptor with eligibility service
             let serviceAdaptor = POSServiceLocatorAdaptor(localCatalogEligibilityService: eligibilityService)

@@ -141,7 +141,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
                 readable.append(product.name)
             }
             if let attendanceStatus {
-                readable.append(attendanceStatus.rawValue) // TODO: update to localized title when available
+                readable.append(attendanceStatus.localizedTitle)
             }
             if let paymentStatus {
                 readable.append(paymentStatus.localizedTitle)
@@ -230,16 +230,14 @@ extension BookingFiltersViewModel.BookingListFilter {
 
 // MARK: - FilterType conformance
 extension BookingResource: FilterType {
-    public var description: String { name }
-    public var isActive: Bool { true }
+    var description: String { name }
+    var isActive: Bool { true }
 }
 
 extension BookingAttendanceStatus: FilterType {
-    public var description: String {
-        "" // TODO: use localized title later
-    }
+    var description: String { localizedTitle }
 
-    public var isActive: Bool {
+    var isActive: Bool {
         switch self {
         case .booked, .checkedIn, .cancelled, .noShow:
             return true
@@ -250,9 +248,9 @@ extension BookingAttendanceStatus: FilterType {
 }
 
 extension BookingStatus: FilterType {
-    public var description: String { localizedTitle }
+    var description: String { localizedTitle }
 
-    public var isActive: Bool {
+    var isActive: Bool {
         switch self {
         case .complete, .paid, .unpaid, .cancelled, .pendingConfirmation, .confirmed:
             return true
@@ -264,14 +262,14 @@ extension BookingStatus: FilterType {
 
 extension FilterBookingsByProduct: FilterType {
     /// The user-facing description of the filter value.
-    public var description: String { name }
+    var description: String { name }
 
     /// Whether the filter is set to a non-empty value.
-    public var isActive: Bool { true }
+    var isActive: Bool { true }
 }
 
 extension BookingDateRangeFilter: FilterType {
-    public var description: String {
+    var description: String {
         // TODO: Format dates nicely when implementing date range selector
         if let startDate = startDate, let endDate = endDate {
             let formatter = DateFormatter()
@@ -299,7 +297,7 @@ extension BookingDateRangeFilter: FilterType {
         }
     }
 
-    public var isActive: Bool {
+    var isActive: Bool {
         startDate != nil || endDate != nil
     }
 }

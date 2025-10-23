@@ -24,6 +24,7 @@ struct PointOfSaleDashboardViewHelper {
                 // Continue to other checks
                 break
             case .syncFailed:
+                // TODO: WOOMOB-1565
                 return .error(PointOfSaleErrorState.errorOnLoadingOrders())
             }
         }

@@ -93,7 +93,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for products
     case products(siteID: Int64)
     // Filter list selector for customer
-    case customer(siteID: Int64)
+    case customer(siteID: Int64, source: FilterSource)
     // Filter list selector for booking team member
     case bookingResource(siteID: Int64)
     // Filter list selector for bookable product
@@ -343,26 +343,30 @@ private extension FilterListViewController {
                 }()
                 self.listSelector.present(controller, animated: true)
 
-            case .customer(let siteID):
+            case .customer(let siteID, let source):
+                let configuration: CustomerSelectorViewController.Configuration = {
+                    switch source {
+                    case .booking: .configurationForBookingFilter
+                    case .orders: .configurationForOrderFilter
+                    case .products: fatalError("Customer filter not supported!")
+                    }
+                }()
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
-                        configuration: .configurationForOrderFilter,
+                        configuration: configuration,
                         addressFormViewModel: nil,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(customer: customer)
 
                             self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                             self?.listSelector.reloadData()
-                            self?.listSelector.dismiss(animated: true)
+                            self?.listSelector.navigationController?.popViewController(animated: true)
                         }
                     )
                 }()
 
-                self.listSelector.present(
-                    WooNavigationController(rootViewController: controller),
-                    animated: true
-                )
+                self.listSelector.navigationController?.pushViewController(controller, animated: true)
             case .bookingResource(let siteID):
                 let selectedMember = selected.selectedValue as? BookingResource
                 let syncable = TeamMemberListSyncable(siteID: siteID)

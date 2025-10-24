@@ -192,7 +192,7 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        selectedValue: filters.product)
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .customer(siteID: siteID),
+                                       listSelectorConfig: .customer(siteID: siteID, source: .booking),
                                        selectedValue: filters.customer)
         case .attendanceStatus:
             let options: [BookingAttendanceStatus?] = [nil, .booked, .checkedIn, .cancelled, .noShow]

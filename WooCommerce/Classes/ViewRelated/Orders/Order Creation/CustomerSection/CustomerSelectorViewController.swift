@@ -82,6 +82,9 @@ extension CustomerSelectorViewController {
 
         // Whether to track when a customer cell is tapped.
         var shouldTrackCustomerAdded: Bool
+
+        // Whether the selector is presented modally
+        var isModal: Bool
     }
 }
 
@@ -134,7 +137,9 @@ private extension CustomerSelectorViewController {
 
     func configureNavigation() {
         navigationItem.title = configuration.title
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelWasPressed))
+        if configuration.isModal {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelWasPressed))
+        }
 
         if !configuration.disallowCreatingCustomer {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: .plusBarButtonItemImage,
@@ -264,13 +269,16 @@ private extension CustomerSelectorViewController {
 
         activityIndicator.startAnimating()
         viewModel.onCustomerSelected(customer, onCompletion: { [weak self] result in
-            self?.activityIndicator.stopAnimating()
+            guard let self else { return }
+            activityIndicator.stopAnimating()
 
             switch result {
             case .success:
-                self?.dismiss(animated: true)
+                if configuration.isModal {
+                    dismiss(animated: true)
+                }
             case .failure:
-                self?.showErrorNotice()
+                showErrorNotice()
             }
         })
     }

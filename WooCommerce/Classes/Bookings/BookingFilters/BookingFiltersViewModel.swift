@@ -188,7 +188,7 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        selectedValue: filters.teamMember)
         case .product(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .products(siteID: siteID),
+                                       listSelectorConfig: .bookableProduct(siteID: siteID),
                                        selectedValue: filters.product)
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,

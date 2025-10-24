@@ -96,6 +96,8 @@ enum FilterListValueSelectorConfig {
     case customer(siteID: Int64)
     // Filter list selector for booking team member
     case bookingResource(siteID: Int64)
+    // Filter list selector for bookable product
+    case bookableProduct(siteID: Int64)
 
 }
 
@@ -371,6 +373,27 @@ private extension FilterListViewController {
                     selectedItem: selectedMember,
                     onSelection: { [weak self] resource in
                         selected.selectedValue = resource
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                        self?.listSelector.navigationController?.popViewController(animated: true)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+
+            case .bookableProduct(let siteID):
+                let selectedProduct = selected.selectedValue as? BookingProductFilter
+                let syncable = BookableProductListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    selectedItem: selectedProduct?.product,
+                    onSelection: { [weak self] product in
+                        selected.selectedValue = {
+                            guard let product else { return BookingProductFilter?.none }
+                            return BookingProductFilter(product: product)
+                        }()
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                         self?.listSelector.reloadData()
                         self?.listSelector.navigationController?.popViewController(animated: true)

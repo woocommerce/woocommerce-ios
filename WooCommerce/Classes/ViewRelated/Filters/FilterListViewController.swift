@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 
@@ -362,13 +363,20 @@ private extension FilterListViewController {
                 )
             case .bookingResource(let siteID):
                 let selectedMember = selected.selectedValue as? BookingResource
-                let viewModel = BookingTeamMemberSelectorViewModel(siteID: siteID)
-                let hostingController = BookingTeamMemberSelectorHostingController(viewModel: viewModel, selectedMember: selectedMember) { [weak self] resource in
-                    selected.selectedValue = resource
-                    self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                    self?.listSelector.reloadData()
-                    self?.listSelector.navigationController?.popViewController(animated: true)
-                }
+                let syncable = TeamMemberListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let bookingListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    selectedItem: selectedMember,
+                    onSelection: { [weak self] resource in
+                        selected.selectedValue = resource
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                        self?.listSelector.navigationController?.popViewController(animated: true)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: bookingListSelectorView)
                 listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }

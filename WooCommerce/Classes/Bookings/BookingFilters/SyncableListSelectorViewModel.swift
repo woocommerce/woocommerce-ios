@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-// View model for `BookingTeamMemberSelectorView`
-final class BookingTeamMemberSelectorViewModel: ObservableObject {
-    @Published private(set) var resources: [BookingResource] = []
+// Generic view model for syncable data list selector views
+final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObject {
+    @Published private(set) var items: [Syncable.ModelType] = []
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -12,7 +12,7 @@ final class BookingTeamMemberSelectorViewModel: ObservableObject {
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
-    private let siteID: Int64
+    private let syncable: Syncable
     private let stores: StoresManager
     private let storage: StorageManagerType
 
@@ -20,20 +20,21 @@ final class BookingTeamMemberSelectorViewModel: ObservableObject {
     private let paginationTracker: PaginationTracker
     private let pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex
 
-    /// BookingResource ResultsController.
-    private lazy var resultsController: ResultsController<StorageBookingResource> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptor = NSSortDescriptor(key: "resourceID", ascending: false)
-        let resultsController = ResultsController<StorageBookingResource>(storageManager: storage,
-                                                                  matching: predicate,
-                                                                  sortedBy: [sortDescriptor])
-        return resultsController
+    /// ResultsController configured by the syncable
+    private lazy var resultsController: ResultsController<Syncable.StorageType> = {
+        let predicate = syncable.createPredicate()
+        let sortDescriptors = syncable.createSortDescriptors()
+        return ResultsController<Syncable.StorageType>(
+            storageManager: storage,
+            matching: predicate,
+            sortedBy: sortDescriptors
+        )
     }()
 
-    init(siteID: Int64,
+    init(syncable: Syncable,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {
-        self.siteID = siteID
+        self.syncable = syncable
         self.stores = stores
         self.storage = storage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
@@ -51,15 +52,15 @@ final class BookingTeamMemberSelectorViewModel: ObservableObject {
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
     }
-}
 
-private extension BookingTeamMemberSelectorViewModel {
-    func configurePaginationTracker() {
+    // MARK: - Private helper methods
+
+    private func configurePaginationTracker() {
         paginationTracker.delegate = self
     }
 
     /// Performs initial fetch from storage and updates results.
-    func configureResultsController() {
+    private func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
             self?.updateResults()
         }
@@ -75,17 +76,16 @@ private extension BookingTeamMemberSelectorViewModel {
     }
 
     /// Updates row view models and sync state.
-    func updateResults() {
-        resources = resultsController.fetchedObjects
+    private func updateResults() {
+        items = resultsController.fetchedObjects
         transitionToResultsUpdatedState()
     }
 }
 
-extension BookingTeamMemberSelectorViewModel: PaginationTrackerDelegate {
+extension SyncableListSelectorViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
-        let action = BookingAction.synchronizeResources(
-            siteID: siteID,
+        let action = syncable.createSyncAction(
             pageNumber: pageNumber,
             pageSize: pageSize
         ) { [weak self] result in
@@ -94,7 +94,7 @@ extension BookingTeamMemberSelectorViewModel: PaginationTrackerDelegate {
                 onCompletion?(.success(hasNextPage))
 
             case .failure(let error):
-                DDLogError("⛔️ Error synchronizing bookings: \(error)")
+                DDLogError("⛔️ Error synchronizing: \(error)")
                 onCompletion?(.failure(error))
             }
 
@@ -106,8 +106,8 @@ extension BookingTeamMemberSelectorViewModel: PaginationTrackerDelegate {
 
 // MARK: State Machine
 
-extension BookingTeamMemberSelectorViewModel {
-    /// Represents possible states for syncing bookings.
+extension SyncableListSelectorViewModel {
+    /// Represents possible states for syncing items.
     enum SyncState: Equatable {
         case syncingFirstPage
         case results
@@ -117,7 +117,7 @@ extension BookingTeamMemberSelectorViewModel {
     /// Update states for sync from remote.
     func transitionToSyncingState() {
         shouldShowBottomActivityIndicator = true
-        if resources.isEmpty {
+        if items.isEmpty {
             syncState = .syncingFirstPage
         }
     }
@@ -125,6 +125,6 @@ extension BookingTeamMemberSelectorViewModel {
     /// Update states after sync is complete.
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
-        syncState = resources.isNotEmpty ? .results : .empty
+        syncState = items.isNotEmpty ? .results : .empty
     }
 }

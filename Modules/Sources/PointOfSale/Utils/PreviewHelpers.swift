@@ -30,6 +30,7 @@ import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncState
+import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
@@ -629,13 +630,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         try await Task.sleep(nanoseconds: 1_000_000_000)
     }
 
-    let fullSyncStateStream: AsyncStream<POSCatalogSyncState> = {
-        let (stream, _) = AsyncStream<POSCatalogSyncState>.makeStream()
-        return stream
-    }()
+    let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return .syncCompleted(siteID: siteID)
+        return fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
     }
 }
 

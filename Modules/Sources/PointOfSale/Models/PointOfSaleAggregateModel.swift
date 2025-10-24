@@ -16,6 +16,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncState
+import class Yosemite.POSCatalogSyncCoordinator
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -63,6 +64,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
 
     private var cancellables: Set<AnyCancellable> = []
+    private var catalogSyncStateTask: Task<Void, Never>?
 
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
@@ -117,7 +119,7 @@ protocol PointOfSaleAggregateModelProtocol {
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
         performIncrementalSync()
-        publishCatalogSyncState()
+        setupCatalogSyncStateObservation()
     }
 }
 
@@ -601,6 +603,7 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         resetCardReaderObservation()
         cancellables.forEach { $0.cancel() }
+        catalogSyncStateTask?.cancel()
     }
 }
 
@@ -630,17 +633,26 @@ private extension PointOfSaleAggregateModel {
 // MARK: - Catalog Sync State Observation
 
 private extension PointOfSaleAggregateModel {
-    private func publishCatalogSyncState() {
+    private func setupCatalogSyncStateObservation() {
         guard let coordinator = catalogSyncCoordinator else { return }
 
-        Task { @MainActor [weak self] in
+        Task { @MainActor in
+            catalogSyncState = await coordinator.lastFullSyncState(for: siteID)
+        }
+
+        observeCatalogSyncState()
+    }
+
+    @Sendable private func observeCatalogSyncState() {
+        withObservationTracking { [weak self] in
             guard let self else { return }
 
-            catalogSyncState = await coordinator.lastFullSyncState(for: siteID)
-
-            for await state in coordinator.fullSyncStateStream {
+            if let state =  catalogSyncCoordinator?.fullSyncStateModel.state[siteID] {
                 catalogSyncState = state
             }
+        } onChange: { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async(execute: observeCatalogSyncState)
         }
     }
 }

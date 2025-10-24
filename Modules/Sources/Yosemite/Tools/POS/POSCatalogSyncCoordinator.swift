@@ -29,7 +29,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws
 
     /// Stream that emits full sync state updates
-    var fullSyncStateStream: AsyncStream<POSCatalogSyncState> { get }
+    var fullSyncStateModel: POSCatalogSyncStateModel { get }
 
     /// Returns the last known full sync state for a site
     /// If no state is cached, determines state from lastSyncDate
@@ -70,12 +70,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
 
-    /// Stream for full sync state updates
-    public nonisolated let fullSyncStateStream: AsyncStream<POSCatalogSyncState>
-    /// Continuation for emitting state updates
-    private let fullSyncStateStreamContinuation: AsyncStream<POSCatalogSyncState>.Continuation
-    /// Cache of last known full sync state for each site
-    private var fullSyncStateCache: [Int64: POSCatalogSyncState] = [:]
+    /// Observable model for full sync state updates
+    public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
@@ -87,10 +83,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.grdbManager = grdbManager
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultSizeLimitForPOSCatalog
         self.catalogSizeChecker = catalogSizeChecker
-
-        let (stream, continuation) = AsyncStream<POSCatalogSyncState>.makeStream()
-        self.fullSyncStateStream = stream
-        self.fullSyncStateStreamContinuation = continuation
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
@@ -102,7 +94,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             return
         }
 
-        if case .syncStarted = fullSyncStateCache[siteID] {
+        if case .syncStarted = fullSyncStateModel.state[siteID] {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
         }
@@ -309,7 +301,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     public func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        if let cached = fullSyncStateCache[siteID] {
+        if let cached = fullSyncStateModel.state[siteID] {
             return cached
         }
 
@@ -330,9 +322,15 @@ private extension POSCatalogSyncCoordinator {
             id
         }
 
-        fullSyncStateCache[siteID] = state
-        fullSyncStateStreamContinuation.yield(state)
+        fullSyncStateModel.state[siteID] = state
     }
+}
+
+@Observable
+public class POSCatalogSyncStateModel {
+    public var state: [Int64: POSCatalogSyncState] = [:]
+
+    public init() {}
 }
 
 public enum POSCatalogSyncState: Equatable {

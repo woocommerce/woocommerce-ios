@@ -292,12 +292,9 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         // Not used
     }
 
-    let fullSyncStateStream: AsyncStream<POSCatalogSyncState> = {
-        let (stream, _) = AsyncStream<POSCatalogSyncState>.makeStream()
-        return stream
-    }()
+    let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return .syncNeverDone(siteID: siteID)
+        return fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
 }

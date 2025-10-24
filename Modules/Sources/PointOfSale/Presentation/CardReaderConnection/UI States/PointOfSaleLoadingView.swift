@@ -1,15 +1,12 @@
 import SwiftUI
 
-struct POSLoadingAnimation {
-    let namespace: Namespace.ID
-    let progressTransitionId: String = "pos_card_present_payment_payment_alert_icon_matched_geometry_id"
-}
-
 struct PointOfSaleLoadingView: View {
-    private let animation: POSLoadingAnimation
+    private let isCatalogSyncing: Bool
+    private let onExit: (() -> Void)?
 
-    init(animation: POSLoadingAnimation) {
-        self.animation = animation
+    init(isCatalogSyncing: Bool = false, onExit: (() -> Void)? = nil) {
+        self.isCatalogSyncing = isCatalogSyncing
+        self.onExit = onExit
     }
 
     var body: some View {
@@ -19,8 +16,29 @@ struct PointOfSaleLoadingView: View {
                 Spacer()
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle())
-                    .matchedGeometryEffect(id: animation.progressTransitionId, in: animation.namespace, properties: .position)
-                Spacer()
+
+                if isCatalogSyncing {
+                    Spacer().frame(height: POSSpacing.large * 2)
+                    Text(Localization.syncingTitle)
+                        .font(.posHeadingBold)
+                    Spacer()
+                    VStack(spacing: POSSpacing.medium) {
+                        Button {
+                            onExit?()
+                        } label: {
+                            Text(Localization.exitButtonTitle)
+                                .font(.posBodySmallBold(underline: true))
+                                .foregroundStyle(Color.posOnSurface)
+                        }
+
+                        Text(Localization.exitButtonDescription)
+                            .font(.posCaptionRegular)
+                            .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                    }
+                    .padding(.bottom, POSPadding.large)
+                } else {
+                    Spacer()
+                }
             }
             .multilineTextAlignment(.center)
             Spacer()
@@ -30,6 +48,31 @@ struct PointOfSaleLoadingView: View {
 }
 
 #Preview {
-    @Previewable @Namespace var namespace
-    PointOfSaleLoadingView(animation: .init(namespace: namespace))
+    PointOfSaleLoadingView()
+}
+
+#Preview("Catalog Syncing") {
+    PointOfSaleLoadingView(isCatalogSyncing: true) {}
+}
+
+private extension PointOfSaleLoadingView {
+    struct Localization {
+        static let syncingTitle = NSLocalizedString(
+            "pointOfSale.catalogLoadingView.title",
+            value: "Syncing catalog",
+            comment: "A title of a full screen view that is displayed while the POS catalog is being synced."
+        )
+
+        static let exitButtonTitle = NSLocalizedString(
+            "pointOfSale.catalogLoadingView.exitButton.title",
+            value: "Exit POS",
+            comment: "A button that exits POS."
+        )
+
+        static let exitButtonDescription = NSLocalizedString(
+            "pointOfSale.catalogLoadingView.exitButton.description",
+            value: "Syncing will continue in the background.",
+            comment: "A description within a full screen loading view for POS catalog."
+        )
+    }
 }

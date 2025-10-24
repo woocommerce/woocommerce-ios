@@ -26,9 +26,6 @@ public struct PointOfSaleEntryPointView: View {
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @Namespace private var namespace
-    private var animation: POSLoadingAnimation { .init(namespace: namespace) }
-
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
@@ -140,10 +137,10 @@ public struct PointOfSaleEntryPointView: View {
     public var body: some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView(animation: animation)
+                PointOfSaleDashboardView()
                     .environment(posModel)
             } else {
-                PointOfSaleLoadingView(animation: animation)
+                PointOfSaleLoadingView()
             }
         }
         .task {

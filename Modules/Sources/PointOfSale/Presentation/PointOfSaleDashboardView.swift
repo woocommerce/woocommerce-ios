@@ -14,8 +14,6 @@ struct PointOfSaleDashboardView: View {
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
-    let animation: POSLoadingAnimation
-
     @State private var floatingSize: CGSize = .zero
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
@@ -62,17 +60,12 @@ struct PointOfSaleDashboardView: View {
         ZStack(alignment: .bottomLeading) {
             switch viewState {
             case .loading(let isCatalogSyncing):
-                if isCatalogSyncing {
-                    POSCatalogLoadingView(animation: animation) {
-                        dismiss()
-                    }
-                        .transition(.opacity)
-                        .ignoresSafeArea()
-                } else {
-                    PointOfSaleLoadingView(animation: animation)
-                        .transition(.opacity)
-                        .ignoresSafeArea()
-                }
+                PointOfSaleLoadingView(
+                    isCatalogSyncing: isCatalogSyncing,
+                    onExit: { dismiss() }
+                )
+                    .transition(.opacity)
+                    .ignoresSafeArea()
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
@@ -284,21 +277,19 @@ private extension PointOfSaleDashboardView {
 #if DEBUG
 
 #Preview("Container loading state") {
-    @Previewable @Namespace var namespace
     return NavigationStack {
-        PointOfSaleDashboardView(animation: .init(namespace: namespace))
+        PointOfSaleDashboardView()
             .environment(POSPreviewHelpers.makePreviewAggregateModel())
             .environmentObject(POSModalManager())
     }
 }
 
 #Preview("Content loading state") {
-    @Previewable @Namespace var namespace
     let itemsController = PointOfSalePreviewItemsController()
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
     return NavigationStack {
-        PointOfSaleDashboardView(animation: .init(namespace: namespace))
+        PointOfSaleDashboardView()
             .environment(posModel)
             .environmentObject(POSModalManager())
     }

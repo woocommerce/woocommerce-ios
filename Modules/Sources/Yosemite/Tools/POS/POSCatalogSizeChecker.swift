@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import Combine
 
 /// Protocol for checking the size of a remote POS catalog
 public protocol POSCatalogSizeCheckerProtocol {
@@ -16,6 +17,15 @@ public struct POSCatalogSizeChecker: POSCatalogSizeCheckerProtocol {
 
     public init(syncRemote: POSCatalogSyncRemoteProtocol) {
         self.syncRemote = syncRemote
+    }
+
+    public init(credentials: Credentials?,
+                selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>) {
+        let syncRemote = POSCatalogSyncRemote(network: AlamofireNetwork(credentials: credentials,
+                                                                        selectedSite: selectedSite,
+                                                                        appPasswordSupportState: appPasswordSupportState))
+        self.init(syncRemote: syncRemote)
     }
 
     public func checkCatalogSize(for siteID: Int64) async throws -> POSCatalogSize {

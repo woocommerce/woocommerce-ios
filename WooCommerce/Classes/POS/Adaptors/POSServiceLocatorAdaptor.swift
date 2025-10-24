@@ -14,6 +14,9 @@ import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
+    init() {
+    }
+
     var analytics: POSAnalyticsProviding {
         POSAnalyticsAdaptor()
     }

@@ -270,7 +270,7 @@ struct POSCatalogSyncCoordinatorTests {
             #expect(error == POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
         }
 
-        let currentState = await sut.lastFullSyncState(for: sampleSiteID)
+        let currentState = await sut.loadLastFullSyncState(for: sampleSiteID)
         let isSyncStarted: Bool = if case .syncStarted = currentState { true } else { false }
         #expect(isSyncStarted)
 
@@ -699,7 +699,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func lastFullSyncState_returns_syncNeverDone_when_never_synced() async throws {
         // Given - no previous sync for this site
         // When - query state
-        let state = await sut.lastFullSyncState(for: sampleSiteID)
+        let state = await sut.loadLastFullSyncState(for: sampleSiteID)
 
         // Then - should return syncNeverDone
         #expect(state == .syncNeverDone(siteID: sampleSiteID))
@@ -710,7 +710,7 @@ struct POSCatalogSyncCoordinatorTests {
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-3600))
 
         // When - query state
-        let state = await sut.lastFullSyncState(for: sampleSiteID)
+        let state = await sut.loadLastFullSyncState(for: sampleSiteID)
 
         // Then - should return syncCompleted
         #expect(state == .syncCompleted(siteID: sampleSiteID))

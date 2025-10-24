@@ -18,7 +18,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
 
@@ -43,7 +43,7 @@ final class PointOfSaleItemsControllerTests {
 
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.itemPages = [expectedItems]
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
 
         // When
         await sut.loadItems(base: .root)
@@ -64,7 +64,7 @@ final class PointOfSaleItemsControllerTests {
         )
 
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
         itemProvider.shouldSimulateTwoPages = true
 
         // When
@@ -85,7 +85,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.itemPages = [expectedItems]
 
@@ -112,7 +112,7 @@ final class PointOfSaleItemsControllerTests {
         )
 
         // When/Then
-        #expect(sut.itemsViewState.containerState == .loading)
+        #expect(sut.itemsViewState.containerState == .loading())
     }
 
     @Test func loadNextItems_when_initial_items_empty_then_container_state_is_content_and_root_state_is_empty() async throws {
@@ -126,7 +126,7 @@ final class PointOfSaleItemsControllerTests {
 
         itemProvider.shouldReturnZeroItems = true
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
 
         // When
         await sut.loadNextItems(base: .root)
@@ -148,7 +148,7 @@ final class PointOfSaleItemsControllerTests {
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.itemPages = [initialItems]
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
 
         // When
         await sut.loadNextItems(base: .root)
@@ -191,7 +191,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
 
@@ -304,7 +304,7 @@ final class PointOfSaleItemsControllerTests {
 
         itemProvider.shouldReturnZeroItems = true
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
 
         // When
         await sut.loadItems(base: .root)
@@ -324,7 +324,7 @@ final class PointOfSaleItemsControllerTests {
         )
 
         itemProvider.errorToThrow = MockError.requestFailed
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
 
         // When
         await sut.loadItems(base: .root)
@@ -343,7 +343,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
 
         itemProvider.shouldSimulateTwoPages = true
         await sut.loadItems(base: .root)
@@ -398,7 +398,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        try #require(sut.itemsViewState.containerState == .loading)
+        try #require(sut.itemsViewState.containerState == .loading())
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.itemPages = [expectedItems]
 

@@ -33,7 +33,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
 
     /// Returns the last known full sync state for a site
     /// If no state is cached, determines state from lastSyncDate
-    func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState
+    func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -300,16 +300,21 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    public func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+    public func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
         if let cached = fullSyncStateModel.state[siteID] {
             return cached
         }
 
+        let state: POSCatalogSyncState
+
         if await lastFullSyncDate(for: siteID) == nil {
-            return .syncNeverDone(siteID: siteID)
+            state = .syncNeverDone(siteID: siteID)
         } else {
-            return .syncCompleted(siteID: siteID)
+            state = .syncCompleted(siteID: siteID)
         }
+
+        fullSyncStateModel.state[siteID] = state
+        return state
     }
 }
 
@@ -332,6 +337,7 @@ public class POSCatalogSyncStateModel {
 
     public init() {}
 }
+
 
 public enum POSCatalogSyncState: Equatable {
     case syncStarted(siteID: Int64, isInitialSync: Bool)

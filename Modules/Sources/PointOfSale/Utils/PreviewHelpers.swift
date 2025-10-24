@@ -102,7 +102,7 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 }
 
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
     func enableCoupons() async { }
@@ -114,7 +114,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
 
@@ -632,7 +632,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
-    func lastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+    func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
         return fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
     }
 }

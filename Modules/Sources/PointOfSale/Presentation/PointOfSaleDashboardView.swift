@@ -42,10 +42,9 @@ struct PointOfSaleDashboardView: View {
     // MARK: View State
 
     enum ViewState: Equatable {
-        case loading
+        case loading(isCatalogSyncing: Bool = false)
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
-        case catalogSyncing
         case content
         case unsupportedWidth
     }
@@ -54,8 +53,7 @@ struct PointOfSaleDashboardView: View {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass,
-            catalogSyncState: posModel.catalogSyncState
+            horizontalSizeClass: horizontalSizeClass
         )
     }
 
@@ -63,10 +61,18 @@ struct PointOfSaleDashboardView: View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             switch viewState {
-            case .loading:
-                PointOfSaleLoadingView(animation: animation)
-                    .transition(.opacity)
-                    .ignoresSafeArea()
+            case .loading(let isCatalogSyncing):
+                if isCatalogSyncing {
+                    POSCatalogLoadingView(animation: animation) {
+                        dismiss()
+                    }
+                        .transition(.opacity)
+                        .ignoresSafeArea()
+                } else {
+                    PointOfSaleLoadingView(animation: animation)
+                        .transition(.opacity)
+                        .ignoresSafeArea()
+                }
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
@@ -87,12 +93,6 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 })
-            case .catalogSyncing:
-                POSCatalogLoadingView(animation: animation) {
-                    dismiss()
-                }
-                    .transition(.opacity)
-                    .ignoresSafeArea()
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
@@ -118,7 +118,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, backgroundAppearance)
-        .animation(.easeInOut, value: viewState == .loading)
+        .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {

@@ -7,7 +7,6 @@ protocol ListSyncable {
     associatedtype StorageType: ResultsControllerMutableType
     associatedtype ModelType: Equatable & Hashable where ModelType == StorageType.ReadOnlyType
 
-    var siteID: Int64 { get }
     var title: String { get }
     var emptyStateMessage: String { get }
 

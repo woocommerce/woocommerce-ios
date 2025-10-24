@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>

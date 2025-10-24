@@ -365,7 +365,7 @@ private extension FilterListViewController {
                 let selectedMember = selected.selectedValue as? BookingResource
                 let syncable = TeamMemberListSyncable(siteID: siteID)
                 let viewModel = SyncableListSelectorViewModel(syncable: syncable)
-                let bookingListSelectorView = SyncableListSelectorView(
+                let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
                     selectedItem: selectedMember,
@@ -376,7 +376,7 @@ private extension FilterListViewController {
                         self?.listSelector.navigationController?.popViewController(animated: true)
                     }
                 )
-                let hostingController = UIHostingController(rootView: bookingListSelectorView)
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
                 listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }

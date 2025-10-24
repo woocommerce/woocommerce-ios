@@ -13,6 +13,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel?
+    private let selectedCustomerID: Int64?
 
     let configuration: CustomerSelectorViewController.Configuration
 
@@ -35,11 +36,13 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     ///   - siteID: ID of the current site
     ///   - configuration: UI configuration for the view controller
     ///   - addressFormViewModel: Optional, has to be provided if the view has to include new customer creation.
+    ///   - selectedCustomerID: Optional, ID of the currently selected customer to show checkmark
     ///   - onCustomerSelected: Callback to be called when a customer is selected
     ///
     init(siteID: Int64,
          configuration: CustomerSelectorViewController.Configuration,
          addressFormViewModel: CreateOrderAddressFormViewModel?,
+         selectedCustomerID: Int64? = nil,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(
             siteID: siteID,
@@ -48,6 +51,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
         self.siteID = siteID
         self.configuration = configuration
         self.addressFormViewModel = addressFormViewModel
+        self.selectedCustomerID = selectedCustomerID
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -73,6 +77,9 @@ extension CustomerSelectorViewController {
 
         // Whether guest-type customers can be selected or not
         var disallowSelectingGuest: Bool
+
+        // Error message when selecting guest if disallowed
+        var guestDisallowedMessage = Localization.guestSelectionDisallowedError
 
         // Whether to show or hide button to create customer
         var disallowCreatingCustomer: Bool
@@ -198,6 +205,7 @@ private extension CustomerSelectorViewController {
                                              showGuestLabel: showGuestLabel,
                                              shouldTrackCustomerAdded: shouldTrackCustomerAdded,
                                              disallowCreatingCustomer: disallowCreatingCustomer,
+                                             selectedCustomerID: selectedCustomerID,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,
                                              onDidStartSyncingAllCustomersFirstPage: {
@@ -290,7 +298,7 @@ private extension CustomerSelectorViewController {
 
     func showGuestSelectionDisallowedNotice() {
         noticePresenter.presentingViewController = self
-        noticePresenter.enqueue(notice: Notice(title: Localization.guestSelectionDisallowedError, feedbackType: .error))
+        noticePresenter.enqueue(notice: Notice(title: configuration.guestDisallowedMessage, feedbackType: .error))
     }
 }
 

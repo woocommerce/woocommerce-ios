@@ -61,12 +61,16 @@ final class CustomerSearchUICommand: SearchUICommand {
     // Whether to hide button for creating customer in empty state
     private let disallowCreatingCustomer: Bool
 
+    // The currently selected customer ID to show checkmark
+    private let selectedCustomerID: Int64?
+
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
          showSearchFilters: Bool = false,
          showGuestLabel: Bool = false,
          shouldTrackCustomerAdded: Bool = true,
          disallowCreatingCustomer: Bool = false,
+         selectedCustomerID: Int64? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -80,6 +84,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.showGuestLabel = showGuestLabel
         self.shouldTrackCustomerAdded = shouldTrackCustomerAdded
         self.disallowCreatingCustomer = disallowCreatingCustomer
+        self.selectedCustomerID = selectedCustomerID
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -172,6 +177,7 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
         let detail = showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+        let isSelected = selectedCustomerID == model.customerID
 
         return CellViewModel(
             id: "\(model.customerID)",
@@ -181,7 +187,8 @@ final class CustomerSearchUICommand: SearchUICommand {
             subtitle: model.email,
             accessibilityLabel: "",
             detail: detail,
-            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
+            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "", // Only underline the search term if it's longer than 1 character
+            isSelected: isSelected
         )
     }
 

@@ -351,11 +351,13 @@ private extension FilterListViewController {
                     case .products: fatalError("Customer filter not supported!")
                     }
                 }()
+                let selectedCustomerID = (selected.selectedValue as? CustomerFilter)?.id
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
                         configuration: configuration,
                         addressFormViewModel: nil,
+                        selectedCustomerID: selectedCustomerID,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(customer: customer)
 

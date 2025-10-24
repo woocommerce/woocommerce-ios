@@ -45,11 +45,6 @@ struct POSOutlinedButtonStyle: ButtonStyle {
         self.state = isLoading ? .loading : .idle
     }
 
-    init(size: POSButtonSize, state: POSButtonState) {
-        self.size = size
-        self.state = state
-    }
-
     func makeBody(configuration: Configuration) -> some View {
         POSButtonStyleInternal(configuration: configuration, variant: .outlined, size: size, state: state)
             .disabled(state != .idle)

@@ -166,6 +166,10 @@ private extension POSTabCoordinator {
         Task { @MainActor in
             let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
             storesManager.dispatch(action)
+
+            // Track last opened date for sync eligibility
+            let lastOpenedAction = AppSettingsAction.setPOSLastOpenedDate(siteID: siteID, date: Date()) { _ in }
+            storesManager.dispatch(lastOpenedAction)
         }
     }
 

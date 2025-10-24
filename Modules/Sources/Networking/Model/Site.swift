@@ -333,6 +333,20 @@ public enum SiteVisibility: Int, Codable, GeneratedFakeable {
 ///
 public extension Site {
 
+    private var jetpackCanonicalURL: String {
+        guard isJetpackConnected,
+              let originalURL = URL(string: url),
+              originalURL.scheme?.lowercased() == "http"
+        else {
+            return url
+        }
+
+        var components = URLComponents(url: originalURL, resolvingAgainstBaseURL: false)
+        components?.scheme = "https"
+
+        return components?.string ?? url
+    }
+
     /// Returns the TimeZone using the gmtOffset
     ///
     var siteTimezone: TimeZone {
@@ -347,7 +361,7 @@ public extension Site {
     }
 
     func toJetpackSite() -> JetpackSite {
-        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
+        JetpackSite(siteID: siteID, siteAddress: jetpackCanonicalURL, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

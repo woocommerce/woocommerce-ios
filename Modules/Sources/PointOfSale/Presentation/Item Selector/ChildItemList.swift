@@ -78,9 +78,7 @@ private extension ChildItemList {
             .transition(.opacity)
             .refreshable {
                 analyticsTracker.trackRefresh()
-                await Task {
-                    await itemsController.refreshItems(base: node)
-                }.value
+                await itemsController.refreshItems(base: node)
             }
         }
     }

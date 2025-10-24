@@ -831,7 +831,7 @@ private extension MainTabBarController {
 
         // Create POS tab coordinator with initial visibility from cache
         let initialPOSTabVisibility = posTabVisibilityChecker?.checkInitialVisibility() ?? false
-        posTabCoordinator = POSTabCoordinator(
+        let coordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
             viewControllerToPresent: self,
@@ -839,6 +839,18 @@ private extension MainTabBarController {
             eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
             initialPOSTabVisibility: initialPOSTabVisibility
         )
+        posTabCoordinator = coordinator
+
+        // Wire up catalog eligibility checking for sync coordinator
+        Task {
+            if let syncCoordinator = stores.posCatalogSyncCoordinator,
+               let eligibilityService = coordinator.localCatalogEligibilityService {
+                await syncCoordinator.setCatalogEligibilityChecker {
+                    await eligibilityService.refreshEligibilityState()
+                    return await eligibilityService.eligibilityState == .eligible
+                }
+            }
+        }
 
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)

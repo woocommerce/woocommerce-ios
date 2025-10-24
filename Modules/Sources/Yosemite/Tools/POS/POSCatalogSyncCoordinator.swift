@@ -55,7 +55,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let grdbManager: GRDBManagerProtocol
     private let catalogSizeLimit: Int
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
-    private let catalogEligibilityChecker: (() async -> Bool)?
+    private var catalogEligibilityChecker: (() async -> Bool)?
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
@@ -128,6 +128,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)
+    }
+
+    /// Sets the catalog eligibility checker closure
+    /// This should be called after the POSTabCoordinator is created to wire up catalog eligibility checking
+    public func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
+        self.catalogEligibilityChecker = checker
     }
 
     /// Determines if a full sync should be performed based on the age of the last sync

@@ -49,12 +49,6 @@ struct TeamMemberListSyncable: ListSyncable {
         )
     }
 
-    // MARK: - Model Conversion
-
-    func convert(_ storage: StorageBookingResource) -> BookingResource {
-        storage.toReadOnly()
-    }
-
     // MARK: - Display Configuration
 
     func displayName(for item: BookingResource) -> String {

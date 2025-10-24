@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// Protocol for configuring a booking list selector with different entity types.
+/// Protocol for configuring a list selector with different entity types.
 /// Provides all necessary configuration for fetching, displaying, and syncing list items.
 protocol ListSyncable {
     associatedtype StorageType: ResultsControllerMutableType
@@ -23,11 +23,6 @@ protocol ListSyncable {
 
     /// Creates the action to sync items from remote
     func createSyncAction(pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action
-
-    // MARK: - Model Conversion
-
-    /// Converts storage object to model object
-    func convert(_ storage: StorageType) -> ModelType
 
     // MARK: - Display Configuration
 

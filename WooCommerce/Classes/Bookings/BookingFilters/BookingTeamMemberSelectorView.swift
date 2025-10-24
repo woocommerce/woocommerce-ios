@@ -102,9 +102,7 @@ private extension BookingTeamMemberSelectorView {
 
 private extension BookingTeamMemberSelectorView {
     enum Layout {
-        static let textVerticalPadding: CGFloat = 8
         static let viewPadding: CGFloat = 16
-        static let cornerRadius: CGFloat = 8
     }
 
     enum Localization {

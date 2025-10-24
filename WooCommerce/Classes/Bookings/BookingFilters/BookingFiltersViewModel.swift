@@ -27,9 +27,9 @@ final class BookingFiltersViewModel: FilterListViewModel {
         filterTypeViewModels = [
             teamMemberFilterViewModel,
             productFilterViewModel,
-            customerFilterViewModel,
             attendanceStatusFilterViewModel,
             paymentStatusFilterViewModel,
+            customerFilterViewModel,
             dateTimeFilterViewModel
         ]
     }

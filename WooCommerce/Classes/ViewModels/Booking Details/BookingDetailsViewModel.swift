@@ -86,7 +86,10 @@ private extension BookingDetailsViewModel {
         if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
             customerContent.update(with: billingAddress)
             insertCustomerSectionIfAbsent()
+        } else {
+            deleteCustomerSectionIfPresent()
         }
+
         headerContent.update(with: booking)
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
 
@@ -105,27 +108,41 @@ private extension BookingDetailsViewModel {
     }
 
     func insertAttendanceSectionIfAbsent() {
-        // Avoid adding if it already exists
-        let attendanceSectionExists = sections.contains {
-            if case .attendance = $0.content {
+        insertSectionIfAbsent(
+            section: Section(
+                header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
+                footerText: Localization.attendanceSectionFooterText,
+                content: .attendance(attendanceContent)
+            ),
+            at: 3
+        )
+    }
+
+    func insertCustomerSectionIfAbsent() {
+        insertSectionIfAbsent(
+            section: Section(
+                header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+                content: .customer(customerContent)
+            ),
+            at: 2
+        )
+    }
+
+    func insertSectionIfAbsent(section: Section, at index: Int) {
+        let sectionExists = sections.contains {
+            if section.content.id == $0.content.id {
                 return true
             }
 
             return false
         }
 
-        guard !attendanceSectionExists else {
+        guard !sectionExists else {
             return
         }
 
-        let attendance = Section(
-            header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
-            footerText: Localization.attendanceSectionFooterText,
-            content: .attendance(attendanceContent)
-        )
-
         withAnimation {
-            sections.insert(attendance, at: 3)
+            sections.insert(section, at: index)
         }
     }
 
@@ -144,26 +161,18 @@ private extension BookingDetailsViewModel {
         }
     }
 
-    func insertCustomerSectionIfAbsent() {
-        // Avoid adding if it already exists
-        let customerSectionExists = sections.contains {
+    func deleteCustomerSectionIfPresent() {
+        guard let customerSectionIndex = sections.firstIndex(where: {
             if case .customer = $0.content {
                 return true
             }
-
             return false
-        }
-
-        guard !customerSectionExists else {
+        }) else {
             return
         }
 
-        let customerSection = Section(
-            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
-            content: .customer(customerContent)
-        )
         withAnimation {
-            sections.insert(customerSection, at: 2)
+            _ = sections.remove(at: customerSectionIndex)
         }
     }
 

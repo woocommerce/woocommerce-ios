@@ -63,12 +63,12 @@ public struct PointOfSaleEntryPointView: View {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         isLocalCatalogEligible: Bool,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
-        let isLocalCatalogEligible = services.localCatalogEligibility.localCatalogEligibilityService?.eligibilityState == .eligible
         if isLocalCatalogEligible, let grdbManager = grdbManager {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
@@ -113,7 +113,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
-                                                                localCatalogEligibilityService: services.localCatalogEligibility.localCatalogEligibilityService)
+                                                                isLocalCatalogEligible: isLocalCatalogEligible)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -203,6 +203,7 @@ public struct PointOfSaleEntryPointView: View {
         siteSettings: [],
         grdbManager: nil,
         catalogSyncCoordinator: nil,
+        isLocalCatalogEligible: false,
         services: POSPreviewServices()
     )
 }

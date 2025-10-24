@@ -471,7 +471,6 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
 }
 
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    var localCatalogEligibilityService: (any POSLocalCatalogEligibilityServiceProtocol)? = nil
     func checkEligibility() async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
@@ -591,7 +590,6 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
-    var localCatalogEligibility: POSLocalCatalogEligibilityProviding = EmptyPOSLocalCatalogEligibility()
 }
 
 // MARK: - Preview Catalog Services

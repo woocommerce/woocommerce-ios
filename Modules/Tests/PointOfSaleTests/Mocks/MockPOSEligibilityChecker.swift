@@ -2,7 +2,6 @@ import Foundation
 @testable import PointOfSale
 
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    var localCatalogEligibilityService: (any POSLocalCatalogEligibilityServiceProtocol)? = nil
     var initialVisibility: Bool = false
     var visibility: Bool = false
     var eligibility: POSEligibilityState = .eligible

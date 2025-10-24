@@ -5,8 +5,6 @@ public protocol POSEntryPointEligibilityCheckerProtocol {
     func checkEligibility() async -> POSEligibilityState
     /// Refreshes the eligibility state based on the provided ineligible reason.
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState
-
-    var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? { get }
 }
 
 @Observable final class POSEntryPointController {

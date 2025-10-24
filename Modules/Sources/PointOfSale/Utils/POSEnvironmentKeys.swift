@@ -160,8 +160,3 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
     }
     init() {}
 }
-
-struct EmptyPOSLocalCatalogEligibility: POSLocalCatalogEligibilityProviding {
-    var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? = nil
-    init() {}
-}

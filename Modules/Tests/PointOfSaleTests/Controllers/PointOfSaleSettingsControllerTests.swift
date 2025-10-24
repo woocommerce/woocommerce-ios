@@ -21,7 +21,7 @@ struct PointOfSaleSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                localCatalogEligibilityService: MockPOSLocalCatalogEligibilityService())
+                                                isLocalCatalogEligible: true)
 
         // When
         let cardReader = sut.connectedCardReader
@@ -41,7 +41,7 @@ struct PointOfSaleSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                localCatalogEligibilityService: MockPOSLocalCatalogEligibilityService())
+                                                isLocalCatalogEligible: true)
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)

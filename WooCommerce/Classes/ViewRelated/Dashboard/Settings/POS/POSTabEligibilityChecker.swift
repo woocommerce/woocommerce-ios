@@ -20,9 +20,7 @@ import class WooFoundation.VersionHelpers
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
-import protocol PointOfSale.POSLocalCatalogEligibilityServiceProtocol
 import enum Yosemite.POSCountryCurrencyValidator
-import struct Yosemite.POSCatalogSizeChecker
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
@@ -31,9 +29,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
-
-    /// Local catalog eligibility service - created asynchronously on init
-    private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
@@ -59,23 +54,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             selectedSite: selectedSite,
             appPasswordSupportState: appPasswordSupport
         )
-
-        // Create local catalog eligibility service asynchronously in the background
-        // First check POS tab eligibility, then create the catalog eligibility service with that state
-        Task { @MainActor in
-            let posEligibility = await self.checkEligibility()
-
-            let eligibilityService = await POSLocalCatalogEligibilityService(
-                siteID: siteID,
-                catalogSizeChecker: POSCatalogSizeChecker(
-                    credentials: credentials,
-                    selectedSite: selectedSite,
-                    appPasswordSupportState: appPasswordSupport
-                ),
-                posTabEligibilityState: posEligibility
-            )
-            self.localCatalogEligibilityService = eligibilityService
-        }
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.

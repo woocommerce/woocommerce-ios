@@ -42,6 +42,9 @@ final class POSTabCoordinator {
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
+    /// Local catalog eligibility service - created asynchronously during init
+    private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                             credentials: credentials,
@@ -123,6 +126,26 @@ final class POSTabCoordinator {
         self.eligibilityChecker = eligibilityChecker
 
         tabContainerController.wrappedController = POSTabViewController()
+
+        // Create local catalog eligibility service asynchronously
+        // Check POS tab eligibility first, then create service with that state
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            let posEligibility = await eligibilityChecker.checkEligibility()
+
+            let service = await POSLocalCatalogEligibilityService(
+                siteID: siteID,
+                catalogSizeChecker: POSCatalogSizeChecker(
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported
+                ),
+                posTabEligibilityState: posEligibility
+            )
+
+            self.localCatalogEligibilityService = service
+        }
     }
 
     func onTabSelected() {
@@ -143,35 +166,24 @@ private extension POSTabCoordinator {
         Task { @MainActor [weak self] in
             guard let self else { return }
 
-            // Check local catalog eligibility before initializing infrastructure
-            // Try to use pre-created service from eligibility checker, otherwise create it now
-            let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol
-            if let preCreatedService = eligibilityChecker.localCatalogEligibilityService {
-                localCatalogEligibilityService = preCreatedService
+            // Get local catalog eligibility as bool from service
+            // Service is created asynchronously in init, might not be ready yet
+            let isLocalCatalogEligible: Bool
+            if let service = localCatalogEligibilityService {
+                // Retry transient failures before using the value
+                switch service.eligibilityState {
+                case .ineligible(reason: .catalogSizeCheckFailed), .ineligible(reason: .posTabNotEligible):
+                    await service.refreshEligibilityState()
+                default:
+                    break
+                }
+                isLocalCatalogEligible = service.eligibilityState == .eligible
             } else {
-                // Fallback: assume we're POS eligible and create service
-                localCatalogEligibilityService = await POSLocalCatalogEligibilityService(
-                    siteID: siteID,
-                    catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
-                                                              selectedSite: defaultSitePublisher,
-                                                              appPasswordSupportState: isAppPasswordSupported
-                    ),
-                    posTabEligibilityState: .eligible
-                )
+                // Service not ready yet (rare race condition), assume ineligible
+                isLocalCatalogEligible = false
             }
 
-            switch localCatalogEligibilityService.eligibilityState {
-            case .ineligible(reason: .catalogSizeCheckFailed):
-                // If we cached a failed check, we can recover by refreshing the value before we next open POS
-                await localCatalogEligibilityService.refreshEligibilityState()
-            case .eligible, .ineligible:
-                break
-            }
-
-            let isLocalCatalogEligible = localCatalogEligibilityService.eligibilityState == .eligible
-
-            // Create service adaptor with eligibility service
-            let serviceAdaptor = POSServiceLocatorAdaptor(localCatalogEligibilityService: localCatalogEligibilityService)
+            let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
@@ -233,6 +245,7 @@ private extension POSTabCoordinator {
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
+                    isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor
                 )
 

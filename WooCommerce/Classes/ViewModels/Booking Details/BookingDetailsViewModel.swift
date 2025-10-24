@@ -62,12 +62,6 @@ private extension BookingDetailsViewModel {
             content: .appointmentDetails(appointmentDetailsContent)
         )
 
-        let attendanceSection = Section(
-            header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
-            footerText: Localization.attendanceSectionFooterText,
-            content: .attendance(attendanceContent)
-        )
-
         let paymentSection = Section(
             header: .title(Localization.paymentSectionHeaderTitle.uppercased()),
             content: .payment(paymentContent)
@@ -81,7 +75,6 @@ private extension BookingDetailsViewModel {
         sections = [
             headerSection,
             appointmentDetailsSection,
-            attendanceSection,
             paymentSection,
             bookingNotes
         ]
@@ -96,8 +89,59 @@ private extension BookingDetailsViewModel {
         }
         headerContent.update(with: booking)
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
+
+        setupAttendanceSectionVisibility()
         attendanceContent.update(with: booking)
+
         paymentContent.update(with: booking)
+    }
+
+    func setupAttendanceSectionVisibility() {
+        if booking.attendanceStatus == .cancelled {
+            deleteAttendanceSectionIfPresent()
+        } else {
+            insertAttendanceSectionIfAbsent()
+        }
+    }
+
+    func insertAttendanceSectionIfAbsent() {
+        // Avoid adding if it already exists
+        let attendanceSectionExists = sections.contains {
+            if case .attendance = $0.content {
+                return true
+            }
+
+            return false
+        }
+
+        guard !attendanceSectionExists else {
+            return
+        }
+
+        let attendance = Section(
+            header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
+            footerText: Localization.attendanceSectionFooterText,
+            content: .attendance(attendanceContent)
+        )
+
+        withAnimation {
+            sections.insert(attendance, at: 3)
+        }
+    }
+
+    func deleteAttendanceSectionIfPresent() {
+        guard let attendanceSectionIndex = sections.firstIndex(where: {
+            if case .attendance = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        withAnimation {
+            _ = sections.remove(at: attendanceSectionIndex)
+        }
     }
 
     func insertCustomerSectionIfAbsent() {

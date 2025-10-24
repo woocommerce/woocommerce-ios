@@ -746,3 +746,238 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         shouldBlockSync = false
     }
 }
+
+// MARK: - Sync Eligibility Tests
+
+extension POSCatalogSyncCoordinatorTests {
+    @Test func performSmartSync_skips_sync_when_catalog_is_ineligible() async throws {
+        // Given
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { false }, // Catalog ineligible
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should be skipped
+        #expect(mockSyncService.startFullSyncCallCount == 0)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performSmartSync_proceeds_when_catalog_is_eligible_and_no_first_sync_date() async throws {
+        // Given - new user, catalog eligible
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true }, // Catalog eligible
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should proceed
+        #expect(mockSyncService.startFullSyncCallCount == 1)
+    }
+
+    @Test func performSmartSync_records_first_sync_date_after_successful_sync() async throws {
+        // Given - new user
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - first sync date should be recorded
+        #expect(mockSiteSettings.setFirstPOSCatalogSyncDateCalled == true)
+        #expect(mockSiteSettings.mockFirstPOSCatalogSyncDate != nil)
+    }
+
+    @Test func performSmartSync_does_not_overwrite_existing_first_sync_date() async throws {
+        // Given - existing user with first sync date
+        let originalDate = Date().addingTimeInterval(-10 * 24 * 60 * 60) // 10 days ago
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = originalDate
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - first sync date should remain unchanged
+        #expect(mockSiteSettings.mockFirstPOSCatalogSyncDate == originalDate)
+    }
+
+    @Test func performSmartSync_proceeds_for_new_user_within_30_day_grace_period() async throws {
+        // Given - user who first synced 15 days ago (within 30-day grace period)
+        let fifteenDaysAgo = Date().addingTimeInterval(-15 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fifteenDaysAgo
+        // No lastPOSOpenedDate set
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should proceed (within grace period)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+
+    @Test func performSmartSync_skips_sync_for_existing_user_past_30_days_with_no_recent_open() async throws {
+        // Given - user who first synced 40 days ago, never opened POS recently
+        let fortyDaysAgo = Date().addingTimeInterval(-40 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fortyDaysAgo
+        // No lastPOSOpenedDate set
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should be skipped (past grace period, no recent open)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performSmartSync_proceeds_for_existing_user_past_30_days_with_recent_open() async throws {
+        // Given - user who first synced 40 days ago, but opened POS 5 days ago
+        let fortyDaysAgo = Date().addingTimeInterval(-40 * 24 * 60 * 60)
+        let fiveDaysAgo = Date().addingTimeInterval(-5 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fortyDaysAgo
+        mockSiteSettings.mockPOSLastOpenedDate = fiveDaysAgo
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should proceed (opened recently)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+
+    @Test func performSmartSync_skips_sync_for_existing_user_past_30_days_with_stale_open() async throws {
+        // Given - user who first synced 40 days ago, last opened POS 35 days ago (too long)
+        let fortyDaysAgo = Date().addingTimeInterval(-40 * 24 * 60 * 60)
+        let thirtyFiveDaysAgo = Date().addingTimeInterval(-35 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fortyDaysAgo
+        mockSiteSettings.mockPOSLastOpenedDate = thirtyFiveDaysAgo
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should be skipped (last opened too long ago)
+        #expect(mockSyncService.startFullSyncCallCount == 0)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performSmartSync_boundary_test_exactly_30_days_after_first_sync_with_recent_open() async throws {
+        // Given - user who first synced exactly 30 days ago, opened POS today
+        let exactlyThirtyDaysAgo = Date().addingTimeInterval(-30 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = exactlyThirtyDaysAgo
+        mockSiteSettings.mockPOSLastOpenedDate = Date()
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should proceed (opened recently, even though at 30-day boundary)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+
+    @Test func performSmartSync_boundary_test_exactly_30_days_since_last_open() async throws {
+        // Given - user who first synced 40 days ago, opened POS exactly 30 days ago
+        let fortyDaysAgo = Date().addingTimeInterval(-40 * 24 * 60 * 60)
+        let exactlyThirtyDaysAgo = Date().addingTimeInterval(-30 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fortyDaysAgo
+        mockSiteSettings.mockPOSLastOpenedDate = exactlyThirtyDaysAgo
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker,
+            catalogEligibilityChecker: { true },
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+
+        // When
+        try await coordinator.performSmartSync(for: sampleSiteID)
+
+        // Then - sync should proceed (exactly at 30-day boundary is still eligible)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+}

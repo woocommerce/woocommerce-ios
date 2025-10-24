@@ -23,7 +23,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -40,7 +40,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -59,7 +59,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -92,7 +92,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -123,7 +123,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -148,7 +148,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -173,7 +173,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -213,7 +213,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
 
@@ -245,7 +245,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .eligible,
+            isPOSTabVisible: true,
             catalogSizeLimit: 100 // Custom lower limit
         )
 
@@ -265,10 +265,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(limit == 100)
     }
 
-    // MARK: - POS Tab Eligibility
+    // MARK: - POS Tab Visibility
 
-    @Test("POS tab not eligible returns ineligible")
-    func testPOSTabNotEligibleReturnsIneligible() async {
+    @Test("POS tab not visible returns ineligible")
+    func testPOSTabNotVisibleReturnsIneligible() async {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
@@ -277,7 +277,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .ineligible(reason: .featureSwitchDisabled),
+            isPOSTabVisible: false,
             catalogSizeLimit: 1000
         )
 
@@ -288,8 +288,8 @@ struct POSLocalCatalogEligibilityServiceTests {
             return
         }
 
-        guard case .posTabNotEligible = reason else {
-            Issue.record("Expected posTabNotEligible reason")
+        guard case .posTabNotVisible = reason else {
+            Issue.record("Expected posTabNotVisible reason")
             return
         }
 
@@ -297,8 +297,8 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
 
-    @Test("POS tab eligibility checked before catalog size")
-    func testPOSTabEligibilityCheckedFirst() async {
+    @Test("POS tab visibility checked before catalog size")
+    func testPOSTabVisibilityCheckedFirst() async {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 2000, variationCount: 0))
         )
@@ -307,22 +307,22 @@ struct POSLocalCatalogEligibilityServiceTests {
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
             featureFlagService: featureFlagService,
-            posTabEligibilityState: .ineligible(reason: .wooCommercePluginNotFound),
+            isPOSTabVisible: false,
             catalogSizeLimit: 1000
         )
 
-        // Should be ineligible due to POS tab, not catalog size
+        // Should be ineligible due to POS tab not visible, not catalog size
         guard case .ineligible(let reason) = service.eligibilityState else {
             Issue.record("Expected ineligible state")
             return
         }
 
-        guard case .posTabNotEligible = reason else {
-            Issue.record("Expected posTabNotEligible reason, not catalogSizeTooLarge")
+        guard case .posTabNotVisible = reason else {
+            Issue.record("Expected posTabNotVisible reason, not catalogSizeTooLarge")
             return
         }
 
-        // Should not have checked catalog size since POS tab wasn't eligible
+        // Should not have checked catalog size since POS tab wasn't visible
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
 }

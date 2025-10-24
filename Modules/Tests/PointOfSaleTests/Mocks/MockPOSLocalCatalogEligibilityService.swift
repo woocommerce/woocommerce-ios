@@ -15,4 +15,6 @@ public final class MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibi
         refreshCallCount += 1
         return eligibilityState
     }
+
+    public func updateVisibility(isPOSTabVisible: Bool) async { }
 }

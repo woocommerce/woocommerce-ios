@@ -107,7 +107,8 @@ final class POSTabCoordinator {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         initialPOSTabVisibility: Bool) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -128,11 +129,9 @@ final class POSTabCoordinator {
         tabContainerController.wrappedController = POSTabViewController()
 
         // Create local catalog eligibility service asynchronously
-        // Check POS tab eligibility first, then create service with that state
+        // Use initial POS tab visibility from cached check
         Task { @MainActor [weak self] in
             guard let self else { return }
-
-            let posEligibility = await eligibilityChecker.checkEligibility()
 
             let service = await POSLocalCatalogEligibilityService(
                 siteID: siteID,
@@ -141,10 +140,18 @@ final class POSTabCoordinator {
                     selectedSite: defaultSitePublisher,
                     appPasswordSupportState: isAppPasswordSupported
                 ),
-                posTabEligibilityState: posEligibility
+                isPOSTabVisible: initialPOSTabVisibility
             )
 
             self.localCatalogEligibilityService = service
+        }
+    }
+
+    /// Update local catalog eligibility when POS tab visibility changes
+    func updatePOSTabVisibility(_ isPOSTabVisible: Bool) {
+        Task { @MainActor [weak self] in
+            guard let self, let service = self.localCatalogEligibilityService else { return }
+            await service.updateVisibility(isPOSTabVisible: isPOSTabVisible)
         }
     }
 
@@ -171,11 +178,8 @@ private extension POSTabCoordinator {
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Retry transient failures before using the value
-                switch service.eligibilityState {
-                case .ineligible(reason: .catalogSizeCheckFailed), .ineligible(reason: .posTabNotEligible):
+                if case .ineligible(reason: .catalogSizeCheckFailed) = service.eligibilityState {
                     await service.refreshEligibilityState()
-                default:
-                    break
                 }
                 isLocalCatalogEligible = service.eligibilityState == .eligible
             } else {

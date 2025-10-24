@@ -5,8 +5,6 @@ import Experiments
 import protocol PointOfSale.POSLocalCatalogEligibilityServiceProtocol
 import enum PointOfSale.POSLocalCatalogEligibilityState
 import enum PointOfSale.POSLocalCatalogIneligibleReason
-import enum PointOfSale.POSEligibilityState
-import enum PointOfSale.POSIneligibleReason
 
 @MainActor
 final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
@@ -14,7 +12,7 @@ final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityService
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
     private let featureFlagService: FeatureFlagService
-    private let posTabEligibilityState: POSEligibilityState
+    private var isPOSTabVisible: Bool
 
     // Current eligibility state
     private(set) var eligibilityState: POSLocalCatalogEligibilityState
@@ -24,25 +22,31 @@ final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityService
         siteID: Int64,
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-        posTabEligibilityState: POSEligibilityState,
+        isPOSTabVisible: Bool,
         catalogSizeLimit: Int? = nil
     ) async {
         self.siteID = siteID
         self.catalogSizeChecker = catalogSizeChecker
         self.featureFlagService = featureFlagService
-        self.posTabEligibilityState = posTabEligibilityState
+        self.isPOSTabVisible = isPOSTabVisible
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
 
         // Perform initial check
         self.eligibilityState = .eligible // Temporary
-        _ = await self.refreshEligibilityState()
+        await self.refreshEligibilityState()
+    }
+
+    /// Update the visibility state and refresh eligibility
+    func updateVisibility(isPOSTabVisible: Bool) async {
+        self.isPOSTabVisible = isPOSTabVisible
+        await refreshEligibilityState()
     }
 
     @discardableResult func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
-        // Check POS tab eligibility FIRST - no point in checking catalog if POS tab isn't eligible
-        if case .ineligible = posTabEligibilityState {
-            eligibilityState = .ineligible(reason: .posTabNotEligible)
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS tab not eligible for site \(siteID)")
+        // Check POS tab visibility FIRST - no point in checking catalog if POS tab isn't visible
+        guard isPOSTabVisible else {
+            eligibilityState = .ineligible(reason: .posTabNotVisible)
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS tab not visible for site \(siteID)")
             return eligibilityState
         }
 

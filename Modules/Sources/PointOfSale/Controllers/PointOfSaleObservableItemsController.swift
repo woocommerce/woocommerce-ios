@@ -228,6 +228,8 @@ private extension PointOfSaleObservableItemsController {
                 return true
             case (.loading, .loading):
                 return true
+            case (.error(let lhsError as POSCatalogSyncError), .error(let rhsError as POSCatalogSyncError)):
+                return lhsError == rhsError
             case (.error(let lhsError), .error(let rhsError)):
                 return lhsError.localizedDescription == rhsError.localizedDescription
             default:

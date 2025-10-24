@@ -604,11 +604,15 @@ extension PointOfSaleAggregateModel {
 // MARK: - Incremental catalog sync on payment success
 
 private extension PointOfSaleAggregateModel {
-    private func setupPaymentSuccessObservation() {
-        withObservationTracking(of: self.paymentState.isSuccess) { [weak self] success in
-            if success {
-                self?.performIncrementalSync()
+    @Sendable private func setupPaymentSuccessObservation() {
+        withObservationTracking { [weak self] in
+            guard let self else { return }
+            if paymentState.isSuccess {
+                performIncrementalSync()
             }
+        } onChange: { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async(execute: setupPaymentSuccessObservation)
         }
     }
 

@@ -26,7 +26,9 @@ protocol PointOfSaleSettingsControllerProtocol {
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
-    var isLocalCatalogEligible: Bool = false
+    var isLocalCatalogEligible: Bool {
+        localCatalogEligibilityService?.eligibilityState == .eligible
+    }
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -55,8 +57,6 @@ protocol PointOfSaleSettingsControllerProtocol {
         }
 
         observeCardReader(from: cardPresentPaymentService)
-
-        checkLocalCatalogEligibility()
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {
@@ -72,10 +72,6 @@ protocol PointOfSaleSettingsControllerProtocol {
                 }
                 connectedCardReader = cardReader
             })
-    }
-
-    private func checkLocalCatalogEligibility() {
-        isLocalCatalogEligible = localCatalogEligibilityService?.eligibilityState == .eligible
     }
 }
 

@@ -92,6 +92,9 @@ extension CustomerSelectorViewController {
 
         // Whether the selector is presented modally
         var isModal: Bool
+
+        // Whether to hide the detail text (username or "Guest") in each customer row
+        var hideDetailText: Bool = false
     }
 }
 
@@ -205,6 +208,7 @@ private extension CustomerSelectorViewController {
                                              showGuestLabel: showGuestLabel,
                                              shouldTrackCustomerAdded: shouldTrackCustomerAdded,
                                              disallowCreatingCustomer: disallowCreatingCustomer,
+                                             hideDetailText: configuration.hideDetailText,
                                              selectedCustomerID: selectedCustomerID,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,

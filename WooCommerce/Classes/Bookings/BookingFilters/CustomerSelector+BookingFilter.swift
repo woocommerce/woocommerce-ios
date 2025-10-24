@@ -8,7 +8,8 @@ extension CustomerSelectorViewController.Configuration {
         disallowCreatingCustomer: true,
         showGuestLabel: true,
         shouldTrackCustomerAdded: false,
-        isModal: false
+        isModal: false,
+        hideDetailText: true
     )
 
     enum BookingFilterLocalization {

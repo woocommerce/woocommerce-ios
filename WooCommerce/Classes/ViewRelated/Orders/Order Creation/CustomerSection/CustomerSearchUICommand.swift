@@ -61,6 +61,9 @@ final class CustomerSearchUICommand: SearchUICommand {
     // Whether to hide button for creating customer in empty state
     private let disallowCreatingCustomer: Bool
 
+    // Whether to hide the detail text (username or "Guest") in each customer row
+    private let hideDetailText: Bool
+
     // The currently selected customer ID to show checkmark
     private let selectedCustomerID: Int64?
 
@@ -70,6 +73,7 @@ final class CustomerSearchUICommand: SearchUICommand {
          showGuestLabel: Bool = false,
          shouldTrackCustomerAdded: Bool = true,
          disallowCreatingCustomer: Bool = false,
+         hideDetailText: Bool = false,
          selectedCustomerID: Int64? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -84,6 +88,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.showGuestLabel = showGuestLabel
         self.shouldTrackCustomerAdded = shouldTrackCustomerAdded
         self.disallowCreatingCustomer = disallowCreatingCustomer
+        self.hideDetailText = hideDetailText
         self.selectedCustomerID = selectedCustomerID
         self.stores = stores
         self.analytics = analytics
@@ -176,7 +181,10 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
-        let detail = showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+        let detail: String = {
+            guard !hideDetailText else { return "" }
+            return showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+        }()
         let isSelected = selectedCustomerID == model.customerID
 
         return CellViewModel(

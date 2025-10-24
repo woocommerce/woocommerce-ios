@@ -146,7 +146,7 @@ private extension POSTabCoordinator {
             // Check local catalog eligibility before initializing infrastructure
             // Try to use pre-created service from eligibility checker, otherwise create it now
             let eligibilityService: POSLocalCatalogEligibilityServiceProtocol
-            if let preCreatedService = (eligibilityChecker as? POSTabEligibilityChecker)?.localCatalogEligibilityService {
+            if let preCreatedService = eligibilityChecker.localCatalogEligibilityService {
                 eligibilityService = preCreatedService
             } else {
                 // Fallback: assume we're POS eligible and create service

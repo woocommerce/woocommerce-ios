@@ -8,6 +8,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let grdbManager: GRDBManager
     private let mockCatalogSizeChecker: MockPOSCatalogSizeChecker
+    private let mockSiteSettings: MockSiteSpecificAppSettingsStoreMethods
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
     private let sampleMaxAge: TimeInterval = 60 * 60
@@ -17,11 +18,13 @@ struct POSCatalogSyncCoordinatorTests {
         self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
         self.grdbManager = try GRDBManager()
         self.mockCatalogSizeChecker = MockPOSCatalogSizeChecker()
+        self.mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogSizeChecker: mockCatalogSizeChecker
+            catalogSizeChecker: mockCatalogSizeChecker,
+            siteSettings: mockSiteSettings
         )
     }
 

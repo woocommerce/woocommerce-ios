@@ -55,6 +55,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let grdbManager: GRDBManagerProtocol
     private let catalogSizeLimit: Int
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
+    private let catalogEligibilityChecker: (() async -> Bool)?
+    private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
     private var ongoingSyncs: Set<Int64> = []
@@ -65,12 +67,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
                 catalogSizeLimit: Int? = nil,
-                catalogSizeChecker: POSCatalogSizeCheckerProtocol) {
+                catalogSizeChecker: POSCatalogSizeCheckerProtocol,
+                catalogEligibilityChecker: (() async -> Bool)? = nil,
+                siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultSizeLimitForPOSCatalog
         self.catalogSizeChecker = catalogSizeChecker
+        self.catalogEligibilityChecker = catalogEligibilityChecker
+        self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {

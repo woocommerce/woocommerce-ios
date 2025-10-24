@@ -145,12 +145,12 @@ private extension POSTabCoordinator {
 
             // Check local catalog eligibility before initializing infrastructure
             // Try to use pre-created service from eligibility checker, otherwise create it now
-            let eligibilityService: POSLocalCatalogEligibilityServiceProtocol
+            let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol
             if let preCreatedService = eligibilityChecker.localCatalogEligibilityService {
-                eligibilityService = preCreatedService
+                localCatalogEligibilityService = preCreatedService
             } else {
                 // Fallback: assume we're POS eligible and create service
-                eligibilityService = await POSLocalCatalogEligibilityService(
+                localCatalogEligibilityService = await POSLocalCatalogEligibilityService(
                     siteID: siteID,
                     catalogSizeChecker: POSCatalogSizeChecker(credentials: credentials,
                                                               selectedSite: defaultSitePublisher,
@@ -160,18 +160,18 @@ private extension POSTabCoordinator {
                 )
             }
 
-            switch eligibilityService.eligibilityState {
+            switch localCatalogEligibilityService.eligibilityState {
             case .ineligible(reason: .catalogSizeCheckFailed):
                 // If we cached a failed check, we can recover by refreshing the value before we next open POS
-                await eligibilityService.refreshEligibilityState()
+                await localCatalogEligibilityService.refreshEligibilityState()
             case .eligible, .ineligible:
                 break
             }
 
-            let isLocalCatalogEligible = eligibilityService.eligibilityState == .eligible
+            let isLocalCatalogEligible = localCatalogEligibilityService.eligibilityState == .eligible
 
             // Create service adaptor with eligibility service
-            let serviceAdaptor = POSServiceLocatorAdaptor(localCatalogEligibilityService: eligibilityService)
+            let serviceAdaptor = POSServiceLocatorAdaptor(localCatalogEligibilityService: localCatalogEligibilityService)
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,

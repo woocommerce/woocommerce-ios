@@ -57,8 +57,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
-    private let catalogSizeLimit: Int
-    private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private var catalogEligibilityChecker: (() async -> Bool)?
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
@@ -70,15 +68,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
-                catalogSizeLimit: Int? = nil,
-                catalogSizeChecker: POSCatalogSizeCheckerProtocol,
                 catalogEligibilityChecker: (() async -> Bool)? = nil,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
-        self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultSizeLimitForPOSCatalog
-        self.catalogSizeChecker = catalogSizeChecker
         self.catalogEligibilityChecker = catalogEligibilityChecker
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
     }
@@ -86,6 +80,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         guard maxAge >= 0 else {
             throw POSCatalogSyncError.negativeMaxAge
+        }
+
+        // Check sync eligibility before proceeding
+        guard await checkSyncEligibility(for: siteID) else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Full sync skipped - site \(siteID) is not eligible")
+            return
         }
 
         guard await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
@@ -110,6 +110,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         _ = try await fullSyncService.startFullSync(for: siteID)
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
+
+        // Record first sync date if this was the first successful sync
+        recordFirstSyncIfNeeded(for: siteID)
     }
 
     public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
@@ -152,14 +155,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
     private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
-        await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
-    }
-
-    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
-        guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
-            return false
-        }
-
         if !siteExistsInDatabase(siteID: siteID) {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) not found in database, sync needed")
             return true
@@ -190,15 +185,17 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     public func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
-        try await performIncrementalSyncIfApplicable(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
-    }
-
-    private func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async throws {
         guard maxAge >= 0 else {
             throw POSCatalogSyncError.negativeMaxAge
         }
 
-        guard await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge, maxCatalogSize: maxCatalogSize) else {
+        // Check sync eligibility before proceeding
+        guard await checkSyncEligibility(for: siteID) else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Incremental sync skipped - site \(siteID) is not eligible")
+            return
+        }
+
+        guard await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
             return
         }
 
@@ -224,13 +221,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                               lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
+
+        // Record first sync date if this was the first successful sync
+        recordFirstSyncIfNeeded(for: siteID)
     }
 
-    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
-        guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
-            return false
-        }
-
+    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
         guard await lastFullSyncDate(for: siteID) != nil else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: No full sync performed yet for site \(siteID), skipping incremental sync")
             return false
@@ -249,28 +245,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     // MARK: - Private
-
-    /// Checks if the catalog size is within the specified sync limit
-    /// - Parameters:
-    ///   - siteID: The site ID to check
-    ///   - maxCatalogSize: Maximum allowed catalog size for syncing
-    /// - Returns: True if catalog size is within limit or if size cannot be determined
-    private func isCatalogSizeWithinLimit(for siteID: Int64, maxCatalogSize: Int) async -> Bool {
-        guard let catalogSize = try? await catalogSizeChecker.checkCatalogSize(for: siteID) else {
-            DDLogError("📋 POSCatalogSyncCoordinator: Could not get catalog size for site \(siteID)")
-            return false
-        }
-
-        guard catalogSize.totalCount <= maxCatalogSize else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), " +
-                      "greater than \(maxCatalogSize), should not sync.")
-            return false
-        }
-
-        DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), with " +
-                  "\(catalogSize.productCount) products and \(catalogSize.variationCount) variations")
-        return true
-    }
 
     private func lastFullSyncDate(for siteID: Int64) async -> Date? {
         do {

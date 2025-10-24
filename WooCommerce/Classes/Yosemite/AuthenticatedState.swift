@@ -173,13 +173,10 @@ class AuthenticatedState: StoresManagerState {
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
             grdbManager: ServiceLocator.grdbManager
            ) {
-            let syncRemote = POSCatalogSyncRemote(network: network)
-            let catalogSizeChecker = POSCatalogSizeChecker(syncRemote: syncRemote)
             posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
                 fullSyncService: fullSyncService,
                 incrementalSyncService: incrementalSyncService,
-                grdbManager: ServiceLocator.grdbManager,
-                catalogSizeChecker: catalogSizeChecker
+                grdbManager: ServiceLocator.grdbManager
             )
         } else {
             posCatalogSyncCoordinator = nil

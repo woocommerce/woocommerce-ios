@@ -3,7 +3,7 @@
 
 23.6
 -----
-
+- [*] Handle sites configured with `http` siteAddress.
 
 23.5
 -----

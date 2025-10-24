@@ -3,20 +3,23 @@ import XCTest
 @testable import Yosemite
 
 class CIABEligibilityCheckerTests: XCTestCase {
-    private var storesManager: MockStoresManager!
     private var sessionManager: SessionManager!
     private var checker: CIABEligibilityChecker!
 
     override func setUp() {
         super.setUp()
         sessionManager = .makeForTesting()
-        storesManager = MockStoresManager(sessionManager: sessionManager)
-        checker = CIABEligibilityChecker(stores: storesManager)
+        checker = CIABEligibilityChecker(
+            currentSite: {
+                return MockStoresManager(
+                    sessionManager: self.sessionManager
+                ).sessionManager.defaultSite
+            }
+        )
     }
 
     override func tearDown() {
         checker = nil
-        storesManager = nil
         sessionManager = nil
         super.tearDown()
     }

@@ -1,7 +1,7 @@
 import Foundation
-import Yosemite
 
-protocol CIABEligibilityCheckerProtocol {
+/// periphery: ignore
+public protocol CIABEligibilityCheckerProtocol {
     var isCurrentSiteCIAB: Bool { get }
 
     func isSiteCIAB(_ site: Site) -> Bool

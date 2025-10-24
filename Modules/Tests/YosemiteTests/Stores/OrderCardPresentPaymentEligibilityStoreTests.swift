@@ -27,12 +27,26 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
     ///
     private var store: OrderCardPresentPaymentEligibilityStore!
 
+    private var currentSite: Site?
+
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
-        store = OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        store = OrderCardPresentPaymentEligibilityStore(
+            dispatcher: dispatcher,
+            storageManager: storageManager,
+            network: network,
+            currentSite: { [weak self] in
+                return self?.currentSite
+            }
+        )
+    }
+
+    override func tearDown() {
+        currentSite = nil
+        super.tearDown()
     }
 
     // Other behavioural tests are in Order_CardPresentPaymentTests
@@ -55,6 +69,14 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
                                                          name: "Chocolate cake",
                                                          productTypeKey: "simple")
 
+        let regularSite = Site.fake().copy(
+            siteID: sampleSiteID,
+            isGarden: false,
+            gardenName: nil
+        )
+        self.currentSite = regularSite
+
+        storageManager.insertSampleSite(readOnlySite: regularSite)
         storageManager.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
         storageManager.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
 
@@ -74,5 +96,55 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
         // Then
         let eligibility = try XCTUnwrap(result.get())
         XCTAssertTrue(eligibility)
+    }
+
+    func test_orderIsEligibleForCardPresentPayment_returns_failure_for_CIAB_sites() throws {
+        // Given
+        let orderItem = OrderItem.fake().copy(itemID: 1234,
+                                              name: "Chocolate cake",
+                                              productID: 678,
+                                              quantity: 1.0)
+        let cppEligibleOrder = Order.fake().copy(siteID: sampleSiteID,
+                                                 orderID: 111,
+                                                 status: .pending,
+                                                 currency: "USD",
+                                                 datePaid: nil,
+                                                 total: "5.00",
+                                                 paymentMethodID: "woocommerce_payments",
+                                                 items: [orderItem])
+        let nonSubscriptionProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                         productID: 678,
+                                                         name: "Chocolate cake",
+                                                         productTypeKey: "simple")
+
+        let ciabSite = Site.fake().copy(
+            siteID: sampleSiteID,
+            isGarden: true,
+            gardenName: "commerce"
+        )
+        self.currentSite = ciabSite
+
+        storageManager.insertSampleSite(readOnlySite: ciabSite)
+        storageManager.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
+        storageManager.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
+
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+
+        // When
+        let result = waitFor { promise in
+            let action = OrderCardPresentPaymentEligibilityAction
+                .orderIsEligibleForCardPresentPayment(orderID: 111,
+                                                      siteID: self.sampleSiteID,
+                                                      cardPresentPaymentsConfiguration: configuration) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertThrowsError(try result.get()) { error in
+            XCTAssertEqual(error as? OrderCardPresentPaymentEligibilityStore.OrderIsEligibleForCardPresentPaymentError,
+                           .cardReaderPaymentOptionIsNotSupportedForCIABSites)
+        }
     }
 }

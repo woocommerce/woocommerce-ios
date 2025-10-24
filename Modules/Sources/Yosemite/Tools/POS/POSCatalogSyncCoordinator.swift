@@ -26,6 +26,10 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///                     performs full sync; otherwise, performs incremental sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
+
+    /// Sets the catalog eligibility checker closure
+    /// This should be called after the POSTabCoordinator is created to wire up catalog eligibility checking
+    nonisolated func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool)
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -132,7 +136,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     /// Sets the catalog eligibility checker closure
     /// This should be called after the POSTabCoordinator is created to wire up catalog eligibility checking
-    public func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
+    public nonisolated func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
+        Task {
+            await self.internalSetCatalogEligibilityChecker(checker)
+        }
+    }
+
+    private func internalSetCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
         self.catalogEligibilityChecker = checker
     }
 

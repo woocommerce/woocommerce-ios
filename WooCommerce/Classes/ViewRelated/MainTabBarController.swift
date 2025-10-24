@@ -842,13 +842,11 @@ private extension MainTabBarController {
         posTabCoordinator = coordinator
 
         // Wire up catalog eligibility checking for sync coordinator
-        Task {
-            if let syncCoordinator = stores.posCatalogSyncCoordinator,
-               let eligibilityService = coordinator.localCatalogEligibilityService {
-                await syncCoordinator.setCatalogEligibilityChecker {
-                    await eligibilityService.refreshEligibilityState()
-                    return await eligibilityService.eligibilityState == .eligible
-                }
+        if let syncCoordinator = stores.posCatalogSyncCoordinator,
+           let eligibilityService = coordinator.localCatalogEligibilityService {
+            syncCoordinator.setCatalogEligibilityChecker {
+                await eligibilityService.refreshEligibilityState()
+                return await eligibilityService.eligibilityState == .eligible
             }
         }
 

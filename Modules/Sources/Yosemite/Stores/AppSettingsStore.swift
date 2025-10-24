@@ -307,6 +307,14 @@ public class AppSettingsStore: Store {
             getHasPOSBeenOpenedAtLeastOnce(onCompletion: onCompletion)
         case .resetPOSSurveyNotificationScheduled(onCompletion: let onCompletion):
             resetPOSSurveyNotificationScheduled(onCompletion: onCompletion)
+        case .setPOSLastOpenedDate(siteID: let siteID, date: let date, onCompletion: let onCompletion):
+            setPOSLastOpenedDate(siteID: siteID, date: date, onCompletion: onCompletion)
+        case .getPOSLastOpenedDate(siteID: let siteID, onCompletion: let onCompletion):
+            getPOSLastOpenedDate(siteID: siteID, onCompletion: onCompletion)
+        case .setFirstPOSCatalogSyncDate(siteID: let siteID, date: let date, onCompletion: let onCompletion):
+            setFirstPOSCatalogSyncDate(siteID: siteID, date: date, onCompletion: onCompletion)
+        case .getFirstPOSCatalogSyncDate(siteID: let siteID, onCompletion: let onCompletion):
+            getFirstPOSCatalogSyncDate(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1356,6 +1364,26 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
+    }
+
+    func setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: (Result<Void, Error>) -> Void) {
+        siteSpecificAppSettingsStoreMethods.setPOSLastOpenedDate(siteID: siteID, date: date)
+        onCompletion(.success(()))
+    }
+
+    func getPOSLastOpenedDate(siteID: Int64, onCompletion: (Date?) -> Void) {
+        let date = siteSpecificAppSettingsStoreMethods.getPOSLastOpenedDate(siteID: siteID)
+        onCompletion(date)
+    }
+
+    func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: (Result<Void, Error>) -> Void) {
+        siteSpecificAppSettingsStoreMethods.setFirstPOSCatalogSyncDate(siteID: siteID, date: date)
+        onCompletion(.success(()))
+    }
+
+    func getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void) {
+        let date = siteSpecificAppSettingsStoreMethods.getFirstPOSCatalogSyncDate(siteID: siteID)
+        onCompletion(date)
     }
 }
 

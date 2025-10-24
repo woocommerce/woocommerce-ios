@@ -58,9 +58,9 @@ private extension SyncableListSelectorView {
         List {
             optionRow(
                 text: NSLocalizedString(
-                    "bookingListSelectorView.any",
+                    "listSelectorView.any",
                     value: "Any",
-                    comment: "Option to select no filter on the booking list selector view"
+                    comment: "Option to select no filter on a list selector view"
                 ),
                 isSelected: selectedItem == nil,
                 onSelection: { selectedItem = nil }

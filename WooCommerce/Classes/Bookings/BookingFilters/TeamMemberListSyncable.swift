@@ -8,21 +8,9 @@ struct TeamMemberListSyncable: ListSyncable {
 
     let siteID: Int64
 
-    var title: String {
-        NSLocalizedString(
-            "bookingTeamMemberSelectorView.title",
-            value: "Team member",
-            comment: "Title of the booking team member selector view"
-        )
-    }
+    var title: String { Localization.title }
 
-    var emptyStateMessage: String {
-        NSLocalizedString(
-            "bookingTeamMemberSelectorView.noMembersFound",
-            value: "No team members found",
-            comment: "Text on the empty view of the booking team member selector view"
-        )
-    }
+    var emptyStateMessage: String { Localization.noMembersFound }
 
     // MARK: - ResultsController Configuration
 
@@ -53,5 +41,20 @@ struct TeamMemberListSyncable: ListSyncable {
 
     func displayName(for item: BookingResource) -> String {
         item.name
+    }
+}
+
+private extension TeamMemberListSyncable {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "bookingTeamMemberSelectorView.title",
+            value: "Team member",
+            comment: "Title of the booking team member selector view"
+        )
+        static let noMembersFound = NSLocalizedString(
+            "bookingTeamMemberSelectorView.noMembersFound",
+            value: "No team members found",
+            comment: "Text on the empty view of the booking team member selector view"
+        )
     }
 }

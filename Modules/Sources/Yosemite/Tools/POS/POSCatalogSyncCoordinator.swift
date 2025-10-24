@@ -109,6 +109,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+        // Check sync eligibility before proceeding
+        guard await checkSyncEligibility(for: siteID) else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Sync skipped - site \(siteID) is not eligible")
+            return
+        }
+
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
 
@@ -119,6 +125,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
             try await performIncrementalSync(for: siteID)
         }
+
+        // Record first sync date if this was the first successful sync
+        recordFirstSyncIfNeeded(for: siteID)
     }
 
     /// Determines if a full sync should be performed based on the age of the last sync
@@ -285,5 +294,63 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 private extension POSCatalogSyncCoordinator {
     enum Constants {
         static let defaultSizeLimitForPOSCatalog = 1000
+        static let maxDaysSinceLastOpened = 30
+    }
+
+    // MARK: - Sync Eligibility
+
+    /// Checks if sync is eligible for the given site based on catalog eligibility and temporal criteria
+    func checkSyncEligibility(for siteID: Int64) async -> Bool {
+        // First check catalog eligibility if checker is provided
+        if let catalogChecker = catalogEligibilityChecker {
+            guard await catalogChecker() else {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
+                return false
+            }
+        }
+
+        // Then check temporal eligibility (30-day criteria)
+        let firstSyncDate = siteSettings.getFirstPOSCatalogSyncDate(siteID: siteID)
+        let lastOpenedDate = siteSettings.getPOSLastOpenedDate(siteID: siteID)
+
+        // Case 1: No first sync date yet - eligible (will be set on first sync)
+        guard let firstSync = firstSyncDate else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (no first sync date recorded)")
+            return true
+        }
+
+        // Case 2: Has synced before. Check if within 30-day window from first sync
+        let daysSinceFirstSync = Calendar.current.dateComponents([.day], from: firstSync, to: Date()).day ?? 0
+
+        if daysSinceFirstSync > Constants.maxDaysSinceLastOpened {
+            // More than 30 days since first sync - must have opened POS recently to remain eligible
+            guard let lastOpened = lastOpenedDate else {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) ineligible (past 30-day grace period, no recent POS open)")
+                return false
+            }
+
+            let daysSinceLastOpened = Calendar.current.dateComponents([.day], from: lastOpened, to: Date()).day ?? 0
+
+            if daysSinceLastOpened <= Constants.maxDaysSinceLastOpened {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (last opened \(daysSinceLastOpened) days ago)")
+                return true
+            } else {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) ineligible (POS last opened \(daysSinceLastOpened) days ago)")
+                return false
+            }
+        } else {
+            // Within 30 days of first sync - always eligible (new user grace period)
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (within grace period: \(daysSinceFirstSync) days since first sync)")
+            return true
+        }
+    }
+
+    /// Records the first sync date if not already set
+    func recordFirstSyncIfNeeded(for siteID: Int64) {
+        // Only set if not already set (preserves original first sync date)
+        if siteSettings.getFirstPOSCatalogSyncDate(siteID: siteID) == nil {
+            siteSettings.setFirstPOSCatalogSyncDate(siteID: siteID, date: Date())
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Recorded first sync date for site \(siteID)")
+        }
     }
 }

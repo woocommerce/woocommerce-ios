@@ -20,6 +20,10 @@ class WPAdminWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
         // no-op
     }
 
+    func handleDisappear() {
+        // no-op
+    }
+
     func handleRedirect(for url: URL?) {
         guard let url else {
             return

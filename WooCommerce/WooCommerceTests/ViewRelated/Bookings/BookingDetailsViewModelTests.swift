@@ -220,4 +220,82 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.navigationTitle.contains("12345"))
     }
+
+    func test_updateAttendanceStatus_whenNewStatusIsProvided_dispatchesUpdateBookingAttendanceStatusAction() {
+        // Given
+        let booking = Booking.fake()
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let newStatus = BookingAttendanceStatus.checkedIn
+
+        // When
+        viewModel.updateAttendanceStatus(to: newStatus)
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        guard let action = storesManager.receivedActions.first as? BookingAction else {
+            XCTFail("Incorrect action type dispatched")
+            return
+        }
+
+        guard case let .updateBookingAttendanceStatus(siteID, bookingID, status, _) = action else {
+            XCTFail("Incorrect action case dispatched")
+            return
+        }
+
+        XCTAssertEqual(siteID, booking.siteID)
+        XCTAssertEqual(bookingID, booking.bookingID)
+        XCTAssertEqual(status, newStatus)
+    }
+
+    func test_init_whenBookingHasStatusAndAttendanceStatus_updatesHeaderContentWithCorrectLocalizedStrings() {
+        // Given
+        let booking = Booking.fake().copy(
+            statusKey: "paid",
+            attendanceStatusKey: "checked-in"
+        )
+
+        // When
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+
+        // Then
+        let headerSection = viewModel.sections.first { section in
+            if case .header = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let headerSection = headerSection,
+              case let .header(headerContent) = headerSection.content else {
+            XCTFail("Header section not found")
+            return
+        }
+        XCTAssertEqual(headerContent.status, ["Checked In", "Paid"])
+    }
+
+    func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {
+        // Given
+        let booking = Booking.fake().copy(
+            attendanceStatusKey: "no-show"
+        )
+
+        // When
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+
+        // Then
+        let attendanceSection = viewModel.sections.first { section in
+            if case .attendance = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let attendanceSection = attendanceSection,
+              case let .attendance(attendanceContent) = attendanceSection.content else {
+            XCTFail("Attendance section not found")
+            return
+        }
+
+        XCTAssertEqual(attendanceContent.value, "No Show")
+    }
 }

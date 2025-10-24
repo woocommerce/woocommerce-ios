@@ -136,7 +136,7 @@ private extension BookingListView {
                 HStack {
                     // TODO: update this when attendance status is available
                     // Update badge colors if design changes as statuses are not clarified now.
-                    statusBadge(text: "Booked", color: Layout.defaultBadgeColor)
+                    statusBadge(text: booking.attendanceStatus.localizedTitle, color: Layout.defaultBadgeColor)
                     statusBadge(text: booking.bookingStatus.localizedTitle, color: Layout.defaultBadgeColor)
                     Spacer()
                 }

@@ -46,4 +46,8 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
         }
         return try result.get()
     }
+
+    func updateBooking(from siteID: Int64, bookingID: Int64, attendanceStatus: Networking.BookingAttendanceStatus) async throws -> Networking.Booking? {
+        return nil
+    }
 }

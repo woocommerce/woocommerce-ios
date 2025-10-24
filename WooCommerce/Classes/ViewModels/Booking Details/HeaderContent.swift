@@ -18,9 +18,8 @@ extension BookingDetailsViewModel {
             )
             serviceAndCustomerLine = booking.summaryText
 
-            let bookingStatus = booking.bookingStatus
             status = [
-                "Booked",
+                booking.attendanceStatus.localizedTitle,
                 booking.bookingStatus.localizedTitle
             ]
         }

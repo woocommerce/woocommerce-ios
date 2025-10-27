@@ -124,29 +124,12 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     }
                     .padding()
                 }
-                Button {
-                    showCardReaderDocumentationModal = true
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: "doc.text")
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(Localization.cardReaderDocumentationTitle)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(Localization.cardReaderDocumentationSubtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
-                    }
-                }
-                .padding()
-                .accessibilityAddTraits(.isButton)
+                POSSettingsCardView(
+                    icon: "doc.text",
+                    title: Localization.cardReaderDocumentationTitle,
+                    subtitle: Localization.cardReaderDocumentationSubtitle,
+                    action: { showCardReaderDocumentationModal = true }
+                )
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
@@ -201,6 +184,47 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
+    }
+}
+
+private struct POSSettingsCardView: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: POSSpacing.medium) {
+                Image(systemName: icon)
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityHidden(true)
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
+                VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                    Text(title)
+                        .font(.posBodyLargeRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    Text(subtitle)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                }
+
+                Spacer()
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.posSurfaceContainerLowest)
+            .posItemCardBorderStyles()
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel("\(title), \(subtitle)")
     }
 }
 
@@ -384,8 +408,19 @@ private extension PointOfSaleSettingsHardwareDetailView {
     }
 }
 
+//#if DEBUG
+//#Preview {
+//    PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
+//        .environment(\.posAnalytics, MockPOSAnalytics())
+//}
+//#endif
+
+
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
+    POSSettingsCardView(icon: "square.and.arrow.up.circle",
+                        title: "title",
+                        subtitle: "subtitle",
+                        action: { })
 }
 #endif

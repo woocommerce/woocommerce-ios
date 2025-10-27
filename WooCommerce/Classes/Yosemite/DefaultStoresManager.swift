@@ -145,7 +145,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Provides access to the session-scoped POS catalog eligibility checker
     ///
-    var posCatalogEligibilityChecker: POSCatalogEligibilityChecking? {
+    var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
         get {
             (state as? AuthenticatedState)?.posCatalogEligibilityChecker
         }
@@ -198,7 +198,10 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(credentials: credentials, sessionManager: sessionManager)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        state = AuthenticatedState(credentials: credentials,
+                                   sessionManager: sessionManager,
+                                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
         sessionManager.defaultCredentials = credentials
 
         if case .wpcom = credentials {

@@ -706,7 +706,6 @@
 		20134CE62D4D1BDF00076A80 /* LearnMoreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */; };
 		20134CE82D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
-		2020B8732EAA405500422B86 /* POSLocalCatalogEligibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8712EAA405500422B86 /* POSLocalCatalogEligibilityService.swift */; };
 		2020B8762EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */; };
 		2020B8782EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8772EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift */; };
 		2020B87A2EAA439200422B86 /* MockPOSCatalogSizeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */; };
@@ -3623,7 +3622,6 @@
 		20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreViewModelTests.swift; sourceTree = "<group>"; };
 		20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentPlugin+SetUpTapToPay.swift"; sourceTree = "<group>"; };
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
-		2020B8712EAA405500422B86 /* POSLocalCatalogEligibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSLocalCatalogEligibilityService.swift; sourceTree = "<group>"; };
 		2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSLocalCatalogEligibilityServiceTests.swift; sourceTree = "<group>"; };
 		2020B8772EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSLocalCatalogEligibilityService.swift; sourceTree = "<group>"; };
 		2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSCatalogSizeChecker.swift; sourceTree = "<group>"; };
@@ -6769,7 +6767,6 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				2020B8722EAA405500422B86 /* Eligibility */,
 				683F18652E9CC838007BC608 /* POSNotificationScheduler.swift */,
 				01654EB02E786223001DBB6F /* Adaptors */,
 				02ABF9B92DF7F8E200348186 /* TabBar */,
@@ -7316,14 +7313,6 @@
 				09F5DE5C27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift */,
 			);
 			path = "Bulk Update";
-			sourceTree = "<group>";
-		};
-		2020B8722EAA405500422B86 /* Eligibility */ = {
-			isa = PBXGroup;
-			children = (
-				2020B8712EAA405500422B86 /* POSLocalCatalogEligibilityService.swift */,
-			);
-			path = Eligibility;
 			sourceTree = "<group>";
 		};
 		2020B8752EAA41C200422B86 /* Eligibility */ = {
@@ -15138,7 +15127,6 @@
 				DE3877E0283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift in Sources */,
 				B9FBEF9A2A7BCCF100AC609B /* UnderlineableTitleAndSubtitleAndDetailTableViewCell.swift in Sources */,
 				020DD48D2322A617005822B1 /* ProductsTabProductViewModel.swift in Sources */,
-				2020B8732EAA405500422B86 /* POSLocalCatalogEligibilityService.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				D449C51B26DE6B5000D75B02 /* ReportList.swift in Sources */,
 				68E952D0287587BF0095A23D /* CardReaderManualRowView.swift in Sources */,

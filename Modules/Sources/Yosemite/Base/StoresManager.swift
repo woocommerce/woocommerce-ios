@@ -74,9 +74,9 @@ public protocol StoresManager {
     ///
     var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? { get }
 
-    /// Provides access to the session-scoped POS catalog eligibility checker
+    /// Provides access to the session-scoped POS catalog eligibility service
     ///
-    var posCatalogEligibilityChecker: POSCatalogEligibilityChecking? { get set }
+    var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? { get set }
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///

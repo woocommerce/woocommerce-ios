@@ -263,7 +263,7 @@ public class MockStoresManager: StoresManager {
         nil
     }
 
-    public var posCatalogEligibilityChecker: POSCatalogEligibilityChecking? {
+    public var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
         get { nil }
         set { }
     }

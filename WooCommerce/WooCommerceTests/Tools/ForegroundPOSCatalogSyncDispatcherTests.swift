@@ -291,8 +291,4 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         // Not used
     }
-
-    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) {
-        // Not used
-    }
 }

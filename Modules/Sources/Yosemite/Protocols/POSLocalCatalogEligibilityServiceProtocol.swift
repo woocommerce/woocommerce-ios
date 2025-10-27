@@ -27,7 +27,7 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 ///
 /// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
 /// The service performs an initial eligibility check during initialization.
-public protocol POSLocalCatalogEligibilityServiceProtocol {
+public protocol POSLocalCatalogEligibilityServiceProtocol: POSCatalogEligibilityChecking {
     /// Current eligibility state (synchronously accessible on main thread)
     var eligibilityState: POSLocalCatalogEligibilityState { get }
 

@@ -26,10 +26,6 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///                     performs full sync; otherwise, performs incremental sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
-
-    /// Sets the catalog eligibility checker
-    /// This should be called after the eligibility service is created in MainTabBarController
-    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?)
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -57,7 +53,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
-    private var catalogEligibilityChecker: POSCatalogEligibilityChecking?
+    private let catalogEligibilityChecker: POSCatalogEligibilityChecking?
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
@@ -75,18 +71,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.grdbManager = grdbManager
         self.catalogEligibilityChecker = catalogEligibilityChecker
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
-    }
-
-    /// Sets the catalog eligibility checker
-    /// This should be called after the eligibility service is created in MainTabBarController
-    public nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) {
-        Task {
-            await self.internalSetCatalogEligibilityChecker(checker)
-        }
-    }
-
-    private func internalSetCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) {
-        self.catalogEligibilityChecker = checker
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {

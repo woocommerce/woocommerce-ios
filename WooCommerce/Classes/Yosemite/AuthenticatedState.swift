@@ -37,10 +37,10 @@ class AuthenticatedState: StoresManagerState {
     ///
     private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
 
-    /// POS Catalog Eligibility Checker (session-scoped)
-    /// This is set from MainTabBarController after the eligibility service is created
+    /// POS Catalog Eligibility Service (session-scoped)
+    /// Created during initialization alongside the sync coordinator
     ///
-    var posCatalogEligibilityChecker: POSCatalogEligibilityChecking?
+    var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
 
     // periphery:ignore - keep strong reference to keep the state publisher alive
     private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
@@ -48,7 +48,9 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
+    init(credentials: Credentials,
+         sessionManager: SessionManagerProtocol,
+         isLocalCatalogFeatureFlagEnabled: Bool) {
         let storageManager = ServiceLocator.storageManager
 
         let site = sessionManager.defaultSitePublisher
@@ -166,9 +168,8 @@ class AuthenticatedState: StoresManagerState {
 
         self.services = services
 
-        // Initialize POS catalog sync coordinator if feature flag is enabled
-        // Note: catalogEligibilityChecker will be set later from MainTabBarController
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+        // Initialize POS catalog sync coordinator and eligibility service if feature flag is enabled
+        if isLocalCatalogFeatureFlagEnabled,
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
                                                            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
@@ -179,20 +180,50 @@ class AuthenticatedState: StoresManagerState {
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
             grdbManager: ServiceLocator.grdbManager
            ) {
-            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
-                fullSyncService: fullSyncService,
-                incrementalSyncService: incrementalSyncService,
-                grdbManager: ServiceLocator.grdbManager,
-                catalogEligibilityChecker: nil  // Will be updated when eligibility service is created
-            )
+
+            // Initialize properties to nil first, then create services on main thread after init completes
+            posCatalogEligibilityChecker = nil
+            posCatalogSyncCoordinator = nil
+
+            trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
+            startListeningToNotifications()
+            observeAppPasswordSupportState()
+
+            // Create eligibility service and sync coordinator on main thread
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+
+                let eligibilityService = POSLocalCatalogEligibilityService(
+                    siteID: sessionManager.defaultStoreID ?? 0,
+                    catalogSizeChecker: POSCatalogSizeChecker(
+                        credentials: credentials,
+                        selectedSite: site,
+                        appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+                    ),
+                    isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                    isPOSTabVisible: false  // Will be updated when POS tab is shown
+                )
+                self.posCatalogEligibilityChecker = eligibilityService
+
+                // Create sync coordinator with eligibility service
+                self.posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                    fullSyncService: fullSyncService,
+                    incrementalSyncService: incrementalSyncService,
+                    grdbManager: ServiceLocator.grdbManager,
+                    catalogEligibilityChecker: eligibilityService
+                )
+
+                // Perform initial eligibility check
+                await eligibilityService.refreshEligibilityState()
+            }
         } else {
             posCatalogSyncCoordinator = nil
+            posCatalogEligibilityChecker = nil
+
+            trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
+            startListeningToNotifications()
+            observeAppPasswordSupportState()
         }
-
-        trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
-
-        startListeningToNotifications()
-        observeAppPasswordSupportState()
     }
 
     /// Convenience Initializer
@@ -201,7 +232,10 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        self.init(credentials: credentials, sessionManager: sessionManager)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        self.init(credentials: credentials,
+                  sessionManager: sessionManager,
+                  isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
     }
 
     /// Executed before the current state is deactivated.

@@ -1,5 +1,5 @@
 import Foundation
-@testable import PointOfSale
+@testable import Yosemite
 
 /// Mock implementation of POSLocalCatalogEligibilityServiceProtocol for testing
 @MainActor
@@ -17,4 +17,8 @@ public final class MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibi
     }
 
     public func updateVisibility(isPOSTabVisible: Bool) async { }
+
+    public func isCatalogEligibleForSync() async -> Bool {
+        return eligibilityState == .eligible
+    }
 }

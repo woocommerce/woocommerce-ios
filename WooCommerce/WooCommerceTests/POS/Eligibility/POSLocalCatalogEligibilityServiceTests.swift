@@ -22,7 +22,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -39,7 +39,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -58,7 +58,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -91,7 +91,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -122,7 +122,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -147,7 +147,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -172,7 +172,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -212,7 +212,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 1000
         )
@@ -244,7 +244,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: true,
             catalogSizeLimit: 100 // Custom lower limit
         )
@@ -276,7 +276,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: false,
             catalogSizeLimit: 1000
         )
@@ -306,7 +306,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = await POSLocalCatalogEligibilityService(
             siteID: siteID,
             catalogSizeChecker: sizeChecker,
-            featureFlagService: featureFlagService,
+            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
             isPOSTabVisible: false,
             catalogSizeLimit: 1000
         )

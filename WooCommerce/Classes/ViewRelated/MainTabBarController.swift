@@ -829,43 +829,16 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible,
                                                     isBookingsTabVisible: isBookingsTabVisible)
 
-        // Create POS tab coordinator with shared eligibility service
-        let initialPOSTabVisibility = posTabVisibilityChecker?.checkInitialVisibility() ?? false
-
-        // Create eligibility service once and share it
-        Task { @MainActor in
-            let appPasswordSupportState = ApplicationPasswordsExperimentState()
-            let isAppPasswordSupported = appPasswordSupportState.$isAvailableAndEnabled.eraseToAnyPublisher()
-
-            let eligibilityService = await POSLocalCatalogEligibilityService(
-                siteID: siteID,
-                catalogSizeChecker: POSCatalogSizeChecker(
-                    credentials: stores.sessionManager.defaultCredentials,
-                    selectedSite: stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher(),
-                    appPasswordSupportState: isAppPasswordSupported
-                ),
-                isPOSTabVisible: initialPOSTabVisibility
-            )
-
-            // Set on AuthenticatedState so sync coordinator can access it
-            stores.posCatalogEligibilityChecker = eligibilityService
-
-            // Pass eligibility service to sync coordinator
-            if let syncCoordinator = stores.posCatalogSyncCoordinator {
-                syncCoordinator.setCatalogEligibilityChecker(eligibilityService)
-            }
-
-            // Create POS tab coordinator with the service
-            let coordinator = POSTabCoordinator(
-                siteID: siteID,
-                tabContainerController: posContainerController,
-                viewControllerToPresent: self,
-                storesManager: stores,
-                eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
-                localCatalogEligibilityService: eligibilityService
-            )
-            posTabCoordinator = coordinator
-        }
+        // Create POS tab coordinator with eligibility service from stores
+        let coordinator = POSTabCoordinator(
+            siteID: siteID,
+            tabContainerController: posContainerController,
+            viewControllerToPresent: self,
+            storesManager: stores,
+            eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
+            localCatalogEligibilityService: stores.posCatalogEligibilityChecker
+        )
+        posTabCoordinator = coordinator
 
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)

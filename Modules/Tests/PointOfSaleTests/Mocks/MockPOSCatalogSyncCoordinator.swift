@@ -42,6 +42,4 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw error
         }
     }
-
-    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) { }
 }

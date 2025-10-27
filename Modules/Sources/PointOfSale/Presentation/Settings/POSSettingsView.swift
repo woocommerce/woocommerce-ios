@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleSettingsView: View {
+struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
     @State private var selection: SidebarNavigation? = .store
@@ -20,7 +20,7 @@ struct PointOfSaleSettingsView: View {
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     @ViewBuilder
     private var listView: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
@@ -66,6 +66,7 @@ extension PointOfSaleSettingsView {
 
                 Spacer()
 
+                // TODO: Clarify if `Help` will use a different style, or the same as the other cards.
                 POSSettingsSidebarNavigationCardView(
                     item: .help,
                     isSelected: selection == .help,
@@ -84,9 +85,9 @@ extension PointOfSaleSettingsView {
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
-            PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
+            POSSettingsHardwareDetailView(settingsController: settingsController)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
                 POSSettingsLocalCatalogDetailView(viewModel: viewModel)
@@ -101,13 +102,13 @@ extension PointOfSaleSettingsView {
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     enum Constants {
         static let sidebarWidthFraction: CGFloat = 0.35
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
         case hardware
@@ -203,6 +204,6 @@ extension PointOfSaleSettingsView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
+    POSSettingsView(settingsController: PointOfSaleSettingsPreviewController())
 }
 #endif

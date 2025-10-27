@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleSettingsStoreDetailView: View {
+struct POSSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
 
     let viewModel: POSSettingsStoreViewModel
@@ -121,7 +121,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
 }
 
 
-private extension PointOfSaleSettingsStoreDetailView {
+private extension POSSettingsStoreDetailView {
     enum Constants {
         static let shimmeringTextWidth: CGFloat = 70
         static let shimmeringTextHeight: CGFloat = 16
@@ -199,6 +199,6 @@ private extension PointOfSaleSettingsStoreDetailView {
 #if DEBUG
 #Preview {
     let controller = PointOfSaleSettingsPreviewController()
-    PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
+    POSSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

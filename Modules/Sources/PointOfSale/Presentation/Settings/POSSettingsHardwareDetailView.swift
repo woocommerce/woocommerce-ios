@@ -1,7 +1,7 @@
 import SwiftUI
 import struct WooFoundation.SafariView
 
-struct PointOfSaleSettingsHardwareDetailView: View {
+struct POSSettingsHardwareDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
 
@@ -186,7 +186,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 }
 
-extension PointOfSaleSettingsHardwareDetailView {
+extension POSSettingsHardwareDetailView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners
@@ -260,7 +260,7 @@ extension PointOfSaleSettingsHardwareDetailView {
     }
 }
 
-private extension PointOfSaleSettingsHardwareDetailView {
+private extension POSSettingsHardwareDetailView {
     enum Localization {
         static let readerModelTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.readerModelTitle",

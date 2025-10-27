@@ -3,7 +3,7 @@ import SwiftUI
 struct POSSettingsSidebarNavigationCardView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    let item: PointOfSaleSettingsView.SidebarNavigation
+    let item: POSSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
 

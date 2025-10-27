@@ -36,7 +36,8 @@ extension PointOfSaleSettingsView {
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                PointOfSaleSettingsCard(
+                //
+                To_Update_PointOfSaleSettingsCard(
                     item: .store,
                     isSelected: selection == .store,
                     onTap: {
@@ -45,7 +46,8 @@ extension PointOfSaleSettingsView {
                     }
                 )
 
-                PointOfSaleSettingsCard(
+                //
+                To_Update_PointOfSaleSettingsCard(
                     item: .hardware,
                     isSelected: selection == .hardware,
                     onTap: {
@@ -55,7 +57,7 @@ extension PointOfSaleSettingsView {
                 )
 
                 if settingsController.isLocalCatalogEligible {
-                    PointOfSaleSettingsCard(
+                    To_Update_PointOfSaleSettingsCard(
                         item: .localCatalog,
                         isSelected: selection == .localCatalog,
                         onTap: {
@@ -66,7 +68,7 @@ extension PointOfSaleSettingsView {
 
                 Spacer()
 
-                PointOfSaleSettingsCard(
+                To_Update_PointOfSaleSettingsCard(
                     item: .help,
                     isSelected: selection == .help,
                     onTap: {
@@ -104,53 +106,6 @@ extension PointOfSaleSettingsView {
 extension PointOfSaleSettingsView {
     enum Constants {
         static let sidebarWidthFraction: CGFloat = 0.35
-    }
-}
-
-struct PointOfSaleSettingsCard: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.colorScheme) private var colorScheme
-
-    let item: PointOfSaleSettingsView.SidebarNavigation
-    let isSelected: Bool
-    let onTap: () -> Void
-
-    private var selectionBackgroundColor: Color {
-        guard isSelected else { return Color.clear }
-        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
-    }
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: POSSpacing.medium) {
-                Image(systemName: item.icon)
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityHidden(true)
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                    Text(item.title)
-                        .font(.posBodyLargeRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    Text(item.subtitle)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                }
-                Spacer()
-            }
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(.isButton)
-        .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
-                .fill(selectionBackgroundColor)
-        )
     }
 }
 

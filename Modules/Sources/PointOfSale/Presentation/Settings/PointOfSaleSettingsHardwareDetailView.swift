@@ -125,7 +125,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     .padding()
                 }
                 POSSettingsCardView(
-                    icon: "doc.text",
                     title: Localization.cardReaderDocumentationTitle,
                     subtitle: Localization.cardReaderDocumentationSubtitle,
                     action: { showCardReaderDocumentationModal = true }
@@ -184,47 +183,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
-    }
-}
-
-private struct POSSettingsCardView: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let action: () -> Void
-
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: POSSpacing.medium) {
-                Image(systemName: icon)
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityHidden(true)
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                    Text(title)
-                        .font(.posBodyLargeRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    Text(subtitle)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                }
-
-                Spacer()
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.posSurfaceContainerLowest)
-            .posItemCardBorderStyles()
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(.isButton)
-        .accessibilityLabel("\(title), \(subtitle)")
     }
 }
 
@@ -414,13 +372,3 @@ private extension PointOfSaleSettingsHardwareDetailView {
 //        .environment(\.posAnalytics, MockPOSAnalytics())
 //}
 //#endif
-
-
-#if DEBUG
-#Preview {
-    POSSettingsCardView(icon: "square.and.arrow.up.circle",
-                        title: "title",
-                        subtitle: "subtitle",
-                        action: { })
-}
-#endif

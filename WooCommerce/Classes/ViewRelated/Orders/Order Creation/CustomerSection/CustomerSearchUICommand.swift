@@ -157,9 +157,12 @@ final class CustomerSearchUICommand: SearchUICommand {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let newCustomerSelectorIsEnabled = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-        let descriptor = newCustomerSelectorIsEnabled ?
-        NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true) : NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)
-        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let descriptors = newCustomerSelectorIsEnabled ?
+        [
+            NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true),
+            NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: true)
+        ] : [NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)]
+        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: descriptors)
     }
 
     func createStarterViewController() -> UIViewController? {

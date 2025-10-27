@@ -182,12 +182,9 @@ private extension BookingFiltersViewModel.BookingListFilter {
 extension BookingFiltersViewModel.BookingListFilter {
     func createViewModel(filters: BookingFiltersViewModel.Filters) -> FilterTypeViewModel {
         switch self {
-        case .teamMember:
-            // TODO: Implement team member selector when available
-            // For now, using static options with nil (Any option)
-            let options: [BookingResource?] = [nil]
+        case .teamMember(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .bookingResource(siteID: siteID),
                                        selectedValue: filters.teamMember)
         case .product(let siteID):
             return FilterTypeViewModel(title: title,

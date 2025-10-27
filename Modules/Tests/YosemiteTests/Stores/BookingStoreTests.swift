@@ -36,6 +36,12 @@ struct BookingStoreTests {
         return viewStorage.countObjects(ofType: StorageBooking.self)
     }
 
+    /// Convenience: returns the number of stored booking resources
+    ///
+    private var storedBookingResourceCount: Int {
+        return viewStorage.countObjects(ofType: Storage.BookingResource.self)
+    }
+
     /// SiteID
     ///
     private let sampleSiteID: Int64 = 120934
@@ -616,6 +622,202 @@ struct BookingStoreTests {
         let orderInfo = try #require(returnedBooking.orderInfo)
         #expect(orderInfo.productInfo?.name == "Test Product")
         #expect(orderInfo.statusKey == "processing")
+    }
+
+    // MARK: - synchronizeResources
+
+    @Test func synchronizeResources_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() async throws {
+        // Given
+        remote.whenFetchingResources(thenReturn: .success([]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasNextPage = try result.get()
+        #expect(hasNextPage == false)
+    }
+
+    @Test func synchronizeResources_returns_true_for_hasNextPage_when_number_of_retrieved_results_equals_pageSize() async throws {
+        // Given
+        let resources = Array(repeating: BookingResource.fake(), count: defaultPageSize)
+        remote.whenFetchingResources(thenReturn: .success(resources))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasNextPage = try result.get()
+        #expect(hasNextPage == true)
+    }
+
+    @Test func synchronizeResources_stores_resources_upon_success() async throws {
+        // Given
+        let resource = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 123)
+        remote.whenFetchingResources(thenReturn: .success([resource]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+        #expect(storedBookingResourceCount == 0)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingResourceCount == 1)
+    }
+
+    @Test func synchronizeResources_updates_existing_resource_when_resource_already_exists() async throws {
+        // Given
+        let originalResource = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 123, name: "Original Name")
+        storeBookingResource(originalResource)
+        #expect(storedBookingResourceCount == 1)
+
+        let updatedResource = originalResource.copy(name: "Updated Name")
+        remote.whenFetchingResources(thenReturn: .success([updatedResource]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingResourceCount == 1)
+        let storedResource = try #require(viewStorage.loadBookingResource(siteID: sampleSiteID, resourceID: 123))
+        #expect(storedResource.name == "Updated Name")
+    }
+
+    @Test func synchronizeResources_stores_multiple_resources_upon_success() async throws {
+        // Given
+        let resource1 = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 123)
+        let resource2 = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 456)
+        remote.whenFetchingResources(thenReturn: .success([resource1, resource2]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+        #expect(storedBookingResourceCount == 0)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingResourceCount == 2)
+    }
+
+    @Test func synchronizeResources_returns_error_on_failure() async throws {
+        // Given
+        remote.whenFetchingResources(thenReturn: .failure(NetworkError.timeout()))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isFailure)
+        let error = result.failure as? NetworkError
+        #expect(error == .timeout())
+    }
+
+    @Test func synchronizeResources_preserves_existing_resources_from_previous_pages() async throws {
+        // Given
+        let existingResource = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 999)
+        storeBookingResource(existingResource)
+        #expect(storedBookingResourceCount == 1)
+
+        let newResource = BookingResource.fake().copy(siteID: sampleSiteID, resourceID: 123)
+        remote.whenFetchingResources(thenReturn: .success([newResource]))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.synchronizeResources(siteID: sampleSiteID,
+                                                              pageNumber: defaultPageNumber,
+                                                              pageSize: defaultPageSize,
+                                                              onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isSuccess)
+        #expect(storedBookingResourceCount == 2)
+
+        // Verify both resources exist
+        let newStoredResource = try #require(viewStorage.loadBookingResource(siteID: sampleSiteID, resourceID: 123))
+        #expect(newStoredResource.resourceID == 123)
+
+        let existingStoredResource = try #require(viewStorage.loadBookingResource(siteID: sampleSiteID, resourceID: 999))
+        #expect(existingStoredResource.resourceID == 999)
     }
 
     // MARK: - orderInfo Storage Tests

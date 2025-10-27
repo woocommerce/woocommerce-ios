@@ -1,0 +1,26 @@
+[
+    {
+        "id": 22,
+        "name": "Joel (Sample resource)",
+        "qty": 1,
+        "role": "",
+        "email": "",
+        "phone_number": "",
+        "image_id": 0,
+        "image_url": "",
+        "description": "",
+        "note": ""
+    },
+    {
+        "id": 23,
+        "name": "Sarah (Sample resource)",
+        "qty": 2,
+        "role": "Manager",
+        "email": "sarah@example.com",
+        "phone_number": "+1234567890",
+        "image_id": 45,
+        "image_url": "https://example.com/image.jpg",
+        "description": "Sample resource description",
+        "note": "Sample note"
+    }
+]

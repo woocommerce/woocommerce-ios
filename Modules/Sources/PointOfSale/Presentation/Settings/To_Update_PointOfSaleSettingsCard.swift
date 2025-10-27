@@ -2,16 +2,10 @@ import SwiftUI
 
 struct To_Update_PointOfSaleSettingsCard: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.colorScheme) private var colorScheme
 
     let item: PointOfSaleSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
-
-    private var selectionBackgroundColor: Color {
-        guard isSelected else { return Color.clear }
-        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
-    }
 
     var body: some View {
         Button(action: onTap) {
@@ -22,20 +16,22 @@ struct To_Update_PointOfSaleSettingsCard: View {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 Text(item.subtitle)
                     .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurface)
+                    .foregroundStyle(.secondary)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             }
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
+            .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
+            .background(Color.posSurfaceContainerLowest)
+            .posItemCardBorderStyles()
         }
         .buttonStyle(.plain)
+        .overlay {
+            if isSelected {
+                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
+                    .stroke(Color.posOnSurface, lineWidth: 2)
+            }
+        }
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel("\(item.title), \(item.subtitle)")
-        .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
-                .fill(selectionBackgroundColor)
-        )
     }
 }

@@ -292,11 +292,14 @@ private extension POSCatalogSyncCoordinator {
     /// Checks if sync is eligible for the given site based on catalog eligibility and temporal criteria
     func checkSyncEligibility(for siteID: Int64) async -> Bool {
         // First check catalog eligibility if checker is provided
-        if let catalogChecker = catalogEligibilityChecker {
-            guard await catalogChecker() else {
-                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
-                return false
-            }
+        guard let catalogChecker = catalogEligibilityChecker else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: No catalog eligibility checker, assuming site is ineligible")
+            return false
+        }
+
+        guard await catalogChecker() else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
+            return false
         }
 
         // Then check temporal eligibility (30-day criteria)

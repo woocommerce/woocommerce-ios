@@ -2,8 +2,13 @@ import SwiftUI
 
 /// View for filtering bookings by date and time range
 struct BookingDateTimeFilterView: View {
+    /// States for the date pickers are required to be non-optional
     @State private var fromDate: Date
     @State private var toDate: Date
+
+    /// Separate states for the selected dates, which can be optional
+    @State private var selectedFromDate: Date?
+    @State private var selectedToDate: Date?
 
     @State private var expandedPicker: PickerType?
 
@@ -14,13 +19,15 @@ struct BookingDateTimeFilterView: View {
         case toTime
     }
 
-    private let onSelection: (Date, Date) -> Void
+    private let onSelection: (Date?, Date?) -> Void
 
     init(startDate: Date?,
          endDate: Date?,
-         onSelection: @escaping (Date, Date) -> Void) {
+         onSelection: @escaping (Date?, Date?) -> Void) {
         self.fromDate = startDate ?? Date()
+        self.selectedFromDate = startDate
         self.toDate = endDate ?? Date()
+        self.selectedToDate = endDate
         self.onSelection = onSelection
     }
 
@@ -28,8 +35,8 @@ struct BookingDateTimeFilterView: View {
         List {
             // From Section
             Section {
-                dateRow(type: .fromDate, selection: $fromDate)
-                timeRow(type: .fromTime, selection: $fromDate)
+                dateRow(type: .fromDate, displayedDate: $fromDate, selectedDate: selectedFromDate)
+                timeRow(type: .fromTime, displayedDate: $fromDate, selectedDate: selectedFromDate)
 
             } header: {
                 Text(Localization.from.uppercased())
@@ -38,8 +45,8 @@ struct BookingDateTimeFilterView: View {
 
             // To Section
             Section {
-                dateRow(type: .toDate, selection: $toDate)
-                timeRow(type: .toTime, selection: $toDate)
+                dateRow(type: .toDate, displayedDate: $toDate, selectedDate: selectedToDate)
+                timeRow(type: .toTime, displayedDate: $toDate, selectedDate: selectedToDate)
             } header: {
                 Text(Localization.to.uppercased())
                     .footnoteStyle()
@@ -50,17 +57,19 @@ struct BookingDateTimeFilterView: View {
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.listBackground))
         .onChange(of: fromDate) { _, newValue in
-            onSelection(newValue, toDate)
+            selectedFromDate = newValue
+            onSelection(selectedFromDate, selectedToDate)
         }
         .onChange(of: toDate) { _, newValue in
-            onSelection(fromDate, newValue)
+            selectedToDate = newValue
+            onSelection(selectedFromDate, selectedToDate)
         }
     }
 }
 
 private extension BookingDateTimeFilterView {
     @ViewBuilder
-    func dateRow(type: PickerType, selection: Binding<Date>) -> some View {
+    func dateRow(type: PickerType, displayedDate: Binding<Date>, selectedDate: Date?) -> some View {
         Button {
             withAnimation {
                 expandedPicker = expandedPicker == type ? nil : type
@@ -70,15 +79,20 @@ private extension BookingDateTimeFilterView {
                 Text(Localization.date)
                     .foregroundColor(.primary)
                 Spacer()
-                Text(selection.wrappedValue, style: .date)
-                    .foregroundColor(.secondary)
+                if let selectedDate {
+                    Text(selectedDate, style: .date)
+                        .foregroundColor(.secondary)
+                }
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color(.tertiaryLabel))
+                    .fontWeight(.medium)
             }
         }
 
         if expandedPicker == type {
             DatePicker(
                 "",
-                selection: selection,
+                selection: displayedDate,
                 in: dateRange(for: type),
                 displayedComponents: .date
             )
@@ -88,7 +102,7 @@ private extension BookingDateTimeFilterView {
     }
 
     @ViewBuilder
-    func timeRow(type: PickerType, selection: Binding<Date>) -> some View {
+    func timeRow(type: PickerType, displayedDate: Binding<Date>, selectedDate: Date?) -> some View {
         Button {
             withAnimation {
                 expandedPicker = expandedPicker == type ? nil : type
@@ -98,15 +112,20 @@ private extension BookingDateTimeFilterView {
                 Text(Localization.time)
                     .foregroundColor(.primary)
                 Spacer()
-                Text(selection.wrappedValue, style: .time)
-                    .foregroundColor(.secondary)
+                if let selectedDate {
+                    Text(selectedDate, style: .time)
+                        .foregroundColor(.secondary)
+                }
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color(.tertiaryLabel))
+                    .fontWeight(.medium)
             }
         }
 
         if expandedPicker == type {
             DatePicker(
                 "",
-                selection: selection,
+                selection: displayedDate,
                 in: dateRange(for: type),
                 displayedComponents: .hourAndMinute
             )

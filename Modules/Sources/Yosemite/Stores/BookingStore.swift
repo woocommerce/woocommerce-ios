@@ -280,8 +280,10 @@ private extension BookingStore {
                             readOnlyOrders: [],
                             siteID: siteID
                         )
-                    } else {
+
                         onCompletion(nil)
+                    } else {
+                        return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
                     }
                 } catch {
                     /// Revert Optimistic Update
@@ -443,4 +445,5 @@ private extension BookingStore {
 //
 private enum UpdateBookingStatusError: Error {
     case undefinedState
+    case missingRemoteBooking
 }

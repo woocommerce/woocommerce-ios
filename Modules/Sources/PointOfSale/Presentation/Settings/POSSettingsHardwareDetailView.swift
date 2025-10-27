@@ -153,24 +153,24 @@ struct POSSettingsHardwareDetailView: View {
                 Button {
                     handleScannerDestination(destination)
                 } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: destination.icon)
+                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                        Text(destination.title)
                             .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
+                            .foregroundStyle(Color.posOnSurface)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        Text(destination.subtitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.posSurfaceContainerLowest)
+                    .posItemCardBorderStyles()
                 }
+                .buttonStyle(.plain)
                 .accessibilityAddTraits(.isButton)
+                .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)

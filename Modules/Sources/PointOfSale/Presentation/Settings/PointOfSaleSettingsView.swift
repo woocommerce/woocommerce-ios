@@ -36,8 +36,7 @@ extension PointOfSaleSettingsView {
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                //
-                To_Update_PointOfSaleSettingsCard(
+                POSSettingsSidebarNavigationCardView(
                     item: .store,
                     isSelected: selection == .store,
                     onTap: {
@@ -46,8 +45,7 @@ extension PointOfSaleSettingsView {
                     }
                 )
 
-                //
-                To_Update_PointOfSaleSettingsCard(
+                POSSettingsSidebarNavigationCardView(
                     item: .hardware,
                     isSelected: selection == .hardware,
                     onTap: {
@@ -57,7 +55,7 @@ extension PointOfSaleSettingsView {
                 )
 
                 if settingsController.isLocalCatalogEligible {
-                    To_Update_PointOfSaleSettingsCard(
+                    POSSettingsSidebarNavigationCardView(
                         item: .localCatalog,
                         isSelected: selection == .localCatalog,
                         onTap: {
@@ -68,7 +66,7 @@ extension PointOfSaleSettingsView {
 
                 Spacer()
 
-                To_Update_PointOfSaleSettingsCard(
+                POSSettingsSidebarNavigationCardView(
                     item: .help,
                     isSelected: selection == .help,
                     onTap: {

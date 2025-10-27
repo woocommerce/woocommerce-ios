@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct To_Update_PointOfSaleSettingsCard: View {
+struct POSSettingsSidebarNavigationCardView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let item: PointOfSaleSettingsView.SidebarNavigation

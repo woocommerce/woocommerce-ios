@@ -27,8 +27,9 @@ struct POSSettingsStoreDetailView: View {
                         receiptInformationView
                             .renderedIf(viewModel.shouldShowReceiptInformation)
                     }
+                    .padding(.horizontal, POSPadding.medium)
                 }
-                .background(backgroundColor)
+                .background(Color.posSurface)
             }
             .background(Color.posSurface)
             .task {

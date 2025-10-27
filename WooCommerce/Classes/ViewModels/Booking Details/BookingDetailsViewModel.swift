@@ -100,7 +100,7 @@ private extension BookingDetailsViewModel {
     }
 
     func setupAttendanceSectionVisibility() {
-        if booking.attendanceStatus == .cancelled {
+        if booking.attendanceStatus == .cancelled || booking.bookingStatus == .cancelled {
             deleteAttendanceSectionIfPresent()
         } else {
             insertAttendanceSectionIfAbsent()

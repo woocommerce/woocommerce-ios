@@ -8,6 +8,7 @@ import Yosemite
 ///
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
     private var searchViewController: SearchViewController<UnderlineableTitleAndSubtitleAndDetailTableViewCell, CustomerSearchUICommand>?
+    private var customerSearchCommand: CustomerSearchUICommand?
     private var emptyStateViewController: UIViewController?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
@@ -200,31 +201,34 @@ private extension CustomerSelectorViewController {
                                  shouldTrackCustomerAdded: Bool,
                                  disallowCreatingCustomer: Bool,
                                  onAddCustomerDetailsManually: (() -> Void)? = nil) {
+        let command = CustomerSearchUICommand(siteID: siteID,
+                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
+                                              showSearchFilters: showSearchFilters,
+                                              showGuestLabel: showGuestLabel,
+                                              shouldTrackCustomerAdded: shouldTrackCustomerAdded,
+                                              disallowCreatingCustomer: disallowCreatingCustomer,
+                                              hideDetailText: configuration.hideDetailText,
+                                              selectedCustomerID: selectedCustomerID,
+                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
+                                              onDidSelectSearchResult: onCustomerTapped,
+                                              onDidStartSyncingAllCustomersFirstPage: {
+                                                  Task { @MainActor [weak self] in
+                                                      guard let searchTableView = self?.searchViewController?.tableView else {
+                                                          return
+                                                      }
+                                                      self?.displayGhostContent(over: searchTableView)
+                                                  }
+                                              },
+                                              onDidFinishSyncingAllCustomersFirstPage: {
+                                                  Task { @MainActor [weak self] in
+                                                      self?.removeGhostContent()
+                                                  }
+                                              })
+        self.customerSearchCommand = command
+
         let searchViewController = SearchViewController(
             storeID: siteID,
-            command: CustomerSearchUICommand(siteID: siteID,
-                                             loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
-                                             showSearchFilters: showSearchFilters,
-                                             showGuestLabel: showGuestLabel,
-                                             shouldTrackCustomerAdded: shouldTrackCustomerAdded,
-                                             disallowCreatingCustomer: disallowCreatingCustomer,
-                                             hideDetailText: configuration.hideDetailText,
-                                             selectedCustomerID: selectedCustomerID,
-                                             onAddCustomerDetailsManually: onAddCustomerDetailsManually,
-                                             onDidSelectSearchResult: onCustomerTapped,
-                                             onDidStartSyncingAllCustomersFirstPage: {
-                                                 Task { @MainActor [weak self] in
-                                                     guard let searchTableView = self?.searchViewController?.tableView else {
-                                                         return
-                                                     }
-                                                     self?.displayGhostContent(over: searchTableView)
-                                                 }
-                                             },
-                                             onDidFinishSyncingAllCustomersFirstPage: {
-                                                 Task { @MainActor [weak self] in
-                                                     self?.removeGhostContent()
-                                                 }
-                                             }),
+            command: command,
             cellType: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )
@@ -283,6 +287,8 @@ private extension CustomerSelectorViewController {
         viewModel.onCustomerSelected(customer, onCompletion: { [weak self] result in
             guard let self else { return }
             activityIndicator.stopAnimating()
+            customerSearchCommand?.updateSelectedCustomerID(customer.customerID)
+            searchViewController?.tableView.reloadData()
 
             switch result {
             case .success:

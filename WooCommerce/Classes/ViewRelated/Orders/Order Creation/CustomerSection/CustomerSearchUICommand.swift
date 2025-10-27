@@ -65,7 +65,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     private let hideDetailText: Bool
 
     // The currently selected customer ID to show checkmark
-    private let selectedCustomerID: Int64?
+    private var selectedCustomerID: Int64?
 
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
@@ -97,6 +97,10 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.onDidSelectSearchResult = onDidSelectSearchResult
         self.onDidStartSyncingAllCustomersFirstPage = onDidStartSyncingAllCustomersFirstPage
         self.onDidFinishSyncingAllCustomersFirstPage = onDidFinishSyncingAllCustomersFirstPage
+    }
+
+    func updateSelectedCustomerID(_ customerID: Int64?) {
+        self.selectedCustomerID = customerID
     }
 
     var hideCancelButton: Bool {

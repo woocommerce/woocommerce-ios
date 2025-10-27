@@ -363,7 +363,6 @@ private extension FilterListViewController {
 
                             self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                             self?.listSelector.reloadData()
-                            self?.listSelector.navigationController?.popViewController(animated: true)
                         }
                     )
                 }()
@@ -381,7 +380,6 @@ private extension FilterListViewController {
                         selected.selectedValue = resource
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                         self?.listSelector.reloadData()
-                        self?.listSelector.navigationController?.popViewController(animated: true)
                     }
                 )
                 let hostingController = UIHostingController(rootView: memberListSelectorView)
@@ -402,7 +400,6 @@ private extension FilterListViewController {
                         }()
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                         self?.listSelector.reloadData()
-                        self?.listSelector.navigationController?.popViewController(animated: true)
                     }
                 )
                 let hostingController = UIHostingController(rootView: memberListSelectorView)

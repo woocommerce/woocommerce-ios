@@ -143,6 +143,17 @@ class DefaultStoresManager: StoresManager {
         (state as? AuthenticatedState)?.posCatalogSyncCoordinator
     }
 
+    /// Provides access to the session-scoped POS catalog eligibility checker
+    ///
+    var posCatalogEligibilityChecker: POSCatalogEligibilityChecking? {
+        get {
+            (state as? AuthenticatedState)?.posCatalogEligibilityChecker
+        }
+        set {
+            (state as? AuthenticatedState)?.posCatalogEligibilityChecker = newValue
+        }
+    }
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,

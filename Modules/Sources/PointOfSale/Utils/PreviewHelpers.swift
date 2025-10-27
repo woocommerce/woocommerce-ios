@@ -29,6 +29,7 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSCatalogEligibilityChecking
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
@@ -609,7 +610,7 @@ final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol 
 }
 
 final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
-    func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) { }
+    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) { }
 
     func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         // Simulates a full sync operation with a 1 second delay.

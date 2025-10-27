@@ -27,9 +27,9 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
 
-    /// Sets the catalog eligibility checker closure
-    /// This should be called after the POSTabCoordinator is created to wire up catalog eligibility checking
-    nonisolated func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool)
+    /// Sets the catalog eligibility checker
+    /// This should be called after the eligibility service is created in MainTabBarController
+    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?)
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -57,7 +57,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
-    private var catalogEligibilityChecker: (() async -> Bool)?
+    private var catalogEligibilityChecker: POSCatalogEligibilityChecking?
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
@@ -68,13 +68,25 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
-                catalogEligibilityChecker: (() async -> Bool)? = nil,
+                catalogEligibilityChecker: POSCatalogEligibilityChecking? = nil,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
         self.catalogEligibilityChecker = catalogEligibilityChecker
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
+    }
+
+    /// Sets the catalog eligibility checker
+    /// This should be called after the eligibility service is created in MainTabBarController
+    public nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) {
+        Task {
+            await self.internalSetCatalogEligibilityChecker(checker)
+        }
+    }
+
+    private func internalSetCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) {
+        self.catalogEligibilityChecker = checker
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
@@ -135,18 +147,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)
-    }
-
-    /// Sets the catalog eligibility checker closure
-    /// This should be called after the POSTabCoordinator is created to wire up catalog eligibility checking
-    public nonisolated func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
-        Task {
-            await self.internalSetCatalogEligibilityChecker(checker)
-        }
-    }
-
-    private func internalSetCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
-        self.catalogEligibilityChecker = checker
     }
 
     /// Determines if a full sync should be performed based on the age of the last sync
@@ -297,7 +297,7 @@ private extension POSCatalogSyncCoordinator {
             return false
         }
 
-        guard await catalogChecker() else {
+        guard await catalogChecker.isCatalogEligibleForSync() else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
             return false
         }

@@ -141,7 +141,7 @@ final class MainTabBarController: UITabBarController {
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
-    private let stores: StoresManager
+    private(set) var stores: StoresManager
     private let analytics: Analytics
     private let posTabVisibilityCheckerFactory: ((_ site: Site) -> POSTabVisibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
@@ -829,25 +829,42 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible,
                                                     isBookingsTabVisible: isBookingsTabVisible)
 
-        // Create POS tab coordinator with initial visibility from cache
+        // Create POS tab coordinator with shared eligibility service
         let initialPOSTabVisibility = posTabVisibilityChecker?.checkInitialVisibility() ?? false
-        let coordinator = POSTabCoordinator(
-            siteID: siteID,
-            tabContainerController: posContainerController,
-            viewControllerToPresent: self,
-            storesManager: stores,
-            eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
-            initialPOSTabVisibility: initialPOSTabVisibility
-        )
-        posTabCoordinator = coordinator
 
-        // Wire up catalog eligibility checking for sync coordinator
-        if let syncCoordinator = stores.posCatalogSyncCoordinator,
-           let eligibilityService = coordinator.localCatalogEligibilityService {
-            syncCoordinator.setCatalogEligibilityChecker {
-                await eligibilityService.refreshEligibilityState()
-                return eligibilityService.eligibilityState == .eligible
+        // Create eligibility service once and share it
+        Task { @MainActor in
+            let appPasswordSupportState = ApplicationPasswordsExperimentState()
+            let isAppPasswordSupported = appPasswordSupportState.$isAvailableAndEnabled.eraseToAnyPublisher()
+
+            let eligibilityService = await POSLocalCatalogEligibilityService(
+                siteID: siteID,
+                catalogSizeChecker: POSCatalogSizeChecker(
+                    credentials: stores.sessionManager.defaultCredentials,
+                    selectedSite: stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher(),
+                    appPasswordSupportState: isAppPasswordSupported
+                ),
+                isPOSTabVisible: initialPOSTabVisibility
+            )
+
+            // Set on AuthenticatedState so sync coordinator can access it
+            stores.posCatalogEligibilityChecker = eligibilityService
+
+            // Pass eligibility service to sync coordinator
+            if let syncCoordinator = stores.posCatalogSyncCoordinator {
+                syncCoordinator.setCatalogEligibilityChecker(eligibilityService)
             }
+
+            // Create POS tab coordinator with the service
+            let coordinator = POSTabCoordinator(
+                siteID: siteID,
+                tabContainerController: posContainerController,
+                viewControllerToPresent: self,
+                storesManager: stores,
+                eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
+                localCatalogEligibilityService: eligibilityService
+            )
+            posTabCoordinator = coordinator
         }
 
         // Updates site ID for the bookings tab to display correct bookings

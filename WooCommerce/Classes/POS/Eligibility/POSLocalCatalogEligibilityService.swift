@@ -7,7 +7,7 @@ import enum PointOfSale.POSLocalCatalogEligibilityState
 import enum PointOfSale.POSLocalCatalogIneligibleReason
 
 @MainActor
-final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
+final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol, POSCatalogEligibilityChecking {
     private let siteID: Int64
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
@@ -82,6 +82,12 @@ final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityService
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
             return eligibilityState
         }
+    }
+
+    // MARK: - POSCatalogEligibilityChecking
+
+    nonisolated func isCatalogEligibleForSync() async -> Bool {
+        await refreshEligibilityState() == .eligible
     }
 }
 

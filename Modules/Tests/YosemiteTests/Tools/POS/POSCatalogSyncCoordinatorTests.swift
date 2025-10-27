@@ -8,6 +8,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let grdbManager: GRDBManager
     private let mockSiteSettings: MockSiteSpecificAppSettingsStoreMethods
+    private let mockEligibilityChecker: MockPOSCatalogEligibilityChecker
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
     private let sampleMaxAge: TimeInterval = 60 * 60
@@ -17,10 +18,12 @@ struct POSCatalogSyncCoordinatorTests {
         self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
         self.grdbManager = try GRDBManager()
         self.mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
+        self.mockEligibilityChecker = MockPOSCatalogEligibilityChecker()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings
         )
     }
@@ -582,11 +585,13 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
 extension POSCatalogSyncCoordinatorTests {
     @Test func performSmartSync_skips_sync_when_catalog_is_ineligible() async throws {
         // Given
+        let eligibilityChecker = MockPOSCatalogEligibilityChecker()
+        eligibilityChecker.isEligible = false  // Catalog ineligible
         let coordinator = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { false }, // Catalog ineligible
+            catalogEligibilityChecker: eligibilityChecker,
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
@@ -605,7 +610,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true }, // Catalog eligible
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(), // Catalog eligible
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
@@ -624,7 +629,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
@@ -647,7 +652,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
@@ -670,7 +675,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
@@ -693,7 +698,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
@@ -717,7 +722,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
@@ -741,7 +746,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
@@ -764,7 +769,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
@@ -788,7 +793,7 @@ extension POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: { true },
+            catalogEligibilityChecker: MockPOSCatalogEligibilityChecker(),
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))

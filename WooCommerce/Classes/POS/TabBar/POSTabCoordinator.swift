@@ -108,7 +108,7 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         initialPOSTabVisibility: Bool) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -125,26 +125,9 @@ final class POSTabCoordinator {
         self.currencySettings = currencySettings
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
+        self.localCatalogEligibilityService = localCatalogEligibilityService
 
         tabContainerController.wrappedController = POSTabViewController()
-
-        // Create local catalog eligibility service asynchronously
-        // Use initial POS tab visibility from cached check
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-
-            let service = await POSLocalCatalogEligibilityService(
-                siteID: siteID,
-                catalogSizeChecker: POSCatalogSizeChecker(
-                    credentials: credentials,
-                    selectedSite: defaultSitePublisher,
-                    appPasswordSupportState: isAppPasswordSupported
-                ),
-                isPOSTabVisible: initialPOSTabVisibility
-            )
-
-            self.localCatalogEligibilityService = service
-        }
     }
 
     /// Update local catalog eligibility when POS tab visibility changes

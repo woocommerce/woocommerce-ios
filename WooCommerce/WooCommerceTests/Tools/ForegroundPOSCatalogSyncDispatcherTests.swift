@@ -292,7 +292,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         // Not used
     }
 
-    func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) {
+    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) {
         // Not used
     }
 }

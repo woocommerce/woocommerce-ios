@@ -43,5 +43,5 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    func setCatalogEligibilityChecker(_ checker: @escaping () async -> Bool) { }
+    nonisolated func setCatalogEligibilityChecker(_ checker: POSCatalogEligibilityChecking?) { }
 }

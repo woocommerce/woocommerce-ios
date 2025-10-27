@@ -37,6 +37,11 @@ class AuthenticatedState: StoresManagerState {
     ///
     private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
 
+    /// POS Catalog Eligibility Checker (session-scoped)
+    /// This is set from MainTabBarController after the eligibility service is created
+    ///
+    var posCatalogEligibilityChecker: POSCatalogEligibilityChecking?
+
     // periphery:ignore - keep strong reference to keep the state publisher alive
     private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
     private var appPasswordSupportState: PassthroughSubject<Bool, Never>
@@ -162,6 +167,7 @@ class AuthenticatedState: StoresManagerState {
         self.services = services
 
         // Initialize POS catalog sync coordinator if feature flag is enabled
+        // Note: catalogEligibilityChecker will be set later from MainTabBarController
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
@@ -176,7 +182,8 @@ class AuthenticatedState: StoresManagerState {
             posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
                 fullSyncService: fullSyncService,
                 incrementalSyncService: incrementalSyncService,
-                grdbManager: ServiceLocator.grdbManager
+                grdbManager: ServiceLocator.grdbManager,
+                catalogEligibilityChecker: nil  // Will be updated when eligibility service is created
             )
         } else {
             posCatalogSyncCoordinator = nil

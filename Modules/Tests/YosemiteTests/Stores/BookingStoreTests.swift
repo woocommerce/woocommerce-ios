@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Networking
 @testable import Storage
@@ -616,6 +617,124 @@ struct BookingStoreTests {
         let orderInfo = try #require(returnedBooking.orderInfo)
         #expect(orderInfo.productInfo?.name == "Test Product")
         #expect(orderInfo.statusKey == "processing")
+    }
+
+    // MARK: - performUpdateBookingAttendanceStatus
+
+    @Test func performUpdateBookingAttendanceStatus_updates_localBooking() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            attendanceStatusKey: BookingAttendanceStatus.booked.rawValue
+        )
+        storeBooking(booking)
+
+        let remoteBooking = booking.copy(attendanceStatusKey: BookingAttendanceStatus.checkedIn.rawValue)
+        remote.whenUpdatingBooking(thenReturn: .success(remoteBooking))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.updateBookingAttendanceStatus(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    status: .checkedIn,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error == nil)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
+        #expect(storedBooking.attendanceStatusKey == BookingAttendanceStatus.checkedIn.rawValue)
+    }
+
+    @Test func performUpdateBookingAttendanceStatus_keeps_existing_create_and_update_dates() async throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 0)
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            dateCreated: date,
+            dateModified: date
+        )
+        storeBooking(booking)
+
+        let remoteBooking = booking.copy(
+            dateCreated: nil,
+            dateModified: nil
+        )
+        remote.whenUpdatingBooking(thenReturn: .success(remoteBooking))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.updateBookingAttendanceStatus(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    status: .checkedIn,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error == nil)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
+        #expect(storedBooking.dateCreated == date)
+        #expect(storedBooking.dateModified == date)
+    }
+
+    @Test func performUpdateBookingAttendanceStatus_reverts_old_status_on_error() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            attendanceStatusKey: BookingAttendanceStatus.booked.rawValue
+        )
+        storeBooking(booking)
+
+        remote.whenUpdatingBooking(thenReturn: .failure(NetworkError.timeout()))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.updateBookingAttendanceStatus(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    status: .checkedIn,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error != nil)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
+        #expect(storedBooking.attendanceStatusKey == BookingAttendanceStatus.booked.rawValue)
     }
 
     // MARK: - orderInfo Storage Tests

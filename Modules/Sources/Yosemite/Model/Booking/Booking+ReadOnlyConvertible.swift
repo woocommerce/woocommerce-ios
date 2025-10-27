@@ -13,8 +13,8 @@ extension Storage.Booking: ReadOnlyConvertible {
         allDay = booking.allDay
         cost = booking.cost
         customerID = booking.customerID
-        dateCreated = booking.dateCreated
-        dateModified = booking.dateModified
+        dateCreated = booking.dateCreated ?? dateCreated
+        dateModified = booking.dateModified ?? dateModified
         endDate = booking.endDate
         googleCalendarEventID = booking.googleCalendarEventID
         orderID = booking.orderID

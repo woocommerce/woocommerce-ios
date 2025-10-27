@@ -98,7 +98,8 @@ enum FilterListValueSelectorConfig {
     case bookingResource(siteID: Int64)
     // Filter list selector for bookable product
     case bookableProduct(siteID: Int64)
-
+    // Filter list selector for booking date time
+    case bookingDateTime
 }
 
 /// Contains data for rendering a filter type row.
@@ -403,6 +404,19 @@ private extension FilterListViewController {
                     }
                 )
                 let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+            case .bookingDateTime:
+                let selectedDateRange = selected.selectedValue as? BookingDateRangeFilter
+                let dateTimeFilterView = BookingDateTimeFilterView(
+                    startDate: selectedDateRange?.startDate,
+                    endDate: selectedDateRange?.endDate,
+                    onSelection: { [weak self] startDate, endDate in
+                        selected.selectedValue = BookingDateRangeFilter(startDate: startDate, endDate: endDate)
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                    }
+                )
+                let hostingController = UIHostingController(rootView: dateTimeFilterView)
                 listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }

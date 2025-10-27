@@ -205,10 +205,8 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.paymentStatus)
         case .dateTime:
-            // TODO: Implement date range selector when available
-            let options: [BookingDateRangeFilter?] = [nil]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .bookingDateTime,
                                        selectedValue: filters.dateRange)
         }
     }

@@ -30,6 +30,7 @@ struct POSSettingsStoreDetailView: View {
                 }
                 .background(backgroundColor)
             }
+            .background(Color.posSurface)
             .task {
                 isLoading = true
                 await viewModel.retrievePOSReceiptSettings()
@@ -49,6 +50,8 @@ struct POSSettingsStoreDetailView: View {
             }
             .padding(.bottom, POSPadding.medium)
         }
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
     }
 
     @ViewBuilder
@@ -65,6 +68,8 @@ struct POSSettingsStoreDetailView: View {
             }
             .padding(.bottom, POSPadding.medium)
         }
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
     }
 
     @ViewBuilder
@@ -141,8 +146,8 @@ private extension POSSettingsStoreDetailView {
         )
 
         static let storeInformation = NSLocalizedString(
-            "pointOfSaleSettingsStoreDetailView.storeInformation",
-            value: "Store Information",
+            "pointOfSaleSettingsStoreDetailView.generalInformation",
+            value: "General",
             comment: "Section title for store information in Point of Sale settings."
         )
 

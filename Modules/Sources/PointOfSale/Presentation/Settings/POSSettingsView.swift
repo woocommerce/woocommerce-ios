@@ -78,7 +78,7 @@ extension POSSettingsView {
             }
             .padding(.horizontal, POSPadding.medium)
         }
-        .background(Color.posSurface)
+        .background(Color.posSurfaceContainerLowest)
     }
 
     @ViewBuilder

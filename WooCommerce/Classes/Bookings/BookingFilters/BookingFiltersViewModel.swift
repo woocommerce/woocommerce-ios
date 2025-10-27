@@ -254,35 +254,48 @@ extension BookingProductFilter: FilterType {
 
 extension BookingDateRangeFilter: FilterType {
     var description: String {
-        // TODO: Format dates nicely when implementing date range selector
-        if let startDate = startDate, let endDate = endDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
-        } else if let startDate = startDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return NSLocalizedString(
-                "bookingDateRangeFilter.from",
-                value: "From \(formatter.string(from: startDate))",
-                comment: "Description for booking date range filter with only start date")
-        } else if let endDate = endDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return NSLocalizedString(
-                "bookingDateRangeFilter.until",
-                value: "Until \(formatter.string(from: endDate))",
-                comment: "Description for booking date range filter with only end date")
+        if let startDate, let endDate {
+            [
+                startDate.formatted(date: .abbreviated, time: .omitted),
+                endDate.formatted(date: .abbreviated, time: .omitted)
+            ].joined(separator: " - ")
+        } else if let startDate {
+            String.localizedStringWithFormat(
+                Localization.dateRangeFrom,
+                startDate.formatted(date: .abbreviated, time: .shortened)
+            )
+        } else if let endDate {
+            String.localizedStringWithFormat(
+                Localization.dateRangeUntil,
+                endDate.formatted(date: .abbreviated, time: .shortened)
+            )
         } else {
-            return NSLocalizedString(
-                "bookingDateRangeFilter.any",
-                value: "Any",
-                comment: "Description for booking date range filter with no dates selected")
+            Localization.dateRangeAny
         }
     }
 
     var isActive: Bool {
         startDate != nil || endDate != nil
+    }
+
+    private enum Localization {
+        static let dateRangeFrom = NSLocalizedString(
+            "bookingFiltersViewModel.dateRangeFilter.from",
+            value: "From %1$@",
+            comment: "Description for booking date range filter with only start date. " +
+            "Placeholder is a date. Reads as: From October 27, 2025."
+        )
+        static let dateRangeUntil = NSLocalizedString(
+            "bookingFiltersViewModel.dateRangeFilter.until",
+            value: "Until %1$@",
+            comment: "Description for booking date range filter with only end date. " +
+            "Placeholder is a date. Reads as: Until October 27, 2025."
+        )
+        static let dateRangeAny = NSLocalizedString(
+            "bookingFiltersViewModel.dateRangeFilter.any",
+            value: "Any",
+            comment: "Description for booking date range filter with no dates selected"
+        )
     }
 }
 

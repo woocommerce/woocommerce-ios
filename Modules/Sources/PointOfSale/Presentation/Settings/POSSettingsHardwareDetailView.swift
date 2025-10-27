@@ -41,23 +41,20 @@ struct POSSettingsHardwareDetailView: View {
 
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: destination.icon)
+                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                        Text(destination.title)
                             .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
+                            .foregroundStyle(Color.posOnSurface)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        Text(destination.subtitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.posSurfaceContainerLowest)
+                    .posItemCardBorderStyles()
                 }
                 .listRowSeparator(.hidden)
             }

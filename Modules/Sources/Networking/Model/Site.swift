@@ -334,8 +334,7 @@ public enum SiteVisibility: Int, Codable, GeneratedFakeable {
 public extension Site {
 
     private var jetpackCanonicalURL: String {
-        guard isJetpackConnected,
-              let originalURL = URL(string: url),
+        guard let originalURL = URL(string: url),
               originalURL.scheme?.lowercased() == "http"
         else {
             return url

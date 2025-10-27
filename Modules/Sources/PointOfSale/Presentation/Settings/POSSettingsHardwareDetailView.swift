@@ -72,7 +72,7 @@ struct POSSettingsHardwareDetailView: View {
                 }
             }
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
+                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
                 SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())

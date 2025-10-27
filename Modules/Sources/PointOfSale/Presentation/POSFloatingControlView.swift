@@ -55,7 +55,7 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
-            PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
+            POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)

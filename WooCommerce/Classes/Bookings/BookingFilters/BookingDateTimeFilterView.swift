@@ -24,9 +24,9 @@ struct BookingDateTimeFilterView: View {
     init(startDate: Date?,
          endDate: Date?,
          onSelection: @escaping (Date?, Date?) -> Void) {
-        self.fromDate = startDate ?? Date()
+        self.fromDate = startDate ?? Date().startOfDay(timezone: .current)
         self.selectedFromDate = startDate
-        self.toDate = endDate ?? Date()
+        self.toDate = endDate ?? Date().endOfDay(timezone: .current)
         self.selectedToDate = endDate
         self.onSelection = onSelection
     }

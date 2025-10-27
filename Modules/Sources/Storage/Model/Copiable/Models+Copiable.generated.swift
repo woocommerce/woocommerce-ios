@@ -4,6 +4,7 @@ import Codegen
 import Foundation
 
 // swiftlint:disable line_length
+
 extension Storage.AnalyticsCard {
     public func copy(
         type: CopiableProp<AnalyticsCard.CardType> = .copy,
@@ -177,4 +178,5 @@ extension Storage.GeneralStoreSettings {
         )
     }
 }
+
 // swiftlint:enable line_length

@@ -7,6 +7,7 @@ import WooFoundation
 import struct Alamofire.JSONEncoding
 import struct NetworkingCore.JetpackSite
 
+// swiftlint:disable line_length
 
 extension Networking.AIProduct {
     public func copy(
@@ -3970,3 +3971,5 @@ extension Networking.WordPressTheme {
         )
     }
 }
+
+// swiftlint:enable line_length

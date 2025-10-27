@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension NetworkingCore.Account {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -593,3 +595,5 @@ extension NetworkingCore.User {
         )
     }
 }
+
+// swiftlint:enable line_length

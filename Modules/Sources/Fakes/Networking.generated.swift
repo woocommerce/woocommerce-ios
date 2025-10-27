@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension Networking.AIProduct {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2611,3 +2613,5 @@ extension Networking.WordPressTheme {
         )
     }
 }
+
+// swiftlint:enable line_length

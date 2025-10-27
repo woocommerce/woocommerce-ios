@@ -846,7 +846,7 @@ private extension MainTabBarController {
            let eligibilityService = coordinator.localCatalogEligibilityService {
             syncCoordinator.setCatalogEligibilityChecker {
                 await eligibilityService.refreshEligibilityState()
-                return await eligibilityService.eligibilityState == .eligible
+                return eligibilityService.eligibilityState == .eligible
             }
         }
 

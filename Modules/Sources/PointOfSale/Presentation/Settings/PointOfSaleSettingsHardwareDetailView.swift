@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
@@ -176,32 +177,40 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .foregroundColor(.posSurface)
 
             List {
-                VStack(spacing: POSPadding.xSmall) {
-                    HStack {
-                        Text(Localization.readerModelTitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(cardReaderName)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
+                if case .connected = posModel.cardReaderConnectionStatus {
+                    VStack(spacing: POSPadding.xSmall) {
+                        HStack {
+                            Text(Localization.readerModelTitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(cardReaderName)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        HStack {
+                            Text(Localization.readerBatteryTitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(formattedBatteryLevel)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
                     }
-                    .padding()
-                    HStack {
-                        Text(Localization.readerBatteryTitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(formattedBatteryLevel)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
+                } else {
+                    POSSettingsCardView(title: Localization.cardReaderConnectTitle,
+                                        subtitle: Localization.cardReaderConnectSubtitle,
+                                        action: {
+                        /* TODO: Trigger reader connection*/
+                    })
                 }
+
                 POSSettingsCardView(title: Localization.cardReaderDocumentationTitle,
                                     subtitle: Localization.cardReaderDocumentationSubtitle,
                                     action: { showCardReaderDocumentationModal = true })
-                .padding()
                 .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
             }
@@ -436,6 +445,16 @@ private extension PointOfSaleSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle",
             value: "Configure barcode scanner settings",
             comment: "Description of Barcode scanner settings configuration."
+        )
+        static let cardReaderConnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
+            value: "Connect card reader",
+            comment: "Title for card reader connect button when no reader is connected."
+        )
+        static let cardReaderConnectSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle",
+            value: "Connect your card reader and start accepting payments",
+            comment: "Subtitle for card reader connect button when no reader is connected."
         )
     }
 }

@@ -20,6 +20,7 @@ import class WooFoundation.VersionHelpers
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
+import enum Yosemite.POSCountryCurrencyValidator
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
@@ -209,20 +210,19 @@ private extension POSTabEligibilityChecker {
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
-        let supportedCountries: [CountryCode] = [.US, .GB]
-        let supportedCurrencies: [CountryCode: [CurrencyCode]] = [.US: [.USD],
-                                                                  .GB: [.GBP]]
+        let validationResult = POSCountryCurrencyValidator.validate(countryCode: countryCode, currencyCode: currencyCode)
 
-        // Checks country first.
-        guard supportedCountries.contains(countryCode) else {
-            return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
+        switch validationResult {
+        case .eligible:
+            return .eligible
+        case .ineligible(let reason):
+            switch reason {
+            case .unsupportedCountry(let supportedCountries):
+                return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
+            case .unsupportedCurrency(let countryCode, let supportedCurrencies):
+                return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrencies))
+            }
         }
-
-        let supportedCurrenciesForCountry = supportedCurrencies[countryCode] ?? []
-        guard supportedCurrenciesForCountry.contains(currencyCode) else {
-            return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrenciesForCountry))
-        }
-        return .eligible
     }
 
     @MainActor

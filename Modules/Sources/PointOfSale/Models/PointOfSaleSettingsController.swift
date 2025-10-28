@@ -15,6 +15,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
+    var isLocalCatalogEligible: Bool { get }
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
@@ -23,6 +24,7 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     let storeViewModel: POSSettingsStoreViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+    let isLocalCatalogEligible: Bool
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -31,12 +33,15 @@ protocol PointOfSaleSettingsControllerProtocol {
          defaultSiteName: String?,
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) {
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         isLocalCatalogEligible: Bool) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings)
+        self.isLocalCatalogEligible = isLocalCatalogEligible
+
         if let catalogSyncCoordinator, let grdbManager {
             self.localCatalogViewModel = POSSettingsLocalCatalogViewModel(
                 siteID: siteID,
@@ -80,6 +85,10 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
                                                                               siteSettings: [])
 
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+
+    var isLocalCatalogEligible: Bool {
+        localCatalogViewModel != nil
+    }
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

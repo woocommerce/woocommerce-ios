@@ -233,13 +233,33 @@ extension BookingDetailsViewModel {
             siteID: booking.siteID,
             bookingID: booking.bookingID,
             status: newStatus
-        ) { error in
-            if let error {
+        ) { [weak self] error in
+            if let error, let self {
                 DDLogError("⛔️ Error updating booking attendance status: \(error)")
-                // TODO: Show an error notice to the user
+                displayAttendanceStatusUpdatedErrorNotice(status: newStatus)
             }
         }
         stores.dispatch(action)
+    }
+
+    private func displayAttendanceStatusUpdatedErrorNotice(status: BookingAttendanceStatus) {
+        let title = String.localizedStringWithFormat(
+            Localization.bookingAttendanceStatusUpdateFailedMessage,
+            booking.bookingID
+        )
+        let notice = Notice(
+            title: title,
+            feedbackType: .error,
+            actionTitle: Localization.retryActionTitle
+        ) { [weak self] in
+            guard let self else {
+                return
+            }
+
+            updateAttendanceStatus(to: status)
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -361,6 +381,20 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.cancelation.alert.message",
             value: "%1$@ will no longer be able to attend “%2$@” on %3$@.",
             comment: "Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date."
+        )
+
+        static let bookingAttendanceStatusUpdateFailedMessage = NSLocalizedString(
+            "BookingDetailsView.attendanceStatus.updateFailed.message",
+            value: "Unable to change attendance status of Booking #%1$d",
+            comment: "Content of error presented when updating the attendance status of a Booking fails. "
+            + "It reads: Unable to change status of Booking #{Booking number}. "
+            + "Parameters: %1$d - Booking number"
+        )
+
+        static let retryActionTitle = NSLocalizedString(
+            "BookingDetailsView.retry.action",
+            value: "Retry",
+            comment: "Retry Action"
         )
     }
 }

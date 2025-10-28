@@ -298,4 +298,25 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
         XCTAssertEqual(attendanceContent.value, "No Show")
     }
+
+    func test_attendance_section_is_hidden_when_booking_is_cancelled() {
+        // Given
+        let booking = Booking.fake().copy(
+            statusKey: "cancelled",
+            attendanceStatusKey: "cancelled"
+        )
+
+        // When
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+
+        // Then
+        let containsAttendanceSection = viewModel.sections.contains { section in
+            if case .attendance = section.content {
+                return true
+            }
+            return false
+        }
+
+        XCTAssertFalse(containsAttendanceSection)
+    }
 }

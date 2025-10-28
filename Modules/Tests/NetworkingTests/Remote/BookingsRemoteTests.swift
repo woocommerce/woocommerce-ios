@@ -124,6 +124,25 @@ struct BookingsRemoteTests {
         }
     }
 
+    @Test func test_updateBooking_ignores_nil_dates_in_response() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        let booking = try await remote.updateBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            attendanceStatus: .noShow,
+        )
+
+        // Then
+        #expect(booking?.dateCreated == nil)
+        #expect(booking?.dateModified == nil)
+        #expect(booking?.id == bookingID)
+    }
+
     @Test func test_fetchResources_properly_returns_parsed_resources() async throws {
         // Given
         let remote = BookingsRemote(network: network)

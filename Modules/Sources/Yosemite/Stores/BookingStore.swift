@@ -291,9 +291,39 @@ private extension BookingStore {
             siteID: siteID,
             bookingID: bookingID,
             statusKey: status
-        ) { _ in
-            //TODO: - booking status remote update + rollback status in case of error
-            onCompletion(nil)
+        ) { [weak self] previousStatusKey in
+            guard let self else {
+                return onCompletion(UpdateBookingStatusError.undefinedState)
+            }
+
+            Task { @MainActor in
+                do {
+                    if let remoteBooking = try await self.remote.updateBooking(
+                        from: siteID,
+                        bookingID: bookingID,
+                        attendanceStatus: status
+                    ) {
+                        await self.upsertStoredBookingsInBackground(
+                            readOnlyBookings: [remoteBooking],
+                            readOnlyOrders: [],
+                            siteID: siteID
+                        )
+
+                        onCompletion(nil)
+                    } else {
+                        return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                    }
+                } catch {
+                    /// Revert Optimistic Update
+                    self.updateBookingAttendanceStatusLocally(
+                        siteID: siteID,
+                        bookingID: bookingID,
+                        statusKey: previousStatusKey
+                    ) { _ in
+                        onCompletion(error)
+                    }
+                }
+            }
         }
     }
 
@@ -442,4 +472,12 @@ private extension BookingStore {
             }, on: .main)
         }
     }
+}
+
+
+// MARK: - Errors
+//
+private enum UpdateBookingStatusError: Error {
+    case undefinedState
+    case missingRemoteBooking
 }

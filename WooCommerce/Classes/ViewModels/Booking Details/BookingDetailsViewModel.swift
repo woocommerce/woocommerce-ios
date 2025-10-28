@@ -62,12 +62,6 @@ private extension BookingDetailsViewModel {
             content: .appointmentDetails(appointmentDetailsContent)
         )
 
-        let attendanceSection = Section(
-            header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
-            footerText: Localization.attendanceSectionFooterText,
-            content: .attendance(attendanceContent)
-        )
-
         let paymentSection = Section(
             header: .title(Localization.paymentSectionHeaderTitle.uppercased()),
             content: .payment(paymentContent)
@@ -81,7 +75,6 @@ private extension BookingDetailsViewModel {
         sections = [
             headerSection,
             appointmentDetailsSection,
-            attendanceSection,
             paymentSection,
             bookingNotes
         ]
@@ -90,36 +83,126 @@ private extension BookingDetailsViewModel {
     func updateDisplayProperties(from booking: Booking) {
         navigationTitle = Self.navigationTitle(for: booking)
 
+        headerContent.update(with: booking)
+
+        setupCustomerSectionVisibility()
         if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
             customerContent.update(with: billingAddress)
-            insertCustomerSectionIfAbsent()
         }
-        headerContent.update(with: booking)
+
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
+
+        setupAttendanceSectionVisibility()
         attendanceContent.update(with: booking)
+
         paymentContent.update(with: booking)
     }
 
-    func insertCustomerSectionIfAbsent() {
-        // Avoid adding if it already exists
-        let customerSectionExists = sections.contains {
+    func setupCustomerSectionVisibility() {
+        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
+            insertCustomerSectionIfAbsent()
+        } else {
+            deleteCustomerSectionIfPresent()
+        }
+    }
+
+    func setupAttendanceSectionVisibility() {
+        if booking.attendanceStatus == .cancelled || booking.bookingStatus == .cancelled {
+            deleteAttendanceSectionIfPresent()
+        } else {
+            insertAttendanceSectionIfAbsent()
+        }
+    }
+
+    func insertAttendanceSectionIfAbsent() {
+        guard let insertAfterIndex = sections.firstIndex(where: {
             if case .customer = $0.content {
+                return true
+            }
+            return false
+        }) ?? sections.firstIndex(where: {
+            if case .appointmentDetails = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        insertSectionIfAbsent(
+            section: Section(
+                header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
+                footerText: Localization.attendanceSectionFooterText,
+                content: .attendance(attendanceContent)
+            ),
+            at: insertAfterIndex + 1
+        )
+    }
+
+    func insertCustomerSectionIfAbsent() {
+        guard let insertAfterIndex = sections.firstIndex(where: {
+            if case .appointmentDetails = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        insertSectionIfAbsent(
+            section: Section(
+                header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+                content: .customer(customerContent)
+            ),
+            at: insertAfterIndex + 1
+        )
+    }
+
+    func insertSectionIfAbsent(section: Section, at index: Int) {
+        let sectionExists = sections.contains {
+            if section.content.id == $0.content.id {
                 return true
             }
 
             return false
         }
 
-        guard !customerSectionExists else {
+        guard !sectionExists else {
             return
         }
 
-        let customerSection = Section(
-            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
-            content: .customer(customerContent)
-        )
         withAnimation {
-            sections.insert(customerSection, at: 2)
+            sections.insert(section, at: index)
+        }
+    }
+
+    func deleteAttendanceSectionIfPresent() {
+        guard let attendanceSectionIndex = sections.firstIndex(where: {
+            if case .attendance = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        withAnimation {
+            _ = sections.remove(at: attendanceSectionIndex)
+        }
+    }
+
+    func deleteCustomerSectionIfPresent() {
+        guard let customerSectionIndex = sections.firstIndex(where: {
+            if case .customer = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        withAnimation {
+            _ = sections.remove(at: customerSectionIndex)
         }
     }
 

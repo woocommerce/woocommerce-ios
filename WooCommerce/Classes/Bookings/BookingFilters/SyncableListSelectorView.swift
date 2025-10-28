@@ -5,17 +5,18 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @State var selectedItem: Syncable.ModelType?
 
     private let syncable: Syncable
+    private let initialSelection: (Syncable.ModelType?) -> Bool
     private let onSelection: (Syncable.ModelType?) -> Void
 
     private let viewPadding: CGFloat = 16
 
     init(viewModel: SyncableListSelectorViewModel<Syncable>,
          syncable: Syncable,
-         selectedItem: Syncable.ModelType?,
+         initialSelection: @escaping (Syncable.ModelType?) -> Bool,
          onSelection: @escaping (Syncable.ModelType?) -> Void) {
         self.viewModel = viewModel
         self.syncable = syncable
-        self.selectedItem = selectedItem
+        self.initialSelection = initialSelection
         self.onSelection = onSelection
     }
 
@@ -68,7 +69,7 @@ private extension SyncableListSelectorView {
 
             ForEach(items, id: \.self) { item in
                 optionRow(text: syncable.displayName(for: item),
-                          isSelected: item == selectedItem,
+                          isSelected: isItemSelected(item),
                           onSelection: { selectedItem = item })
             }
 
@@ -80,6 +81,13 @@ private extension SyncableListSelectorView {
         }
         .listStyle(.plain)
         .background(Color(.listBackground))
+    }
+
+    func isItemSelected(_ item: Syncable.ModelType?) -> Bool {
+        if let selectedItem {
+            return item == selectedItem
+        }
+        return initialSelection(item)
     }
 
     func optionRow(text: String, isSelected: Bool, onSelection: @escaping () -> Void) -> some View {

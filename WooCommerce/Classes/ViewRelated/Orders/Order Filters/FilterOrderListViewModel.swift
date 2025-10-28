@@ -265,7 +265,7 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        selectedValue: filters.product)
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .customer(siteID: siteID),
+                                       listSelectorConfig: .customer(siteID: siteID, source: .orders),
                                        selectedValue: filters.customer)
         case .salesChannel:
             let salesChannelOptions: [SalesChannelFilter] = [.any, .pointOfSale, .webCheckout, .wpAdmin]

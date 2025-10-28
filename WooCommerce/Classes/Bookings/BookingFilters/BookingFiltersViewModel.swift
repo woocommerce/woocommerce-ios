@@ -27,9 +27,9 @@ final class BookingFiltersViewModel: FilterListViewModel {
         filterTypeViewModels = [
             teamMemberFilterViewModel,
             productFilterViewModel,
-            customerFilterViewModel,
             attendanceStatusFilterViewModel,
             paymentStatusFilterViewModel,
+            customerFilterViewModel,
             dateTimeFilterViewModel
         ]
     }
@@ -188,11 +188,11 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        selectedValue: filters.teamMember)
         case .product(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .products(siteID: siteID),
+                                       listSelectorConfig: .bookableProduct(siteID: siteID),
                                        selectedValue: filters.product)
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .customer(siteID: siteID),
+                                       listSelectorConfig: .customer(siteID: siteID, source: .booking),
                                        selectedValue: filters.customer)
         case .attendanceStatus:
             let options: [BookingAttendanceStatus?] = [nil, .booked, .checkedIn, .cancelled, .noShow]

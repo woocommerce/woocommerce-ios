@@ -640,7 +640,11 @@ struct MultipleFilterSelection: FilterType {
 
     var description: String {
         if items.isEmpty {
-            return NSLocalizedString("Any", comment: "Display label for no filter selected")
+            return NSLocalizedString(
+                "multipleFilterSelection.any",
+                value: "Any",
+                comment: "Display label for when no filter selected."
+            )
         } else if items.count == 1 {
             return items.first?.description ?? ""
         } else {

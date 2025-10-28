@@ -84,6 +84,8 @@ final class FilterTypeViewModel {
 enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
+    // Multi-select list selector with fixed options
+    case multiSelectStaticOptions(options: [FilterType])
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
     // Filter list selector for order statuses
@@ -290,6 +292,26 @@ private extension FilterListViewController {
                 self.selectedFilterValueSubscription = command.onItemSelected.sink { selectedValueAction($0) }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
+            case .multiSelectStaticOptions(let options):
+                let selectedItems: [any FilterType] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items
+                    }
+                    return []
+                }()
+
+                let multiSelectView = MultiSelectListView(
+                    title: selected.title,
+                    options: options,
+                    initialSelection: selectedItems,
+                    onSelection: { [weak self] selectedOptions in
+                        selected.selectedValue = MultipleFilterSelection(items: selectedOptions)
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                    }
+                )
+                let hostingController = UIHostingController(rootView: multiSelectView)
+                self.listSelector.navigationController?.pushViewController(hostingController, animated: true)
             case let .productCategories(siteID):
                 let selectedProductCategory = selected.selectedValue as? ProductCategory
                 let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID,
@@ -594,5 +616,29 @@ private extension FilterListViewController {
                 ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
             }
         }
+    }
+}
+
+/// Wrapper type for storing multiple filter selections
+/// This allows arrays of FilterType items to be stored in FilterTypeViewModel.selectedValue
+struct MultipleFilterSelection: FilterType {
+    let items: [any FilterType]
+
+    var isActive: Bool {
+        return !items.isEmpty
+    }
+
+    var description: String {
+        if items.isEmpty {
+            return NSLocalizedString("Any", comment: "Display label for no filter selected")
+        } else if items.count == 1 {
+            return items.first?.description ?? ""
+        } else {
+            return "\(items.count)"
+        }
+    }
+
+    init(items: [any FilterType]) {
+        self.items = items
     }
 }

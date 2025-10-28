@@ -195,14 +195,14 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .customer(siteID: siteID, source: .booking),
                                        selectedValue: filters.customer)
         case .attendanceStatus:
-            let options: [BookingAttendanceStatus?] = [nil, .booked, .checkedIn, .cancelled, .noShow]
+            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .cancelled, .noShow]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: filters.attendanceStatus)
         case .paymentStatus:
-            let options: [BookingStatus?] = [nil, .complete, .paid, .unpaid, .cancelled, .pendingConfirmation, .confirmed]
+            let options: [BookingStatus?] = [.complete, .paid, .unpaid, .cancelled, .pendingConfirmation, .confirmed]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: filters.paymentStatus)
         case .dateTime:
             return FilterTypeViewModel(title: title,

@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
 
@@ -69,7 +70,11 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):
-                    cardReadersView
+                    if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsCardReaderFlow) {
+                        cardReadersView
+                    } else {
+                        legacyCardReadersView
+                    }
                 case .hardware(.scanners):
                     scannersView
                 }
@@ -89,6 +94,75 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             showBarcodeScanningSetupModal = true
         case .documentation:
             showBarcodeScanningDocumentationModal = true
+        }
+    }
+
+    private var legacyCardReadersView: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.cardReadersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
+            List {
+                VStack(spacing: POSPadding.xSmall) {
+                    HStack {
+                        Text(Localization.readerModelTitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(cardReaderName)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    HStack {
+                        Text(Localization.readerBatteryTitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(formattedBatteryLevel)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                }
+                Button {
+                    showCardReaderDocumentationModal = true
+                } label: {
+                    HStack(spacing: POSSpacing.medium) {
+                        Image(systemName: "doc.text")
+                            .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.cardReaderDocumentationTitle)
+                                .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            Text(Localization.cardReaderDocumentationSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        }
+                        Spacer()
+                    }
+                }
+                .padding()
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
+        }
+        .navigationBarBackButtonHidden(true)
+        .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
+            SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>
-    @State private var selectedItems: [Syncable.ModelType]
+    @State private var selectedItems: [Syncable.ModelType] = []
 
     private let syncable: Syncable
     private let initialSelection: (Syncable.ModelType) -> Bool
@@ -18,7 +18,6 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         self.syncable = syncable
         self.initialSelection = initialSelection
         self.onSelection = onSelection
-        self._selectedItems = State(initialValue: [])
     }
 
     var body: some View {
@@ -38,6 +37,11 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         }
         .navigationTitle(syncable.title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    func populateInitialSelection(from items: [Syncable.ModelType]) {
+        guard selectedItems.isEmpty else { return }
+        selectedItems = items.filter { initialSelection($0) }
     }
 }
 
@@ -82,13 +86,19 @@ private extension SyncableListSelectorView {
         }
         .listStyle(.plain)
         .background(Color(.listBackground))
+        .onAppear {
+            populateInitialSelection(from: items)
+        }
     }
 
     func isItemSelected(_ item: Syncable.ModelType) -> Bool {
-        if selectedItems.isEmpty {
-            return initialSelection(item)
+        // First check if it's in selectedItems (user has interacted)
+        if !selectedItems.isEmpty && selectedItems.contains(item) {
+            return true
         }
-        return selectedItems.contains(item)
+        // Fall back to initialSelection for items not yet in selectedItems
+        // This handles the case where items are reloaded with new instances
+        return initialSelection(item)
     }
 
     func toggleSelection(for item: Syncable.ModelType) {

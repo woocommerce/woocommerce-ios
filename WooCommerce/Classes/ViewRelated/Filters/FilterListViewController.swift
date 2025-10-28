@@ -403,9 +403,7 @@ private extension FilterListViewController {
                 let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
-                    initialSelection: { item in
-                        selectedMembers.contains(item)
-                    },
+                    initialSelections: selectedMembers,
                     onSelection: { [weak self] resources in
                         selected.selectedValue = MultipleFilterSelection(items: resources)
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
@@ -427,9 +425,7 @@ private extension FilterListViewController {
                 let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
-                    initialSelection: { item in
-                        selectedProducts.contains { $0.productID == item.productID }
-                    },
+                    initialSelections: selectedProducts,
                     onSelection: { [weak self] products in
                         let filters = products.map { product in
                             BookingProductFilter(productID: product.productID, name: product.name)

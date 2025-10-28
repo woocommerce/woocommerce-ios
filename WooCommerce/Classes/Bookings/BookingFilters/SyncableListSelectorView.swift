@@ -2,21 +2,20 @@ import SwiftUI
 
 struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>
-    @State private var selectedItems: [Syncable.ModelType] = []
+    @State private var selectedItems: [Syncable.ListFilterType]
 
     private let syncable: Syncable
-    private let initialSelection: (Syncable.ModelType) -> Bool
-    private let onSelection: ([Syncable.ModelType]) -> Void
+    private let onSelection: ([Syncable.ListFilterType]) -> Void
 
     private let viewPadding: CGFloat = 16
 
     init(viewModel: SyncableListSelectorViewModel<Syncable>,
          syncable: Syncable,
-         initialSelection: @escaping (Syncable.ModelType) -> Bool,
-         onSelection: @escaping ([Syncable.ModelType]) -> Void) {
+         initialSelections: [Syncable.ListFilterType],
+         onSelection: @escaping ([Syncable.ListFilterType]) -> Void) {
         self.viewModel = viewModel
         self.syncable = syncable
-        self.initialSelection = initialSelection
+        self.selectedItems = initialSelections
         self.onSelection = onSelection
     }
 
@@ -37,11 +36,6 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         }
         .navigationTitle(syncable.title)
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    func populateInitialSelection(from items: [Syncable.ModelType]) {
-        guard selectedItems.isEmpty else { return }
-        selectedItems = items.filter { initialSelection($0) }
     }
 }
 
@@ -74,7 +68,7 @@ private extension SyncableListSelectorView {
 
             ForEach(items, id: \.self) { item in
                 optionRow(text: syncable.displayName(for: item),
-                          isSelected: isItemSelected(item),
+                          isSelected: selectedItems.contains(where: { $0 == syncable.filterItem(for: item) }),
                           onSelection: { toggleSelection(for: item) })
             }
 
@@ -86,26 +80,14 @@ private extension SyncableListSelectorView {
         }
         .listStyle(.plain)
         .background(Color(.listBackground))
-        .onAppear {
-            populateInitialSelection(from: items)
-        }
-    }
-
-    func isItemSelected(_ item: Syncable.ModelType) -> Bool {
-        // First check if it's in selectedItems (user has interacted)
-        if !selectedItems.isEmpty && selectedItems.contains(item) {
-            return true
-        }
-        // Fall back to initialSelection for items not yet in selectedItems
-        // This handles the case where items are reloaded with new instances
-        return initialSelection(item)
     }
 
     func toggleSelection(for item: Syncable.ModelType) {
-        if let index = selectedItems.firstIndex(of: item) {
+        let filterItem = syncable.filterItem(for: item)
+        if let index = selectedItems.firstIndex(of: filterItem) {
             selectedItems.remove(at: index)
         } else {
-            selectedItems.append(item)
+            selectedItems.append(filterItem)
         }
         onSelection(selectedItems)
     }

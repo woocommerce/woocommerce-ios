@@ -6,6 +6,7 @@ import Yosemite
 protocol ListSyncable {
     associatedtype StorageType: ResultsControllerMutableType
     associatedtype ModelType: Equatable & Hashable where ModelType == StorageType.ReadOnlyType
+    associatedtype ListFilterType: FilterType & Equatable
 
     var title: String { get }
     var emptyStateMessage: String { get }
@@ -27,4 +28,7 @@ protocol ListSyncable {
 
     /// Returns the display name for an item
     func displayName(for item: ModelType) -> String
+
+    /// Returns the filter type for an item
+    func filterItem(for item: ModelType) -> ListFilterType
 }

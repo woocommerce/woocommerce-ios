@@ -27,7 +27,11 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 ///
 /// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
 /// The service performs an initial eligibility check during initialization.
-public protocol POSLocalCatalogEligibilityServiceProtocol: POSCatalogEligibilityChecking {
+public protocol POSLocalCatalogEligibilityServiceProtocol {
+    /// Check if the catalog is eligible for syncing
+    /// - Returns: true if eligible to sync, false otherwise
+    func isCatalogEligibleForSync() async -> Bool
+
     /// Current eligibility state (synchronously accessible on main thread)
     var eligibilityState: POSLocalCatalogEligibilityState { get }
 

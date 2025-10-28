@@ -29,7 +29,6 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
-import protocol Yosemite.POSCatalogEligibilityChecking
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site

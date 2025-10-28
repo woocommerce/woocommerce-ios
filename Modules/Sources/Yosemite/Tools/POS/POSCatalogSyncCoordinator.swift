@@ -53,7 +53,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
-    private let catalogEligibilityChecker: POSCatalogEligibilityChecking?
+    private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
@@ -64,7 +64,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
-                catalogEligibilityChecker: POSCatalogEligibilityChecking? = nil,
+                catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? = nil,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService

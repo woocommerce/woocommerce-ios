@@ -375,7 +375,7 @@ private extension FilterListViewController {
                 let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
-                    selectedItem: selectedMember,
+                    initialSelection: { $0 == selectedMember },
                     onSelection: { [weak self] resource in
                         selected.selectedValue = resource
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
@@ -392,11 +392,11 @@ private extension FilterListViewController {
                 let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
-                    selectedItem: selectedProduct?.product,
+                    initialSelection: { $0?.productID == selectedProduct?.productID },
                     onSelection: { [weak self] product in
                         selected.selectedValue = {
                             guard let product else { return BookingProductFilter?.none }
-                            return BookingProductFilter(product: product)
+                            return BookingProductFilter(productID: product.productID, name: product.name)
                         }()
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                         self?.listSelector.reloadData()

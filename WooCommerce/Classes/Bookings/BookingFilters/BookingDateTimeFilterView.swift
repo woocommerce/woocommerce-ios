@@ -168,7 +168,7 @@ private extension BookingDateTimeFilterView {
             comment: "Title of the Date row in the date time picker for booking filter"
         )
         static let time = NSLocalizedString(
-            "bookingDateTimeFilterView.title",
+            "bookingDateTimeFilterView.time",
             value: "Time",
             comment: "Title of the Time row in the date time picker for booking filter"
         )

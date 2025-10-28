@@ -19,7 +19,7 @@ actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServicePr
         return eligibilityStates[siteID] ?? .eligible
     }
 
-    func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async {
+    func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {
         // No-op for tests
     }
 

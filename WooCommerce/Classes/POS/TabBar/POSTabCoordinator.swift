@@ -130,11 +130,22 @@ final class POSTabCoordinator {
         tabContainerController.wrappedController = POSTabViewController()
     }
 
-    /// Update local catalog eligibility when POS tab visibility changes
-    func updatePOSTabVisibility(_ isPOSTabVisible: Bool) {
+    /// Check and update POS eligibility for local catalog
+    /// Only checks eligibility if the POS tab is visible
+    func updatePOSEligibility(isPOSTabVisible: Bool) {
         Task { @MainActor [weak self] in
             guard let self, let service = self.localCatalogEligibilityService else { return }
-            await service.updateVisibility(isPOSTabVisible: isPOSTabVisible, for: siteID)
+
+            // If POS tab is not visible, mark as ineligible
+            guard isPOSTabVisible else {
+                await service.updatePOSEligibility(isEligible: false, for: siteID)
+                return
+            }
+
+            // Check actual POS eligibility using the eligibility checker
+            let eligibilityState = await eligibilityChecker.checkEligibility()
+            let isPOSEligible = eligibilityState == .eligible
+            await service.updatePOSEligibility(isEligible: isPOSEligible, for: siteID)
         }
     }
 

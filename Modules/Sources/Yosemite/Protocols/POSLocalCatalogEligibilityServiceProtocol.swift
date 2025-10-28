@@ -12,7 +12,7 @@ public enum POSLocalCatalogEligibilityState: Equatable {
 
 /// Reasons why local catalog is ineligible
 public enum POSLocalCatalogIneligibleReason: Equatable {
-    case posTabNotVisible
+    case posTabNotEligible
     case featureFlagDisabled
     case catalogSizeTooLarge(totalCount: Int, limit: Int)
     case catalogSizeCheckFailed(underlyingError: String)
@@ -33,11 +33,11 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// - Returns: Cached eligibility state, or eligible if not yet checked
     func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState
 
-    /// Update the POS tab visibility state and refresh eligibility for the specified site
+    /// Update POS eligibility and refresh catalog eligibility for the specified site
     /// - Parameters:
-    ///   - isPOSTabVisible: Whether the POS tab is visible
+    ///   - isEligible: Whether POS is eligible for the site
     ///   - siteID: The site ID to refresh eligibility for
-    func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async
+    func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async
 
     /// Refresh eligibility state for a specific site
     /// - Parameter siteID: The site ID to check eligibility for

@@ -181,15 +181,14 @@ class AuthenticatedState: StoresManagerState {
             grdbManager: ServiceLocator.grdbManager
            ) {
 
-            // Create eligibility service synchronously (actor allows this)
+            // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: site,
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
                 ),
-                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
-                isPOSTabVisible: false  // Will be updated when POS tab is shown
+                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled
             )
             posCatalogEligibilityChecker = eligibilityService
 
@@ -201,12 +200,8 @@ class AuthenticatedState: StoresManagerState {
                 catalogEligibilityChecker: eligibilityService
             )
 
-            // Perform initial eligibility check asynchronously for current site
-            Task {
-                if let siteID = sessionManager.defaultStoreID {
-                    await eligibilityService.refreshEligibilityState(for: siteID)
-                }
-            }
+            // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility
+            // when the POS tab visibility check completes in MainTabBarController
         } else {
             posCatalogSyncCoordinator = nil
             posCatalogEligibilityChecker = nil

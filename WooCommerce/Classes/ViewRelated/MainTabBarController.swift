@@ -721,8 +721,8 @@ private extension MainTabBarController {
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
 
-            // Update POS tab coordinator with new visibility state for local catalog eligibility
-            posTabCoordinator?.updatePOSTabVisibility(isPOSTabVisible)
+            // Update POS eligibility - coordinator will check actual eligibility if tab is visible
+            posTabCoordinator?.updatePOSEligibility(isPOSTabVisible: isPOSTabVisible)
 
             // Begin foreground synchronization if POS tab becomes visible
             await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()

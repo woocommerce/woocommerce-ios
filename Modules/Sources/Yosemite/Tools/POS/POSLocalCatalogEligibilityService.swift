@@ -5,21 +5,25 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
     private let isLocalCatalogFeatureFlagEnabled: Bool
-    private var isPOSTabVisible: Bool
 
     // Eligibility states cached per site
     private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
 
+    // POS eligibility states cached per site
+    private var posEligibilityStates: [Int64: Bool] = [:]
+
     /// Initialize eligibility service
+    /// - Parameters:
+    ///   - catalogSizeChecker: Service to check catalog size for sites
+    ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
+    ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
     public init(
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         isLocalCatalogFeatureFlagEnabled: Bool,
-        isPOSTabVisible: Bool,
         catalogSizeLimit: Int? = nil
     ) {
         self.catalogSizeChecker = catalogSizeChecker
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
-        self.isPOSTabVisible = isPOSTabVisible
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
     }
 
@@ -33,22 +37,28 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         return await refreshEligibilityState(for: siteID)
     }
 
-    /// Update the POS tab visibility state and refresh eligibility for the specified site
-    public func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async {
-        self.isPOSTabVisible = isPOSTabVisible
-        // Refresh eligibility for the current site now that visibility has changed
+    /// Update POS eligibility and refresh catalog eligibility for the specified site
+    /// - Parameters:
+    ///   - isEligible: Whether POS is eligible
+    ///   - siteID: The site ID to refresh eligibility for
+    public func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {
+        // Store the POS eligibility state for this site
+        posEligibilityStates[siteID] = isEligible
+        // Refresh eligibility for the current site now that POS eligibility has changed
         await refreshEligibilityState(for: siteID)
     }
 
     /// Refresh eligibility state for a specific site
     @discardableResult
     public func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
-        // Check POS tab visibility FIRST - no point in checking catalog if POS tab isn't visible
-        guard isPOSTabVisible else {
-            let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotVisible)
-            eligibilityStates[siteID] = state
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS tab not visible for site \(siteID)")
-            return state
+        // Check POS tab eligibility FIRST - no point in checking catalog if POS isn't eligible
+        if let isPOSEligible = posEligibilityStates[siteID] {
+            guard isPOSEligible else {
+                let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+                eligibilityStates[siteID] = state
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: POS not eligible for site \(siteID)")
+                return state
+            }
         }
 
         // Check feature flag - if disabled, no need to check catalog size

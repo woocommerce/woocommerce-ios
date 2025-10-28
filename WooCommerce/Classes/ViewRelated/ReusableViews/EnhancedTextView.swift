@@ -6,6 +6,7 @@ final class EnhancedTextView: UITextView {
 
     var onTextChange: ((String) -> Void)?
     var onTextDidBeginEditing: (() -> Void)?
+    var dismissOnReturn: Bool = false
 
     var placeholder: String? {
         didSet {
@@ -83,6 +84,18 @@ private extension EnhancedTextView {
 // MARK: UITextViewDelegate conformance
 //
 extension EnhancedTextView: UITextViewDelegate {
+
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+
+        if dismissOnReturn && text == "\n" {
+            textView.resignFirstResponder()
+            return false
+        }
+
+        return true
+    }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
         hidePlaceholder()

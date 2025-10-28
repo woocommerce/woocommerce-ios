@@ -52,13 +52,20 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     @discardableResult
     public func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
         // Check POS tab eligibility FIRST - no point in checking catalog if POS isn't eligible
-        if let isPOSEligible = posEligibilityStates[siteID] {
-            guard isPOSEligible else {
-                let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
-                eligibilityStates[siteID] = state
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: POS not eligible for site \(siteID)")
-                return state
-            }
+        guard let isPOSEligible = posEligibilityStates[siteID] else {
+            // We don't have POS eligibility info yet - don't cache this state
+            // Return ineligible but allow it to be refreshed later when eligibility is known
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS eligibility unknown for site \(siteID), assuming ineligible")
+            return state
+        }
+
+        guard isPOSEligible else {
+            // We know POS is explicitly ineligible - cache this state
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+            eligibilityStates[siteID] = state
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS not eligible for site \(siteID)")
+            return state
         }
 
         // Check feature flag - if disabled, no need to check catalog size

@@ -58,11 +58,16 @@ struct BookingDateTimeFilterView: View {
         .background(Color(.listBackground))
         .onChange(of: fromDate) { _, newValue in
             selectedFromDate = newValue
-            onSelection(selectedFromDate, selectedToDate)
         }
         .onChange(of: toDate) { _, newValue in
             selectedToDate = newValue
-            onSelection(selectedFromDate, selectedToDate)
+            
+        }
+        .onChange(of: selectedFromDate) { _, newValue in
+            onSelection(newValue, selectedToDate)
+        }
+        .onChange(of: selectedToDate) { _, newValue in
+            onSelection(selectedFromDate, newValue)
         }
     }
 }
@@ -73,6 +78,15 @@ private extension BookingDateTimeFilterView {
         Button {
             withAnimation {
                 expandedPicker = expandedPicker == type ? nil : type
+                /// auto selects dates upon expanding the date picker
+                if selectedDate == nil {
+                    switch type {
+                    case .fromDate, .fromTime:
+                        selectedFromDate = displayedDate.wrappedValue
+                    case .toDate, .toTime:
+                        selectedToDate = displayedDate.wrappedValue
+                    }
+                }
             }
         } label: {
             HStack {

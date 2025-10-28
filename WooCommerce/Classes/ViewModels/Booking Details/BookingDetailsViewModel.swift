@@ -83,20 +83,27 @@ private extension BookingDetailsViewModel {
     func updateDisplayProperties(from booking: Booking) {
         navigationTitle = Self.navigationTitle(for: booking)
 
+        headerContent.update(with: booking)
+
+        setupCustomerSectionVisibility()
         if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
             customerContent.update(with: billingAddress)
-            insertCustomerSectionIfAbsent()
-        } else {
-            deleteCustomerSectionIfPresent()
         }
 
-        headerContent.update(with: booking)
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
 
         setupAttendanceSectionVisibility()
         attendanceContent.update(with: booking)
 
         paymentContent.update(with: booking)
+    }
+
+    func setupCustomerSectionVisibility() {
+        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
+            insertCustomerSectionIfAbsent()
+        } else {
+            deleteCustomerSectionIfPresent()
+        }
     }
 
     func setupAttendanceSectionVisibility() {
@@ -108,23 +115,46 @@ private extension BookingDetailsViewModel {
     }
 
     func insertAttendanceSectionIfAbsent() {
+        guard let insertAfterIndex = sections.firstIndex(where: {
+            if case .customer = $0.content {
+                return true
+            }
+            return false
+        }) ?? sections.firstIndex(where: {
+            if case .appointmentDetails = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
         insertSectionIfAbsent(
             section: Section(
                 header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
                 footerText: Localization.attendanceSectionFooterText,
                 content: .attendance(attendanceContent)
             ),
-            at: 3
+            at: insertAfterIndex + 1
         )
     }
 
     func insertCustomerSectionIfAbsent() {
+        guard let insertAfterIndex = sections.firstIndex(where: {
+            if case .appointmentDetails = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
         insertSectionIfAbsent(
             section: Section(
                 header: .title(Localization.customerSectionHeaderTitle.uppercased()),
                 content: .customer(customerContent)
             ),
-            at: 2
+            at: insertAfterIndex + 1
         )
     }
 

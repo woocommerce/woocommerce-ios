@@ -53,7 +53,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
-    private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
+    private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
@@ -64,7 +64,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
-                catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? = nil,
+                catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
@@ -274,14 +274,7 @@ private extension POSCatalogSyncCoordinator {
     // MARK: - Sync Eligibility
 
     /// Checks if sync is eligible for the given site based on catalog eligibility and temporal criteria
-    func checkSyncEligibility(for siteID: Int64) async -> Bool {
-        // First check catalog eligibility if checker is provided
-        guard let catalogChecker = catalogEligibilityChecker else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: No catalog eligibility checker, assuming site is ineligible")
-            return false
-        }
-
-        guard await catalogChecker.eligibilityState == .eligible else {
+    func checkSyncEligibility(for siteID: Int64) async -> Bool {guard await catalogEligibilityChecker.catalogEligibility(for: siteID) == .eligible else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
             return false
         }

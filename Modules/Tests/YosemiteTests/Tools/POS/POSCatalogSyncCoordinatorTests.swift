@@ -276,7 +276,8 @@ struct POSCatalogSyncCoordinatorTests {
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
         )
 
         // When
@@ -296,7 +297,8 @@ struct POSCatalogSyncCoordinatorTests {
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
         )
 
         // When
@@ -330,7 +332,8 @@ struct POSCatalogSyncCoordinatorTests {
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
         )
 
         // When

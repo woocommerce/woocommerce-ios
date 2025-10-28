@@ -63,6 +63,8 @@ public class BookingStore: Store {
                            onCompletion: onCompletion)
         case let .fetchResource(siteID, resourceID, onCompletion):
             fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
+        case let .synchronizeResources(siteID, pageNumber, pageSize, onCompletion):
+            synchronizeResources(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateBookingAttendanceStatus(let siteID, let bookingID, let status, let onCompletion):
             performUpdateBookingAttendanceStatus(
                 siteID: siteID,
@@ -244,9 +246,35 @@ private extension BookingStore {
                     return
                 }
 
-                await upsertBookingResourceInBackground(readOnlyBookingResource: resource)
+                await upsertBookingResourcesInBackground(siteID: resource.siteID,
+                                                         readOnlyBookingResources: [resource])
 
                 onCompletion(.success(resource))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Synchronizes booking resources for the specified site.
+    ///
+    func synchronizeResources(siteID: Int64,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let resources = try await remote.fetchResources(
+                    for: siteID,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+                )
+
+                await upsertBookingResourcesInBackground(siteID: siteID,
+                                                         readOnlyBookingResources: resources)
+
+                let hasNextPage = resources.count == pageSize
+                onCompletion(.success(hasNextPage))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -423,16 +451,22 @@ private extension BookingStore {
     }
 
     /// Updates (OR Inserts) the specified ReadOnly BookingResource Entities *in a background thread* async.
-    func upsertBookingResourceInBackground(readOnlyBookingResource: BookingResource) async {
+    func upsertBookingResourcesInBackground(siteID: Int64, readOnlyBookingResources: [BookingResource]) async {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume()
             }
 
             storageManager.performAndSave({ storage in
-                let storedItem = storage.loadBookingResource(siteID: readOnlyBookingResource.siteID, resourceID: readOnlyBookingResource.resourceID)
-                let storageResource = storedItem ?? storage.insertNewObject(ofType: Storage.BookingResource.self)
-                storageResource.update(with: readOnlyBookingResource)
+                let storedItems = storage.loadBookingResources(
+                    siteID: siteID,
+                    resourceIDs: readOnlyBookingResources.map { $0.resourceID }
+                )
+                for item in readOnlyBookingResources {
+                    let storageResource = storedItems.first(where: { $0.resourceID == item.resourceID }) ??
+                    storage.insertNewObject(ofType: Storage.BookingResource.self)
+                    storageResource.update(with: item)
+                }
             }, completion: {
                 continuation.resume()
             }, on: .main)

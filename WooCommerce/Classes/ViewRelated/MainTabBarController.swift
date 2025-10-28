@@ -721,6 +721,9 @@ private extension MainTabBarController {
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
 
+            // Update POS tab coordinator with new visibility state for local catalog eligibility
+            posTabCoordinator?.updatePOSTabVisibility(isPOSTabVisible)
+
             // Begin foreground synchronization if POS tab becomes visible
             await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
         }
@@ -826,12 +829,15 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible,
                                                     isBookingsTabVisible: isBookingsTabVisible)
 
+        // Create POS tab coordinator with initial visibility from cache
+        let initialPOSTabVisibility = posTabVisibilityChecker?.checkInitialVisibility() ?? false
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
             viewControllerToPresent: self,
             storesManager: stores,
-            eligibilityChecker: POSTabEligibilityChecker(siteID: siteID)
+            eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
+            initialPOSTabVisibility: initialPOSTabVisibility
         )
 
         // Updates site ID for the bookings tab to display correct bookings

@@ -32,7 +32,8 @@ struct OrderCustomerSection: View {
                         disallowSelectingGuest: viewModel.isCustomerAccountRequired,
                         disallowCreatingCustomer: true,
                         showGuestLabel: false,
-                        shouldTrackCustomerAdded: true
+                        shouldTrackCustomerAdded: true,
+                        isModal: true
                     ),
                     addressFormViewModel: viewModel.addressFormViewModel) { customer in
                         viewModel.addCustomerFromSearch(customer)

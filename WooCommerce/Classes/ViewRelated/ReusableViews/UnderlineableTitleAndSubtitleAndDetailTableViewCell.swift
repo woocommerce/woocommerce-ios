@@ -13,12 +13,14 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
+        accessoryType = .none
     }
 
     func configureCell(searchModel: ViewModel) {
         accessibilityLabel = searchModel.accessibilityLabel
         setupTitleLabelText(with: searchModel)
         subtitleLabel.attributedText = subtitleAttributedString(from: searchModel)
+        accessoryType = searchModel.isSelected ? .checkmark : .none
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -42,6 +44,7 @@ extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
         let accessibilityLabel: String
         let detail: String
         let underlinedText: String?
+        let isSelected: Bool
     }
 }
 
@@ -54,7 +57,7 @@ private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
                                              attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.textTertiary])
         }
 
-        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.text])
+        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.secondaryLabel])
 
         if let underlinedText = viewModel.underlinedText {
             subtitle.underlineSubstring(underlinedText: underlinedText)

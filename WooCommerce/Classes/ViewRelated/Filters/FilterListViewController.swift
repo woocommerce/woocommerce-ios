@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 
@@ -92,8 +93,13 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for products
     case products(siteID: Int64)
     // Filter list selector for customer
-    case customer(siteID: Int64)
-
+    case customer(siteID: Int64, source: FilterSource)
+    // Filter list selector for booking team member
+    case bookingResource(siteID: Int64)
+    // Filter list selector for bookable product
+    case bookableProduct(siteID: Int64)
+    // Filter list selector for booking date time
+    case bookingDateTime
 }
 
 /// Contains data for rendering a filter type row.
@@ -338,26 +344,80 @@ private extension FilterListViewController {
                 }()
                 self.listSelector.present(controller, animated: true)
 
-            case .customer(let siteID):
+            case .customer(let siteID, let source):
+                let configuration: CustomerSelectorViewController.Configuration = {
+                    switch source {
+                    case .booking: .configurationForBookingFilter
+                    case .orders: .configurationForOrderFilter
+                    case .products: fatalError("Customer filter not supported!")
+                    }
+                }()
+                let selectedCustomerID = (selected.selectedValue as? CustomerFilter)?.id
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
-                        configuration: .configurationForOrderFilter,
+                        configuration: configuration,
                         addressFormViewModel: nil,
+                        selectedCustomerID: selectedCustomerID,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(customer: customer)
 
                             self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                             self?.listSelector.reloadData()
-                            self?.listSelector.dismiss(animated: true)
                         }
                     )
                 }()
 
-                self.listSelector.present(
-                    WooNavigationController(rootViewController: controller),
-                    animated: true
+                self.listSelector.navigationController?.pushViewController(controller, animated: true)
+            case .bookingResource(let siteID):
+                let selectedMember = selected.selectedValue as? BookingResource
+                let syncable = TeamMemberListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    initialSelection: { $0 == selectedMember },
+                    onSelection: { [weak self] resource in
+                        selected.selectedValue = resource
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                    }
                 )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+
+            case .bookableProduct(let siteID):
+                let selectedProduct = selected.selectedValue as? BookingProductFilter
+                let syncable = BookableProductListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    initialSelection: { $0?.productID == selectedProduct?.productID },
+                    onSelection: { [weak self] product in
+                        selected.selectedValue = {
+                            guard let product else { return BookingProductFilter?.none }
+                            return BookingProductFilter(productID: product.productID, name: product.name)
+                        }()
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                    }
+                )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+            case .bookingDateTime:
+                let selectedDateRange = selected.selectedValue as? BookingDateRangeFilter
+                let dateTimeFilterView = BookingDateTimeFilterView(
+                    startDate: selectedDateRange?.startDate,
+                    endDate: selectedDateRange?.endDate,
+                    onSelection: { [weak self] startDate, endDate in
+                        selected.selectedValue = BookingDateRangeFilter(startDate: startDate, endDate: endDate)
+                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                        self?.listSelector.reloadData()
+                    }
+                )
+                let hostingController = UIHostingController(rootView: dateTimeFilterView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }
     }

@@ -142,4 +142,47 @@ struct BookingsRemoteTests {
         #expect(booking?.dateModified == nil)
         #expect(booking?.id == bookingID)
     }
+
+    @Test func test_fetchResources_properly_returns_parsed_resources() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "resources/team-members", filename: "booking-resource-list")
+
+        // When
+        let resources = try await remote.fetchResources(for: sampleSiteID)
+
+        // Then
+        #expect(resources.count == 2)
+        let firstResource = try #require(resources.first)
+        #expect(firstResource.resourceID == 22)
+        #expect(firstResource.name == "Joel (Sample resource)")
+        #expect(firstResource.quantity == 1)
+        #expect(firstResource.siteID == sampleSiteID)
+    }
+
+    @Test func test_fetchResources_properly_relays_networking_errors() async {
+        // Given
+        let remote = BookingsRemote(network: network)
+
+        // Then
+        await #expect(throws: NetworkError.notFound()) {
+            _ = try await remote.fetchResources(for: sampleSiteID)
+        }
+    }
+
+    @Test func test_fetchResources_sends_correct_parameters() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "resources/team-members", filename: "booking-resource-list")
+
+        // When
+        _ = try await remote.fetchResources(for: sampleSiteID, pageNumber: 3, pageSize: 100)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["page"] as? String) == "3")
+        #expect((parameters["per_page"] as? String) == "100")
+    }
 }

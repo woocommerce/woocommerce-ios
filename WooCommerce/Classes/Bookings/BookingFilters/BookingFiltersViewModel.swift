@@ -27,9 +27,9 @@ final class BookingFiltersViewModel: FilterListViewModel {
         filterTypeViewModels = [
             teamMemberFilterViewModel,
             productFilterViewModel,
-            customerFilterViewModel,
             attendanceStatusFilterViewModel,
             paymentStatusFilterViewModel,
+            customerFilterViewModel,
             dateTimeFilterViewModel
         ]
     }
@@ -182,20 +182,17 @@ private extension BookingFiltersViewModel.BookingListFilter {
 extension BookingFiltersViewModel.BookingListFilter {
     func createViewModel(filters: BookingFiltersViewModel.Filters) -> FilterTypeViewModel {
         switch self {
-        case .teamMember:
-            // TODO: Implement team member selector when available
-            // For now, using static options with nil (Any option)
-            let options: [BookingResource?] = [nil]
+        case .teamMember(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .bookingResource(siteID: siteID),
                                        selectedValue: filters.teamMember)
         case .product(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .products(siteID: siteID),
+                                       listSelectorConfig: .bookableProduct(siteID: siteID),
                                        selectedValue: filters.product)
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .customer(siteID: siteID),
+                                       listSelectorConfig: .customer(siteID: siteID, source: .booking),
                                        selectedValue: filters.customer)
         case .attendanceStatus:
             let options: [BookingAttendanceStatus?] = [nil, .booked, .checkedIn, .cancelled, .noShow]
@@ -208,10 +205,8 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.paymentStatus)
         case .dateTime:
-            // TODO: Implement date range selector when available
-            let options: [BookingDateRangeFilter?] = [nil]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .bookingDateTime,
                                        selectedValue: filters.dateRange)
         }
     }
@@ -259,35 +254,48 @@ extension BookingProductFilter: FilterType {
 
 extension BookingDateRangeFilter: FilterType {
     var description: String {
-        // TODO: Format dates nicely when implementing date range selector
-        if let startDate = startDate, let endDate = endDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
-        } else if let startDate = startDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return NSLocalizedString(
-                "bookingDateRangeFilter.from",
-                value: "From \(formatter.string(from: startDate))",
-                comment: "Description for booking date range filter with only start date")
-        } else if let endDate = endDate {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            return NSLocalizedString(
-                "bookingDateRangeFilter.until",
-                value: "Until \(formatter.string(from: endDate))",
-                comment: "Description for booking date range filter with only end date")
+        if let startDate, let endDate {
+            [
+                startDate.formatted(date: .abbreviated, time: .omitted),
+                endDate.formatted(date: .abbreviated, time: .omitted)
+            ].joined(separator: " - ")
+        } else if let startDate {
+            String.localizedStringWithFormat(
+                Localization.dateRangeFrom,
+                startDate.formatted(date: .abbreviated, time: .shortened)
+            )
+        } else if let endDate {
+            String.localizedStringWithFormat(
+                Localization.dateRangeUntil,
+                endDate.formatted(date: .abbreviated, time: .shortened)
+            )
         } else {
-            return NSLocalizedString(
-                "bookingDateRangeFilter.any",
-                value: "Any",
-                comment: "Description for booking date range filter with no dates selected")
+            Localization.dateRangeAny
         }
     }
 
     var isActive: Bool {
         startDate != nil || endDate != nil
+    }
+
+    private enum Localization {
+        static let dateRangeFrom = NSLocalizedString(
+            "bookingFiltersViewModel.dateRangeFilter.from",
+            value: "From %1$@",
+            comment: "Description for booking date range filter with only start date. " +
+            "Placeholder is a date. Reads as: From October 27, 2025."
+        )
+        static let dateRangeUntil = NSLocalizedString(
+            "bookingFiltersViewModel.dateRangeFilter.until",
+            value: "Until %1$@",
+            comment: "Description for booking date range filter with only end date. " +
+            "Placeholder is a date. Reads as: Until October 27, 2025."
+        )
+        static let dateRangeAny = NSLocalizedString(
+            "bookingFiltersViewModel.dateRangeFilter.any",
+            value: "Any",
+            comment: "Description for booking date range filter with no dates selected"
+        )
     }
 }
 

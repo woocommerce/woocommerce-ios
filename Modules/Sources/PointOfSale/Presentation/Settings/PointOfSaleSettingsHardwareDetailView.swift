@@ -74,6 +74,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsCardReaderFlow) {
                         cardReadersView
                     } else {
+                        // TODO: Legacy view to be removed along feature flag on WOOMOB-1591
                         legacyCardReadersView
                     }
                 case .hardware(.scanners):
@@ -204,7 +205,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     POSSettingsCardView(title: Localization.cardReaderConnectTitle,
                                         subtitle: Localization.cardReaderConnectSubtitle,
                                         action: {
-                        /* TODO: Trigger reader connection*/
+                        posModel.connectCardReader()
                     })
                 }
 
@@ -269,7 +270,8 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 }
 
-extension PointOfSaleSettingsHardwareDetailView {
+// MARK: - Navigation
+private extension PointOfSaleSettingsHardwareDetailView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners

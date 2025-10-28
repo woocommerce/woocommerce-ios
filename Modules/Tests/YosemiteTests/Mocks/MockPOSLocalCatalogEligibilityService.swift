@@ -1,22 +1,20 @@
 import Foundation
 @testable import Yosemite
 
-/// Mock implementation that can be used from any isolation context
-final class MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    var isEligible = true
-    var isCatalogEligibleForSyncCallCount = 0
+/// Mock actor for testing
+actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     var eligibilityState: POSLocalCatalogEligibilityState = .eligible
 
-    nonisolated func isCatalogEligibleForSync() async -> Bool {
-        isCatalogEligibleForSyncCallCount += 1
-        return isEligible
+    /// Set to ineligible for testing
+    func setIneligible() {
+        eligibilityState = .ineligible(reason: .featureFlagDisabled)
     }
 
-    nonisolated func updateVisibility(isPOSTabVisible: Bool) async {
+    func updateVisibility(isPOSTabVisible: Bool) async {
         // No-op for tests
     }
 
-    nonisolated func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
+    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
         return eligibilityState
     }
 }

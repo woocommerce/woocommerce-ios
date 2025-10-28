@@ -1,8 +1,7 @@
 import Foundation
 import CocoaLumberjackSwift
 
-@MainActor
-public final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
+public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let siteID: Int64
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
@@ -76,12 +75,6 @@ public final class POSLocalCatalogEligibilityService: POSLocalCatalogEligibility
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
             return eligibilityState
         }
-    }
-
-    // MARK: - POSCatalogEligibilityChecking
-
-    nonisolated public func isCatalogEligibleForSync() async -> Bool {
-        await refreshEligibilityState() == .eligible
     }
 }
 

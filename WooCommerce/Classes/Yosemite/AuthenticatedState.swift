@@ -181,49 +181,39 @@ class AuthenticatedState: StoresManagerState {
             grdbManager: ServiceLocator.grdbManager
            ) {
 
-            // Initialize properties to nil first, then create services on main thread after init completes
-            posCatalogEligibilityChecker = nil
-            posCatalogSyncCoordinator = nil
+            // Create eligibility service synchronously (actor allows this)
+            let eligibilityService = POSLocalCatalogEligibilityService(
+                siteID: sessionManager.defaultStoreID ?? 0,
+                catalogSizeChecker: POSCatalogSizeChecker(
+                    credentials: credentials,
+                    selectedSite: site,
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+                ),
+                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                isPOSTabVisible: false  // Will be updated when POS tab is shown
+            )
+            posCatalogEligibilityChecker = eligibilityService
 
-            trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
-            startListeningToNotifications()
-            observeAppPasswordSupportState()
+            // Create sync coordinator with eligibility service
+            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                fullSyncService: fullSyncService,
+                incrementalSyncService: incrementalSyncService,
+                grdbManager: ServiceLocator.grdbManager,
+                catalogEligibilityChecker: eligibilityService
+            )
 
-            // Create eligibility service and sync coordinator on main thread
-            Task { @MainActor [weak self] in
-                guard let self else { return }
-
-                let eligibilityService = POSLocalCatalogEligibilityService(
-                    siteID: sessionManager.defaultStoreID ?? 0,
-                    catalogSizeChecker: POSCatalogSizeChecker(
-                        credentials: credentials,
-                        selectedSite: site,
-                        appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
-                    ),
-                    isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
-                    isPOSTabVisible: false  // Will be updated when POS tab is shown
-                )
-                self.posCatalogEligibilityChecker = eligibilityService
-
-                // Create sync coordinator with eligibility service
-                self.posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
-                    fullSyncService: fullSyncService,
-                    incrementalSyncService: incrementalSyncService,
-                    grdbManager: ServiceLocator.grdbManager,
-                    catalogEligibilityChecker: eligibilityService
-                )
-
-                // Perform initial eligibility check
+            // Perform initial eligibility check asynchronously
+            Task {
                 await eligibilityService.refreshEligibilityState()
             }
         } else {
             posCatalogSyncCoordinator = nil
             posCatalogEligibilityChecker = nil
-
-            trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
-            startListeningToNotifications()
-            observeAppPasswordSupportState()
         }
+
+        trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
+        startListeningToNotifications()
+        observeAppPasswordSupportState()
     }
 
     /// Convenience Initializer

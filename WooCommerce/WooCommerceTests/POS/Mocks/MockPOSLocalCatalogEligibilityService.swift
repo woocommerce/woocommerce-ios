@@ -17,8 +17,4 @@ public final class MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibi
     }
 
     public func updateVisibility(isPOSTabVisible: Bool) async { }
-
-    public func isCatalogEligibleForSync() async -> Bool {
-        return eligibilityState == .eligible
-    }
 }

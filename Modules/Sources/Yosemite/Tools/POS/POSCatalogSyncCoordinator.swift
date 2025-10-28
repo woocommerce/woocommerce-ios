@@ -281,7 +281,7 @@ private extension POSCatalogSyncCoordinator {
             return false
         }
 
-        guard await catalogChecker.isCatalogEligibleForSync() else {
+        guard await catalogChecker.eligibilityState == .eligible else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
             return false
         }

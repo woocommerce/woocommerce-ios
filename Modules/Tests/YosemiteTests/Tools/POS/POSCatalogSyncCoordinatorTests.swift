@@ -586,7 +586,7 @@ extension POSCatalogSyncCoordinatorTests {
     @Test func performSmartSync_skips_sync_when_catalog_is_ineligible() async throws {
         // Given
         let eligibilityChecker = MockPOSLocalCatalogEligibilityService()
-        eligibilityChecker.isEligible = false  // Catalog ineligible
+        await eligibilityChecker.setIneligible()  // Catalog ineligible
         let coordinator = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,

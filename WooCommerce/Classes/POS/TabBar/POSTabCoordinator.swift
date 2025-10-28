@@ -165,10 +165,10 @@ private extension POSTabCoordinator {
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Retry transient failures before using the value
-                if case .ineligible(reason: .catalogSizeCheckFailed) = service.eligibilityState {
+                if case .ineligible(reason: .catalogSizeCheckFailed) = await service.eligibilityState {
                     await service.refreshEligibilityState()
                 }
-                isLocalCatalogEligible = service.eligibilityState == .eligible
+                isLocalCatalogEligible = await service.eligibilityState == .eligible
             } else {
                 // Service not ready yet (rare race condition), assume ineligible
                 isLocalCatalogEligible = false

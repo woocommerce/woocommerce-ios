@@ -2,22 +2,23 @@ import SwiftUI
 
 struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>
-    @State var selectedItem: Syncable.ModelType?
+    @State private var selectedItems: [Syncable.ModelType]
 
     private let syncable: Syncable
-    private let initialSelection: (Syncable.ModelType?) -> Bool
-    private let onSelection: (Syncable.ModelType?) -> Void
+    private let initialSelection: (Syncable.ModelType) -> Bool
+    private let onSelection: ([Syncable.ModelType]) -> Void
 
     private let viewPadding: CGFloat = 16
 
     init(viewModel: SyncableListSelectorViewModel<Syncable>,
          syncable: Syncable,
-         initialSelection: @escaping (Syncable.ModelType?) -> Bool,
-         onSelection: @escaping (Syncable.ModelType?) -> Void) {
+         initialSelection: @escaping (Syncable.ModelType) -> Bool,
+         onSelection: @escaping ([Syncable.ModelType]) -> Void) {
         self.viewModel = viewModel
         self.syncable = syncable
         self.initialSelection = initialSelection
         self.onSelection = onSelection
+        self._selectedItems = State(initialValue: [])
     }
 
     var body: some View {
@@ -37,9 +38,6 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         }
         .navigationTitle(syncable.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: selectedItem) { _, newValue in
-            onSelection(newValue)
-        }
     }
 }
 
@@ -63,14 +61,17 @@ private extension SyncableListSelectorView {
                     value: "Any",
                     comment: "Option to select no filter on a list selector view"
                 ),
-                isSelected: selectedItem == nil,
-                onSelection: { selectedItem = nil }
+                isSelected: selectedItems.isEmpty,
+                onSelection: {
+                    selectedItems.removeAll()
+                    onSelection(selectedItems)
+                }
             )
 
             ForEach(items, id: \.self) { item in
                 optionRow(text: syncable.displayName(for: item),
                           isSelected: isItemSelected(item),
-                          onSelection: { selectedItem = item })
+                          onSelection: { toggleSelection(for: item) })
             }
 
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -83,11 +84,20 @@ private extension SyncableListSelectorView {
         .background(Color(.listBackground))
     }
 
-    func isItemSelected(_ item: Syncable.ModelType?) -> Bool {
-        if let selectedItem {
-            return item == selectedItem
+    func isItemSelected(_ item: Syncable.ModelType) -> Bool {
+        if selectedItems.isEmpty {
+            return initialSelection(item)
         }
-        return initialSelection(item)
+        return selectedItems.contains(item)
+    }
+
+    func toggleSelection(for item: Syncable.ModelType) {
+        if let index = selectedItems.firstIndex(of: item) {
+            selectedItems.remove(at: index)
+        } else {
+            selectedItems.append(item)
+        }
+        onSelection(selectedItems)
     }
 
     func optionRow(text: String, isSelected: Bool, onSelection: @escaping () -> Void) -> some View {

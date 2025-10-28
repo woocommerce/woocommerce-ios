@@ -392,15 +392,22 @@ private extension FilterListViewController {
 
                 self.listSelector.navigationController?.pushViewController(controller, animated: true)
             case .bookingResource(let siteID):
-                let selectedMember = selected.selectedValue as? BookingResource
+                let selectedMembers: [BookingResource] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items.compactMap { $0 as? BookingResource }
+                    }
+                    return []
+                }()
                 let syncable = TeamMemberListSyncable(siteID: siteID)
                 let viewModel = SyncableListSelectorViewModel(syncable: syncable)
                 let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
-                    initialSelection: { $0 == selectedMember },
-                    onSelection: { [weak self] resource in
-                        selected.selectedValue = resource
+                    initialSelection: { item in
+                        selectedMembers.contains(item)
+                    },
+                    onSelection: { [weak self] resources in
+                        selected.selectedValue = MultipleFilterSelection(items: resources)
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                         self?.listSelector.reloadData()
                     }
@@ -409,18 +416,25 @@ private extension FilterListViewController {
                 listSelector.navigationController?.pushViewController(hostingController, animated: true)
 
             case .bookableProduct(let siteID):
-                let selectedProduct = selected.selectedValue as? BookingProductFilter
+                let selectedProducts: [BookingProductFilter] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items.compactMap { $0 as? BookingProductFilter }
+                    }
+                    return []
+                }()
                 let syncable = BookableProductListSyncable(siteID: siteID)
                 let viewModel = SyncableListSelectorViewModel(syncable: syncable)
                 let memberListSelectorView = SyncableListSelectorView(
                     viewModel: viewModel,
                     syncable: syncable,
-                    initialSelection: { $0?.productID == selectedProduct?.productID },
-                    onSelection: { [weak self] product in
-                        selected.selectedValue = {
-                            guard let product else { return BookingProductFilter?.none }
-                            return BookingProductFilter(productID: product.productID, name: product.name)
-                        }()
+                    initialSelection: { item in
+                        selectedProducts.contains { $0.productID == item.productID }
+                    },
+                    onSelection: { [weak self] products in
+                        let filters = products.map { product in
+                            BookingProductFilter(productID: product.productID, name: product.name)
+                        }
+                        selected.selectedValue = MultipleFilterSelection(items: filters)
                         self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                         self?.listSelector.reloadData()
                     }

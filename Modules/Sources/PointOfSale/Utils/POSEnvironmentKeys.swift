@@ -160,3 +160,14 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
     }
     init() {}
 }
+
+#if DEBUG
+
+final class MockPOSAnalytics: POSAnalyticsProviding, ObservableObject {
+    func track(event: WooAnalyticsEvent) {}
+    func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:]) {}
+    func track(_ stat: WooAnalyticsStat) {}
+    func track(_ stat: WooFoundationCore.WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType], error: any Error) {}
+    init() {}
+}
+#endif

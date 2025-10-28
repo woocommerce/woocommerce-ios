@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct POSSettingsHardwareDetailView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -34,7 +35,22 @@ struct POSSettingsHardwareDetailView: View {
         Color.posSurface
     }
 
+    func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewContainer) -> some View {
+        factory.configuration.showSupport = { [weak posModel] in
+            posModel?.cancelCardPaymentsOnboarding()
+        }
+
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewContainer: factory,
+                                                                            onDismissTap: {
+            posModel.cancelCardPaymentsOnboarding()
+        }))
+        .onAppear {
+            posModel.trackCardPaymentsOnboardingShown()
+        }
+    }
+
     var body: some View {
+        @Bindable var posModel = posModel
         NavigationStack(path: $navigationPath) {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(title: Localization.hardwareTitle)
@@ -73,6 +89,18 @@ struct POSSettingsHardwareDetailView: View {
                 case .hardware(.scanners):
                     scannersView
                 }
+            }
+            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+                posModel.cancelCardPaymentsOnboarding()
+            }) { factory in
+                paymentsOnboardingView(from: factory)
+            }
+            .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                      onDismiss: {
+                posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+            }) { alertType in
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                    .posInteractiveDismissDisabled(alertType.isDismissDisabled)
             }
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)

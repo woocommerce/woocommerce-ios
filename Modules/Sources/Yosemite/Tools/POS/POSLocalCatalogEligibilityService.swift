@@ -2,53 +2,61 @@ import Foundation
 import CocoaLumberjackSwift
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    private let siteID: Int64
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let catalogSizeLimit: Int
     private let isLocalCatalogFeatureFlagEnabled: Bool
     private var isPOSTabVisible: Bool
 
-    // Current eligibility state
-    public private(set) var eligibilityState: POSLocalCatalogEligibilityState
+    // Eligibility states cached per site
+    private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
 
     /// Initialize eligibility service
-    /// Note: Call refreshEligibilityState() after creation to perform initial check
     public init(
-        siteID: Int64,
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         isLocalCatalogFeatureFlagEnabled: Bool,
         isPOSTabVisible: Bool,
         catalogSizeLimit: Int? = nil
     ) {
-        self.siteID = siteID
         self.catalogSizeChecker = catalogSizeChecker
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
         self.isPOSTabVisible = isPOSTabVisible
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
-        // Start with eligible state, will be updated on first refresh
-        self.eligibilityState = .eligible
     }
 
-    /// Update the visibility state and refresh eligibility
-    public func updateVisibility(isPOSTabVisible: Bool) async {
+    /// Get catalog eligibility for a specific site
+    /// If not cached, refreshes eligibility and returns the result
+    public func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+        if let cached = eligibilityStates[siteID] {
+            return cached
+        }
+        // Not cached yet, refresh and return
+        return await refreshEligibilityState(for: siteID)
+    }
+
+    /// Update the POS tab visibility state and refresh eligibility for the specified site
+    public func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async {
         self.isPOSTabVisible = isPOSTabVisible
-        await refreshEligibilityState()
+        // Refresh eligibility for the current site now that visibility has changed
+        await refreshEligibilityState(for: siteID)
     }
 
+    /// Refresh eligibility state for a specific site
     @discardableResult
-    public func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
+    public func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
         // Check POS tab visibility FIRST - no point in checking catalog if POS tab isn't visible
         guard isPOSTabVisible else {
-            eligibilityState = .ineligible(reason: .posTabNotVisible)
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotVisible)
+            eligibilityStates[siteID] = state
             DDLogInfo("📋 POSLocalCatalogEligibilityService: POS tab not visible for site \(siteID)")
-            return eligibilityState
+            return state
         }
 
         // Check feature flag - if disabled, no need to check catalog size
         guard isLocalCatalogFeatureFlagEnabled else {
-            eligibilityState = .ineligible(reason: .featureFlagDisabled)
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
+            eligibilityStates[siteID] = state
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flag disabled for site \(siteID)")
-            return eligibilityState
+            return state
         }
 
         // Fetch remote catalog size and check against limit
@@ -56,24 +64,26 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
 
             if size.totalCount > catalogSizeLimit {
-                eligibilityState = .ineligible(
+                let state = POSLocalCatalogEligibilityState.ineligible(
                     reason: .catalogSizeTooLarge(totalCount: size.totalCount, limit: catalogSizeLimit)
                 )
+                eligibilityStates[siteID] = state
                 DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) exceeds limit \(catalogSizeLimit)")
-                return eligibilityState
+                return state
             }
 
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) is within limit \(catalogSizeLimit)")
-            eligibilityState = .eligible
-            return eligibilityState
+            eligibilityStates[siteID] = .eligible
+            return .eligible
 
         } catch {
             let errorString = String(describing: error)
-            eligibilityState = .ineligible(
+            let state = POSLocalCatalogEligibilityState.ineligible(
                 reason: .catalogSizeCheckFailed(underlyingError: errorString)
             )
+            eligibilityStates[siteID] = state
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
-            return eligibilityState
+            return state
         }
     }
 }

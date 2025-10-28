@@ -183,7 +183,6 @@ class AuthenticatedState: StoresManagerState {
 
             // Create eligibility service synchronously (actor allows this)
             let eligibilityService = POSLocalCatalogEligibilityService(
-                siteID: sessionManager.defaultStoreID ?? 0,
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: site,
@@ -202,9 +201,11 @@ class AuthenticatedState: StoresManagerState {
                 catalogEligibilityChecker: eligibilityService
             )
 
-            // Perform initial eligibility check asynchronously
+            // Perform initial eligibility check asynchronously for current site
             Task {
-                await eligibilityService.refreshEligibilityState()
+                if let siteID = sessionManager.defaultStoreID {
+                    await eligibilityService.refreshEligibilityState(for: siteID)
+                }
             }
         } else {
             posCatalogSyncCoordinator = nil

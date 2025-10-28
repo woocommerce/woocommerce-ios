@@ -11,10 +11,14 @@ public final class MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibi
         self.eligibilityState = eligibilityState
     }
 
-    public func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
+    public func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+        return eligibilityState
+    }
+
+    public func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
         refreshCallCount += 1
         return eligibilityState
     }
 
-    public func updateVisibility(isPOSTabVisible: Bool) async { }
+    public func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async { }
 }

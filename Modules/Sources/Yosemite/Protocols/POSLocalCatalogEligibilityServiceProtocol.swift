@@ -28,15 +28,19 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 /// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
 /// The service performs an initial eligibility check during initialization.
 public protocol POSLocalCatalogEligibilityServiceProtocol {
-    /// Current eligibility state (actor-isolated, requires await to access)
-    /// Use `eligibilityState == .eligible` to check if catalog is eligible for sync
-    var eligibilityState: POSLocalCatalogEligibilityState { get async }
+    /// Get catalog eligibility for a specific site
+    /// - Parameter siteID: The site ID to check eligibility for
+    /// - Returns: Cached eligibility state, or eligible if not yet checked
+    func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState
 
-    /// Update the POS tab visibility state and refresh eligibility
-    /// - Parameter isPOSTabVisible: Whether the POS tab is visible
-    func updateVisibility(isPOSTabVisible: Bool) async
+    /// Update the POS tab visibility state and refresh eligibility for the specified site
+    /// - Parameters:
+    ///   - isPOSTabVisible: Whether the POS tab is visible
+    ///   - siteID: The site ID to refresh eligibility for
+    func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async
 
-    /// Force refresh eligibility (bypasses cache and updates eligibilityState)
+    /// Refresh eligibility state for a specific site
+    /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Fresh eligibility state with reason if ineligible
-    @discardableResult func refreshEligibilityState() async -> POSLocalCatalogEligibilityState
+    @discardableResult func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState
 }

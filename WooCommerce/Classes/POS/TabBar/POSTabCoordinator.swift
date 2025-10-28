@@ -134,7 +134,7 @@ final class POSTabCoordinator {
     func updatePOSTabVisibility(_ isPOSTabVisible: Bool) {
         Task { @MainActor [weak self] in
             guard let self, let service = self.localCatalogEligibilityService else { return }
-            await service.updateVisibility(isPOSTabVisible: isPOSTabVisible)
+            await service.updateVisibility(isPOSTabVisible: isPOSTabVisible, for: siteID)
         }
     }
 
@@ -161,14 +161,14 @@ private extension POSTabCoordinator {
             guard let self else { return }
 
             // Get local catalog eligibility as bool from service
-            // Service is created asynchronously in init, might not be ready yet
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Retry transient failures before using the value
-                if case .ineligible(reason: .catalogSizeCheckFailed) = await service.eligibilityState {
-                    await service.refreshEligibilityState()
+                let state = await service.catalogEligibility(for: siteID)
+                if case .ineligible(reason: .catalogSizeCheckFailed) = state {
+                    await service.refreshEligibilityState(for: siteID)
                 }
-                isLocalCatalogEligible = await service.eligibilityState == .eligible
+                isLocalCatalogEligible = await service.catalogEligibility(for: siteID) == .eligible
             } else {
                 // Service not ready yet (rare race condition), assume ineligible
                 isLocalCatalogEligible = false

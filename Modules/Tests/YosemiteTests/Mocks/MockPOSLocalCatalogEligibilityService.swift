@@ -3,18 +3,27 @@ import Foundation
 
 /// Mock actor for testing
 actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    var eligibilityState: POSLocalCatalogEligibilityState = .eligible
+    private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
 
-    /// Set to ineligible for testing
-    func setIneligible() {
-        eligibilityState = .ineligible(reason: .featureFlagDisabled)
+    /// Set eligibility for a specific site
+    func setEligibility(_ state: POSLocalCatalogEligibilityState, for siteID: Int64) {
+        eligibilityStates[siteID] = state
     }
 
-    func updateVisibility(isPOSTabVisible: Bool) async {
+    /// Set to ineligible for testing
+    func setIneligible(for siteID: Int64) {
+        eligibilityStates[siteID] = .ineligible(reason: .featureFlagDisabled)
+    }
+
+    func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+        return eligibilityStates[siteID] ?? .eligible
+    }
+
+    func updateVisibility(isPOSTabVisible: Bool, for siteID: Int64) async {
         // No-op for tests
     }
 
-    func refreshEligibilityState() async -> POSLocalCatalogEligibilityState {
-        return eligibilityState
+    func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+        return eligibilityStates[siteID] ?? .eligible
     }
 }

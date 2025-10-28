@@ -268,7 +268,7 @@ private extension BookingStore {
                 return onCompletion(UpdateBookingStatusError.undefinedState)
             }
 
-            Task {
+            Task { @MainActor in
                 do {
                     if let remoteBooking = try await self.remote.updateBooking(
                         from: siteID,

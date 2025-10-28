@@ -61,7 +61,6 @@ struct BookingDateTimeFilterView: View {
         }
         .onChange(of: toDate) { _, newValue in
             selectedToDate = newValue
-            
         }
         .onChange(of: selectedFromDate) { _, newValue in
             onSelection(newValue, selectedToDate)

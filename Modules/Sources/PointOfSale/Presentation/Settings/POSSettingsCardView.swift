@@ -5,8 +5,6 @@ struct POSSettingsCardView: View {
     let subtitle: String
     let action: () -> Void
 
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: POSPadding.xSmall) {

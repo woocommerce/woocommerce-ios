@@ -30,39 +30,41 @@ struct POSSettingsHardwareDetailView: View {
     }
 
     private var backgroundColor: Color {
-        Color.posOnSecondaryContainer
+        Color.posSurface
     }
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
-            POSPageHeaderView(title: Localization.hardwareTitle)
-            .foregroundColor(.posSurface)
-            .accessibilityAddTraits(.isHeader)
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.hardwareTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-            List(HardwareDestination.allCases) { destination in
-                NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                        Text(destination.title)
-                            .font(.posBodyLargeRegular())
-                            .foregroundStyle(Color.posOnSurface)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        Text(destination.subtitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                List(HardwareDestination.allCases) { destination in
+                    NavigationLink(value: NavigationDestination.hardware(destination)) {
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeRegular())
+                                .foregroundStyle(Color.posOnSurface)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.posSurfaceContainerLowest)
+                        .posItemCardBorderStyles()
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.posSurfaceContainerLowest)
-                    .posItemCardBorderStyles()
+                    .listRowSeparator(.hidden)
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
             .background(backgroundColor)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):
@@ -121,6 +123,10 @@ struct POSSettingsHardwareDetailView: View {
                     }
                     .padding()
                 }
+                .background(Color.posSurfaceContainerLowest)
+                .posItemCardBorderStyles()
+                .listRowSeparator(.hidden)
+
                 POSSettingsCardView(
                     title: Localization.cardReaderDocumentationTitle,
                     subtitle: Localization.cardReaderDocumentationSubtitle,
@@ -131,9 +137,9 @@ struct POSSettingsHardwareDetailView: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .listRowBackground(Color.clear)
-            .background(backgroundColor)
             .foregroundColor(.posOnSurface)
         }
+        .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
@@ -176,9 +182,9 @@ struct POSSettingsHardwareDetailView: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .listRowBackground(Color.clear)
-            .background(backgroundColor)
             .foregroundColor(.posOnSurface)
         }
+        .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
     }
 }

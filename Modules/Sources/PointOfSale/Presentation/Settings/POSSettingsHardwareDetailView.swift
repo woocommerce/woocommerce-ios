@@ -4,6 +4,7 @@ import struct WooFoundation.SafariView
 struct POSSettingsHardwareDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     let settingsController: PointOfSaleSettingsControllerProtocol
 
@@ -101,38 +102,61 @@ struct POSSettingsHardwareDetailView: View {
             .foregroundColor(.posSurface)
 
             List {
-                VStack(spacing: POSPadding.xSmall) {
-                    HStack {
-                        Text(Localization.readerModelTitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(cardReaderName)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                    HStack {
-                        Text(Localization.readerBatteryTitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(formattedBatteryLevel)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                }
-                .background(Color.posSurfaceContainerLowest)
-                .posItemCardBorderStyles()
-                .listRowSeparator(.hidden)
+                if posModel.cardReaderConnectionStatus == .disconnected {
+                    // Show connect card reader button when disconnected
+                    VStack(spacing: POSPadding.xSmall) {
+                        POSSettingsCardView(
+                            title: Localization.cardReaderConnectTitle,
+                            subtitle: Localization.cardReaderConnectSubtitle,
+                            action: {
+                                print("🍍 Card reader is disconnected, triggering connection flow")
+                                posModel.connectCardReader()
+                            }
+                        )
 
-                POSSettingsCardView(
-                    title: Localization.cardReaderDocumentationTitle,
-                    subtitle: Localization.cardReaderDocumentationSubtitle,
-                    action: { showCardReaderDocumentationModal = true }
-                )
-                .listRowSeparator(.hidden)
+                        POSSettingsCardView(
+                            title: Localization.cardReaderDocumentationTitle,
+                            subtitle: Localization.cardReaderDocumentationSubtitle,
+                            action: { showCardReaderDocumentationModal = true }
+                        )
+                    }
+                    .listRowSeparator(.hidden)
+
+                } else {
+                    // Show card reader details when connected
+                    VStack(spacing: POSPadding.xSmall) {
+                        HStack {
+                            Text(Localization.readerModelTitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(cardReaderName)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        HStack {
+                            Text(Localization.readerBatteryTitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(formattedBatteryLevel)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                    }
+                    .background(Color.posSurfaceContainerLowest)
+                    .posItemCardBorderStyles()
+                    .listRowSeparator(.hidden)
+
+                    POSSettingsCardView(
+                        title: Localization.cardReaderDocumentationTitle,
+                        subtitle: Localization.cardReaderDocumentationSubtitle,
+                        action: { showCardReaderDocumentationModal = true }
+                    )
+                    .listRowSeparator(.hidden)
+                }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
@@ -341,6 +365,18 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle",
             value: "Learn more about accepting mobile payments",
             comment: "Subtitle describing card reader documentation in Point of Sale settings."
+        )
+
+        static let cardReaderConnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
+            value: "Connect card reader",
+            comment: "Title for card reader connect button when no reader is connected."
+        )
+
+        static let cardReaderConnectSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle",
+            value: "Connect your card reader and start accepting payments",
+            comment: "Subtitle for card reader connect button when no reader is connected."
         )
 
         static let hardwareNavigationBarcodeTitle = NSLocalizedString(

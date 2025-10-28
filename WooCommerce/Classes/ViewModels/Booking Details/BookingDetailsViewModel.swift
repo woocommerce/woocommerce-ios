@@ -27,6 +27,7 @@ final class BookingDetailsViewModel: ObservableObject {
 
     @Published private(set) var navigationTitle = ""
     @Published private(set) var sections: [Section] = []
+    @Published var notice: Notice?
 
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
@@ -243,12 +244,12 @@ extension BookingDetailsViewModel {
     }
 
     private func displayAttendanceStatusUpdatedErrorNotice(status: BookingAttendanceStatus) {
-        let title = String.localizedStringWithFormat(
+        let text = String.localizedStringWithFormat(
             Localization.bookingAttendanceStatusUpdateFailedMessage,
             booking.bookingID
         )
-        let notice = Notice(
-            title: title,
+        self.notice = Notice(
+            message: text,
             feedbackType: .error,
             actionTitle: Localization.retryActionTitle
         ) { [weak self] in
@@ -258,8 +259,6 @@ extension BookingDetailsViewModel {
 
             updateAttendanceStatus(to: status)
         }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

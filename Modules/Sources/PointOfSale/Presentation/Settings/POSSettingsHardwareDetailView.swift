@@ -83,7 +83,7 @@ struct POSSettingsHardwareDetailView: View {
                 }
             }
             .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
-                // TODO: Dismissal
+                posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
             }, content: { alertType in
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                     .posInteractiveDismissDisabled(alertType.isDismissDisabled)

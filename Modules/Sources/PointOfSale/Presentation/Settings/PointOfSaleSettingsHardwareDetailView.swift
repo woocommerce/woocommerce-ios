@@ -89,17 +89,11 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
         }
     }
+}
 
-    private func handleScannerDestination(_ destination: ScannerDestination) {
-        switch destination {
-        case .setup:
-            showBarcodeScanningSetupModal = true
-        case .documentation:
-            showBarcodeScanningDocumentationModal = true
-        }
-    }
-
-    private var legacyCardReadersView: some View {
+// MARK: - Views
+private extension PointOfSaleSettingsHardwareDetailView {
+    var legacyCardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.cardReadersTitle,
@@ -168,7 +162,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
-    private var cardReadersView: some View {
+    var cardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.cardReadersTitle,
@@ -224,7 +218,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
-    private var scannersView: some View {
+    var scannersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.scannersTitle,
@@ -340,8 +334,18 @@ private extension PointOfSaleSettingsHardwareDetailView {
             }
         }
     }
+
+    private func handleScannerDestination(_ destination: ScannerDestination) {
+        switch destination {
+        case .setup:
+            showBarcodeScanningSetupModal = true
+        case .documentation:
+            showBarcodeScanningDocumentationModal = true
+        }
+    }
 }
 
+// MARK: - Constants
 private extension PointOfSaleSettingsHardwareDetailView {
     enum Localization {
         static let readerModelTitle = NSLocalizedString(

@@ -20,6 +20,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         #expect(await service.catalogEligibility(for: siteID) == .eligible)
     }
@@ -34,6 +35,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         #expect(await service.catalogEligibility(for: siteID) == .eligible)
     }
@@ -50,6 +52,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         let state = await service.catalogEligibility(for: siteID)
 
@@ -80,6 +83,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         let state = await service.catalogEligibility(for: siteID)
 
@@ -108,6 +112,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         // First call
         let firstState = await service.catalogEligibility(for: siteID)
@@ -130,6 +135,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         // First call
         let firstState = await service.catalogEligibility(for: siteID)
@@ -152,6 +158,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         // First call caches eligible state
         _ = await service.catalogEligibility(for: siteID)
@@ -189,6 +196,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: false,
             catalogSizeLimit: 1000
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         let state = await service.catalogEligibility(for: siteID)
 
@@ -218,6 +226,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 100 // Custom lower limit
         )
+        await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         let state = await service.catalogEligibility(for: siteID)
 

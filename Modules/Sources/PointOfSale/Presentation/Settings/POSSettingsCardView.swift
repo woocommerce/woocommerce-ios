@@ -11,15 +11,14 @@ struct POSSettingsCardView: View {
                 Text(title)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 Text(subtitle)
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(.secondary)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.posSurfaceContainerLowest)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             .posItemCardBorderStyles()
         }
         .buttonStyle(.plain)

@@ -247,6 +247,42 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(status, newStatus)
     }
 
+    func test_error_notice_displayed_when_attendance_staus_update_fails() {
+        // Given
+        let booking = Booking.fake()
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let newStatus = BookingAttendanceStatus.checkedIn
+        enum TestError: Error { case generic }
+
+        // When
+        viewModel.updateAttendanceStatus(to: newStatus)
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        guard let action = storesManager.receivedActions.first as? BookingAction else {
+            XCTFail("Incorrect action type dispatched")
+            return
+        }
+
+        guard case let .updateBookingAttendanceStatus(_, _, _, onCompletion) = action else {
+            XCTFail("Incorrect action case dispatched")
+            return
+        }
+
+        onCompletion(TestError.generic)
+
+        XCTAssertNotNil(viewModel.notice)
+        XCTAssertEqual(viewModel.notice?.feedbackType, .error)
+
+        let messageFormat = NSLocalizedString(
+            "BookingDetailsView.attendanceStatus.updateFailed.message",
+            value: "Unable to change attendance status of Booking #%1$d",
+            comment: ""
+        )
+        let expectedMessage = String(format: messageFormat, booking.bookingID)
+        XCTAssertEqual(viewModel.notice?.message, expectedMessage)
+    }
+
     func test_init_whenBookingHasStatusAndAttendanceStatus_updatesHeaderContentWithCorrectLocalizedStrings() {
         // Given
         let booking = Booking.fake().copy(

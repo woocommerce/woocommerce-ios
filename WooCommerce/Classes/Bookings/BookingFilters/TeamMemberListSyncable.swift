@@ -5,6 +5,7 @@ import Yosemite
 struct TeamMemberListSyncable: ListSyncable {
     typealias StorageType = StorageBookingResource
     typealias ModelType = BookingResource
+    typealias ListFilterType = BookingResource
 
     let siteID: Int64
 
@@ -41,6 +42,10 @@ struct TeamMemberListSyncable: ListSyncable {
 
     func displayName(for item: BookingResource) -> String {
         item.name
+    }
+
+    func filterItem(for item: BookingResource) -> BookingResource {
+        item
     }
 }
 

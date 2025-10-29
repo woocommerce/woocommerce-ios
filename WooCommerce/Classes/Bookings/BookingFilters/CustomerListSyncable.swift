@@ -9,11 +9,16 @@ struct CustomerListSyncable: ListSyncable {
 
     let siteID: Int64
 
-    var title: String { Localization.title }
+    let title = Localization.title
 
-    var emptyStateMessage: String { Localization.noCustomersFound }
+    let emptyStateMessage = Localization.noCustomersFound
+    let emptyItemTitlePlaceholder: String? = Localization.emptyItemTitlePlaceholder
 
-    var emptyItemTitlePlaceholder: String? { Localization.emptyItemTitlePlaceholder }
+    let searchConfiguration: ListSearchConfiguration? = ListSearchConfiguration(
+        searchPrompt: Localization.searchPrompt,
+        emptySearchTitle: Localization.noCustomersFound,
+        emptySearchDescription: Localization.emptySearchDescription
+    )
 
     // MARK: - ResultsController Configuration
 
@@ -38,6 +43,22 @@ struct CustomerListSyncable: ListSyncable {
             pageSize: pageSize,
             orderby: .name,
             order: .asc,
+            filterEmpty: .email,
+            onCompletion: completion
+        )
+    }
+
+    /// Creates the action to search items with keyword
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+        CustomerAction.searchCustomers(
+            siteID: siteID,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            orderby: .name,
+            order: .asc,
+            keyword: keyword,
+            retrieveFullCustomersData: false,
+            filter: .all,
             filterEmpty: .email,
             onCompletion: completion
         )
@@ -85,6 +106,21 @@ private extension CustomerListSyncable {
             "bookingCustomerSelectorView.emptyItemTitlePlaceholder",
             value: "No name",
             comment: "Title of the booking customer selector view"
+        )
+        static let searchPrompt = NSLocalizedString(
+            "bookingCustomerSelectorView.searchPrompt",
+            value: "Search customer",
+            comment: "Prompt in the search bar of the booking customer selector view"
+        )
+        static let emptySearchTitle = NSLocalizedString(
+            "bookingCustomerSelectorView.emptySearchTitle",
+            value: "Search customer",
+            comment: "Prompt in the search bar of the booking customer selector view"
+        )
+        static let emptySearchDescription = NSLocalizedString(
+            "bookingCustomerSelectorView.emptySearchDescription",
+            value: "Try adjusting your search term to see more results",
+            comment: "Message on the empty search result view of the booking customer selector view"
         )
     }
 }

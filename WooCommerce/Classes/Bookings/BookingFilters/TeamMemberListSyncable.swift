@@ -9,11 +9,12 @@ struct TeamMemberListSyncable: ListSyncable {
 
     let siteID: Int64
 
-    var title: String { Localization.title }
+    let title = Localization.title
 
-    var emptyItemTitlePlaceholder: String? { nil }
+    let emptyItemTitlePlaceholder: String? = nil
+    let emptyStateMessage = Localization.noMembersFound
 
-    var emptyStateMessage: String { Localization.noMembersFound }
+    let searchConfiguration: ListSearchConfiguration? = nil
 
     // MARK: - ResultsController Configuration
 
@@ -38,6 +39,11 @@ struct TeamMemberListSyncable: ListSyncable {
             pageSize: pageSize,
             onCompletion: completion
         )
+    }
+
+    /// Creates the action to search items with keyword
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+        fatalError("Searching is not supported")
     }
 
     // MARK: - Display Configuration

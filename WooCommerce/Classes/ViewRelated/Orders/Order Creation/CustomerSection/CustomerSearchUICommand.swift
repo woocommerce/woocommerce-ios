@@ -318,10 +318,11 @@ private extension CustomerSearchUICommand {
                                               filter: searchFilter,
                                               filterEmpty: .email) { result in
             switch result {
-            case .success:
-                onCompletion?(result.isSuccess)
+            case .success(let hasNextPage):
+                onCompletion?(hasNextPage)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
+                onCompletion?(false)
             }
         }
     }

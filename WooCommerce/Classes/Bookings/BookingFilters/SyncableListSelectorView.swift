@@ -4,10 +4,13 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>
     @State private var selectedItems: [Syncable.ListFilterType]
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     private let syncable: Syncable
     private let onSelection: ([Syncable.ListFilterType]) -> Void
 
     private let viewPadding: CGFloat = 16
+    private let emptyStateImageWidth: CGFloat = 67
 
     init(viewModel: SyncableListSelectorViewModel<Syncable>,
          syncable: Syncable,
@@ -28,7 +31,7 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
                 loadingView
             case .results:
                 itemList(with: viewModel.items,
-                        onNextPage: { viewModel.onLoadNextPageAction() })
+                         onNextPage: { viewModel.onLoadNextPageAction() })
             }
         }
         .task {
@@ -36,6 +39,11 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         }
         .navigationTitle(syncable.title)
         .navigationBarTitleDisplayMode(.inline)
+        .if(syncable.searchConfiguration != nil) { view in
+            view.searchable(text: $viewModel.searchQuery,
+                            placement: .navigationBarDrawer(displayMode: .always),
+                            prompt: syncable.searchConfiguration!.searchPrompt)
+        }
     }
 }
 
@@ -127,8 +135,24 @@ private extension SyncableListSelectorView {
     var emptyStateView: some View {
         VStack {
             Spacer()
+            Image(.magnifyingGlassNotFound)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: emptyStateImageWidth * scale)
+                .padding(.bottom, viewPadding)
+                .renderedIf(viewModel.searchQuery.isNotEmpty)
             Text(syncable.emptyStateMessage)
-                .secondaryBodyStyle()
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.primary)
+
+            if viewModel.searchQuery.isNotEmpty,
+                let message = syncable.searchConfiguration?.emptySearchDescription {
+                Text(message)
+                    .font(.title3)
+                    .foregroundStyle(Color.secondary)
+            }
+
             Spacer()
         }
         .multilineTextAlignment(.center)

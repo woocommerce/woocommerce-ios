@@ -9,11 +9,12 @@ struct BookableProductListSyncable: ListSyncable {
 
     let siteID: Int64
 
-    var title: String { Localization.title }
+    let title = Localization.title
 
-    var emptyStateMessage: String { Localization.noMembersFound }
+    let emptyStateMessage = Localization.noMembersFound
+    let emptyItemTitlePlaceholder: String? = nil
 
-    var emptyItemTitlePlaceholder: String? { nil }
+    let searchConfiguration: ListSearchConfiguration? = nil
 
     // MARK: - ResultsController Configuration
 
@@ -46,6 +47,11 @@ struct BookableProductListSyncable: ListSyncable {
             shouldDeleteStoredProductsOnFirstPage: true,
             onCompletion: completion
         )
+    }
+
+    /// Creates the action to search items with keyword
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+        fatalError("Searching is not supported")
     }
 
     // MARK: - Display Configuration

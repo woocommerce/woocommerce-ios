@@ -609,11 +609,14 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performSmartSync_proceeds_when_catalog_is_eligible_and_no_first_sync_date() async throws {
         // Given - new user, catalog eligible
+        let eligibilityChecker = MockPOSLocalCatalogEligibilityService()
+        await eligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        
         let coordinator = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(), // Catalog eligible
+            catalogEligibilityChecker: catalogEligibilityChecker,
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
@@ -668,7 +671,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockSiteSettings.mockFirstPOSCatalogSyncDate == originalDate)
     }
 
-    @Test func performSmartSync_proceeds_for_new_user_within_30_day_grace_period() async throws {
+    @Test func performSmartSync_proceeds_with_incremental_sync_for_new_user_within_30_day_grace_period() async throws {
         // Given - user who first synced 15 days ago (within 30-day grace period)
         let fifteenDaysAgo = Date().addingTimeInterval(-15 * 24 * 60 * 60)
         mockSiteSettings.mockFirstPOSCatalogSyncDate = fifteenDaysAgo
@@ -681,7 +684,8 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
             siteSettings: mockSiteSettings
         )
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo)
         mockIncrementalSyncService.startIncrementalSyncResult = .success(())
 
         // When

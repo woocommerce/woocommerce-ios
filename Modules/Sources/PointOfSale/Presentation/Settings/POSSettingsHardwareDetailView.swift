@@ -36,6 +36,7 @@ struct POSSettingsHardwareDetailView: View {
     }
 
     var body: some View {
+        @Bindable var posModel = posModel
         NavigationStack(path: $navigationPath) {
             POSPageHeaderView(title: Localization.hardwareTitle)
             .foregroundColor(.posSurface)
@@ -81,6 +82,17 @@ struct POSSettingsHardwareDetailView: View {
                     scannersView
                 }
             }
+            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+                // TODO: Dismissal
+            }, content: { onboardingViewContainer in
+                paymentsOnboardingView(onboardingViewContainer)
+            })
+            .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+                // TODO: Dismissal
+            }, content: { alertType in
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                    .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+            })
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }
@@ -260,6 +272,21 @@ private extension POSSettingsHardwareDetailView {
         .navigationBarBackButtonHidden(true)
     }
 }
+
+// MARK: - Reader connection
+private extension POSSettingsHardwareDetailView {
+    func paymentsOnboardingView(_ onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
+        let viewModel = PointOfSaleCardPresentPaymentOnboardingViewModel(onboardingViewContainer: onboardingViewContainer, onDismissTap: {
+            // TODO: Handle dismissal
+        })
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: viewModel)
+            .onAppear {
+                // TODO: Do we need to distinguish here for tracking?
+                // posModel.trackCardPaymentsOnboardingShown()
+            }
+    }
+}
+
 
 // MARK: - Navigation
 private extension POSSettingsHardwareDetailView {

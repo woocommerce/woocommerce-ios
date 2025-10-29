@@ -10,6 +10,7 @@ protocol ListSyncable {
 
     var title: String { get }
     var emptyStateMessage: String { get }
+    var emptyItemTitlePlaceholder: String? { get }
 
     // MARK: - ResultsController Configuration
 
@@ -28,6 +29,9 @@ protocol ListSyncable {
 
     /// Returns the display name for an item
     func displayName(for item: ModelType) -> String
+
+    /// Returns the description for an item
+    func description(for item: ModelType) -> String?
 
     /// Returns the filter type for an item
     func filterItem(for item: ModelType) -> ListFilterType

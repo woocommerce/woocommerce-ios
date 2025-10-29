@@ -11,6 +11,8 @@ struct TeamMemberListSyncable: ListSyncable {
 
     var title: String { Localization.title }
 
+    var emptyItemTitlePlaceholder: String? { nil }
+
     var emptyStateMessage: String { Localization.noMembersFound }
 
     // MARK: - ResultsController Configuration
@@ -43,6 +45,9 @@ struct TeamMemberListSyncable: ListSyncable {
     func displayName(for item: BookingResource) -> String {
         item.name
     }
+
+    /// Returns the description for an item
+    func description(for item: BookingResource) -> String? { nil }
 
     func filterItem(for item: BookingResource) -> BookingResource {
         item

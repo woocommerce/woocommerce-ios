@@ -59,6 +59,7 @@ private extension SyncableListSelectorView {
                     value: "Any",
                     comment: "Option to select no filter on a list selector view"
                 ),
+                description: nil,
                 isSelected: selectedItems.isEmpty,
                 onSelection: {
                     selectedItems.removeAll()
@@ -68,6 +69,7 @@ private extension SyncableListSelectorView {
 
             ForEach(items, id: \.self) { item in
                 optionRow(text: syncable.displayName(for: item),
+                          description: syncable.description(for: item),
                           isSelected: selectedItems.contains(where: { $0 == syncable.filterItem(for: item) }),
                           onSelection: { toggleSelection(for: item) })
             }
@@ -92,9 +94,24 @@ private extension SyncableListSelectorView {
         onSelection(selectedItems)
     }
 
-    func optionRow(text: String, isSelected: Bool, onSelection: @escaping () -> Void) -> some View {
+    func optionRow(text: String, description: String?, isSelected: Bool, onSelection: @escaping () -> Void) -> some View {
         HStack {
-            Text(text)
+            VStack(alignment: .leading) {
+                if text.isEmpty, let placeholder = syncable.emptyItemTitlePlaceholder {
+                    Text(placeholder)
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(Color.secondary)
+                } else {
+                    Text(text)
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(Color.primary)
+                }
+
+                if let description {
+                    Text(description)
+                        .footnoteStyle()
+                }
+            }
             Spacer()
             Image(systemName: "checkmark")
                 .font(.body.weight(.medium))

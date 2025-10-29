@@ -13,6 +13,8 @@ struct BookableProductListSyncable: ListSyncable {
 
     var emptyStateMessage: String { Localization.noMembersFound }
 
+    var emptyItemTitlePlaceholder: String? { nil }
+
     // MARK: - ResultsController Configuration
 
     func createPredicate() -> NSPredicate {
@@ -51,6 +53,9 @@ struct BookableProductListSyncable: ListSyncable {
     func displayName(for item: Product) -> String {
         item.name
     }
+
+    /// Returns the description for an item
+    func description(for item: Product) -> String? { nil }
 
     func filterItem(for item: Product) -> BookingProductFilter {
         BookingProductFilter(productID: item.productID, name: item.name)

@@ -962,7 +962,7 @@ private extension MainTabBarController {
             let tab = WooTab.orders
             let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
 
-            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
+            guard let orderTab: UITabBarItem = self.tabBar.items?[safe: tabIndex] else {
                 return
             }
 

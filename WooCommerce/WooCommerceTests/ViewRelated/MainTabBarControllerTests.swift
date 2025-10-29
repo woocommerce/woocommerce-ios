@@ -147,6 +147,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         noticePresenter: noticePresenter,
@@ -177,6 +181,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         noticePresenter: noticePresenter,
@@ -206,6 +214,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         noticePresenter: noticePresenter,
@@ -234,6 +246,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
@@ -276,6 +292,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
 
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         noticePresenter: noticePresenter,
@@ -317,6 +337,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let noticePresenter = MockNoticePresenter()
         let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
         let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,

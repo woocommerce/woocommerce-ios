@@ -273,14 +273,10 @@ private extension FilterListViewController {
             }
 
             let selectedValueAction: (FilterType) -> Void = { [weak self] selectedOption in
-                guard let self = self else {
-                    return
-                }
-                if selectedOption.description != selected.selectedValue.description {
-                    selected.selectedValue = selectedOption
-                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                    self.listSelector.reloadData()
-                }
+                guard let self else { return }
+                selected.selectedValue = selectedOption
+                updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+                listSelector.reloadData()
             }
 
             switch selected.listSelectorConfig {
@@ -289,7 +285,9 @@ private extension FilterListViewController {
                                                         data: options,
                                                         selected: selected.selectedValue,
                                                         hostViewController: self)
-                self.selectedFilterValueSubscription = command.onItemSelected.sink { selectedValueAction($0) }
+                self.selectedFilterValueSubscription = command.onItemSelected.sink {
+                    selectedValueAction($0)
+                }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case .multiSelectStaticOptions(let options):
@@ -304,10 +302,9 @@ private extension FilterListViewController {
                     title: selected.title,
                     options: options,
                     initialSelection: selectedItems,
-                    onSelection: { [weak self] selectedOptions in
-                        selected.selectedValue = MultipleFilterSelection(items: selectedOptions)
-                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                        self?.listSelector.reloadData()
+                    onSelection: { selectedOptions in
+                        let filterType = MultipleFilterSelection(items: selectedOptions)
+                        selectedValueAction(filterType)
                     }
                 )
                 let hostingController = UIHostingController(rootView: multiSelectView)
@@ -350,9 +347,8 @@ private extension FilterListViewController {
                         onProductSelectionStateChanged: { [weak self] product, _ in
                             guard let self else { return }
 
-                            selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
-                            self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                            self.listSelector.reloadData()
+                            let filterType = FilterOrdersByProduct(id: product.productID, name: product.name)
+                            selectedValueAction(filterType)
                             self.listSelector.dismiss(animated: true)
                         },
                         onCloseButtonTapped: { [weak self] in
@@ -381,11 +377,9 @@ private extension FilterListViewController {
                         configuration: configuration,
                         addressFormViewModel: nil,
                         selectedCustomerID: selectedCustomerID,
-                        onCustomerSelected: { [weak self] customer in
-                            selected.selectedValue = CustomerFilter(customer: customer)
-
-                            self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                            self?.listSelector.reloadData()
+                        onCustomerSelected: { customer in
+                            let filterType = CustomerFilter(customer: customer)
+                            selectedValueAction(filterType)
                         }
                     )
                 }()
@@ -404,10 +398,9 @@ private extension FilterListViewController {
                     viewModel: viewModel,
                     syncable: syncable,
                     initialSelections: selectedMembers,
-                    onSelection: { [weak self] resources in
-                        selected.selectedValue = MultipleFilterSelection(items: resources)
-                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                        self?.listSelector.reloadData()
+                    onSelection: { resources in
+                        let filterType = MultipleFilterSelection(items: resources)
+                        selectedValueAction(filterType)
                     }
                 )
                 let hostingController = UIHostingController(rootView: memberListSelectorView)
@@ -426,13 +419,12 @@ private extension FilterListViewController {
                     viewModel: viewModel,
                     syncable: syncable,
                     initialSelections: selectedProducts,
-                    onSelection: { [weak self] products in
+                    onSelection: { products in
                         let filters = products.map { product in
                             BookingProductFilter(productID: product.productID, name: product.name)
                         }
-                        selected.selectedValue = MultipleFilterSelection(items: filters)
-                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                        self?.listSelector.reloadData()
+                        let filterType = MultipleFilterSelection(items: filters)
+                        selectedValueAction(filterType)
                     }
                 )
                 let hostingController = UIHostingController(rootView: memberListSelectorView)
@@ -442,10 +434,9 @@ private extension FilterListViewController {
                 let dateTimeFilterView = BookingDateTimeFilterView(
                     startDate: selectedDateRange?.startDate,
                     endDate: selectedDateRange?.endDate,
-                    onSelection: { [weak self] startDate, endDate in
-                        selected.selectedValue = BookingDateRangeFilter(startDate: startDate, endDate: endDate)
-                        self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                        self?.listSelector.reloadData()
+                    onSelection: { startDate, endDate in
+                        let filterType = BookingDateRangeFilter(startDate: startDate, endDate: endDate)
+                        selectedValueAction(filterType)
                     }
                 )
                 let hostingController = UIHostingController(rootView: dateTimeFilterView)

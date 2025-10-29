@@ -596,6 +596,96 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
     }
 
+    func test_initial_tabs_visibility_is_set_from_cache() throws {
+        // Given
+        let siteID: Int64 = 1126
+        let mockPOSEligibilityService = MockPOSEligibilityService()
+        mockPOSEligibilityService.cachedTabVisibility[siteID] = true
+
+        let userDefaults = UserDefaults(suiteName: #function)!
+        userDefaults.removePersistentDomain(forName: #function)
+        userDefaults.cacheBookingsTabVisibility(siteID: siteID, isVisible: true)
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        stores: stores,
+                                        posEligibilityService: mockPOSEligibilityService,
+                                        userDefaults: userDefaults)
+        }) else {
+            XCTFail("Failed to instantiate MainTabBarController")
+            return
+        }
+
+        // When
+        stores.updateDefaultStore(storeID: siteID)
+        XCTAssertNotNil(tabBarController.view) // This triggers viewDidLoad
+
+        // Then
+        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .bookings, .pointOfSale, .hubMenu]
+        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: true, isBookingsTabVisible: true)
+        XCTAssertEqual(tabBarController.viewControllers?.count, expectedTabs.count)
+        XCTAssertEqual(visibleTabs, expectedTabs)
+    }
+
+    func test_switching_sites_applies_cached_tab_visibility() throws {
+        // Arrange
+        let siteA_ID: Int64 = 101
+        let siteB_ID: Int64 = 202
+
+        // Site A: POS visible, Bookings not visible
+        let mockPOSEligibilityService = MockPOSEligibilityService()
+        mockPOSEligibilityService.cachedTabVisibility[siteA_ID] = true
+        mockPOSEligibilityService.cachedTabVisibility[siteB_ID] = false
+
+        let userDefaults = UserDefaults(suiteName: #function)!
+        userDefaults.removePersistentDomain(forName: #function)
+        userDefaults.cacheBookingsTabVisibility(siteID: siteA_ID, isVisible: false)
+        userDefaults.cacheBookingsTabVisibility(siteID: siteB_ID, isVisible: true)
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            MainTabBarController(coder: coder,
+                                 stores: stores,
+                                 posTabVisibilityCheckerFactory: { site in
+                                     POSTabVisibilityChecker(site: site, eligibilityService: mockPOSEligibilityService)
+                                 },
+                                 posEligibilityService: mockPOSEligibilityService,
+                                 bookingsEligibilityCheckerFactory: { site in
+                                     BookingsTabEligibilityChecker(site: site, userDefaults: userDefaults)
+                                 },
+                                 userDefaults: userDefaults)
+        }))
+
+        // Trigger viewDidLoad
+        XCTAssertNotNil(tabBarController.view)
+
+        // Action 1: Switch to Site A
+        stores.updateDefaultStore(storeID: siteA_ID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteA_ID))
+
+        // Assert 1: Site A should have POS, but not Bookings.
+        XCTAssertEqual(tabBarController.viewControllers?.count, 5, "There should be 5 tabs for Site A")
+        XCTAssertFalse(tabBarController.tabRootViewControllers.contains(where: { $0 is BookingsTabViewHostingController }),
+                       "Bookings tab should not be visible for Site A")
+        XCTAssertTrue(tabBarController.tabRootViewControllers.contains(where: { $0 is POSTabViewController }),
+                       "POS tab should be visible for Site A")
+
+
+        // Action 2: Switch to Site B
+        stores.updateDefaultStore(storeID: siteB_ID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteB_ID))
+
+        // Assert 2: Site B should have Bookings, but not POS.
+        XCTAssertEqual(tabBarController.viewControllers?.count, 5, "There should be 5 tabs for Site B")
+        XCTAssertTrue(tabBarController.tabRootViewControllers.contains(where: { $0 is BookingsTabViewHostingController }),
+                      "Bookings tab should be visible for Site B")
+        XCTAssertFalse(tabBarController.tabRootViewControllers.contains(where: { $0 is POSTabViewController }),
+                       "POS tab should not be visible for Site B")
+    }
+
     func test_bookings_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
         // Given
         let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()

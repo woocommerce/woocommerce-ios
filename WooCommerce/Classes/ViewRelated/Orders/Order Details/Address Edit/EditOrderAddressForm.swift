@@ -145,6 +145,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 Spacer(minLength: safeAreaInsets.bottom)
             }
             .disableAutocorrection(true)
+            .scrollDismissesKeyboard(.immediately)
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }

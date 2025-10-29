@@ -401,7 +401,7 @@ public enum AppSettingsAction: Action {
 
     /// Sets the last time POS was opened for a specific site
     ///
-    case setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: (Result<Void, Error>) -> Void)
+    case setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: () -> Void)
 
     /// Gets the last time POS was opened for a specific site
     ///
@@ -409,7 +409,7 @@ public enum AppSettingsAction: Action {
 
     /// Sets the date of the first POS catalog sync for a specific site
     ///
-    case setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: (Result<Void, Error>) -> Void)
+    case setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: () -> Void)
 
     /// Gets the date of the first POS catalog sync for a specific site
     ///

@@ -1366,9 +1366,9 @@ private extension AppSettingsStore {
         }
     }
 
-    func setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: (Result<Void, Error>) -> Void) {
+    func setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: () -> Void) {
         siteSpecificAppSettingsStoreMethods.setPOSLastOpenedDate(siteID: siteID, date: date)
-        onCompletion(.success(()))
+        onCompletion()
     }
 
     func getPOSLastOpenedDate(siteID: Int64, onCompletion: (Date?) -> Void) {
@@ -1376,9 +1376,9 @@ private extension AppSettingsStore {
         onCompletion(date)
     }
 
-    func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: (Result<Void, Error>) -> Void) {
+    func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: () -> Void) {
         siteSpecificAppSettingsStoreMethods.setFirstPOSCatalogSyncDate(siteID: siteID, date: date)
-        onCompletion(.success(()))
+        onCompletion()
     }
 
     func getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void) {

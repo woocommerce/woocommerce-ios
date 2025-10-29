@@ -162,7 +162,7 @@ private extension POSTabCoordinator {
             storesManager.dispatch(action)
 
             // Track last opened date for sync eligibility
-            let lastOpenedAction = AppSettingsAction.setPOSLastOpenedDate(siteID: siteID, date: Date()) { _ in }
+            let lastOpenedAction = AppSettingsAction.setPOSLastOpenedDate(siteID: siteID, date: Date()) {}
             storesManager.dispatch(lastOpenedAction)
         }
     }

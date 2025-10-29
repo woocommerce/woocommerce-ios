@@ -149,18 +149,20 @@ private extension SyncableListSelectorView {
                 .frame(width: emptyStateImageWidth * scale)
                 .padding(.bottom, viewPadding)
                 .renderedIf(viewModel.searchQuery.isNotEmpty)
-            Text(syncable.emptyStateMessage)
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundStyle(Color.primary)
 
-            if viewModel.searchQuery.isNotEmpty,
-                let message = syncable.searchConfiguration?.emptySearchDescription {
-                Text(message)
+            if let configuration = syncable.searchConfiguration,
+                viewModel.searchQuery.isNotEmpty {
+                Text(configuration.emptySearchTitle)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.primary)
+                Text(configuration.emptySearchDescription)
                     .font(.title3)
                     .foregroundStyle(Color.secondary)
+            } else {
+                Text(syncable.emptyStateMessage)
+                    .secondaryBodyStyle()
             }
-
             Spacer()
         }
         .multilineTextAlignment(.center)

@@ -117,10 +117,14 @@ public final class CustomerStore: Store {
                     let hasNextPage = customers.count == pageSize
                     if retrieveFullCustomersData {
                         self.mapSearchResultsToCustomerObjects(for: siteID,
-                                                              with: keyword,
-                                                              with: customers,
-                                                              hasNextPage: hasNextPage,
-                                                              onCompletion: onCompletion)
+                                                               with: keyword,
+                                                               with: customers,
+                                                               onCompletion: { result in
+                            switch result {
+                            case .success: onCompletion(.success(hasNextPage))
+                            case .failure(let error): onCompletion(.failure(error))
+                            }
+                        })
                     } else {
                         self.upsertCustomersAndSave(siteID: siteID,
                                                     readOnlyCustomers: customers,
@@ -262,14 +266,12 @@ public final class CustomerStore: Store {
     ///   - siteID: The site for which customers should be fetched.
     ///   - keyword: The keyword used for the Customer search query.
     ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search.
-    ///   - hasNextPage: Whether there are more pages available.
     ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
     ///
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
                                                    with keyword: String,
                                                    with searchResults: [WCAnalyticsCustomer],
-                                                   hasNextPage: Bool,
-                                                   onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                                                   onCompletion: @escaping (Result<Void, Error>) -> Void) {
         var customers = [Customer]()
         let group = DispatchGroup()
         for result in searchResults {
@@ -294,7 +296,7 @@ public final class CustomerStore: Store {
                 keyword: keyword,
                 readOnlyCustomers: customers,
                 onCompletion: {
-                    onCompletion(.success(hasNextPage))
+                    onCompletion(.success(()))
                 }
             )
         }

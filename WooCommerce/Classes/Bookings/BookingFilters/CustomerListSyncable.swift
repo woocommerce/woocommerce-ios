@@ -84,7 +84,7 @@ struct CustomerListSyncable: ListSyncable {
     func selectionEnabled(for item: Customer) -> Bool {
         item.customerID > 0
     }
-    
+
     func filterItem(for item: Customer) -> BookingCustomerFilter {
         let name: String = {
             if let firstName = item.firstName, let lastName = item.lastName {

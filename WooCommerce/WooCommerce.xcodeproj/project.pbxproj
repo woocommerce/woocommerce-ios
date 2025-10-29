@@ -706,7 +706,6 @@
 		20134CE62D4D1BDF00076A80 /* LearnMoreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */; };
 		20134CE82D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
-		2020B8762EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */; };
 		2020B87A2EAA439200422B86 /* MockPOSCatalogSizeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */; };
 		2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */; };
 		202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D2A592AC5933100E4ABC0 /* TopTabView.swift */; };
@@ -3621,7 +3620,6 @@
 		20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreViewModelTests.swift; sourceTree = "<group>"; };
 		20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentPlugin+SetUpTapToPay.swift"; sourceTree = "<group>"; };
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
-		2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSLocalCatalogEligibilityServiceTests.swift; sourceTree = "<group>"; };
 		2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSCatalogSizeChecker.swift; sourceTree = "<group>"; };
 		202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooPaymentsDepositService.swift; sourceTree = "<group>"; };
 		202D2A592AC5933100E4ABC0 /* TopTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabView.swift; sourceTree = "<group>"; };
@@ -7310,14 +7308,6 @@
 				09F5DE5C27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift */,
 			);
 			path = "Bulk Update";
-			sourceTree = "<group>";
-		};
-		2020B8752EAA41C200422B86 /* Eligibility */ = {
-			isa = PBXGroup;
-			children = (
-				2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */,
-			);
-			path = Eligibility;
 			sourceTree = "<group>";
 		};
 		202496682B0BC07E00EE527D /* Deposits Overview */ = {
@@ -12016,7 +12006,6 @@
 		DABF35242C11B40C006AF826 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				2020B8752EAA41C200422B86 /* Eligibility */,
 				68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */,
 				687C006C2D63469F00F832FC /* Analytics */,
 				02CD3BFC2C35D01600E575C4 /* Mocks */,
@@ -15767,7 +15756,6 @@
 				03FBDAFD263EE4E800ACE257 /* CouponListViewModelTests.swift in Sources */,
 				036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
-				2020B8762EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift in Sources */,
 				682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */,
 				4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */,
 				DE78DE442B2846AF002E58DE /* ThemesCarouselViewModelTests.swift in Sources */,

@@ -1,6 +1,5 @@
 import Foundation
 import Testing
-@testable import WooCommerce
 @testable import Yosemite
 
 @Suite("POSLocalCatalogEligibilityService Tests")

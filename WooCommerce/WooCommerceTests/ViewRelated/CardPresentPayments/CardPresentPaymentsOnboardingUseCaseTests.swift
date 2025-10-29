@@ -202,7 +202,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertNotEqual(state, .countryNotSupported(countryCode: .GB))
     }
 
-    func test_onboarding_returns_etup_not_completed_with_uk_when_stripe_plugin_installed() {
+    func test_onboarding_returns_setup_not_completed_with_uk_when_stripe_plugin_installed() {
         // Given
         setupCountry(country: .gb)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)

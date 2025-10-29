@@ -202,7 +202,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertNotEqual(state, .countryNotSupported(countryCode: .GB))
     }
 
-    func test_onboarding_returns_country_unsupported_with_uk_when_stripe_plugin_installed() {
+    func test_onboarding_returns_etup_not_completed_with_uk_when_stripe_plugin_installed() {
         // Given
         setupCountry(country: .gb)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
@@ -214,10 +214,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: .GB))
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
     }
 
-    func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_UK() {
+    func test_onboarding_returns_select_plugin_when_stripe_and_wcPay_plugins_are_installed_in_UK() {
         // Given
         setupCountry(country: .gb)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
@@ -230,7 +230,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
+        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: false))
     }
 
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_uk_when_version_unsupported() {

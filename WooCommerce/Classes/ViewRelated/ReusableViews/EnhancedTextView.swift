@@ -6,7 +6,7 @@ final class EnhancedTextView: UITextView {
 
     var onTextChange: ((String) -> Void)?
     var onTextDidBeginEditing: (() -> Void)?
-    var dismissOnReturn: Bool = false
+    var shouldDismissOnReturn: Bool = false
 
     var placeholder: String? {
         didSet {
@@ -89,7 +89,7 @@ extension EnhancedTextView: UITextViewDelegate {
                   shouldChangeTextIn range: NSRange,
                   replacementText text: String) -> Bool {
 
-        if dismissOnReturn && text == "\n" {
+        if shouldDismissOnReturn && text == "\n" {
             textView.resignFirstResponder()
             return false
         }

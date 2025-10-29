@@ -611,12 +611,12 @@ extension POSCatalogSyncCoordinatorTests {
         // Given - new user, catalog eligible
         let eligibilityChecker = MockPOSLocalCatalogEligibilityService()
         await eligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
-        
+
         let coordinator = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: catalogEligibilityChecker,
+            catalogEligibilityChecker: eligibilityChecker,
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)

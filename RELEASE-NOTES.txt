@@ -3,7 +3,8 @@
 
 23.6
 -----
-- [*] Handle sites configured with `http` siteAddress.
+- [*] Handle sites configured with `http` siteAddress. [https://github.com/woocommerce/woocommerce-ios/pull/16279]
+- [*] Use tabs cache state to display conditional tabs initially. [https://github.com/woocommerce/woocommerce-ios/pull/16292]
 
 23.5
 -----

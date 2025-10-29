@@ -1,10 +1,7 @@
 import Foundation
 import Testing
-import PointOfSale
 @testable import WooCommerce
 @testable import Yosemite
-import protocol Experiments.FeatureFlagService
-import enum Experiments.FeatureFlag
 
 @Suite("POSLocalCatalogEligibilityService Tests")
 @MainActor
@@ -18,10 +15,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -33,10 +29,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 600, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -50,10 +45,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 501, variationCount: 500))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -81,10 +75,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .failure(expectedError)
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -110,10 +103,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -133,10 +125,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -156,10 +147,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -194,10 +184,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: false)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: false,
             catalogSizeLimit: 1000
         )
 
@@ -224,10 +213,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 100, variationCount: 50))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 100 // Custom lower limit
         )
 
@@ -254,10 +242,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -285,10 +272,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 2000, variationCount: 0))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 
@@ -315,10 +301,9 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
-        let featureFlagService = MockFeatureFlagService(isLocalCatalogEnabled: true)
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
-            isLocalCatalogFeatureFlagEnabled: featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+            isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
 

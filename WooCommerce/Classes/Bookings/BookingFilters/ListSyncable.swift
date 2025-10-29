@@ -12,6 +12,7 @@ protocol ListSyncable {
     var emptyStateMessage: String { get }
     var emptyItemTitlePlaceholder: String? { get }
     var searchConfiguration: ListSearchConfiguration? { get }
+    var selectionDisabledMessage: String? { get }
 
     // MARK: - ResultsController Configuration
 
@@ -36,6 +37,9 @@ protocol ListSyncable {
 
     /// Returns the description for an item
     func description(for item: ModelType) -> String?
+
+    /// Checks whether the specified item can be selected
+    func selectionEnabled(for item: ModelType) -> Bool
 
     /// Returns the filter type for an item
     func filterItem(for item: ModelType) -> ListFilterType

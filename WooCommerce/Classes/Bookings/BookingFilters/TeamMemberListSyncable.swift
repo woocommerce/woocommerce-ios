@@ -16,6 +16,8 @@ struct TeamMemberListSyncable: ListSyncable {
 
     let searchConfiguration: ListSearchConfiguration? = nil
 
+    let selectionDisabledMessage: String? = nil
+
     // MARK: - ResultsController Configuration
 
     func createPredicate() -> NSPredicate {
@@ -54,6 +56,8 @@ struct TeamMemberListSyncable: ListSyncable {
 
     /// Returns the description for an item
     func description(for item: BookingResource) -> String? { nil }
+
+    func selectionEnabled(for item: BookingResource) -> Bool { true }
 
     func filterItem(for item: BookingResource) -> BookingResource {
         item

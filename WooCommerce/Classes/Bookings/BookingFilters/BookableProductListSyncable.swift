@@ -16,6 +16,8 @@ struct BookableProductListSyncable: ListSyncable {
 
     let searchConfiguration: ListSearchConfiguration? = nil
 
+    let selectionDisabledMessage: String? = nil
+
     // MARK: - ResultsController Configuration
 
     func createPredicate() -> NSPredicate {
@@ -62,6 +64,8 @@ struct BookableProductListSyncable: ListSyncable {
 
     /// Returns the description for an item
     func description(for item: Product) -> String? { nil }
+
+    func selectionEnabled(for item: Product) -> Bool { true }
 
     func filterItem(for item: Product) -> BookingProductFilter {
         BookingProductFilter(productID: item.productID, name: item.name)

@@ -3,6 +3,7 @@ import SwiftUI
 struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>
     @State private var selectedItems: [Syncable.ListFilterType]
+    @State private var notice: Notice?
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -39,6 +40,7 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         }
         .navigationTitle(syncable.title)
         .navigationBarTitleDisplayMode(.inline)
+        .notice($notice)
         .if(syncable.searchConfiguration != nil) { view in
             view.searchable(text: $viewModel.searchQuery,
                             placement: .navigationBarDrawer(displayMode: .always),
@@ -79,7 +81,7 @@ private extension SyncableListSelectorView {
                 optionRow(text: syncable.displayName(for: item),
                           description: syncable.description(for: item),
                           isSelected: selectedItems.contains(where: { $0 == syncable.filterItem(for: item) }),
-                          onSelection: { toggleSelection(for: item) })
+                          onSelection: { toggleSelectionIfPossible(for: item) })
             }
 
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -92,7 +94,13 @@ private extension SyncableListSelectorView {
         .background(Color(.listBackground))
     }
 
-    func toggleSelection(for item: Syncable.ModelType) {
+    func toggleSelectionIfPossible(for item: Syncable.ModelType) {
+        guard syncable.selectionEnabled(for: item) else {
+            if let message = syncable.selectionDisabledMessage {
+                notice = Notice(message: message, feedbackType: .error)
+            }
+            return
+        }
         let filterItem = syncable.filterItem(for: item)
         if let index = selectedItems.firstIndex(of: filterItem) {
             selectedItems.remove(at: index)

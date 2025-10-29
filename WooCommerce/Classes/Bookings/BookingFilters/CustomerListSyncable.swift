@@ -20,6 +20,8 @@ struct CustomerListSyncable: ListSyncable {
         emptySearchDescription: Localization.emptySearchDescription
     )
 
+    let selectionDisabledMessage: String? = Localization.selectionDisabledMessage
+
     // MARK: - ResultsController Configuration
 
     func createPredicate() -> NSPredicate {
@@ -79,6 +81,10 @@ struct CustomerListSyncable: ListSyncable {
         item.email
     }
 
+    func selectionEnabled(for item: Customer) -> Bool {
+        item.customerID > 0
+    }
+    
     func filterItem(for item: Customer) -> BookingCustomerFilter {
         let name: String = {
             if let firstName = item.firstName, let lastName = item.lastName {
@@ -121,6 +127,11 @@ private extension CustomerListSyncable {
             "bookingCustomerSelectorView.emptySearchDescription",
             value: "Try adjusting your search term to see more results",
             comment: "Message on the empty search result view of the booking customer selector view"
+        )
+        static let selectionDisabledMessage = NSLocalizedString(
+            "bookingCustomerSelectorView.selectionDisabledMessage",
+            value: "This user is a guest, and guests can’t be used for filtering bookings.",
+            comment: "Error message when selecting guest customer in booking filtering"
         )
     }
 }

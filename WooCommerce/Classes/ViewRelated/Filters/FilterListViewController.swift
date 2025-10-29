@@ -95,7 +95,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for products
     case products(siteID: Int64)
     // Filter list selector for customer
-    case customer(siteID: Int64, source: FilterSource)
+    case customer(siteID: Int64)
     // Filter list selector for booking team member
     case bookingResource(siteID: Int64)
     // Filter list selector for bookable product
@@ -364,19 +364,12 @@ private extension FilterListViewController {
                 }()
                 self.listSelector.present(controller, animated: true)
 
-            case .customer(let siteID, let source):
-                let configuration: CustomerSelectorViewController.Configuration = {
-                    switch source {
-                    case .booking: .configurationForBookingFilter
-                    case .orders: .configurationForOrderFilter
-                    case .products: fatalError("Customer filter not supported!")
-                    }
-                }()
+            case .customer(let siteID):
                 let selectedCustomerID = (selected.selectedValue as? CustomerFilter)?.id
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
-                        configuration: configuration,
+                        configuration: .configurationForOrderFilter,
                         addressFormViewModel: nil,
                         selectedCustomerID: selectedCustomerID,
                         onCustomerSelected: { customer in

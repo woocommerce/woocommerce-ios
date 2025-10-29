@@ -62,7 +62,7 @@ private extension SyncableListSelectorView {
                 isSelected: selectedItems.isEmpty,
                 onSelection: {
                     selectedItems.removeAll()
-                    onSelection(selectedItems)
+                    onSelection([])
                 }
             )
 

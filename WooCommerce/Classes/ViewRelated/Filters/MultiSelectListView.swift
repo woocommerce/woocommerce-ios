@@ -29,7 +29,7 @@ struct MultiSelectListView: View {
         List {
             Button {
                 selectedItems.removeAll()
-                onSelection(selectedItems)
+                onSelection([])
             } label: {
                 HStack {
                     Text(Localization.any)

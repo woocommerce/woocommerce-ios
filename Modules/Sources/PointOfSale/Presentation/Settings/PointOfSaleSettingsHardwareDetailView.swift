@@ -182,25 +182,22 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     VStack(spacing: POSPadding.xSmall) {
                         HStack {
                             Text(Localization.readerModelTitle)
-                                .font(.posBodyMediumRegular())
                                 .foregroundStyle(.primary)
                             Spacer()
                             Text(cardReaderName)
-                                .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
                         }
                         .padding()
                         HStack {
                             Text(Localization.readerBatteryTitle)
-                                .font(.posBodyMediumRegular())
                                 .foregroundStyle(.primary)
                             Spacer()
                             Text(formattedBatteryLevel)
-                                .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
                         }
                         .padding()
                     }
+                    .font(.posBodyMediumRegular())
                 } else {
                     POSSettingsCardView(title: Localization.cardReaderConnectTitle,
                                         subtitle: Localization.cardReaderConnectSubtitle,

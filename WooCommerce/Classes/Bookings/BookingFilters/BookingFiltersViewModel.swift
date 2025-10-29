@@ -35,18 +35,18 @@ final class BookingFiltersViewModel: FilterListViewModel {
     }
 
     var criteria: Filters {
-        let teamMember = teamMemberFilterViewModel.selectedValue as? BookingResource
-        let product = productFilterViewModel.selectedValue as? BookingProductFilter
+        let teamMembers = (teamMemberFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingResource] ?? []
+        let products = (productFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingProductFilter] ?? []
         let customer = customerFilterViewModel.selectedValue as? CustomerFilter
-        let attendanceStatus = attendanceStatusFilterViewModel.selectedValue as? BookingAttendanceStatus
-        let paymentStatus = paymentStatusFilterViewModel.selectedValue as? BookingStatus
+        let attendanceStatuses = (attendanceStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingAttendanceStatus] ?? []
+        let paymentStatuses = (paymentStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingStatus] ?? []
         let dateRange = dateTimeFilterViewModel.selectedValue as? BookingDateRangeFilter
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
-        return Filters(teamMember: teamMember,
-                       product: product,
-                       attendanceStatus: attendanceStatus,
-                       paymentStatus: paymentStatus,
+        return Filters(teamMembers: teamMembers,
+                       products: products,
+                       attendanceStatuses: attendanceStatuses,
+                       paymentStatuses: paymentStatuses,
                        customer: customer,
                        dateRange: dateRange,
                        numberOfActiveFilters: numberOfActiveFilters)
@@ -86,55 +86,47 @@ final class BookingFiltersViewModel: FilterListViewModel {
 
     struct Filters: Equatable, HumanReadable {
 
-        let teamMember: BookingResource?
-        let product: BookingProductFilter?
-        let attendanceStatus: BookingAttendanceStatus?
-        let paymentStatus: BookingStatus?
+        let teamMembers: [BookingResource]
+        let products: [BookingProductFilter]
+        let attendanceStatuses: [BookingAttendanceStatus]
+        let paymentStatuses: [BookingStatus]
         let customer: CustomerFilter?
         let dateRange: BookingDateRangeFilter?
 
         let numberOfActiveFilters: Int
 
         init() {
-            teamMember = nil
-            product = nil
-            attendanceStatus = nil
-            paymentStatus = nil
+            teamMembers = []
+            products = []
+            attendanceStatuses = []
+            paymentStatuses = []
             customer = nil
             dateRange = nil
             numberOfActiveFilters = 0
         }
 
-        init(teamMember: BookingResource?,
-             product: BookingProductFilter?,
-             attendanceStatus: BookingAttendanceStatus?,
-             paymentStatus: BookingStatus?,
+        init(teamMembers: [BookingResource],
+             products: [BookingProductFilter],
+             attendanceStatuses: [BookingAttendanceStatus],
+             paymentStatuses: [BookingStatus],
              customer: CustomerFilter?,
              dateRange: BookingDateRangeFilter?,
              numberOfActiveFilters: Int) {
-            self.teamMember = teamMember
-            self.product = product
-            self.attendanceStatus = attendanceStatus
-            self.paymentStatus = paymentStatus
+            self.teamMembers = teamMembers
+            self.products = products
+            self.attendanceStatuses = attendanceStatuses
+            self.paymentStatuses = paymentStatuses
             self.customer = customer
             self.dateRange = dateRange
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
         var readableString: String {
-            var readable: [String] = []
-            if let teamMember {
-                readable.append(teamMember.name)
-            }
-            if let product {
-                readable.append(product.name)
-            }
-            if let attendanceStatus {
-                readable.append(attendanceStatus.localizedTitle)
-            }
-            if let paymentStatus {
-                readable.append(paymentStatus.localizedTitle)
-            }
+            var readable: [String] = teamMembers.map { $0.name } +
+            products.map { $0.name } +
+            attendanceStatuses.map { $0.localizedTitle } +
+            paymentStatuses.map { $0.localizedTitle }
+
             if let customer {
                 readable.append(customer.description)
             }
@@ -185,11 +177,11 @@ extension BookingFiltersViewModel.BookingListFilter {
         case .teamMember(let siteID):
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .bookingResource(siteID: siteID),
-                                       selectedValue: filters.teamMember)
+                                       selectedValue: MultipleFilterSelection(items: filters.teamMembers))
         case .product(let siteID):
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .bookableProduct(siteID: siteID),
-                                       selectedValue: filters.product)
+                                       selectedValue: MultipleFilterSelection(items: filters.products))
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .customer(siteID: siteID, source: .booking),
@@ -198,12 +190,12 @@ extension BookingFiltersViewModel.BookingListFilter {
             let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .cancelled, .noShow]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
-                                       selectedValue: filters.attendanceStatus)
+                                       selectedValue: MultipleFilterSelection(items: filters.attendanceStatuses))
         case .paymentStatus:
             let options: [BookingStatus?] = [.complete, .paid, .unpaid, .cancelled, .pendingConfirmation, .confirmed]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
-                                       selectedValue: filters.paymentStatus)
+                                       selectedValue: MultipleFilterSelection(items: filters.paymentStatuses))
         case .dateTime:
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .bookingDateTime,

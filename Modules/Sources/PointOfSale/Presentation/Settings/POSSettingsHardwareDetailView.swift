@@ -96,6 +96,9 @@ struct POSSettingsHardwareDetailView: View {
                                      onDismissTap: {
                                          posModel.cancelCardPaymentsOnboarding()
                                      }))
+                .onAppear {
+                    posModel.trackCardPaymentsOnboardingShown()
+                }
             })
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)

@@ -732,7 +732,7 @@ private extension MainTabBarController {
 
         // Configures POS tab coordinator once per logged in site session.
         let posTabVisibilityChecker = posTabVisibilityCheckerFactory(site)
-        self.posTabVisibilityChecker = posTabVisibilityCheckerFactory(site)
+        self.posTabVisibilityChecker = posTabVisibilityChecker
 
         // Sets POS tab initial visibility based on cached value if available.
         let initialVisibility = posTabVisibilityChecker.checkInitialVisibility()

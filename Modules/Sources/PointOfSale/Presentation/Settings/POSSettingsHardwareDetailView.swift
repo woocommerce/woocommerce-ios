@@ -1,13 +1,13 @@
 import SwiftUI
 import struct WooFoundation.SafariView
 
-struct PointOfSaleSettingsHardwareDetailView: View {
+struct POSSettingsHardwareDetailView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
 
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    let settingsController: POSSettingsControllerProtocol
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var showBarcodeScanningSetupModal: Bool = false
@@ -36,6 +36,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     var body: some View {
+        @Bindable var posModel = posModel
         NavigationStack(path: $navigationPath) {
             POSPageHeaderView(title: Localization.hardwareTitle)
             .foregroundColor(.posSurface)
@@ -81,25 +82,25 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     scannersView
                 }
             }
+            .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+                posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+            }, content: { alertType in
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                    .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+            })
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
+                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
                 SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
             }
         }
     }
+}
 
-    private func handleScannerDestination(_ destination: ScannerDestination) {
-        switch destination {
-        case .setup:
-            showBarcodeScanningSetupModal = true
-        case .documentation:
-            showBarcodeScanningDocumentationModal = true
-        }
-    }
-
-    private var legacyCardReadersView: some View {
+// MARK: - Views
+private extension POSSettingsHardwareDetailView {
+    var legacyCardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.cardReadersTitle,
@@ -168,7 +169,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
-    private var cardReadersView: some View {
+    var cardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.cardReadersTitle,
@@ -224,7 +225,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
-    private var scannersView: some View {
+    var scannersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.scannersTitle,
@@ -268,7 +269,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 }
 
 // MARK: - Navigation
-private extension PointOfSaleSettingsHardwareDetailView {
+private extension POSSettingsHardwareDetailView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners
@@ -340,9 +341,19 @@ private extension PointOfSaleSettingsHardwareDetailView {
             }
         }
     }
+
+    func handleScannerDestination(_ destination: ScannerDestination) {
+        switch destination {
+        case .setup:
+            showBarcodeScanningSetupModal = true
+        case .documentation:
+            showBarcodeScanningDocumentationModal = true
+        }
+    }
 }
 
-private extension PointOfSaleSettingsHardwareDetailView {
+// MARK: - Constants
+private extension POSSettingsHardwareDetailView {
     enum Localization {
         static let readerModelTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
@@ -460,6 +471,6 @@ private extension PointOfSaleSettingsHardwareDetailView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
+    POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController())
 }
 #endif

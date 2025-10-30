@@ -706,10 +706,6 @@
 		20134CE62D4D1BDF00076A80 /* LearnMoreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */; };
 		20134CE82D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
-		2020B8732EAA405500422B86 /* POSLocalCatalogEligibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8712EAA405500422B86 /* POSLocalCatalogEligibilityService.swift */; };
-		2020B8762EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */; };
-		2020B8782EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8772EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift */; };
-		2020B87A2EAA439200422B86 /* MockPOSCatalogSizeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */; };
 		2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */; };
 		202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D2A592AC5933100E4ABC0 /* TopTabView.swift */; };
 		203A5C312AC5ADD700BF29A1 /* WooPaymentsPayoutsOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203A5C302AC5ADD700BF29A1 /* WooPaymentsPayoutsOverviewView.swift */; };
@@ -3624,10 +3620,6 @@
 		20134CE52D4D1BDF00076A80 /* LearnMoreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreViewModelTests.swift; sourceTree = "<group>"; };
 		20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentPlugin+SetUpTapToPay.swift"; sourceTree = "<group>"; };
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
-		2020B8712EAA405500422B86 /* POSLocalCatalogEligibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSLocalCatalogEligibilityService.swift; sourceTree = "<group>"; };
-		2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSLocalCatalogEligibilityServiceTests.swift; sourceTree = "<group>"; };
-		2020B8772EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSLocalCatalogEligibilityService.swift; sourceTree = "<group>"; };
-		2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSCatalogSizeChecker.swift; sourceTree = "<group>"; };
 		202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooPaymentsDepositService.swift; sourceTree = "<group>"; };
 		202D2A592AC5933100E4ABC0 /* TopTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabView.swift; sourceTree = "<group>"; };
 		203A5C302AC5ADD700BF29A1 /* WooPaymentsPayoutsOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewView.swift; sourceTree = "<group>"; };
@@ -6772,7 +6764,6 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				2020B8722EAA405500422B86 /* Eligibility */,
 				683F18652E9CC838007BC608 /* POSNotificationScheduler.swift */,
 				01654EB02E786223001DBB6F /* Adaptors */,
 				02ABF9B92DF7F8E200348186 /* TabBar */,
@@ -6969,11 +6960,9 @@
 		02CD3BFC2C35D01600E575C4 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				2020B8772EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift */,
 				02DE61812E86437E0060DCEF /* MockPOSAnalytics.swift */,
 				02F5E5DE2E857A90002DEE24 /* MockSelectedSiteSettings.swift */,
 				02F5E5DC2E857A50002DEE24 /* MockPOSSiteSettingService.swift */,
-				2020B8792EAA439200422B86 /* MockPOSCatalogSizeChecker.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -7319,22 +7308,6 @@
 				09F5DE5C27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift */,
 			);
 			path = "Bulk Update";
-			sourceTree = "<group>";
-		};
-		2020B8722EAA405500422B86 /* Eligibility */ = {
-			isa = PBXGroup;
-			children = (
-				2020B8712EAA405500422B86 /* POSLocalCatalogEligibilityService.swift */,
-			);
-			path = Eligibility;
-			sourceTree = "<group>";
-		};
-		2020B8752EAA41C200422B86 /* Eligibility */ = {
-			isa = PBXGroup;
-			children = (
-				2020B8742EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift */,
-			);
-			path = Eligibility;
 			sourceTree = "<group>";
 		};
 		202496682B0BC07E00EE527D /* Deposits Overview */ = {
@@ -12033,7 +12006,6 @@
 		DABF35242C11B40C006AF826 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				2020B8752EAA41C200422B86 /* Eligibility */,
 				68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */,
 				687C006C2D63469F00F832FC /* Analytics */,
 				02CD3BFC2C35D01600E575C4 /* Mocks */,
@@ -15142,7 +15114,6 @@
 				DE3877E0283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift in Sources */,
 				B9FBEF9A2A7BCCF100AC609B /* UnderlineableTitleAndSubtitleAndDetailTableViewCell.swift in Sources */,
 				020DD48D2322A617005822B1 /* ProductsTabProductViewModel.swift in Sources */,
-				2020B8732EAA405500422B86 /* POSLocalCatalogEligibilityService.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				D449C51B26DE6B5000D75B02 /* ReportList.swift in Sources */,
 				68E952D0287587BF0095A23D /* CardReaderManualRowView.swift in Sources */,
@@ -15786,7 +15757,6 @@
 				03FBDAFD263EE4E800ACE257 /* CouponListViewModelTests.swift in Sources */,
 				036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
-				2020B8762EAA41C200422B86 /* POSLocalCatalogEligibilityServiceTests.swift in Sources */,
 				682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */,
 				4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */,
 				DE78DE442B2846AF002E58DE /* ThemesCarouselViewModelTests.swift in Sources */,
@@ -15827,7 +15797,6 @@
 				02DE61822E86437E0060DCEF /* MockPOSAnalytics.swift in Sources */,
 				02FADAA52A607CEE00FE8683 /* MockImageTextScanner.swift in Sources */,
 				68674D312B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift in Sources */,
-				2020B8782EAA425700422B86 /* MockPOSLocalCatalogEligibilityService.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				DE61979528A25842005E4362 /* StorePickerViewModelTests.swift in Sources */,
 				EEB4E2D329B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift in Sources */,
@@ -16103,7 +16072,6 @@
 				02BAB02124D0235F00F8B06E /* ProductPriceSettingsViewModel+ProductVariationTests.swift in Sources */,
 				CC2E72F727B6BFB800A62872 /* ProductVariationFormatterTests.swift in Sources */,
 				02B21C5529C84E4A00C5623B /* WPAdminWebViewModelTests.swift in Sources */,
-				2020B87A2EAA439200422B86 /* MockPOSCatalogSizeChecker.swift in Sources */,
 				D802547826551DB8001B2CC1 /* CardPresentModalDisplayMessageTests.swift in Sources */,
 				02503C632538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift in Sources */,
 				B9A5317F2D2FCC5600208304 /* WooShippingCustomsItemViewModelTests.swift in Sources */,

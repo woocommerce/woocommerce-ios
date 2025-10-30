@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension WooFoundationCore.CurrencyCode {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -13,3 +15,5 @@ extension WooFoundationCore.CurrencyCode {
         .AED
     }
 }
+
+// swiftlint:enable line_length

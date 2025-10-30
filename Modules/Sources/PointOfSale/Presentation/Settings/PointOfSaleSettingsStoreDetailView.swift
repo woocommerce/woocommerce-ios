@@ -198,7 +198,7 @@ private extension PointOfSaleSettingsStoreDetailView {
 
 #if DEBUG
 #Preview {
-    let controller = PointOfSaleSettingsPreviewController()
+    let controller = POSSettingsPreviewController()
     PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

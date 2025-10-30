@@ -108,7 +108,7 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         initialPOSTabVisibility: Bool) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -125,33 +125,27 @@ final class POSTabCoordinator {
         self.currencySettings = currencySettings
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
+        self.localCatalogEligibilityService = localCatalogEligibilityService
 
         tabContainerController.wrappedController = POSTabViewController()
-
-        // Create local catalog eligibility service asynchronously
-        // Use initial POS tab visibility from cached check
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-
-            let service = await POSLocalCatalogEligibilityService(
-                siteID: siteID,
-                catalogSizeChecker: POSCatalogSizeChecker(
-                    credentials: credentials,
-                    selectedSite: defaultSitePublisher,
-                    appPasswordSupportState: isAppPasswordSupported
-                ),
-                isPOSTabVisible: initialPOSTabVisibility
-            )
-
-            self.localCatalogEligibilityService = service
-        }
     }
 
-    /// Update local catalog eligibility when POS tab visibility changes
-    func updatePOSTabVisibility(_ isPOSTabVisible: Bool) {
+    /// Check and update POS eligibility for local catalog
+    /// Only checks eligibility if the POS tab is visible
+    func updatePOSEligibility(isPOSTabVisible: Bool) {
         Task { @MainActor [weak self] in
             guard let self, let service = self.localCatalogEligibilityService else { return }
-            await service.updateVisibility(isPOSTabVisible: isPOSTabVisible)
+
+            // If POS tab is not visible, mark as ineligible
+            guard isPOSTabVisible else {
+                await service.updatePOSEligibility(isEligible: false, for: siteID)
+                return
+            }
+
+            // Check actual POS eligibility using the eligibility checker
+            let eligibilityState = await eligibilityChecker.checkEligibility()
+            let isPOSEligible = eligibilityState == .eligible
+            await service.updatePOSEligibility(isEligible: isPOSEligible, for: siteID)
         }
     }
 
@@ -166,6 +160,10 @@ private extension POSTabCoordinator {
         Task { @MainActor in
             let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
             storesManager.dispatch(action)
+
+            // Track last opened date for sync eligibility
+            let lastOpenedAction = AppSettingsAction.setPOSLastOpenedDate(siteID: siteID, date: Date()) {}
+            storesManager.dispatch(lastOpenedAction)
         }
     }
 
@@ -174,14 +172,14 @@ private extension POSTabCoordinator {
             guard let self else { return }
 
             // Get local catalog eligibility as bool from service
-            // Service is created asynchronously in init, might not be ready yet
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Retry transient failures before using the value
-                if case .ineligible(reason: .catalogSizeCheckFailed) = service.eligibilityState {
-                    await service.refreshEligibilityState()
+                let state = await service.catalogEligibility(for: siteID)
+                if case .ineligible(reason: .catalogSizeCheckFailed) = state {
+                    await service.refreshEligibilityState(for: siteID)
                 }
-                isLocalCatalogEligible = service.eligibilityState == .eligible
+                isLocalCatalogEligible = await service.catalogEligibility(for: siteID) == .eligible
             } else {
                 // Service not ready yet (rare race condition), assume ineligible
                 isLocalCatalogEligible = false

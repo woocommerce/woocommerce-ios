@@ -208,6 +208,7 @@ private extension ProductFormTableViewDataSource {
                                                                    productStatus: productStatus,
                                                                    placeholder: placeholder,
                                                                    textViewMinimumHeight: 10.0,
+                                                                   shouldDismissOnReturn: true,
                                                                    isScrollEnabled: false,
                                                                    onNameChange: { [weak self] (newName) in self?.onNameChange?(newName) },
                                                                    style: .headline)

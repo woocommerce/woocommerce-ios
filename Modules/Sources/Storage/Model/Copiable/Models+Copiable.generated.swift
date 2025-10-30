@@ -3,6 +3,7 @@
 import Codegen
 import Foundation
 
+// swiftlint:disable line_length
 
 extension Storage.AnalyticsCard {
     public func copy(
@@ -80,10 +81,8 @@ extension Storage.GeneralAppSettings {
         let sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished ?? self.sitesWithAtLeastOneIPPTransactionFinished
         let isEUShippingNoticeDismissed = isEUShippingNoticeDismissed ?? self.isEUShippingNoticeDismissed
         let isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed ?? self.isCustomFieldsTopBannerDismissed
-        let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ??
-        self.isPOSSurveyPotentialMerchantNotificationScheduled
-        let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ??
-        self.isPOSSurveyCurrentMerchantNotificationScheduled
+        let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ?? self.isPOSSurveyPotentialMerchantNotificationScheduled
+        let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ?? self.isPOSSurveyCurrentMerchantNotificationScheduled
         let hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce ?? self.hasPOSBeenOpenedAtLeastOnce
 
         return Storage.GeneralAppSettings(
@@ -126,7 +125,9 @@ extension Storage.GeneralStoreSettings {
         lastSelectedOrderStatus: NullableCopiableProp<String> = .copy,
         favoriteProductIDs: CopiableProp<[Int64]> = .copy,
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
-        isPOSTabVisible: NullableCopiableProp<Bool> = .copy
+        isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
+        lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
+        firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -148,6 +149,8 @@ extension Storage.GeneralStoreSettings {
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
         let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
+        let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
+        let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -169,7 +172,11 @@ extension Storage.GeneralStoreSettings {
             lastSelectedOrderStatus: lastSelectedOrderStatus,
             favoriteProductIDs: favoriteProductIDs,
             searchTermsByKey: searchTermsByKey,
-            isPOSTabVisible: isPOSTabVisible
+            isPOSTabVisible: isPOSTabVisible,
+            lastPOSOpenedDate: lastPOSOpenedDate,
+            firstPOSCatalogSyncDate: firstPOSCatalogSyncDate
         )
     }
 }
+
+// swiftlint:enable line_length

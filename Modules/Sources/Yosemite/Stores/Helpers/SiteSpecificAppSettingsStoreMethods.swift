@@ -11,6 +11,12 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     // Search history methods
     func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String]
     func setSearchTerms(_ terms: [String], for itemType: POSItemType, siteID: Int64)
+
+    // POS sync eligibility tracking
+    func getPOSLastOpenedDate(siteID: Int64) -> Date?
+    func setPOSLastOpenedDate(siteID: Int64, date: Date)
+    func getFirstPOSCatalogSyncDate(siteID: Int64) -> Date?
+    func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date)
 }
 
 /// Methods for managing site-specific app settings
@@ -94,6 +100,26 @@ extension SiteSpecificAppSettingsStoreMethods {
         var updatedSearchTermsByKey = storeSettings.searchTermsByKey
         updatedSearchTermsByKey[key] = terms
         let updatedSettings = storeSettings.copy(searchTermsByKey: updatedSearchTermsByKey)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func getPOSLastOpenedDate(siteID: Int64) -> Date? {
+        getStoreSettings(for: siteID).lastPOSOpenedDate
+    }
+
+    func setPOSLastOpenedDate(siteID: Int64, date: Date) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastPOSOpenedDate: date)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func getFirstPOSCatalogSyncDate(siteID: Int64) -> Date? {
+        getStoreSettings(for: siteID).firstPOSCatalogSyncDate
+    }
+
+    func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(firstPOSCatalogSyncDate: date)
         setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }

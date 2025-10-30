@@ -5,7 +5,7 @@ struct PointOfSaleSettingsView: View {
     @Environment(\.posAnalytics) private var analytics
     @State private var selection: SidebarNavigation? = .store
 
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
         GeometryReader { geometry in
@@ -86,7 +86,7 @@ extension PointOfSaleSettingsView {
         case .store:
             PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
-            PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
+            POSSettingsHardwareDetailView(settingsController: settingsController)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
                 POSSettingsLocalCatalogDetailView(viewModel: viewModel)
@@ -250,6 +250,6 @@ extension PointOfSaleSettingsView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
+    PointOfSaleSettingsView(settingsController: POSSettingsPreviewController())
 }
 #endif

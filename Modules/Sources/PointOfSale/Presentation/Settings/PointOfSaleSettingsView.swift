@@ -3,10 +3,9 @@ import SwiftUI
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posFeatureFlags) private var featureFlags
     @State private var selection: SidebarNavigation? = .store
 
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
         GeometryReader { geometry in
@@ -55,8 +54,7 @@ extension PointOfSaleSettingsView {
                     }
                 )
 
-                // TODO: WOOMOB-1287 - integrate with local catalog feature eligibility
-                if featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) && settingsController.localCatalogViewModel != nil {
+                if settingsController.isLocalCatalogEligible {
                     PointOfSaleSettingsCard(
                         item: .localCatalog,
                         isSelected: selection == .localCatalog,
@@ -88,7 +86,7 @@ extension PointOfSaleSettingsView {
         case .store:
             PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
-            PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
+            POSSettingsHardwareDetailView(settingsController: settingsController)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
                 POSSettingsLocalCatalogDetailView(viewModel: viewModel)
@@ -252,6 +250,6 @@ extension PointOfSaleSettingsView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
+    PointOfSaleSettingsView(settingsController: POSSettingsPreviewController())
 }
 #endif

@@ -1,12 +1,14 @@
 import SwiftUI
+import Networking
 
 struct UpdateAttendanceStatusView: View {
     @Environment(\.dismiss) private var dismiss
-    private let statuses = AttendanceStatus.allCases
-    private let onStatusSelected: (AttendanceStatus) -> Void
+    private let onStatusSelected: (BookingAttendanceStatus) -> Void
+    @State private var selectedStatus: BookingAttendanceStatus
 
-    init(onStatusSelected: @escaping (AttendanceStatus) -> Void) {
+    init(selectedStatus: BookingAttendanceStatus, onStatusSelected: @escaping (BookingAttendanceStatus) -> Void) {
         self.onStatusSelected = onStatusSelected
+        self._selectedStatus = .init(initialValue: selectedStatus)
     }
 
     var body: some View {
@@ -17,7 +19,7 @@ struct UpdateAttendanceStatusView: View {
                     .foregroundColor(.secondary)
                     .padding(.horizontal)
 
-                ForEach(statuses) { status in
+                ForEach(Constants.statuses, id: \.self) { status in
                     HStack(alignment: .top, spacing: 16) {
                         Image(systemName: status.iconName)
                             .font(.title3.weight(.medium))
@@ -26,17 +28,28 @@ struct UpdateAttendanceStatusView: View {
                             Text(status.title)
                                 .font(.body.weight(.medium))
                                 .fixedSize(horizontal: false, vertical: true)
-                            Text(status.description)
+                            Text(status.information)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
+                        }
+
+                        if status == selectedStatus {
+                            Spacer()
+                            Image(systemName: "checkmark")
+                                .font(.title3.weight(.medium))
+                                .foregroundStyle(Color.accentColor)
                         }
                     }
                     .padding(.horizontal)
                     .contentShape(Rectangle())
                     .tappable {
-                        onStatusSelected(status)
-                        dismiss()
+                        DispatchQueue.main.asyncAfter(
+                            deadline: .now() + Constants.statusSelectionDelay
+                        ) {
+                            onStatusSelected(status)
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -45,17 +58,7 @@ struct UpdateAttendanceStatusView: View {
     }
 }
 
-extension UpdateAttendanceStatusView {
-    enum AttendanceStatus: CaseIterable, Identifiable {
-        case booked
-        case checkedIn
-        case noShow
-
-        var id: Self { self }
-    }
-}
-
-private extension UpdateAttendanceStatusView.AttendanceStatus {
+private extension BookingAttendanceStatus {
     var title: String {
         switch self {
         case .booked:
@@ -64,10 +67,12 @@ private extension UpdateAttendanceStatusView.AttendanceStatus {
             return UpdateAttendanceStatusView.Localization.checkedInTitle
         case .noShow:
             return UpdateAttendanceStatusView.Localization.noShowTitle
+        case .cancelled, .unknown:
+            return ""
         }
     }
 
-    var description: String {
+    var information: String {
         switch self {
         case .booked:
             return UpdateAttendanceStatusView.Localization.bookedDescription
@@ -75,6 +80,8 @@ private extension UpdateAttendanceStatusView.AttendanceStatus {
             return UpdateAttendanceStatusView.Localization.checkedInDescription
         case .noShow:
             return UpdateAttendanceStatusView.Localization.noShowDescription
+        case .cancelled, .unknown:
+            return ""
         }
     }
 
@@ -86,11 +93,18 @@ private extension UpdateAttendanceStatusView.AttendanceStatus {
             return "calendar.and.person"
         case .noShow:
             return "calendar.badge.exclamationmark"
+        case .cancelled, .unknown:
+            return ""
         }
     }
 }
 
 private extension UpdateAttendanceStatusView {
+    enum Constants {
+        static let statuses: [BookingAttendanceStatus] = [.booked, .checkedIn, .noShow]
+        static let statusSelectionDelay: TimeInterval = 0.2
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "UpdateAttendanceStatusView.title",
@@ -136,7 +150,7 @@ private extension UpdateAttendanceStatusView {
 #if DEBUG
 struct UpdateAttendanceStatusView_Previews: PreviewProvider {
     static var previews: some View {
-        UpdateAttendanceStatusView { selectedStatus in
+        UpdateAttendanceStatusView(selectedStatus: .booked) { selectedStatus in
             print("Selected status: \(selectedStatus)")
         }
     }

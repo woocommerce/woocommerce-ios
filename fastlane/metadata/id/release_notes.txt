@@ -1,1 +1,1 @@
-Pembaruan ini menghadirkan perbaikan penting untuk pengelolaan toko yang terasa lebih lancar. Masalah navigasi dalam rincian pesanan dan tampilan widget toko pada iOS 26 sudah beres. Perbarui sekarang juga dan rasakan aplikasi yang lebih mulus dan andal.
+Pembaruan ini menghadirkan pengelolaan toko yang lebih lancar dan kontrol yang lebih baik. Kini, Anda dapat menyaring pesanan berdasarkan sumber, serta mengelola semua pesanan POS langsung dari antarmuka POS. Selain itu, kami memperbaiki masalah gulir pada layar Buat Kupon untuk pengalaman yang lebih mulus.

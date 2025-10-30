@@ -1,1 +1,0 @@
-Dieses Update enthält wichtige Fehlerbehebungen für eine reibungslosere Shop-Verwaltung. Wir haben Navigationsprobleme bei Bestelldetails behoben und die Anzeige von Shop-Widgets in iOS 26 korrigiert. Führe jetzt ein Update durch, um ein optimiertes und zuverlässigeres App-Erlebnis zu erhalten.

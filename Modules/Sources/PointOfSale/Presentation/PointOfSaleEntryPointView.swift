@@ -33,7 +33,7 @@ public struct PointOfSaleEntryPointView: View {
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let settingsController: PointOfSaleSettingsControllerProtocol
+    private let settingsController: POSSettingsControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -63,14 +63,13 @@ public struct PointOfSaleEntryPointView: View {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         isLocalCatalogEligible: Bool,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        // Use observable controller with GRDB if available and feature flag is enabled, otherwise fall back to standard controller
-        // Note: We check feature flag here for eligibility. Once eligibility checking is
-        // refactored to be more centralized, this check can be simplified.
-        let isGRDBEnabled = services.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
-        if let grdbManager = grdbManager, catalogSyncCoordinator != nil, isGRDBEnabled {
+        // Use observable controller with GRDB if local catalog is eligible,
+        // otherwise fall back to standard controller.
+        if isLocalCatalogEligible, let grdbManager = grdbManager {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
@@ -113,7 +112,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 defaultSiteName: defaultSiteName,
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
-                                                                catalogSyncCoordinator: catalogSyncCoordinator)
+                                                                catalogSyncCoordinator: catalogSyncCoordinator,
+                                                                isLocalCatalogEligible: isLocalCatalogEligible)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -203,6 +203,7 @@ public struct PointOfSaleEntryPointView: View {
         siteSettings: [],
         grdbManager: nil,
         catalogSyncCoordinator: nil,
+        isLocalCatalogEligible: false,
         services: POSPreviewServices()
     )
 }

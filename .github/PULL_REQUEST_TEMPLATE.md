@@ -6,11 +6,10 @@
 ## Description
 <!-- Take the time to write a good summary. Why is it needed? What does it do? When fixing bugs try to avoid just writing “See original issue” – clarify what the problem was and how you’ve fixed it. -->
 
-## Steps to reproduce
-<!-- Step-by-step testing instructions. For new user flows, consider instead stating the goal of the workflow and see if your PR reviewer can accomplish the workflow without specific steps! -->
-
-## Testing information
-<!-- This is your opportunity to break out individual scenarios that need testing (when necessary) and/or include a checklist for the reviewer to go through. Consider documenting the following from your own completed testing: devices used, alternate workflows, edge cases, affected areas, critical flows, areas not tested, and any remaining unknowns. Provide feedback on this new section of the PR template through Sept 30, 2024 to Apps Quality; additional context here: https://woomobilep2.wordpress.com/2024/05/06/woocommerce-mobile-quality-report-march-april/#comment-12036 -->
+## Test Steps
+<!-- Describe how to test your changes. Include only what’s needed for the reviewer to validate the behavior.
+For new features, outline the main user flow or goal rather than every tap or click — the reviewer should be able to complete the flow naturally.
+If applicable, mention key devices, scenarios, or edge cases to verify. -->
 
 ## Screenshots
 <!-- Include before and after images or gifs when appropriate. -->

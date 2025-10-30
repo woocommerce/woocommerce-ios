@@ -4,7 +4,8 @@ import Foundation
 @testable import Yosemite
 import Storage
 
-struct PointOfSaleSettingsControllerTests {
+@MainActor
+struct POSSettingsControllerTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockCardPresentPaymentService = MockCardPresentPaymentService()
     private let mockPluginService = MockPluginsService()
@@ -19,7 +20,8 @@ struct PointOfSaleSettingsControllerTests {
                                                 defaultSiteName: "Test Store",
                                                 siteSettings: [],
                                                 grdbManager: nil,
-                                                catalogSyncCoordinator: nil)
+                                                catalogSyncCoordinator: nil,
+                                                isLocalCatalogEligible: true)
 
         // When
         let cardReader = sut.connectedCardReader
@@ -38,7 +40,8 @@ struct PointOfSaleSettingsControllerTests {
                                                 defaultSiteName: "Test Store",
                                                 siteSettings: [],
                                                 grdbManager: nil,
-                                                catalogSyncCoordinator: nil)
+                                                catalogSyncCoordinator: nil,
+                                                isLocalCatalogEligible: true)
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)
@@ -72,7 +75,7 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
     }
 }
 
-final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
+final class MockPOSSettingsController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = nil
     var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),
@@ -80,4 +83,5 @@ final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProt
                                                                               defaultSiteName: "Sample Store",
                                                                               siteSettings: [])
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+    var isLocalCatalogEligible = true
 }

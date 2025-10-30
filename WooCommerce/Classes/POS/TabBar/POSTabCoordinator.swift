@@ -42,6 +42,9 @@ final class POSTabCoordinator {
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
+    /// Local catalog eligibility service - created asynchronously during init
+    private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                             credentials: credentials,
@@ -71,13 +74,23 @@ final class POSTabCoordinator {
                                         storage: storageManager)
     }()
 
-    private lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
-        PointOfSaleBarcodeScanService(siteID: siteID,
-                                      credentials: credentials,
-                                      selectedSite: defaultSitePublisher,
-                                      appPasswordSupportState: isAppPasswordSupported,
-                                      currencySettings: currencySettings)
-    }()
+    /// Creates the appropriate barcode scan service based on local catalog availability
+    private func createBarcodeScanService(isLocalCatalogEligible: Bool,
+                                          grdbManager: GRDBManagerProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
+        if isLocalCatalogEligible,
+           let grdbManager {
+            return PointOfSaleLocalBarcodeScanService(siteID: siteID,
+                                                     grdbManager: grdbManager,
+                                                     currencySettings: currencySettings)
+        } else {
+            // Fall back to remote barcode scanning
+            return PointOfSaleBarcodeScanService(siteID: siteID,
+                                                credentials: credentials,
+                                                selectedSite: defaultSitePublisher,
+                                                appPasswordSupportState: isAppPasswordSupported,
+                                                currencySettings: currencySettings)
+        }
+    }
 
     /// Publisher to send to `AlamofireNetwork` for request authentication mode switching.
     private let defaultSitePublisher: AnyPublisher<JetpackSite?, Never>
@@ -94,7 +107,8 @@ final class POSTabCoordinator {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         initialPOSTabVisibility: Bool) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -113,19 +127,43 @@ final class POSTabCoordinator {
         self.eligibilityChecker = eligibilityChecker
 
         tabContainerController.wrappedController = POSTabViewController()
+
+        // Create local catalog eligibility service asynchronously
+        // Use initial POS tab visibility from cached check
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            let service = await POSLocalCatalogEligibilityService(
+                siteID: siteID,
+                catalogSizeChecker: POSCatalogSizeChecker(
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported
+                ),
+                isPOSTabVisible: initialPOSTabVisibility
+            )
+
+            self.localCatalogEligibilityService = service
+        }
+    }
+
+    /// Update local catalog eligibility when POS tab visibility changes
+    func updatePOSTabVisibility(_ isPOSTabVisible: Bool) {
+        Task { @MainActor [weak self] in
+            guard let self, let service = self.localCatalogEligibilityService else { return }
+            await service.updateVisibility(isPOSTabVisible: isPOSTabVisible)
+        }
     }
 
     func onTabSelected() {
-        schedulePOSSurveyNotificationIfNeeded()
+        setPOSHasBeenOpened()
         presentPOSView(siteID: siteID)
     }
 }
 
 private extension POSTabCoordinator {
-    func schedulePOSSurveyNotificationIfNeeded() {
+    func setPOSHasBeenOpened() {
         Task { @MainActor in
-            await POSNotificationScheduler().scheduleLocalNotificationIfEligible(for: .currentMerchant)
-
             let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
             storesManager.dispatch(action)
         }
@@ -134,6 +172,21 @@ private extension POSTabCoordinator {
     func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }
+
+            // Get local catalog eligibility as bool from service
+            // Service is created asynchronously in init, might not be ready yet
+            let isLocalCatalogEligible: Bool
+            if let service = localCatalogEligibilityService {
+                // Retry transient failures before using the value
+                if case .ineligible(reason: .catalogSizeCheckFailed) = service.eligibilityState {
+                    await service.refreshEligibilityState()
+                }
+                isLocalCatalogEligible = service.eligibilityState == .eligible
+            } else {
+                // Service not ready yet (rare race condition), assume ineligible
+                isLocalCatalogEligible = false
+            }
+
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
@@ -147,8 +200,15 @@ private extension POSTabCoordinator {
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
-            let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
-            let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
+            // Only initialize local catalog infrastructure if eligible
+            let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
+
+            // Create appropriate barcode scan service based on local catalog eligibility
+            // Will use local GRDB-based scanning if eligible and infrastructure is available,
+            // otherwise falls back to remote API-based scanning
+            let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
+                                                              grdbManager: grdbManager)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -189,6 +249,7 @@ private extension POSTabCoordinator {
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
+                    isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor
                 )
 

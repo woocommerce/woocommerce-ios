@@ -84,8 +84,8 @@ struct BookingDetailsView: View {
             $0.toolbarRole(.editor)
         }
         .sheet(isPresented: $showingStatusSheet) {
-            UpdateAttendanceStatusView { selectedStatus in
-                print("Selected status: \(selectedStatus)")
+            UpdateAttendanceStatusView(selectedStatus: viewModel.bookingAttendanceStatus) { selectedStatus in
+                viewModel.updateAttendanceStatus(to: selectedStatus)
             }
             .padding(.top)
             .presentationDetents([.medium, .large])
@@ -103,6 +103,7 @@ struct BookingDetailsView: View {
             Text(viewModel.cancellationAlertMessage)
         }
         .notice($notice)
+        .notice($viewModel.notice)
     }
 }
 
@@ -335,6 +336,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             resourceID: 113,
             startDate: now,
             statusKey: "paid",
+            attendanceStatusKey: "booked",
             localTimezone: "America/New_York",
             currency: "USD",
             orderInfo: nil

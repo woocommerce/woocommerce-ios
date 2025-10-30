@@ -11,18 +11,20 @@ import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSettingsService
 
-protocol PointOfSaleSettingsControllerProtocol {
+protocol POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
+    var isLocalCatalogEligible: Bool { get }
 }
 
-@Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
+@Observable final class PointOfSaleSettingsController: POSSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
     let storeViewModel: POSSettingsStoreViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+    let isLocalCatalogEligible: Bool
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -31,12 +33,15 @@ protocol PointOfSaleSettingsControllerProtocol {
          defaultSiteName: String?,
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) {
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
+         isLocalCatalogEligible: Bool) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings)
+        self.isLocalCatalogEligible = isLocalCatalogEligible
+
         if let catalogSyncCoordinator, let grdbManager {
             self.localCatalogViewModel = POSSettingsLocalCatalogViewModel(
                 siteID: siteID,
@@ -67,7 +72,7 @@ protocol PointOfSaleSettingsControllerProtocol {
 }
 
 #if DEBUG
-final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
+final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
         batteryLevel: 0.75
@@ -80,6 +85,10 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
                                                                               siteSettings: [])
 
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+
+    var isLocalCatalogEligible: Bool {
+        localCatalogViewModel != nil
+    }
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

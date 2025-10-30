@@ -1,0 +1,22 @@
+{
+  "data": {
+    "id": 206,
+    "start": 1761238800,
+    "end": 1761242400,
+    "all_day": false,
+    "status": "cancelled",
+    "attendance_status": "no-show",
+    "cost": "35.00",
+    "currency": "USD",
+    "customer_id": 5,
+    "product_id": 23,
+    "resource_id": 19,
+    "google_calendar_event_id": "0",
+    "order_id": 205,
+    "order_item_id": 21,
+    "parent_id": 0,
+    "person_counts": [],
+    "local_timezone": "",
+    "note": "edited note"
+  }
+}

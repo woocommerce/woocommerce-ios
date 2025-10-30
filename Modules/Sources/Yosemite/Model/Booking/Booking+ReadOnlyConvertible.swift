@@ -13,8 +13,13 @@ extension Storage.Booking: ReadOnlyConvertible {
         allDay = booking.allDay
         cost = booking.cost
         customerID = booking.customerID
-        dateCreated = booking.dateCreated
-        dateModified = booking.dateModified
+
+        /// Falling to back to existing values in case if new values are absent
+        /// Booking returned when sending a `PUT` request to `bookings/{booking_id}`
+        /// doesn't contain `date_created` and `date_modified` values.
+        dateCreated = booking.dateCreated ?? dateCreated
+        dateModified = booking.dateModified ?? dateModified
+
         endDate = booking.endDate
         googleCalendarEventID = booking.googleCalendarEventID
         orderID = booking.orderID
@@ -24,6 +29,7 @@ extension Storage.Booking: ReadOnlyConvertible {
         resourceID = booking.resourceID
         startDate = booking.startDate
         statusKey = booking.statusKey
+        attendanceStatusKey = booking.attendanceStatusKey
         localTimezone = booking.localTimezone
         currency = booking.currency
     }
@@ -47,6 +53,7 @@ extension Storage.Booking: ReadOnlyConvertible {
                 resourceID: resourceID,
                 startDate: startDate ?? Date(),
                 statusKey: statusKey ?? "",
+                attendanceStatusKey: attendanceStatusKey ?? "",
                 localTimezone: localTimezone ?? "",
                 currency: currency ?? "USD",
                 orderInfo: orderInfo?.toReadOnly())

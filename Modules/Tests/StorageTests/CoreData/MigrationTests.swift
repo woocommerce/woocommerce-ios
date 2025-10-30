@@ -2281,6 +2281,37 @@ final class MigrationTests: XCTestCase {
         let insertedResource = try XCTUnwrap(targetContext.first(entityName: "BookingResource"))
         XCTAssertEqual(insertedResource, resource)
     }
+
+    func test_migrating_from_128_to_129_adds_new_attendanceStatusKey_attribute_to_booking() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 128")
+        let sourceContext = sourceContainer.viewContext
+
+        let booking = insertBooking(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(booking.entity.attributesByName["attendanceStatusKey"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 129")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedBooking = try XCTUnwrap(targetContext.first(entityName: "Booking"))
+
+        // `attendanceStatusKey` should be present in `migratedBooking`
+        XCTAssertNotNil(migratedBooking.entity.attributesByName["attendanceStatusKey"])
+
+        // `attendanceStatusKey` value should default as "" in model 129
+        let value = migratedBooking.value(forKey: "attendanceStatusKey") as? String
+        XCTAssertEqual(value, "")
+
+        // `attendanceStatusKey` must be settable
+        migratedBooking.setValue("checked_in", forKey: "attendanceStatusKey")
+        try targetContext.save()
+        let updatedValue = migratedBooking.value(forKey: "attendanceStatusKey") as? String
+        XCTAssertEqual(updatedValue, "checked_in")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

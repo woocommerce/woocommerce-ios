@@ -52,4 +52,25 @@ public enum BookingAction: Action {
     case fetchResource(siteID: Int64,
                        resourceID: Int64,
                        onCompletion: (Result<BookingResource, Error>) -> Void)
+
+    /// Synchronizes booking resources matching the specified criteria.
+    ///
+    /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more resources to sync.
+    ///
+    case synchronizeResources(siteID: Int64,
+                             pageNumber: Int,
+                             pageSize: Int = BookingsRemote.Default.pageSize,
+                             onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Updates a booking attendance status.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to be updated.
+    /// - Parameter status: The new attendance status.
+    /// - Parameter onCompletion: called when update completes, returns an error in case of a failure.
+    ///
+    case updateBookingAttendanceStatus(siteID: Int64,
+                                       bookingID: Int64,
+                                       status: BookingAttendanceStatus,
+                                       onCompletion: (Error?) -> Void)
 }

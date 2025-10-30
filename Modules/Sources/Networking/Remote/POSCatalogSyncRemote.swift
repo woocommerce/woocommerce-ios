@@ -29,10 +29,11 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
+    ///   - forceGeneration: Whether to always generate a catalog.
     /// - Returns: Catalog job response with job ID.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    func requestCatalogGeneration(for siteID: Int64) async throws -> POSCatalogRequestResponse
+    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse
 
     /// Downloads the generated catalog at the specified download URL.
     /// - Parameters:
@@ -153,12 +154,11 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Returns: Catalog job response with job ID.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func requestCatalogGeneration(for siteID: Int64) async throws -> POSCatalogRequestResponse {
+    public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
         let path = "products/catalog"
         let parameters: [String: Any] = [
             ParameterKey.fullSyncFields: POSProduct.requestFields,
-            // TODO: make it a parameter
-            "force_generate": true
+            ParameterKey.forceGenerate: forceGeneration
         ]
         let request = JetpackRequest(
             wooApiVersion: .mark3,
@@ -319,6 +319,7 @@ private extension POSCatalogSyncRemote {
         static let perPage = "per_page"
         static let fields = "_fields"
         static let fullSyncFields = "fields"
+        static let forceGenerate = "force_generate"
     }
 
     enum Path {

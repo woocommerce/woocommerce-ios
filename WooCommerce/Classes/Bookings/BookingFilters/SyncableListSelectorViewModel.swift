@@ -81,7 +81,6 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
 
     /// Handles search query changes by resetting pagination and triggering new search
     private func handleSearchQueryChange(_ query: String) {
-        syncState = .syncingFirstPage
         currentSearchKeyword = query
 
         // Update the predicate to filter by search results if needed

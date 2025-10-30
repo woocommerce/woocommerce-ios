@@ -8,8 +8,8 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         var productStatus: ProductStatus
         var placeholder: String? = nil
         var textViewMinimumHeight: CGFloat? = nil
+        var shouldDismissOnReturn: Bool = false
         var isScrollEnabled: Bool = true
-        var keyboardType: UIKeyboardType = .default
         var onNameChange: ((_ text: String) -> Void)? = nil
         var onTextDidBeginEditing: (() -> Void)? = nil
         var style: Style = .headline
@@ -33,7 +33,7 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         productTextField.isScrollEnabled = viewModel.isScrollEnabled
         productTextField.onTextChange = viewModel.onNameChange
         productTextField.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
-        productTextField.keyboardType = viewModel.keyboardType
+        productTextField.shouldDismissOnReturn = viewModel.shouldDismissOnReturn
         configureProductStatusLabel(productStatus: viewModel.productStatus)
         applyStyle(style: viewModel.style)
     }

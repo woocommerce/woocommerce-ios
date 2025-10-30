@@ -145,7 +145,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 Spacer(minLength: safeAreaInsets.bottom)
             }
             .disableAutocorrection(true)
-            .scrollDismissesKeyboard(.immediately)
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
@@ -429,6 +428,12 @@ struct SingleAddressForm: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
         .addingTopAndBottomDividers()
+        .onChange(of: showStateSelector) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .onChange(of: showCountrySelector) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
     }
 

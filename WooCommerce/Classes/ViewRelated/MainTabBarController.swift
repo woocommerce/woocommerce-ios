@@ -141,7 +141,7 @@ final class MainTabBarController: UITabBarController {
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
-    private(set) var stores: StoresManager
+    private let stores: StoresManager
     private let analytics: Analytics
     private let posTabVisibilityCheckerFactory: ((_ site: Site) -> POSTabVisibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol

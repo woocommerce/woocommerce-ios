@@ -89,11 +89,13 @@ struct POSSettingsHardwareDetailView: View {
                     .posInteractiveDismissDisabled(alertType.isDismissDisabled)
             })
             .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
-                // TODO: Handle dismiss
+                posModel.cancelCardPaymentsOnboarding()
             }, content: { viewContainer in
                 PointOfSaleCardPresentPaymentOnboardingView(
                     viewModel: .init(onboardingViewContainer: viewContainer,
-                                     onDismissTap: { /* TODO: Handle dismiss */ }))
+                                     onDismissTap: {
+                                         posModel.cancelCardPaymentsOnboarding()
+                                     }))
             })
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)

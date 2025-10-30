@@ -4,6 +4,7 @@ import Codegen
 import Foundation
 import UIKit
 
+// swiftlint:disable line_length
 
 extension Hardware.CardPresentReceiptParameters {
     public func copy(
@@ -94,3 +95,5 @@ extension Hardware.PaymentIntent {
         )
     }
 }
+
+// swiftlint:enable line_length

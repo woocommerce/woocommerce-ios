@@ -3,6 +3,7 @@
 import Codegen
 import Foundation
 
+// swiftlint:disable line_length
 
 extension NetworkingCore.Address {
     public func copy(
@@ -927,3 +928,5 @@ extension NetworkingCore.User {
         )
     }
 }
+
+// swiftlint:enable line_length

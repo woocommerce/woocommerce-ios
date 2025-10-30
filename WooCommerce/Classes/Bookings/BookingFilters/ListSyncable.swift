@@ -30,6 +30,11 @@ protocol ListSyncable {
     /// Creates the action to search items with keyword
     func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action
 
+    /// Creates the predicate for filtering search results
+    /// - Parameter keyword: The search keyword
+    /// - Returns: A predicate to filter storage objects by search results, or nil if search predicate is not needed
+    func createSearchPredicate(keyword: String) -> NSPredicate?
+
     // MARK: - Display Configuration
 
     /// Returns the display name for an item

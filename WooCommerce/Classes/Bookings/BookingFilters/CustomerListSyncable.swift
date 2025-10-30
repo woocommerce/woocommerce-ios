@@ -66,6 +66,12 @@ struct CustomerListSyncable: ListSyncable {
         )
     }
 
+    /// Creates the predicate for filtering search results
+    /// - Returns: nil because customer search handles filtering directly
+    func createSearchPredicate(keyword: String) -> NSPredicate? {
+        nil
+    }
+
     // MARK: - Display Configuration
 
     func displayName(for item: Customer) -> String {

@@ -83,6 +83,20 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
     private func handleSearchQueryChange(_ query: String) {
         syncState = .syncingFirstPage
         currentSearchKeyword = query
+
+        // Update the predicate to filter by search results if needed
+        if query.isEmpty {
+            // Reset to base predicate when search is cleared
+            resultsController.predicate = syncable.createPredicate()
+        } else if let searchPredicate = syncable.createSearchPredicate(keyword: query) {
+            // Combine base predicate with search predicate
+            let basePredicate = syncable.createPredicate()
+            resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [basePredicate, searchPredicate])
+        } else {
+            // Keep base predicate if search predicate is not available
+            resultsController.predicate = syncable.createPredicate()
+        }
+
         paginationTracker.syncFirstPage()
     }
 

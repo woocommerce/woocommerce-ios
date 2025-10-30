@@ -9,8 +9,8 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let allDay: Bool
     public let cost: String
     public let customerID: Int64
-    public let dateCreated: Date
-    public let dateModified: Date
+    public let dateCreated: Date?
+    public let dateModified: Date?
     public let endDate: Date
     public let googleCalendarEventID: String?
     public let orderID: Int64
@@ -40,8 +40,8 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                 allDay: Bool,
                 cost: String,
                 customerID: Int64,
-                dateCreated: Date,
-                dateModified: Date,
+                dateCreated: Date?,
+                dateModified: Date?,
                 endDate: Date,
                 googleCalendarEventID: String?,
                 orderID: Int64,
@@ -95,8 +95,27 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                                                      alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
 
         let customerID = try container.decode(Int64.self, forKey: .customerID)
-        let dateCreated = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .dateCreated))
-        let dateModified = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .dateModified))
+
+        let dateCreated: Date?
+        if let dateCreatedValue = try container.decodeIfPresent(
+            Double.self,
+            forKey: .dateCreated
+        ) {
+            dateCreated = Date(timeIntervalSince1970: dateCreatedValue)
+        } else {
+            dateCreated = nil
+        }
+
+        let dateModified: Date?
+        if let dateModifiedValue = try container.decodeIfPresent(
+            Double.self,
+            forKey: .dateModified
+        ) {
+            dateModified = Date(timeIntervalSince1970: dateModifiedValue)
+        } else {
+            dateModified = nil
+        }
+
         let endDate = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .endDate))
         let googleCalendarEventID = try container.decodeIfPresent(String.self, forKey: .googleCalendarEventID)
         let orderID = try container.decode(Int64.self, forKey: .orderID)

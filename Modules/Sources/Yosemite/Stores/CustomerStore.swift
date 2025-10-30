@@ -90,7 +90,7 @@ public final class CustomerStore: Store {
     /// - Parameters:
     ///   - siteID: The site for which the array of Customers should be fetched.
     ///   - keyword: Keyword that we pass to the `?query={keyword}` endpoint to perform the search
-    ///   - onCompletion: Invoked when the operation finishes.
+    ///   - onCompletion: Invoked when the operation finishes. Returns true if there are more pages available.
     ///
     func searchCustomers(
         for siteID: Int64,
@@ -102,7 +102,7 @@ public final class CustomerStore: Store {
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
         filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty?,
-        onCompletion: @escaping (Result<(), Error>) -> Void) {
+        onCompletion: @escaping (Result<Bool, Error>) -> Void) {
             wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
                                                       pageNumber: pageNumber,
                                                       pageSize: pageSize,
@@ -114,15 +114,24 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
+                    let hasNextPage = customers.count == pageSize
                     if retrieveFullCustomersData {
-                        self.mapSearchResultsToCustomerObjects(for: siteID, with: keyword, with: customers, onCompletion: onCompletion)
+                        self.mapSearchResultsToCustomerObjects(for: siteID,
+                                                               with: keyword,
+                                                               with: customers,
+                                                               onCompletion: { result in
+                            switch result {
+                            case .success: onCompletion(.success(hasNextPage))
+                            case .failure(let error): onCompletion(.failure(error))
+                            }
+                        })
                     } else {
                         self.upsertCustomersAndSave(siteID: siteID,
                                                     readOnlyCustomers: customers,
                                                     shouldDeleteExistingCustomers: pageNumber == 1,
                                                     keyword: keyword,
                                                     onCompletion: {
-                            onCompletion(.success(()))
+                            onCompletion(.success(hasNextPage))
                         })
                     }
                 case .failure(let error):
@@ -262,7 +271,7 @@ public final class CustomerStore: Store {
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
                                                    with keyword: String,
                                                    with searchResults: [WCAnalyticsCustomer],
-                                                  onCompletion: @escaping (Result<(), Error>) -> Void) {
+                                                   onCompletion: @escaping (Result<Void, Error>) -> Void) {
         var customers = [Customer]()
         let group = DispatchGroup()
         for result in searchResults {

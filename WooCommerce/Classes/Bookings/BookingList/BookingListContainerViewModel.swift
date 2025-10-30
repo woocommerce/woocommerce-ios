@@ -3,6 +3,7 @@ import Combine
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
+    private let siteID: Int64
     private let todayListViewModel: BookingListViewModel
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
@@ -14,12 +15,26 @@ final class BookingListContainerViewModel: ObservableObject {
     @Published var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
+    @Published var numberOfActiveFilters: Int = 0
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
     private var sortBySubscription: AnyCancellable?
 
+
+    private var filters = BookingFiltersViewModel.Filters()
+
+    var filterText: String {
+        numberOfActiveFilters == 0 ? Localization.filter : String.localizedStringWithFormat(Localization.filterWithCount, numberOfActiveFilters)
+    }
+
+    var filterViewModel: BookingFiltersViewModel {
+        BookingFiltersViewModel(filter: filters, siteID: siteID)
+    }
+
     init(siteID: Int64) {
+        self.siteID = siteID
+
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
         self.todayListViewModel = BookingListViewModel(
             siteID: siteID,
@@ -88,6 +103,27 @@ final class BookingListContainerViewModel: ObservableObject {
         case .all:
             allSearchViewModel
         }
+    }
+
+    func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
+        self.filters = filters
+        self.numberOfActiveFilters = filters.numberOfActiveFilters
+        // TODO: Apply filters to All tab
+    }
+}
+
+private extension BookingListContainerViewModel {
+    enum Localization {
+        static let filter = NSLocalizedString(
+            "bookingListView.filter",
+            value: "Filter",
+            comment: "Button to filter the booking list"
+        )
+        static let filterWithCount = NSLocalizedString(
+            "bookingListView.filter.withCount",
+            value: "Filter (%1$d)",
+            comment: "Button to filter the booking list with number of active filters"
+        )
     }
 }
 

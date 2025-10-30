@@ -205,6 +205,7 @@ let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
 import <%= module %>
 <% } -%>
 
+// swiftlint:disable line_length
 <% for copiableSpec in specsToGenerate { -%>
 
 extension <%= copiableSpec.name %> {
@@ -231,3 +232,5 @@ extension <%= copiableSpec.name %> {
     }
 }
 <% } -%>
+
+// swiftlint:enable line_length

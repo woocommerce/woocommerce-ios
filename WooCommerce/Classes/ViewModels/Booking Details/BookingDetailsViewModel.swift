@@ -27,6 +27,7 @@ final class BookingDetailsViewModel: ObservableObject {
 
     @Published private(set) var navigationTitle = ""
     @Published private(set) var sections: [Section] = []
+    @Published var notice: Notice?
 
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
@@ -62,12 +63,6 @@ private extension BookingDetailsViewModel {
             content: .appointmentDetails(appointmentDetailsContent)
         )
 
-        let attendanceSection = Section(
-            header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
-            footerText: Localization.attendanceSectionFooterText,
-            content: .attendance(attendanceContent)
-        )
-
         let paymentSection = Section(
             header: .title(Localization.paymentSectionHeaderTitle.uppercased()),
             content: .payment(paymentContent)
@@ -81,7 +76,6 @@ private extension BookingDetailsViewModel {
         sections = [
             headerSection,
             appointmentDetailsSection,
-            attendanceSection,
             paymentSection,
             bookingNotes
         ]
@@ -90,36 +84,126 @@ private extension BookingDetailsViewModel {
     func updateDisplayProperties(from booking: Booking) {
         navigationTitle = Self.navigationTitle(for: booking)
 
+        headerContent.update(with: booking)
+
+        setupCustomerSectionVisibility()
         if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
             customerContent.update(with: billingAddress)
-            insertCustomerSectionIfAbsent()
         }
-        headerContent.update(with: booking)
+
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
+
+        setupAttendanceSectionVisibility()
         attendanceContent.update(with: booking)
+
         paymentContent.update(with: booking)
     }
 
-    func insertCustomerSectionIfAbsent() {
-        // Avoid adding if it already exists
-        let customerSectionExists = sections.contains {
+    func setupCustomerSectionVisibility() {
+        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
+            insertCustomerSectionIfAbsent()
+        } else {
+            deleteCustomerSectionIfPresent()
+        }
+    }
+
+    func setupAttendanceSectionVisibility() {
+        if booking.attendanceStatus == .cancelled || booking.bookingStatus == .cancelled {
+            deleteAttendanceSectionIfPresent()
+        } else {
+            insertAttendanceSectionIfAbsent()
+        }
+    }
+
+    func insertAttendanceSectionIfAbsent() {
+        guard let insertAfterIndex = sections.firstIndex(where: {
             if case .customer = $0.content {
+                return true
+            }
+            return false
+        }) ?? sections.firstIndex(where: {
+            if case .appointmentDetails = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        insertSectionIfAbsent(
+            section: Section(
+                header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
+                footerText: Localization.attendanceSectionFooterText,
+                content: .attendance(attendanceContent)
+            ),
+            at: insertAfterIndex + 1
+        )
+    }
+
+    func insertCustomerSectionIfAbsent() {
+        guard let insertAfterIndex = sections.firstIndex(where: {
+            if case .appointmentDetails = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        insertSectionIfAbsent(
+            section: Section(
+                header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+                content: .customer(customerContent)
+            ),
+            at: insertAfterIndex + 1
+        )
+    }
+
+    func insertSectionIfAbsent(section: Section, at index: Int) {
+        let sectionExists = sections.contains {
+            if section.content.id == $0.content.id {
                 return true
             }
 
             return false
         }
 
-        guard !customerSectionExists else {
+        guard !sectionExists else {
             return
         }
 
-        let customerSection = Section(
-            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
-            content: .customer(customerContent)
-        )
         withAnimation {
-            sections.insert(customerSection, at: 2)
+            sections.insert(section, at: index)
+        }
+    }
+
+    func deleteAttendanceSectionIfPresent() {
+        guard let attendanceSectionIndex = sections.firstIndex(where: {
+            if case .attendance = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        withAnimation {
+            _ = sections.remove(at: attendanceSectionIndex)
+        }
+    }
+
+    func deleteCustomerSectionIfPresent() {
+        guard let customerSectionIndex = sections.firstIndex(where: {
+            if case .customer = $0.content {
+                return true
+            }
+            return false
+        }) else {
+            return
+        }
+
+        withAnimation {
+            _ = sections.remove(at: customerSectionIndex)
         }
     }
 
@@ -150,13 +234,31 @@ extension BookingDetailsViewModel {
             siteID: booking.siteID,
             bookingID: booking.bookingID,
             status: newStatus
-        ) { error in
-            if let error {
+        ) { [weak self] error in
+            if let error, let self {
                 DDLogError("⛔️ Error updating booking attendance status: \(error)")
-                // TODO: Show an error notice to the user
+                displayAttendanceStatusUpdatedErrorNotice(status: newStatus)
             }
         }
         stores.dispatch(action)
+    }
+
+    private func displayAttendanceStatusUpdatedErrorNotice(status: BookingAttendanceStatus) {
+        let text = String.localizedStringWithFormat(
+            Localization.bookingAttendanceStatusUpdateFailedMessage,
+            booking.bookingID
+        )
+        self.notice = Notice(
+            message: text,
+            feedbackType: .error,
+            actionTitle: Localization.retryActionTitle
+        ) { [weak self] in
+            guard let self else {
+                return
+            }
+
+            updateAttendanceStatus(to: status)
+        }
     }
 }
 
@@ -278,6 +380,20 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.cancelation.alert.message",
             value: "%1$@ will no longer be able to attend “%2$@” on %3$@.",
             comment: "Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date."
+        )
+
+        static let bookingAttendanceStatusUpdateFailedMessage = NSLocalizedString(
+            "BookingDetailsView.attendanceStatus.updateFailed.message",
+            value: "Unable to change attendance status of Booking #%1$d",
+            comment: "Content of error presented when updating the attendance status of a Booking fails. "
+            + "It reads: Unable to change status of Booking #{Booking number}. "
+            + "Parameters: %1$d - Booking number"
+        )
+
+        static let retryActionTitle = NSLocalizedString(
+            "BookingDetailsView.retry.action",
+            value: "Retry",
+            comment: "Retry Action"
         )
     }
 }

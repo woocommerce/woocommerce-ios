@@ -28,6 +28,14 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var spySetSearchTermsSiteID: Int64?
     var mockSearchTerms: [POSItemType: [String]] = [:]
 
+    // POS sync eligibility tracking properties
+    var getPOSLastOpenedDateCalled = false
+    var setPOSLastOpenedDateCalled = false
+    var getFirstPOSCatalogSyncDateCalled = false
+    var setFirstPOSCatalogSyncDateCalled = false
+    var mockPOSLastOpenedDate: Date?
+    var mockFirstPOSCatalogSyncDate: Date?
+
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
@@ -86,4 +94,24 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         mockSearchTerms[itemType] = terms
     }
 
+    // POS sync eligibility tracking methods
+    func getPOSLastOpenedDate(siteID: Int64) -> Date? {
+        getPOSLastOpenedDateCalled = true
+        return mockPOSLastOpenedDate
+    }
+
+    func setPOSLastOpenedDate(siteID: Int64, date: Date) {
+        setPOSLastOpenedDateCalled = true
+        mockPOSLastOpenedDate = date
+    }
+
+    func getFirstPOSCatalogSyncDate(siteID: Int64) -> Date? {
+        getFirstPOSCatalogSyncDateCalled = true
+        return mockFirstPOSCatalogSyncDate
+    }
+
+    func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date) {
+        setFirstPOSCatalogSyncDateCalled = true
+        mockFirstPOSCatalogSyncDate = date
+    }
 }

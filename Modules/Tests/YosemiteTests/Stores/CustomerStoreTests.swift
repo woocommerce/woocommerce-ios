@@ -143,7 +143,7 @@ final class CustomerStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
-        let result = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = CustomerAction.searchCustomers(
                 siteID: self.dummySiteID,
                 pageNumber: 1,
@@ -172,7 +172,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 0)
 
         // When
-        let response = waitFor { promise in
+        let response: Result<Bool, Error> = waitFor { promise in
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
                                                         pageNumber: 1,
                                                         pageSize: 25,
@@ -188,6 +188,8 @@ final class CustomerStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(response.isSuccess)
+        // Verify hasNextPage is false since we received 2 customers with pageSize 25
+        XCTAssertEqual(try? response.get(), false)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 1)
 

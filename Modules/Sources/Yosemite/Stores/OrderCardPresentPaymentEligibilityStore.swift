@@ -1,9 +1,29 @@
-
 import Foundation
+import protocol Storage.StorageManagerType
+import protocol NetworkingCore.Network
 
 /// Determines whether an order is eligible for card present payment or not
 ///
 public final class OrderCardPresentPaymentEligibilityStore: Store {
+    private let currentSite: () -> Site?
+    private lazy var siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(
+        currentSite: currentSite
+    )
+
+    public init(
+        dispatcher: Dispatcher,
+        storageManager: StorageManagerType,
+        network: Network,
+        currentSite: @escaping () -> Site?
+    ) {
+        self.currentSite = currentSite
+        super.init(
+            dispatcher: dispatcher,
+            storageManager: storageManager,
+            network: network
+        )
+    }
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -35,10 +55,26 @@ private extension OrderCardPresentPaymentEligibilityStore {
                                               cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                               onCompletion: (Result<Bool, Error>) -> Void) {
         let storage = storageManager.viewStorage
+
+        guard let site = storage.loadSite(siteID: siteID)?.toReadOnly() else {
+            return onCompletion(
+                .failure(
+                    OrderIsEligibleForCardPresentPaymentError.siteNotFoundInStorage
+                )
+            )
+        }
+
+        guard siteCIABEligibilityChecker.isFeatureSupported(.cardReader, for: site) else {
+            return onCompletion(
+                .failure(
+                    OrderIsEligibleForCardPresentPaymentError.cardReaderPaymentOptionIsNotSupportedForCIABSites
+                )
+            )
+        }
+
         guard let order = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
             return onCompletion(.failure(OrderIsEligibleForCardPresentPaymentError.orderNotFoundInStorage))
         }
-
 
         let orderProductsIDs = order.items.map(\.productID)
         let products = storage.loadProducts(siteID: siteID, productsIDs: orderProductsIDs).map { $0.toReadOnly() }
@@ -50,5 +86,7 @@ private extension OrderCardPresentPaymentEligibilityStore {
 extension OrderCardPresentPaymentEligibilityStore {
     enum OrderIsEligibleForCardPresentPaymentError: Error {
         case orderNotFoundInStorage
+        case siteNotFoundInStorage
+        case cardReaderPaymentOptionIsNotSupportedForCIABSites
     }
 }

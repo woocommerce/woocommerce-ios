@@ -967,6 +967,13 @@ public extension StorageType {
         return objects.isEmpty ? nil : objects
     }
 
+    /// Retrieves the store booking resources
+    func loadBookingResources(siteID: Int64, resourceIDs: [Int64]) -> [BookingResource] {
+        let predicate = NSPredicate(format: "siteID == %lld && resourceID in %@", siteID, resourceIDs)
+        let descriptor = NSSortDescriptor(keyPath: \BookingResource.resourceID, ascending: false)
+        return allObjects(ofType: BookingResource.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     /// Retrieves the store booking resource
     func loadBookingResource(siteID: Int64, resourceID: Int64) -> BookingResource? {
         let predicate = \BookingResource.resourceID == resourceID && \BookingResource.siteID == siteID

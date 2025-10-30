@@ -2,3 +2,5 @@
 // DO NOT EDIT
 
 // Currently empty because none of the given sources conforms to GeneratedFakeable
+
+// swiftlint:enable line_length

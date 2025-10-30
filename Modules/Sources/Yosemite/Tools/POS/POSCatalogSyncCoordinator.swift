@@ -2,6 +2,7 @@
 import Foundation
 import Storage
 import GRDB
+import Alamofire
 
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync if applicable for the specified site
@@ -25,7 +26,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - fullSyncMaxAge: Maximum age before a full sync is triggered. If the last full sync is older than this,
     ///                     performs full sync; otherwise, performs incremental sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -40,13 +41,15 @@ public extension POSCatalogSyncCoordinatorProtocol {
     /// Performs a smart sync with a default 24-hour threshold for full sync
     func performSmartSync(for siteID: Int64) async throws {
         let twentyFourHours: TimeInterval = 24 * 60 * 60
-        try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours)
+        let oneHour: TimeInterval = 60 * 60
+        try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours, incrementalSyncMaxAge: oneHour)
     }
 }
 
 public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
+    case requestCancelled
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
@@ -78,13 +81,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.negativeMaxAge
         }
 
-        // Check sync eligibility before proceeding
-        guard await checkSyncEligibility(for: siteID) else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Full sync skipped - site \(siteID) is not eligible")
-            return
-        }
-
-        guard await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+        guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
             return
         }
 
@@ -103,7 +100,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
-        _ = try await fullSyncService.startFullSync(for: siteID)
+        do {
+            _ = try await fullSyncService.startFullSync(for: siteID)
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        }
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
 
@@ -111,22 +112,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         recordFirstSyncIfNeeded(for: siteID)
     }
 
-    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
-        // Check sync eligibility before proceeding
-        guard await checkSyncEligibility(for: siteID) else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Sync skipped - site \(siteID) is not eligible")
-            return
-        }
-
+    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
 
         if Date().timeIntervalSince(lastFullSync) >= fullSyncMaxAge {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
-            try await performFullSync(for: siteID)
+            try await performFullSyncIfApplicable(for: siteID, maxAge: fullSyncMaxAge)
         } else {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
-            try await performIncrementalSync(for: siteID)
+            try await performIncrementalSyncIfApplicable(for: siteID, maxAge: incrementalSyncMaxAge)
         }
 
         // Record first sync date if this was the first successful sync
@@ -138,7 +133,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     ///   - siteID: The site ID to check
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
-    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async throws -> Bool {
+        guard try await checkSyncEligibility(for: siteID) else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Full sync skipped - site \(siteID) is not eligible")
+            return false
+        }
+
         if !siteExistsInDatabase(siteID: siteID) {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) not found in database, sync needed")
             return true
@@ -173,13 +173,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.negativeMaxAge
         }
 
-        // Check sync eligibility before proceeding
-        guard await checkSyncEligibility(for: siteID) else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Incremental sync skipped - site \(siteID) is not eligible")
-            return
-        }
-
-        guard await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
+        guard try await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
             return
         }
 
@@ -200,9 +194,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting incremental sync for site \(siteID)")
 
-        try await incrementalSyncService.startIncrementalSync(for: siteID,
-                                                              lastFullSyncDate: lastFullSyncDate,
-                                                              lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
+        do {
+            try await incrementalSyncService.startIncrementalSync(for: siteID,
+                                                                  lastFullSyncDate: lastFullSyncDate,
+                                                                  lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        }
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
 
@@ -210,7 +208,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         recordFirstSyncIfNeeded(for: siteID)
     }
 
-    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+    private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval) async throws -> Bool {
+        guard try await checkSyncEligibility(for: siteID) else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Incremental sync skipped - site \(siteID) is not eligible")
+            return false
+        }
+
         guard await lastFullSyncDate(for: siteID) != nil else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: No full sync performed yet for site \(siteID), skipping incremental sync")
             return false
@@ -274,8 +277,8 @@ private extension POSCatalogSyncCoordinator {
     // MARK: - Sync Eligibility
 
     /// Checks if sync is eligible for the given site based on catalog eligibility and temporal criteria
-    func checkSyncEligibility(for siteID: Int64) async -> Bool {
-        guard await catalogEligibilityChecker.catalogEligibility(for: siteID) == .eligible else {
+    func checkSyncEligibility(for siteID: Int64) async throws -> Bool {
+        guard try await catalogEligibilityChecker.catalogEligibility(for: siteID) == .eligible else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
             return false
         }

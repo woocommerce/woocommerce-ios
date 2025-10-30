@@ -2,9 +2,11 @@ import SwiftUI
 
 struct POSListInlineErrorView: View {
     let errorState: PointOfSaleErrorState
-    let buttonAction: () -> Void
+    let buttonAction: @Sendable () async -> Void
+
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @State private var isLoading: Bool = false
 
     var body: some View {
         ViewThatFits {
@@ -39,7 +41,7 @@ struct POSListInlineErrorView: View {
             Spacer()
 
             button
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal, isLoading: isLoading))
                 .fixedSize(horizontal: true, vertical: false)
                 .padding(Constants.accessoryButtonPadding * (1 / scale))
         }
@@ -62,7 +64,7 @@ struct POSListInlineErrorView: View {
                 }
                 Spacer()
                 button
-                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall, isLoading: isLoading))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -73,7 +75,11 @@ struct POSListInlineErrorView: View {
     @ViewBuilder
     private var button: some View {
         Button {
-            buttonAction()
+            Task { @MainActor in
+                isLoading = true
+                await buttonAction()
+                isLoading = false
+            }
         } label: {
             Text(errorState.buttonText)
                 .font(Constants.itemTitleFont)

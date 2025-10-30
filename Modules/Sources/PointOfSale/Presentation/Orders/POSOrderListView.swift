@@ -108,9 +108,7 @@ struct POSOrderListView: View {
         switch ordersViewState {
         case .inlineError(_, let errorState, .refresh):
             POSListInlineErrorView(errorState: errorState) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadOrders()
-                }
+                await orderListModel.ordersController.loadOrders()
             }
         default:
             EmptyView()
@@ -180,9 +178,7 @@ struct POSOrderListView: View {
             }
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadNextOrders()
-                }
+                await orderListModel.ordersController.loadNextOrders()
             }
         default:
             EmptyView()

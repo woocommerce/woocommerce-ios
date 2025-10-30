@@ -220,14 +220,6 @@ struct GRDBObservableDataSourceTests {
         #expect(sut.productItems.count == 3)
     }
 
-    @Test("Refresh is a no-op")
-    func test_refresh_is_a_no_op() {
-        // When/Then: Should not crash or change state
-        sut.refresh()
-        #expect(sut.productItems.isEmpty)
-        #expect(sut.isLoadingProducts == false)
-    }
-
     @Test("Load more products guards against concurrent loads")
     func test_load_more_products_guards_against_concurrent_loads() async throws {
         // Given: Products already loaded

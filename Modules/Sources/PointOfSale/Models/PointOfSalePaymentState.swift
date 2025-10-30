@@ -28,6 +28,17 @@ struct PointOfSalePaymentState: Equatable {
             return card.shownFullScreen
         }
     }
+
+    var isSuccess: Bool {
+        switch (card, cash) {
+        case (.cardPaymentSuccessful, _):
+            return true
+        case (_, .paymentSuccess):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 enum PointOfSaleCardPaymentState: Equatable {

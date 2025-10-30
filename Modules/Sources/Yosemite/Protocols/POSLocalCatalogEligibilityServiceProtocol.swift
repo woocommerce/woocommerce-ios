@@ -31,16 +31,16 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// Get catalog eligibility for a specific site
     /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Cached eligibility state, or eligible if not yet checked
-    func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState
+    func catalogEligibility(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
 
     /// Update POS eligibility and refresh catalog eligibility for the specified site
     /// - Parameters:
     ///   - isEligible: Whether POS is eligible for the site
     ///   - siteID: The site ID to refresh eligibility for
-    func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async
+    func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async throws
 
     /// Refresh eligibility state for a specific site
     /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Fresh eligibility state with reason if ineligible
-    @discardableResult func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState
+    @discardableResult func refreshEligibilityState(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
 }

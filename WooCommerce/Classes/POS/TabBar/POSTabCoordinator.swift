@@ -138,14 +138,14 @@ final class POSTabCoordinator {
 
             // If POS tab is not visible, mark as ineligible
             guard isPOSTabVisible else {
-                await service.updatePOSEligibility(isEligible: false, for: siteID)
+                try await service.updatePOSEligibility(isEligible: false, for: siteID)
                 return
             }
 
             // Check actual POS eligibility using the eligibility checker
             let eligibilityState = await eligibilityChecker.checkEligibility()
             let isPOSEligible = eligibilityState == .eligible
-            await service.updatePOSEligibility(isEligible: isPOSEligible, for: siteID)
+            try await service.updatePOSEligibility(isEligible: isPOSEligible, for: siteID)
         }
     }
 
@@ -175,11 +175,11 @@ private extension POSTabCoordinator {
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Retry transient failures before using the value
-                let state = await service.catalogEligibility(for: siteID)
+                let state = try await service.catalogEligibility(for: siteID)
                 if case .ineligible(reason: .catalogSizeCheckFailed) = state {
-                    await service.refreshEligibilityState(for: siteID)
+                    try await service.refreshEligibilityState(for: siteID)
                 }
-                isLocalCatalogEligible = await service.catalogEligibility(for: siteID) == .eligible
+                isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
             } else {
                 // Service not ready yet (rare race condition), assume ineligible
                 isLocalCatalogEligible = false

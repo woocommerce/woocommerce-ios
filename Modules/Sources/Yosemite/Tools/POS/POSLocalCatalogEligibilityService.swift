@@ -1,5 +1,5 @@
 import Foundation
-import CocoaLumberjackSwift
+import Alamofire
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
@@ -29,28 +29,28 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
     /// Get catalog eligibility for a specific site
     /// If not cached, refreshes eligibility and returns the result
-    public func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+    public func catalogEligibility(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState {
         if let cached = eligibilityStates[siteID] {
             return cached
         }
         // Not cached yet, refresh and return
-        return await refreshEligibilityState(for: siteID)
+        return try await refreshEligibilityState(for: siteID)
     }
 
     /// Update POS eligibility and refresh catalog eligibility for the specified site
     /// - Parameters:
     ///   - isEligible: Whether POS is eligible
     ///   - siteID: The site ID to refresh eligibility for
-    public func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {
+    public func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async throws {
         // Store the POS eligibility state for this site
         posEligibilityStates[siteID] = isEligible
         // Refresh eligibility for the current site now that POS eligibility has changed
-        await refreshEligibilityState(for: siteID)
+        try await refreshEligibilityState(for: siteID)
     }
 
     /// Refresh eligibility state for a specific site
     @discardableResult
-    public func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+    public func refreshEligibilityState(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState {
         // Check POS tab eligibility FIRST - no point in checking catalog if POS isn't eligible
         guard let isPOSEligible = posEligibilityStates[siteID] else {
             // We don't have POS eligibility info yet - don't cache this state
@@ -93,6 +93,8 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             eligibilityStates[siteID] = .eligible
             return .eligible
 
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
         } catch {
             let errorString = String(describing: error)
             let state = POSLocalCatalogEligibilityState.ineligible(

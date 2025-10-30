@@ -108,10 +108,6 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         setupVariationObservation(parentProduct: parentProduct)
     }
 
-    public func refresh() {
-        // No-op: database observation automatically updates when data changes during incremental sync
-    }
-
     // MARK: - ValueObservation Setup
 
     private func setupProductObservation() {

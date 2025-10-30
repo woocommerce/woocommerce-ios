@@ -14,6 +14,7 @@ import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -51,6 +52,8 @@ protocol PointOfSaleAggregateModelProtocol {
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let siteID: Int64
+    private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -86,7 +89,9 @@ protocol PointOfSaleAggregateModelProtocol {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
-         paymentState: PointOfSalePaymentState = .idle) {
+         paymentState: PointOfSalePaymentState = .idle,
+         siteID: Int64,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -102,10 +107,14 @@ protocol PointOfSaleAggregateModelProtocol {
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
         self.soundPlayer = soundPlayer
+        self.siteID = siteID
+        self.catalogSyncCoordinator = catalogSyncCoordinator
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
+        setupPaymentSuccessObservation()
+        performIncrementalSync()
     }
 }
 
@@ -589,6 +598,29 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         resetCardReaderObservation()
         cancellables.forEach { $0.cancel() }
+    }
+}
+
+// MARK: - Incremental catalog sync on payment success
+
+private extension PointOfSaleAggregateModel {
+    @Sendable private func setupPaymentSuccessObservation() {
+        withObservationTracking { [weak self] in
+            guard let self else { return }
+            if paymentState.isSuccess {
+                performIncrementalSync()
+            }
+        } onChange: { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async(execute: setupPaymentSuccessObservation)
+        }
+    }
+
+    private func performIncrementalSync() {
+        guard let catalogSyncCoordinator else { return }
+        Task {
+            try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        }
     }
 }
 

@@ -38,7 +38,8 @@ final class PointOfSaleObservableItemsControllerTests {
         // Given
         let dataSource = MockPOSObservableDataSource()
         dataSource.isLoadingProducts = true
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         // Then
         #expect(sut.itemsViewState.containerState == .loading)
@@ -49,7 +50,8 @@ final class PointOfSaleObservableItemsControllerTests {
     @Test func test_load_products_transitions_to_loaded_state() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let mockItems = [makeSimpleProduct()]
         dataSource.productItems = mockItems
@@ -67,7 +69,8 @@ final class PointOfSaleObservableItemsControllerTests {
     @Test func test_load_products_with_more_pages_sets_hasMoreItems() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let mockItems = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
         dataSource.productItems = mockItems
@@ -81,18 +84,25 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.root == .loaded(mockItems, hasMoreItems: true))
     }
 
-    @Test func test_load_products_when_empty_results_in_empty_state() async {
+    @Test func test_load_products_when_empty_triggers_refresh_on_subsequent_load() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         dataSource.productItems = []
         dataSource.isLoadingProducts = false
+        coordinator.performIncrementalSyncResult = .success(())
 
-        // When
+        // When: First load (initial load, no refresh triggered)
+        await sut.loadItems(base: .root)
+        #expect(coordinator.performIncrementalSyncInvocationCount == 0)
+
+        // When: Second load while still empty (should trigger refresh)
         await sut.loadItems(base: .root)
 
-        // Then
+        // Then: Should trigger refresh when empty after initial load
+        #expect(coordinator.performIncrementalSyncInvocationCount == 1)
         #expect(sut.itemsViewState.containerState == .content)
         #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
@@ -100,7 +110,8 @@ final class PointOfSaleObservableItemsControllerTests {
     @Test func test_load_variations_for_parent() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parentProduct = POSVariableParentProduct(
             id: UUID(),
@@ -123,10 +134,11 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .loaded(mockVariations, hasMoreItems: false))
     }
 
-    @Test func test_load_variations_when_empty_results_in_empty_state() async {
+    @Test func test_load_variations_when_empty_triggers_refresh_on_subsequent_load() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parentProduct = POSVariableParentProduct(
             id: UUID(),
@@ -139,18 +151,25 @@ final class PointOfSaleObservableItemsControllerTests {
 
         dataSource.variationItems = []
         dataSource.isLoadingVariations = false
+        coordinator.performIncrementalSyncResult = .success(())
 
-        // When
+        // When: First load (initial load, no refresh triggered)
+        await sut.loadItems(base: .parent(parentItem))
+        #expect(coordinator.performIncrementalSyncInvocationCount == 0)
+
+        // When: Second load while still empty (should trigger refresh)
         await sut.loadItems(base: .parent(parentItem))
 
-        // Then
+        // Then: Should trigger refresh when empty after initial load
+        #expect(coordinator.performIncrementalSyncInvocationCount == 1)
         #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .empty)
     }
 
     @Test func test_products_and_variations_are_independent() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let mockProducts = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
         let mockVariations = [makeVariation()]
@@ -186,7 +205,8 @@ final class PointOfSaleObservableItemsControllerTests {
     @Test func test_load_next_items_delegates_to_data_source() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         // Simulate initial load
         dataSource.productItems = [makeSimpleProduct()]
@@ -202,10 +222,12 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(sut.itemsViewState.containerState == .content)
     }
 
-    @Test func test_refresh_delegates_to_data_source() async {
+    @Test func test_refresh_triggers_incremental_sync() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         dataSource.productItems = [makeSimpleProduct()]
         dataSource.isLoadingProducts = false
@@ -214,14 +236,18 @@ final class PointOfSaleObservableItemsControllerTests {
         // When
         await sut.refreshItems(base: .root)
 
-        // Then: Should still be in content state
+        // Then: Should trigger incremental sync with correct site ID
+        #expect(coordinator.performIncrementalSyncInvocationCount == 1)
+        #expect(coordinator.performIncrementalSyncSiteID == siteID)
+        #expect(coordinator.performIncrementalSyncMaxAge == 0)
         #expect(sut.itemsViewState.containerState == .content)
     }
 
     @Test func test_switching_parent_resets_variation_state() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
         let parentItem1 = POSItem.variableParentProduct(parent1)
@@ -248,7 +274,8 @@ final class PointOfSaleObservableItemsControllerTests {
     @Test func test_error_state_when_data_source_has_error() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         dataSource.productItems = []
         dataSource.isLoadingProducts = false
@@ -267,7 +294,8 @@ final class PointOfSaleObservableItemsControllerTests {
     @Test func test_loading_state_preserves_existing_items() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
-        let sut = PointOfSaleObservableItemsController(dataSource: dataSource)
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let mockItems = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
 
@@ -281,5 +309,130 @@ final class PointOfSaleObservableItemsControllerTests {
 
         // Then: Loading state should preserve items
         #expect(sut.itemsViewState.itemsStack.root == .loading(mockItems))
+    }
+
+    @Test func test_refresh_error_handling_for_products() async {
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        // Test 1: Inline error when items exist
+        let mockItems = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
+        dataSource.productItems = mockItems
+        dataSource.isLoadingProducts = false
+        await sut.loadItems(base: .root)
+        coordinator.performIncrementalSyncResult = .failure(NSError(domain: "test.error", code: 500))
+        await sut.refreshItems(base: .root)
+
+        guard case .inlineError(let items, let error, let context) = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected inlineError state when items exist")
+            return
+        }
+        #expect(items.count == 2)
+        #expect(error.errorType == .productsLoadError)
+        #expect(context == .refresh)
+
+        // Test 2: Full error when no items
+        dataSource.productItems = []
+        await sut.loadItems(base: .root)
+        coordinator.performIncrementalSyncResult = .failure(NSError(domain: "test.error", code: 500))
+        await sut.refreshItems(base: .root)
+
+        guard case .error(let fullError) = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected error state when no items")
+            return
+        }
+        #expect(fullError.errorType == .productsLoadError)
+
+        // Test 3: Error clears on successful retry
+        let mockProduct = makeSimpleProduct()
+        dataSource.productItems = [mockProduct]
+        await sut.loadItems(base: .root)
+        coordinator.performIncrementalSyncResult = .success(())
+        await sut.refreshItems(base: .root)
+
+        #expect(sut.itemsViewState.itemsStack.root == .loaded([mockProduct], hasMoreItems: false))
+    }
+
+    @Test func test_load_products_retries_refresh_when_error_exists() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let mockProduct = makeSimpleProduct()
+        dataSource.productItems = [mockProduct]
+        dataSource.isLoadingProducts = false
+        await sut.loadItems(base: .root)
+
+        // Trigger a refresh error
+        coordinator.performIncrementalSyncResult = .failure(NSError(domain: "test.error", code: 500))
+        await sut.refreshItems(base: .root)
+
+        guard case .inlineError = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected inlineError state after refresh")
+            return
+        }
+
+        // When: Load items again with successful refresh
+        coordinator.performIncrementalSyncResult = .success(())
+        await sut.loadItems(base: .root)
+
+        // Then: Refresh should be retried and error cleared
+        #expect(coordinator.performIncrementalSyncInvocationCount == 2)
+        #expect(sut.itemsViewState.itemsStack.root == .loaded([mockProduct], hasMoreItems: false))
+    }
+
+    @Test func test_refresh_error_handling_for_variations() async {
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let parentProduct = POSVariableParentProduct(
+            id: UUID(),
+            name: "Parent",
+            productImageSource: nil,
+            productID: 100,
+            allAttributes: []
+        )
+        let parentItem = POSItem.variableParentProduct(parentProduct)
+
+        // Test 1: Inline error when items exist
+        let mockVariations = [makeVariation(variationID: 1), makeVariation(variationID: 2)]
+        dataSource.variationItems = mockVariations
+        dataSource.isLoadingVariations = false
+        await sut.loadItems(base: .parent(parentItem))
+        coordinator.performIncrementalSyncResult = .failure(NSError(domain: "test.error", code: 500))
+        await sut.refreshItems(base: .parent(parentItem))
+
+        guard case .inlineError(let items, let error, let context) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
+            Issue.record("Expected inlineError state when items exist")
+            return
+        }
+        #expect(items.count == 2)
+        #expect(error.errorType == .variationsLoadError)
+        #expect(context == .refresh)
+
+        // Test 2: Full error when no items
+        dataSource.variationItems = []
+        await sut.loadItems(base: .parent(parentItem))
+        coordinator.performIncrementalSyncResult = .failure(NSError(domain: "test.error", code: 500))
+        await sut.refreshItems(base: .parent(parentItem))
+
+        guard case .error(let fullError) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
+            Issue.record("Expected error state when no items")
+            return
+        }
+        #expect(fullError.errorType == .variationsLoadError)
+
+        // Test 3: Error clears on successful retry
+        dataSource.variationItems = mockVariations
+        dataSource.hasMoreVariations = false
+        await sut.loadItems(base: .parent(parentItem))
+        coordinator.performIncrementalSyncResult = .success(())
+        await sut.refreshItems(base: .parent(parentItem))
+
+        #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .loaded(mockVariations, hasMoreItems: false))
+        #expect(coordinator.performIncrementalSyncInvocationCount == 5)
     }
 }

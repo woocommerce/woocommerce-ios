@@ -428,6 +428,12 @@ struct SingleAddressForm: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
         .addingTopAndBottomDividers()
+        .onChange(of: showStateSelector) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .onChange(of: showCountrySelector) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
     }
 

@@ -11,9 +11,11 @@ import struct Networking.POSCatalogResponse
 // periphery:ignore
 public protocol POSCatalogFullSyncServiceProtocol {
     /// Starts a full catalog sync process
-    /// - Parameter siteID: The site ID to sync catalog for
+    /// - Parameters:
+    ///   - siteID: The site ID to sync catalog for
+    ///   - regenerateCatalog: Whether to force the catalog generation
     /// - Returns: The synced catalog containing products and variations
-    func startFullSync(for siteID: Int64) async throws -> POSCatalog
+    func startFullSync(for siteID: Int64, regenerateCatalog: Bool) async throws -> POSCatalog
 }
 
 /// POS catalog from full sync.
@@ -66,14 +68,14 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 
     // MARK: - Protocol Conformance
 
-    public func startFullSync(for siteID: Int64) async throws -> POSCatalog {
-        DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
+    public func startFullSync(for siteID: Int64, regenerateCatalog: Bool = false) async throws -> POSCatalog {
+        DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog)")
 
         do {
             // Sync from network
             let catalog: POSCatalog
             if usesCatalogAPI {
-                catalog = try await loadCatalogFromCatalogEndpoint(for: siteID, syncRemote: syncRemote)
+                catalog = try await loadCatalogFromCatalogAPI(for: siteID, syncRemote: syncRemote, regenerateCatalog: regenerateCatalog)
             } else {
                 catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
             }
@@ -112,33 +114,32 @@ private extension POSCatalogFullSyncService {
         return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
     }
 
-    func loadCatalogFromCatalogEndpoint(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
+    func loadCatalogFromCatalogAPI(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol, regenerateCatalog: Bool) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
-        let catalog = try await downloadCatalog(for: siteID, syncRemote: syncRemote)
+        let catalog = try await downloadCatalog(for: siteID, syncRemote: syncRemote, regenerateCatalog: regenerateCatalog)
         let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
-        print("🟣 Download completed - Time: \(String(format: "%.2f", downloadTime))s")
+        DDLogInfo("🟣 Catalog download completed - Time: \(String(format: "%.2f", downloadTime))s")
 
         return .init(products: catalog.products, variations: catalog.variations, syncDate: .init())
     }
 }
 
 private extension POSCatalogFullSyncService {
-    func downloadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalogResponse {
-        print("🟣 Starting catalog generation...")
+    func downloadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol, regenerateCatalog: Bool) async throws -> POSCatalogResponse {
+        DDLogInfo("🟣 Starting catalog request...")
 
-        // 1. Generate catalog and get job ID
-        let response = try await syncRemote.requestCatalogGeneration(for: siteID, forceGeneration: true)
+        // 1. Requests catalog until download URL is available.
+        let response = try await syncRemote.requestCatalogGeneration(for: siteID, forceGeneration: regenerateCatalog)
         let downloadURL: String?
         if let url = response.downloadURL {
             downloadURL = url
-            print("🟣 Catalog ready for download: \(url)")
+            DDLogInfo("🟣 Catalog ready for download: \(url)")
         } else {
-            // 2. Poll for completion
+            // 2. Polls for completion until download URL is available.
             downloadURL = try await pollForCatalogCompletion(siteID: siteID, syncRemote: syncRemote)
-            print("🟣 Catalog generation started")
         }
 
-        // 3. Download using the provided URL
+        // 3. Downloads catalog using the provided URL.
         guard let downloadURL else {
             throw POSCatalogSyncError.invalidData
         }
@@ -146,7 +147,8 @@ private extension POSCatalogFullSyncService {
     }
 
     func pollForCatalogCompletion(siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> String {
-        let maxAttempts = 1000 // each attempt is made 1 second after the last one completes
+        // Each attempt is made 1 second after the last one completes.
+        let maxAttempts = 1000
         var attempts = 0
 
         while attempts < maxAttempts {
@@ -159,7 +161,7 @@ private extension POSCatalogFullSyncService {
                 }
                 return downloadURL
             case .pending, .processing:
-                print("🟣 Catalog generation \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
+                DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
                 try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 attempts += 1
             case .failed:

@@ -118,11 +118,6 @@ private extension CustomerListSyncable {
             value: "Search customer",
             comment: "Prompt in the search bar of the booking customer selector view"
         )
-        static let emptySearchTitle = NSLocalizedString(
-            "bookingCustomerSelectorView.emptySearchTitle",
-            value: "Search customer",
-            comment: "Prompt in the search bar of the booking customer selector view"
-        )
         static let emptySearchDescription = NSLocalizedString(
             "bookingCustomerSelectorView.emptySearchDescription",
             value: "Try adjusting your search term to see more results",

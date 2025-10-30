@@ -88,6 +88,13 @@ struct POSSettingsHardwareDetailView: View {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                     .posInteractiveDismissDisabled(alertType.isDismissDisabled)
             })
+            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+                // TODO: Handle dismiss
+            }, content: { viewContainer in
+                PointOfSaleCardPresentPaymentOnboardingView(
+                    viewModel: .init(onboardingViewContainer: viewContainer,
+                                     onDismissTap: { /* TODO: Handle dismiss */ }))
+            })
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }

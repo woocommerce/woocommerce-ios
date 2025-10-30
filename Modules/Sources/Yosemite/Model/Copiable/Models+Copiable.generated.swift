@@ -11,6 +11,7 @@ import struct NetworkingCore.Order
 import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderRefundCondensed
 
+// swiftlint:disable line_length
 
 extension Yosemite.JustInTimeMessage {
     public func copy(
@@ -230,3 +231,5 @@ extension Yosemite.WooPaymentsPayoutsOverviewByCurrency {
         )
     }
 }
+
+// swiftlint:enable line_length

@@ -28,7 +28,7 @@ struct UpdateAttendanceStatusView: View {
                             Text(status.title)
                                 .font(.body.weight(.medium))
                                 .fixedSize(horizontal: false, vertical: true)
-                            Text(status.description)
+                            Text(status.information)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -72,7 +72,7 @@ private extension BookingAttendanceStatus {
         }
     }
 
-    var description: String {
+    var information: String {
         switch self {
         case .booked:
             return UpdateAttendanceStatusView.Localization.bookedDescription

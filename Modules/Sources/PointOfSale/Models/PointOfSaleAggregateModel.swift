@@ -44,7 +44,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
     let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    let settingsController: POSSettingsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -82,7 +82,7 @@ protocol PointOfSaleAggregateModelProtocol {
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         settingsController: PointOfSaleSettingsControllerProtocol,
+         settingsController: POSSettingsControllerProtocol,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,

@@ -33,6 +33,15 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
         userDefaults.loadCachedBookingsTabVisibility(siteID: site.siteID)
     }
 
+    /// Checks the initial visibility without the `BookingsTabEligibilityChecker` instsance
+    /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
+    static func checkInitialVisibility(
+        for siteID: Int64,
+        in userDefaults: UserDefaults = .standard
+    ) -> Bool {
+        return userDefaults.loadCachedBookingsTabVisibility(siteID: siteID)
+    }
+
     /// Checks the final visibility of the Bookings tab.
     func checkVisibility() async -> Bool {
         // Check feature flag

@@ -26,6 +26,7 @@ public typealias BlazeTargetOptions = Networking.BlazeTargetOptions
 public typealias BlazeTargetLocation = Networking.BlazeTargetLocation
 public typealias BlazeTargetTopic = Networking.BlazeTargetTopic
 public typealias Booking = Networking.Booking
+public typealias BookingStatus = Networking.BookingStatus
 public typealias BookingOrderInfo = Networking.BookingOrderInfo
 public typealias BookingCustomerInfo = Networking.BookingCustomerInfo
 public typealias BookingPaymentInfo = Networking.BookingPaymentInfo
@@ -276,6 +277,7 @@ public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
 public typealias StorageBlazeTargetTopic = Storage.BlazeTargetTopic
 // periphery: ignore
 public typealias StorageBooking = Storage.Booking
+public typealias StorageBookingResource = Storage.BookingResource
 public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer

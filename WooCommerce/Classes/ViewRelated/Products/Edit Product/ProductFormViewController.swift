@@ -645,6 +645,7 @@ private extension ProductFormViewController {
         tableView.delegate = self
         tableView.accessibilityIdentifier = "product-form"
         tableView.cellLayoutMarginsFollowReadableWidth = true
+        tableView.keyboardDismissMode = .onDrag
 
         tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()

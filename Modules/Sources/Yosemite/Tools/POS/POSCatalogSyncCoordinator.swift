@@ -281,7 +281,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
 private extension POSCatalogSyncCoordinator {
     enum Constants {
-        // Temporary high limit to allow large catalog size
-        static let defaultSizeLimitForPOSCatalog = 100000000
+        static let defaultSizeLimitForPOSCatalog = 1000
     }
 }

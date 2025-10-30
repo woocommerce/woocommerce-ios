@@ -37,7 +37,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     var criteria: Filters {
         let teamMembers = (teamMemberFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingResource] ?? []
         let products = (productFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingProductFilter] ?? []
-        let customer = customerFilterViewModel.selectedValue as? CustomerFilter
+        let customers = (customerFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingCustomerFilter] ?? []
         let attendanceStatuses = (attendanceStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingAttendanceStatus] ?? []
         let paymentStatuses = (paymentStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingStatus] ?? []
         let dateRange = dateTimeFilterViewModel.selectedValue as? BookingDateRangeFilter
@@ -47,7 +47,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
                        products: products,
                        attendanceStatuses: attendanceStatuses,
                        paymentStatuses: paymentStatuses,
-                       customer: customer,
+                       customers: customers,
                        dateRange: dateRange,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
@@ -90,7 +90,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let products: [BookingProductFilter]
         let attendanceStatuses: [BookingAttendanceStatus]
         let paymentStatuses: [BookingStatus]
-        let customer: CustomerFilter?
+        let customers: [BookingCustomerFilter]
         let dateRange: BookingDateRangeFilter?
 
         let numberOfActiveFilters: Int
@@ -100,7 +100,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
             products = []
             attendanceStatuses = []
             paymentStatuses = []
-            customer = nil
+            customers = []
             dateRange = nil
             numberOfActiveFilters = 0
         }
@@ -109,14 +109,14 @@ final class BookingFiltersViewModel: FilterListViewModel {
              products: [BookingProductFilter],
              attendanceStatuses: [BookingAttendanceStatus],
              paymentStatuses: [BookingStatus],
-             customer: CustomerFilter?,
+             customers: [BookingCustomerFilter],
              dateRange: BookingDateRangeFilter?,
              numberOfActiveFilters: Int) {
             self.teamMembers = teamMembers
             self.products = products
             self.attendanceStatuses = attendanceStatuses
             self.paymentStatuses = paymentStatuses
-            self.customer = customer
+            self.customers = customers
             self.dateRange = dateRange
             self.numberOfActiveFilters = numberOfActiveFilters
         }
@@ -127,9 +127,8 @@ final class BookingFiltersViewModel: FilterListViewModel {
             attendanceStatuses.map { $0.localizedTitle } +
             paymentStatuses.map { $0.localizedTitle }
 
-            if let customer {
-                readable.append(customer.description)
-            }
+            readable += customers.map { $0.name }
+
             if let dateRange {
                 readable.append(dateRange.description)
             }
@@ -184,8 +183,8 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        selectedValue: MultipleFilterSelection(items: filters.products))
         case .customer(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .customer(siteID: siteID, source: .booking),
-                                       selectedValue: filters.customer)
+                                       listSelectorConfig: .bookingCustomers(siteID: siteID),
+                                       selectedValue: MultipleFilterSelection(items: filters.customers))
         case .attendanceStatus:
             let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .cancelled, .noShow]
             return FilterTypeViewModel(title: title,
@@ -237,6 +236,14 @@ extension BookingStatus: FilterType {
 }
 
 extension BookingProductFilter: FilterType {
+    /// The user-facing description of the filter value.
+    var description: String { name }
+
+    /// Whether the filter is set to a non-empty value.
+    var isActive: Bool { true }
+}
+
+extension BookingCustomerFilter: FilterType {
     /// The user-facing description of the filter value.
     var description: String { name }
 
@@ -314,8 +321,8 @@ private extension BookingFiltersViewModel.BookingListFilter {
             comment: "Row title for filtering bookings by product.")
 
         static let rowTitleCustomer = NSLocalizedString(
-            "bookingFilters.rowTitleCustomer",
-            value: "Customer name",
+            "bookingFilters.rowCustomer",
+            value: "Customer",
             comment: "Row title for filtering bookings by customer.")
 
         static let rowTitleAttendanceStatus = NSLocalizedString(

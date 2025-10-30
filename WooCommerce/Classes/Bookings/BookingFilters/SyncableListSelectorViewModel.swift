@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 
@@ -12,6 +13,8 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
+    @Published var searchQuery: String = ""
+
     private let syncable: Syncable
     private let stores: StoresManager
     private let storage: StorageManagerType
@@ -19,6 +22,12 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
     /// Supports infinite scroll.
     private let paginationTracker: PaginationTracker
     private let pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex
+
+    /// Stores the current search keyword for pagination
+    private var currentSearchKeyword: String = ""
+
+    /// Cancellable for search query observation
+    private var searchCancellable: AnyCancellable?
 
     /// ResultsController configured by the syncable
     private lazy var resultsController: ResultsController<Syncable.StorageType> = {
@@ -41,6 +50,7 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
 
         configureResultsController()
         configurePaginationTracker()
+        configureSearchObserver()
     }
 
     /// Called when loading the first page of resources.
@@ -57,6 +67,23 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
 
     private func configurePaginationTracker() {
         paginationTracker.delegate = self
+    }
+
+    /// Observes search query changes and triggers search with debouncing
+    private func configureSearchObserver() {
+        searchCancellable = $searchQuery
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { [weak self] newQuery in
+                self?.handleSearchQueryChange(newQuery)
+            }
+    }
+
+    /// Handles search query changes by resetting pagination and triggering new search
+    private func handleSearchQueryChange(_ query: String) {
+        syncState = .syncingFirstPage
+        currentSearchKeyword = query
+        paginationTracker.syncFirstPage()
     }
 
     /// Performs initial fetch from storage and updates results.
@@ -85,22 +112,40 @@ final class SyncableListSelectorViewModel<Syncable: ListSyncable>: ObservableObj
 extension SyncableListSelectorViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
-        let action = syncable.createSyncAction(
-            pageNumber: pageNumber,
-            pageSize: pageSize
-        ) { [weak self] result in
-            switch result {
-            case .success(let hasNextPage):
-                onCompletion?(.success(hasNextPage))
 
-            case .failure(let error):
-                DDLogError("⛔️ Error synchronizing: \(error)")
-                onCompletion?(.failure(error))
+        // Use search action if there's a search keyword, otherwise use regular sync action
+        let action: Action
+        if currentSearchKeyword.isEmpty {
+            action = syncable.createSyncAction(
+                pageNumber: pageNumber,
+                pageSize: pageSize
+            ) { [weak self] result in
+                self?.handleSyncResult(result, onCompletion: onCompletion)
             }
-
-            self?.updateResults()
+        } else {
+            action = syncable.createSearchAction(
+                keyword: currentSearchKeyword,
+                pageNumber: pageNumber,
+                pageSize: pageSize
+            ) { [weak self] result in
+                self?.handleSyncResult(result, onCompletion: onCompletion)
+            }
         }
+
         stores.dispatch(action)
+    }
+
+    private func handleSyncResult(_ result: Result<Bool, Error>, onCompletion: SyncCompletion?) {
+        switch result {
+        case .success(let hasNextPage):
+            onCompletion?(.success(hasNextPage))
+
+        case .failure(let error):
+            DDLogError("⛔️ Error synchronizing: \(error)")
+            onCompletion?(.failure(error))
+        }
+
+        updateResults()
     }
 }
 

@@ -3,11 +3,15 @@ import SwiftUI
 struct SyncableListSelectorView<Syncable: ListSyncable>: View {
     @ObservedObject private var viewModel: SyncableListSelectorViewModel<Syncable>
     @State private var selectedItems: [Syncable.ListFilterType]
+    @State private var notice: Notice?
+
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     private let syncable: Syncable
     private let onSelection: ([Syncable.ListFilterType]) -> Void
 
     private let viewPadding: CGFloat = 16
+    private let emptyStateImageWidth: CGFloat = 67
 
     init(viewModel: SyncableListSelectorViewModel<Syncable>,
          syncable: Syncable,
@@ -28,7 +32,7 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
                 loadingView
             case .results:
                 itemList(with: viewModel.items,
-                        onNextPage: { viewModel.onLoadNextPageAction() })
+                         onNextPage: { viewModel.onLoadNextPageAction() })
             }
         }
         .task {
@@ -36,6 +40,12 @@ struct SyncableListSelectorView<Syncable: ListSyncable>: View {
         }
         .navigationTitle(syncable.title)
         .navigationBarTitleDisplayMode(.inline)
+        .notice($notice)
+        .if(syncable.searchConfiguration != nil) { view in
+            view.searchable(text: $viewModel.searchQuery,
+                            placement: .navigationBarDrawer(displayMode: .always),
+                            prompt: syncable.searchConfiguration!.searchPrompt)
+        }
     }
 }
 
@@ -59,17 +69,20 @@ private extension SyncableListSelectorView {
                     value: "Any",
                     comment: "Option to select no filter on a list selector view"
                 ),
+                description: nil,
                 isSelected: selectedItems.isEmpty,
                 onSelection: {
                     selectedItems.removeAll()
                     onSelection([])
                 }
             )
+            .renderedIf(viewModel.searchQuery.isEmpty)
 
             ForEach(items, id: \.self) { item in
                 optionRow(text: syncable.displayName(for: item),
+                          description: syncable.description(for: item),
                           isSelected: selectedItems.contains(where: { $0 == syncable.filterItem(for: item) }),
-                          onSelection: { toggleSelection(for: item) })
+                          onSelection: { toggleSelectionIfPossible(for: item) })
             }
 
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -82,7 +95,13 @@ private extension SyncableListSelectorView {
         .background(Color(.listBackground))
     }
 
-    func toggleSelection(for item: Syncable.ModelType) {
+    func toggleSelectionIfPossible(for item: Syncable.ModelType) {
+        guard syncable.selectionEnabled(for: item) else {
+            if let message = syncable.selectionDisabledMessage {
+                notice = Notice(message: message, feedbackType: .error)
+            }
+            return
+        }
         let filterItem = syncable.filterItem(for: item)
         if let index = selectedItems.firstIndex(of: filterItem) {
             selectedItems.remove(at: index)
@@ -92,9 +111,24 @@ private extension SyncableListSelectorView {
         onSelection(selectedItems)
     }
 
-    func optionRow(text: String, isSelected: Bool, onSelection: @escaping () -> Void) -> some View {
+    func optionRow(text: String, description: String?, isSelected: Bool, onSelection: @escaping () -> Void) -> some View {
         HStack {
-            Text(text)
+            VStack(alignment: .leading) {
+                if text.isEmpty, let placeholder = syncable.emptyItemTitlePlaceholder {
+                    Text(placeholder)
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(Color.secondary)
+                } else {
+                    Text(text)
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(Color.primary)
+                }
+
+                if let description {
+                    Text(description)
+                        .footnoteStyle()
+                }
+            }
             Spacer()
             Image(systemName: "checkmark")
                 .font(.body.weight(.medium))
@@ -110,8 +144,26 @@ private extension SyncableListSelectorView {
     var emptyStateView: some View {
         VStack {
             Spacer()
-            Text(syncable.emptyStateMessage)
-                .secondaryBodyStyle()
+            Image(.magnifyingGlassNotFound)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: emptyStateImageWidth * scale)
+                .padding(.bottom, viewPadding)
+                .renderedIf(viewModel.searchQuery.isNotEmpty)
+
+            if let configuration = syncable.searchConfiguration,
+                viewModel.searchQuery.isNotEmpty {
+                Text(configuration.emptySearchTitle)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.primary)
+                Text(configuration.emptySearchDescription)
+                    .font(.title3)
+                    .foregroundStyle(Color.secondary)
+            } else {
+                Text(syncable.emptyStateMessage)
+                    .secondaryBodyStyle()
+            }
             Spacer()
         }
         .multilineTextAlignment(.center)

@@ -9,9 +9,14 @@ struct TeamMemberListSyncable: ListSyncable {
 
     let siteID: Int64
 
-    var title: String { Localization.title }
+    let title = Localization.title
 
-    var emptyStateMessage: String { Localization.noMembersFound }
+    let emptyItemTitlePlaceholder: String? = nil
+    let emptyStateMessage = Localization.noMembersFound
+
+    let searchConfiguration: ListSearchConfiguration? = nil
+
+    let selectionDisabledMessage: String? = nil
 
     // MARK: - ResultsController Configuration
 
@@ -38,11 +43,21 @@ struct TeamMemberListSyncable: ListSyncable {
         )
     }
 
+    /// Creates the action to search items with keyword
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+        fatalError("Searching is not supported")
+    }
+
     // MARK: - Display Configuration
 
     func displayName(for item: BookingResource) -> String {
         item.name
     }
+
+    /// Returns the description for an item
+    func description(for item: BookingResource) -> String? { nil }
+
+    func selectionEnabled(for item: BookingResource) -> Bool { true }
 
     func filterItem(for item: BookingResource) -> BookingResource {
         item

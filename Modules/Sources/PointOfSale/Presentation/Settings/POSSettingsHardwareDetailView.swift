@@ -342,7 +342,7 @@ private extension POSSettingsHardwareDetailView {
         }
     }
 
-    private func handleScannerDestination(_ destination: ScannerDestination) {
+    func handleScannerDestination(_ destination: ScannerDestination) {
         switch destination {
         case .setup:
             showBarcodeScanningSetupModal = true

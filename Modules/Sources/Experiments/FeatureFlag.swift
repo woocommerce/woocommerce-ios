@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Enables surveys for potential and current POS merchants
     ///
     case pointOfSaleSurveys
+
+    /// Enables using the catalog API endpoint for Point of Sale catalog sync
+    ///
+    case pointOfSaleCatalogAPI
 }

@@ -5,7 +5,7 @@ import Foundation
 import Storage
 
 @MainActor
-struct PointOfSaleSettingsControllerTests {
+struct POSSettingsControllerTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockCardPresentPaymentService = MockCardPresentPaymentService()
     private let mockPluginService = MockPluginsService()
@@ -75,7 +75,7 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
     }
 }
 
-final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
+final class MockPOSSettingsController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = nil
     var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),

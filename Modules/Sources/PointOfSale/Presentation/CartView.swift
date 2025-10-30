@@ -69,7 +69,7 @@ struct CartView: View {
                 }
             }
             .posModal(isPresented: $showBarcodeScanningModal) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
+                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)

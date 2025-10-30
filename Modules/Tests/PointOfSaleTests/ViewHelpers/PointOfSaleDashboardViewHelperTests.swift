@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Testing
 import enum WooFoundationCore.CurrencyCode
+import Yosemite
 @testable import PointOfSale
 
 struct PointOfSaleDashboardViewHelperTests {
@@ -57,7 +58,7 @@ struct PointOfSaleDashboardViewHelperTests {
         )
 
         // Then
-        #expect(result == .loading)
+        #expect(result == .loading())
     }
 
     @Test(arguments: [
@@ -90,7 +91,7 @@ struct PointOfSaleDashboardViewHelperTests {
     @Test func determineViewState_when_eligible_and_loading_returns_loading() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
-        let itemsContainerState: ItemsContainerState = .loading
+        let itemsContainerState: ItemsContainerState = .loading()
         let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
@@ -101,7 +102,7 @@ struct PointOfSaleDashboardViewHelperTests {
         )
 
         // Then
-        #expect(result == .loading)
+        #expect(result == .loading())
     }
 
     @Test func determineViewState_when_eligible_and_content_returns_content() async throws {
@@ -184,7 +185,7 @@ struct PointOfSaleDashboardViewHelperTests {
         )
 
         // Then
-        #expect(result == .loading)
+        #expect(result == .loading())
     }
 
     @Test func determineViewState_ineligible_state_takes_priority_over_containerState() async throws {
@@ -217,7 +218,7 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     @Test(arguments: [
-        (PointOfSaleDashboardView.ViewState.loading, false),
+        (PointOfSaleDashboardView.ViewState.loading(), false),
         (PointOfSaleDashboardView.ViewState.ineligible(reason: .featureSwitchDisabled), false)
     ])
     func showsFloatingControl_when_loading_or_ineligible_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {

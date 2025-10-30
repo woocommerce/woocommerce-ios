@@ -15,6 +15,7 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import class Yosemite.POSCatalogSyncCoordinator
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }

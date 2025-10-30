@@ -42,6 +42,8 @@ final class POSTabCoordinator {
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
+    private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
+
     /// Local catalog eligibility service - created asynchronously during init
     private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
@@ -134,18 +136,27 @@ final class POSTabCoordinator {
     /// Only checks eligibility if the POS tab is visible
     func updatePOSEligibility(isPOSTabVisible: Bool) {
         Task { @MainActor [weak self] in
-            guard let self, let service = self.localCatalogEligibilityService else { return }
+            guard let self, let catalogEligibilityService = self.localCatalogEligibilityService else { return }
 
             // If POS tab is not visible, mark as ineligible
             guard isPOSTabVisible else {
-                try await service.updatePOSEligibility(isEligible: false, for: siteID)
+                try await catalogEligibilityService.updatePOSEligibility(isEligible: false,
+                                                                         for: siteID)
+                await posSyncDispatcher.stop()
                 return
             }
 
             // Check actual POS eligibility using the eligibility checker
             let eligibilityState = await eligibilityChecker.checkEligibility()
             let isPOSEligible = eligibilityState == .eligible
-            try await service.updatePOSEligibility(isEligible: isPOSEligible, for: siteID)
+            do {
+                try await catalogEligibilityService.updatePOSEligibility(isEligible: isPOSEligible,
+                                                                         for: siteID)
+                // Only start syncs after we've updated the catalog eligibility.
+                await isPOSEligible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
+            } catch {
+                await posSyncDispatcher.stop()
+            }
         }
     }
 

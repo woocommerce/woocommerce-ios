@@ -40,7 +40,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 
     init(itemProvider: PointOfSaleItemServiceProtocol,
          itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
-         initialState: ItemsViewState = ItemsViewState(containerState: .loading,
+         initialState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                        itemsStack: ItemsStackState(root: .initial,
                                                                                    itemStates: [:])),
          analyticsProvider: POSAnalyticsProviding) {
@@ -213,7 +213,7 @@ private extension PointOfSaleItemsController {
     func setRootLoadingState() {
         let items = itemsViewState.itemsStack.root.items
 
-        let isInitialState = itemsViewState.containerState == .loading && itemsViewState.itemsStack.root == .initial
+        let isInitialState = itemsViewState.containerState == .loading() && itemsViewState.itemsStack.root == .initial
         if isInitialState {
             // Transition from initial to loading on first load
             itemsViewState.itemsStack.root = .loading([])

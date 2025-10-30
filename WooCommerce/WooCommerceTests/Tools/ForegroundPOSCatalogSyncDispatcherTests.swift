@@ -291,4 +291,10 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     func performIncrementalSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
         // Not used
     }
+
+    let fullSyncStateModel = POSCatalogSyncStateModel()
+
+    func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+        return fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
+    }
 }

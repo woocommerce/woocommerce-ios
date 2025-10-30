@@ -27,6 +27,13 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///                     performs full sync; otherwise, performs incremental sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws
+
+    /// Stream that emits full sync state updates
+    var fullSyncStateModel: POSCatalogSyncStateModel { get }
+
+    /// Returns the last known full sync state for a site
+    /// If no state is cached, determines state from lastSyncDate
+    func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -50,6 +57,7 @@ public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
     case requestCancelled
+    case shouldNotSync
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
@@ -59,10 +67,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
 
-    /// Tracks ongoing full syncs by site ID to prevent duplicates
-    private var ongoingSyncs: Set<Int64> = []
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
+
+    /// Observable model for full sync state updates
+    public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
@@ -82,28 +91,28 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
-            return
+            throw POSCatalogSyncError.shouldNotSync
         }
 
-        if ongoingSyncs.contains(siteID) {
+        if case .syncStarted = fullSyncStateModel.state[siteID] {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
         }
 
-        // Mark sync as in progress
-        ongoingSyncs.insert(siteID)
-
-        // Ensure cleanup happens regardless of success or failure
-        defer {
-            ongoingSyncs.remove(siteID)
-        }
+        await emitSyncState(.syncStarted(siteID: siteID, isInitialSync: lastFullSyncDate(for: siteID) == nil))
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
         do {
             _ = try await fullSyncService.startFullSync(for: siteID)
+            emitSyncState(.syncCompleted(siteID: siteID))
         } catch AFError.explicitlyCancelled, is CancellationError {
+            emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             throw POSCatalogSyncError.requestCancelled
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete sync for site \(siteID): \(error)")
+            emitSyncState(.syncFailed(siteID: siteID, error: error))
+            throw error
         }
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
@@ -266,7 +275,69 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             return true
         }
     }
+
+    public func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+        if let cached = fullSyncStateModel.state[siteID] {
+            return cached
+        }
+
+        let state: POSCatalogSyncState
+
+        if await lastFullSyncDate(for: siteID) == nil {
+            state = .syncNeverDone(siteID: siteID)
+        } else {
+            state = .syncCompleted(siteID: siteID)
+        }
+
+        fullSyncStateModel.state[siteID] = state
+        return state
+    }
 }
+
+// MARK: - Syncing State
+
+private extension POSCatalogSyncCoordinator {
+    func emitSyncState(_ state: POSCatalogSyncState) {
+        let siteID: Int64 = switch state {
+        case .syncStarted(let id, _), .syncCompleted(let id), .syncFailed(let id, _), .syncNeverDone(let id):
+            id
+        }
+
+        fullSyncStateModel.state[siteID] = state
+    }
+}
+
+@Observable
+public class POSCatalogSyncStateModel {
+    public var state: [Int64: POSCatalogSyncState] = [:]
+
+    public init() {}
+}
+
+
+public enum POSCatalogSyncState: Equatable {
+    case syncStarted(siteID: Int64, isInitialSync: Bool)
+    case syncCompleted(siteID: Int64)
+    case syncFailed(siteID: Int64, error: Error)
+    case syncNeverDone(siteID: Int64)
+
+    public static func == (lhs: POSCatalogSyncState, rhs: POSCatalogSyncState) -> Bool {
+        switch (lhs, rhs) {
+        case (.syncStarted(let lhsSiteID, let lhsInitial), .syncStarted(let rhsSiteID, let rhsInitial)):
+            return lhsSiteID == rhsSiteID && lhsInitial == rhsInitial
+        case (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)):
+            return lhsSiteID == rhsSiteID
+        case (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
+            return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
+        case (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
+            return lhsSiteID == rhsSiteID
+        default:
+            return false
+        }
+    }
+}
+
+// MARK: - Constants
 
 private extension POSCatalogSyncCoordinator {
     enum Constants {

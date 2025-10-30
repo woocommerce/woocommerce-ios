@@ -11,7 +11,7 @@ enum POSFontStyle {
     case posBodyLargeRegular(underline: Bool = false)
     case posBodyMediumBold
     case posBodyMediumRegular(underline: Bool = false)
-    case posBodySmallBold
+    case posBodySmallBold(underline: Bool = false)
     case posBodySmallRegular(underline: Bool = false)
     case posCaptionBold
     case posCaptionRegular
@@ -105,7 +105,8 @@ private struct POSScaledFont: ViewModifier {
         switch style {
         case .posBodyLargeRegular(let underline),
                 .posBodyMediumRegular(let underline),
-                .posBodySmallRegular(let underline):
+                .posBodySmallRegular(let underline),
+                .posBodySmallBold(let underline):
             return underline
         default:
             return false
@@ -167,7 +168,9 @@ extension UIContentSizeCategory {
                 Text("Body Medium Regular Underline")
                     .font(.posBodyMediumRegular(underline: true))
                 Text("Body Small Bold")
-                    .font(.posBodySmallBold)
+                    .font(.posBodySmallBold())
+                Text("Body Small Bold Underline")
+                    .font(.posBodySmallBold(underline: true))
                 Text("Body Small Regular")
                     .font(.posBodySmallRegular())
                 Text("Body Small Regular Underline")

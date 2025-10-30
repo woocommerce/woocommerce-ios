@@ -45,6 +45,8 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
             currencySettings: currencySettings
         )
         self.catalogSyncCoordinator = catalogSyncCoordinator
+
+        preloadloadLastFullSyncState()
     }
 
     // periphery:ignore - used by tests
@@ -54,6 +56,8 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
         self.siteID = siteID
         self.dataSource = dataSource
         self.catalogSyncCoordinator = catalogSyncCoordinator
+
+        preloadloadLastFullSyncState()
     }
 
     func loadItems(base: ItemListBaseItem) async {
@@ -117,11 +121,27 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 // MARK: - State Computation
 private extension PointOfSaleObservableItemsController {
     var containerState: ItemsContainerState {
-        // Use .loading during initial load, .content otherwise
+        if isInitialCatalogSync {
+            return .loading(isCatalogSyncing: true)
+        }
+
         if !loadingState.productsLoaded && dataSource.isLoadingProducts {
-            return .loading
+            return .loading()
         }
         return .content
+    }
+
+    var isInitialCatalogSync: Bool {
+        guard let syncState = catalogSyncCoordinator.fullSyncStateModel.state[siteID] else {
+            return false
+        }
+
+        switch syncState {
+        case .syncStarted(_, true), .syncNeverDone:
+            return true
+        default:
+            return false
+        }
     }
 
     var rootState: ItemListState {
@@ -242,5 +262,14 @@ private extension PointOfSaleObservableItemsController {
     struct LoadingState {
         var productsLoaded = false
         var variationsLoaded = false
+    }
+}
+
+private extension PointOfSaleObservableItemsController {
+    func preloadloadLastFullSyncState() {
+        Task { @MainActor in
+            /// Ensure last full sync state is loaded with initial value
+            _ = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        }
     }
 }

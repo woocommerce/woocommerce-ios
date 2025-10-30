@@ -10,7 +10,6 @@ import Experiments
 final actor ForegroundPOSCatalogSyncDispatcher {
     private enum Constants {
         static let syncInterval: TimeInterval = 60 * 60 // 1 hour
-        static let initialSyncDelay: TimeInterval = 5 // 5 seconds after becoming active
         static let leeway: Int = 5 // 5 seconds leeway to give a system more flexibility in managing resources
     }
 
@@ -108,11 +107,11 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     private func startTimer() {
         guard timer == nil else { return }
 
-        DDLogInfo("⏱️ ForegroundPOSCatalogSyncDispatcher: Starting timer (interval: \(Int(interval))s, initial delay: \(Int(Constants.initialSyncDelay))s)")
+        DDLogInfo("⏱️ ForegroundPOSCatalogSyncDispatcher: Starting timer (interval: \(Int(interval))s")
 
         let queue = DispatchQueue(label: "com.automattic.woocommerce.posCatalogForegroundSync.timer", qos: .utility)
         let timer = timerProvider.makeTimer(queue: queue)
-        timer.schedule(deadline: .now() + Constants.initialSyncDelay, repeating: interval, leeway: .seconds(Constants.leeway))
+        timer.schedule(deadline: .now(), repeating: interval, leeway: .seconds(Constants.leeway))
         timer.setEventHandler { [weak self] in
             Task {
                 await self?.performSync()
@@ -162,6 +161,8 @@ final actor ForegroundPOSCatalogSyncDispatcher {
                     DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Invalid max age for site \(siteID)")
                 case .requestCancelled:
                     DDLogInfo("ℹ️ ForegroundPOSCatalogSyncDispatcher: Sync request was cancelled for site \(siteID)")
+                case .shouldNotSync:
+                    DDLogInfo("ℹ️ ForegroundPOSCatalogSyncDispatcher: Should not sync site \(siteID) at this time")
                 }
             } catch {
                 DDLogError("⛔️ ForegroundPOSCatalogSyncDispatcher: Sync failed for site \(siteID): \(error)")

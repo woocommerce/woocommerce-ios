@@ -152,7 +152,6 @@ final class MainTabBarController: UITabBarController {
 
     private var posTabVisibilityChecker: POSTabVisibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
-    private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
@@ -752,9 +751,6 @@ private extension MainTabBarController {
 
             // Update POS eligibility - coordinator will check actual eligibility if tab is visible
             posTabCoordinator?.updatePOSEligibility(isPOSTabVisible: isPOSTabVisible)
-
-            // Begin foreground synchronization if POS tab becomes visible
-            await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
         }
     }
 

@@ -76,6 +76,7 @@ private extension SyncableListSelectorView {
                     onSelection([])
                 }
             )
+            .renderedIf(viewModel.searchQuery.isEmpty)
 
             ForEach(items, id: \.self) { item in
                 optionRow(text: syncable.displayName(for: item),

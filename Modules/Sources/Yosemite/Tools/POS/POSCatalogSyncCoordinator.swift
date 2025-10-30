@@ -57,6 +57,7 @@ public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
     case requestCancelled
+    case shouldNotSync
 }
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
@@ -90,7 +91,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
-            return
+            throw POSCatalogSyncError.shouldNotSync
         }
 
         if case .syncStarted = fullSyncStateModel.state[siteID] {

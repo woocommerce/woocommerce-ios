@@ -1,4 +1,1 @@
-- [*] Handle sites configured with `http` siteAddress. [https://github.com/woocommerce/woocommerce-ios/pull/16279]
-- [*] Use tabs cache state to display conditional tabs initially. [https://github.com/woocommerce/woocommerce-ios/pull/16292]
-- [*] Handle sites configured with `http` siteAddress.
-- [*] Fix: Unable to dismiss keyboard when editing Product Title. [https://github.com/woocommerce/woocommerce-ios/pull/16288]
+This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.

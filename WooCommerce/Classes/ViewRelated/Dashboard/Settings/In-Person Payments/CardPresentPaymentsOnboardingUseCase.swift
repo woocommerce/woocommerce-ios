@@ -4,6 +4,7 @@ import Storage
 import Yosemite
 import Experiments
 import WooFoundation
+import Alamofire
 
 private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
@@ -180,8 +181,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
                 return
             }
 
-            self.updateState()
-            CardPresentPaymentOnboardingStateCache.shared.update(self.state)
+            switch result {
+            case .success:
+                updateState()
+                CardPresentPaymentOnboardingStateCache.shared.update(state)
+            case .failure(let error):
+                if isNetworkError(error) {
+                    state = .noConnectionError
+                } else {
+                    state = .genericError
+                }
+            }
         }
         stores.dispatch(paymentGatewayAccountsAction)
     }
@@ -548,7 +558,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isNetworkError(_ error: Error) -> Bool {
-        (error as NSError).domain == NSURLErrorDomain
+        if let afError = error as? AFError {
+            return true
+        } else {
+            return (error as NSError).domain == NSURLErrorDomain
+        }
     }
 }
 

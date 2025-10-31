@@ -476,8 +476,7 @@ private extension CardPresentPaymentStore {
             case (true, _):
                 // If either succeeds, the load is successful
                 onCompletion(.success(()))
-            case (false, .some(let error)),
-                (.none, .some(let error)):
+            case (_, .some(let error)):
                 // If we have an error, and no success, the load fails
                 onCompletion(.failure(error))
             case (_, .none):

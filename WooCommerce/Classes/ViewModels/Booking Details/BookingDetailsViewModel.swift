@@ -327,6 +327,14 @@ extension BookingDetailsViewModel {
     }
 }
 
+// MARK: Navigation
+
+extension BookingDetailsViewModel {
+    func navigateToOrderDetails() {
+        MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
+    }
+}
+
 private extension BookingDetailsViewModel {
     static func navigationTitle(for booking: Booking) -> String {
         let titleFormat = NSLocalizedString(

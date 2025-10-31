@@ -262,6 +262,11 @@ public class MockStoresManager: StoresManager {
     public var posCatalogSyncCoordinator: (any POSCatalogSyncCoordinatorProtocol)? {
         nil
     }
+
+    public var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
+        get { nil }
+        set { }
+    }
 }
 
 private extension MockStoresManager {

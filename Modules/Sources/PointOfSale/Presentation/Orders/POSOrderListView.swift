@@ -108,9 +108,7 @@ struct POSOrderListView: View {
         switch ordersViewState {
         case .inlineError(_, let errorState, .refresh):
             POSListInlineErrorView(errorState: errorState) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadOrders()
-                }
+                await orderListModel.ordersController.loadOrders()
             }
         default:
             EmptyView()
@@ -180,9 +178,7 @@ struct POSOrderListView: View {
             }
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState) {
-                Task { @MainActor in
-                    await orderListModel.ordersController.loadNextOrders()
-                }
+                await orderListModel.ordersController.loadNextOrders()
             }
         default:
             EmptyView()
@@ -238,7 +234,7 @@ private struct POSOrderRowView: View {
     private var orderHeaderRow: some View {
         HStack(alignment: .center) {
             Text(POSOrderListView.Localization.orderTitle(order.number))
-                .font(.posBodySmallBold)
+                .font(.posBodySmallBold())
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 

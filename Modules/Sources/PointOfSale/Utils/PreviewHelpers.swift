@@ -29,6 +29,8 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import enum Yosemite.POSCatalogSyncState
+import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
@@ -100,7 +102,7 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 }
 
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
     func enableCoupons() async { }
@@ -112,7 +114,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
 
@@ -213,7 +215,9 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
-        analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
+        siteID: Int64 = 1,
+        catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -228,7 +232,9 @@ struct POSPreviewHelpers {
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
-            barcodeScanService: barcodeScanService
+            barcodeScanService: barcodeScanService,
+            siteID: siteID,
+            catalogSyncCoordinator: catalogSyncCoordinator
         )
     }
 
@@ -619,9 +625,15 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         try await Task.sleep(nanoseconds: 500_000_000)
     }
 
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval) async throws {
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
         // Simulates a smart sync operation with a 1 second delay.
         try await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+
+    let fullSyncStateModel = POSCatalogSyncStateModel()
+
+    func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+        return fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
     }
 }
 

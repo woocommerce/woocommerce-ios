@@ -4,6 +4,7 @@ import Codegen
 import Foundation
 import Yosemite
 
+// swiftlint:disable line_length
 
 extension WooCommerce.AggregateOrderItem {
     func copy(
@@ -118,3 +119,5 @@ extension WooCommerce.ShippingLabelSelectedRate {
         )
     }
 }
+
+// swiftlint:enable line_length

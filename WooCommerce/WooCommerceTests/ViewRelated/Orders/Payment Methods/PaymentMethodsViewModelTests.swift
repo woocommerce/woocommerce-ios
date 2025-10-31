@@ -6,6 +6,7 @@ import WooFoundation
 
 @testable import WooCommerce
 @testable import Yosemite
+@testable import Networking
 
 private typealias Dependencies = PaymentMethodsViewModel.Dependencies
 
@@ -779,6 +780,58 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 flow: .simplePayment,
                                                 channel: .storeManagement,
                                                 dependencies: dependencies)
+
+        // Then
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+    }
+
+    func test_card_rows_are_not_shown_for_ciab_site() {
+        // Given
+        let siteID: Int64 = 1212
+        let orderID: Int64 = 111
+        let ciabSite = Site.fake().copy(siteID: siteID, isGarden: true, gardenName: "commerce")
+        let order = MockOrders()
+            .makeOrder(status: .pending)
+            .copy(
+                siteID: siteID,
+                orderID: orderID,
+                datePaid: .some(nil),
+                total: "100"
+            )
+
+        storage.insertSampleSite(readOnlySite: ciabSite)
+        storage.insertSampleOrder(readOnlyOrder: order)
+
+        let eligibilityStore = OrderCardPresentPaymentEligibilityStore(
+            dispatcher: Dispatcher(),
+            storageManager: storage,
+            network: MockNetwork(),
+            currentSite: { ciabSite }
+        )
+
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            eligibilityStore.onAction(action)
+        }
+
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let dependencies = Dependencies(
+            stores: stores,
+            storage: storage,
+            cardPresentPaymentsConfiguration: configuration
+        )
+        let viewModel = PaymentMethodsViewModel(
+            siteID: siteID,
+            orderID: orderID,
+            total: "5",
+            formattedTotal: "$5.00",
+            flow: .simplePayment,
+            channel: .storeManagement,
+            dependencies: dependencies
+        )
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)

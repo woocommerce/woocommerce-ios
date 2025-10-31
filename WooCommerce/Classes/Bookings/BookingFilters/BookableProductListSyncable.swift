@@ -9,9 +9,14 @@ struct BookableProductListSyncable: ListSyncable {
 
     let siteID: Int64
 
-    var title: String { Localization.title }
+    let title = Localization.title
 
-    var emptyStateMessage: String { Localization.noMembersFound }
+    let emptyStateMessage = Localization.noMembersFound
+    let emptyItemTitlePlaceholder: String? = nil
+
+    let searchConfiguration: ListSearchConfiguration? = nil
+
+    let selectionDisabledMessage: String? = nil
 
     // MARK: - ResultsController Configuration
 
@@ -46,11 +51,21 @@ struct BookableProductListSyncable: ListSyncable {
         )
     }
 
+    /// Creates the action to search items with keyword
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+        fatalError("Searching is not supported")
+    }
+
     // MARK: - Display Configuration
 
     func displayName(for item: Product) -> String {
         item.name
     }
+
+    /// Returns the description for an item
+    func description(for item: Product) -> String? { nil }
+
+    func selectionEnabled(for item: Product) -> Bool { true }
 
     func filterItem(for item: Product) -> BookingProductFilter {
         BookingProductFilter(productID: item.productID, name: item.name)

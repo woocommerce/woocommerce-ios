@@ -95,13 +95,15 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for products
     case products(siteID: Int64)
     // Filter list selector for customer
-    case customer(siteID: Int64, source: FilterSource)
+    case customer(siteID: Int64)
     // Filter list selector for booking team member
     case bookingResource(siteID: Int64)
     // Filter list selector for bookable product
     case bookableProduct(siteID: Int64)
     // Filter list selector for booking date time
     case bookingDateTime
+    // Filter list selector for booking customers
+    case bookingCustomers(siteID: Int64)
 }
 
 /// Contains data for rendering a filter type row.
@@ -362,19 +364,12 @@ private extension FilterListViewController {
                 }()
                 self.listSelector.present(controller, animated: true)
 
-            case .customer(let siteID, let source):
-                let configuration: CustomerSelectorViewController.Configuration = {
-                    switch source {
-                    case .booking: .configurationForBookingFilter
-                    case .orders: .configurationForOrderFilter
-                    case .products: fatalError("Customer filter not supported!")
-                    }
-                }()
+            case .customer(let siteID):
                 let selectedCustomerID = (selected.selectedValue as? CustomerFilter)?.id
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
-                        configuration: configuration,
+                        configuration: .configurationForOrderFilter,
                         addressFormViewModel: nil,
                         selectedCustomerID: selectedCustomerID,
                         onCustomerSelected: { customer in
@@ -419,10 +414,7 @@ private extension FilterListViewController {
                     viewModel: viewModel,
                     syncable: syncable,
                     initialSelections: selectedProducts,
-                    onSelection: { products in
-                        let filters = products.map { product in
-                            BookingProductFilter(productID: product.productID, name: product.name)
-                        }
+                    onSelection: { filters in
                         let filterType = MultipleFilterSelection(items: filters)
                         selectedValueAction(filterType)
                     }
@@ -440,6 +432,27 @@ private extension FilterListViewController {
                     }
                 )
                 let hostingController = UIHostingController(rootView: dateTimeFilterView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+
+            case .bookingCustomers(let siteID):
+                let selectedCustomers: [BookingCustomerFilter] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items.compactMap { $0 as? BookingCustomerFilter }
+                    }
+                    return []
+                }()
+                let syncable = CustomerListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    initialSelections: selectedCustomers,
+                    onSelection: { customers in
+                        let filterType = MultipleFilterSelection(items: customers)
+                        selectedValueAction(filterType)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
                 listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }

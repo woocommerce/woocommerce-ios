@@ -92,7 +92,7 @@ private extension CouponRowView {
         static let horizontalPadding: CGFloat = POSPadding.medium
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
-        static let titleFont: POSFontStyle = .posBodySmallBold
+        static let titleFont: POSFontStyle = .posBodySmallBold()
         static let titleSummarySpacing: CGFloat = POSSpacing.xSmall
         static let summaryFont: POSFontStyle = .posBodySmallRegular()
     }

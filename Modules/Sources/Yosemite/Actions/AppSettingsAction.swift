@@ -396,4 +396,22 @@ public enum AppSettingsAction: Action {
     /// Resets all POS survey notification scheduled states
     /// At the moment this one is used for testing only. To remove in WOOMOB-1480
     case resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    // MARK: - POS Sync Eligibility Tracking
+
+    /// Sets the last time POS was opened for a specific site
+    ///
+    case setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: () -> Void)
+
+    /// Gets the last time POS was opened for a specific site
+    ///
+    case getPOSLastOpenedDate(siteID: Int64, onCompletion: (Date?) -> Void)
+
+    /// Sets the date of the first POS catalog sync for a specific site
+    ///
+    case setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: () -> Void)
+
+    /// Gets the date of the first POS catalog sync for a specific site
+    ///
+    case getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void)
 }

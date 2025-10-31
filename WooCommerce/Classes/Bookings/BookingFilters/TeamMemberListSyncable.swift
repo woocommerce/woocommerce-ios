@@ -48,6 +48,12 @@ struct TeamMemberListSyncable: ListSyncable {
         fatalError("Searching is not supported")
     }
 
+    /// Creates the predicate for filtering search results
+    /// - Returns: nil because searching is not supported for team members
+    func createSearchPredicate(keyword: String) -> NSPredicate? {
+        nil
+    }
+
     // MARK: - Display Configuration
 
     func displayName(for item: BookingResource) -> String {

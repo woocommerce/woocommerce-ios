@@ -223,7 +223,11 @@ private extension BookingDetailsView {
             VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
                 ForEach(content.actions) { action in
                     Button {
-                        /// On action tap
+                        if action == .viewOrder {
+                            viewModel.navigateToOrderDetails()
+                        } else {
+                            /// On action tap
+                        }
                     } label: {
                         Text(action.buttonTitle)
                     }

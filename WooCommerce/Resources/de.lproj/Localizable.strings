@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-10 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-10-22 10:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -877,11 +877,26 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Booking notes' section in the booking details screen. */
 "BookingDetailsView.bookingNotes.headerTitle" = "Buchungsnotizen";
 
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "Nein, behalten";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "Ja, bitte stornieren";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "%1$@ kann nicht mehr am %3$@ an „%2$@“ teilnehmen.";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "Buchung stornieren";
+
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Rechnungsadresse";
 
 /* 'Cancel booking' button title in appointment details section in booking details view. */
 "BookingDetailsView.customer.cancelBookingButton.title" = "Buchung stornieren";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "E-Mail-Adresse kopiert";
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Kunde";
@@ -907,6 +922,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Zahlung";
 
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "Rückerstattung ausstellen";
+
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "Als bezahlt markieren";
 
@@ -921,6 +939,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for 'View order' button in payment section in booking details view. */
 "BookingDetailsView.payment.viewOrder.title" = "Bestellung anzeigen";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "Anrufen";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "Telefonnummer kopiert";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "Kopieren";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "An diese Nummer konnte kein Anruf getätigt werden.";
 
 /* Title for the 'Booked' status label in the header view. */
 "BookingDetailsView.statusLabel.booked" = "Gebucht";
@@ -8584,11 +8614,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Erneut versuchen";
 
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "Wir konnten keine Buchungen mit diesem Namen finden – passe deinen Suchbegriff an, um weitere Ergebnisse zu erhalten.";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "Fehler beim Abrufen der Buchungen";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "Datum: Neu nach alt";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "Datum: Alt nach neu";
+
 /* Tab title for all bookings */
 "bookingListView.all" = "Alle";
 
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "Zu deinen Filtern gibt es keine Buchungen. Versuche, sie anzupassen, um weitere Ergebnisse zu erhalten.";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "Keine Buchungen gefunden";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "Für heute sind keine Termine oder Veranstaltungen geplant.";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "Keine Buchungen heute";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "Es sind noch keine zukünftigen Termine oder Veranstaltungen geplant.";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "Keine bevorstehenden Buchungen";
+
 /* Button to filter the booking list */
 "bookingListView.filter" = "Filtern";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "Buchungen suchen";
 
 /* Button to select the order of the booking list */
 "bookingListView.sortBy" = "Sortieren nach";
@@ -8622,6 +8685,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "Unbezahlt";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "Gast";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "Buchungen";
@@ -9635,6 +9701,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Deine Verkaufszahlen erhöhen";
+
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "Teile deine Erfahrungen in einer kurzen zweiminütigen Umfrage und hilf uns, uns zu verbessern.";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "Wie funktioniert POS für dich?";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "Nimm an einer kurzen zweiminütigen Umfrage teil, um uns dabei zu helfen, deine Lieblingsfunktionen zu gestalten.";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "Du denkst über persönliche Verkäufe nach?";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "Deine Produktbilder werden noch im Hintergrund hochgeladen. Die Upload-Geschwindigkeit kann langsamer sein und es können Fehler auftreten. Die besten Ergebnisse erzielst du, wenn du die App geöffnet lässt, bis die Uploads abgeschlossen sind.";
@@ -10697,6 +10775,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "Verkaufsort (POS)";
+
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "Web-Bezahlen";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "WP Admin";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Abbrechen";

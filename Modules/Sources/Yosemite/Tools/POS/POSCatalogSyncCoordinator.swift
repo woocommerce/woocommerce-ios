@@ -9,7 +9,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
     ///   - maxAge: Maximum age before a sync is considered stale
-    ///   - regenerateCatalog: Whether to regenerate the catalog regardless of maxAge or other conditions (default false)
+    ///   - regenerateCatalog: Whether to always generate a new catalog. If false, a cached catalog will be used if available.
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws
 

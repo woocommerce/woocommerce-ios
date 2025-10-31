@@ -284,7 +284,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         }
     }
 
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
         // Not used
     }
 

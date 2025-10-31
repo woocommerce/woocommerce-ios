@@ -118,13 +118,16 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             errorFetching = false
         }
 
+        let filters = BookingFilters(
+            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+        )
         let action = BookingAction.searchBookings(
             siteID: siteID,
             searchQuery: currentSearchQuery,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            filters: filters,
             order: remoteOrder(from: currentOrder)
         ) { [weak self] result in
             guard let self else { return }

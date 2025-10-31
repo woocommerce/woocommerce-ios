@@ -155,12 +155,15 @@ extension BookingListViewModel: PaginationTrackerDelegate {
             errorFetching = false
         }
         let shouldClearCache = reason == Self.refreshCacheReason
+        let filters = BookingFilters(
+            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+        )
         let action = BookingAction.synchronizeBookings(
             siteID: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            filters: filters,
             order: remoteOrder(from: currentOrder),
             shouldClearCache: shouldClearCache
         ) { [weak self] result in

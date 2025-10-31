@@ -28,8 +28,7 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
     func loadAllBookings(for siteID: Int64,
                          pageNumber: Int,
                          pageSize: Int,
-                         startDateBefore: String?,
-                         startDateAfter: String?,
+                         filters: BookingFilters?,
                          searchQuery: String?,
                          order: BookingsRemote.Order) async throws -> [Booking] {
         guard let result = loadAllBookingsResult else {

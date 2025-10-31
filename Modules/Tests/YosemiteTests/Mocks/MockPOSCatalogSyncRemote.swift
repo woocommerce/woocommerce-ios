@@ -8,6 +8,9 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var incrementalProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
 
+    var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+    var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
+
     let loadProductsCallCount = Counter()
     let loadProductVariationsCallCount = Counter()
     let loadIncrementalProductsCallCount = Counter()
@@ -129,11 +132,21 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // MARK: - Protocol Methods - Catalog API
 
     func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
-        .init(status: .pending, downloadURL: nil)
+        switch catalogRequestResult {
+        case .success(let response):
+            return response
+        case .failure(let error):
+            throw error
+        }
     }
 
     func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse {
-        .init(products: [], variations: [])
+        switch catalogDownloadResult {
+        case .success(let response):
+            return response
+        case .failure(let error):
+            throw error
+        }
     }
 
     // MARK: - Protocol Methods - Catalog size

@@ -180,4 +180,89 @@ struct POSCatalogFullSyncServiceTests {
         #expect(await mockSyncRemote.loadProductsCallCount.value == 5)
         #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 5)
     }
+
+    // MARK: - Catalog API Tests
+
+    @Test func startFullSync_with_catalog_API_downloads_and_persists_catalog() async throws {
+        // Given
+        let expectedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1)
+        let expectedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 1)
+
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [expectedProduct], variations: [expectedVariation]))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID)
+
+        // Then
+        #expect(result.products.count == 1)
+        #expect(result.variations.count == 1)
+        #expect(mockPersistenceService.replaceAllCatalogDataCallCount == 1)
+        #expect(mockPersistenceService.replaceAllCatalogDataLastPersistedCatalog?.products.count == 1)
+        #expect(mockPersistenceService.replaceAllCatalogDataLastPersistedCatalog?.variations.count == 1)
+    }
+
+    @Test func startFullSync_with_catalog_API_propagates_catalog_request_error() async throws {
+        // Given
+        let expectedError = NSError(domain: "catalog", code: 500, userInfo: [NSLocalizedDescriptionKey: "Catalog request failed"])
+        mockSyncRemote.catalogRequestResult = .failure(expectedError)
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            _ = try await sut.startFullSync(for: sampleSiteID)
+        }
+    }
+
+    @Test func startFullSync_with_catalog_API_propagates_catalog_download_error() async throws {
+        // Given
+        let expectedError = NSError(domain: "catalog", code: 404, userInfo: [NSLocalizedDescriptionKey: "Catalog download failed"])
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .failure(expectedError)
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            _ = try await sut.startFullSync(for: sampleSiteID)
+        }
+    }
+
+    @Test func startFullSync_with_catalog_API_propagates_persistence_error() async throws {
+        // Given
+        let expectedError = NSError(domain: "persistence", code: 1000, userInfo: [NSLocalizedDescriptionKey: "Persistence failed"])
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+        mockPersistenceService.replaceAllCatalogDataError = expectedError
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            _ = try await sut.startFullSync(for: sampleSiteID)
+        }
+    }
 }

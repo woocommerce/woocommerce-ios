@@ -6,6 +6,7 @@ struct POSSettingsHardwareDetailView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posExternalViews) private var externalViews
 
     let settingsController: POSSettingsControllerProtocol
 
@@ -13,6 +14,7 @@ struct POSSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
+    @State private var showSupport: Bool = false
 
     private var cardReaderName: String {
         if let cardReaderName = settingsController.connectedCardReader?.name {
@@ -88,6 +90,15 @@ struct POSSettingsHardwareDetailView: View {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                     .posInteractiveDismissDisabled(alertType.isDismissDisabled)
             })
+            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+                posModel.cancelCardPaymentsOnboarding()
+            }, content: { viewContainer in
+                paymentsOnboardingView(from: viewContainer)
+            })
+            .posSheet(isPresented: $showSupport) {
+                supportForm
+                    .interactiveDismissDisabled(true)
+            }
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }
@@ -100,6 +111,36 @@ struct POSSettingsHardwareDetailView: View {
 
 // MARK: - Views
 private extension POSSettingsHardwareDetailView {
+    func paymentsOnboardingView(from onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
+        onboardingViewContainer.configuration.showSupport = {
+            posModel.cancelCardPaymentsOnboarding()
+            showSupport = true
+        }
+
+        return PointOfSaleCardPresentPaymentOnboardingView(
+            viewModel: .init(onboardingViewContainer: onboardingViewContainer,
+                             onDismissTap: {
+                                 posModel.cancelCardPaymentsOnboarding()
+                             }))
+        .onAppear {
+            posModel.trackCardPaymentsOnboardingShown()
+        }
+    }
+
+    var supportForm: some View {
+        NavigationView {
+            externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.supportCancel) {
+                        showSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+
     var legacyCardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
@@ -354,6 +395,10 @@ private extension POSSettingsHardwareDetailView {
 
 // MARK: - Constants
 private extension POSSettingsHardwareDetailView {
+    enum Constants {
+        static let supportTag = "origin:point-of-sale"
+    }
+
     enum Localization {
         static let readerModelTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
@@ -465,6 +510,12 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle",
             value: "Connect your card reader and start accepting payments",
             comment: "Subtitle for card reader connect button when no reader is connected."
+        )
+
+        static let supportCancel = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.help.support.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the support form from POS settings."
         )
     }
 }

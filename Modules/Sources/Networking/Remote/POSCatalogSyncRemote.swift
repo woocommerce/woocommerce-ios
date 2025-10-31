@@ -32,6 +32,7 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - forceGeneration: Whether to always generate a catalog.
     /// - Returns: Catalog job response with job ID.
     ///
+    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse
 
     /// Downloads the generated catalog at the specified download URL.
@@ -39,6 +40,7 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     /// - Returns: List of products and variations in the POS catalog.
+    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse
 
     /// Loads POS products for full sync.
@@ -151,6 +153,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to generate catalog for.
     /// - Returns: Catalog job response with job ID.
     ///
+    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
         let path = "products/catalog"
         let parameters: [String: Any] = [
@@ -174,6 +177,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     /// - Returns: List of products and variations in the POS catalog.
+    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     public func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse {
         // TODO: WOOMOB-1173 - move download task to the background using `URLSessionConfiguration.background`
         guard let url = URL(string: downloadURL) else {

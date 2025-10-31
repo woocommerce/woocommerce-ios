@@ -126,6 +126,16 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         return fallbackVariationResult
     }
 
+    // MARK: - Protocol Methods - Catalog API
+
+    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
+        .init(status: .pending, downloadURL: nil)
+    }
+
+    func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse {
+        .init(products: [], variations: [])
+    }
+
     // MARK: - Protocol Methods - Catalog size
 
     // MARK: - getProductCount tracking

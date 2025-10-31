@@ -265,4 +265,24 @@ struct POSCatalogFullSyncServiceTests {
             _ = try await sut.startFullSync(for: sampleSiteID)
         }
     }
+
+    @Test(arguments: [true, false])
+    func startFullSync_with_catalog_API_passes_regenerateCatalog_to_remote(regenerateCatalog: Bool) async throws {
+        // Given
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: regenerateCatalog)
+
+        // Then
+        #expect(mockSyncRemote.lastCatalogRequestForceGeneration == regenerateCatalog)
+    }
 }

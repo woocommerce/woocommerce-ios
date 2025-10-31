@@ -18,6 +18,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     private(set) var lastIncrementalProductsModifiedAfter: Date?
     private(set) var lastIncrementalVariationsModifiedAfter: Date?
+    private(set) var lastCatalogRequestForceGeneration: Bool?
 
     // Fallback result when no specific page result is configured
     private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
@@ -132,6 +133,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // MARK: - Protocol Methods - Catalog API
 
     func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
+        lastCatalogRequestForceGeneration = forceGeneration
         switch catalogRequestResult {
         case .success(let response):
             return response

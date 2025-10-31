@@ -26,7 +26,6 @@ final class BookingListViewModel: ObservableObject {
     private let type: BookingListTab
     private let stores: StoresManager
     private let storage: StorageManagerType
-    private let currentDate: Date
     private var currentOrder: SortBy = .newestToOldest
 
     private var filters: BookingFilters
@@ -66,7 +65,6 @@ final class BookingListViewModel: ObservableObject {
         self.type = type
         self.stores = stores
         self.storage = storage
-        self.currentDate = currentDate
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         self.filters = {

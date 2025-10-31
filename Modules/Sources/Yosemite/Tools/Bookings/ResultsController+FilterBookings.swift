@@ -1,5 +1,4 @@
 import CoreData
-import Storage
 
 extension NSPredicate {
     public static func createBookingPredicate(siteID: Int64, filters: BookingFilters) -> NSPredicate {
@@ -23,7 +22,8 @@ extension NSPredicate {
 
         let bookingStatusesPredicate = filters.bookingStatuses.isNotEmpty ? NSPredicate(format: "statusKey IN %@", filters.bookingStatuses) : nil
 
-        let attendanceStatusesPredicate = filters.attendanceStatuses.isNotEmpty ? NSPredicate(format: "attendanceStatusKey IN %@", filters.attendanceStatuses) : nil
+        let attendanceStatusesPredicate = filters.attendanceStatuses.isNotEmpty ?
+        NSPredicate(format: "attendanceStatusKey IN %@", filters.attendanceStatuses) : nil
 
         let subpredicates = [
             siteIDPredicate,

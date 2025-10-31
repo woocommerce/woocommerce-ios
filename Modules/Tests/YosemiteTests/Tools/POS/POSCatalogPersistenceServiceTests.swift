@@ -564,6 +564,42 @@ struct POSCatalogPersistenceServiceTests {
             #expect(site?.id == sampleSiteID)
         }
     }
+
+    // MARK: - Orphaned Variation Filtering Tests
+
+    @Test func replaceAllCatalogData_filters_out_variations_without_parent_products() async throws {
+        // Given
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
+        let validVariation = POSProductVariation.fake()
+            .copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, image: ProductImage.fake().copy(imageID: 100))
+        let orphanedVariation1 = POSProductVariation.fake()
+            .copy(siteID: sampleSiteID, productID: 20, productVariationID: 2, image: ProductImage.fake().copy(imageID: 200))
+        let orphanedVariation2 = POSProductVariation.fake()
+            .copy(siteID: sampleSiteID, productID: 30, productVariationID: 3, image: ProductImage.fake().copy(imageID: 300))
+
+        let catalog = POSCatalog(
+            products: [product],
+            variations: [validVariation, orphanedVariation1, orphanedVariation2],
+            syncDate: .now
+        )
+
+        // When
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            #expect(variationCount == 1)
+            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
+            #expect(variationImageCount == 1)
+
+            let variation = try PersistedProductVariation.fetchOne(db)
+            #expect(variation?.id == 1)
+            #expect(variation?.productID == 10)
+            let variationImage = try PersistedProductVariationImage.fetchOne(db)
+            #expect(variationImage?.imageID == 100)
+        }
+    }
 }
 
 private extension POSCatalogPersistenceServiceTests {

@@ -49,14 +49,7 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        var predicates = [NSPredicate(format: "siteID == %lld", siteID)]
-        if let before = type.startDateBefore(currentDate: currentDate) {
-            predicates.append(NSPredicate(format: "startDate < %@", before as NSDate))
-        }
-        if let after = type.startDateAfter(currentDate: currentDate) {
-            predicates.append(NSPredicate(format: "startDate > %@", after as NSDate))
-        }
-        let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+        let combinedPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
                                                                   matching: combinedPredicate,
@@ -128,6 +121,7 @@ final class BookingListViewModel: ObservableObject {
         guard type == .all else { return }
         hasFilters = filters.numberOfActiveFilters > 0
         self.filters = filters.bookingFilters
+        resultsController.updatePredicate(siteID: siteID, filters: self.filters)
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
 

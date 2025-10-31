@@ -16,7 +16,6 @@ final class BookingSearchViewModel: ObservableObject {
     private let siteID: Int64
     private let type: BookingListTab
     private let stores: StoresManager
-    private let currentDate: Date
     private var searchQuerySubscription: AnyCancellable?
     private var currentOrder: BookingListViewModel.SortBy = .newestToOldest
 
@@ -40,7 +39,6 @@ final class BookingSearchViewModel: ObservableObject {
         self.siteID = siteID
         self.type = type
         self.stores = stores
-        self.currentDate = currentDate
         self.searchPaginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         self.filters = {

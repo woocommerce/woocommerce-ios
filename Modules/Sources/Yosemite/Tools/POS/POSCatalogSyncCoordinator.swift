@@ -345,7 +345,6 @@ public enum POSCatalogSyncState: Equatable {
 
 private extension POSCatalogSyncCoordinator {
     enum Constants {
-        static let defaultSizeLimitForPOSCatalog = 1000
         static let maxDaysSinceLastOpened = 30
     }
 

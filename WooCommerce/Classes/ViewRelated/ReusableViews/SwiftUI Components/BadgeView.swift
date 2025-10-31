@@ -35,11 +35,17 @@ struct BadgeView: View {
     struct Customizations {
         let textColor: Color
         let backgroundColor: Color
+        let bordered: Bool
+        let bold: Bool
 
         init(textColor: Color = Color(.textBrand),
-             backgroundColor: Color = Color(.wooCommercePurple(.shade0))) {
+             backgroundColor: Color = Color(.wooCommercePurple(.shade0)),
+             bordered: Bool = true,
+             bold: Bool = true) {
             self.textColor = textColor
             self.backgroundColor = backgroundColor
+            self.bordered = bordered
+            self.bold = bold
         }
     }
 
@@ -64,7 +70,9 @@ struct BadgeView: View {
     var body: some View {
         if let text = type.title {
             Text(text)
-                .bold()
+                .if(customizations.bold) {
+                    $0.bold()
+                }
                 .foregroundColor(customizations.textColor)
                 .captionStyle()
                 .padding(.leading, Layout.horizontalPadding)
@@ -98,13 +106,18 @@ private extension BadgeView {
         case .circle:
             Circle()
                 .fill(customizations.backgroundColor)
-                .stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                .overlay(
+                    Circle()
+                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                        .opacity(customizations.bordered ? 1 : 0)
+                )
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
-                .stroke(.white, lineWidth: Layout.borderLineWidth)
-                .background(
+                .fill(customizations.backgroundColor)
+                .overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(customizations.backgroundColor)
+                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                        .opacity(customizations.bordered ? 1 : 0)
                 )
         }
     }
@@ -119,7 +132,7 @@ private extension BadgeView.BadgeType {
 
 private extension BadgeView {
     enum Layout {
-        static let horizontalPadding: CGFloat = 6
+        static let horizontalPadding: CGFloat = 8
         static let verticalPadding: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
         static let cornerRadius: CGFloat = 8

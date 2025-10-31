@@ -133,7 +133,6 @@ private extension POSCatalogFullSyncService {
         let downloadURL: String?
         if let url = response.downloadURL {
             downloadURL = url
-            DDLogInfo("🟣 Catalog ready for download: \(url)")
         } else {
             // 2. Polls for completion until download URL is available.
             downloadURL = try await pollForCatalogCompletion(siteID: siteID, syncRemote: syncRemote)
@@ -143,6 +142,7 @@ private extension POSCatalogFullSyncService {
         guard let downloadURL else {
             throw POSCatalogSyncError.invalidData
         }
+        DDLogInfo("🟣 Catalog ready for download: \(downloadURL)")
         return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL)
     }
 

@@ -331,6 +331,7 @@ private extension POSCatalogSyncRemote {
 // MARK: - Response Models
 
 /// Response from catalog generation request.
+// periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
 public struct POSCatalogRequestResponse: Decodable {
     /// Current status of the catalog generation job.
     public let status: POSCatalogStatus
@@ -352,6 +353,7 @@ public enum POSCatalogStatus: String, Decodable {
 }
 
 /// POS catalog from download.
+// periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
 public struct POSCatalogResponse {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]

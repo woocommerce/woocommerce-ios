@@ -12,10 +12,7 @@ final class BookingListViewModel: ObservableObject {
 
     @Published var errorFetching = false
 
-    var hasFilters: Bool {
-        // TODO: Update when adding filters
-        return false
-    }
+    @Published private(set) var hasFilters = false
 
     var emptyStateTitle: String {
         type.emptyStateTitle(hasFilters: hasFilters)
@@ -31,6 +28,8 @@ final class BookingListViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let currentDate: Date
     private var currentOrder: SortBy = .newestToOldest
+
+    private var filters: BookingFilters
 
     private static let refreshCacheReason = "refresh-cache"
     private static let reorderReason = "reorder"
@@ -77,6 +76,18 @@ final class BookingListViewModel: ObservableObject {
         self.currentDate = currentDate
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
+        self.filters = {
+            switch type {
+            case .all:
+                BookingFilters() // TODO: check local storage for persisted filters
+            case .today, .upcoming:
+                BookingFilters(
+                    startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+                    startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+                )
+            }
+        }()
+
         configureResultsController()
         configurePaginationTracker()
     }
@@ -110,6 +121,14 @@ final class BookingListViewModel: ObservableObject {
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: ascending)
         resultsController.sortDescriptors = [sortDescriptorByDate]
         paginationTracker.resync(reason: Self.reorderReason) {}
+    }
+
+    func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
+        /// Only support filters for All tab
+        guard type == .all else { return }
+        hasFilters = filters.numberOfActiveFilters > 0
+        self.filters = filters.bookingFilters
+        paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
 
     /// Converts SortBy to BookingsRemote.Order
@@ -155,10 +174,6 @@ extension BookingListViewModel: PaginationTrackerDelegate {
             errorFetching = false
         }
         let shouldClearCache = reason == Self.refreshCacheReason
-        let filters = BookingFilters(
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-        )
         let action = BookingAction.synchronizeBookings(
             siteID: siteID,
             pageNumber: pageNumber,

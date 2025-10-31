@@ -81,7 +81,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                                 filters: BookingFilters? = nil,
                                 searchQuery: String? = nil,
                                 order: Order) async throws -> [Booking] {
-        var parameters = [
+        var parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.rawValue
@@ -90,15 +90,15 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         // Apply filters if provided
         if let filters {
             if filters.productIDs.isNotEmpty {
-                parameters[ParameterKey.product] = filters.productIDs.map(String.init).joined(separator: ",")
+                parameters[ParameterKey.product] = filters.productIDs.map(String.init)
             }
 
             if filters.customerIDs.isNotEmpty {
-                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init).joined(separator: ",")
+                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init)
             }
 
             if filters.resourceIDs.isNotEmpty {
-                parameters[ParameterKey.resource] = filters.resourceIDs.map(String.init).joined(separator: ",")
+                parameters[ParameterKey.resource] = filters.resourceIDs.map(String.init)
             }
 
             if let startDateBefore = filters.startDateBefore {
@@ -110,11 +110,11 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             }
 
             if filters.bookingStatuses.isNotEmpty {
-                parameters[ParameterKey.bookingStatus] = filters.bookingStatuses.joined(separator: ",")
+                parameters[ParameterKey.bookingStatus] = filters.bookingStatuses
             }
 
             if filters.attendanceStatuses.isNotEmpty {
-                parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses.joined(separator: ",")
+                parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses
             }
         }
 

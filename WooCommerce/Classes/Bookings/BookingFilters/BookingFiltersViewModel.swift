@@ -135,6 +135,18 @@ final class BookingFiltersViewModel: FilterListViewModel {
 
             return readable.joined(separator: ", ")
         }
+
+        var bookingFilters: BookingFilters {
+            BookingFilters(
+                productIDs: products.map { $0.productID },
+                customerIDs: customers.map { $0.customerID },
+                resourceIDs: teamMembers.map { $0.resourceID },
+                startDateBefore: dateRange?.endDate?.ISO8601Format(),
+                startDateAfter: dateRange?.startDate?.ISO8601Format(),
+                bookingStatuses: paymentStatuses.map { $0.rawValue },
+                attendanceStatuses: attendanceStatuses.map { $0.rawValue }
+            )
+        }
     }
 }
 

@@ -20,6 +20,8 @@ final class BookingSearchViewModel: ObservableObject {
     private var searchQuerySubscription: AnyCancellable?
     private var currentOrder: BookingListViewModel.SortBy = .newestToOldest
 
+    private var filters: BookingFilters
+
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
@@ -40,6 +42,18 @@ final class BookingSearchViewModel: ObservableObject {
         self.stores = stores
         self.currentDate = currentDate
         self.searchPaginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
+
+        self.filters = {
+            switch type {
+            case .all:
+                BookingFilters() // TODO: check local storage for persisted filters
+            case .today, .upcoming:
+                BookingFilters(
+                    startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+                    startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+                )
+            }
+        }()
 
         configureSearchPaginationTracker()
         configureSearchQuerySubscription(searchQueryPublisher: searchQueryPublisher)
@@ -68,6 +82,13 @@ final class BookingSearchViewModel: ObservableObject {
         if !currentSearchQuery.isEmpty {
             searchPaginationTracker.syncFirstPage()
         }
+    }
+
+    func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
+        /// Only support filters for All tab
+        guard type == .all else { return }
+        self.filters = filters.bookingFilters
+        searchPaginationTracker.resync(reason: nil) {}
     }
 
     /// Converts SortBy to BookingsRemote.Order
@@ -118,10 +139,6 @@ extension BookingSearchViewModel: PaginationTrackerDelegate {
             errorFetching = false
         }
 
-        let filters = BookingFilters(
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-        )
         let action = BookingAction.searchBookings(
             siteID: siteID,
             searchQuery: currentSearchQuery,

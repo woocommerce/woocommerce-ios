@@ -683,6 +683,7 @@ public enum ServerSidePaymentCaptureError: Error, LocalizedError {
     }
 }
 
+//periphery:ignore - logging this error detail in WooCommerce is useful, if it ever happens. It's part of the public API here.
 public enum CardPresentPaymentStoreError: Error {
     case unknownErrorFetchingAccounts
 }

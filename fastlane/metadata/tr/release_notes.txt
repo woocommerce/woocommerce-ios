@@ -1,1 +1,1 @@
-Bu güncelleme daha sorunsuz bir mağaza yönetimi ve daha iyi kontrol sağlar. Artık siparişleri kaynağa göre filtreleyebilir ve tüm POS siparişlerini doğrudan POS arayüzünden yönetebilirsiniz. Ayrıca, daha sorunsuz bir deneyim için Kupon Oluştur ekranında kaydırma sorununu düzelttik.
+Bu güncelleme daha sorunsuz bir mağaza yönetimi ve daha iyi kontrol sağlar. Artık siparişleri kaynağa göre filtreleyebilir ve tüm POS siparişlerini doğrudan POS arayüzünden yönetebilirsiniz. Ayrıca, daha sorunsuz bir deneyim için Kupon Oluşturma ekranında kaydırma sorununu düzelttik.

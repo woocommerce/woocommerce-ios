@@ -1,0 +1,1 @@
+Dieses Update sorgt für eine reibungslosere Shop-Verwaltung und bessere Kontrolle. Du kannst Bestellungen jetzt nach Quelle filtern und alle POS-Bestellungen direkt in der POS-Benutzeroberfläche verwalten. Außerdem haben wir ein Problem beim Scrollen auf dem Bildschirm „Gutschein erstellen“ behoben, um ein reibungsloseres Erlebnis zu bieten.

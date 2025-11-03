@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-21 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-10-22 13:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -884,7 +884,7 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.cancelation.alert.confirmAction" = "Да, отменить";
 
 /* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
-"BookingDetailsView.cancelation.alert.message" = "%1$@ больше не сможет участвовать в мероприятии «%2$@» в %3$@. @@@@@ХОРОШО БЫ УТОЧНИТЬ, О ЧЁМ РЕЧЬ";
+"BookingDetailsView.cancelation.alert.message" = "%1$@ больше не сможет участвовать в «%2$@» в %3$@.";
 
 /* Title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.title" = "Отменить бронирование";

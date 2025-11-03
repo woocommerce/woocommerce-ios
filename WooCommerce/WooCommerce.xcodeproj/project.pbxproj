@@ -2467,6 +2467,7 @@
 		DE8AA0B32BBE55E40084D2CC /* DashboardViewHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */; };
 		DE8AA0B52BBEBE590084D2CC /* ViewControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */; };
 		DE8C22732EB0AE8500C69F35 /* MultiSelectListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C22722EB0AE8500C69F35 /* MultiSelectListView.swift */; };
+		DE8C3A002EB3527300C69F35 /* SyncableListSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C39FF2EB3527300C69F35 /* SyncableListSelectorViewModelTests.swift */; };
 		DE8C63AE2E1E2D2D00DA48AC /* OrderDetailsShipmentDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C63AD2E1E2D1400DA48AC /* OrderDetailsShipmentDetailsView.swift */; };
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		DE96844B2A331AD2000FBF4E /* WooAnalyticsEvent+ProductSharingAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96844A2A331AD2000FBF4E /* WooAnalyticsEvent+ProductSharingAI.swift */; };
@@ -5395,6 +5396,7 @@
 		DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewHostingController.swift; sourceTree = "<group>"; };
 		DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerContainer.swift; sourceTree = "<group>"; };
 		DE8C22722EB0AE8500C69F35 /* MultiSelectListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectListView.swift; sourceTree = "<group>"; };
+		DE8C39FF2EB3527300C69F35 /* SyncableListSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncableListSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		DE8C63AD2E1E2D1400DA48AC /* OrderDetailsShipmentDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsShipmentDetailsView.swift; sourceTree = "<group>"; };
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		DE96844A2A331AD2000FBF4E /* WooAnalyticsEvent+ProductSharingAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductSharingAI.swift"; sourceTree = "<group>"; };
@@ -12502,6 +12504,7 @@
 		DED1E3162E8556270089909C /* Bookings */ = {
 			isa = PBXGroup;
 			children = (
+				DE8C39FF2EB3527300C69F35 /* SyncableListSelectorViewModelTests.swift */,
 				DE49CD212E966814006DCB07 /* BookingSearchViewModelTests.swift */,
 				DED1E3152E8556270089909C /* BookingListViewModelTests.swift */,
 				2D054A292E953E3C004111FD /* BookingDetailsViewModelTests.swift */,
@@ -16006,6 +16009,7 @@
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				DEF8CF1129A8933E00800A60 /* JetpackBenefitsViewModelTests.swift in Sources */,
 				31F21B5A263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift in Sources */,
+				DE8C3A002EB3527300C69F35 /* SyncableListSelectorViewModelTests.swift in Sources */,
 				86F0896F2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift in Sources */,
 				CC3B35DF28E5BE6F0036B097 /* ReviewReplyViewModelTests.swift in Sources */,
 				DEE215322D116FBB004A11F3 /* EditStoreListViewModelTests.swift in Sources */,

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-21 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-10-22 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -878,16 +878,16 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.bookingNotes.headerTitle" = "Bokningsanteckningar";
 
 /* Cancel button title for the booking cancellation confirmation alert. */
-"BookingDetailsView.cancelation.alert.cancelAction" = "Nej, behåll det";
+"BookingDetailsView.cancelation.alert.cancelAction" = "Nej, behåll den";
 
 /* Confirm button title for the booking cancellation confirmation alert. */
-"BookingDetailsView.cancelation.alert.confirmAction" = "Ja, avbryt nu";
+"BookingDetailsView.cancelation.alert.confirmAction" = "Ja, annullera den";
 
 /* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
-"BookingDetailsView.cancelation.alert.message" = "%1$@ kommer inte längre att kunna delta i ”%2$@” på %3$@.";
+"BookingDetailsView.cancelation.alert.message" = "%1$@ kommer inte längre att kunna närvara på ”%2$@” den %3$@.";
 
 /* Title for the booking cancellation confirmation alert. */
-"BookingDetailsView.cancelation.alert.title" = "Avbryt bokning";
+"BookingDetailsView.cancelation.alert.title" = "Annullera bokning";
 
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Faktureringsadress";
@@ -8615,10 +8615,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 "blazeTargetTopicPickerView.tryAgain" = "Försök igen";
 
 /* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "Vi kunde inte hitta några rabattkoder med det namnet — prova att justera din sökterm.";
+"bookingList.emptySearchText" = "Vi kunde inte hitta några bokningar med det namnet — prova att justera din sökterm för att se fler resultat.";
 
 /* Error message when fetching bookings fails */
-"bookingList.errorMessage" = "Det gick inte att hämta bokningar";
+"bookingList.errorMessage" = "Fel vid hämtning av bokningar";
 
 /* Option to sort bookings from newest to oldest */
 "bookingList.sort.newestToOldest" = "Datum: nyaste till äldsta";
@@ -8630,7 +8630,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingListView.all" = "Alla";
 
 /* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "No bookings match your filters. Try adjusting them to see more results.";
+"bookingListView.emptyState.filter.description" = "Inga bokningar matchar dina filter. Prova att justera dem för att se fler resultat.";
 
 /* Title for the empty state when there's no bookings for the given filter */
 "bookingListView.emptyState.filter.title" = "Inga bokningar hittades";
@@ -9703,16 +9703,16 @@ which should be translated separately and considered part of this sentence. */
 "localNotification.BlazeNoCampaignReminder.title" = "Öka din försäljning";
 
 /* Body of the local notification for current POS merchants survey. */
-"localNotification.PointOfSaleCurrentMerchant.body" = "Share your experience in a quick 2-minute survey and help us improve.";
+"localNotification.PointOfSaleCurrentMerchant.body" = "Dela din upplevelse i en snabb 2-minuters undersökning och hjälp oss att bli bättre.";
 
 /* Title of the local notification for current POS merchants survey. */
 "localNotification.PointOfSaleCurrentMerchant.title" = "Hur fungerar POS för dig?";
 
 /* Message body of the local notification sent to potential Point of Sale merchants */
-"localNotification.PointOfSalePotentialMerchant.body" = "Gör en snabb 2-minuters undersökning för att hjälpa oss att forma funktioner som du kommer att älska.";
+"localNotification.PointOfSalePotentialMerchant.body" = "Gör en snabb 2-minuters undersökning för att hjälpa oss att utforma funktioner som du kommer att älska.";
 
 /* Title of the local notification sent to potential Point of Sale merchants */
-"localNotification.PointOfSalePotentialMerchant.title" = "Thinking about in-person sales?";
+"localNotification.PointOfSalePotentialMerchant.title" = "Funderar du på personlig försäljning?";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "Dina produktbilder laddas fortfarande upp i bakgrunden. Uppladdningshastigheten kan vara långsammare och det kan uppstå fel. För bästa resultat, behåll appen öppen tills uppladdningarna är klara.";

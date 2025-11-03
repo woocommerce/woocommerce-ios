@@ -95,9 +95,12 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 countryCode: country,
                 paymentMethods: [.cardPresent],
                 currencies: [.GBP],
-                paymentGateways: [WCPayAccount.gatewayID],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
                 supportedReaders: [.wisepad3, .tapToPay],
-                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "4.4.0"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: 10000,

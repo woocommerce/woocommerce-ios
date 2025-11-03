@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-08 09:54:09+0000 */
+/* Translation-Revision-Date: 2025-10-22 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -877,11 +877,26 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Booking notes' section in the booking details screen. */
 "BookingDetailsView.bookingNotes.headerTitle" = "Rezervasyon notları";
 
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "Hayır, sakla";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "Evet, iptal et";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "%1$@ artık şuna %3$@ tarihinde katılamayacak: “%2$@”.";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "Rezervasyonu iptal edin";
+
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Fatura adresi";
 
 /* 'Cancel booking' button title in appointment details section in booking details view. */
 "BookingDetailsView.customer.cancelBookingButton.title" = "Rezervasyonu iptal et";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "E-posta adresi kopyalandı";
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Müşteri";
@@ -907,6 +922,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Ödeme";
 
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "Para iadesi düzenle";
+
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "Ödendi olarak işaretle";
 
@@ -921,6 +939,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for 'View order' button in payment section in booking details view. */
 "BookingDetailsView.payment.viewOrder.title" = "Siparişi görüntüle";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "Ara";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "Telefon numarası kopyalandı";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "Kopyala";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "Bu numaraya bir arama yapılamadı.";
 
 /* Title for the 'Booked' status label in the header view. */
 "BookingDetailsView.statusLabel.booked" = "Rezerve Edildi";
@@ -8581,11 +8611,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Yeniden Dene";
 
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "Bu ada sahip herhangi bir rezervasyon bulamadık; daha fazla sonuç görmek için arama terimlerinizi düzenlemeyi deneyin.";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "Rezervasyonlar alınırken hata oluştu";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "Tarih: Yeniden eskiye";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "Tarih: Eskiden Yeniye";
+
 /* Tab title for all bookings */
 "bookingListView.all" = "Tümü";
 
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "Filtrelerinizle eşleşen rezervasyon yok. Daha fazla sonuç görmek için düzenlemeyi deneyin.";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "Rezervasyon bulunamadı";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "Bugün için zamanlanmış herhangi bir randevunuz veya etkinliğiniz yok.";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "Bugün rezervasyon yok";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "Henüz zamanlanmış gelecekteki randevunuz veya etkinliğiniz yok.";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "Yaklaşan rezervasyon yok";
+
 /* Button to filter the booking list */
 "bookingListView.filter" = "Filtrele";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "Rezervasyon arayın";
 
 /* Button to select the order of the booking list */
 "bookingListView.sortBy" = "Şuna göre sırala:";
@@ -8619,6 +8682,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "Ödenmemiş";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "Misafir";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "Rezervasyonlar";
@@ -9632,6 +9698,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Satışlarınızı güçlendirin";
+
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "2 dakikalık hızlı bir anketle deneyiminizi paylaşın ve iyileştirmemize yardımcı olun.";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "POS sizin için nasıl çalışıyor?";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "Seveceğiniz özellikleri şekillendirmemize yardımcı olmak için hızlı bir 2 dakikalık ankete katılın.";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "Şahsen satışları mı düşünüyorsunuz?";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "Ürün görselleriniz hala arka planda karşıya yükleniyor. Karşıya yükleme hızı daha yavaş olabilir ve hatalar oluşabilir. En iyi sonuçlar için lütfen karşıya yüklemeler tamamlanıncaya kadar uygulamayı açık tutun.";
@@ -10694,6 +10772,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "Satış Noktası";
+
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "Web Ödemesi";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "WP Yöneticisi";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "İptal et";

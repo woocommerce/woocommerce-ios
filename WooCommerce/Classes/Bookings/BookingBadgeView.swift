@@ -15,17 +15,18 @@ struct BookingBadgeView: View {
     }
 }
 
-extension BookingBadgeView {
-    init(_ status: BookingAttendanceStatus) {
-        self.init(text: status.localizedTitle, color: status.badgeColor)
-    }
+protocol BookingBadgeable {
+    var text: String { get }
+    var badgeColor: Color { get }
+}
 
-    init(_ status: BookingStatus) {
-        self.init(text: status.localizedTitle, color: status.badgeColor)
+extension BookingBadgeView {
+    init(_ badgeable: BookingBadgeable) {
+        self.init(text: badgeable.text, color: badgeable.badgeColor)
     }
 }
 
-extension BookingAttendanceStatus {
+extension BookingAttendanceStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
         case .noShow:
@@ -34,9 +35,13 @@ extension BookingAttendanceStatus {
             return BadgeColor.default
         }
     }
+
+    var text: String {
+        self.localizedTitle
+    }
 }
 
-extension BookingStatus {
+extension BookingStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
         case .unpaid:
@@ -44,6 +49,10 @@ extension BookingStatus {
         default:
             return BadgeColor.default
         }
+    }
+
+    var text: String {
+        self.localizedTitle
     }
 }
 

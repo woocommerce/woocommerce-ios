@@ -161,7 +161,10 @@ private extension POSCatalogFullSyncService {
                 }
                 return downloadURL
             case .pending, .processing:
-                DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
+                // Only logs every 10th attempt to avoid flooding logs for large catalogs.
+                if attempts % 10 == 0 {
+                    DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
+                }
                 try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 attempts += 1
             case .failed:

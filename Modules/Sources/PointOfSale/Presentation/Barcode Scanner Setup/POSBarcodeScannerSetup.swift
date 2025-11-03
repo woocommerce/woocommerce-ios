@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleBarcodeScannerSetup: View {
+struct POSBarcodeScannerSetup: View {
     @Binding var isPresented: Bool
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
     @Environment(\.posModalParentSize) var parentSize
@@ -91,7 +91,7 @@ private enum Constants {
 }
 
 // MARK: - Private Localization Extension
-private extension PointOfSaleBarcodeScannerSetup {
+private extension POSBarcodeScannerSetup {
     enum Localization {
         static let starBSH20BTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.starBSH20B.title",
@@ -120,7 +120,7 @@ private extension PointOfSaleBarcodeScannerSetup {
 
 #if DEBUG
 #Preview {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true), analytics: EmptyPOSAnalytics())
+    POSBarcodeScannerSetup(isPresented: .constant(true), analytics: EmptyPOSAnalytics())
 }
 #endif
 

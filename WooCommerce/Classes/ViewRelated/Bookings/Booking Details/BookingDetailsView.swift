@@ -103,6 +103,7 @@ struct BookingDetailsView: View {
             Text(viewModel.cancellationAlertMessage)
         }
         .notice($notice)
+        .notice($viewModel.notice)
     }
 }
 

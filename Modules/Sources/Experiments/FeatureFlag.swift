@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Enables surveys for potential and current POS merchants
     ///
     case pointOfSaleSurveys
+
+    /// Enables card reader connection flow within POS settings
+    ///
+    case pointOfSaleSettingsCardReaderFlow
 }

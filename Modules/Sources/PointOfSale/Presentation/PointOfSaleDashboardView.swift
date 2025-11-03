@@ -6,6 +6,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.dismiss) private var dismiss
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -39,7 +40,7 @@ struct PointOfSaleDashboardView: View {
     // MARK: View State
 
     enum ViewState: Equatable {
-        case loading
+        case loading(isCatalogSyncing: Bool = false)
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
         case content
@@ -58,8 +59,11 @@ struct PointOfSaleDashboardView: View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             switch viewState {
-            case .loading:
-                PointOfSaleLoadingView()
+            case .loading(let isCatalogSyncing):
+                PointOfSaleLoadingView(
+                    isCatalogSyncing: isCatalogSyncing,
+                    onExit: { dismiss() }
+                )
                     .transition(.opacity)
                     .ignoresSafeArea()
             case .ineligible(let reason):
@@ -107,7 +111,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, backgroundAppearance)
-        .animation(.easeInOut, value: viewState == .loading)
+        .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {

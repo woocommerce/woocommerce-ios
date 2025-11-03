@@ -5,12 +5,22 @@ import Yosemite
 struct BookableProductListSyncable: ListSyncable {
     typealias StorageType = StorageProduct
     typealias ModelType = Product
+    typealias ListFilterType = BookingProductFilter
 
     let siteID: Int64
 
-    var title: String { Localization.title }
+    let title = Localization.title
 
-    var emptyStateMessage: String { Localization.noMembersFound }
+    let emptyStateMessage = Localization.noServiceFound
+    let emptyItemTitlePlaceholder: String? = nil
+
+    let searchConfiguration: ListSearchConfiguration? = ListSearchConfiguration(
+        searchPrompt: Localization.searchPrompt,
+        emptySearchTitle: Localization.noServiceFound,
+        emptySearchDescription: Localization.emptySearchDescription
+    )
+
+    let selectionDisabledMessage: String? = nil
 
     // MARK: - ResultsController Configuration
 
@@ -45,10 +55,36 @@ struct BookableProductListSyncable: ListSyncable {
         )
     }
 
+    /// Creates the action to search items with keyword
+    func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
+        ProductAction.searchProducts(
+            siteID: siteID,
+            keyword: keyword,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            productType: .booking,
+            onCompletion: completion
+        )
+    }
+
+    /// Creates the predicate for filtering search results
+    func createSearchPredicate(keyword: String) -> NSPredicate? {
+        NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@).@count > 0", keyword)
+    }
+
     // MARK: - Display Configuration
 
     func displayName(for item: Product) -> String {
         item.name
+    }
+
+    /// Returns the description for an item
+    func description(for item: Product) -> String? { nil }
+
+    func selectionEnabled(for item: Product) -> Bool { true }
+
+    func filterItem(for item: Product) -> BookingProductFilter {
+        BookingProductFilter(productID: item.productID, name: item.name)
     }
 }
 
@@ -59,10 +95,20 @@ private extension BookableProductListSyncable {
             value: "Service / Event",
             comment: "Title of the booking service/event selector view"
         )
-        static let noMembersFound = NSLocalizedString(
+        static let noServiceFound = NSLocalizedString(
             "bookingServiceEventSelectorView.noMembersFound",
             value: "No service or event found",
             comment: "Text on the empty view of the booking service/event selector view"
+        )
+        static let searchPrompt = NSLocalizedString(
+            "bookingServiceEventSelectorView.searchPrompt",
+            value: "Search service / event",
+            comment: "Prompt in the search bar of the booking service/event selector view"
+        )
+        static let emptySearchDescription = NSLocalizedString(
+            "bookingServiceEventSelectorView.emptySearchDescription",
+            value: "Try adjusting your search term to see more results",
+            comment: "Message on the empty search result view of the booking service/event selector view"
         )
     }
 }

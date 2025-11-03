@@ -1,16 +1,20 @@
 import SwiftUI
 import struct WooFoundation.SafariView
 
-struct PointOfSaleSettingsHardwareDetailView: View {
+struct POSSettingsHardwareDetailView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posExternalViews) private var externalViews
 
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    let settingsController: POSSettingsControllerProtocol
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
+    @State private var showSupport: Bool = false
 
     private var cardReaderName: String {
         if let cardReaderName = settingsController.connectedCardReader?.name {
@@ -34,6 +38,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     var body: some View {
+        @Bindable var posModel = posModel
         NavigationStack(path: $navigationPath) {
             POSPageHeaderView(title: Localization.hardwareTitle)
             .foregroundColor(.posSurface)
@@ -69,30 +74,74 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):
-                    cardReadersView
+                    if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsCardReaderFlow) {
+                        cardReadersView
+                    } else {
+                        // TODO: Legacy view to be removed along feature flag on WOOMOB-1591
+                        legacyCardReadersView
+                    }
                 case .hardware(.scanners):
                     scannersView
                 }
             }
+            .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+                posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+            }, content: { alertType in
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                    .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+            })
+            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+                posModel.cancelCardPaymentsOnboarding()
+            }, content: { viewContainer in
+                paymentsOnboardingView(from: viewContainer)
+            })
+            .posSheet(isPresented: $showSupport) {
+                supportForm
+                    .interactiveDismissDisabled(true)
+            }
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
+                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
                 SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
             }
         }
     }
+}
 
-    private func handleScannerDestination(_ destination: ScannerDestination) {
-        switch destination {
-        case .setup:
-            showBarcodeScanningSetupModal = true
-        case .documentation:
-            showBarcodeScanningDocumentationModal = true
+// MARK: - Views
+private extension POSSettingsHardwareDetailView {
+    func paymentsOnboardingView(from onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
+        onboardingViewContainer.configuration.showSupport = {
+            posModel.cancelCardPaymentsOnboarding()
+            showSupport = true
+        }
+
+        return PointOfSaleCardPresentPaymentOnboardingView(
+            viewModel: .init(onboardingViewContainer: onboardingViewContainer,
+                             onDismissTap: {
+                                 posModel.cancelCardPaymentsOnboarding()
+                             }))
+        .onAppear {
+            posModel.trackCardPaymentsOnboardingShown()
         }
     }
 
-    private var cardReadersView: some View {
+    var supportForm: some View {
+        NavigationView {
+            externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.supportCancel) {
+                        showSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+
+    var legacyCardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.cardReadersTitle,
@@ -161,7 +210,63 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
-    private var scannersView: some View {
+    var cardReadersView: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.cardReadersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
+            List {
+                if case .connected = posModel.cardReaderConnectionStatus {
+                    VStack(spacing: POSPadding.xSmall) {
+                        HStack {
+                            Text(Localization.readerModelTitle)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(cardReaderName)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        HStack {
+                            Text(Localization.readerBatteryTitle)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text(formattedBatteryLevel)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                    }
+                    .font(.posBodyMediumRegular())
+                } else {
+                    POSSettingsCardView(title: Localization.cardReaderConnectTitle,
+                                        subtitle: Localization.cardReaderConnectSubtitle,
+                                        action: {
+                        posModel.connectCardReader()
+                    })
+                }
+
+                POSSettingsCardView(title: Localization.cardReaderDocumentationTitle,
+                                    subtitle: Localization.cardReaderDocumentationSubtitle,
+                                    action: { showCardReaderDocumentationModal = true })
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
+        }
+        .navigationBarBackButtonHidden(true)
+        .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
+            SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
+        }
+    }
+
+    var scannersView: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.scannersTitle,
@@ -204,7 +309,8 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 }
 
-extension PointOfSaleSettingsHardwareDetailView {
+// MARK: - Navigation
+private extension POSSettingsHardwareDetailView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners
@@ -276,9 +382,23 @@ extension PointOfSaleSettingsHardwareDetailView {
             }
         }
     }
+
+    func handleScannerDestination(_ destination: ScannerDestination) {
+        switch destination {
+        case .setup:
+            showBarcodeScanningSetupModal = true
+        case .documentation:
+            showBarcodeScanningDocumentationModal = true
+        }
+    }
 }
 
-private extension PointOfSaleSettingsHardwareDetailView {
+// MARK: - Constants
+private extension POSSettingsHardwareDetailView {
+    enum Constants {
+        static let supportTag = "origin:point-of-sale"
+    }
+
     enum Localization {
         static let readerModelTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
@@ -381,11 +501,27 @@ private extension PointOfSaleSettingsHardwareDetailView {
             value: "Configure barcode scanner settings",
             comment: "Description of Barcode scanner settings configuration."
         )
+        static let cardReaderConnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
+            value: "Connect card reader",
+            comment: "Title for card reader connect button when no reader is connected."
+        )
+        static let cardReaderConnectSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle",
+            value: "Connect your card reader and start accepting payments",
+            comment: "Subtitle for card reader connect button when no reader is connected."
+        )
+
+        static let supportCancel = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.help.support.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the support form from POS settings."
+        )
     }
 }
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
+    POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController())
 }
 #endif

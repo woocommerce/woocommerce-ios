@@ -33,13 +33,15 @@ public struct PointOfSaleEntryPointView: View {
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let settingsController: PointOfSaleSettingsControllerProtocol
+    private let settingsController: POSSettingsControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
+    private let siteID: Int64
+    private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -69,11 +71,12 @@ public struct PointOfSaleEntryPointView: View {
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
-        if isLocalCatalogEligible, let grdbManager = grdbManager {
+        if isLocalCatalogEligible, let grdbManager = grdbManager, let catalogSyncCoordinator {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
-                currencySettings: services.currency.currencySettings
+                currencySettings: services.currency.currencySettings,
+                catalogSyncCoordinator: catalogSyncCoordinator
             )
         } else {
             self.itemsController = PointOfSaleItemsController(
@@ -127,6 +130,8 @@ public struct PointOfSaleEntryPointView: View {
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services
+        self.siteID = siteID
+        self.catalogSyncCoordinator = catalogSyncCoordinator
     }
 
     public var body: some View {
@@ -155,7 +160,9 @@ public struct PointOfSaleEntryPointView: View {
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
-                barcodeScanService: barcodeScanService)
+                barcodeScanService: barcodeScanService,
+                siteID: siteID,
+                catalogSyncCoordinator: catalogSyncCoordinator)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

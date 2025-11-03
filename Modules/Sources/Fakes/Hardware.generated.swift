@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension Hardware.CardBrand {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -97,3 +99,5 @@ extension Hardware.PaymentMethod {
         .card
     }
 }
+
+// swiftlint:enable line_length

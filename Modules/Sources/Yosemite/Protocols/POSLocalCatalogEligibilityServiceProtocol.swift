@@ -12,7 +12,7 @@ public enum POSLocalCatalogEligibilityState: Equatable {
 
 /// Reasons why local catalog is ineligible
 public enum POSLocalCatalogIneligibleReason: Equatable {
-    case posTabNotVisible
+    case posTabNotEligible
     case featureFlagDisabled
     case catalogSizeTooLarge(totalCount: Int, limit: Int)
     case catalogSizeCheckFailed(underlyingError: String)
@@ -28,14 +28,19 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 /// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
 /// The service performs an initial eligibility check during initialization.
 public protocol POSLocalCatalogEligibilityServiceProtocol {
-    /// Current eligibility state (synchronously accessible on main thread)
-    var eligibilityState: POSLocalCatalogEligibilityState { get }
+    /// Get catalog eligibility for a specific site
+    /// - Parameter siteID: The site ID to check eligibility for
+    /// - Returns: Cached eligibility state, or eligible if not yet checked
+    func catalogEligibility(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
 
-    /// Update the POS tab visibility state and refresh eligibility
-    /// - Parameter isPOSTabVisible: Whether the POS tab is visible
-    func updateVisibility(isPOSTabVisible: Bool) async
+    /// Update POS eligibility and refresh catalog eligibility for the specified site
+    /// - Parameters:
+    ///   - isEligible: Whether POS is eligible for the site
+    ///   - siteID: The site ID to refresh eligibility for
+    func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async throws
 
-    /// Force refresh eligibility (bypasses cache and updates eligibilityState)
+    /// Refresh eligibility state for a specific site
+    /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Fresh eligibility state with reason if ineligible
-    @discardableResult func refreshEligibilityState() async -> POSLocalCatalogEligibilityState
+    @discardableResult func refreshEligibilityState(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
 }

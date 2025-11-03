@@ -44,14 +44,17 @@ struct BookingsRemoteTests {
         let startDateBefore = "2024-12-31T23:59:59"
         let startDateAfter = "2024-01-01T00:00:00"
         let searchQuery = "test search"
+        let filters = BookingFilters(
+            startDateBefore: startDateBefore,
+            startDateAfter: startDateAfter
+        )
         network.simulateResponse(requestUrlSuffix: "bookings", filename: "booking-list")
 
         // When
         _ = try await remote.loadAllBookings(for: sampleSiteID,
                                              pageNumber: 2,
                                              pageSize: 50,
-                                             startDateBefore: startDateBefore,
-                                             startDateAfter: startDateAfter,
+                                             filters: filters,
                                              searchQuery: searchQuery,
                                              order: .ascending)
 
@@ -74,8 +77,7 @@ struct BookingsRemoteTests {
 
         // When
         _ = try await remote.loadAllBookings(for: sampleSiteID,
-                                             startDateBefore: nil,
-                                             startDateAfter: nil,
+                                             filters: nil,
                                              searchQuery: nil,
                                              order: .descending)
 

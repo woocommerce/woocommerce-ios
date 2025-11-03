@@ -31,8 +31,4 @@ final class MockPOSObservableDataSource: POSObservableDataSourceProtocol {
     func loadMoreVariations() {
         // Tests set properties directly - no async behavior needed
     }
-
-    func refresh() {
-        // No-op for mock
-    }
 }

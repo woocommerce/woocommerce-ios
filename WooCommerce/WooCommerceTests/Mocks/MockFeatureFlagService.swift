@@ -26,7 +26,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
-    var isLocalCatalogEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -49,8 +48,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          notificationSettings: Bool = false,
          allowMerchantAIAPIKey: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
-         isCIABBookingsEnabled: Bool = false,
-         isLocalCatalogEnabled: Bool = false) {
+         isCIABBookingsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -73,7 +71,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
-        self.isLocalCatalogEnabled = isLocalCatalogEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -128,8 +125,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return isCIABBookingsEnabled
-        case .pointOfSaleLocalCatalogi1:
-            return isLocalCatalogEnabled
         default:
             return false
         }

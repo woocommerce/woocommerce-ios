@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.6
+This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.
+
 ## 23.5
 This update brings smoother store management and better control. You can now filter orders by source, and manage all POS orders directly within the POS interface. Plus, we fixed a scrolling issue on the Create Coupon screen for a more seamless experience.
 

@@ -50,8 +50,8 @@ public enum CustomerAction: Action {
     ///- `filter`: Filter to perform the search.
     ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request. It will be removed once
     ///  `betterCustomerSelectionInOrder` is finished for performance reasons.
-    ///- `onCompletion`: Invoked when the operation finishes.
-    ///     - `result.success()`:  On success.
+    ///- `onCompletion`: Invoked when the operation finishes. Returns true if there are more customers to be synced in the search results.
+    ///     - `result.success(Bool)`:  On success, returns whether there are more pages available.
     ///     - `result.failure(Error)`: Error fetching data
     case searchCustomers(
         siteID: Int64,
@@ -63,7 +63,7 @@ public enum CustomerAction: Action {
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
         filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
-        onCompletion: (Result<(), Error>) -> Void)
+        onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Searches for WCAnalyticsCustomers by keyword and stores the results.
     ///

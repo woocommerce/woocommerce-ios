@@ -444,6 +444,7 @@ private extension CardPresentPaymentStore {
     ///
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         var error: Error? = nil
+        var hasSuccess: Bool? = nil
 
         let group = DispatchGroup()
         group.enter()
@@ -453,7 +454,7 @@ private extension CardPresentPaymentStore {
                 DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
                 error = loadError
             case .success:
-                break
+                hasSuccess = true
             }
             group.leave()
         })
@@ -465,17 +466,23 @@ private extension CardPresentPaymentStore {
                 DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
                 error = loadError
             case .success:
-                break
+                hasSuccess = true
             }
             group.leave()
         })
 
         group.notify(queue: .main) {
-            guard let error = error else {
+            switch (hasSuccess, error) {
+            case (true, _):
+                // If either succeeds, the load is successful
                 onCompletion(.success(()))
-                return
+            case (_, .some(let error)):
+                // If we have an error, and no success, the load fails
+                onCompletion(.failure(error))
+            case (_, .none):
+                // This... shouldn't really happen.
+                onCompletion(.failure(CardPresentPaymentStoreError.unknownErrorFetchingAccounts))
             }
-            onCompletion(.failure(error))
         }
     }
 
@@ -674,6 +681,11 @@ public enum ServerSidePaymentCaptureError: Error, LocalizedError {
             return error.localizedDescription
         }
     }
+}
+
+//periphery:ignore - logging this error detail in WooCommerce is useful, if it ever happens. It's part of the public API here.
+public enum CardPresentPaymentStoreError: Error {
+    case unknownErrorFetchingAccounts
 }
 
 private extension PaymentGatewayAccount {

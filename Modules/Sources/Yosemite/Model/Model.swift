@@ -26,6 +26,7 @@ public typealias BlazeTargetOptions = Networking.BlazeTargetOptions
 public typealias BlazeTargetLocation = Networking.BlazeTargetLocation
 public typealias BlazeTargetTopic = Networking.BlazeTargetTopic
 public typealias Booking = Networking.Booking
+public typealias BookingFilters = Networking.BookingFilters
 public typealias BookingStatus = Networking.BookingStatus
 public typealias BookingOrderInfo = Networking.BookingOrderInfo
 public typealias BookingCustomerInfo = Networking.BookingCustomerInfo

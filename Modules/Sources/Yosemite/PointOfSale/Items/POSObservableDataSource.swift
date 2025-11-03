@@ -38,9 +38,4 @@ public protocol POSObservableDataSourceProtocol {
 
     /// Loads more variations for the current parent product
     func loadMoreVariations()
-
-    /// Refreshes all data
-    /// Note: For GRDB implementations, this is a no-op as the database observation
-    /// automatically updates when data changes during incremental sync
-    func refresh()
 }

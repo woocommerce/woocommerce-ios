@@ -146,12 +146,12 @@ final class MainTabBarController: UITabBarController {
     private let posTabVisibilityCheckerFactory: ((_ site: Site) -> POSTabVisibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: ((_ site: Site) -> BookingsTabEligibilityCheckerProtocol)
+    private let userDefaults: UserDefaults
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private var posTabVisibilityChecker: POSTabVisibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
-    private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
@@ -171,7 +171,8 @@ final class MainTabBarController: UITabBarController {
           stores: StoresManager = ServiceLocator.stores,
           posTabVisibilityCheckerFactory: ((Site) -> POSTabVisibilityCheckerProtocol)? = nil,
           posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
-          bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil) {
+          bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
+          userDefaults: UserDefaults = .standard) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -184,6 +185,7 @@ final class MainTabBarController: UITabBarController {
         self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory ?? { site in
             BookingsTabEligibilityChecker(site: site)
         }
+        self.userDefaults = userDefaults
         super.init(coder: coder)
     }
 
@@ -201,6 +203,7 @@ final class MainTabBarController: UITabBarController {
         self.bookingsEligibilityCheckerFactory = { site in
             BookingsTabEligibilityChecker(site: site)
         }
+        self.userDefaults = .standard
         super.init(coder: coder)
     }
 
@@ -218,8 +221,9 @@ final class MainTabBarController: UITabBarController {
 
         delegate = self
 
-        // POS and Bookings tabs are hidden by default.
-        updateTabViewControllers(isPOSTabVisible: false, isBookingsTabVisible: false)
+        // Setup initial visibility for conditional tabs (POS, Bookings)
+        setupConditionalTabsInitialVisibility()
+
         observeSiteIDForViewControllers()
         observeSiteForConditionalTabs()
         observeProductImageUploadStatusUpdates()
@@ -332,6 +336,30 @@ final class MainTabBarController: UITabBarController {
                 }
             }
         }
+    }
+
+    private func setupConditionalTabsInitialVisibility() {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        setupConditionalTabsInitialVisibility(for: siteID)
+    }
+
+    private func setupConditionalTabsInitialVisibility(for siteID: Int64) {
+        let isPOSTabVisible = POSTabVisibilityChecker.checkInitialVisibility(
+            for: siteID,
+            eligibilityService: posEligibilityService
+        )
+        let isBookingsTabVisible = BookingsTabEligibilityChecker.checkInitialVisibility(
+            for: siteID,
+            in: userDefaults
+        )
+
+        updateTabViewControllers(
+            isPOSTabVisible: isPOSTabVisible,
+            isBookingsTabVisible: isBookingsTabVisible
+        )
     }
 }
 
@@ -698,12 +726,12 @@ extension MainTabBarController: DeepLinkNavigator {
 // MARK: - Site ID observation for updating tab view controllers
 //
 private extension MainTabBarController {
-    func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
-        guard let posTabVisibilityChecker else {
-            updateTabViewControllers(isPOSTabVisible: false, isBookingsTabVisible: isBookingsTabVisible)
-            viewModel.loadHubMenuTabBadge()
-            return
-        }
+    func observePOSEligibilityForPOSTabVisibility(site: Site) {
+        let siteID = site.siteID
+
+        // Configures POS tab coordinator once per logged in site session.
+        let posTabVisibilityChecker = posTabVisibilityCheckerFactory(site)
+        self.posTabVisibilityChecker = posTabVisibilityChecker
 
         // Sets POS tab initial visibility based on cached value if available.
         let initialVisibility = posTabVisibilityChecker.checkInitialVisibility()
@@ -721,11 +749,8 @@ private extension MainTabBarController {
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
 
-            // Update POS tab coordinator with new visibility state for local catalog eligibility
-            posTabCoordinator?.updatePOSTabVisibility(isPOSTabVisible)
-
-            // Begin foreground synchronization if POS tab becomes visible
-            await isPOSTabVisible ? posSyncDispatcher.start() : posSyncDispatcher.stop()
+            // Update POS eligibility - coordinator will check actual eligibility if tab is visible
+            posTabCoordinator?.updatePOSEligibility(isPOSTabVisible: isPOSTabVisible)
         }
     }
 
@@ -770,7 +795,8 @@ private extension MainTabBarController {
                     return
                 }
 
-                observeConditionalTabsAvailabilityWith(site)
+                observePOSEligibilityForPOSTabVisibility(site: site)
+                observeBookingsEligibilityForBookingsTabVisibility(site: site)
             }
     }
 
@@ -783,23 +809,13 @@ private extension MainTabBarController {
         }
     }
 
-    func observeConditionalTabsAvailabilityWith(_ site: Site) {
-        // Configures POS tab coordinator once per logged in site session.
-        let posTabVisibilityChecker = posTabVisibilityCheckerFactory(site)
-        self.posTabVisibilityChecker = posTabVisibilityChecker
-
-        observePOSEligibilityForPOSTabVisibility(siteID: site.siteID)
-
-        // Configures Booking tab.
-        let bookingsViewController = createBookingsViewController(siteID: site.siteID)
-        bookingsContainerController.wrappedController = bookingsViewController
-        observeBookingsEligibilityForBookingsTabVisibility(site: site)
-    }
-
     func updateViewControllers(siteID: Int64?) {
         guard let siteID else {
             return
         }
+
+        // Update conditional tabs initial state for the `siteID`
+        setupConditionalTabsInitialVisibility(for: siteID)
 
         // Update view model with `siteID` to query correct Orders Status
         viewModel.configureOrdersStatusesListener(for: siteID)
@@ -829,16 +845,20 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible,
                                                     isBookingsTabVisible: isBookingsTabVisible)
 
-        // Create POS tab coordinator with initial visibility from cache
-        let initialPOSTabVisibility = posTabVisibilityChecker?.checkInitialVisibility() ?? false
-        posTabCoordinator = POSTabCoordinator(
+        // Create POS tab coordinator with eligibility service from stores
+        let coordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
             viewControllerToPresent: self,
             storesManager: stores,
             eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
-            initialPOSTabVisibility: initialPOSTabVisibility
+            localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
+        posTabCoordinator = coordinator
+
+        // Setup bookings wrapped view controller
+        let bookingsViewController = createBookingsViewController(siteID: siteID)
+        bookingsContainerController.wrappedController = bookingsViewController
 
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
@@ -938,7 +958,7 @@ private extension MainTabBarController {
             let tab = WooTab.orders
             let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
 
-            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
+            guard let orderTab: UITabBarItem = self.tabBar.items?[safe: tabIndex] else {
                 return
             }
 

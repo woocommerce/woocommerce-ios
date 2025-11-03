@@ -1,6 +1,7 @@
 import XCTest
 import Fakes
 import Yosemite
+import enum Alamofire.AFError
 @testable import WooCommerce
 
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
@@ -1225,6 +1226,62 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(CardPresentPaymentsPlugin.stripe.pluginName, "WooCommerce Stripe Gateway")
         XCTAssertEqual(CardPresentPaymentsPlugin.stripe.plugin, .stripe)
         XCTAssertEqual(CardPresentPaymentsPlugin.stripe.fileNameWithPathExtension, "woocommerce-gateway-stripe/woocommerce-gateway-stripe")
+    }
+
+    // MARK: - loadAccounts error handling tests
+
+    func test_onboarding_handles_network_error_when_loading_accounts() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+
+        // Use AFError.sessionTaskFailed which is what Alamofire returns for network errors
+        let urlError = URLError(.notConnectedToInternet)
+        let networkError = AFError.sessionTaskFailed(error: urlError)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .loadAccounts(_, onCompletion):
+                onCompletion(.failure(networkError))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.updateAccounts()
+
+        // Then - Should show no connection error
+        XCTAssertEqual(useCase.state, .noConnectionError)
+    }
+
+    func test_onboarding_handles_generic_error_when_both_accounts_fail_to_load() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+
+        let genericError = NSError(domain: "test.error", code: 500, userInfo: nil)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .loadAccounts(_, onCompletion):
+                // Both accounts fail to load
+                onCompletion(.failure(genericError))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.updateAccounts()
+
+        // Then - Should show generic error
+        XCTAssertEqual(useCase.state, .genericError)
     }
 }
 

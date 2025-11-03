@@ -3,7 +3,7 @@
 
 23.7
 -----
-
+- [*] Improve card payments onboarding error handling to show network errors correctly [https://github.com/woocommerce/woocommerce-ios/pull/16304]
 
 23.6
 -----

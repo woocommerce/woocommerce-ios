@@ -36,8 +36,12 @@ struct PointOfSaleDashboardViewHelper {
 extension PointOfSaleDashboardView.ViewState {
     var showsFloatingControl: Bool {
         switch self {
-        case .content, .error, .unsupportedWidth:
+        case .content, .unsupportedWidth:
             return true
+        case .error(let error):
+            // Hide floating controls for initial catalog sync errors
+            // TODO: WOOMOB-1692 remove specialisation of errors if possible
+            return error.errorType != .initialCatalogSyncError
         case .loading, .ineligible:
             return false
         }

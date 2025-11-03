@@ -1,16 +1,25 @@
 import SwiftUI
 
 struct PointOfSaleItemListFullscreenView<Content: View>: View {
+    let showTitle: Bool
     let content: () -> Content
+
+    init(showTitle: Bool = true, @ViewBuilder content: @escaping () -> Content) {
+        self.showTitle = showTitle
+        self.content = content
+    }
 
     var body: some View {
         ZStack {
-            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                POSHeaderTitleView(
-                    title: Localization.title,
-                    foregroundColor: .posOnSurfaceVariantHighest
-                )
-                Spacer()
+            // TODO: WOOMOB-1692 remove specialisation of errors if possible
+            if showTitle {
+                VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+                    POSHeaderTitleView(
+                        title: Localization.title,
+                        foregroundColor: .posOnSurfaceVariantHighest
+                    )
+                    Spacer()
+                }
             }
 
             content()

@@ -99,7 +99,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
         }
 
-        await emitSyncState(.syncStarted(siteID: siteID, isInitialSync: lastFullSyncDate(for: siteID) == nil))
+        let isFirstSync = await lastFullSyncDate(for: siteID) == nil
+
+        emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
@@ -107,11 +109,19 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             _ = try await fullSyncService.startFullSync(for: siteID)
             emitSyncState(.syncCompleted(siteID: siteID))
         } catch AFError.explicitlyCancelled, is CancellationError {
-            emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+            if isFirstSync {
+                emitSyncState(.initialSyncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+            } else {
+                emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+            }
             throw POSCatalogSyncError.requestCancelled
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete sync for site \(siteID): \(error)")
-            emitSyncState(.syncFailed(siteID: siteID, error: error))
+            if isFirstSync {
+                emitSyncState(.initialSyncFailed(siteID: siteID, error: error))
+            } else {
+                emitSyncState(.syncFailed(siteID: siteID, error: error))
+            }
             throw error
         }
 
@@ -299,7 +309,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 private extension POSCatalogSyncCoordinator {
     func emitSyncState(_ state: POSCatalogSyncState) {
         let siteID: Int64 = switch state {
-        case .syncStarted(let id, _), .syncCompleted(let id), .syncFailed(let id, _), .syncNeverDone(let id):
+        case .initialSyncStarted(let id),
+                .syncStarted(let id),
+                .syncCompleted(let id),
+                .initialSyncFailed(let id, _),
+                .syncFailed(let id, _),
+                .syncNeverDone(let id):
             id
         }
 
@@ -316,21 +331,23 @@ public class POSCatalogSyncStateModel {
 
 
 public enum POSCatalogSyncState: Equatable {
-    case syncStarted(siteID: Int64, isInitialSync: Bool)
+    case initialSyncStarted(siteID: Int64)
+    case syncStarted(siteID: Int64)
     case syncCompleted(siteID: Int64)
+    case initialSyncFailed(siteID: Int64, error: Error)
     case syncFailed(siteID: Int64, error: Error)
     case syncNeverDone(siteID: Int64)
 
     public static func == (lhs: POSCatalogSyncState, rhs: POSCatalogSyncState) -> Bool {
         switch (lhs, rhs) {
-        case (.syncStarted(let lhsSiteID, let lhsInitial), .syncStarted(let rhsSiteID, let rhsInitial)):
-            return lhsSiteID == rhsSiteID && lhsInitial == rhsInitial
-        case (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)):
+        case (.initialSyncStarted(let lhsSiteID), .initialSyncStarted(let rhsSiteID)),
+            (.syncStarted(let lhsSiteID), .syncStarted(let rhsSiteID)),
+            (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)),
+            (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
-        case (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
+        case (.initialSyncFailed(let lhsSiteID, let lhsError), .initialSyncFailed(let rhsSiteID, let rhsError)),
+            (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
             return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
-        case (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
-            return lhsSiteID == rhsSiteID
         default:
             return false
         }

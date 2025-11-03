@@ -448,7 +448,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         dataSource.isLoadingProducts = true
-        coordinator.fullSyncStateModel.state[siteID] = .syncStarted(siteID: siteID, isInitialSync: true)
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncStarted(siteID: siteID)
 
         // When
         let containerState = sut.itemsViewState.containerState

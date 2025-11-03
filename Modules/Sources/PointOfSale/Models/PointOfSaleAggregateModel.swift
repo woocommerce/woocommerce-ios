@@ -115,7 +115,7 @@ protocol PointOfSaleAggregateModelProtocol {
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
-        performIncrementalSync()
+        performInitialSyncIfNeeded()
     }
 }
 
@@ -621,6 +621,13 @@ private extension PointOfSaleAggregateModel {
         guard let catalogSyncCoordinator else { return }
         Task {
             try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        }
+    }
+
+    private func performInitialSyncIfNeeded() {
+        guard let catalogSyncCoordinator else { return }
+        Task {
+            try? await catalogSyncCoordinator.performSmartSync(for: siteID)
         }
     }
 }

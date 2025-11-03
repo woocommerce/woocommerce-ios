@@ -39,7 +39,7 @@ struct BookingSearchViewModelTests {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCount = 0
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCount += 1
@@ -67,7 +67,7 @@ struct BookingSearchViewModelTests {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var capturedSearchQuery: String?
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, searchQuery, _, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, searchQuery, _, _, _, _, onCompletion) = action else {
                 return
             }
             capturedSearchQuery = searchQuery
@@ -96,7 +96,7 @@ struct BookingSearchViewModelTests {
         let booking1 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, startDate: Date())
         let booking2 = Booking.fake().copy(siteID: sampleSiteID, bookingID: 2, startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success([booking1, booking2]))
@@ -124,7 +124,7 @@ struct BookingSearchViewModelTests {
         let searchQuerySubject = PassthroughSubject<String, Never>()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.failure(NSError(domain: "test", code: 1)))
@@ -158,7 +158,7 @@ struct BookingSearchViewModelTests {
         let secondPageBookings = [Booking.fake().copy(siteID: sampleSiteID, bookingID: 26, startDate: Date())]
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, pageNumber, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, pageNumber, _, _, _, onCompletion) = action else {
                 return
             }
             capturedPageNumbers.append(pageNumber)
@@ -196,7 +196,7 @@ struct BookingSearchViewModelTests {
         var searchCount = 0
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             searchCount += 1
@@ -234,15 +234,13 @@ struct BookingSearchViewModelTests {
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let searchQuerySubject = PassthroughSubject<String, Never>()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedStartDateBefore: String?
-        var capturedStartDateAfter: String?
+        var capturedFilters: BookingFilters?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, startDateBefore, startDateAfter, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
                 return
             }
-            capturedStartDateBefore = startDateBefore
-            capturedStartDateAfter = startDateAfter
+            capturedFilters = filters
             onCompletion(.success([]))
         }
 
@@ -259,8 +257,8 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedStartDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
-        #expect(capturedStartDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
+        #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
     }
 
     @Test func upcoming_tab_passes_correct_date_filters_to_search_action() async throws {
@@ -268,15 +266,13 @@ struct BookingSearchViewModelTests {
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let searchQuerySubject = PassthroughSubject<String, Never>()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedStartDateBefore: String?
-        var capturedStartDateAfter: String?
+        var capturedFilters: BookingFilters?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, startDateBefore, startDateAfter, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
                 return
             }
-            capturedStartDateBefore = startDateBefore
-            capturedStartDateAfter = startDateAfter
+            capturedFilters = filters
             onCompletion(.success([]))
         }
 
@@ -293,8 +289,8 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedStartDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
-        #expect(capturedStartDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
+        #expect(capturedFilters?.startDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
+        #expect(capturedFilters?.startDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
     }
 
     @Test func all_tab_passes_no_date_filters_to_search_action() async throws {
@@ -302,15 +298,13 @@ struct BookingSearchViewModelTests {
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let searchQuerySubject = PassthroughSubject<String, Never>()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedStartDateBefore: String?
-        var capturedStartDateAfter: String?
+        var capturedFilters: BookingFilters?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, startDateBefore, startDateAfter, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
                 return
             }
-            capturedStartDateBefore = startDateBefore
-            capturedStartDateAfter = startDateAfter
+            capturedFilters = filters
             onCompletion(.success([]))
         }
 
@@ -327,8 +321,8 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedStartDateBefore == nil, "All tab should not have startDateBefore filter")
-        #expect(capturedStartDateAfter == nil, "All tab should not have startDateAfter filter")
+        #expect(capturedFilters?.startDateBefore == nil, "All tab should not have startDateBefore filter")
+        #expect(capturedFilters?.startDateAfter == nil, "All tab should not have startDateAfter filter")
     }
 
     // MARK: - Refresh action
@@ -340,7 +334,7 @@ struct BookingSearchViewModelTests {
         var searchCount = 0
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             searchCount += 1
@@ -376,7 +370,7 @@ struct BookingSearchViewModelTests {
         var capturedOrder: BookingsRemote.Order?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, order, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, order, onCompletion) = action else {
                 return
             }
             capturedOrder = order
@@ -409,7 +403,7 @@ struct BookingSearchViewModelTests {
         var capturedOrder: BookingsRemote.Order?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, order, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, order, onCompletion) = action else {
                 return
             }
             capturedOrder = order
@@ -470,7 +464,7 @@ struct BookingSearchViewModelTests {
         var capturedOrders: [BookingsRemote.Order] = []
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .searchBookings(_, _, _, _, _, _, order, onCompletion) = action else {
+            guard case let .searchBookings(_, _, _, _, _, order, onCompletion) = action else {
                 return
             }
             capturedOrders.append(order)

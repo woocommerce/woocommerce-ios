@@ -460,4 +460,203 @@ final class PointOfSaleObservableItemsControllerTests {
         }
         #expect(isCatalogSyncing == true)
     }
+
+    // MARK: - Initial Sync Error Handling Tests
+
+    @Test func test_container_state_shows_error_when_initial_sync_fails() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncFailed(siteID: siteID, error: testError)
+
+        // When
+        let containerState = sut.itemsViewState.containerState
+
+        // Then
+        guard case .error(let errorState) = containerState else {
+            Issue.record("Expected error state")
+            return
+        }
+        #expect(errorState.errorType == .initialCatalogSyncError)
+    }
+
+    @Test func test_syncFailed_with_empty_catalog_shows_error() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+
+        // When
+        let containerState = sut.itemsViewState.containerState
+
+        // Then
+        guard case .error(let errorState) = containerState else {
+            Issue.record("Expected error state when catalog is empty")
+            return
+        }
+        #expect(errorState.errorType == .initialCatalogSyncError)
+    }
+
+    @Test func test_syncFailed_with_existing_catalog_shows_content() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let mockItems = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
+        dataSource.productItems = mockItems
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+
+        // Load items first so productsLoaded is true
+        await sut.loadItems(base: .root)
+
+        // When
+        let containerState = sut.itemsViewState.containerState
+
+        // Then
+        // Should show content, not error, because we have cached data
+        #expect(containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .loaded(mockItems, hasMoreItems: false))
+    }
+
+    @Test func test_reload_items_after_initial_sync_failure() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncFailed(siteID: siteID, error: testError)
+        coordinator.performSmartSyncResult = .success(())
+
+        // When: Load items (should trigger reload)
+        await sut.loadItems(base: .root)
+
+        // Then: Should have called performSmartSync
+        #expect(coordinator.performSmartSyncInvocationCount == 1)
+        #expect(coordinator.performSmartSyncSiteID == siteID)
+    }
+
+    @Test func test_reload_items_after_syncFailed_with_empty_catalog() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+        coordinator.performSmartSyncResult = .success(())
+
+        // When: Load items (should trigger reload because catalog is empty)
+        await sut.loadItems(base: .root)
+
+        // Then: Should have called performSmartSync
+        #expect(coordinator.performSmartSyncInvocationCount == 1)
+        #expect(coordinator.performSmartSyncSiteID == siteID)
+    }
+
+    @Test func test_no_reload_after_syncFailed_with_existing_catalog() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let mockItems = [makeSimpleProduct(productID: 1)]
+        dataSource.productItems = mockItems
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+
+        // When: Load items (should NOT trigger reload because we have catalog data)
+        await sut.loadItems(base: .root)
+
+        // Then: Should NOT call performSmartSync
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
+    }
+
+    @Test func test_no_reload_when_sync_in_progress() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        coordinator.fullSyncStateModel.state[siteID] = .syncStarted(siteID: siteID)
+
+        // When: Load items while sync is in progress
+        await sut.loadItems(base: .root)
+
+        // Then: Should NOT call performSmartSync (already in progress)
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
+    }
+
+    @Test func test_no_reload_when_initial_sync_in_progress() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncStarted(siteID: siteID)
+
+        // When: Load items while initial sync is in progress
+        await sut.loadItems(base: .root)
+
+        // Then: Should NOT call performSmartSync (already in progress)
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
+    }
+
+    @Test func test_reload_only_applies_to_root_items() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let parentProduct = POSVariableParentProduct(
+            id: UUID(),
+            name: "Parent",
+            productImageSource: nil,
+            productID: 100,
+            allAttributes: []
+        )
+        let parentItem = POSItem.variableParentProduct(parentProduct)
+
+        dataSource.variationItems = []
+        dataSource.isLoadingVariations = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncFailed(siteID: siteID, error: testError)
+
+        // When: Load variations (not root)
+        await sut.loadItems(base: .parent(parentItem))
+
+        // Then: Should NOT trigger reload (reload only applies to root)
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
+    }
 }

@@ -235,9 +235,16 @@ private extension ProductStore {
             do {
                 let products: [Product]
                 switch filter {
-                case .all:
+                case .all, .name:
+                    let searchFields: [ProductSearchField] = {
+                        if filter == .name {
+                            return [.name]
+                        }
+                        return []
+                    }()
                     products = try await remote.searchProducts(for: siteID,
                                                                keyword: keyword,
+                                                               searchFields: searchFields,
                                                                pageNumber: pageNumber,
                                                                pageSize: pageSize,
                                                                stockStatus: stockStatus,

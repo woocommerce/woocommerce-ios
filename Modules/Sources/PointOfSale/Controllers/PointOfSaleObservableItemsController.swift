@@ -161,7 +161,10 @@ private extension PointOfSaleObservableItemsController {
         switch catalogSyncCoordinator.fullSyncStateModel.state[siteID] {
         case .initialSyncFailed(_, let error):
             return .failure(error)
-        case .syncCompleted, .syncFailed:
+        case .syncFailed(_, let error):
+            // If there's no catalog data, treat subsequent sync failures as critical
+            return dataSource.productItems.isEmpty ? .failure(error) : .success(())
+        case .syncCompleted:
             return .success(())
         default:
             return nil
@@ -202,11 +205,12 @@ private extension PointOfSaleObservableItemsController {
             return false
         }
 
-        if case .failure(let error) = initialSyncResult {
+        // Reload if there's a failure
+        if case .failure = initialSyncResult {
             return true
-        } else {
-            return false
         }
+
+        return false
     }
 
     /// Determines if a refresh should be triggered

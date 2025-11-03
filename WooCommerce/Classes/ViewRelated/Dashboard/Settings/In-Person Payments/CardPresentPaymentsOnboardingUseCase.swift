@@ -4,7 +4,7 @@ import Storage
 import Yosemite
 import Experiments
 import WooFoundation
-import Alamofire
+import enum Alamofire.AFError
 
 private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount

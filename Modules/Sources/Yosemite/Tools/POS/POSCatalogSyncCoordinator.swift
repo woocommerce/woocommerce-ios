@@ -94,9 +94,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.shouldNotSync
         }
 
-        if case .syncStarted = fullSyncStateModel.state[siteID] {
+        switch fullSyncStateModel.state[siteID] {
+        case .syncStarted, .initialSyncStarted:
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
+        default:
+            break
         }
 
         let isFirstSync = await lastFullSyncDate(for: siteID) == nil

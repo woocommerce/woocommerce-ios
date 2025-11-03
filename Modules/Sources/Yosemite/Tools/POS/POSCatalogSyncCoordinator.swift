@@ -34,6 +34,13 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// Returns the last known full sync state for a site
     /// If no state is cached, determines state from lastSyncDate
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState
+
+    /// Checks if the last sync is older than the specified number of days
+    /// - Parameters:
+    ///   - siteID: The site ID to check
+    ///   - maxDays: Maximum number of days before a sync is considered stale
+    /// - Returns: True if the last sync is older than the specified days or if there has been no sync
+    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -304,6 +311,21 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         fullSyncStateModel.state[siteID] = state
         return state
+    }
+
+    public func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
+        // Check only the last full sync date, incremental syncs don't refresh well enough to consider non-stale.
+        guard let lastFullSync = await lastFullSyncDate(for: siteID) else {
+            // If we've never done a full sync, we're stale.
+            return true
+        }
+
+        guard let thresholdDate = Calendar.current.date(byAdding: .day, value: -maxDays, to: Date()) else {
+            // This shouldn't fail, and if it does, we can assume the catalog is fine
+            return false
+        }
+
+        return lastFullSync < thresholdDate
     }
 }
 

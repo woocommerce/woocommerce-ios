@@ -161,18 +161,47 @@ struct ItemListView: View {
 
     @ViewBuilder
     private func listView(itemListType: ItemListType) -> some View {
-        ItemList(
-            itemsController: itemsController(itemListType),
-            node: .root,
-            itemActionHandler: actionHandler(itemListType),
-            willLoadMore: {
-                analyticsTracker.trackNextPageWillLoad()
+        VStack(spacing: 0) {
+            // Stale sync warning banner
+            if posModel.showStaleSyncWarning {
+                staleSyncWarningBanner
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.small)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
-        )
-        .refreshable {
-            analyticsTracker.trackRefresh()
-            await itemsController(itemListType).refreshItems(base: .root)
+
+            ItemList(
+                itemsController: itemsController(itemListType),
+                node: .root,
+                itemActionHandler: actionHandler(itemListType),
+                willLoadMore: {
+                    analyticsTracker.trackNextPageWillLoad()
+                }
+            )
+            .refreshable {
+                analyticsTracker.trackRefresh()
+                await itemsController(itemListType).refreshItems(base: .root)
+            }
         }
+        .task {
+            // Check stale sync status when view appears
+            await posModel.checkStaleSyncStatus()
+        }
+    }
+
+    @ViewBuilder
+    private var staleSyncWarningBanner: some View {
+        POSNoticeView(
+            title: Localization.staleSyncWarningTitle,
+            icon: Image(systemName: "info.circle"),
+            onDismiss: {
+                withAnimation {
+                    posModel.dismissStaleSyncWarning()
+                }
+            }, content: {
+                Text(Localization.staleSyncWarningDescription(days: posModel.staleSyncThresholdDays))
+                    .font(POSFontStyle.posBodyMediumRegular())
+            })
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
@@ -400,6 +429,22 @@ private extension ItemListView {
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
+
+        static let staleSyncWarningTitle = NSLocalizedString(
+            "pos.itemlistview.staleSyncWarning.title",
+            value: "Refresh catalog",
+            comment: "Warning title shown when the product catalog hasn't synced in several days"
+        )
+
+        static let staleSyncWarningDescriptionFormat = NSLocalizedString(
+            "pos.itemlistview.staleSyncWarning.description",
+            value: "The catalog hasn't been synced in the last %1$ld days. Please ensure you're connected to the internet and sync again in POS Settings.",
+            comment: "Message shown when the product catalog hasn't synced in the specified number of days. %1$ld is the number of days. Reads like: The catalog hasn't been synced in the last 7 days."
+        )
+
+        static func staleSyncWarningDescription(days: Int) -> String {
+            String.localizedStringWithFormat(staleSyncWarningDescriptionFormat, days)
+        }
     }
 }
 

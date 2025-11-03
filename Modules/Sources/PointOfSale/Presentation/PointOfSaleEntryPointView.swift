@@ -42,6 +42,7 @@ public struct PointOfSaleEntryPointView: View {
     private let services: POSDependencyProviding
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    private let isLocalCatalogEligible: Bool
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -132,6 +133,7 @@ public struct PointOfSaleEntryPointView: View {
         self.services = services
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.isLocalCatalogEligible = isLocalCatalogEligible
     }
 
     public var body: some View {
@@ -162,7 +164,8 @@ public struct PointOfSaleEntryPointView: View {
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
                 siteID: siteID,
-                catalogSyncCoordinator: catalogSyncCoordinator)
+                catalogSyncCoordinator: catalogSyncCoordinator,
+                isLocalCatalogEligible: isLocalCatalogEligible)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

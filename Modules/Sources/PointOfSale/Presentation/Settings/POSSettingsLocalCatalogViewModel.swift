@@ -1,6 +1,7 @@
 import CocoaLumberjackSwift
 import Yosemite
 import Foundation
+import Storage
 
 @Observable
 final class POSSettingsLocalCatalogViewModel {
@@ -14,6 +15,7 @@ final class POSSettingsLocalCatalogViewModel {
     private let siteID: Int64
     private let catalogSettingsService: POSCatalogSettingsServiceProtocol
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol
+    private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let dateFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.dateTimeStyle = .named
@@ -21,14 +23,23 @@ final class POSSettingsLocalCatalogViewModel {
         return formatter
     }()
 
-    var allowFullSyncOnCellular: Bool = true
+    var allowFullSyncOnCellular: Bool {
+        get {
+            siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
+        }
+        set {
+            siteSettings.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: newValue)
+        }
+    }
 
     init(siteID: Int64,
          catalogSettingsService: POSCatalogSettingsServiceProtocol,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol) {
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol,
+         siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.siteID = siteID
         self.catalogSettingsService = catalogSettingsService
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
     }
 
     @MainActor

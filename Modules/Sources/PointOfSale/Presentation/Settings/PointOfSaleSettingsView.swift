@@ -31,7 +31,7 @@ extension PointOfSaleSettingsView {
                                                    analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                    dismiss()
                                                },
-                                               buttonIcon: "xmark"))
+                                               buttonIcon: "chevron.left"))
             .foregroundColor(.posSurface)
             .accessibilityAddTraits(.isHeader)
 

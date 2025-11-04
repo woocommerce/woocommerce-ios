@@ -40,37 +40,37 @@ struct POSSettingsHardwareDetailView: View {
     var body: some View {
         @Bindable var posModel = posModel
         NavigationStack(path: $navigationPath) {
-            POSPageHeaderView(title: Localization.hardwareTitle)
-            .foregroundColor(.posSurface)
-            .accessibilityAddTraits(.isHeader)
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.hardwareTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-            List(HardwareDestination.allCases) { destination in
-                NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: destination.icon)
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                VStack(spacing: POSSpacing.small) {
+                    ForEach(HardwareDestination.allCases) { destination in
+                        NavigationLink(value: NavigationDestination.hardware(destination)) {
+                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                                Text(destination.title)
+                                    .font(.posBodyLargeBold)
+                                    .foregroundStyle(Color.posOnSurface)
+                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                Text(destination.subtitle)
+                                    .font(.posBodyMediumRegular())
+                                    .foregroundStyle(.secondary)
+                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.posSurfaceContainerLowest)
+                            .posItemCardBorderStyles()
                         }
-                        Spacer()
+                        .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                     }
                 }
-                .listRowSeparator(.hidden)
+                .padding(.horizontal, POSPadding.medium)
+
+                Spacer()
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
             .background(backgroundColor)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):

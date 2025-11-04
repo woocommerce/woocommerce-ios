@@ -36,44 +36,32 @@ extension PointOfSaleSettingsView {
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                PointOfSaleSettingsCard(
-                    item: .store,
-                    isSelected: selection == .store,
-                    onTap: {
-                        analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
-                        selection = .store
-                    }
-                )
-
-                PointOfSaleSettingsCard(
-                    item: .hardware,
-                    isSelected: selection == .hardware,
-                    onTap: {
-                        analytics.track(.pointOfSaleSettingsHardwareTapped)
-                        selection = .hardware
-                    }
-                )
-
+                POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.store.title,
+                                    subtitle: PointOfSaleSettingsView.SidebarNavigation.store.subtitle,
+                                    action: {
+                    analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                    selection = .store
+                })
+                POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.hardware.title,
+                                    subtitle: PointOfSaleSettingsView.SidebarNavigation.hardware.subtitle,
+                                    action: {
+                    analytics.track(.pointOfSaleSettingsHardwareTapped)
+                    selection = .hardware
+                })
                 if settingsController.isLocalCatalogEligible {
-                    PointOfSaleSettingsCard(
-                        item: .localCatalog,
-                        isSelected: selection == .localCatalog,
-                        onTap: {
-                            selection = .localCatalog
-                        }
-                    )
+                    POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.localCatalog.title,
+                                        subtitle: PointOfSaleSettingsView.SidebarNavigation.localCatalog.subtitle,
+                                        action: {
+                        selection = .localCatalog
+                    })
                 }
-
                 Spacer()
-
-                PointOfSaleSettingsCard(
-                    item: .help,
-                    isSelected: selection == .help,
-                    onTap: {
-                        analytics.track(.pointOfSaleSettingsHelpTapped)
-                        selection = .help
-                    }
-                )
+                POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.help.title,
+                                    subtitle: PointOfSaleSettingsView.SidebarNavigation.help.subtitle,
+                                    action: {
+                    analytics.track(.pointOfSaleSettingsHelpTapped)
+                    selection = .help
+                })
             }
             .padding(.horizontal, POSPadding.medium)
         }
@@ -107,53 +95,6 @@ extension PointOfSaleSettingsView {
     }
 }
 
-struct PointOfSaleSettingsCard: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.colorScheme) private var colorScheme
-
-    let item: PointOfSaleSettingsView.SidebarNavigation
-    let isSelected: Bool
-    let onTap: () -> Void
-
-    private var selectionBackgroundColor: Color {
-        guard isSelected else { return Color.clear }
-        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
-    }
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: POSSpacing.medium) {
-                Image(systemName: item.icon)
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityHidden(true)
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                    Text(item.title)
-                        .font(.posBodyLargeRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    Text(item.subtitle)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                }
-                Spacer()
-            }
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(.isButton)
-        .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
-                .fill(selectionBackgroundColor)
-        )
-    }
-}
-
 extension PointOfSaleSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
@@ -178,15 +119,6 @@ extension PointOfSaleSettingsView {
             case .hardware: return Localization.sidebarNavigationHardwareSubtitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogSubtitle
             case .help: return Localization.sidebarNavigationHelpSubtitle
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .store: return "bag"
-            case .hardware: return "wrench.and.screwdriver"
-            case .localCatalog: return "internaldrive"
-            case .help: return "questionmark.circle"
             }
         }
     }

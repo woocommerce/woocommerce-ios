@@ -2,7 +2,6 @@ import SwiftUI
 
 struct POSSettingsLocalCatalogDetailView: View {
     // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
-    @State private var allowFullSyncOnCellular: Bool = true
     private let viewModel: POSSettingsLocalCatalogViewModel
 
     init(viewModel: POSSettingsLocalCatalogViewModel) {
@@ -51,11 +50,12 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
+        @Bindable var viewModel = viewModel
         VStack(spacing: POSSpacing.none) {
             sectionHeaderView(title: Localization.managingDataUsage)
 
             VStack(spacing: POSSpacing.medium) {
-                toggleRowView(label: Localization.allowFullSyncOnCellular, isOn: $allowFullSyncOnCellular)
+                toggleRowView(label: Localization.allowFullSyncOnCellular, isOn: $viewModel.allowFullSyncOnCellular)
             }
             .padding(.bottom, POSPadding.medium)
         }

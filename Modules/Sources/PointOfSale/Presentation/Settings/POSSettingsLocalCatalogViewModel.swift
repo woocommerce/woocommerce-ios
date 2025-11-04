@@ -21,6 +21,8 @@ final class POSSettingsLocalCatalogViewModel {
         return formatter
     }()
 
+    var allowFullSyncOnCellular: Bool = true
+
     init(siteID: Int64,
          catalogSettingsService: POSCatalogSettingsServiceProtocol,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol) {

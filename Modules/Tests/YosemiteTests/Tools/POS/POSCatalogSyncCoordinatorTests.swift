@@ -863,7 +863,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     // MARK: - isSyncStale Tests
 
-    @Test func test_isSyncStale_returns_true_when_no_full_sync_performed() async throws {
+    @Test func isSyncStale_returns_true_when_no_full_sync_performed() async throws {
         // Given - no full sync date set
 
         // When
@@ -873,7 +873,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(isStale == true)
     }
 
-    @Test func test_isSyncStale_returns_false_when_full_sync_is_recent() async throws {
+    @Test func isSyncStale_returns_false_when_full_sync_is_recent() async throws {
         // Given - last full sync was 3 days ago
         let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: Date())!
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: threeDaysAgo)
@@ -885,7 +885,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(isStale == false)
     }
 
-    @Test func test_isSyncStale_returns_true_when_full_sync_is_old() async throws {
+    @Test func isSyncStale_returns_true_when_full_sync_is_old() async throws {
         // Given - last full sync was 10 days ago
         let tenDaysAgo = Calendar.current.date(byAdding: .day, value: -10, to: Date())!
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo)
@@ -897,7 +897,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(isStale == true)
     }
 
-    @Test func test_isSyncStale_ignores_incremental_sync_date() async throws {
+    @Test func isSyncStale_ignores_incremental_sync_date() async throws {
         // Given - incremental sync was recent, but full sync was old
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let tenDaysAgo = Calendar.current.date(byAdding: .day, value: -10, to: Date())!
@@ -910,7 +910,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(isStale == true)
     }
 
-    @Test func test_isSyncStale_boundary_within_threshold() async throws {
+    @Test func isSyncStale_boundary_within_threshold() async throws {
         // Given - last full sync was 6 days and 23 hours ago (just under 7 days)
         let justUnderSevenDays = Calendar.current.date(byAdding: .day, value: -6, to: Date())!
             .addingTimeInterval(-23 * 60 * 60) // minus 23 hours
@@ -923,7 +923,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(isStale == false)
     }
 
-    @Test func test_isSyncStale_boundary_past_threshold() async throws {
+    @Test func isSyncStale_boundary_past_threshold() async throws {
         // Given - last full sync was 8 days ago (clearly past 7 days)
         let eightDaysAgo = Calendar.current.date(byAdding: .day, value: -8, to: Date())!
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: eightDaysAgo)

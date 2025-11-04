@@ -204,36 +204,23 @@ private extension POSSettingsHardwareDetailView {
                 }, buttonIcon: "chevron.left"))
             .foregroundColor(.posSurface)
 
-            List(ScannerDestination.allCases) { destination in
-                Button {
-                    handleScannerDestination(destination)
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: destination.icon)
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            VStack(spacing: POSSpacing.small) {
+                ForEach(ScannerDestination.allCases) { destination in
+                    POSSettingsCardView(
+                        title: destination.title,
+                        subtitle: destination.subtitle,
+                        isSelected: false,
+                        action: {
+                            handleScannerDestination(destination)
                         }
-                        Spacer()
-                    }
+                    )
                 }
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .listRowBackground(Color.clear)
-            .background(backgroundColor)
-            .foregroundColor(.posOnSurface)
+            .padding(.horizontal, POSPadding.medium)
+
+            Spacer()
         }
+        .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
     }
 }

@@ -292,7 +292,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     /// Remote search of products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
-    /// `search` is used, which searches in `name`, `description`, `short_description` fields.
+    /// `search` is used, which searches in `name`, `sku`, `globalUniqueID` fields.
     /// We also send `search_name_or_sku`, which will be used in preference to `search` when implemented on a site (in future.)
     ///
     /// - Parameter siteID: Site for which we'll fetch remote products.

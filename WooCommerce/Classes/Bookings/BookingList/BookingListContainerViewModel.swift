@@ -108,7 +108,8 @@ final class BookingListContainerViewModel: ObservableObject {
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
-        // TODO: Apply filters to All tab
+        allListViewModel.updateFilters(filters)
+        allSearchViewModel.updateFilters(filters)
     }
 }
 

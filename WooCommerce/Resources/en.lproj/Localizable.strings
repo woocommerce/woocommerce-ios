@@ -1840,10 +1840,10 @@ which should be translated separately and considered part of this sentence. */
 "BookingAttendanceStatus.cancelled" = "Cancelled";
 
 /* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "Checked In";
+"BookingAttendanceStatus.checkedIn" = "Checked-in";
 
 /* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "No Show";
+"BookingAttendanceStatus.noShow" = "No-show";
 
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Unknown";

@@ -8,6 +8,9 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var incrementalProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
 
+    var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+    var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
+
     let loadProductsCallCount = Counter()
     let loadProductVariationsCallCount = Counter()
     let loadIncrementalProductsCallCount = Counter()
@@ -15,6 +18,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     private(set) var lastIncrementalProductsModifiedAfter: Date?
     private(set) var lastIncrementalVariationsModifiedAfter: Date?
+    private(set) var lastCatalogRequestForceGeneration: Bool?
 
     // Fallback result when no specific page result is configured
     private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
@@ -124,6 +128,27 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
             }
         }
         return fallbackVariationResult
+    }
+
+    // MARK: - Protocol Methods - Catalog API
+
+    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
+        lastCatalogRequestForceGeneration = forceGeneration
+        switch catalogRequestResult {
+        case .success(let response):
+            return response
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse {
+        switch catalogDownloadResult {
+        case .success(let response):
+            return response
+        case .failure(let error):
+            throw error
+        }
     }
 
     // MARK: - Protocol Methods - Catalog size

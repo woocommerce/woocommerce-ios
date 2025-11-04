@@ -9,8 +9,9 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
     ///   - maxAge: Maximum age before a sync is considered stale
+    ///   - regenerateCatalog: Whether to always generate a new catalog. If false, a cached catalog will be used if available.
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws
 
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
@@ -44,8 +45,8 @@ public protocol POSCatalogSyncCoordinatorProtocol {
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
-    func performFullSync(for siteID: Int64) async throws {
-        try await performFullSyncIfApplicable(for: siteID, maxAge: .zero)
+    func performFullSync(for siteID: Int64, regenerateCatalog: Bool = false) async throws {
+        try await performFullSyncIfApplicable(for: siteID, maxAge: .zero, regenerateCatalog: regenerateCatalog)
     }
 
     func performIncrementalSync(for siteID: Int64) async throws {
@@ -63,6 +64,9 @@ public extension POSCatalogSyncCoordinatorProtocol {
 public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
+    case invalidData
+    case timeout
+    case generationFailed
     case requestCancelled
     case shouldNotSync
 }
@@ -92,7 +96,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
     }
 
-    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
         guard maxAge >= 0 else {
             throw POSCatalogSyncError.negativeMaxAge
         }
@@ -116,7 +120,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
         do {
-            _ = try await fullSyncService.startFullSync(for: siteID)
+            _ = try await fullSyncService.startFullSync(for: siteID, regenerateCatalog: regenerateCatalog)
             emitSyncState(.syncCompleted(siteID: siteID))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
@@ -147,7 +151,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         if Date().timeIntervalSince(lastFullSync) >= fullSyncMaxAge {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
-            try await performFullSyncIfApplicable(for: siteID, maxAge: fullSyncMaxAge)
+            try await performFullSyncIfApplicable(for: siteID, maxAge: fullSyncMaxAge, regenerateCatalog: false)
         } else {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
             try await performIncrementalSyncIfApplicable(for: siteID, maxAge: incrementalSyncMaxAge)
@@ -383,7 +387,6 @@ public enum POSCatalogSyncState: Equatable {
 
 private extension POSCatalogSyncCoordinator {
     enum Constants {
-        static let defaultSizeLimitForPOSCatalog = 1000
         static let maxDaysSinceLastOpened = 30
     }
 

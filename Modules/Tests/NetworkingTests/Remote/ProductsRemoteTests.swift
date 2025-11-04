@@ -458,6 +458,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         let products = try await remote.searchProducts(for: sampleSiteID,
                                                        keyword: "photo",
+                                                       searchFields: [],
                                                        pageNumber: 0,
                                                        pageSize: 100)
 
@@ -475,12 +476,33 @@ final class ProductsRemoteTests: XCTestCase {
         do {
             _ = try await remote.searchProducts(for: sampleSiteID,
                                                 keyword: String(),
+                                                searchFields: [],
                                                 pageNumber: 0,
                                                 pageSize: 100)
             XCTFail("Expected error to be thrown")
         } catch {
             // Expected error
         }
+    }
+
+    /// Verifies that searchProducts with name search field includes the search_fields param in network request.
+    ///
+    func test_searchProducts_with_name_search_field_includes_search_fields_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [.name],
+                                            pageNumber: 0,
+                                            pageSize: 100)
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let expectedParam = "search_fields=[\"name\"]"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
     // MARK: - Search Products by SKU

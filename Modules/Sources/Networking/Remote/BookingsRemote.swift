@@ -9,8 +9,7 @@ public protocol BookingsRemoteProtocol {
     func loadAllBookings(for siteID: Int64,
                          pageNumber: Int,
                          pageSize: Int,
-                         startDateBefore: String?,
-                         startDateAfter: String?,
+                         filters: BookingFilters?,
                          searchQuery: String?,
                          order: BookingsRemote.Order) async throws -> [Booking]
 
@@ -31,6 +30,35 @@ public protocol BookingsRemoteProtocol {
                         pageSize: Int) async throws -> [BookingResource]
 }
 
+/// Filters for booking queries
+public struct BookingFilters {
+    public let productIDs: [Int64]
+    public let customerIDs: [Int64]
+    public let resourceIDs: [Int64]
+    public let startDateBefore: String?
+    public let startDateAfter: String?
+    public let bookingStatuses: [String]
+    public let attendanceStatuses: [String]
+
+    public init(
+        productIDs: [Int64] = [],
+        customerIDs: [Int64] = [],
+        resourceIDs: [Int64] = [],
+        startDateBefore: String? = nil,
+        startDateAfter: String? = nil,
+        bookingStatuses: [String] = [],
+        attendanceStatuses: [String] = []
+    ) {
+        self.productIDs = productIDs
+        self.customerIDs = customerIDs
+        self.resourceIDs = resourceIDs
+        self.startDateBefore = startDateBefore
+        self.startDateAfter = startDateAfter
+        self.bookingStatuses = bookingStatuses
+        self.attendanceStatuses = attendanceStatuses
+    }
+}
+
 /// Booking: Remote Endpoints
 ///
 public final class BookingsRemote: Remote, BookingsRemoteProtocol {
@@ -43,30 +71,51 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     ///     - siteID: Site for which we'll fetch remote bookings.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of bookings to be retrieved per page.
-    ///     - startDateBefore: Filter bookings with start date before this timestamp.
-    ///     - startDateAfter: Filter bookings with start date after this timestamp.
+    ///     - filters: Optional filters for bookings (products, customers, resources, dates, statuses).
     ///     - searchQuery: Search query to filter bookings.
     ///     - order: Sort order for bookings (ascending or descending).
     ///
     public func loadAllBookings(for siteID: Int64,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
-                                startDateBefore: String? = nil,
-                                startDateAfter: String? = nil,
+                                filters: BookingFilters? = nil,
                                 searchQuery: String? = nil,
                                 order: Order) async throws -> [Booking] {
-        var parameters = [
+        var parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.rawValue
         ]
 
-        if let startDateBefore = startDateBefore {
-            parameters[ParameterKey.startDateBefore] = startDateBefore
-        }
+        // Apply filters if provided
+        if let filters {
+            if filters.productIDs.isNotEmpty {
+                parameters[ParameterKey.product] = filters.productIDs.map(String.init)
+            }
 
-        if let startDateAfter = startDateAfter {
-            parameters[ParameterKey.startDateAfter] = startDateAfter
+            if filters.customerIDs.isNotEmpty {
+                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init)
+            }
+
+            if filters.resourceIDs.isNotEmpty {
+                parameters[ParameterKey.resource] = filters.resourceIDs.map(String.init)
+            }
+
+            if let startDateBefore = filters.startDateBefore {
+                parameters[ParameterKey.startDateBefore] = startDateBefore
+            }
+
+            if let startDateAfter = filters.startDateAfter {
+                parameters[ParameterKey.startDateAfter] = startDateAfter
+            }
+
+            if filters.bookingStatuses.isNotEmpty {
+                parameters[ParameterKey.bookingStatus] = filters.bookingStatuses
+            }
+
+            if filters.attendanceStatuses.isNotEmpty {
+                parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses
+            }
         }
 
         if let searchQuery = searchQuery, !searchQuery.isEmpty {
@@ -195,6 +244,10 @@ public extension BookingsRemote {
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
         static let order: String           = "order"
+        static let product: String         = "product"
+        static let customer: String        = "customer"
+        static let resource: String        = "resource"
+        static let bookingStatus: String   = "booking_status"
         static let attendanceStatus        = "attendance_status"
     }
 }

@@ -875,7 +875,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func isSyncStale_returns_false_when_full_sync_is_recent() async throws {
         // Given - last full sync was 3 days ago
-        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: Date())!
+        let threeDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -3, to: Date()))
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: threeDaysAgo)
 
         // When
@@ -887,7 +887,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func isSyncStale_returns_true_when_full_sync_is_old() async throws {
         // Given - last full sync was 10 days ago
-        let tenDaysAgo = Calendar.current.date(byAdding: .day, value: -10, to: Date())!
+        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: Date()))
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo)
 
         // When
@@ -899,8 +899,8 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func isSyncStale_ignores_incremental_sync_date() async throws {
         // Given - incremental sync was recent, but full sync was old
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-        let tenDaysAgo = Calendar.current.date(byAdding: .day, value: -10, to: Date())!
+        let yesterday = try #require(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
+        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: Date()))
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo, lastIncrementalSyncDate: yesterday)
 
         // When
@@ -912,7 +912,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func isSyncStale_boundary_within_threshold() async throws {
         // Given - last full sync was 6 days and 23 hours ago (just under 7 days)
-        let justUnderSevenDays = Calendar.current.date(byAdding: .day, value: -6, to: Date())!
+        let justUnderSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -6, to: Date()))
             .addingTimeInterval(-23 * 60 * 60) // minus 23 hours
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justUnderSevenDays)
 

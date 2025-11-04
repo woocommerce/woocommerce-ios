@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleSettingsView: View {
+struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
     @State private var selection: SidebarNavigation? = .store
@@ -20,7 +20,7 @@ struct PointOfSaleSettingsView: View {
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     @ViewBuilder
     private var listView: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
@@ -36,23 +36,23 @@ extension PointOfSaleSettingsView {
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.store.title,
-                                    subtitle: PointOfSaleSettingsView.SidebarNavigation.store.subtitle,
+                POSSettingsCardView(title: POSSettingsView.SidebarNavigation.store.title,
+                                    subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
                                     isSelected: selection == .store,
                                     action: {
                     analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                     selection = .store
                 })
-                POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.hardware.title,
-                                    subtitle: PointOfSaleSettingsView.SidebarNavigation.hardware.subtitle,
+                POSSettingsCardView(title: POSSettingsView.SidebarNavigation.hardware.title,
+                                    subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
                                     isSelected: selection == .hardware,
                                     action: {
                     analytics.track(.pointOfSaleSettingsHardwareTapped)
                     selection = .hardware
                 })
                 if settingsController.isLocalCatalogEligible {
-                    POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.localCatalog.title,
-                                        subtitle: PointOfSaleSettingsView.SidebarNavigation.localCatalog.subtitle,
+                    POSSettingsCardView(title: POSSettingsView.SidebarNavigation.localCatalog.title,
+                                        subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
                                         isSelected: selection == .localCatalog,
                                         action: {
                         selection = .localCatalog
@@ -113,13 +113,13 @@ extension PointOfSaleSettingsView {
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     enum Constants {
         static let sidebarWidthFraction: CGFloat = 0.35
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
         case hardware
@@ -215,6 +215,6 @@ extension PointOfSaleSettingsView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsView(settingsController: POSSettingsPreviewController())
+    POSSettingsView(settingsController: POSSettingsPreviewController())
 }
 #endif

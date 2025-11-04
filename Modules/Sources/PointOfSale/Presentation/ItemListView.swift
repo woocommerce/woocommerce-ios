@@ -439,7 +439,8 @@ private extension ItemListView {
         static let staleSyncWarningDescriptionFormat = NSLocalizedString(
             "pos.itemlistview.staleSyncWarning.description",
             value: "The catalog hasn't been synced in the last %1$ld days. Please ensure you're connected to the internet and sync again in POS Settings.",
-            comment: "Message shown when the product catalog hasn't synced in the specified number of days. %1$ld is the number of days. Reads like: The catalog hasn't been synced in the last 7 days."
+            comment: "Message shown when the product catalog hasn't synced in the specified number of days. " +
+            "%1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days."
         )
 
         static func staleSyncWarningDescription(days: Int) -> String {

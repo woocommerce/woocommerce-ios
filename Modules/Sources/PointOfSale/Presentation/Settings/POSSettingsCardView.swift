@@ -9,7 +9,7 @@ struct POSSettingsCardView: View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                 Text(title)
-                    .font(.posBodyLargeRegular())
+                    .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
                 Text(subtitle)
                     .font(.posBodyMediumRegular())

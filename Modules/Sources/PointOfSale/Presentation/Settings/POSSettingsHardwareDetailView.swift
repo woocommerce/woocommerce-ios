@@ -3,8 +3,6 @@ import struct WooFoundation.SafariView
 
 struct POSSettingsHardwareDetailView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.posFeatureFlags) private var featureFlags
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
 
@@ -247,15 +245,6 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationBarcodeSubtitle
             }
         }
-
-        var icon: String {
-            switch self {
-            case .cardReaders:
-                return "creditcard"
-            case .scanners:
-                return "qrcode.viewfinder"
-            }
-        }
     }
 
     enum NavigationDestination: Hashable {
@@ -283,15 +272,6 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.scannerSetupSubtitle
             case .documentation:
                 return Localization.scannerDocumentationSubtitle
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .setup:
-                return "gearshape"
-            case .documentation:
-                return "doc.text"
             }
         }
     }

@@ -306,7 +306,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Header section not found")
             return
         }
-        XCTAssertEqual(headerContent.status, ["Checked In", "Paid"])
+        XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Checked-in")
+        XCTAssertEqual(headerContent.bookingStatus.localizedTitle, "Paid")
     }
 
     func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {
@@ -332,7 +333,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(attendanceContent.value, "No Show")
+        XCTAssertEqual(attendanceContent.value, "No-show")
     }
 
     func test_attendance_section_is_hidden_when_booking_is_cancelled() {

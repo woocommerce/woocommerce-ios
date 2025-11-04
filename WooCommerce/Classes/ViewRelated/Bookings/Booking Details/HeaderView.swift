@@ -17,16 +17,8 @@ extension BookingDetailsView {
                         .foregroundColor(.secondary)
                 }
                 HStack {
-                    ForEach(content.status, id: \.self) { statusString in
-                        Text(statusString)
-                            .font(.caption2)
-                            .padding(.vertical, 4.5)
-                            .padding(.horizontal, 8)
-                            .background(
-                                BookingDetailsView.Layout.defaultBadgeColor
-                            )
-                            .cornerRadius(4)
-                    }
+                    BookingBadgeView(content.attendanceStatus)
+                    BookingBadgeView(content.bookingStatus)
                 }
                 .padding(.top, Layout.headerBadgesAdditionalTopPadding)
             }

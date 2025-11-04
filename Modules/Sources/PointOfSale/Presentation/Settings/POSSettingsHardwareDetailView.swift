@@ -63,6 +63,7 @@ struct POSSettingsHardwareDetailView: View {
                             .background(Color.posSurfaceContainerLowest)
                             .posItemCardBorderStyles()
                         }
+                        .buttonStyle(.plain)
                         .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                     }
                 }

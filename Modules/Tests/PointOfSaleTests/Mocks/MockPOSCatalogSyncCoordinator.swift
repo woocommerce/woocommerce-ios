@@ -21,7 +21,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     var onPerformFullSyncCalled: (() -> Void)?
 
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
         performFullSyncInvocationCount += 1
         performFullSyncSiteID = siteID
 

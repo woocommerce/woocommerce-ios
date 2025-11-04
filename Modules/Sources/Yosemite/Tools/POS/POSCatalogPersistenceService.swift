@@ -27,6 +27,8 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
+        let catalog = filterOrphanedVariations(from: catalog)
+
         try await grdbManager.databaseConnection.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
             try PersistedSite.deleteOne(db, key: siteID)
@@ -151,6 +153,22 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }
+    }
+}
+
+private extension POSCatalogPersistenceService {
+    /// Filters out variations whose parent products are not in the catalog.
+    /// This can happen when the API returns public variations but their parent products are not public.
+    func filterOrphanedVariations(from catalog: POSCatalog) -> POSCatalog {
+        let productIDs = catalog.products.map { $0.productID }
+        let variations = catalog.variations.filter { variation in
+            let parentExists = productIDs.contains { $0 == variation.productID }
+            if !parentExists {
+                DDLogWarn("Variation \(variation.productVariationID) references missing product \(variation.productID) - it will not be available in POS.")
+            }
+            return parentExists
+        }
+        return POSCatalog(products: catalog.products, variations: variations, syncDate: catalog.syncDate)
     }
 }
 

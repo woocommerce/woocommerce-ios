@@ -2,6 +2,11 @@
 import Foundation
 
 final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
+    // MARK: - replaceAllCatalogData tracking
+    private(set) var replaceAllCatalogDataCallCount = 0
+    private(set) var replaceAllCatalogDataLastPersistedCatalog: POSCatalog?
+    var replaceAllCatalogDataError: Error?
+
     // MARK: - persistIncrementalCatalogData tracking
     private(set) var persistIncrementalCatalogDataCallCount = 0
     private(set) var persistIncrementalCatalogDataLastPersistedCatalog: POSCatalog?
@@ -10,7 +15,12 @@ final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtoc
     // MARK: - Protocol Implementation
 
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        // Not used in current tests
+        replaceAllCatalogDataCallCount += 1
+        replaceAllCatalogDataLastPersistedCatalog = catalog
+
+        if let error = replaceAllCatalogDataError {
+            throw error
+        }
     }
 
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {

@@ -106,19 +106,20 @@ private extension BadgeView {
         case .circle:
             Circle()
                 .fill(customizations.backgroundColor)
-                .overlay(
-                    Circle()
-                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
-                        .opacity(customizations.bordered ? 1 : 0)
-                )
+                .if(customizations.bordered) { view in
+                    view.overlay {
+                        Circle().stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                    }
+                }
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(customizations.backgroundColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
-                        .opacity(customizations.bordered ? 1 : 0)
-                )
+                .if(customizations.bordered) { view in
+                    view.overlay {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                    }
+                }
         }
     }
 }

@@ -59,13 +59,28 @@ extension PointOfSaleSettingsView {
                     })
                 }
                 Spacer()
-                POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.help.title,
-                                    subtitle: PointOfSaleSettingsView.SidebarNavigation.help.subtitle,
-                                    isSelected: selection == .help,
-                                    action: {
+
+                Button {
                     analytics.track(.pointOfSaleSettingsHelpTapped)
                     selection = .help
-                })
+                } label: {
+                    HStack(spacing: POSSpacing.small) {
+                        if let icon = SidebarNavigation.help.icon {
+                            Image(systemName: icon)
+                                .font(.posBodyMediumBold)
+                                .foregroundStyle(Color.posOnSurface)
+                        }
+                        Text(SidebarNavigation.help.title)
+                            .font(.posBodyMediumBold)
+                            .foregroundStyle(Color.posOnSurface)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(SidebarNavigation.help.title)
             }
             .padding(.horizontal, POSPadding.medium)
         }
@@ -125,6 +140,15 @@ extension PointOfSaleSettingsView {
             case .help: return Localization.sidebarNavigationHelpSubtitle
             }
         }
+
+        var icon: String? {
+            switch self {
+            case .store, .hardware, .localCatalog:
+                return nil
+            case .help:
+                return "questionmark.circle"
+            }
+        }
     }
 
     enum Localization {
@@ -147,8 +171,8 @@ extension PointOfSaleSettingsView {
         )
 
         static let sidebarNavigationHelpTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.sidebarNavigationHelpTitle",
-            value: "Help",
+            "pointOfSaleSettingsView.sidebarNavigationHelpTitle.1",
+            value: "Get help and support",
             comment: "Title of the Help section within Point of Sale settings."
         )
 

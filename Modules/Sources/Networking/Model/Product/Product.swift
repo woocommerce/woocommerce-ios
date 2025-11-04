@@ -766,12 +766,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(password, forKey: .password)
 
         // Metadata
-        var metaDataValuePairs = buildMetaDataValuePairs()
-
-        // Add custom fields to metadata
-        let customFields = buildCustomFields()
-        metaDataValuePairs.append(contentsOf: customFields)
-
+        let metaDataValuePairs = buildMetaDataValuePairs()
+        // Custom fields will not be included in metadata - when updating products.
+        // They are saved separately with `MetaDataStore`.
         // Encode metadata if it's not empty
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
@@ -785,16 +782,6 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         }
         return metaDataArray
     }
-
-    // Function to get the custom fields
-    private func buildCustomFields() -> [[String: String]] {
-        var customFieldsArray: [[String: String]] = []
-        for customField in customFields {
-            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value.stringValue])
-        }
-        return customFieldsArray
-    }
-
 }
 
 /// Defines all of the Product CodingKeys

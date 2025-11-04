@@ -1736,6 +1736,69 @@ extension AppSettingsStoreTests {
         }
         XCTAssertFalse(checkPOSOpenedAfterReset)
     }
+
+    // MARK: - POS Local Catalog Cellular Data Tests
+
+    func test_getPOSLocalCatalogCellularDataAllowed_returns_false_by_default() throws {
+        // When
+        let isAllowed: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSLocalCatalogCellularDataAllowed(siteID: TestConstants.siteID) { isAllowed in
+                promise(isAllowed)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(isAllowed)
+    }
+
+    func test_getPOSLocalCatalogCellularDataAllowed_returns_saved_value() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed = true
+
+        // When
+        let isAllowed: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSLocalCatalogCellularDataAllowed(siteID: TestConstants.siteID) { isAllowed in
+                promise(isAllowed)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowedCalled)
+        XCTAssertTrue(isAllowed)
+    }
+
+    func test_setPOSLocalCatalogCellularDataAllowed_saves_value_successfully() throws {
+        // When
+        waitFor { promise in
+            let action = AppSettingsAction.setPOSLocalCatalogCellularDataAllowed(siteID: TestConstants.siteID, allowed: true) {
+                promise(())
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowedCalled)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, true)
+    }
+
+    func test_setPOSLocalCatalogCellularDataAllowed_can_set_false() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed = true
+
+        // When
+        waitFor { promise in
+            let action = AppSettingsAction.setPOSLocalCatalogCellularDataAllowed(siteID: TestConstants.siteID, allowed: false) {
+                promise(())
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowedCalled)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, false)
+    }
 }
 
 // MARK: - Utils

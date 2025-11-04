@@ -17,6 +17,10 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     func setPOSLastOpenedDate(siteID: Int64, date: Date)
     func getFirstPOSCatalogSyncDate(siteID: Int64) -> Date?
     func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date)
+
+    // POS local catalog cellular data
+    func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool)
+    func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool
 }
 
 /// Methods for managing site-specific app settings
@@ -102,7 +106,10 @@ extension SiteSpecificAppSettingsStoreMethods {
         let updatedSettings = storeSettings.copy(searchTermsByKey: updatedSearchTermsByKey)
         setStoreSettings(settings: updatedSettings, for: siteID)
     }
+}
 
+// MARK: - POS sync eligibility tracking
+extension SiteSpecificAppSettingsStoreMethods{
     func getPOSLastOpenedDate(siteID: Int64) -> Date? {
         getStoreSettings(for: siteID).lastPOSOpenedDate
     }
@@ -121,6 +128,19 @@ extension SiteSpecificAppSettingsStoreMethods {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedSettings = storeSettings.copy(firstPOSCatalogSyncDate: date)
         setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+}
+
+// MARK: - POS local catalog cellular data
+extension SiteSpecificAppSettingsStoreMethods {
+    func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(syncPOSCatalogOverCellular: allowed)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool {
+        getStoreSettings(for: siteID).syncPOSCatalogOverCellular
     }
 }
 

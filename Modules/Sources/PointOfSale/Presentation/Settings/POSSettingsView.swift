@@ -106,6 +106,7 @@ extension POSSettingsView {
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(.isButton)

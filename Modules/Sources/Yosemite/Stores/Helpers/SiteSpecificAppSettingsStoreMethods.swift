@@ -109,7 +109,7 @@ extension SiteSpecificAppSettingsStoreMethods {
 }
 
 // MARK: - POS sync eligibility tracking
-extension SiteSpecificAppSettingsStoreMethods{
+extension SiteSpecificAppSettingsStoreMethods {
     public func getPOSLastOpenedDate(siteID: Int64) -> Date? {
         getStoreSettings(for: siteID).lastPOSOpenedDate
     }

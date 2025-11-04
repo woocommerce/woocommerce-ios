@@ -3,6 +3,7 @@ import SwiftUI
 struct POSSettingsCardView: View {
     let title: String
     let subtitle: String
+    let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
@@ -20,6 +21,12 @@ struct POSSettingsCardView: View {
             .background(Color.posSurfaceContainerLowest)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             .posItemCardBorderStyles()
+            .overlay {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
+                        .stroke(Color.posOnSurface, lineWidth: 2)
+                }
+            }
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(.isButton)
@@ -32,6 +39,7 @@ struct POSSettingsCardView: View {
     POSSettingsCardView(
         title: "Documentation",
         subtitle: "Learn more about accepting mobile payments",
+        isSelected: true,
         action: { }
     )
 }

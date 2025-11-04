@@ -38,12 +38,14 @@ extension PointOfSaleSettingsView {
             VStack(spacing: POSSpacing.small) {
                 POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.store.title,
                                     subtitle: PointOfSaleSettingsView.SidebarNavigation.store.subtitle,
+                                    isSelected: selection == .store,
                                     action: {
                     analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                     selection = .store
                 })
                 POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.hardware.title,
                                     subtitle: PointOfSaleSettingsView.SidebarNavigation.hardware.subtitle,
+                                    isSelected: selection == .hardware,
                                     action: {
                     analytics.track(.pointOfSaleSettingsHardwareTapped)
                     selection = .hardware
@@ -51,6 +53,7 @@ extension PointOfSaleSettingsView {
                 if settingsController.isLocalCatalogEligible {
                     POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.localCatalog.title,
                                         subtitle: PointOfSaleSettingsView.SidebarNavigation.localCatalog.subtitle,
+                                        isSelected: selection == .localCatalog,
                                         action: {
                         selection = .localCatalog
                     })
@@ -58,6 +61,7 @@ extension PointOfSaleSettingsView {
                 Spacer()
                 POSSettingsCardView(title: PointOfSaleSettingsView.SidebarNavigation.help.title,
                                     subtitle: PointOfSaleSettingsView.SidebarNavigation.help.subtitle,
+                                    isSelected: selection == .help,
                                     action: {
                     analytics.track(.pointOfSaleSettingsHelpTapped)
                     selection = .help

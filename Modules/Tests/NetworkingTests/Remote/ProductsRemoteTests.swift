@@ -640,6 +640,67 @@ final class ProductsRemoteTests: XCTestCase {
         }
     }
 
+    /// Verifies that updateProduct sends only subscription details in metadata and does not send custom fields.
+    ///
+    func test_updateProduct_sends_only_subscription_in_metadata_not_custom_fields() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
+
+        // Create a product with both custom fields and a subscription
+        let customFields = [
+            MetaData(metadataID: 1, key: "custom_field_1", value: "value_1"),
+            MetaData(metadataID: 2, key: "custom_field_2", value: "value_2")
+        ]
+        let subscription = ProductSubscription(
+            length: "12",
+            period: .month,
+            periodInterval: "1",
+            price: "9.99",
+            signUpFee: "0",
+            trialLength: "7",
+            trialPeriod: .day,
+            oneTimeShipping: false,
+            paymentSyncDate: "0",
+            paymentSyncMonth: ""
+        )
+        let product = sampleProduct().copy(subscription: subscription, customFields: customFields)
+
+        // When
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let parametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+
+        // Verify that metadata contains only subscription details, not custom fields
+        if let metadata = parametersDictionary["meta_data"] as? [[String: Any]] {
+            let metadataKeys = metadata.compactMap { $0["key"] as? String }
+
+            // Verify subscription metadata is present
+            XCTAssertTrue(metadataKeys.contains("_subscription_length"), "Subscription length should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_period"), "Subscription period should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_period_interval"), "Subscription period interval should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_price"), "Subscription price should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_sign_up_fee"), "Subscription sign up fee should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_trial_length"), "Subscription trial length should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_trial_period"), "Subscription trial period should be in metadata")
+            XCTAssertTrue(metadataKeys.contains("_subscription_one_time_shipping"), "Subscription one time shipping should be in metadata")
+
+            // Verify custom fields are NOT in metadata
+            XCTAssertFalse(metadataKeys.contains("custom_field_1"), "Custom field 1 should not be sent in metadata")
+            XCTAssertFalse(metadataKeys.contains("custom_field_2"), "Custom field 2 should not be sent in metadata")
+
+            // Verify metadata contains exactly 8 subscription fields and no custom fields
+            XCTAssertEqual(metadata.count, 8, "Metadata should contain exactly 8 subscription fields")
+        } else {
+            XCTFail("Metadata should be present when product has subscription")
+        }
+    }
+
     // MARK: - Update Product Images
 
     /// Verifies that updateProductImages properly parses the `product-update` sample response.

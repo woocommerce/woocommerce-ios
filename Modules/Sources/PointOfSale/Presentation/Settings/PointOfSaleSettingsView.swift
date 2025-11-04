@@ -60,27 +60,7 @@ extension PointOfSaleSettingsView {
                 }
                 Spacer()
 
-                Button {
-                    analytics.track(.pointOfSaleSettingsHelpTapped)
-                    selection = .help
-                } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        if let icon = SidebarNavigation.help.icon {
-                            Image(systemName: icon)
-                                .font(.posBodyMediumBold)
-                                .foregroundStyle(Color.posOnSurface)
-                        }
-                        Text(SidebarNavigation.help.title)
-                            .font(.posBodyMediumBold)
-                            .foregroundStyle(Color.posOnSurface)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(SidebarNavigation.help.title)
+                helpView
             }
             .padding(.horizontal, POSPadding.medium)
         }
@@ -105,6 +85,31 @@ extension PointOfSaleSettingsView {
         default:
             EmptyView()
         }
+    }
+
+    @ViewBuilder
+    private var helpView: some View {
+        Button {
+            analytics.track(.pointOfSaleSettingsHelpTapped)
+            selection = .help
+        } label: {
+            HStack(spacing: POSSpacing.small) {
+                if let icon = SidebarNavigation.help.icon {
+                    Image(systemName: icon)
+                        .font(.posBodyMediumBold)
+                        .foregroundStyle(Color.posOnSurface)
+                }
+                Text(SidebarNavigation.help.title)
+                    .font(.posBodyMediumBold)
+                    .foregroundStyle(Color.posOnSurface)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(SidebarNavigation.help.title)
     }
 }
 

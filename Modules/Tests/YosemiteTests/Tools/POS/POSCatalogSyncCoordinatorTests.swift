@@ -924,9 +924,10 @@ extension POSCatalogSyncCoordinatorTests {
     }
 
     @Test func isSyncStale_boundary_past_threshold() async throws {
-        // Given - last full sync was 8 days ago (clearly past 7 days)
-        let eightDaysAgo = Calendar.current.date(byAdding: .day, value: -8, to: Date())!
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: eightDaysAgo)
+        // Given - last full sync was 7 days and 1 second ago (just past 7 days)
+        let justPastSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -7, to: Date()))
+            .addingTimeInterval(-1)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justPastSevenDays)
 
         // When
         let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)

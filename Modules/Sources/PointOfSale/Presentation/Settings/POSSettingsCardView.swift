@@ -6,6 +6,13 @@ struct POSSettingsCardView: View {
     let isSelected: Bool
     let action: () -> Void
 
+    init(title: String, subtitle: String, isSelected: Bool = false, action: @escaping () -> Void) {
+        self.title = title
+        self.subtitle = subtitle
+        self.isSelected = isSelected
+        self.action = action
+    }
+
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: POSPadding.xSmall) {
@@ -36,11 +43,19 @@ struct POSSettingsCardView: View {
 
 #if DEBUG
 #Preview {
-    POSSettingsCardView(
-        title: "Documentation",
-        subtitle: "Learn more about accepting mobile payments",
-        isSelected: true,
-        action: { }
-    )
+    VStack {
+        POSSettingsCardView(
+            title: "Documentation",
+            subtitle: "Learn more about accepting mobile payments",
+            isSelected: true,
+            action: { }
+        )
+        POSSettingsCardView(
+            title: "Documentation",
+            subtitle: "Learn more about accepting mobile payments",
+            isSelected: false,
+            action: { }
+        )
+    }
 }
 #endif

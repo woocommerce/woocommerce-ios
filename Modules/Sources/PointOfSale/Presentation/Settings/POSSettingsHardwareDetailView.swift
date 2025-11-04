@@ -170,7 +170,6 @@ private extension POSSettingsHardwareDetailView {
                 } else {
                     POSSettingsCardView(title: Localization.cardReaderConnectTitle,
                                         subtitle: Localization.cardReaderConnectSubtitle,
-                                        isSelected: false, // Temporary. Update with WOOMOB-1571
                                         action: {
                         posModel.connectCardReader()
                     })
@@ -178,7 +177,6 @@ private extension POSSettingsHardwareDetailView {
 
                 POSSettingsCardView(title: Localization.cardReaderDocumentationTitle,
                                     subtitle: Localization.cardReaderDocumentationSubtitle,
-                                    isSelected: false, // Temporary. Update with WOOMOB-1571
                                     action: { showCardReaderDocumentationModal = true })
                 .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
@@ -209,7 +207,6 @@ private extension POSSettingsHardwareDetailView {
                     POSSettingsCardView(
                         title: destination.title,
                         subtitle: destination.subtitle,
-                        isSelected: false,
                         action: {
                             handleScannerDestination(destination)
                         }

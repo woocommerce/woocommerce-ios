@@ -3,7 +3,8 @@
 
 23.7
 -----
-
+- [**] We added support for collecting in-person payments (including Tap To Pay) using Stripe Payment Gateway extension in the UK. [https://github.com/woocommerce/woocommerce-ios/pull/16287]
+- [*] Improve card payments onboarding error handling to show network errors correctly [https://github.com/woocommerce/woocommerce-ios/pull/16304]
 
 23.6
 -----

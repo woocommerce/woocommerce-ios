@@ -173,7 +173,8 @@ class AuthenticatedState: StoresManagerState {
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
                                                            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                                                           grdbManager: ServiceLocator.grdbManager),
+                                                           grdbManager: ServiceLocator.grdbManager,
+                                                           usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)),
            let incrementalSyncService = POSCatalogIncrementalSyncService(
             credentials: credentials,
             selectedSite: site,

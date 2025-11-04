@@ -286,6 +286,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func searchProducts(for siteID: Int64,
                         keyword: String,
+                        searchFields: [ProductSearchField],
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,

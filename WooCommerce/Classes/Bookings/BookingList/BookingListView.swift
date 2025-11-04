@@ -134,23 +134,12 @@ private extension BookingListView {
                     .foregroundStyle(Color.secondary)
 
                 HStack {
-                    // TODO: update this when attendance status is available
-                    // Update badge colors if design changes as statuses are not clarified now.
-                    statusBadge(text: booking.attendanceStatus.localizedTitle, color: Layout.defaultBadgeColor)
-                    statusBadge(text: booking.bookingStatus.localizedTitle, color: Layout.defaultBadgeColor)
+                    BookingBadgeView(booking.attendanceStatus)
+                    BookingBadgeView(booking.bookingStatus)
                     Spacer()
                 }
             }
         }
-    }
-
-    func statusBadge(text: String, color: Color) -> some View {
-        Text(text)
-            .font(.caption2)
-            .foregroundStyle(Color.primary)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
 
     func emptyStateView(isSearching: Bool, onRefresh: @escaping () async -> Void) -> some View {
@@ -225,7 +214,6 @@ private extension BookingListView {
         static let viewPadding: CGFloat = 16
         static let emptyStatePadding: CGFloat = 24
         static let emptyStateImageWidth: CGFloat = 67
-        static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
         static let cornerRadius: CGFloat = 8
     }
 

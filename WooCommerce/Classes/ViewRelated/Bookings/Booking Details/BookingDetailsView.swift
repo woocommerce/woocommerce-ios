@@ -18,12 +18,6 @@ struct BookingDetailsView: View {
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let rowTextVerticalPadding: CGFloat = 11
-        static let defaultBadgeColor = Color(
-            uiColor: .init(
-                light: .systemGray6,
-                dark: .systemGray5
-            )
-        )
     }
 
     enum TextFont {

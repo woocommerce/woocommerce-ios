@@ -93,7 +93,7 @@ struct BookingListViewModelTests {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let booking = createBooking(id: 1, startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             self.insertBookings([booking])
@@ -131,7 +131,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -171,7 +171,7 @@ struct BookingListViewModelTests {
         let firstPageItems = (1...2).map { createBooking(id: Int64($0), startDate: Date()) }
         let secondPageItems = [createBooking(id: 3, startDate: Date())]
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, pageNumber, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, pageNumber, _, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadBookings += 1
@@ -219,7 +219,7 @@ struct BookingListViewModelTests {
         let booking1 = createBooking(id: 9, startDate: Date())
         let booking2 = createBooking(id: 10, startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             self.insertBookings([booking1, booking2])
@@ -244,7 +244,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -267,7 +267,7 @@ struct BookingListViewModelTests {
         let olderBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, dateCreated: Date(timeIntervalSince1970: 1000), startDate: Date())
         let newerBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 3, dateCreated: Date(timeIntervalSince1970: 2000), startDate: Date())
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             let items = [olderBooking, newerBooking]
@@ -296,7 +296,7 @@ struct BookingListViewModelTests {
         var invocationCountOfLoadBookings = 0
         var skip: Int?
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, pageNumber, pageSize, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, pageNumber, pageSize, _, _, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadBookings += 1
@@ -320,15 +320,13 @@ struct BookingListViewModelTests {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedStartDateBefore: String?
-        var capturedStartDateAfter: String?
+        var capturedFilters: BookingFilters?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
                 return
             }
-            capturedStartDateBefore = startDateBefore
-            capturedStartDateAfter = startDateAfter
+            capturedFilters = filters
             onCompletion(.success(false))
         }
 
@@ -338,23 +336,21 @@ struct BookingListViewModelTests {
         viewModel.loadBookings()
 
         // Then
-        #expect(capturedStartDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
-        #expect(capturedStartDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
+        #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
     }
 
     @Test func upcoming_tab_passes_correct_date_filters_to_booking_action() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedStartDateBefore: String?
-        var capturedStartDateAfter: String?
+        var capturedFilters: BookingFilters?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
                 return
             }
-            capturedStartDateBefore = startDateBefore
-            capturedStartDateAfter = startDateAfter
+            capturedFilters = filters
             onCompletion(.success(false))
         }
 
@@ -367,23 +363,21 @@ struct BookingListViewModelTests {
         viewModel.loadBookings()
 
         // Then
-        #expect(capturedStartDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
-        #expect(capturedStartDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
+        #expect(capturedFilters?.startDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
+        #expect(capturedFilters?.startDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
     }
 
     @Test func all_tab_passes_no_date_filters_to_booking_action() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedStartDateBefore: String?
-        var capturedStartDateAfter: String?
+        var capturedFilters: BookingFilters?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, startDateBefore, startDateAfter, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
                 return
             }
-            capturedStartDateBefore = startDateBefore
-            capturedStartDateAfter = startDateAfter
+            capturedFilters = filters
             onCompletion(.success(false))
         }
 
@@ -393,8 +387,8 @@ struct BookingListViewModelTests {
         viewModel.loadBookings()
 
         // Then
-        #expect(capturedStartDateBefore == nil, "All tab should not have startDateBefore filter")
-        #expect(capturedStartDateAfter == nil, "All tab should not have startDateAfter filter")
+        #expect(capturedFilters?.startDateBefore == nil, "All tab should not have startDateBefore filter")
+        #expect(capturedFilters?.startDateAfter == nil, "All tab should not have startDateAfter filter")
     }
 
     // MARK: - Cache clearing logic
@@ -405,7 +399,7 @@ struct BookingListViewModelTests {
         var capturedShouldClearCache: Bool?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, shouldClearCache, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
                 return
             }
             capturedShouldClearCache = shouldClearCache
@@ -428,7 +422,7 @@ struct BookingListViewModelTests {
         var actionCallCount = 0
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, shouldClearCache, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
                 return
             }
             actionCallCount += 1
@@ -453,7 +447,7 @@ struct BookingListViewModelTests {
         var capturedShouldClearCache: Bool?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, shouldClearCache, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
                 return
             }
             capturedShouldClearCache = shouldClearCache
@@ -585,7 +579,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -626,7 +620,7 @@ struct BookingListViewModelTests {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, _, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -669,7 +663,7 @@ struct BookingListViewModelTests {
         var capturedOrder: BookingsRemote.Order?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, order, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, order, _, onCompletion) = action else {
                 return
             }
             capturedOrder = order
@@ -691,7 +685,7 @@ struct BookingListViewModelTests {
         var capturedOrder: BookingsRemote.Order?
 
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, order, _, onCompletion) = action else {
+            guard case let .synchronizeBookings(_, _, _, _, order, _, onCompletion) = action else {
                 return
             }
             capturedOrder = order

@@ -13,8 +13,7 @@ public enum BookingAction: Action {
     case synchronizeBookings(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
-                             startDateBefore: String? = nil,
-                             startDateAfter: String? = nil,
+                             filters: BookingFilters? = nil,
                              order: BookingsRemote.Order = .descending,
                              shouldClearCache: Bool = false,
                              onCompletion: (Result<Bool, Error>) -> Void)
@@ -40,8 +39,7 @@ public enum BookingAction: Action {
                         searchQuery: String,
                         pageNumber: Int,
                         pageSize: Int = BookingsRemote.Default.pageSize,
-                        startDateBefore: String? = nil,
-                        startDateAfter: String? = nil,
+                        filters: BookingFilters? = nil,
                         order: BookingsRemote.Order = .descending,
                         onCompletion: (Result<[Booking], Error>) -> Void)
 

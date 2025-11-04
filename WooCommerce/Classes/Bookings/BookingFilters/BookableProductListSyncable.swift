@@ -60,6 +60,7 @@ struct BookableProductListSyncable: ListSyncable {
         ProductAction.searchProducts(
             siteID: siteID,
             keyword: keyword,
+            filter: .name,
             pageNumber: pageNumber,
             pageSize: pageSize,
             productType: .booking,

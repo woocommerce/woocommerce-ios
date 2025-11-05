@@ -4,7 +4,6 @@ import Foundation
 ///
 public struct BookingCustomerFilter: Codable, Hashable {
     /// ID of the customer
-    /// periphery:ignore - to be used later when applying filter
     ///
     public let customerID: Int64
 

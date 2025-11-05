@@ -160,7 +160,6 @@ private extension BookingListContainerViewModel {
     /// Saves booking filters to AppSettings for persistence.
     private func saveFilters(_ filters: BookingFiltersViewModel.Filters) {
         let persistedFilters = StoredBookingFilters.Filters(
-            siteID: siteID,
             teamMembers: filters.teamMembers,
             products: filters.products,
             attendanceStatuses: filters.attendanceStatuses,

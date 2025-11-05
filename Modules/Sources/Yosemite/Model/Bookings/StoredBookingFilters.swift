@@ -14,7 +14,6 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
     }
 
     public struct Filters: Codable, Equatable {
-        public let siteID: Int64
         public let teamMembers: [BookingTeamMemberFilter]
         public let products: [BookingProductFilter]
         public let attendanceStatuses: [BookingAttendanceStatus]
@@ -22,14 +21,12 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
         public let customers: [BookingCustomerFilter]
         public let dateRange: BookingDateRangeFilter?
 
-        public init(siteID: Int64,
-                    teamMembers: [BookingTeamMemberFilter],
+        public init(teamMembers: [BookingTeamMemberFilter],
                     products: [BookingProductFilter],
                     attendanceStatuses: [BookingAttendanceStatus],
                     paymentStatuses: [BookingStatus],
                     customers: [BookingCustomerFilter],
                     dateRange: BookingDateRangeFilter?) {
-            self.siteID = siteID
             self.teamMembers = teamMembers
             self.products = products
             self.attendanceStatuses = attendanceStatuses

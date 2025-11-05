@@ -290,7 +290,7 @@ struct POSCatalogSyncRemoteTests {
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
         // When loading page 1
-        let pagedProducts = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1)
+        let pagedProducts = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
 
         // Then there are more pages
         #expect(pagedProducts.hasMorePages == true)
@@ -304,7 +304,7 @@ struct POSCatalogSyncRemoteTests {
         let pageNumber = 2
 
         // When
-        _ = try? await remote.loadProducts(siteID: sampleSiteID, pageNumber: pageNumber)
+        _ = try? await remote.loadProducts(siteID: sampleSiteID, pageNumber: pageNumber, allowCellular: true)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
@@ -321,7 +321,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-pos")
-        let pagedProducts = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1)
+        let pagedProducts = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
 
         // Then
         #expect(pagedProducts.items.count == expectedProductsCount)
@@ -338,7 +338,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1)
+            try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
         }
     }
 
@@ -350,7 +350,7 @@ struct POSCatalogSyncRemoteTests {
         let pageNumber = 3
 
         // When
-        _ = try? await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: pageNumber)
+        _ = try? await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: pageNumber, allowCellular: true)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
@@ -366,7 +366,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-pos")
-        let pagedVariations = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1)
+        let pagedVariations = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
 
         // Then
         #expect(pagedVariations.items.count == 1)
@@ -383,7 +383,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1)
+            try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
         }
     }
 
@@ -394,7 +394,7 @@ struct POSCatalogSyncRemoteTests {
         network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
 
         // When loading page 1
-        let pagedVariations = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1)
+        let pagedVariations = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
 
         // Then there are more pages
         #expect(pagedVariations.hasMorePages == true)
@@ -598,7 +598,7 @@ struct POSCatalogSyncRemoteTests {
         let remote = POSCatalogSyncRemote(network: network)
 
         // When
-        _ = try? await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false)
+        _ = try? await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
@@ -612,7 +612,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-generation")
-        let response = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false)
+        let response = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
 
         // Then
         #expect(response.status == .complete)
@@ -625,7 +625,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false)
+            try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
         }
     }
 
@@ -741,6 +741,53 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         let urlRequest = try #require(network.requestsForResponseData.last as? URLRequest)
+        #expect(urlRequest.allowsCellularAccess == allowCellular)
+    }
+
+    // MARK: - Full Sync allowCellular Tests
+
+    @Test(arguments: [true, false])
+    func requestCatalogGeneration_sets_allowsCellularAccess_on_request(allowCellular: Bool) async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-generation")
+
+        // When
+        _ = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: allowCellular)
+
+        // Then
+        let jetpackRequest = try #require(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try jetpackRequest.asURLRequest()
+        #expect(urlRequest.allowsCellularAccess == allowCellular)
+    }
+
+    @Test(arguments: [true, false])
+    func loadProducts_fullSync_sets_allowsCellularAccess_on_request(allowCellular: Bool) async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        _ = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1, allowCellular: allowCellular)
+
+        // Then
+        let jetpackRequest = try #require(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try jetpackRequest.asURLRequest()
+        #expect(urlRequest.allowsCellularAccess == allowCellular)
+    }
+
+    @Test(arguments: [true, false])
+    func loadProductVariations_fullSync_sets_allowsCellularAccess_on_request(allowCellular: Bool) async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When
+        _ = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1, allowCellular: allowCellular)
+
+        // Then
+        let jetpackRequest = try #require(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try jetpackRequest.asURLRequest()
         #expect(urlRequest.allowsCellularAccess == allowCellular)
     }
 }

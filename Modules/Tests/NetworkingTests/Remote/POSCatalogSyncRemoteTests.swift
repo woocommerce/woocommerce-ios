@@ -638,7 +638,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "", filename: "pos-catalog-download-mixed")
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then
         #expect(catalog.products.count == 2)
@@ -700,7 +700,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "", filename: "empty-data-array")
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then
         #expect(catalog.products.count == 0)
@@ -714,7 +714,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.invalidURL) {
-            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL)
+            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL, allowCellular: true)
         }
     }
 
@@ -725,7 +725,22 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
+            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
         }
+    }
+
+    @Test(arguments: [true, false])
+    func downloadCatalog_sets_allowsCellularAccess_on_request(allowCellular: Bool) async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let downloadURL = "https://example.com/catalog.json"
+        network.simulateResponse(requestUrlSuffix: "", filename: "empty-data-array")
+
+        // When
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: allowCellular)
+
+        // Then
+        let urlRequest = try #require(network.requestsForResponseData.last as? URLRequest)
+        #expect(urlRequest.allowsCellularAccess == allowCellular)
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-11-04 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -121,9 +121,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
 "%1$d\/%2$d completed" = "已完成 %1$d\/%2$d 個";
 
-/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day' */
-"%1$ld day" = "%1$ld 天";
-
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld 個款式";
@@ -132,17 +129,11 @@ which should be translated separately and considered part of this sentence. */
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld 個款式";
 
-/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days' */
-"%1ld days" = "%1ld 天";
-
 /* 1 Item */
 "%@ Item" = "%@ 個品項";
 
 /* For example, '5 Items' */
 "%@ Items" = "%@ 個品項";
-
-/* Reads like: eCommerce ended */
-"%@ ended" = " %@ 已結束";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "已提出 %@ 標籤退款要求";
@@ -230,26 +221,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "已選取 1 個項目";
 
-/* Disclaimer regarding some of the features related to payments. */
-"1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 此為 WooCommerce Payments 的標準功能 (有其限制)。其他付款服務供應商可能需要額外安裝擴充功能才能使用。";
-
-/* Disclaimer regarding some of the features related to shipping. */
-"2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 僅適用於美國；其他國家\/地區需要額外擴充功能才能使用。";
-
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. 連結完成後，系統會將你登入自己的商店。";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 分鐘";
 
-/* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
-"50 GB" = "50 GB";
-
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
-
-/* Error message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"A WooCommerce app store subscription with your Apple ID already exists" = "已有使用你 Apple ID 的 WooCommerce 應用程式商店訂購";
 
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "WordPress.com 帳號已連結至你的商店憑證。 若要繼續操作，我們會傳送驗證連結到上方電子郵件地址。";
@@ -284,14 +263,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "新增選項";
 
-/* No comment provided by engineer. */
-"Abandoned cart recovery" = "復原擱置的購物車項目";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "關於此應用程式";
-
-/* No comment provided by engineer. */
-"Accept local payments'" = "接受當地付款方式";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "在設定過程中接受服務條款。";
@@ -323,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "啟用";
-
-/* No comment provided by engineer. */
-"Ad-free experience" = "不含廣告的體驗";
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
@@ -535,14 +505,8 @@ which should be translated separately and considered part of this sentence. */
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "需成人簽名 (+%1$@)";
 
-/* No comment provided by engineer. */
-"Advanced SEO tools" = "進階 SEO 工具";
-
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "檢視應用程式狀態的進階工具";
-
-/* No comment provided by engineer. */
-"Advertise on Google" = "在 Google 上廣告";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "可空運的乙醇包裹：(獲准運送的香水及乾洗手貨件)";
@@ -614,9 +578,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "符合退款資格的金額";
 
-/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"An Apple ID can only be used to upgrade one store" = "一個 Apple ID 只能用於升級一家商店";
-
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "已傳回 HTTP 錯誤代碼 %i。";
 
@@ -643,9 +604,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "已成功啟用分析。";
-
-/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
-"Annually (Save 35%)" = "年繳 (省下 35% 的費用)";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
@@ -753,12 +711,6 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "主機需要的驗證：%@";
 
-/* No comment provided by engineer. */
-"Automated backup + quick restore" = "自動備份與快速還原功能";
-
-/* No comment provided by engineer. */
-"Automated sales taxes" = "自動化營業稅";
-
 /* Title for the bottom sheet when there is a tax rate stored */
 "Automatically adding tax rate" = "自動新增稅率";
 
@@ -787,9 +739,6 @@ which should be translated separately and considered part of this sentence. */
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
 "Back" = "上一步";
-
-/* No comment provided by engineer. */
-"Back in stock emails" = "重新上架電子郵件";
 
 /* Accessibility announcement message when device goes back online */
 "Back online" = "重新上線";
@@ -844,6 +793,15 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "粗體";
 
+/* Title for 'Booked' booking attendance status. */
+"BookingAttendanceStatus.booked" = "已預訂";
+
+/* Title for 'Cancelled' booking attendance status. */
+"BookingAttendanceStatus.cancelled" = "已取消";
+
+/* Title for 'Unknown' booking attendance status. */
+"BookingAttendanceStatus.unknown" = "不明";
+
 /* Assigned staff row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.assignedStaff.title" = "指派員工";
 
@@ -870,6 +828,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Attendance' section in the booking details screen. */
 "BookingDetailsView.attendance.headerTitle" = "出席";
+
+/* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.attendanceStatus.updateFailed.message" = "無法變更預訂編號 #%1$d 的出席狀態";
 
 /* Add a note row title in booking notes section in booking details view. */
 "BookingDetailsView.bookingNotes.addANoteRow.title" = "新增備註";
@@ -952,14 +913,8 @@ which should be translated separately and considered part of this sentence. */
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "無法撥打此號碼。";
 
-/* Title for the 'Booked' status label in the header view. */
-"BookingDetailsView.statusLabel.booked" = "已預訂";
-
-/* Title for the 'Paid' status label in the header view. */
-"BookingDetailsView.statusLabel.paid" = "已付款";
-
-/* Title for the 'Pay at location' status label in the header view. */
-"BookingDetailsView.statusLabel.payAtLocation" = "現場付款";
+/* Retry Action */
+"BookingDetailsView.retry.action" = "重試";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "透過特價方案提高銷量";
@@ -1130,10 +1085,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "取消安裝";
-
-/* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
-   Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
-"Cancel Upgrade" = "取消升級";
 
 /* Display label for the subscription status type */
 "Cancelled" = "已取消";
@@ -1493,9 +1444,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "連線至讀卡機";
 
-/* No comment provided by engineer. */
-"Connect with Facebook" = "連接至 Facebook";
-
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "連接讀卡機";
 
@@ -1785,9 +1733,6 @@ which should be translated separately and considered part of this sentence. */
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "目前價格不一。";
 
-/* Reads like: Current: Free Trial */
-"Current: %@" = "目前：%@";
-
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "目前最多支援建立 100 個款式。 為此產品產生款式將建立 %d 個款式。";
 
@@ -1827,12 +1772,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "海關表格要求填寫 10 位數電話號碼";
 
-/* No comment provided by engineer. */
-"Custom order emails" = "自訂訂單電子郵件";
-
-/* No comment provided by engineer. */
-"Custom product kits" = "自訂產品套件";
-
 /* Customer info section title
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
@@ -1846,9 +1785,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the edit customer provided note screen
    Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "顧客所提出的備註";
-
-/* No comment provided by engineer. */
-"Customer birthday emails" = "顧客生日電子郵件";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "客戶支付 %1$@ (%2$@) 運費";
@@ -1967,9 +1903,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "折扣費率";
 
-/* No comment provided by engineer. */
-"Discounted shipping²" = "運送可享折扣²";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "折扣不適用";
 
@@ -2044,9 +1977,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
 
-/* Text within the Upgrades summary card, informing the merchant their Free Trial has expired. */
-"Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. Unlock more features, launch and start selling, and make your ecommerce business a reality." = "別遺失辛苦完成的成果！ 升級至付費方案，即可繼續使用商店。 獲得更多功能、上架商品並開始銷售，擁有自己的電子商務事業。";
-
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "不要再顯示";
@@ -2063,7 +1993,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
-   Done button on the screen that is shown after a successful plan upgrade.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2220,9 +2149,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "電子郵件收據";
-
-/* No comment provided by engineer. */
-"Email support" = "電子郵件支援";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "透過電子郵件傳送標籤購買收據給%1$@ (%2$@)，電子郵件地址是 %3$@";
@@ -2410,9 +2336,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack activation fails */
 "Error activating Jetpack" = "啟用 Jetpack 時發生錯誤";
 
-/* Error message displayed when plan activation fails after purchasing a plan. */
-"Error activating plan" = "啟用方案時發生錯誤";
-
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "授權連結到 Jetpack 時發生錯誤";
 
@@ -2422,17 +2345,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "查看網站的 Jetpack 連結狀態時發生錯誤";
 
-/* A string shown on the error screen when there's an issue purchasing a plan, to inform the user of the error code for use with Support. %1$@ will be replaced with the error code and must be included in the translations. */
-"Error code %1$@" = "錯誤代碼 %1$@";
-
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "錯誤代碼 %1$d";
-
-/* Error message displayed when a payment fails when attempting to purchase a plan. */
-"Error confirming payment" = "確認付款時發生錯誤";
-
-/* Title of an unknown error after purchasing a plan */
-"Error during purchase" = "購買時發生錯誤";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "啟用分析時發生錯誤。 請再試一次。";
@@ -2482,9 +2396,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "人人都喜歡優惠";
-
-/* Title for the Performance plan features list. Is followed by a list of the plan features. */
-"Everything in Essential, plus:" = "基本方案的所有功能，再加上：";
 
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "範例：盆栽, 仙人掌, 植物, 家飾, 輕鬆照顧";
@@ -2539,9 +2450,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "已展開";
-
-/* Title for the features list in the Subscriptions Screen */
-"Experience more of our features and services beyond the app" = "體驗比應用程式還要多的功能與服務";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2694,9 +2602,6 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "轉寄";
 
-/* No comment provided by engineer. */
-"Free SSL certificate" = "免費 SSL 憑證";
-
 /* Plan name for an active free trial */
 "Free Trial" = "免費試用";
 
@@ -2711,9 +2616,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "透過 WooCommerce Shipping 完成你的訂單";
-
-/* Title of the view which shows the full feature list for paid plans. */
-"Full Feature List" = "完整功能清單";
 
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "款項待確認 %1$d 天後，現在已可提供。";
@@ -2748,9 +2650,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "超過產生上限";
 
-/* No comment provided by engineer. */
-"Generous storage" = "龐大的儲存空間";
-
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "開始使用";
@@ -2779,12 +2678,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "只要幾分鐘即可開始使用";
 
-/* Button title to allow merchants to open the support screens when there's an error with their plan purchase
-   Button to contact support when Jetpack setup fails */
+/* Button to contact support when Jetpack setup fails */
 "Get support" = "取得支援";
-
-/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
-"Get the most out of %1$@" = "充分發揮 %1$@ 的優勢";
 
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "從自己的商店獲得最大利益";
@@ -2813,9 +2708,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "禮物卡序號";
 
-/* No comment provided by engineer. */
-"Gift cards" = "禮物卡";
-
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
@@ -2836,9 +2728,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "前往商店";
-
-/* No comment provided by engineer. */
-"Google Analytics" = "Google Analytics (分析)";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 註冊失敗。";
@@ -3023,9 +2912,6 @@ which should be translated separately and considered part of this sentence. */
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "在你的網站管理中，你可以從 Jetpack 控制台的「連結」>「帳號連結」找到用於連結 WordPress.com 的電子郵件。";
 
-/* Error message displayed when In-App Purchases are not supported. */
-"In-App Purchases not supported" = "不支援應用程式內購買";
-
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "為 %2$@ blog_id %3$@ 的訂單 #%1$@ 親自收款";
 
@@ -3118,12 +3004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "保險 (最高 %1$@)";
-
-/* No comment provided by engineer. */
-"Integrated payments" = "整合型付款";
-
-/* No comment provided by engineer. */
-"International payments'" = "國際付款";
 
 /* Title for the internet connection connectivity tool card */
 "Internet Connection" = "網際網路連線";
@@ -3402,18 +3282,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "商品圖片清單";
 
-/* No comment provided by engineer. */
-"List products by brand" = "依品牌列出產品";
-
-/* No comment provided by engineer. */
-"List unlimited products" = "列出不受限制的產品數量";
-
-/* No comment provided by engineer. */
-"Live chat support" = "即時線上文字對談支援";
-
-/* No comment provided by engineer. */
-"Live shipping rates" = "即時運費費率";
-
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "載入中";
 
@@ -3425,9 +3293,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "正在載入內容";
-
-/* Accessibility label for the initial loading state of the Upgrades view */
-"Loading plan details" = "正在載入方案詳細資訊";
 
 /* Accessibility label for placeholder rows while product variations are loading */
 "Loading product variations" = "正在載入商品款式";
@@ -3517,9 +3382,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button. */
 "Lost your password?" = "忘記密碼？";
 
-/* No comment provided by engineer. */
-"Loyalty points programs" = "忠實顧客點數計畫";
-
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "由 Automattic 用心製作。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我們在招募人才！<\/a>";
 
@@ -3546,9 +3408,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the privacy banner */
 "Manage Privacy" = "管理隱私權";
 
-/* Title for the button to manage subscriptions */
-"Manage Your Subscription" = "管理你的訂購";
-
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "隨時隨地管理及編輯訂單";
 
@@ -3563,9 +3422,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "庫存管理";
-
-/* Description of one of the hub menu options */
-"Manage your subscription" = "管理你的訂購";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "手動退款";
@@ -3594,12 +3450,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "將此訂單標示為完成並通知客戶";
-
-/* No comment provided by engineer. */
-"Marketing & Email" = "行銷與電子郵件";
-
-/* No comment provided by engineer. */
-"Marketing automation" = "自動化行銷";
 
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "上限 消費金額 (%1$@)";
@@ -3652,9 +3502,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "最低 消費金額 (%1$@)";
 
-/* No comment provided by engineer. */
-"Min\/Max order quantity" = "訂單數量上下限";
-
 /* Title for the minimum quantity setting in the quantity rules screen. */
 "Minimum quantity" = "數量下限";
 
@@ -3672,9 +3519,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "月初至今";
-
-/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
-"Monthly" = "每月";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3866,9 +3710,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "未選取訂單";
-
-/* Bolded message confirming that no payment has been taken when the upgrade failed. */
-"No payment has been taken" = "未收取任何費用";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未設定價格";
@@ -4320,9 +4161,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "效能";
 
-/* Indicates a feature is part of the performance plan. */
-"Performance plan only" = "僅提供 Performance 方案";
-
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "永久關閉帳號";
 
@@ -4351,9 +4189,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "正在將你的商品放入垃圾桶…";
 
-/* Detail text shown after an In-App Purchase for a Woo Express plan, shown while we upgrade the site. %1$@ is replaced with the short plan name. Reads as: 'Please bear with us while we process the payment for your Essential plan.' */
-"Please bear with us while we process the payment for your %1$@ plan." = "請耐心等候我們處理你的 %1$@ 方案付款。";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "請為讀卡機充電";
 
@@ -4363,15 +4198,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "請將你的商店連結到 Jetpack，以在此應用程式上存取你的商店。";
 
-/* Bolded message advising the merchant to contact support when the plan activation failed.
-   Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
-"Please contact support for assistance." = "請接洽支援團隊取得協助";
-
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "請聯絡網站管理員以獲得網站邀請，成為商店經理或管理員後即可使用應用程式。";
-
-/* Text describing that only the site owner can upgrade the site's plan. */
-"Please contact the store owner to upgrade your plan." = "請聯絡商店擁有者以升級你的方案。";
 
 /* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
 "Please contact your shop manager or administrator for help." = "請聯絡商店經理或管理員尋求協助。";
@@ -4469,9 +4297,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "請再試一次或與我們聯絡，我們將很樂意提供協助！";
 
-/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"Please try again, or contact support for assistance" = "請再試一次，或聯絡支援團隊以取得協助";
-
 /* Account creation error when an unexpected error occurs. */
 "Please try again." = "請再試一次。";
 
@@ -4536,8 +4361,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "外掛程式";
 
-/* Section title for popular products on the Select Product screen.
-   The text of the badge that indicates the most popular choice when purchasing a Plan */
+/* Section title for popular products on the Select Product screen. */
 "Popular" = "熱門";
 
 /* Text field postcode in Edit Address Form
@@ -4555,9 +4379,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供技術";
-
-/* No comment provided by engineer. */
-"Premium themes included" = "隨附進階版佈景主題";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
 "Preparing Tap to Pay on iPhone" = "正在準備「iPhone 卡緊收」功能";
@@ -4639,9 +4460,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "列印收據";
 
-/* No comment provided by engineer. */
-"Print shipping labels²" = "列印運送標籤²";
-
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "列印標籤";
 
@@ -4687,9 +4505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the product add-ons screen */
 "Product Add-ons" = "產品附加元件";
 
-/* No comment provided by engineer. */
-"Product Bundles" = "產品搭售方案";
-
 /* Row title for filtering products by product category. */
 "Product Category" = "商品分類";
 
@@ -4723,9 +4538,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "已上架商品";
-
-/* No comment provided by engineer. */
-"Product recommendations" = "Product recommendations";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "商品已儲存";
@@ -4780,9 +4592,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "客戶檢視目前商品時推銷其他商品 (例如：獲利更高的商品)";
 
-/* No comment provided by engineer. */
-"Promote on TikTok" = "在 TikTok 宣傳";
-
 /* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "使用 Blaze 宣傳產品";
 
@@ -4806,9 +4615,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "正在上架你的商品…";
-
-/* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
-"Purchase %1$@" = "購買 %1$@";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "購買日期";
@@ -4888,12 +4694,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The title of the view containing a receipt preview */
 "Receipt" = "收據";
-
-/* No comment provided by engineer. */
-"Recurring payments'" = "定期付款";
-
-/* No comment provided by engineer. */
-"Referral programs" = "推薦計畫";
 
 /* Button label to refresh a web page
    Button to refresh the state of the in-person payments setup
@@ -5042,9 +4842,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
 
-/* Title for the button to contact support on the Subscriptions view */
-"Report Subscription Issue" = "回報訂閱問題";
-
 /* Title of the report section on the privacy screen */
 "Reports" = "報告";
 
@@ -5101,12 +4898,10 @@ If your translation of that term also happens to contains a hyphen, please be su
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry action title
-   Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
    Retry button title when the scanner cannot finda matching product and create a new order
    Retry the last action
-   Retry title on the notice action button
-   Title of the button to attempt a retry when fetching or purchasing plans fails. */
+   Retry title on the notice action button */
 "Retry" = "重試";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -5118,9 +4913,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Retry connection button in the connectivity tool screen */
 "Retry connection" = "重試連結";
-
-/* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
-"Return to My Store" = "返回我的商店";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "包裹無法投遞時退還寄件者";
@@ -5177,9 +4969,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
-
-/* No comment provided by engineer. */
-"Sales reports" = "銷售報表";
 
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "樣本";
@@ -5295,9 +5084,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "查看版面配置和紙張大小選項";
 
-/* Title for a link to view Woo Express plan details on the web, as a fallback. */
-"See plan details" = "查看方案詳細資訊";
-
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
 "Select %1$d Categories" = "選取 %1$d 個類別";
 
@@ -5331,9 +5117,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "選取包裹";
-
-/* The title of the button to purchase a Plan when no plan is selected yet. */
-"Select a plan" = "選取方案";
 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "請選取商品類型";
@@ -5502,9 +5285,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar title of shipping label details */
 "Shipment Details" = "貨件詳細資訊";
 
-/* No comment provided by engineer. */
-"Shipment tracking" = "貨件追蹤";
-
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
 "Shipped %@" = "已運送 %@";
@@ -5652,9 +5432,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "某人";
 
-/* Description of an unknown error after purchasing a plan */
-"Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "購買期間發生錯誤，我們無法確定付款是否已完成，或你的商店方案是否已升級。";
-
 /* Notice title when validating a coupon code fails. */
 "Something went wrong when validating your coupon code. Please try again" = "驗證你的優惠券代碼時發生錯誤。 請再試一次";
 
@@ -5794,9 +5571,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when the user disables adding tax rates automatically */
 "Stopped automatically adding tax rate" = "已停止自動新增稅率";
 
-/* Title of one of the features of the Paid plans, regarding site storage. */
-"Storage" = "儲存空間";
-
 /* Navigates to the Store name setup screen */
 "Store Name" = "商店名稱";
 
@@ -5818,12 +5592,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title to submit a support request. */
 "Submit Support Request" = "提交支援請求";
 
-/* Title for the plan section on the subscriptions view. Uppercased */
-"Subscription Status" = "訂購狀態";
-
-/* Subscriptions section title
-   Title for the Subscriptions / Upgrades view
-   Title of one of the hub menu options */
+/* Subscriptions section title */
 "Subscriptions" = "訂閱";
 
 /* Create Shipping Label form -> Subtotal label
@@ -5869,9 +5638,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切換至預設的文字大小";
-
-/* No comment provided by engineer. */
-"Sync with Pinterest" = "與 Pinterest 同步";
 
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "正在同步資料";
@@ -6259,9 +6025,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "There was an error connecting your site to Jetpack." = "將你的網站連結至 Jetpack 時發生錯誤。";
 
-/* Error shown when failing to fetch the plan details in the upgrades view. */
-"There was an error fetching your plan details, please try again later." = "擷取方案詳細資料時發生錯誤，請稍後再試。";
-
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "擷取你的隱私權設定時發生錯誤";
 
@@ -6506,17 +6269,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Move a comment to the trash */
 "Trash" = "移至垃圾桶";
 
-/* Plan name for an expired free trial */
-"Trial ended" = "試用期已結束";
-
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "疑難排解";
 
 /* Screen title for the connectivity tool */
 "Troubleshoot Connection" = "對連結進行疑難排解";
-
-/* Title for the section to contact support on the subscriptions view. Uppercased */
-"Troubleshooting" = "疑難排解";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
@@ -6548,9 +6305,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
 "Try Out Tap to Pay on iPhone" = "試用「iPhone 卡緊收」";
-
-/* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
-"Try Payment Again" = "重試付款";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
 "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "嘗試使用簽帳金融卡或信用卡支付 %1$@ 款項。 完成後即可進行退款。";
@@ -6783,9 +6537,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "無限制";
 
-/* No comment provided by engineer. */
-"Unlimited admin accounts" = "不限數量的管理員帳號";
-
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "未命名產品";
 
@@ -6886,9 +6637,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "正在更新你的產品...";
-
-/* Navigation title for the Upgrades screen */
-"Upgrade" = "升級";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7001,9 +6749,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "檢視";
 
-/* Title for the button to expand plan details on the Upgrade plan screen. Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with the plan name. */
-"View %1$@ features" = "檢視 %1$@ 功能";
-
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons
    Title of the button on the order details product list item to navigate to add-ons */
@@ -7019,9 +6764,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for the 'View Custom Fields' button
    Custom Fields section title */
 "View Custom Fields" = "檢視自訂欄位";
-
-/* The title of the button to view a list of all features that plans offer. */
-"View Full Feature List" = "檢視完整功能清單";
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "查看商店產品";
@@ -7147,12 +6889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "載入分析時發生問題";
-
-/* Error description displayed when a payment fails when attempting to purchase a plan. */
-"We encountered an error confirming your payment." = "確認付款時發生錯誤。";
-
-/* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
-"We encountered an error loading plan information" = "載入方案資訊時發生錯誤";
 
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "我們已將你的商店暫停。 只要你在瀏覽器登入 WordPress.com，就能購買其他方案。";
@@ -7293,9 +7029,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "寬度";
 
-/* Text shown when a plan upgrade has been successfully purchased. */
-"Woo! You’re off to a great start!" = "Woo！ 你有一個不錯的開始！";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -7323,25 +7056,13 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping 目前不支援透過 %1$@ 的危險物品貨件。";
 
-/* No comment provided by engineer. */
-"WooCommerce mobile app" = "WooCommerce 行動應用程式";
-
-/* No comment provided by engineer. */
-"WooCommerce store" = "WooCommerce 商店";
-
 /* Highlighted header text on the store onboarding WCPay setup screen.
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
-/* No comment provided by engineer. */
-"WordPress CMS" = "WordPress CMS";
-
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress 媒體庫";
-
-/* No comment provided by engineer. */
-"WordPress mobile app" = "WordPress 行動應用程式";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress 版本過舊。網址為 %1$@ 的網站使用 WordPress %2$@。建議更新至最新版本，或至少更新至 %3$@";
@@ -7383,17 +7104,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Yesterday Section Header */
 "Yesterday" = "昨天";
 
-/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
-"You are in the %1$d-day free trial. The free trial will end in %2$d days. " = "目前你正處於為期 %1$d 天的免費試用期。 免費試用期將於 %2$d 天後結束。 ";
-
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "你沒有存取此商店的權限。";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "你未取得安裝 Jetpack 的授權";
-
-/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
-"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "你已訂閱「%1$@」方案！ %2$@ 前，你可存取我們的所有功能。";
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "你可以在網頁儀表板中編輯搭售產品。";
@@ -7410,9 +7125,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "你可以快速輕鬆管理。";
 
-/* Instructions guiding the merchant to manage a site's plan upgrade. */
-"You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "你可以在 iPhone 的「設定」→「你的名字」→「訂閱項目」中管理訂購";
-
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "在網頁儀表板中只能新增多款式訂閱。";
 
@@ -7427,9 +7139,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "你無法使用該電子郵件地址註冊。我們無法使用這些電子郵件地址，因為它們會阻擋我們的某些郵件。請使用其他電子郵件供應商。";
-
-/* Text describing that is not possible to upgrade the site's plan. */
-"You can’t upgrade because you are not the store owner" = "你不是商店擁有者，因此無法進行升級";
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "你目前在此商店中停用優惠券。 啟用優惠券即可開始使用。";
@@ -7462,14 +7171,8 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "你的帳號審核完畢後，就能使用親自收款功能了。";
 
-/* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
-"You're in a free trial" = "你正在使用免費試用";
-
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "你無權關閉該帳號。";
-
-/* No comment provided by engineer. */
-"Your Store" = "你的商店";
 
 /* First instruction on the Woo payments setup instructions screen. */
 "Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "WooPayments 通知會傳送至您的 WordPress.com 帳號電子郵件信箱。 想要使用新帳號嗎？ 詳情請見此處。";
@@ -7485,15 +7188,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "你的電子郵件並未用於 WordPress.com 帳號";
-
-/* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
-"Your free trial has ended" = "你的免費試用已結束";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "你的免費試用已結束，存取所有功能時會受到限制。 立即訂購 Woo Express 方案。";
-
-/* Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade. */
-"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "你的免費試用將於 %1$@ 到期。 於 %2$@ 前升級方案，即可用新功能開始銷售。";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "你的 iPhone 可做為讀卡機使用，或者你可以透過藍牙連線至外部讀卡機。";
@@ -7513,9 +7207,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "你的手機快要可以收款了…";
 
-/* Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by the plan name, and should be included in the translated string. */
-"Your purchase is complete and you're on the %1$@ plan." = "已完成購買，你已開始使用 %1$@ 方案。";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新完成後，你的讀卡機會自動重新啟動並重新連線";
 
@@ -7534,17 +7225,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a timeout error in the recovery tool */
 "Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "你的網站太久沒有回應。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
 
-/* Title on the banner when the site's WooExpress plan has expired */
-"Your site plan has ended." = "你的網站方案已結束。";
-
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "你的商店已上線！";
-
-/* Info details for an expired plan */
-"Your subscription has ended and you have limited access to all the features." = "你的訂閱已結束，存取所有功能時皆會受到限制。";
-
-/* Error description displayed when plan activation fails after purchasing a plan. */
-"Your subscription is active, but there was an error activating the plan on your store." = "你的訂購已啟用，但為商店啟用方案時發生錯誤。";
 
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "您的稅率目前是以顧客帳單地址計算：";
@@ -7563,9 +7245,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "你需要為商店安裝免費 WooCommerce Payments 擴充功能，才能使用親自收款功能。";
-
-/* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
-"You’re almost there" = "你就快完成了";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -8611,6 +8290,69 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "再試一次";
 
+/* Title of the booking customer selector view */
+"bookingCustomerSelectorView.emptyItemTitlePlaceholder" = "沒有名稱";
+
+/* Message on the empty search result view of the booking customer selector view */
+"bookingCustomerSelectorView.emptySearchDescription" = "嘗試調整搜尋字詞以檢視更多結果";
+
+/* Text on the empty view of the booking customer selector view */
+"bookingCustomerSelectorView.noCustomersFound" = "找不到顧客";
+
+/* Prompt in the search bar of the booking customer selector view */
+"bookingCustomerSelectorView.searchPrompt" = "搜尋顧客";
+
+/* Error message when selecting guest customer in booking filtering */
+"bookingCustomerSelectorView.selectionDisabledMessage" = "由於此使用者是訪客，故無法透過此身分篩選預訂內容。";
+
+/* Title of the booking customer selector view */
+"bookingCustomerSelectorView.title" = "顧客";
+
+/* Title of the Date row in the date time picker for booking filter */
+"bookingDateTimeFilterView.date" = "日期";
+
+/* Title of From section in the date time picker for booking filter */
+"bookingDateTimeFilterView.from" = "開始日期";
+
+/* Title of the Time row in the date time picker for booking filter */
+"bookingDateTimeFilterView.time" = "時間";
+
+/* Title of the date time picker for booking filter */
+"bookingDateTimeFilterView.title" = "日期和時間";
+
+/* Title of the To section in the date time picker for booking filter */
+"bookingDateTimeFilterView.to" = "結束日期";
+
+/* Button title for applying filters to a list of bookings. */
+"bookingFilters.filterActionTitle" = "顯示預訂";
+
+/* Row title for filtering bookings by customer. */
+"bookingFilters.rowCustomer" = "顧客";
+
+/* Row title for filtering bookings by attendance status. */
+"bookingFilters.rowTitleAttendanceStatus" = "出席狀態";
+
+/* Row title for filtering bookings by date range. */
+"bookingFilters.rowTitleDateTime" = "日期和時間";
+
+/* Row title for filtering bookings by payment status. */
+"bookingFilters.rowTitlePaymentStatus" = "付款狀態";
+
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleProduct" = "服務\/活動";
+
+/* Row title for filtering bookings by team member. */
+"bookingFilters.rowTitleTeamMember" = "團隊成員";
+
+/* Description for booking date range filter with no dates selected */
+"bookingFiltersViewModel.dateRangeFilter.any" = "任何";
+
+/* Description for booking date range filter with only start date. Placeholder is a date. Reads as: From October 27, 2025. */
+"bookingFiltersViewModel.dateRangeFilter.from" = "開始日期：%1$@";
+
+/* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
+"bookingFiltersViewModel.dateRangeFilter.until" = "結束日期：%1$@";
+
 /* Message displayed when searching bookings by keyword yields no results. */
 "bookingList.emptySearchText" = "找不到符合該名稱的預訂。請嘗試調整搜尋字詞，以便查看更多結果。";
 
@@ -8647,6 +8389,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to filter the booking list */
 "bookingListView.filter" = "篩選";
 
+/* Button to filter the booking list with number of active filters */
+"bookingListView.filter.withCount" = "篩選條件 (%1$d)";
+
 /* Prompt in the search bar on top of the booking list */
 "bookingListView.search.prompt" = "搜尋預訂";
 
@@ -8661,6 +8406,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "預訂";
+
+/* Text on the empty view of the booking service/event selector view */
+"bookingServiceEventSelectorView.noMembersFound" = "找不到服務或活動";
+
+/* Title of the booking service/event selector view */
+"bookingServiceEventSelectorView.title" = "服務\/活動";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "已取消";
@@ -8682,6 +8433,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "未付款";
+
+/* Text on the empty view of the booking team member selector view */
+"bookingTeamMemberSelectorView.noMembersFound" = "找不到團隊成員";
+
+/* Title of the booking team member selector view */
+"bookingTeamMemberSelectorView.title" = "團隊成員";
 
 /* Displayed name on the booking list when no customer is associated with a booking. */
 "bookings.guest" = "訪客";
@@ -9687,6 +9444,9 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "有運送量限制的陸運包裹：氣溶膠、噴霧消毒劑、噴漆、髮膠、丙烷、丁烷、清潔產品等。 - 香氛、指甲油、去光水、溶劑、乾洗手、外用酒精、乙醇類產品等。 - 有運送量限制的陸運物品 (化妝品、清潔用品、塗料等)。";
 
+/* Option to select no filter on a list selector view */
+"listSelectorView.any" = "任何";
+
 /* Message on the local notification to remind to continue the Blaze campaign creation. */
 "localNotification.AbandonedCampaignCreation.body" = "運用 Blaze 讓數百萬使用者看見你的商品，並強化銷售表現";
 
@@ -9871,6 +9631,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Default text for Most active coupons dashboard card when no data exists for a given period. */
 "mostActiveCouponsEmptyView.text" = "此期間並未使用任何優惠券";
+
+/* Option to remove selections on multi selection list view */
+"multiSelectListView.any" = "任何";
+
+/* Display label for when no filter selected. */
+"multipleFilterSelection.any" = "任何";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "搜尋";
@@ -10319,9 +10085,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編輯";
-
-/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
-"plan ended" = "方案已結束";
 
 /* Title for the Close button within the Plugin List view. */
 "pluginListView.button.close" = "關閉";
@@ -11044,9 +10807,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "免費試用";
-
-/* Button to dismiss the support form. */
-"subscriptionsView.dismissSupport" = "完成";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "收到";

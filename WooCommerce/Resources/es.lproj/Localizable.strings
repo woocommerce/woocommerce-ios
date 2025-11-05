@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-10-21 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-11-04 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -121,9 +121,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
 "%1$d\/%2$d completed" = "%1$d\/%2$d completado";
 
-/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day' */
-"%1$ld day" = "%1$ld día";
-
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld variación";
@@ -132,17 +129,11 @@ which should be translated separately and considered part of this sentence. */
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld variaciones";
 
-/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days' */
-"%1ld days" = "%1ld días";
-
 /* 1 Item */
 "%@ Item" = "%@ elemento";
 
 /* For example, '5 Items' */
 "%@ Items" = "%@ elementos";
-
-/* Reads like: eCommerce ended */
-"%@ ended" = "Finalizó el %@";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "Se ha solicitado la etiqueta de reembolso a %@";
@@ -230,26 +221,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 elemento elegido";
 
-/* Disclaimer regarding some of the features related to payments. */
-"1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Disponible como estándar en WooCommerce Payments (se aplican restricciones). Es posible que para otros proveedores de pago se necesiten extensiones adicionales.";
-
-/* Disclaimer regarding some of the features related to shipping. */
-"2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Solo disponible en EE. UU.: para otros países, se requerirá una extensión adicional.";
-
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. Una vez completada la conexión, estarás conectado a tu tienda.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minutos";
 
-/* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
-"50 GB" = "50 GB";
-
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
-
-/* Error message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"A WooCommerce app store subscription with your Apple ID already exists" = "Ya existe una suscripción a WooCommerce a través del App Store con tu ID de Apple";
 
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Una cuenta WordPress.com está conectada a tus credenciales de tienda. Para continuar, te enviaremos un enlace de verificación a la dirección de correo electrónico de arriba.";
@@ -284,14 +263,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "AÑADIR OPCIONES";
 
-/* No comment provided by engineer. */
-"Abandoned cart recovery" = "Recuperación de carritos abandonados";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Acerca de la aplicación";
-
-/* No comment provided by engineer. */
-"Accept local payments'" = "Aceptar pagos locales'";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Acepta las condiciones del servicio durante la instalación.";
@@ -323,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "Activo";
-
-/* No comment provided by engineer. */
-"Ad-free experience" = "Experiencia sin anuncios";
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
@@ -535,14 +505,8 @@ which should be translated separately and considered part of this sentence. */
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Firma obligatoria de un adulto (+%1$@)";
 
-/* No comment provided by engineer. */
-"Advanced SEO tools" = "Herramientas SEO avanzadas";
-
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Herramienta avanzada para revisar el estado de la aplicación";
-
-/* No comment provided by engineer. */
-"Advertise on Google" = "Promocionar en Google";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Paquete de etanol que se puede enviar por avión (envíos de fragancias y desinfectantes de manos autorizados)";
@@ -614,9 +578,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Cantidad apta para el reembolso";
 
-/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"An Apple ID can only be used to upgrade one store" = "Cada ID de Apple solo se puede utilizar para mejorar una tienda";
-
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "Devolvió un código de error HTTP %i.";
 
@@ -643,9 +604,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "Los análisis se han activado correctamente.";
-
-/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
-"Annually (Save 35%)" = "Anualmente (ahorras un 35 %)";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
@@ -753,12 +711,6 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Se requiere autenticación para el host: %@";
 
-/* No comment provided by engineer. */
-"Automated backup + quick restore" = "Copias de seguridad automatizadas y restauraciones rápidas";
-
-/* No comment provided by engineer. */
-"Automated sales taxes" = "Impuestos de ventas automáticos";
-
 /* Title for the bottom sheet when there is a tax rate stored */
 "Automatically adding tax rate" = "Añadir automáticamente la tasa de impuesto";
 
@@ -787,9 +739,6 @@ which should be translated separately and considered part of this sentence. */
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
 "Back" = "Volver";
-
-/* No comment provided by engineer. */
-"Back in stock emails" = "Correos electrónicos de reposición de artículos";
 
 /* Accessibility announcement message when device goes back online */
 "Back online" = "Vuelve a estar conectado a Internet";
@@ -844,6 +793,15 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Negrita";
 
+/* Title for 'Booked' booking attendance status. */
+"BookingAttendanceStatus.booked" = "Reservado";
+
+/* Title for 'Cancelled' booking attendance status. */
+"BookingAttendanceStatus.cancelled" = "Cancelado";
+
+/* Title for 'Unknown' booking attendance status. */
+"BookingAttendanceStatus.unknown" = "Desconocido";
+
 /* Assigned staff row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.assignedStaff.title" = "Personal asignado";
 
@@ -870,6 +828,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Attendance' section in the booking details screen. */
 "BookingDetailsView.attendance.headerTitle" = "Asistencia";
+
+/* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.attendanceStatus.updateFailed.message" = "No se ha podido cambiar el estado de asistencia de la reserva n.º %1$d";
 
 /* Add a note row title in booking notes section in booking details view. */
 "BookingDetailsView.bookingNotes.addANoteRow.title" = "Añadir una nota";
@@ -952,14 +913,8 @@ which should be translated separately and considered part of this sentence. */
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "No se ha podido llamar a este número.";
 
-/* Title for the 'Booked' status label in the header view. */
-"BookingDetailsView.statusLabel.booked" = "Reservada";
-
-/* Title for the 'Paid' status label in the header view. */
-"BookingDetailsView.statusLabel.paid" = "Pagada";
-
-/* Title for the 'Pay at location' status label in the header view. */
-"BookingDetailsView.statusLabel.payAtLocation" = "Pagar en el lugar";
+/* Retry Action */
+"BookingDetailsView.retry.action" = "Reintentar";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Mejorar las ventas con ofertas especiales";
@@ -1130,10 +1085,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "Cancelar instalación";
-
-/* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
-   Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
-"Cancel Upgrade" = "Cancelar mejora";
 
 /* Display label for the subscription status type */
 "Cancelled" = "Cancelada";
@@ -1493,9 +1444,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar con el lector";
 
-/* No comment provided by engineer. */
-"Connect with Facebook" = "Conectar con Facebook";
-
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Conectar el lector de tarjetas";
 
@@ -1785,9 +1733,6 @@ which should be translated separately and considered part of this sentence. */
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Los precios actuales son mixtos.";
 
-/* Reads like: Current: Free Trial */
-"Current: %@" = "Actual: %@";
-
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "En este momento, la creación es compatible con un máximo de 100 variaciones. La generación de variaciones para este producto crearía %d variaciones.";
 
@@ -1827,12 +1772,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "Los formularios de aduanas requieren un número de teléfono de 10 dígitos";
 
-/* No comment provided by engineer. */
-"Custom order emails" = "Correos electrónicos de pedidos personalizados";
-
-/* No comment provided by engineer. */
-"Custom product kits" = "Kits de productos personalizados";
-
 /* Customer info section title
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
@@ -1846,9 +1785,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the edit customer provided note screen
    Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "Nota proporcionada por el cliente";
-
-/* No comment provided by engineer. */
-"Customer birthday emails" = "Correos electrónicos de felicitación de cumpleaños del cliente";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "El cliente ha pagado un %1$@ de %2$@ por el envío";
@@ -1967,9 +1903,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "Tarifas con descuento";
 
-/* No comment provided by engineer. */
-"Discounted shipping²" = "Envío con descuento²";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Descuentos no disponibles";
 
@@ -2044,9 +1977,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "¿No tienes una cuenta? _Regístrate_";
 
-/* Text within the Upgrades summary card, informing the merchant their Free Trial has expired. */
-"Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. Unlock more features, launch and start selling, and make your ecommerce business a reality." = "No pierdas todo ese duro trabajo. Mejora tu plan a uno de pago para que puedas seguir trabajando en tu tienda. Desbloquea más funciones, lanza tu tienda y empieza a vender. Haz realidad tu negocio de comercio electrónico.";
-
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "No mostrar de nuevo";
@@ -2063,7 +1993,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
-   Done button on the screen that is shown after a successful plan upgrade.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2220,9 +2149,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Enviar recibo por correo electrónico";
-
-/* No comment provided by engineer. */
-"Email support" = "Ayuda por correo electrónico";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Envía los recibos de compra de la etiqueta a %1$@ (%2$@) en %3$@";
@@ -2410,9 +2336,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack activation fails */
 "Error activating Jetpack" = "Error al activar Jetpack";
 
-/* Error message displayed when plan activation fails after purchasing a plan. */
-"Error activating plan" = "Se ha producido un error al activar el plan";
-
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "Error al autorizar la conexión con Jetpack";
 
@@ -2422,17 +2345,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "Se ha producido un error al comprobar la conexión de Jetpack en tu sitio.";
 
-/* A string shown on the error screen when there's an issue purchasing a plan, to inform the user of the error code for use with Support. %1$@ will be replaced with the error code and must be included in the translations. */
-"Error code %1$@" = "Código de error: %1$@";
-
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "Código de error %1$d";
-
-/* Error message displayed when a payment fails when attempting to purchase a plan. */
-"Error confirming payment" = "Se ha producido un error al confirmar el pago";
-
-/* Title of an unknown error after purchasing a plan */
-"Error during purchase" = "Se ha producido un error durante la compra";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "Error al activar los análisis. Inténtalo de nuevo.";
@@ -2482,9 +2396,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "A todo el mundo le gustan las ofertas";
-
-/* Title for the Performance plan features list. Is followed by a list of the plan features. */
-"Everything in Essential, plus:" = "Todo lo que incluye el plan Essential, y además:";
 
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "Ejemplo: en maceta, cactus, planta, decorativa, de fácil cuidado";
@@ -2539,9 +2450,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is expanded */
 "Expanded" = "Ampliado";
-
-/* Title for the features list in the Subscriptions Screen */
-"Experience more of our features and services beyond the app" = "Accede a más funciones y servicios más allá de la aplicación";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2694,9 +2602,6 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "Adelante";
 
-/* No comment provided by engineer. */
-"Free SSL certificate" = "Certificado SSL gratuito";
-
 /* Plan name for an active free trial */
 "Free Trial" = "Prueba gratuita";
 
@@ -2711,9 +2616,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Cumple con tus pedidos con WooCommerce Shipping";
-
-/* Title of the view which shows the full feature list for paid plans. */
-"Full Feature List" = "Lista completa de las funciones";
 
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Los fondos estarán disponibles después de estar pendientes durante %1$d días.";
@@ -2748,9 +2650,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Se ha excedido el límite de generaciones.";
 
-/* No comment provided by engineer. */
-"Generous storage" = "Amplio espacio de almacenamiento";
-
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Primeros pasos";
@@ -2779,12 +2678,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "Empezar en pocos minutos";
 
-/* Button title to allow merchants to open the support screens when there's an error with their plan purchase
-   Button to contact support when Jetpack setup fails */
+/* Button to contact support when Jetpack setup fails */
 "Get support" = "Obtener soporte";
-
-/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
-"Get the most out of %1$@" = "Saca el máximo partido al plan %1$@";
 
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Saca el máximo partido a tu tienda";
@@ -2813,9 +2708,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "Código de tarjeta regalo";
 
-/* No comment provided by engineer. */
-"Gift cards" = "Tarjetas regalo";
-
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
@@ -2836,9 +2728,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Ir a la tienda";
-
-/* No comment provided by engineer. */
-"Google Analytics" = "Google Analytics";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Fallo en el registro en Google.";
@@ -3023,9 +2912,6 @@ which should be translated separately and considered part of this sentence. */
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "En la sección de administración de tu sitio encontrarás la dirección de correo electrónico que usaste para conectar WordPress.com desde el Escritorio de Jetpack, en Conexiones > Conexión de la cuenta";
 
-/* Error message displayed when In-App Purchases are not supported. */
-"In-App Purchases not supported" = "No se admiten las compras en la aplicación";
-
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "Pago en persona del pedido #%1$@ para %2$@ blog_id %3$@";
 
@@ -3118,12 +3004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "Seguro (hasta %1$@)";
-
-/* No comment provided by engineer. */
-"Integrated payments" = "Pagos integrados";
-
-/* No comment provided by engineer. */
-"International payments'" = "Pagos internacionales'";
 
 /* Title for the internet connection connectivity tool card */
 "Internet Connection" = "Conexión a Internet";
@@ -3402,18 +3282,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lista de imágenes del producto";
 
-/* No comment provided by engineer. */
-"List products by brand" = "Presenta productos por marca";
-
-/* No comment provided by engineer. */
-"List unlimited products" = "Presenta tantos productos como quieras";
-
-/* No comment provided by engineer. */
-"Live chat support" = "Soporte por medio de chat en vivo";
-
-/* No comment provided by engineer. */
-"Live shipping rates" = "Tarifas de envío en directo";
-
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "Cargando";
 
@@ -3425,9 +3293,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "Cargando contenido";
-
-/* Accessibility label for the initial loading state of the Upgrades view */
-"Loading plan details" = "Cargando detalles del plan";
 
 /* Accessibility label for placeholder rows while product variations are loading */
 "Loading product variations" = "Cargando variaciones de productos";
@@ -3517,9 +3382,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button. */
 "Lost your password?" = "¿Has perdido tu contraseña?";
 
-/* No comment provided by engineer. */
-"Loyalty points programs" = "Programas de puntos de fidelización";
-
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Con mucho cariño, por la gente de Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">¡Trabaja con nosotros!<\/a>";
 
@@ -3546,9 +3408,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the privacy banner */
 "Manage Privacy" = "Gestión de la privacidad";
 
-/* Title for the button to manage subscriptions */
-"Manage Your Subscription" = "Gestionar la suscripción";
-
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Gestiona y edita pedidos sobre la marcha";
 
@@ -3563,9 +3422,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gestionar inventario";
-
-/* Description of one of the hub menu options */
-"Manage your subscription" = "Gestiona tu suscripción";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Reembolso manual";
@@ -3594,12 +3450,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Marcar este pedido como completado y avisar al cliente";
-
-/* No comment provided by engineer. */
-"Marketing & Email" = "Marketing y correo electrónico";
-
-/* No comment provided by engineer. */
-"Marketing automation" = "Automatización del marketing";
 
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Máx. Gasto (%1$@)";
@@ -3652,9 +3502,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "Mín. Gasto (%1$@)";
 
-/* No comment provided by engineer. */
-"Min\/Max order quantity" = "Cantidad mínima\/máxima del pedido";
-
 /* Title for the minimum quantity setting in the quantity rules screen. */
 "Minimum quantity" = "Cantidad mínima";
 
@@ -3672,9 +3519,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Desde hace un mes";
-
-/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
-"Monthly" = "Mensual";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3866,9 +3710,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "No se ha seleccionado ningún pedido";
-
-/* Bolded message confirming that no payment has been taken when the upgrade failed. */
-"No payment has been taken" = "No se ha efectuado ningún pago";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Sin precio";
@@ -4320,9 +4161,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Rendimiento";
 
-/* Indicates a feature is part of the performance plan. */
-"Performance plan only" = "Solo el plan de rendimiento";
-
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Cerrar cuenta permanentemente";
 
@@ -4351,9 +4189,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Colocando el producto en la papelera...";
 
-/* Detail text shown after an In-App Purchase for a Woo Express plan, shown while we upgrade the site. %1$@ is replaced with the short plan name. Reads as: 'Please bear with us while we process the payment for your Essential plan.' */
-"Please bear with us while we process the payment for your %1$@ plan." = "Espera un momento mientras procesamos el pago de tu plan %1$@.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carga el lector";
 
@@ -4363,15 +4198,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Conecta tu tienda a Jetpack para acceder a ella en esta aplicación.";
 
-/* Bolded message advising the merchant to contact support when the plan activation failed.
-   Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
-"Please contact support for assistance." = "Por favor, contacta con soporte para obtener ayuda.";
-
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Ponte en contacto con el propietario del sitio para obtener una invitación como gestor o administrador de la tienda y utilizar la aplicación con este rol.";
-
-/* Text describing that only the site owner can upgrade the site's plan. */
-"Please contact the store owner to upgrade your plan." = "Ponte en contacto con la persona propietaria de la tienda para mejorar tu plan.";
 
 /* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
 "Please contact your shop manager or administrator for help." = "Ponte en contacto con el gestor o administrador de la tienda para obtener ayuda.";
@@ -4469,9 +4297,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
-/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"Please try again, or contact support for assistance" = "Inténtalo de nuevo o ponte en contacto con el equipo de soporte si necesitas ayuda";
-
 /* Account creation error when an unexpected error occurs. */
 "Please try again." = "Inténtalo de nuevo.";
 
@@ -4536,8 +4361,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "Plugins";
 
-/* Section title for popular products on the Select Product screen.
-   The text of the badge that indicates the most popular choice when purchasing a Plan */
+/* Section title for popular products on the Select Product screen. */
 "Popular" = "Popular";
 
 /* Text field postcode in Edit Address Form
@@ -4555,9 +4379,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Ofrecido por Automattic";
-
-/* No comment provided by engineer. */
-"Premium themes included" = "Se incluyen temas Premium";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
 "Preparing Tap to Pay on iPhone" = "Preparando Tap to Pay on iPhone";
@@ -4639,9 +4460,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Imprimir recibo";
 
-/* No comment provided by engineer. */
-"Print shipping labels²" = "Imprimir etiquetas de envío²";
-
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Imprimiendo etiqueta";
 
@@ -4687,9 +4505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the product add-ons screen */
 "Product Add-ons" = "Complementos de producto";
 
-/* No comment provided by engineer. */
-"Product Bundles" = "Paquetes de productos";
-
 /* Row title for filtering products by product category. */
 "Product Category" = "Categoría de producto";
 
@@ -4723,9 +4538,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Producto publicado";
-
-/* No comment provided by engineer. */
-"Product recommendations" = "Recomendaciones de productos";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Producto guardado";
@@ -4780,9 +4592,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Productos promocionados en lugar del producto que se está viendo actualmente (por ejemplo, productos más rentables)";
 
-/* No comment provided by engineer. */
-"Promote on TikTok" = "Promocionar en TikTok";
-
 /* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "Promociona productos con Blaze";
 
@@ -4806,9 +4615,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publicando tu producto...";
-
-/* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
-"Purchase %1$@" = "Comprar %1$@";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Fecha de compra";
@@ -4888,12 +4694,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Recibo";
-
-/* No comment provided by engineer. */
-"Recurring payments'" = "Pagos recurrentes'";
-
-/* No comment provided by engineer. */
-"Referral programs" = "Programas de recomendación";
 
 /* Button label to refresh a web page
    Button to refresh the state of the in-person payments setup
@@ -5042,9 +4842,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Informar de fallos";
 
-/* Title for the button to contact support on the Subscriptions view */
-"Report Subscription Issue" = "Informar sobre un problema en la suscripción";
-
 /* Title of the report section on the privacy screen */
 "Reports" = "Informes";
 
@@ -5101,12 +4898,10 @@ If your translation of that term also happens to contains a hyphen, please be su
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry action title
-   Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
    Retry button title when the scanner cannot finda matching product and create a new order
    Retry the last action
-   Retry title on the notice action button
-   Title of the button to attempt a retry when fetching or purchasing plans fails. */
+   Retry title on the notice action button */
 "Retry" = "Reintentar";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -5118,9 +4913,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Retry connection button in the connectivity tool screen */
 "Retry connection" = "Volver a intentar la conexión";
-
-/* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
-"Return to My Store" = "Volver a mi tienda";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Devolver el paquete al remitente si no se puede entregar";
@@ -5177,9 +4969,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Precio rebajado: %@";
-
-/* No comment provided by engineer. */
-"Sales reports" = "Informes de ventas";
 
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "Muestra";
@@ -5295,9 +5084,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Consulta las opciones de tamaño de papel y diseño";
 
-/* Title for a link to view Woo Express plan details on the web, as a fallback. */
-"See plan details" = "Ver detalles del plan";
-
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
 "Select %1$d Categories" = "Elegir %1$d categorías";
 
@@ -5331,9 +5117,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Elige un paquete";
-
-/* The title of the button to purchase a Plan when no plan is selected yet. */
-"Select a plan" = "Elige un plan";
 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Elige un tipo de producto";
@@ -5502,9 +5285,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar title of shipping label details */
 "Shipment Details" = "Detalles del envío";
 
-/* No comment provided by engineer. */
-"Shipment tracking" = "Seguimiento de envíos";
-
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
 "Shipped %@" = "Enviado el %@";
@@ -5652,9 +5432,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Alguien";
 
-/* Description of an unknown error after purchasing a plan */
-"Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "Se ha producido un error durante tu compra y no podemos saber si se ha efectuado el pago o si se ha mejorado el plan de tu tienda.";
-
 /* Notice title when validating a coupon code fails. */
 "Something went wrong when validating your coupon code. Please try again" = "Se ha producido un error al validar el código de tu cupón. Inténtalo de nuevo.";
 
@@ -5794,9 +5571,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when the user disables adding tax rates automatically */
 "Stopped automatically adding tax rate" = "Se ha dejado de añadir automáticamente la tasa de impuesto";
 
-/* Title of one of the features of the Paid plans, regarding site storage. */
-"Storage" = "Almacenamiento";
-
 /* Navigates to the Store name setup screen */
 "Store Name" = "Nombre de la tienda";
 
@@ -5818,12 +5592,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title to submit a support request. */
 "Submit Support Request" = "Enviar solicitud de asistencia";
 
-/* Title for the plan section on the subscriptions view. Uppercased */
-"Subscription Status" = "Estado de la suscripción";
-
-/* Subscriptions section title
-   Title for the Subscriptions / Upgrades view
-   Title of one of the hub menu options */
+/* Subscriptions section title */
 "Subscriptions" = "Subscriptions";
 
 /* Create Shipping Label form -> Subtotal label
@@ -5869,9 +5638,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Cambia al tamaño de fuente por defecto";
-
-/* No comment provided by engineer. */
-"Sync with Pinterest" = "Sincronizar con Pinterest";
 
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "Se están sincronizando los datos";
@@ -6259,9 +6025,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "There was an error connecting your site to Jetpack." = "Se ha producido un error al conectar tu sitio a Jetpack.";
 
-/* Error shown when failing to fetch the plan details in the upgrades view. */
-"There was an error fetching your plan details, please try again later." = "Se ha producido un error al obtener los detalles de tu plan, inténtalo de nuevo más tarde.";
-
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "Se ha producido un error al obtener tu configuración de privacidad";
 
@@ -6506,17 +6269,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Move a comment to the trash */
 "Trash" = "Papelera";
 
-/* Plan name for an expired free trial */
-"Trial ended" = "La prueba ha terminado.";
-
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Solucionar problemas";
 
 /* Screen title for the connectivity tool */
 "Troubleshoot Connection" = "Solución de problemas de conexión";
-
-/* Title for the section to contact support on the subscriptions view. Uppercased */
-"Troubleshooting" = "Solución de problemas";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
@@ -6548,9 +6305,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
 "Try Out Tap to Pay on iPhone" = "Prueba Tap to Pay on iPhone";
-
-/* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
-"Try Payment Again" = "Intentar efectuar el pago de nuevo";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
 "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "Haz un pago de %1$@ con tu tarjeta de débito o crédito. Puedes reembolsar el pago cuando hayas terminado.";
@@ -6783,9 +6537,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Ilimitado";
 
-/* No comment provided by engineer. */
-"Unlimited admin accounts" = "Cuentas de administrador ilimitadas";
-
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "Producto sin nombre";
 
@@ -6886,9 +6637,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Actualizando los productos...";
-
-/* Navigation title for the Upgrades screen */
-"Upgrade" = "Mejorar ";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7001,9 +6749,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "Ver";
 
-/* Title for the button to expand plan details on the Upgrade plan screen. Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with the plan name. */
-"View %1$@ features" = "Ver las funciones de %1$@ ";
-
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons
    Title of the button on the order details product list item to navigate to add-ons */
@@ -7019,9 +6764,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for the 'View Custom Fields' button
    Custom Fields section title */
 "View Custom Fields" = "Ver campos personalizados";
-
-/* The title of the button to view a list of all features that plans offer. */
-"View Full Feature List" = "Ver lista completa de funciones";
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Ver producto en tienda";
@@ -7147,12 +6889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "Se ha producido un problema al cargar los análisis";
-
-/* Error description displayed when a payment fails when attempting to purchase a plan. */
-"We encountered an error confirming your payment." = "Se ha producido un error al confirmar tu pago.";
-
-/* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
-"We encountered an error loading plan information" = "Se ha producido un error al cargar la información del plan.";
 
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "Hemos puesto en pausa tu tienda. Puedes adquirir otro plan accediendo a WordPress.com desde tu navegador.";
@@ -7293,9 +7029,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Ancho";
 
-/* Text shown when a plan upgrade has been successfully purchased. */
-"Woo! You’re off to a great start!" = "¡Bravo! ¡Es un gran comienzo!";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -7323,25 +7056,13 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping no admite actualmente envíos de materiales peligrosos a través de %1$@.";
 
-/* No comment provided by engineer. */
-"WooCommerce mobile app" = "Aplicación de WooCommerce para móviles";
-
-/* No comment provided by engineer. */
-"WooCommerce store" = "Tienda de WooCommerce";
-
 /* Highlighted header text on the store onboarding WCPay setup screen.
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
-/* No comment provided by engineer. */
-"WordPress CMS" = "CMS de WordPress";
-
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Biblioteca multimedia de WordPress";
-
-/* No comment provided by engineer. */
-"WordPress mobile app" = "Aplicación de WordPress para móviles";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "La versión de WordPress es demasiado antigua. El sitio en %1$@ utiliza la versión %2$@ de WordPress. Recomendamos actualizarla a la versión más reciente o al menos a la %3$@";
@@ -7383,17 +7104,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Yesterday Section Header */
 "Yesterday" = "Ayer";
 
-/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
-"You are in the %1$d-day free trial. The free trial will end in %2$d days. " = "Estás en el período de prueba de %1$d días. El período de prueba finaliza en %2$d días. ";
-
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "No tienes permiso para acceder a esta tienda.";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "No tienes autorización para instalar Jetpack";
-
-/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
-"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "¡Tienes una suscripción al plan %1$@! Tienes acceso a todas nuestras funciones hasta el %2$@.";
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Puedes editar productos agrupados en el escritorio del sitio web.";
@@ -7410,9 +7125,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "Gestiona de forma rápida y sencilla.";
 
-/* Instructions guiding the merchant to manage a site's plan upgrade. */
-"You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "Puedes gestionar tu suscripción desde tu iPhone en Ajustes → Tu nombre → Suscripciones";
-
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Solo puedes añadir suscripciones variables en el escritorio de tu página web";
 
@@ -7427,9 +7139,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "No puedes usar este correo electrónico para registrarte. Estamos teniendo problemas con él, bloquea nuestros correos electrónicos. Por favor, usa otro proveedor.";
-
-/* Text describing that is not possible to upgrade the site's plan. */
-"You can’t upgrade because you are not the store owner" = "No puedes mejorar el plan porque no eres la persona propietaria de la tienda.";
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "En este momento, los cupones están desactivados en esta tienda. Activa los cupones para empezar.";
@@ -7462,14 +7171,8 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "En cuanto terminemos de revisar tu cuenta, podrás aceptar Pagos en Persona.";
 
-/* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
-"You're in a free trial" = "Estás en un período de prueba";
-
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "No estás autorizado a cerrar la cuenta.";
-
-/* No comment provided by engineer. */
-"Your Store" = "Tu tienda";
 
 /* First instruction on the Woo payments setup instructions screen. */
 "Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "Tus notificaciones de WooPayments se enviarán al correo electrónico de tu cuenta de WordPress. ¿Prefieres crear una cuenta nueva? Encontrarás más información aquí.";
@@ -7485,15 +7188,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Ninguna cuenta de WordPress.com utiliza tu dirección de correo electrónico";
-
-/* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
-"Your free trial has ended" = "Tu período de prueba ha finalizado";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Tu prueba gratuita ha terminado y tienes acceso limitado a todas las funciones. Suscríbete ahora a un plan Woo Express.";
-
-/* Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade. */
-"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "Tu período de prueba finaliza en %1$@. Mejora tu plan antes de %2$@ para desbloquear nuevas funciones y empezar a vender.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Tu iPhone se puede usar como lector de tarjetas o puedes conectarlo a un lector externo a través de Bluetooth.";
@@ -7513,9 +7207,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Podrás aceptar pagos con tu teléfono en un momento...";
 
-/* Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by the plan name, and should be included in the translated string. */
-"Your purchase is complete and you're on the %1$@ plan." = "Se ha completado tu compra y ahora tienes el plan %1$@.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "El lector se reiniciará automáticamente y se volverá a conectar cuando se haya completado la actualización";
 
@@ -7534,17 +7225,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a timeout error in the recovery tool */
 "Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "Tu sitio tarda en responder.\n\nConsulta a tu proveedor de alojamiento.";
 
-/* Title on the banner when the site's WooExpress plan has expired */
-"Your site plan has ended." = "El plan de tu sitio ha finalizado.";
-
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Tu tienda ya está abierta.";
-
-/* Info details for an expired plan */
-"Your subscription has ended and you have limited access to all the features." = "Tu suscripción ha finalizado y tienes acceso restringido a todas las funciones.";
-
-/* Error description displayed when plan activation fails after purchasing a plan. */
-"Your subscription is active, but there was an error activating the plan on your store." = "Tu suscripción está activa, pero se ha producido un error al activar el plan en tu tienda.";
 
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "Actualmente, el tipo impositivo se calcula en función de la dirección de facturación del cliente:";
@@ -7563,9 +7245,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "Tendrás que instalar la extensión gratuita de WooCommerce Payments en tu tienda para aceptar Pagos en Persona.";
-
-/* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
-"You’re almost there" = "Ya casi estás.";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -8614,6 +8293,69 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Intentar de nuevo";
 
+/* Title of the booking customer selector view */
+"bookingCustomerSelectorView.emptyItemTitlePlaceholder" = "Sin nombre";
+
+/* Message on the empty search result view of the booking customer selector view */
+"bookingCustomerSelectorView.emptySearchDescription" = "Prueba a ajustar el término de búsqueda para ver más resultados";
+
+/* Text on the empty view of the booking customer selector view */
+"bookingCustomerSelectorView.noCustomersFound" = "No se ha encontrado ningún cliente";
+
+/* Prompt in the search bar of the booking customer selector view */
+"bookingCustomerSelectorView.searchPrompt" = "Buscar cliente";
+
+/* Error message when selecting guest customer in booking filtering */
+"bookingCustomerSelectorView.selectionDisabledMessage" = "Este usuario es un invitado y no se pueden usar invitados para filtrar reservas.";
+
+/* Title of the booking customer selector view */
+"bookingCustomerSelectorView.title" = "Cliente";
+
+/* Title of the Date row in the date time picker for booking filter */
+"bookingDateTimeFilterView.date" = "Fecha";
+
+/* Title of From section in the date time picker for booking filter */
+"bookingDateTimeFilterView.from" = "Desde";
+
+/* Title of the Time row in the date time picker for booking filter */
+"bookingDateTimeFilterView.time" = "Hora";
+
+/* Title of the date time picker for booking filter */
+"bookingDateTimeFilterView.title" = "Fecha y hora";
+
+/* Title of the To section in the date time picker for booking filter */
+"bookingDateTimeFilterView.to" = "Para";
+
+/* Button title for applying filters to a list of bookings. */
+"bookingFilters.filterActionTitle" = "Mostrar reservas";
+
+/* Row title for filtering bookings by customer. */
+"bookingFilters.rowCustomer" = "Cliente";
+
+/* Row title for filtering bookings by attendance status. */
+"bookingFilters.rowTitleAttendanceStatus" = "Estado de asistencia";
+
+/* Row title for filtering bookings by date range. */
+"bookingFilters.rowTitleDateTime" = "Fecha y hora";
+
+/* Row title for filtering bookings by payment status. */
+"bookingFilters.rowTitlePaymentStatus" = "Estado del pago";
+
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleProduct" = "Servicio\/Evento";
+
+/* Row title for filtering bookings by team member. */
+"bookingFilters.rowTitleTeamMember" = "Miembro del equipo";
+
+/* Description for booking date range filter with no dates selected */
+"bookingFiltersViewModel.dateRangeFilter.any" = "Cualquiera";
+
+/* Description for booking date range filter with only start date. Placeholder is a date. Reads as: From October 27, 2025. */
+"bookingFiltersViewModel.dateRangeFilter.from" = "Desde %1$@";
+
+/* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
+"bookingFiltersViewModel.dateRangeFilter.until" = "Hasta %1$@";
+
 /* Message displayed when searching bookings by keyword yields no results. */
 "bookingList.emptySearchText" = "No hemos podido encontrar ninguna reserva con ese nombre. Prueba a ajustar el término de búsqueda para ver más resultados.";
 
@@ -8650,6 +8392,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to filter the booking list */
 "bookingListView.filter" = "Filtrar";
 
+/* Button to filter the booking list with number of active filters */
+"bookingListView.filter.withCount" = "Filtro (%1$d)";
+
 /* Prompt in the search bar on top of the booking list */
 "bookingListView.search.prompt" = "Buscar en las reservas";
 
@@ -8664,6 +8409,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Reservas";
+
+/* Text on the empty view of the booking service/event selector view */
+"bookingServiceEventSelectorView.noMembersFound" = "No se ha encontrado ningún servicio o evento";
+
+/* Title of the booking service/event selector view */
+"bookingServiceEventSelectorView.title" = "Servicio\/Evento";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "Cancelada";
@@ -8685,6 +8436,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Status of an unpaid booking */
 "bookingStatus.title.unpaid" = "Sin pagar";
+
+/* Text on the empty view of the booking team member selector view */
+"bookingTeamMemberSelectorView.noMembersFound" = "No se han encontrado miembros del equipo";
+
+/* Title of the booking team member selector view */
+"bookingTeamMemberSelectorView.title" = "Miembro del equipo";
 
 /* Displayed name on the booking list when no customer is associated with a booking. */
 "bookings.guest" = "Invitado";
@@ -9690,6 +9447,9 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Paquete de transporte terrestre con cantidad limitada: aerosoles, desinfectantes en pulverizador, pintura en pulverizador, productos capilares en pulverizador, propano, butano, productos de limpieza, etc. - Fragancias, esmalte de uñas, quitaesmalte, disolventes, desinfectante de manos, alcohol isopropílico, productos con base de etanol, etc. - Otros materiales de transporte terrestre con cantidad limitada (cosméticos, productos de limpieza, pinturas, etc.).";
 
+/* Option to select no filter on a list selector view */
+"listSelectorView.any" = "Cualquiera";
+
 /* Message on the local notification to remind to continue the Blaze campaign creation. */
 "localNotification.AbandonedCampaignCreation.body" = "Consigue que tus productos sean vistos por millones de personas con Blaze e impulsa tus ventas";
 
@@ -9874,6 +9634,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Default text for Most active coupons dashboard card when no data exists for a given period. */
 "mostActiveCouponsEmptyView.text" = "No se puede utilizar ningún cupón durante este periodo";
+
+/* Option to remove selections on multi selection list view */
+"multiSelectListView.any" = "Cualquiera";
+
+/* Display label for when no filter selected. */
+"multipleFilterSelection.any" = "Cualquiera";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "Buscar";
@@ -10322,9 +10088,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Editar";
-
-/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
-"plan ended" = "plan finalizado";
 
 /* Title for the Close button within the Plugin List view. */
 "pluginListView.button.close" = "Cerrar";
@@ -11047,9 +10810,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Período de prueba";
-
-/* Button to dismiss the support form. */
-"subscriptionsView.dismissSupport" = "Hecho";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Entendido";

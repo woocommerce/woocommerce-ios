@@ -53,7 +53,6 @@ struct AppSettingsStoreTests_BookingFilters {
         let siteID: Int64 = 134
 
         let filters = StoredBookingFilters.Filters(
-            siteID: siteID,
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
             attendanceStatuses: [.booked, .noShow],
@@ -95,7 +94,6 @@ struct AppSettingsStoreTests_BookingFilters {
         let siteID2: Int64 = 268
 
         let filters1 = StoredBookingFilters.Filters(
-            siteID: siteID1,
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
             attendanceStatuses: [.booked],
@@ -105,7 +103,6 @@ struct AppSettingsStoreTests_BookingFilters {
         )
 
         let filters2 = StoredBookingFilters.Filters(
-            siteID: siteID2,
             teamMembers: [BookingTeamMemberFilter(resourceID: 200, name: "Team Member 2")],
             products: [BookingProductFilter(productID: 2, name: "Product 2")],
             attendanceStatuses: [.noShow],
@@ -162,7 +159,6 @@ struct AppSettingsStoreTests_BookingFilters {
         let siteID: Int64 = 134
 
         let initialFilters = StoredBookingFilters.Filters(
-            siteID: siteID,
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
             attendanceStatuses: [],
@@ -172,7 +168,6 @@ struct AppSettingsStoreTests_BookingFilters {
         )
 
         let updatedFilters = StoredBookingFilters.Filters(
-            siteID: siteID,
             teamMembers: [],
             products: [],
             attendanceStatuses: [.booked],
@@ -223,7 +218,6 @@ struct AppSettingsStoreTests_BookingFilters {
         let siteID: Int64 = 134
 
         let filters = StoredBookingFilters.Filters(
-            siteID: siteID,
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [],
             attendanceStatuses: [.booked],

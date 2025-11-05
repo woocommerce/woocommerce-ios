@@ -143,47 +143,46 @@ private extension POSSettingsHardwareDetailView {
                 }, buttonIcon: "chevron.left"))
             .foregroundColor(.posSurface)
 
-            List {
-                if case .connected = posModel.cardReaderConnectionStatus {
-                    VStack(spacing: POSPadding.xSmall) {
-                        HStack {
-                            Text(Localization.readerModelTitle)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text(cardReaderName)
-                                .foregroundStyle(.secondary)
+            ScrollView {
+                VStack(spacing: POSSpacing.small) {
+                    if case .connected = posModel.cardReaderConnectionStatus {
+                        VStack(spacing: POSPadding.xSmall) {
+                            HStack {
+                                Text(Localization.readerModelTitle)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text(cardReaderName)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding()
+                            HStack {
+                                Text(Localization.readerBatteryTitle)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text(formattedBatteryLevel)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding()
                         }
-                        .padding()
-                        HStack {
-                            Text(Localization.readerBatteryTitle)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text(formattedBatteryLevel)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding()
+                        .font(.posBodyMediumRegular())
+                    } else {
+                        POSSettingsCard(title: Localization.cardReaderConnectTitle,
+                                            subtitle: Localization.cardReaderConnectSubtitle,
+                                            action: {
+                            posModel.connectCardReader()
+                        })
                     }
-                    .font(.posBodyMediumRegular())
-                } else {
-                    POSSettingsCard(title: Localization.cardReaderConnectTitle,
-                                        subtitle: Localization.cardReaderConnectSubtitle,
-                                        action: {
-                        posModel.connectCardReader()
-                    })
-                }
 
-                POSSettingsCard(title: Localization.cardReaderDocumentationTitle,
-                                    subtitle: Localization.cardReaderDocumentationSubtitle,
-                                    action: { showCardReaderDocumentationModal = true })
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
+                    POSSettingsCard(title: Localization.cardReaderDocumentationTitle,
+                                        subtitle: Localization.cardReaderDocumentationSubtitle,
+                                        action: { showCardReaderDocumentationModal = true })
+                    .accessibilityAddTraits(.isButton)
+                }
+                .padding(.horizontal, POSPadding.medium)
+                .foregroundColor(.posOnSurface)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .listRowBackground(Color.clear)
-            .background(backgroundColor)
-            .foregroundColor(.posOnSurface)
         }
+        .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())

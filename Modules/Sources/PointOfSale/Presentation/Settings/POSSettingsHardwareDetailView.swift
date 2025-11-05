@@ -122,7 +122,7 @@ private extension POSSettingsHardwareDetailView {
     }
 
     var supportForm: some View {
-        NavigationView {
+        NavigationStack {
             externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -132,7 +132,6 @@ private extension POSSettingsHardwareDetailView {
                 }
             }
         }
-        .navigationViewStyle(.stack)
     }
 
     var cardReadersView: some View {

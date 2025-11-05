@@ -51,10 +51,9 @@ struct POSSettingsStoreDetailView: View {
 
                 VStack(spacing: POSSpacing.medium) {
                     fieldRowView(label: Localization.storeName, value: viewModel.storeName)
-                    fieldRowView(label: Localization.address, value: viewModel.storeAddress)
+                    fieldRowView(label: Localization.address, value: viewModel.storeAddress, showSeparator: false)
                 }
                 .padding(.bottom, POSPadding.medium)
-                //.padding(POSPadding.medium)
             }
         }
     }
@@ -70,7 +69,9 @@ struct POSSettingsStoreDetailView: View {
                     receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
                     receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
                     receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
-                    receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
+                    receiptFieldRowView(label: Localization.refundReturnsPolicy,
+                                        value: viewModel.receiptInformation.refundReturnsPolicy,
+                                        showSeparator: false)
                 }
                 .padding(.bottom, POSPadding.medium)
             }
@@ -91,24 +92,34 @@ struct POSSettingsStoreDetailView: View {
     }
 
     @ViewBuilder
-    private func fieldRowView(label: String, value: String) -> some View {
+    private func fieldRowView(label: String, value: String, showSeparator: Bool = true) -> some View {
         VStack(alignment: .leading, spacing: POSPadding.small) {
             Text(label)
                 .font(.posBodyMediumRegular())
             Text(value)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(.secondary)
+
+            if showSeparator {
+                Divider()
+                    .padding(.top, POSPadding.medium)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder
-    private func receiptFieldRowView(label: String, value: String?) -> some View {
+    private func receiptFieldRowView(label: String, value: String?, showSeparator: Bool = true) -> some View {
         VStack(alignment: .leading, spacing: POSPadding.small) {
             Text(label)
                 .font(.posBodyMediumRegular())
             settingValueView(for: value)
+
+            if showSeparator {
+                Divider()
+                    .padding(.top, POSPadding.medium)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, POSPadding.medium)

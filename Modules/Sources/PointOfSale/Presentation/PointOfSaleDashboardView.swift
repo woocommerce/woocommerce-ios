@@ -85,7 +85,9 @@ struct PointOfSaleDashboardView: View {
                             await posModel.couponsSearchController.loadItems(base: .root)
                         }
                     }
-                })
+                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
+                    dismiss()
+                } : nil)
             case .content:
                 contentView
                     .accessibilitySortPriority(2)

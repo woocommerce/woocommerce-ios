@@ -204,7 +204,10 @@ struct POSCatalogSyncCoordinatorTests {
         }
 
         let currentState = await sut.loadLastFullSyncState(for: sampleSiteID)
-        let isSyncStarted: Bool = if case .syncStarted = currentState { true } else { false }
+        let isSyncStarted: Bool = switch currentState {
+        case .syncStarted, .initialSyncStarted: true
+        default: false
+        }
         #expect(isSyncStarted)
 
         // Cleanup - resume the first sync and wait for it to complete

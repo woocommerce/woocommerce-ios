@@ -3,6 +3,7 @@ import enum Alamofire.AFError
 
 struct PointOfSaleErrorState: Equatable {
     enum ErrorType: Equatable {
+        case initialCatalogSyncError
         case productsLoadError
         case variationsLoadError
         case productsNextPageError
@@ -108,6 +109,14 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.retryButtonTitle)
     }
 
+    static func errorOnInitalCatalogSync(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .initialCatalogSyncError,
+            title: Constants.failedToSyncCatalogTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
     private static func subtitle(for error: Error?) -> String {
         if let error, error.isConnectivityError {
             return Constants.connectivityErrorSubtitle
@@ -126,6 +135,11 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.retryButtonTitle",
             value: "Retry",
             comment: "Generic text for retry buttons appearing on error screens."
+        )
+        static let failedToSyncCatalogTitle = NSLocalizedString(
+            "pos.itemList.syncCatalogErrorTitle",
+            value: "Unable to sync catalog",
+            comment: "Title appearing on the item list screen when there's an error syncing the catalog for the first time."
         )
         static let loadingCouponsErrorTitle = NSLocalizedString(
             "pos.itemList.loadingCouponsErrorTitle.2",

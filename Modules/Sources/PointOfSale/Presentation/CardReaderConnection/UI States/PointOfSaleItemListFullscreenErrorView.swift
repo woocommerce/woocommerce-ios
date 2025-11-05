@@ -4,16 +4,23 @@ import SwiftUI
 struct PointOfSaleItemListFullscreenErrorView: View {
     private let error: PointOfSaleErrorState
     private let onAction: (() -> Void)?
+    private let onExit: (() -> Void)?
 
-    init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
+    init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil, onExit: (() -> Void)? = nil) {
         self.error = error
         self.onAction = onAction
+        self.onExit = onExit
     }
 
     var body: some View {
-        PointOfSaleItemListFullscreenView {
-            POSListErrorView(error: error, onAction: onAction)
+        PointOfSaleItemListFullscreenView(showTitle: !isInitialCatalogSyncError) {
+            POSListErrorView(error: error, onAction: onAction, onExit: onExit)
         }
+    }
+
+    // TODO: WOOMOB-1692 remove specialisation of errors if possible
+    private var isInitialCatalogSyncError: Bool {
+        error.errorType == .initialCatalogSyncError
     }
 }
 

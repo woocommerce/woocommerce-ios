@@ -36,7 +36,7 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
 
 // MARK: - Site checks
 
-private extension Site {
+public extension Site {
     var isCIAB: Bool {
         return isGarden && gardenName == GardenName.commerce.rawValue
     }

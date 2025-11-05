@@ -85,6 +85,8 @@ final class BookingListContainerViewModel: ObservableObject {
                 upcomingSearchViewModel.updateSortOrder(sortBy)
                 allSearchViewModel.updateSortOrder(sortBy)
             }
+
+        restorePersistedFilters()
     }
 
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {
@@ -109,20 +111,33 @@ final class BookingListContainerViewModel: ObservableObject {
         }
     }
 
-    func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
+    func updateFilters(_ filters: BookingFiltersViewModel.Filters, shouldPersist: Bool = true) {
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
         allListViewModel.updateFilters(filters)
         allSearchViewModel.updateFilters(filters)
+        if shouldPersist {
+            saveFilters(filters)
+        }
     }
 }
 
 private extension BookingListContainerViewModel {
     func restorePersistedFilters() {
         Task { @MainActor in
-            guard let filters = await loadPersistedFilters() else {
+            guard let storedFilters = await loadPersistedFilters() else {
                 return
             }
+            let filters = BookingFiltersViewModel.Filters(
+                teamMembers: storedFilters.teamMembers,
+                products: storedFilters.products,
+                attendanceStatuses: storedFilters.attendanceStatuses,
+                paymentStatuses: storedFilters.paymentStatuses,
+                customers: storedFilters.customers,
+                dateRange: storedFilters.dateRange,
+                numberOfActiveFilters: storedFilters.numberOfActiveFilters()
+            )
+            updateFilters(filters, shouldPersist: false)
         }
     }
 
@@ -143,8 +158,17 @@ private extension BookingListContainerViewModel {
     }
 
     /// Saves booking filters to AppSettings for persistence.
-    private func saveFilters(_ filters: StoredBookingFilters.Filters) {
-        let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: filters) { error in
+    private func saveFilters(_ filters: BookingFiltersViewModel.Filters) {
+        let persistedFilters = StoredBookingFilters.Filters(
+            siteID: siteID,
+            teamMembers: filters.teamMembers,
+            products: filters.products,
+            attendanceStatuses: filters.attendanceStatuses,
+            paymentStatuses: filters.paymentStatuses,
+            customers: filters.customers,
+            dateRange: filters.dateRange
+        )
+        let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: persistedFilters) { error in
             if let error = error {
                 DDLogError("⛔️ Error saving booking filters: \(error)")
             }

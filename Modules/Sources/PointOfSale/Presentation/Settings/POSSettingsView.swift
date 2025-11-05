@@ -36,14 +36,14 @@ extension POSSettingsView {
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                POSSettingsCardView(title: POSSettingsView.SidebarNavigation.store.title,
+                POSSettingsCard(title: POSSettingsView.SidebarNavigation.store.title,
                                     subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
                                     isSelected: selection == .store,
                                     action: {
                     analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                     selection = .store
                 })
-                POSSettingsCardView(title: POSSettingsView.SidebarNavigation.hardware.title,
+                POSSettingsCard(title: POSSettingsView.SidebarNavigation.hardware.title,
                                     subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
                                     isSelected: selection == .hardware,
                                     action: {
@@ -51,7 +51,7 @@ extension POSSettingsView {
                     selection = .hardware
                 })
                 if settingsController.isLocalCatalogEligible {
-                    POSSettingsCardView(title: POSSettingsView.SidebarNavigation.localCatalog.title,
+                    POSSettingsCard(title: POSSettingsView.SidebarNavigation.localCatalog.title,
                                         subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
                                         isSelected: selection == .localCatalog,
                                         action: {

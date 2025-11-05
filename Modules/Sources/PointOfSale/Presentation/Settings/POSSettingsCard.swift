@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct POSSettingsCardView: View {
+struct POSSettingsCard: View {
     let title: String
     let subtitle: String
     let isSelected: Bool
@@ -44,13 +44,13 @@ struct POSSettingsCardView: View {
 #if DEBUG
 #Preview {
     VStack {
-        POSSettingsCardView(
+        POSSettingsCard(
             title: "Documentation",
             subtitle: "Learn more about accepting mobile payments",
             isSelected: true,
             action: { }
         )
-        POSSettingsCardView(
+        POSSettingsCard(
             title: "Documentation",
             subtitle: "Learn more about accepting mobile payments",
             isSelected: false,

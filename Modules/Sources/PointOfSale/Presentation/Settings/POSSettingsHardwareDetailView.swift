@@ -166,14 +166,14 @@ private extension POSSettingsHardwareDetailView {
                     }
                     .font(.posBodyMediumRegular())
                 } else {
-                    POSSettingsCardView(title: Localization.cardReaderConnectTitle,
+                    POSSettingsCard(title: Localization.cardReaderConnectTitle,
                                         subtitle: Localization.cardReaderConnectSubtitle,
                                         action: {
                         posModel.connectCardReader()
                     })
                 }
 
-                POSSettingsCardView(title: Localization.cardReaderDocumentationTitle,
+                POSSettingsCard(title: Localization.cardReaderDocumentationTitle,
                                     subtitle: Localization.cardReaderDocumentationSubtitle,
                                     action: { showCardReaderDocumentationModal = true })
                 .accessibilityAddTraits(.isButton)
@@ -202,7 +202,7 @@ private extension POSSettingsHardwareDetailView {
 
             VStack(spacing: POSSpacing.small) {
                 ForEach(ScannerDestination.allCases) { destination in
-                    POSSettingsCardView(
+                    POSSettingsCard(
                         title: destination.title,
                         subtitle: destination.subtitle,
                         action: {

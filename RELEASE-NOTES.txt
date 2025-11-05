@@ -7,6 +7,7 @@
 - [*] Improve card payments onboarding error handling to show network errors correctly [https://github.com/woocommerce/woocommerce-ios/pull/16304]
 - [*] Authenticate the admin page automatically for sites with SSO enabled in custom fields, in-person payment setup, and editing tax rates flows. [https://github.com/woocommerce/woocommerce-ios/pull/16318]
 - [*] Show POS feedback surveys for eligible merchants [https://github.com/woocommerce/woocommerce-ios/pull/16325]
+- [*] Fix product variation selection for order creation [https://github.com/woocommerce/woocommerce-ios/pull/16317]
 
 23.6
 -----

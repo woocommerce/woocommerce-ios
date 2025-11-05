@@ -1018,7 +1018,7 @@ private extension AppSettingsStore {
 // MARK: - Booking Filters
 //
 private extension AppSettingsStore {
-    func loadBookingFilters(siteID: Int64, onCompletion: (Result<BookingFilters, Error>) -> Void) {
+    func loadBookingFilters(siteID: Int64, onCompletion: (Result<StoredBookingFilters.Filters, Error>) -> Void) {
         guard let allSavedFilters: StoredBookingFilters = try? fileStorage.data(for: bookingFiltersURL),
               let filtersUnwrapped = allSavedFilters.filters[siteID] else {
             let error = AppSettingsStoreErrors.noBookingFilters
@@ -1029,8 +1029,8 @@ private extension AppSettingsStore {
         onCompletion(.success(filtersUnwrapped))
     }
 
-    func upsertBookingFilters(siteID: Int64, filters: BookingFilters, onCompletion: (Error?) -> Void) {
-        var existingFilters: [Int64: BookingFilters] = [:]
+    func upsertBookingFilters(siteID: Int64, filters: StoredBookingFilters.Filters, onCompletion: (Error?) -> Void) {
+        var existingFilters: [Int64: StoredBookingFilters.Filters] = [:]
         if let storedFilters: StoredBookingFilters = try? fileStorage.data(for: bookingFiltersURL) {
             existingFilters = storedFilters.filters
         }

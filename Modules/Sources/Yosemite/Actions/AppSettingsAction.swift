@@ -109,12 +109,12 @@ public enum AppSettingsAction: Action {
 
     /// Loads the booking filters
     ///
-    case loadBookingFilters(siteID: Int64, onCompletion: (Result<BookingFilters, Error>) -> Void)
+    case loadBookingFilters(siteID: Int64, onCompletion: (Result<StoredBookingFilters.Filters, Error>) -> Void)
 
     /// Add or Update booking filters
     ///
     case upsertBookingFilters(siteID: Int64,
-                              filters: BookingFilters,
+                              filters: StoredBookingFilters.Filters,
                               onCompletion: (Error?) -> Void)
 
     /// Clears all the booking filters

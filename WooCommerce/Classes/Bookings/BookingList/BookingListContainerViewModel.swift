@@ -129,7 +129,7 @@ private extension BookingListContainerViewModel {
     /// Loads persisted booking filters from AppSettings.
     /// Returns the loaded filters, or nil if none are persisted.
     @MainActor
-    func loadPersistedFilters() async -> BookingFilters? {
+    func loadPersistedFilters() async -> StoredBookingFilters.Filters? {
         await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadBookingFilters(siteID: siteID) { result in
                 if case .success(let filters) = result {
@@ -143,7 +143,7 @@ private extension BookingListContainerViewModel {
     }
 
     /// Saves booking filters to AppSettings for persistence.
-    private func saveFilters(_ filters: BookingFilters) {
+    private func saveFilters(_ filters: StoredBookingFilters.Filters) {
         let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: filters) { error in
             if let error = error {
                 DDLogError("⛔️ Error saving booking filters: \(error)")

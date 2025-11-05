@@ -52,14 +52,14 @@ struct AppSettingsStoreTests_BookingFilters {
         // Given
         let siteID: Int64 = 134
 
-        let filters = BookingFilters(
-            productIDs: [1, 2, 3],
-            customerIDs: [10, 20],
-            resourceIDs: [100, 200],
-            startDateBefore: "2024-12-31",
-            startDateAfter: "2024-01-01",
-            bookingStatuses: ["confirmed", "pending"],
-            attendanceStatuses: ["attended", "no-show"]
+        let filters = StoredBookingFilters.Filters(
+            siteID: siteID,
+            teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
+            products: [BookingProductFilter(productID: 1, name: "Product 1")],
+            attendanceStatuses: [.booked, .noShow],
+            paymentStatuses: [.confirmed, .paid],
+            customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
+            dateRange: nil
         )
 
         let subject = AppSettingsStore(dispatcher: dispatcher,
@@ -94,24 +94,24 @@ struct AppSettingsStoreTests_BookingFilters {
         let siteID1: Int64 = 134
         let siteID2: Int64 = 268
 
-        let filters1 = BookingFilters(
-            productIDs: [1, 2],
-            customerIDs: [10],
-            resourceIDs: [100],
-            startDateBefore: "2024-12-31",
-            startDateAfter: "2024-01-01",
-            bookingStatuses: ["confirmed"],
-            attendanceStatuses: ["attended"]
+        let filters1 = StoredBookingFilters.Filters(
+            siteID: siteID1,
+            teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
+            products: [BookingProductFilter(productID: 1, name: "Product 1")],
+            attendanceStatuses: [.booked],
+            paymentStatuses: [.confirmed],
+            customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
+            dateRange: nil
         )
 
-        let filters2 = BookingFilters(
-            productIDs: [3, 4, 5],
-            customerIDs: [20, 30],
-            resourceIDs: [200, 300],
-            startDateBefore: "2024-06-30",
-            startDateAfter: "2024-06-01",
-            bookingStatuses: ["pending", "cancelled"],
-            attendanceStatuses: ["no-show"]
+        let filters2 = StoredBookingFilters.Filters(
+            siteID: siteID2,
+            teamMembers: [BookingTeamMemberFilter(resourceID: 200, name: "Team Member 2")],
+            products: [BookingProductFilter(productID: 2, name: "Product 2")],
+            attendanceStatuses: [.noShow],
+            paymentStatuses: [.paid, .cancelled],
+            customers: [],
+            dateRange: nil
         )
 
         let subject = AppSettingsStore(dispatcher: dispatcher,
@@ -161,24 +161,24 @@ struct AppSettingsStoreTests_BookingFilters {
         // Given
         let siteID: Int64 = 134
 
-        let initialFilters = BookingFilters(
-            productIDs: [1],
-            customerIDs: [10],
-            resourceIDs: [100],
-            startDateBefore: nil,
-            startDateAfter: nil,
-            bookingStatuses: ["confirmed"],
-            attendanceStatuses: []
+        let initialFilters = StoredBookingFilters.Filters(
+            siteID: siteID,
+            teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
+            products: [BookingProductFilter(productID: 1, name: "Product 1")],
+            attendanceStatuses: [],
+            paymentStatuses: [.confirmed],
+            customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
+            dateRange: nil
         )
 
-        let updatedFilters = BookingFilters(
-            productIDs: [2, 3],
-            customerIDs: [20],
-            resourceIDs: [200],
-            startDateBefore: "2024-12-31",
-            startDateAfter: "2024-01-01",
-            bookingStatuses: ["pending"],
-            attendanceStatuses: ["attended"]
+        let updatedFilters = StoredBookingFilters.Filters(
+            siteID: siteID,
+            teamMembers: [],
+            products: [],
+            attendanceStatuses: [.booked],
+            paymentStatuses: [.paid],
+            customers: [BookingCustomerFilter(customerID: 20, name: "Customer 2")],
+            dateRange: nil
         )
 
         let subject = AppSettingsStore(dispatcher: dispatcher,
@@ -222,14 +222,14 @@ struct AppSettingsStoreTests_BookingFilters {
         // Given
         let siteID: Int64 = 134
 
-        let filters = BookingFilters(
-            productIDs: [1, 2],
-            customerIDs: [10],
-            resourceIDs: [100],
-            startDateBefore: "2024-12-31",
-            startDateAfter: "2024-01-01",
-            bookingStatuses: ["confirmed"],
-            attendanceStatuses: ["attended"]
+        let filters = StoredBookingFilters.Filters(
+            siteID: siteID,
+            teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
+            products: [],
+            attendanceStatuses: [.booked],
+            paymentStatuses: [.confirmed],
+            customers: [],
+            dateRange: nil
         )
 
         let subject = AppSettingsStore(dispatcher: dispatcher,

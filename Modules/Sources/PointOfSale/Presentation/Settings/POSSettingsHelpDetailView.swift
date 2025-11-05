@@ -1,7 +1,7 @@
 import SwiftUI
 import struct WooFoundation.SafariView
 
-struct PointOfSaleSettingsHelpDetailView: View {
+struct POSSettingsHelpDetailView: View {
     @Environment(\.posExternalViews) private var externalViews
 
     @State private var showProductRestrictions = false
@@ -70,7 +70,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
     }
 }
 
-private extension PointOfSaleSettingsHelpDetailView {
+private extension POSSettingsHelpDetailView {
     enum Constants {
         static let supportTag = "origin:point-of-sale"
     }
@@ -144,6 +144,6 @@ private extension PointOfSaleSettingsHelpDetailView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsHelpDetailView()
+    POSSettingsHelpDetailView()
 }
 #endif

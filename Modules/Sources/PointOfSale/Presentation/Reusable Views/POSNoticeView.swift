@@ -45,6 +45,7 @@ struct POSNoticeView<Content: View>: View {
                         .accessibilityElement(children: .combine)
                 }
             }
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             .frame(maxWidth: .infinity, alignment: .leading)
 
             if let onDismiss {

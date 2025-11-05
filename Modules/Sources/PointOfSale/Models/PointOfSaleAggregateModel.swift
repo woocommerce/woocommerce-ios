@@ -60,6 +60,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cardReaderDisconnection: AnyCancellable?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
+    private let isLocalCatalogEligible: Bool
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -74,6 +75,18 @@ protocol PointOfSaleAggregateModelProtocol {
     // Type-safe accessor specifically for the view
     var viewStateCoordinatorForView: PointOfSaleViewStateCoordinator {
         _viewStateCoordinator
+    }
+
+    // Track stale sync warning (only relevant when using local catalog)
+    var isSyncStale: Bool = false
+    var isStaleSyncWarningDismissed: Bool = false
+
+    var showStaleSyncWarning: Bool {
+        // Only show warning if using local catalog
+        guard isLocalCatalogEligible else {
+            return false
+        }
+        return isSyncStale && !isStaleSyncWarningDismissed
     }
 
     init(entryPointController: POSEntryPointController,
@@ -92,7 +105,8 @@ protocol PointOfSaleAggregateModelProtocol {
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil) {
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+         isLocalCatalogEligible: Bool = false) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -110,6 +124,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.soundPlayer = soundPlayer
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.isLocalCatalogEligible = isLocalCatalogEligible
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -630,6 +645,28 @@ private extension PointOfSaleAggregateModel {
             try? await catalogSyncCoordinator.performSmartSync(for: siteID)
         }
     }
+}
+
+// MARK: - Stale Sync Warning
+extension PointOfSaleAggregateModel {
+    var staleSyncThresholdDays: Int {
+        Constants.staleSyncThresholdDays
+    }
+
+    func dismissStaleSyncWarning() {
+        isStaleSyncWarningDismissed = true
+    }
+
+    func checkStaleSyncStatus() async {
+        guard let catalogSyncCoordinator else { return }
+        isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+    }
+}
+
+// MARK: - Constants
+private enum Constants {
+    /// Number of days before showing a stale catalog sync warning
+    static let staleSyncThresholdDays: Int = 7
 }
 
 #if DEBUG

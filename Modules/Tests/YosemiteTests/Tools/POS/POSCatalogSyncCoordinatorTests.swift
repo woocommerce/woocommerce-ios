@@ -860,6 +860,81 @@ extension POSCatalogSyncCoordinatorTests {
         // Then - sync should proceed (exactly at 30-day boundary is still eligible)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
     }
+
+    // MARK: - isSyncStale Tests
+
+    @Test func isSyncStale_returns_true_when_no_full_sync_performed() async throws {
+        // Given - no full sync date set
+
+        // When
+        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+
+        // Then
+        #expect(isStale == true)
+    }
+
+    @Test func isSyncStale_returns_false_when_full_sync_is_recent() async throws {
+        // Given - last full sync was 3 days ago
+        let threeDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -3, to: Date()))
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: threeDaysAgo)
+
+        // When
+        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+
+        // Then
+        #expect(isStale == false)
+    }
+
+    @Test func isSyncStale_returns_true_when_full_sync_is_old() async throws {
+        // Given - last full sync was 10 days ago
+        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: Date()))
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo)
+
+        // When
+        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+
+        // Then
+        #expect(isStale == true)
+    }
+
+    @Test func isSyncStale_ignores_incremental_sync_date() async throws {
+        // Given - incremental sync was recent, but full sync was old
+        let yesterday = try #require(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
+        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: Date()))
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo, lastIncrementalSyncDate: yesterday)
+
+        // When
+        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+
+        // Then - should only check full sync date
+        #expect(isStale == true)
+    }
+
+    @Test func isSyncStale_boundary_within_threshold() async throws {
+        // Given - last full sync was 6 days and 23 hours ago (just under 7 days)
+        let justUnderSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -6, to: Date()))
+            .addingTimeInterval(-23 * 60 * 60) // minus 23 hours
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justUnderSevenDays)
+
+        // When
+        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+
+        // Then - just under threshold should not be stale
+        #expect(isStale == false)
+    }
+
+    @Test func isSyncStale_boundary_past_threshold() async throws {
+        // Given - last full sync was 7 days and 1 second ago (just past 7 days)
+        let justPastSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -7, to: Date()))
+            .addingTimeInterval(-1)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justPastSevenDays)
+
+        // When
+        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+
+        // Then - past threshold should be stale
+        #expect(isStale == true)
+    }
 }
 
 extension POSCatalogSyncCoordinator {

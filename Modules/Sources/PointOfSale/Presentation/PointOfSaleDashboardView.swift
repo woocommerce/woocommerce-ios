@@ -143,6 +143,12 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
         }
+        .onChange(of: showSettings) { oldValue, newValue in
+            guard !newValue, oldValue else { return }
+            Task {
+                await posModel.checkStaleSyncStatus()
+            }
+        }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
             Task { @MainActor in

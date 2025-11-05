@@ -2,7 +2,6 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct PointOfSaleSettingsHelpDetailView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posExternalViews) private var externalViews
 
     @State private var showProductRestrictions = false
@@ -10,92 +9,46 @@ struct PointOfSaleSettingsHelpDetailView: View {
     @State private var showSupport = false
 
     private var backgroundColor: Color {
-        Color.posOnSecondaryContainer
+        Color.posSurface
     }
 
     var body: some View {
         NavigationStack {
-            POSPageHeaderView(title: Localization.helpTitle)
-            .foregroundColor(.posSurface)
-            .accessibilityAddTraits(.isHeader)
-            List {
-                Button {
-                    showProductRestrictions = true
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(Localization.productRestrictionsInfo)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(Localization.productRestrictionsInfoSubtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
-                    }
-                }
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
-                .buttonStyle(.plain)
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.helpTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-                Button {
-                    showDocumentation = true
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: "doc.text")
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(Localization.documentationTitle)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(Localization.documentationSubtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
-                    }
-                }
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
-                .buttonStyle(.plain)
+                ScrollView {
+                    VStack(spacing: POSSpacing.small) {
+                        POSSettingsCard(
+                            title: Localization.productRestrictionsInfo,
+                            subtitle: Localization.productRestrictionsInfoSubtitle,
+                            action: {
+                                showProductRestrictions = true
+                            }
+                        )
 
-                Button {
-                    showSupport = true
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: "questionmark")
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(Localization.getSupportTitle)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(Localization.getSupportSubtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
+                        POSSettingsCard(
+                            title: Localization.documentationTitle,
+                            subtitle: Localization.documentationSubtitle,
+                            action: {
+                                showDocumentation = true
+                            }
+                        )
+
+                        POSSettingsCard(
+                            title: Localization.getSupportTitle,
+                            subtitle: Localization.getSupportSubtitle,
+                            action: {
+                                showSupport = true
+                            }
+                        )
                     }
+                    .padding(.horizontal, POSPadding.medium)
                 }
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
-                .buttonStyle(.plain)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
             .background(backgroundColor)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
         }
         .posModal(isPresented: $showProductRestrictions) {
             // TODO: Remove copy on POSFloatingControlView.documentationView

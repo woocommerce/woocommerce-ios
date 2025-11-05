@@ -1,9 +1,12 @@
 import Foundation
 import Combine
+import Yosemite
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
     private let siteID: Int64
+    private let stores: StoresManager
+
     private let todayListViewModel: BookingListViewModel
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
@@ -32,8 +35,9 @@ final class BookingListContainerViewModel: ObservableObject {
         BookingFiltersViewModel(filter: filters, siteID: siteID)
     }
 
-    init(siteID: Int64) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
+        self.stores = stores
 
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
         self.todayListViewModel = BookingListViewModel(
@@ -110,6 +114,42 @@ final class BookingListContainerViewModel: ObservableObject {
         self.numberOfActiveFilters = filters.numberOfActiveFilters
         allListViewModel.updateFilters(filters)
         allSearchViewModel.updateFilters(filters)
+    }
+}
+
+private extension BookingListContainerViewModel {
+    func restorePersistedFilters() {
+        Task { @MainActor in
+            guard let filters = await loadPersistedFilters() else {
+                return
+            }
+        }
+    }
+
+    /// Loads persisted booking filters from AppSettings.
+    /// Returns the loaded filters, or nil if none are persisted.
+    @MainActor
+    func loadPersistedFilters() async -> BookingFilters? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadBookingFilters(siteID: siteID) { result in
+                if case .success(let filters) = result {
+                    continuation.resume(returning: filters)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Saves booking filters to AppSettings for persistence.
+    private func saveFilters(_ filters: BookingFilters) {
+        let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: filters) { error in
+            if let error = error {
+                DDLogError("⛔️ Error saving booking filters: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

@@ -33,8 +33,8 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     }
                     .padding(.horizontal, POSPadding.medium)
                 }
-                .background(backgroundColor)
             }
+            .background(backgroundColor)
             .task {
                 isLoading = true
                 await viewModel.retrievePOSReceiptSettings()

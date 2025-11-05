@@ -3,8 +3,6 @@ import struct WooFoundation.SafariView
 
 struct POSSettingsHardwareDetailView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.posFeatureFlags) private var featureFlags
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
 
@@ -40,46 +38,42 @@ struct POSSettingsHardwareDetailView: View {
     var body: some View {
         @Bindable var posModel = posModel
         NavigationStack(path: $navigationPath) {
-            POSPageHeaderView(title: Localization.hardwareTitle)
-            .foregroundColor(.posSurface)
-            .accessibilityAddTraits(.isHeader)
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.hardwareTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-            List(HardwareDestination.allCases) { destination in
-                NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: destination.icon)
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                VStack(spacing: POSSpacing.small) {
+                    ForEach(HardwareDestination.allCases) { destination in
+                        NavigationLink(value: NavigationDestination.hardware(destination)) {
+                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                                Text(destination.title)
+                                    .font(.posBodyLargeBold)
+                                    .foregroundStyle(Color.posOnSurface)
+                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                Text(destination.subtitle)
+                                    .font(.posBodyMediumRegular())
+                                    .foregroundStyle(.secondary)
+                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.posSurfaceContainerLowest)
+                            .posItemCardBorderStyles()
                         }
-                        Spacer()
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                     }
                 }
-                .listRowSeparator(.hidden)
+                .padding(.horizontal, POSPadding.medium)
+
+                Spacer()
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
             .background(backgroundColor)
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):
-                    if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsCardReaderFlow) {
-                        cardReadersView
-                    } else {
-                        // TODO: Legacy view to be removed along feature flag on WOOMOB-1591
-                        legacyCardReadersView
-                    }
+                    cardReadersView
                 case .hardware(.scanners):
                     scannersView
                 }
@@ -128,7 +122,7 @@ private extension POSSettingsHardwareDetailView {
     }
 
     var supportForm: some View {
-        NavigationView {
+        NavigationStack {
             externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -137,76 +131,6 @@ private extension POSSettingsHardwareDetailView {
                     }
                 }
             }
-        }
-        .navigationViewStyle(.stack)
-    }
-
-    var legacyCardReadersView: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.cardReadersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    navigationPath.removeLast()
-                }, buttonIcon: "chevron.left"))
-            .foregroundColor(.posSurface)
-
-            List {
-                VStack(spacing: POSPadding.xSmall) {
-                    HStack {
-                        Text(Localization.readerModelTitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(cardReaderName)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                    HStack {
-                        Text(Localization.readerBatteryTitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Text(formattedBatteryLevel)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                }
-                Button {
-                    showCardReaderDocumentationModal = true
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: "doc.text")
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(Localization.cardReaderDocumentationTitle)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(Localization.cardReaderDocumentationSubtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        }
-                        Spacer()
-                    }
-                }
-                .padding()
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
-            }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .listRowBackground(Color.clear)
-            .background(backgroundColor)
-            .foregroundColor(.posOnSurface)
-        }
-        .navigationBarBackButtonHidden(true)
-        .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
-            SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
@@ -241,17 +165,15 @@ private extension POSSettingsHardwareDetailView {
                     }
                     .font(.posBodyMediumRegular())
                 } else {
-                    POSSettingsCardView(title: Localization.cardReaderConnectTitle,
+                    POSSettingsCard(title: Localization.cardReaderConnectTitle,
                                         subtitle: Localization.cardReaderConnectSubtitle,
-                                        isSelected: false, // Temporary. Update with WOOMOB-1571
                                         action: {
                         posModel.connectCardReader()
                     })
                 }
 
-                POSSettingsCardView(title: Localization.cardReaderDocumentationTitle,
+                POSSettingsCard(title: Localization.cardReaderDocumentationTitle,
                                     subtitle: Localization.cardReaderDocumentationSubtitle,
-                                    isSelected: false, // Temporary. Update with WOOMOB-1571
                                     action: { showCardReaderDocumentationModal = true })
                 .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
@@ -277,36 +199,22 @@ private extension POSSettingsHardwareDetailView {
                 }, buttonIcon: "chevron.left"))
             .foregroundColor(.posSurface)
 
-            List(ScannerDestination.allCases) { destination in
-                Button {
-                    handleScannerDestination(destination)
-                } label: {
-                    HStack(spacing: POSSpacing.medium) {
-                        Image(systemName: destination.icon)
-                            .font(.posBodyLargeRegular())
-                            .accessibilityHidden(true)
-                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            VStack(spacing: POSSpacing.small) {
+                ForEach(ScannerDestination.allCases) { destination in
+                    POSSettingsCard(
+                        title: destination.title,
+                        subtitle: destination.subtitle,
+                        action: {
+                            handleScannerDestination(destination)
                         }
-                        Spacer()
-                    }
+                    )
                 }
-                .accessibilityAddTraits(.isButton)
-                .listRowSeparator(.hidden)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .listRowBackground(Color.clear)
-            .background(backgroundColor)
-            .foregroundColor(.posOnSurface)
+            .padding(.horizontal, POSPadding.medium)
+
+            Spacer()
         }
+        .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
     }
 }
@@ -336,15 +244,6 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationBarcodeSubtitle
             }
         }
-
-        var icon: String {
-            switch self {
-            case .cardReaders:
-                return "creditcard"
-            case .scanners:
-                return "qrcode.viewfinder"
-            }
-        }
     }
 
     enum NavigationDestination: Hashable {
@@ -372,15 +271,6 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.scannerSetupSubtitle
             case .documentation:
                 return Localization.scannerDocumentationSubtitle
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .setup:
-                return "gearshape"
-            case .documentation:
-                return "doc.text"
             }
         }
     }

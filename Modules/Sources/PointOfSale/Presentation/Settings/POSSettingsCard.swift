@@ -1,10 +1,17 @@
 import SwiftUI
 
-struct POSSettingsCardView: View {
+struct POSSettingsCard: View {
     let title: String
     let subtitle: String
     let isSelected: Bool
     let action: () -> Void
+
+    init(title: String, subtitle: String, isSelected: Bool = false, action: @escaping () -> Void) {
+        self.title = title
+        self.subtitle = subtitle
+        self.isSelected = isSelected
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
@@ -36,11 +43,19 @@ struct POSSettingsCardView: View {
 
 #if DEBUG
 #Preview {
-    POSSettingsCardView(
-        title: "Documentation",
-        subtitle: "Learn more about accepting mobile payments",
-        isSelected: true,
-        action: { }
-    )
+    VStack {
+        POSSettingsCard(
+            title: "Documentation",
+            subtitle: "Learn more about accepting mobile payments",
+            isSelected: true,
+            action: { }
+        )
+        POSSettingsCard(
+            title: "Documentation",
+            subtitle: "Learn more about accepting mobile payments",
+            isSelected: false,
+            action: { }
+        )
+    }
 }
 #endif

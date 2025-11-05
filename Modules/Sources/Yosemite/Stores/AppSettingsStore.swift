@@ -315,6 +315,10 @@ public class AppSettingsStore: Store {
             setFirstPOSCatalogSyncDate(siteID: siteID, date: date, onCompletion: onCompletion)
         case .getFirstPOSCatalogSyncDate(siteID: let siteID, onCompletion: let onCompletion):
             getFirstPOSCatalogSyncDate(siteID: siteID, onCompletion: onCompletion)
+        case .setPOSLocalCatalogCellularDataAllowed(let siteID, let allowed, let onCompletion):
+            setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
+        case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
+            getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1365,7 +1369,10 @@ private extension AppSettingsStore {
             onCompletion(.failure(error))
         }
     }
+}
 
+// MARK: - Point of Sale local catalog settings
+private extension AppSettingsStore {
     func setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: () -> Void) {
         siteSpecificAppSettingsStoreMethods.setPOSLastOpenedDate(siteID: siteID, date: date)
         onCompletion()
@@ -1384,6 +1391,16 @@ private extension AppSettingsStore {
     func getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void) {
         let date = siteSpecificAppSettingsStoreMethods.getFirstPOSCatalogSyncDate(siteID: siteID)
         onCompletion(date)
+    }
+
+    func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool, onCompletion: () -> Void) {
+        siteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed)
+        onCompletion()
+    }
+
+    func getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void) {
+        let allowed = siteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
+        onCompletion(allowed)
     }
 }
 

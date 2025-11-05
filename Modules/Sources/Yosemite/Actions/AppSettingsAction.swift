@@ -414,4 +414,11 @@ public enum AppSettingsAction: Action {
     /// Gets the date of the first POS catalog sync for a specific site
     ///
     case getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void)
+
+    /// Sets whether we should allow cellular data use downloading POS catalogs for a specific site
+    ///
+    case setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool, onCompletion: () -> Void)
+
+    /// Gets whether we should allow cellular data use downloading POS catalogs for a specific site
+    case getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void)
 }

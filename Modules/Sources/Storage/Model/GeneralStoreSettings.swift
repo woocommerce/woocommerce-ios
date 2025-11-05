@@ -94,6 +94,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var firstPOSCatalogSyncDate: Date?
 
+    /// Whether we should sync catalog data over cellular connections for this store
+    ///
+    public var syncPOSCatalogOverCellular: Bool
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -115,7 +119,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 searchTermsByKey: [String: [String]] = [:],
                 isPOSTabVisible: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
-                firstPOSCatalogSyncDate: Date? = nil) {
+                firstPOSCatalogSyncDate: Date? = nil,
+                syncPOSCatalogOverCellular: Bool = true) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -138,6 +143,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.isPOSTabVisible = isPOSTabVisible
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
+        self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -198,6 +204,7 @@ extension GeneralStoreSettings {
         self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
+        self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

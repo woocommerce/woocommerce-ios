@@ -230,6 +230,74 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         #expect(retrievedCouponTerms == couponTerms)
     }
 
+    // MARK: - POS Local Catalog Cellular Data Tests
+
+    @Test func getPOSLocalCatalogCellularDataAllowed_returns_true_by_default() {
+        // When
+        let isAllowed = sut.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
+
+        // Then
+        #expect(isAllowed == true)
+    }
+
+    @Test func getPOSLocalCatalogCellularDataAllowed_returns_saved_value() throws {
+        // Given
+        let storeSettings = GeneralStoreSettings(syncPOSCatalogOverCellular: false)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let isAllowed = sut.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
+
+        // Then
+        #expect(isAllowed == false)
+    }
+
+    @Test func setPOSLocalCatalogCellularDataAllowed_saves_value_successfully() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: false)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.syncPOSCatalogOverCellular == false)
+    }
+
+    @Test func setPOSLocalCatalogCellularDataAllowed_preserves_existing_settings() throws {
+        // Given
+        let existingStoreID = "existing-store-id"
+        let existingSettings = GeneralStoreSettings(storeID: existingStoreID)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: existingSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: false)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.syncPOSCatalogOverCellular == false)
+        #expect(savedData.storeSettingsBySite[siteID]?.storeID == existingStoreID)
+    }
+
+    @Test func setPOSLocalCatalogCellularDataAllowed_preserves_settings_for_other_sites() throws {
+        // Given
+        let otherSiteID: Int64 = 456
+        let otherSiteSettings = GeneralStoreSettings(syncPOSCatalogOverCellular: true)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [otherSiteID: otherSiteSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: false)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.syncPOSCatalogOverCellular == false)
+        #expect(savedData.storeSettingsBySite[otherSiteID]?.syncPOSCatalogOverCellular == true)
+    }
+
 }
 
 // MARK: - Mock FileStorage

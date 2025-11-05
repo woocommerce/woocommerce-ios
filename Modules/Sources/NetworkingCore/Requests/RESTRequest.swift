@@ -87,6 +87,7 @@ public struct RESTRequest: Request {
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
+    // periphery:ignore - we include the cellular parameter for all inits
     init(siteURL: String,
          wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,

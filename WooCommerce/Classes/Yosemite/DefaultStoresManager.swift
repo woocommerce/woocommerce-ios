@@ -786,6 +786,9 @@ private extension DefaultStoresManager {
             guard case .success(let site) = result else {
                 return
             }
+            sessionManager.defaultSite = site
+            updateAndReloadWidgetInformation(with: siteID)
+
             /// Triggers root endpoint to check if application password is available
             dispatch(SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
                 guard let self else { return }
@@ -794,9 +797,8 @@ private extension DefaultStoresManager {
                     let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                     sessionManager.defaultSite = updatedSite
                     updateAndReloadWidgetInformation(with: siteID)
-                case .failure:
-                    sessionManager.defaultSite = site
-                    updateAndReloadWidgetInformation(with: siteID)
+                case .failure(let error):
+                    DDLogError("⛔️ Cannot trigger root endpoint: \(error)")
                 }
             })
         }

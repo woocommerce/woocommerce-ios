@@ -31,7 +31,7 @@ public protocol BookingsRemoteProtocol {
 }
 
 /// Filters for booking queries
-public struct BookingFilters {
+public struct BookingFilters: Codable, Equatable {
     public let productIDs: [Int64]
     public let customerIDs: [Int64]
     public let resourceIDs: [Int64]

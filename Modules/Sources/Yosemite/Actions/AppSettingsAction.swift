@@ -105,6 +105,22 @@ public enum AppSettingsAction: Action {
     /// Clears all the product filter history for a given site
     case resetProductFilterHistory(siteID: Int64, onCompletion: (Error?) -> Void)
 
+    // MARK: - Bookings Filters
+
+    /// Loads the booking filters
+    ///
+    case loadBookingFilters(siteID: Int64, onCompletion: (Result<BookingFilters, Error>) -> Void)
+
+    /// Add or Update booking filters
+    ///
+    case upsertBookingFilters(siteID: Int64,
+                              filters: BookingFilters,
+                              onCompletion: (Error?) -> Void)
+
+    /// Clears all the booking filters
+    ///
+    case resetBookingFilters
+
     // MARK: - General App Settings
 
     /// Saves the `date` as the last known date that the app was installed. This does not do

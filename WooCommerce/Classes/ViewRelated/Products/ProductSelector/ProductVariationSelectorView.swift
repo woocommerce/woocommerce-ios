@@ -15,8 +15,6 @@ struct ProductVariationSelectorView: View {
 
     private let onMultipleSelections: (([Int64]) -> Void)?
 
-    @State private var hasSentSelectionOnDismiss = false
-
     /// Tracks the state for the 'Clear Selection' button
     ///
     private var isClearSelectionDisabled: Bool {
@@ -102,11 +100,6 @@ struct ProductVariationSelectorView: View {
                 }
                 .accessibilityLabel(Localization.backButtonAccessibilityLabel)
             }
-        }
-        .onDisappear {
-            guard !hasSentSelectionOnDismiss else { return }
-            hasSentSelectionOnDismiss = true
-            onMultipleSelections?(viewModel.selectedProductVariationIDs)
         }
         .onAppear {
             viewModel.onLoadTrigger.send()

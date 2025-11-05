@@ -31,6 +31,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                         receiptInformationView
                             .renderedIf(viewModel.shouldShowReceiptInformation)
                     }
+                    .padding(.horizontal, POSPadding.medium)
                 }
                 .background(backgroundColor)
             }

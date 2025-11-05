@@ -10,7 +10,11 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 
     private var backgroundColor: Color {
-        Color.posOnSecondaryContainer
+        Color.posSurface
+    }
+
+    private var cardBackgroundColor: Color {
+        Color.posSurfaceContainerLowest
     }
 
     var body: some View {
@@ -40,37 +44,42 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
     @ViewBuilder
     private var storeInformationView: some View {
-        VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.storeInformation)
+        POSInformationCard {
+            VStack(spacing: POSSpacing.none) {
+                sectionHeaderView(title: Localization.storeInformation)
 
-            VStack(spacing: POSSpacing.medium) {
-                fieldRowView(label: Localization.storeName, value: viewModel.storeName)
-                fieldRowView(label: Localization.address, value: viewModel.storeAddress)
+                VStack(spacing: POSSpacing.medium) {
+                    fieldRowView(label: Localization.storeName, value: viewModel.storeName)
+                    fieldRowView(label: Localization.address, value: viewModel.storeAddress)
+                }
+                .padding(.bottom, POSPadding.medium)
+                //.padding(POSPadding.medium)
             }
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
     private var receiptInformationView: some View {
-        VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.receiptInformation)
+        POSInformationCard {
+            VStack(spacing: POSSpacing.none) {
+                sectionHeaderView(title: Localization.receiptInformation)
 
-            VStack(spacing: POSSpacing.medium) {
-                receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
-                receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
-                receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
-                receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
-                receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
+                VStack(spacing: POSSpacing.medium) {
+                    receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+                    receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+                    receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+                    receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+                    receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
+                }
+                .padding(.bottom, POSPadding.medium)
             }
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
     private func sectionHeaderView(title: String) -> some View {
         ZStack {
-            backgroundColor
+            cardBackgroundColor
             Text(title)
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
@@ -120,6 +129,21 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 }
 
+private struct POSInformationCard<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.posSurfaceContainerLowest)
+            .posItemCardBorderStyles()
+    }
+}
 
 private extension PointOfSaleSettingsStoreDetailView {
     enum Constants {
@@ -141,8 +165,8 @@ private extension PointOfSaleSettingsStoreDetailView {
         )
 
         static let storeInformation = NSLocalizedString(
-            "pointOfSaleSettingsStoreDetailView.storeInformation",
-            value: "Store Information",
+            "pointOfSaleSettingsStoreDetailView.general",
+            value: "General",
             comment: "Section title for store information in Point of Sale settings."
         )
 

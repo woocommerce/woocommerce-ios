@@ -139,7 +139,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            PointOfSaleSettingsView(settingsController: posModel.settingsController)
+            POSSettingsView(settingsController: posModel.settingsController)
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }

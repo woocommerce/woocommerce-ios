@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleSettingsView: View {
+struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
     @State private var selection: SidebarNavigation? = .store
@@ -20,7 +20,7 @@ struct PointOfSaleSettingsView: View {
     }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     @ViewBuilder
     private var listView: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
@@ -31,49 +31,36 @@ extension PointOfSaleSettingsView {
                                                    analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                    dismiss()
                                                },
-                                               buttonIcon: "xmark"))
+                                               buttonIcon: "chevron.left"))
             .foregroundColor(.posSurface)
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                PointOfSaleSettingsCard(
-                    item: .store,
-                    isSelected: selection == .store,
-                    onTap: {
-                        analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
-                        selection = .store
-                    }
-                )
-
-                PointOfSaleSettingsCard(
-                    item: .hardware,
-                    isSelected: selection == .hardware,
-                    onTap: {
-                        analytics.track(.pointOfSaleSettingsHardwareTapped)
-                        selection = .hardware
-                    }
-                )
-
+                POSSettingsCardView(title: POSSettingsView.SidebarNavigation.store.title,
+                                    subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
+                                    isSelected: selection == .store,
+                                    action: {
+                    analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                    selection = .store
+                })
+                POSSettingsCardView(title: POSSettingsView.SidebarNavigation.hardware.title,
+                                    subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
+                                    isSelected: selection == .hardware,
+                                    action: {
+                    analytics.track(.pointOfSaleSettingsHardwareTapped)
+                    selection = .hardware
+                })
                 if settingsController.isLocalCatalogEligible {
-                    PointOfSaleSettingsCard(
-                        item: .localCatalog,
-                        isSelected: selection == .localCatalog,
-                        onTap: {
-                            selection = .localCatalog
-                        }
-                    )
+                    POSSettingsCardView(title: POSSettingsView.SidebarNavigation.localCatalog.title,
+                                        subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
+                                        isSelected: selection == .localCatalog,
+                                        action: {
+                        selection = .localCatalog
+                    })
                 }
-
                 Spacer()
 
-                PointOfSaleSettingsCard(
-                    item: .help,
-                    isSelected: selection == .help,
-                    onTap: {
-                        analytics.track(.pointOfSaleSettingsHelpTapped)
-                        selection = .help
-                    }
-                )
+                helpView
             }
             .padding(.horizontal, POSPadding.medium)
         }
@@ -99,62 +86,41 @@ extension PointOfSaleSettingsView {
             EmptyView()
         }
     }
+
+    @ViewBuilder
+    private var helpView: some View {
+        Button {
+            analytics.track(.pointOfSaleSettingsHelpTapped)
+            selection = .help
+        } label: {
+            HStack(spacing: POSSpacing.small) {
+                if let icon = SidebarNavigation.help.icon {
+                    Image(systemName: icon)
+                        .font(.posBodyMediumBold)
+                        .foregroundStyle(Color.posOnSurface)
+                }
+                Text(SidebarNavigation.help.title)
+                    .font(.posBodyMediumBold)
+                    .foregroundStyle(Color.posOnSurface)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(SidebarNavigation.help.title)
+    }
 }
 
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     enum Constants {
         static let sidebarWidthFraction: CGFloat = 0.35
     }
 }
 
-struct PointOfSaleSettingsCard: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.colorScheme) private var colorScheme
-
-    let item: PointOfSaleSettingsView.SidebarNavigation
-    let isSelected: Bool
-    let onTap: () -> Void
-
-    private var selectionBackgroundColor: Color {
-        guard isSelected else { return Color.clear }
-        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
-    }
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: POSSpacing.medium) {
-                Image(systemName: item.icon)
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityHidden(true)
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                    Text(item.title)
-                        .font(.posBodyLargeRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    Text(item.subtitle)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                }
-                Spacer()
-            }
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(.isButton)
-        .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
-                .fill(selectionBackgroundColor)
-        )
-    }
-}
-
-extension PointOfSaleSettingsView {
+extension POSSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
         case hardware
@@ -181,12 +147,12 @@ extension PointOfSaleSettingsView {
             }
         }
 
-        var icon: String {
+        var icon: String? {
             switch self {
-            case .store: return "bag"
-            case .hardware: return "wrench.and.screwdriver"
-            case .localCatalog: return "internaldrive"
-            case .help: return "questionmark.circle"
+            case .store, .hardware, .localCatalog:
+                return nil
+            case .help:
+                return "questionmark.circle"
             }
         }
     }
@@ -211,8 +177,8 @@ extension PointOfSaleSettingsView {
         )
 
         static let sidebarNavigationHelpTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.sidebarNavigationHelpTitle",
-            value: "Help",
+            "pointOfSaleSettingsView.sidebarNavigationHelpTitle.1",
+            value: "Get help and support",
             comment: "Title of the Help section within Point of Sale settings."
         )
 
@@ -250,6 +216,6 @@ extension PointOfSaleSettingsView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsView(settingsController: POSSettingsPreviewController())
+    POSSettingsView(settingsController: POSSettingsPreviewController())
 }
 #endif

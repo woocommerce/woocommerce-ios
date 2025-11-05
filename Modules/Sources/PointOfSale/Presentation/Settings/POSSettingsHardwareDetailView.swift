@@ -32,7 +32,7 @@ struct POSSettingsHardwareDetailView: View {
     }
 
     private var backgroundColor: Color {
-        Color.posOnSecondaryContainer
+        Color.posSurface
     }
 
     var body: some View {

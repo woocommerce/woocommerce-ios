@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsPluginNotSetup: View {
@@ -53,7 +54,31 @@ struct InPersonPaymentsPluginNotSetup: View {
                 tappedAnalyticEvent: learnMoreAnalyticEvent))
             .padding(.vertical, 8)
         }
-        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+        .sheet(item: $presentedSetupURL, onDismiss: onRefresh) { url in
+            setupWebView(url: url)
+        }
+    }
+
+    @ViewBuilder
+    private func setupWebView(url: URL) -> some View {
+        let stores = ServiceLocator.stores
+        let site = stores.sessionManager.defaultSite
+        if let site, stores.shouldAuthenticateAdminPage(for: site) {
+            NavigationStack {
+                AuthenticatedWebView(isPresented: .constant(true), url: url)
+                    .navigationTitle(Localization.primaryButton)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(Localization.doneButton) {
+                                presentedSetupURL = nil
+                            }
+                        }
+                    }
+            }
+        } else {
+            SafariSheetView(url: url)
+        }
     }
 
     private var setupURL: URL? {
@@ -88,6 +113,12 @@ private enum Localization {
     static let refreshButton = NSLocalizedString(
         "Refresh",
         comment: "Button to refresh the state of the in-person payments setup")
+
+    static let doneButton = NSLocalizedString(
+        "inPersonPaymentsPluginNotSetup.done",
+        value: "Done",
+        comment: "Button to dismiss setup in-person payments plugin"
+    )
 }
 
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {

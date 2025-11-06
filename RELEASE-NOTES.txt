@@ -5,6 +5,7 @@
 -----
 - [**] We added support for collecting in-person payments (including Tap To Pay) using Stripe Payment Gateway extension in the UK. [https://github.com/woocommerce/woocommerce-ios/pull/16287]
 - [*] Improve card payments onboarding error handling to show network errors correctly [https://github.com/woocommerce/woocommerce-ios/pull/16304]
+- [*] Authenticate the admin page automatically for sites with SSO enabled in custom fields, in-person payment setup, and editing tax rates flows. [https://github.com/woocommerce/woocommerce-ios/pull/16318]
 
 23.6
 -----

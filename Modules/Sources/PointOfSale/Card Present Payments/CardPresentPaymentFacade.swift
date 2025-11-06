@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
+import enum Hardware.CardReaderSoftwareUpdateState
 import Combine
 
 public protocol CardPresentPaymentFacade {
@@ -12,6 +13,10 @@ public protocol CardPresentPaymentFacade {
     /// `readerConnectionStatusPublisher` provides the latest connection status for the card reader.
     /// This is a long lasting stream, and will not finish during the life of the façade.
     var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> { get }
+
+    /// `cardReaderUpdateStatePublisher` provides the latest software update state for the connected card reader.
+    /// This is a long lasting stream, and will not finish during the life of the façade.
+    var cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never> { get }
 
     /// Attempts to a card reader of the specified type.
     /// If another type of reader is already connected, this will be disconnected automatically.

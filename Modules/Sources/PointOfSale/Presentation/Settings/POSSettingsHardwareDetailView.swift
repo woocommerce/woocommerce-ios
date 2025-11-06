@@ -38,6 +38,10 @@ struct POSSettingsHardwareDetailView: View {
             return Localization.firmwareVersionUnknown
         }
     }
+    
+    private var shouldShowUpdateFirmwareButton: Bool {
+        posModel.isCardReaderUpdateAvailable
+    }
 
     private var backgroundColor: Color {
         Color.posSurface
@@ -169,10 +173,10 @@ private extension POSSettingsHardwareDetailView {
                                 POSInformationCardFieldRow(label: Localization.firmwareTitle,
                                                            value: formattedCardReaderFirmware,
                                                            showSeparator: false,
-                                                           buttonTitle: Localization.updateFirmwareButtontitle,
-                                                           buttonAction: {
+                                                           buttonTitle: shouldShowUpdateFirmwareButton ? Localization.updateFirmwareButtontitle : nil,
+                                                           buttonAction: shouldShowUpdateFirmwareButton ? {
                                     posModel.updateCardReaderSoftware()
-                                })
+                                } : nil)
                             }
                             .padding(.bottom, POSPadding.medium)
                         }

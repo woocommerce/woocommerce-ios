@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
+import enum Hardware.CardReaderSoftwareUpdateState
 
 #if DEBUG
 
@@ -12,6 +13,10 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
 
     var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
         $readerConnectionStatus.eraseToAnyPublisher()
+    }
+
+    var cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
+        Just(.none).eraseToAnyPublisher()
     }
 
     init(connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected) {

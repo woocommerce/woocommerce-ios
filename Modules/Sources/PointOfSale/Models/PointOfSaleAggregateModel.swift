@@ -2,6 +2,7 @@ import CocoaLumberjackSwift
 import Foundation
 import Combine
 import Observation
+import enum Hardware.CardReaderSoftwareUpdateState
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
@@ -28,11 +29,19 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+    private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     private var onOnboardingCancellation: (() -> Void)?
+
+    var isCardReaderUpdateAvailable: Bool {
+        if case .available = cardReaderUpdateState {
+            return true
+        }
+        return false
+    }
 
     private(set) var cart: Cart = .init()
 
@@ -127,6 +136,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
         publishCardReaderConnectionStatus()
+        publishCardReaderUpdateState()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
@@ -299,6 +309,14 @@ extension PointOfSaleAggregateModel {
         cardPresentPaymentService.readerConnectionStatusPublisher
             .sink(receiveValue: { [weak self] connectionStatus in
                 self?.cardReaderConnectionStatus = connectionStatus
+            })
+            .store(in: &cancellables)
+    }
+
+    private func publishCardReaderUpdateState() {
+        cardPresentPaymentService.cardReaderUpdateStatePublisher
+            .sink(receiveValue: { [weak self] updateState in
+                self?.cardReaderUpdateState = updateState
             })
             .store(in: &cancellables)
     }

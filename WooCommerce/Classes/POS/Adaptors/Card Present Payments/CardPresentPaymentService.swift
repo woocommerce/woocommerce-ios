@@ -6,12 +6,15 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
+import enum Hardware.CardReaderSoftwareUpdateState
 import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
+
+    let cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never>
 
     private let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
@@ -75,6 +78,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             })
             .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+
+        let updateStatePublisher = await Self.createUpdateStatePublisher(stores: stores)
+        self.cardReaderUpdateStatePublisher = updateStatePublisher
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
@@ -213,6 +221,19 @@ private extension CardPresentPaymentService {
                     .eraseToAnyPublisher()
 
                 nillableContinuation?.resume(returning: readerConnectionPublisher)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    static func createUpdateStatePublisher(stores: StoresManager) async -> AnyPublisher<CardReaderSoftwareUpdateState, Never> {
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<AnyPublisher<CardReaderSoftwareUpdateState, Never>, Never>? = continuation
+
+            let action = CardPresentPaymentAction.observeCardReaderUpdateState { updateStatePublisher in
+                nillableContinuation?.resume(returning: updateStatePublisher)
                 nillableContinuation = nil
             }
             stores.dispatch(action)

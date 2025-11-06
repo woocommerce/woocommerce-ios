@@ -89,7 +89,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         switch preflightResult {
         case .completed(let cardReader, _):
             let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
-                                                               batteryLevel: cardReader.batteryLevel)
+                                                               batteryLevel: cardReader.batteryLevel,
+                                                               softwareVersion: cardReader.softwareVersion)
             paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
                 self?.paymentEventSubject.send(.idle)
             })))
@@ -205,7 +206,8 @@ private extension CardPresentPaymentService {
                             return nil
                         }
                         return CardPresentPaymentCardReader(name: reader.name ?? reader.id,
-                                                            batteryLevel: reader.batteryLevel)
+                                                            batteryLevel: reader.batteryLevel,
+                                                            softwareVersion: reader.softwareVersion)
                     }
                     .receive(on: DispatchQueue.main)
                     .eraseToAnyPublisher()

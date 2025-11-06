@@ -30,10 +30,13 @@ struct POSSettingsHardwareDetailView: View {
             return Localization.batteryLevelUnknown
         }
     }
-    
-    // TODO
+
     private var formattedCardReaderFirmware: String {
-        "Unknown"
+        if let softwareVersion = settingsController.connectedCardReader?.softwareVersion {
+            return softwareVersion
+        } else {
+            return Localization.firmwareVersionUnknown
+        }
     }
 
     private var backgroundColor: Color {
@@ -321,6 +324,12 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown",
             value: "Unknown",
             comment: "Text displayed on Point of Sale settings when card reader battery is unknown."
+        )
+
+        static let firmwareVersionUnknown = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown",
+            value: "Unknown",
+            comment: "Text displayed on Point of Sale settings when card reader firmware version is unknown."
         )
 
         static let hardwareTitle = NSLocalizedString(

@@ -75,7 +75,8 @@ protocol POSSettingsControllerProtocol {
 final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
-        batteryLevel: 0.75
+        batteryLevel: 0.75,
+        softwareVersion: "2.0.1.23"
     )
 
     var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,

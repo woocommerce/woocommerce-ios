@@ -98,7 +98,8 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
                     reason: .unsupportedWooCommerceVersion(minimumVersion: Constants.wcPluginMinimumVersionForLocalCatalog)
                 )
                 eligibilityStates[siteID] = state
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) below minimum \(Constants.wcPluginMinimumVersionForLocalCatalog) for site \(siteID)")
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) below minimum" +
+                          "\(Constants.wcPluginMinimumVersionForLocalCatalog) for site \(siteID)")
                 return state
             }
 

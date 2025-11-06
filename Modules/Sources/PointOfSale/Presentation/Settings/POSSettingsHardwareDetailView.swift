@@ -176,7 +176,8 @@ private extension POSSettingsHardwareDetailView {
                                                            buttonTitle: shouldShowUpdateFirmwareButton ? Localization.updateFirmwareButtontitle : nil,
                                                            buttonAction: shouldShowUpdateFirmwareButton ? {
                                     posModel.updateCardReaderSoftware()
-                                } : nil)
+                                } : nil,
+                                                           buttonStyle: .primary)
                             }
                             .padding(.bottom, POSPadding.medium)
                         }

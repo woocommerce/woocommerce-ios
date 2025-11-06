@@ -17,22 +17,30 @@ struct POSInformationCard<Content: View>: View {
 }
 
 struct POSInformationCardFieldRow: View {
+    enum ButtonStyle {
+        case `default`
+        case primary
+    }
+
     let label: String
     let value: String
     let showSeparator: Bool
     let buttonTitle: String?
     let buttonAction: (() -> Void)?
+    let buttonStyle: ButtonStyle
 
     init(label: String,
          value: String,
          showSeparator: Bool = true,
          buttonTitle: String? = nil,
-         buttonAction: (() -> Void)? = nil) {
+         buttonAction: (() -> Void)? = nil,
+         buttonStyle: ButtonStyle = .default) {
         self.label = label
         self.value = value
         self.showSeparator = showSeparator
         self.buttonTitle = buttonTitle
         self.buttonAction = buttonAction
+        self.buttonStyle = buttonStyle
     }
 
     var body: some View {
@@ -56,15 +64,15 @@ struct POSInformationCardFieldRow: View {
                         Button(action: buttonAction) {
                             Text(buttonTitle)
                                 .font(.posBodyMediumRegular())
-                                .foregroundStyle(Color.posOnSurface)
+                                .foregroundStyle(buttonStyle == .default ? Color.posOnSurface : Color.posOnPrimaryContainer)
                         }
                         .buttonStyle(.plain)
                         .padding(.horizontal, POSPadding.small)
                         .padding(.vertical, POSPadding.xSmall)
-                        .background(Color.posSurfaceContainerLowest)
+                        .background(buttonStyle == .primary ? Color.posPrimaryContainer : Color.posSurfaceContainerLowest)
                         .overlay {
                             RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
-                                .stroke(Color.posOnSurface, lineWidth: 2)
+                                .stroke(buttonStyle == .default ? Color.posOnSurface : Color.posPrimaryContainer, lineWidth: 2)
                         }
 
                         Spacer()

@@ -43,6 +43,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
 
+    public let variationIDs: [Int64]
+
     public init(siteID: Int64,
                 productID: Int64,
                 name: String,
@@ -58,7 +60,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 attributes: [ProductAttribute],
                 manageStock: Bool,
                 stockQuantity: Decimal?,
-                stockStatusKey: String) {
+                stockStatusKey: String,
+                variationIDs: [Int64]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -81,6 +84,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+
+        self.variationIDs = variationIDs
     }
 
     public init(from decoder: any Decoder) throws {
@@ -124,6 +129,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
+        let variationIDs = try container.decodeIfPresent([Int64].self, forKey: .variationIDs) ?? []
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -139,7 +146,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   attributes: attributes,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
-                  stockStatusKey: stockStatusKey)
+                  stockStatusKey: stockStatusKey,
+                  variationIDs: variationIDs)
     }
 
     static let requestFields: [String] = {
@@ -172,5 +180,6 @@ private extension POSProduct {
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"
         case stockStatusKey = "stock_status"
+        case variationIDs = "variations"
     }
 }

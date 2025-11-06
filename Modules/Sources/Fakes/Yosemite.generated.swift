@@ -76,6 +76,15 @@ extension Yosemite.ProductReviewFromNoteParcel {
         )
     }
 }
+extension Yosemite.StoredBookingFilters {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Yosemite.StoredBookingFilters {
+        .init(
+            filters: .fake()
+        )
+    }
+}
 extension Yosemite.SystemInformation {
     /// Returns a "ready to use" type filled with fake values.
     ///

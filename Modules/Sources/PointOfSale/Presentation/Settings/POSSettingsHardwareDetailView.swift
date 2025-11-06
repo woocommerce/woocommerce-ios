@@ -159,9 +159,8 @@ private extension POSSettingsHardwareDetailView {
                 VStack(spacing: POSSpacing.small) {
                     if case .connected = posModel.cardReaderConnectionStatus {
                         if shouldShowUpdateFirmwareButton {
-                            POSSettingsCard(title: "Update firmware version",
-                                            subtitle: "Update the firmware version to continue accepting payments.",
-                                            action: { })
+                            POSSettingsCardWithIcon(title: "Update firmware version",
+                                                    subtitle: "Update the firmware version to continue accepting payments.")
                         }
                         POSInformationCard {
                             VStack(spacing: POSSpacing.medium) {
@@ -195,8 +194,8 @@ private extension POSSettingsHardwareDetailView {
                     }
 
                     POSSettingsCard(title: Localization.cardReaderDocumentationTitle,
-                                        subtitle: Localization.cardReaderDocumentationSubtitle,
-                                        action: { showCardReaderDocumentationModal = true })
+                                    subtitle: Localization.cardReaderDocumentationSubtitle,
+                                    action: { showCardReaderDocumentationModal = true })
                     .accessibilityAddTraits(.isButton)
                 }
                 .padding(.horizontal, POSPadding.medium)
@@ -455,6 +454,42 @@ private extension POSSettingsHardwareDetailView {
             value: "Cancel",
             comment: "Button to dismiss the support form from POS settings."
         )
+    }
+}
+
+private extension POSSettingsHardwareDetailView {
+    struct POSSettingsCardWithIcon: View {
+        let title: String
+        let subtitle: String
+
+        init(title: String, subtitle: String) {
+            self.title = title
+            self.subtitle = subtitle
+        }
+
+        var body: some View {
+            HStack(alignment: .center, spacing: POSPadding.medium) {
+                Image(systemName: "info.circle")
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .frame(width: 36, height: 36)
+
+                VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                    Text(title)
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                    Text(subtitle)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.posSurfaceContainerLowest)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .posItemCardBorderStyles()
+            .accessibilityLabel("\(title), \(subtitle)")
+        }
     }
 }
 

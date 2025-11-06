@@ -64,14 +64,14 @@ extension POSSettingsView {
             }
             .padding(.horizontal, POSPadding.medium)
         }
-        .background(Color.posSurface)
+        .background(Color.posSurfaceBright)
     }
 
     @ViewBuilder
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             POSSettingsHardwareDetailView(settingsController: settingsController)
         case .localCatalog:
@@ -81,7 +81,7 @@ extension POSSettingsView {
                 EmptyView()
             }
         case .help:
-            PointOfSaleSettingsHelpDetailView()
+            POSSettingsHelpDetailView()
         default:
             EmptyView()
         }

@@ -21,9 +21,10 @@ struct POSSettingsLocalCatalogDetailView: View {
                         managingDataUsage
                         manualCatalogUpdate
                     }
+                    .padding(.horizontal, POSPadding.medium)
                 }
-                .background(Style.backgroundColor)
             }
+            .background(Style.backgroundColor)
         }
         .task {
             await viewModel.loadCatalogData()
@@ -128,7 +129,7 @@ private extension POSSettingsLocalCatalogDetailView {
 
 private extension POSSettingsLocalCatalogDetailView {
     enum Style {
-        static let backgroundColor = Color.posOnSecondaryContainer
+        static let backgroundColor = Color.posSurface
     }
 
     enum Localization {

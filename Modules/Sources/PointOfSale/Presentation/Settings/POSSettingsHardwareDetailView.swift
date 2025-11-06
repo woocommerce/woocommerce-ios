@@ -158,6 +158,11 @@ private extension POSSettingsHardwareDetailView {
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
                     if case .connected = posModel.cardReaderConnectionStatus {
+                        if shouldShowUpdateFirmwareButton {
+                            POSSettingsCard(title: "Update firmware version",
+                                            subtitle: "Update the firmware version to continue accepting payments.",
+                                            action: { })
+                        }
                         POSInformationCard {
                             VStack(spacing: POSSpacing.medium) {
                                 POSInformationCardFieldRow(label: Localization.readerModelTitle,
@@ -438,7 +443,7 @@ private extension POSSettingsHardwareDetailView {
             value: "Firmware",
             comment: "Title for the card reader firmware section in Point of Sale settings."
         )
-        
+
         static let updateFirmwareButtontitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle",
             value: "Update firmware",

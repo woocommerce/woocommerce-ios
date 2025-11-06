@@ -117,7 +117,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let siteID = try siteContainer.decode(Int64.self, forKey: .siteID)
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
-        let url = try siteContainer.decode(String.self, forKey: .url)
+        let url = Self.safeURL(try siteContainer.decode(String.self, forKey: .url))
         let capabilitiesContainer = try siteContainer.nestedContainer(keyedBy: CapabilitiesKeys.self, forKey: .capabilities)
         let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
         let isAdmin = try capabilitiesContainer.decode(Bool.self, forKey: .isAdmin)
@@ -130,8 +130,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
         let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
-        let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL)
-        let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
+        let adminURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .adminURL))
+        let loginURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .loginURL))
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
         let canBlaze = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .canBlaze) ?? false
         let visibility = optionsContainer.failsafeDecodeIfPresent(SiteVisibility.self, forKey: .visibility) ?? .privateSite
@@ -333,7 +333,8 @@ public enum SiteVisibility: Int, Codable, GeneratedFakeable {
 ///
 public extension Site {
 
-    private var jetpackCanonicalURL: String {
+    /// Force URL to use HTTPS if possible to avoid App Transport Security errors
+    private static func safeURL(_ url: String) -> String {
         guard let originalURL = URL(string: url),
               originalURL.scheme?.lowercased() == "http"
         else {
@@ -360,7 +361,7 @@ public extension Site {
     }
 
     func toJetpackSite() -> JetpackSite {
-        JetpackSite(siteID: siteID, siteAddress: jetpackCanonicalURL, applicationPasswordAvailable: applicationPasswordAvailable)
+        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

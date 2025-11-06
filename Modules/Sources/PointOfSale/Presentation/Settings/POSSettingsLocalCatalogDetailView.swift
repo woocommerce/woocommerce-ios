@@ -2,7 +2,6 @@ import SwiftUI
 
 struct POSSettingsLocalCatalogDetailView: View {
     // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
-    @State private var allowFullSyncOnCellular: Bool = true
     private let viewModel: POSSettingsLocalCatalogViewModel
 
     init(viewModel: POSSettingsLocalCatalogViewModel) {
@@ -22,9 +21,10 @@ struct POSSettingsLocalCatalogDetailView: View {
                         managingDataUsage
                         manualCatalogUpdate
                     }
+                    .padding(.horizontal, POSPadding.medium)
                 }
-                .background(Style.backgroundColor)
             }
+            .background(Style.backgroundColor)
         }
         .task {
             await viewModel.loadCatalogData()
@@ -51,11 +51,12 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
+        @Bindable var viewModel = viewModel
         VStack(spacing: POSSpacing.none) {
             sectionHeaderView(title: Localization.managingDataUsage)
 
             VStack(spacing: POSSpacing.medium) {
-                toggleRowView(label: Localization.allowFullSyncOnCellular, isOn: $allowFullSyncOnCellular)
+                toggleRowView(label: Localization.allowFullSyncOnCellular, isOn: $viewModel.allowFullSyncOnCellular)
             }
             .padding(.bottom, POSPadding.medium)
         }
@@ -128,7 +129,7 @@ private extension POSSettingsLocalCatalogDetailView {
 
 private extension POSSettingsLocalCatalogDetailView {
     enum Style {
-        static let backgroundColor = Color.posOnSecondaryContainer
+        static let backgroundColor = Color.posSurface
     }
 
     enum Localization {

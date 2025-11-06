@@ -30,34 +30,39 @@ public protocol POSCatalogSyncRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
     ///   - forceGeneration: Whether to always generate a catalog.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Catalog job response with job ID.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse
+    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse
 
     /// Downloads the generated catalog at the specified download URL.
     /// - Parameters:
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: List of products and variations in the POS catalog.
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse
+    func downloadCatalog(for siteID: Int64,
+                         downloadURL: String,
+                         allowCellular: Bool) async throws -> POSCatalogResponse
 
     /// Loads POS products for full sync.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Paginated list of POS products.
-    func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct>
+    func loadProducts(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations for full sync.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Paginated list of POS product variations.
-    func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+    func loadProductVariations(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProductVariation>
 
     /// Gets the total count of products for the specified site.
     ///
@@ -87,7 +92,6 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS products.
     ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     public func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
@@ -120,7 +124,6 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS product variations.
     ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     public func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
@@ -151,10 +154,11 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
+    ///   - forceGeneration: Whether to always generate a catalog.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Catalog job response with job ID.
     ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
+    public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
         let path = "products/catalog"
         let parameters: [String: Any] = [
             ParameterKey.fullSyncFields: POSProduct.requestFields,
@@ -166,7 +170,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             siteID: siteID,
             path: path,
             parameters: parameters,
-            availableAsRESTRequest: true
+            availableAsRESTRequest: true,
+            allowsCellularAccess: allowCellular
         )
         let mapper = SingleItemMapper<POSCatalogRequestResponse>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
@@ -176,14 +181,17 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: List of products and variations in the POS catalog.
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse {
+    public func downloadCatalog(for siteID: Int64,
+                                downloadURL: String,
+                                allowCellular: Bool) async throws -> POSCatalogResponse {
         // TODO: WOOMOB-1173 - move download task to the background using `URLSessionConfiguration.background`
         guard let url = URL(string: downloadURL) else {
             throw NetworkError.invalidURL
         }
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.allowsCellularAccess = allowCellular
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let items = try await enqueue(request, mapper: mapper)
         let variationProductTypeKey = "variation"
@@ -198,10 +206,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Paginated list of POS products.
     ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
+    public func loadProducts(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProduct> {
         let path = Path.products
         let parameters = [
             ParameterKey.page: String(pageNumber),
@@ -215,7 +223,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             siteID: siteID,
             path: path,
             parameters: parameters,
-            availableAsRESTRequest: true
+            availableAsRESTRequest: true,
+            allowsCellularAccess: allowCellular
         )
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
@@ -228,10 +237,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
+    ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Paginated list of POS product variations.
     ///
-    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
+    public func loadProductVariations(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
             ParameterKey.page: String(pageNumber),
@@ -245,7 +254,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             siteID: siteID,
             path: path,
             parameters: parameters,
-            availableAsRESTRequest: true
+            availableAsRESTRequest: true,
+            allowsCellularAccess: allowCellular
         )
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
@@ -331,7 +341,6 @@ private extension POSCatalogSyncRemote {
 // MARK: - Response Models
 
 /// Response from catalog generation request.
-// periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
 public struct POSCatalogRequestResponse: Decodable {
     /// Current status of the catalog generation job.
     public let status: POSCatalogStatus
@@ -353,7 +362,6 @@ public enum POSCatalogStatus: String, Decodable {
 }
 
 /// POS catalog from download.
-// periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
 public struct POSCatalogResponse {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]

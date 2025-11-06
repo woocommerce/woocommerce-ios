@@ -70,7 +70,7 @@ final class BookingListViewModel: ObservableObject {
         self.filters = {
             switch type {
             case .all:
-                BookingFilters() // TODO: check local storage for persisted filters
+                BookingFilters()
             case .today, .upcoming:
                 BookingFilters(
                     startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),

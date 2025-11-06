@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleSettingsStoreDetailView: View {
+struct POSSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
 
     let viewModel: POSSettingsStoreViewModel
@@ -10,7 +10,11 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 
     private var backgroundColor: Color {
-        Color.posOnSecondaryContainer
+        Color.posSurface
+    }
+
+    private var cardBackgroundColor: Color {
+        Color.posSurfaceContainerLowest
     }
 
     var body: some View {
@@ -27,9 +31,10 @@ struct PointOfSaleSettingsStoreDetailView: View {
                         receiptInformationView
                             .renderedIf(viewModel.shouldShowReceiptInformation)
                     }
+                    .padding(.horizontal, POSPadding.medium)
                 }
-                .background(backgroundColor)
             }
+            .background(backgroundColor)
             .task {
                 isLoading = true
                 await viewModel.retrievePOSReceiptSettings()
@@ -40,37 +45,43 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
     @ViewBuilder
     private var storeInformationView: some View {
-        VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.storeInformation)
+        POSInformationCard {
+            VStack(spacing: POSSpacing.none) {
+                sectionHeaderView(title: Localization.storeInformation)
 
-            VStack(spacing: POSSpacing.medium) {
-                fieldRowView(label: Localization.storeName, value: viewModel.storeName)
-                fieldRowView(label: Localization.address, value: viewModel.storeAddress)
+                VStack(spacing: POSSpacing.medium) {
+                    fieldRowView(label: Localization.storeName, value: viewModel.storeName)
+                    fieldRowView(label: Localization.address, value: viewModel.storeAddress, showSeparator: false)
+                }
+                .padding(.bottom, POSPadding.medium)
             }
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
     private var receiptInformationView: some View {
-        VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.receiptInformation)
+        POSInformationCard {
+            VStack(spacing: POSSpacing.none) {
+                sectionHeaderView(title: Localization.receiptInformation)
 
-            VStack(spacing: POSSpacing.medium) {
-                receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
-                receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
-                receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
-                receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
-                receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
+                VStack(spacing: POSSpacing.medium) {
+                    receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+                    receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+                    receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+                    receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+                    receiptFieldRowView(label: Localization.refundReturnsPolicy,
+                                        value: viewModel.receiptInformation.refundReturnsPolicy,
+                                        showSeparator: false)
+                }
+                .padding(.bottom, POSPadding.medium)
             }
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
     private func sectionHeaderView(title: String) -> some View {
         ZStack {
-            backgroundColor
+            cardBackgroundColor
             Text(title)
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
@@ -81,24 +92,34 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 
     @ViewBuilder
-    private func fieldRowView(label: String, value: String) -> some View {
+    private func fieldRowView(label: String, value: String, showSeparator: Bool = true) -> some View {
         VStack(alignment: .leading, spacing: POSPadding.small) {
             Text(label)
                 .font(.posBodyMediumRegular())
             Text(value)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(.secondary)
+
+            if showSeparator {
+                Divider()
+                    .padding(.top, POSPadding.medium)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder
-    private func receiptFieldRowView(label: String, value: String?) -> some View {
+    private func receiptFieldRowView(label: String, value: String?, showSeparator: Bool = true) -> some View {
         VStack(alignment: .leading, spacing: POSPadding.small) {
             Text(label)
                 .font(.posBodyMediumRegular())
             settingValueView(for: value)
+
+            if showSeparator {
+                Divider()
+                    .padding(.top, POSPadding.medium)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, POSPadding.medium)
@@ -120,8 +141,23 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 }
 
+private struct POSInformationCard<Content: View>: View {
+    let content: Content
 
-private extension PointOfSaleSettingsStoreDetailView {
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.posSurfaceContainerLowest)
+            .posItemCardBorderStyles()
+    }
+}
+
+private extension POSSettingsStoreDetailView {
     enum Constants {
         static let shimmeringTextWidth: CGFloat = 70
         static let shimmeringTextHeight: CGFloat = 16
@@ -141,8 +177,8 @@ private extension PointOfSaleSettingsStoreDetailView {
         )
 
         static let storeInformation = NSLocalizedString(
-            "pointOfSaleSettingsStoreDetailView.storeInformation",
-            value: "Store Information",
+            "pointOfSaleSettingsStoreDetailView.general",
+            value: "General",
             comment: "Section title for store information in Point of Sale settings."
         )
 
@@ -199,6 +235,6 @@ private extension PointOfSaleSettingsStoreDetailView {
 #if DEBUG
 #Preview {
     let controller = POSSettingsPreviewController()
-    PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
+    POSSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

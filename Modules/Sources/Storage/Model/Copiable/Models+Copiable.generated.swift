@@ -127,7 +127,8 @@ extension Storage.GeneralStoreSettings {
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
         isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
-        firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy
+        firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
+        syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -151,6 +152,7 @@ extension Storage.GeneralStoreSettings {
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
         let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
+        let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -174,7 +176,8 @@ extension Storage.GeneralStoreSettings {
             searchTermsByKey: searchTermsByKey,
             isPOSTabVisible: isPOSTabVisible,
             lastPOSOpenedDate: lastPOSOpenedDate,
-            firstPOSCatalogSyncDate: firstPOSCatalogSyncDate
+            firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+            syncPOSCatalogOverCellular: syncPOSCatalogOverCellular
         )
     }
 }

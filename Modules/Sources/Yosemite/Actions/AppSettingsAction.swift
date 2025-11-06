@@ -105,6 +105,22 @@ public enum AppSettingsAction: Action {
     /// Clears all the product filter history for a given site
     case resetProductFilterHistory(siteID: Int64, onCompletion: (Error?) -> Void)
 
+    // MARK: - Bookings Filters
+
+    /// Loads the booking filters
+    ///
+    case loadBookingFilters(siteID: Int64, onCompletion: (Result<StoredBookingFilters.Filters, Error>) -> Void)
+
+    /// Add or Update booking filters
+    ///
+    case upsertBookingFilters(siteID: Int64,
+                              filters: StoredBookingFilters.Filters,
+                              onCompletion: (Error?) -> Void)
+
+    /// Clears all the booking filters
+    ///
+    case resetBookingFilters
+
     // MARK: - General App Settings
 
     /// Saves the `date` as the last known date that the app was installed. This does not do
@@ -414,4 +430,11 @@ public enum AppSettingsAction: Action {
     /// Gets the date of the first POS catalog sync for a specific site
     ///
     case getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void)
+
+    /// Sets whether we should allow cellular data use downloading POS catalogs for a specific site
+    ///
+    case setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool, onCompletion: () -> Void)
+
+    /// Gets whether we should allow cellular data use downloading POS catalogs for a specific site
+    case getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void)
 }

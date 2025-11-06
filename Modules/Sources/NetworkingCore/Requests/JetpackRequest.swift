@@ -38,6 +38,10 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///
     private let availableAsRESTRequest: Bool
 
+    /// Whether this request should allow cellular access.
+    ///
+    private let allowsCellularAccess: Bool
+
 
     /// Designated Initializer.
     ///
@@ -48,6 +52,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
+    ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     public init(wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
@@ -55,7 +60,8 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: [String: Any]? = nil,
-         availableAsRESTRequest: Bool = false) {
+         availableAsRESTRequest: Bool = false,
+         allowsCellularAccess: Bool = true) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
         }
@@ -66,6 +72,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         self.path = path
         self.parameters = parameters ?? [:]
         self.availableAsRESTRequest = availableAsRESTRequest
+        self.allowsCellularAccess = allowsCellularAccess
     }
 
 
@@ -73,7 +80,8 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///
     public func asURLRequest() throws -> URLRequest {
         let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
-        let dotcomRequest = try dotcomEndpoint.asURLRequest()
+        var dotcomRequest = try dotcomEndpoint.asURLRequest()
+        dotcomRequest.allowsCellularAccess = allowsCellularAccess
 
         return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
     }
@@ -86,7 +94,12 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         guard availableAsRESTRequest else {
             return nil
         }
-        return RESTRequest(siteURL: siteURL, wooApiVersion: wooApiVersion, method: method, path: path, parameters: parameters)
+        return RESTRequest(siteURL: siteURL,
+                           wooApiVersion: wooApiVersion,
+                           method: method,
+                           path: path,
+                           parameters: parameters,
+                           allowsCellularAccess: allowsCellularAccess)
     }
 }
 

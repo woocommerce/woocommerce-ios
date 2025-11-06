@@ -83,6 +83,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productFilterHistory)
     }()
 
+    /// URL to the plist file that we use to determine the booking filters
+    ///
+    private lazy var bookingFiltersURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.bookingFilters)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -179,6 +186,12 @@ public class AppSettingsStore: Store {
             removeFromProductFilterHistory(filter: filter, onCompletion: onCompletion)
         case let .resetProductFilterHistory(siteID, onCompletion):
             resetProductFilterHistory(siteID: siteID, onCompletion: onCompletion)
+        case .loadBookingFilters(let siteID, let onCompletion):
+            loadBookingFilters(siteID: siteID, onCompletion: onCompletion)
+        case .upsertBookingFilters(let siteID, let filters, let onCompletion):
+            upsertBookingFilters(siteID: siteID, filters: filters, onCompletion: onCompletion)
+        case .resetBookingFilters:
+            resetBookingFilters()
         case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
@@ -315,6 +328,10 @@ public class AppSettingsStore: Store {
             setFirstPOSCatalogSyncDate(siteID: siteID, date: date, onCompletion: onCompletion)
         case .getFirstPOSCatalogSyncDate(siteID: let siteID, onCompletion: let onCompletion):
             getFirstPOSCatalogSyncDate(siteID: siteID, onCompletion: onCompletion)
+        case .setPOSLocalCatalogCellularDataAllowed(let siteID, let allowed, let onCompletion):
+            setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
+        case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
+            getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1002,6 +1019,46 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Booking Filters
+//
+private extension AppSettingsStore {
+    func loadBookingFilters(siteID: Int64, onCompletion: (Result<StoredBookingFilters.Filters, Error>) -> Void) {
+        guard let allSavedFilters: StoredBookingFilters = try? fileStorage.data(for: bookingFiltersURL),
+              let filtersUnwrapped = allSavedFilters.filters[siteID] else {
+            let error = AppSettingsStoreErrors.noBookingFilters
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(filtersUnwrapped))
+    }
+
+    func upsertBookingFilters(siteID: Int64, filters: StoredBookingFilters.Filters, onCompletion: (Error?) -> Void) {
+        var existingFilters: [Int64: StoredBookingFilters.Filters] = [:]
+        if let storedFilters: StoredBookingFilters = try? fileStorage.data(for: bookingFiltersURL) {
+            existingFilters = storedFilters.filters
+        }
+
+        existingFilters[siteID] = filters
+
+        let newStoredBookingFilters = StoredBookingFilters(filters: existingFilters)
+        do {
+            try fileStorage.write(newStoredBookingFilters, to: bookingFiltersURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeBookingFilters)
+        }
+    }
+
+    func resetBookingFilters() {
+        do {
+            try fileStorage.deleteFile(at: bookingFiltersURL)
+        } catch {
+            DDLogError("⛔️ Deleting the booking filters file failed. Error: \(error)")
+        }
+    }
+}
+
 // MARK: - Store settings
 //
 private extension AppSettingsStore {
@@ -1365,7 +1422,10 @@ private extension AppSettingsStore {
             onCompletion(.failure(error))
         }
     }
+}
 
+// MARK: - Point of Sale local catalog settings
+private extension AppSettingsStore {
     func setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: () -> Void) {
         siteSpecificAppSettingsStoreMethods.setPOSLastOpenedDate(siteID: siteID, date: date)
         onCompletion()
@@ -1384,6 +1444,16 @@ private extension AppSettingsStore {
     func getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void) {
         let date = siteSpecificAppSettingsStoreMethods.getFirstPOSCatalogSyncDate(siteID: siteID)
         onCompletion(date)
+    }
+
+    func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool, onCompletion: () -> Void) {
+        siteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed)
+        onCompletion()
+    }
+
+    func getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void) {
+        let allowed = siteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
+        onCompletion(allowed)
     }
 }
 
@@ -1406,6 +1476,8 @@ enum AppSettingsStoreErrors: Error {
     case writeOrderFilterHistory
     case writeProductsSettings
     case writeProductFilterHistory
+    case noBookingFilters
+    case writeBookingFilters
     case noEligibilityErrorInfo
 }
 
@@ -1423,4 +1495,5 @@ private enum Constants {
     static let productsSettings = "products-settings.plist"
     static let orderFilterHistory = "order-filter-history.plist"
     static let productFilterHistory = "product-filter-history.plist"
+    static let bookingFilters = "booking-filters.plist"
 }

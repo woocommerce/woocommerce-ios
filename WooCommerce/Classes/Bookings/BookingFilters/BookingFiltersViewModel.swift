@@ -35,7 +35,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     }
 
     var criteria: Filters {
-        let teamMembers = (teamMemberFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingResource] ?? []
+        let teamMembers = (teamMemberFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingTeamMemberFilter] ?? []
         let products = (productFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingProductFilter] ?? []
         let customers = (customerFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingCustomerFilter] ?? []
         let attendanceStatuses = (attendanceStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingAttendanceStatus] ?? []
@@ -74,7 +74,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     }
 
     func clearAll() {
-        teamMemberFilterViewModel.selectedValue = BookingResource?.none
+        teamMemberFilterViewModel.selectedValue = BookingTeamMemberFilter?.none
         productFilterViewModel.selectedValue = BookingProductFilter?.none
         customerFilterViewModel.selectedValue = CustomerFilter?.none
         attendanceStatusFilterViewModel.selectedValue = BookingAttendanceStatus?.none
@@ -86,7 +86,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
 
     struct Filters: Equatable, HumanReadable {
 
-        let teamMembers: [BookingResource]
+        let teamMembers: [BookingTeamMemberFilter]
         let products: [BookingProductFilter]
         let attendanceStatuses: [BookingAttendanceStatus]
         let paymentStatuses: [BookingStatus]
@@ -105,7 +105,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
             numberOfActiveFilters = 0
         }
 
-        init(teamMembers: [BookingResource],
+        init(teamMembers: [BookingTeamMemberFilter],
              products: [BookingProductFilter],
              attendanceStatuses: [BookingAttendanceStatus],
              paymentStatuses: [BookingStatus],
@@ -216,7 +216,7 @@ extension BookingFiltersViewModel.BookingListFilter {
 }
 
 // MARK: - FilterType conformance
-extension BookingResource: FilterType {
+extension BookingTeamMemberFilter: FilterType {
     var description: String { name }
     var isActive: Bool { true }
 }

@@ -276,10 +276,12 @@ private extension AuthenticatedState {
         let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
         let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
+        let resetBookingFilters = AppSettingsAction.resetBookingFilters
         ServiceLocator.stores.dispatch([resetStoredProviders,
                                         resetOrdersSettings,
                                         resetProductsSettings,
-                                        resetGeneralStoreSettings])
+                                        resetGeneralStoreSettings,
+                                        resetBookingFilters])
     }
 }
 

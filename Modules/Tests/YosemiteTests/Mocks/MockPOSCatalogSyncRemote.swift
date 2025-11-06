@@ -19,6 +19,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var lastIncrementalProductsModifiedAfter: Date?
     private(set) var lastIncrementalVariationsModifiedAfter: Date?
     private(set) var lastCatalogRequestForceGeneration: Bool?
+    private(set) var lastCatalogDownloadAllowCellular: Bool?
 
     // Fallback result when no specific page result is configured
     private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
@@ -102,7 +103,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     // MARK: - Protocol Methods - Full Sync
 
-    func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
+    func loadProducts(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProduct> {
         await loadProductsCallCount.increment()
 
         if let result = productResults[pageNumber] {
@@ -116,7 +117,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         return fallbackResult
     }
 
-    func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
+    func loadProductVariations(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProductVariation> {
         await loadProductVariationsCallCount.increment()
 
         if let result = variationResults[pageNumber] {
@@ -132,8 +133,9 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     // MARK: - Protocol Methods - Catalog API
 
-    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool) async throws -> POSCatalogRequestResponse {
+    func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
         lastCatalogRequestForceGeneration = forceGeneration
+        lastCatalogDownloadAllowCellular = allowCellular
         switch catalogRequestResult {
         case .success(let response):
             return response
@@ -142,7 +144,8 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
-    func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalogResponse {
+    func downloadCatalog(for siteID: Int64, downloadURL: String, allowCellular: Bool) async throws -> POSCatalogResponse {
+        lastCatalogDownloadAllowCellular = allowCellular
         switch catalogDownloadResult {
         case .success(let response):
             return response

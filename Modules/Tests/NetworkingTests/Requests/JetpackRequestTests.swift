@@ -161,6 +161,72 @@ final class JetpackRequestTests: XCTestCase {
         // Then
         XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
     }
+
+    // MARK: - allowsCellularAccess Tests
+
+    func test_request_with_allowsCellularAccess_true_sets_URLRequest_property() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     allowsCellularAccess: true)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertTrue(urlRequest.allowsCellularAccess)
+    }
+
+    func test_request_with_allowsCellularAccess_false_sets_URLRequest_property() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     allowsCellularAccess: false)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertFalse(urlRequest.allowsCellularAccess)
+    }
+
+    func test_request_defaults_to_allowsCellularAccess_true() throws {
+        // Given - no explicit allowsCellularAccess parameter
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertTrue(urlRequest.allowsCellularAccess)
+    }
+
+    func test_converting_to_RESTRequest_preserves_allowsCellularAccess() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     availableAsRESTRequest: true,
+                                     allowsCellularAccess: false)
+
+        // When
+        let restRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertFalse(restRequest.allowsCellularAccess)
+    }
 }
 
 

@@ -117,10 +117,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
 
+        let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
         do {
-            _ = try await fullSyncService.startFullSync(for: siteID, regenerateCatalog: regenerateCatalog)
+            _ = try await fullSyncService.startFullSync(for: siteID,
+                                                        regenerateCatalog: regenerateCatalog,
+                                                        allowCellular: allowCellular)
             emitSyncState(.syncCompleted(siteID: siteID))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {

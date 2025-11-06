@@ -378,10 +378,8 @@ class DefaultStoresManager: StoresManager {
     }
 
     func shouldAuthenticateAdminPage(for site: Site) -> Bool {
-        /// If the site is self-hosted and user is authenticated with WPCom,
-        /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
-        /// This should be prevented 💀⛔️
-        guard site.isCIAB || site.isWordPressComStore || isAuthenticatedWithoutWPCom else {
+        /// Auto-authentication for web view works if the site has SSO or if user is authenticated with site credentials
+        guard site.hasSSOEnabled || isAuthenticatedWithoutWPCom else {
             return false
         }
         return true

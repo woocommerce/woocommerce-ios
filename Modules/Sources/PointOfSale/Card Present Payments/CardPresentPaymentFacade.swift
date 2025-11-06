@@ -26,6 +26,11 @@ public protocol CardPresentPaymentFacade {
     /// Also cancels any in-progress payment, if possible.
     func disconnectReader() async
 
+    /// Starts a software update for the currently connected card reader, if an update is available.
+    /// - Throws: `CardPresentPaymentError` for any failures.
+    /// - Output: publishes intermediate events on the `paymentEventPublisher` as required.
+    func updateCardReaderSoftware() async throws
+
     /// Collects a card present payment for an order.
     /// If the appropriate type of reader is not already connected, this should attempt a connection before the payment.
     /// If another type of reader is already connected, this will be disconnected automatically.

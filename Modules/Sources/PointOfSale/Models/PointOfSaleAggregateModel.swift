@@ -317,6 +317,13 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    func updateCardReaderSoftware() {
+        //TODO: analytics.track(.cardReaderUpdateTapped)
+        Task { @MainActor [weak self] in
+            try? await self?.cardPresentPaymentService.updateCardReaderSoftware()
+        }
+    }
+
     /// Starts a payment immediately if a reader is connected.
     /// Otherwise, schedules a payment to start the next time a reader connects.
     /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`

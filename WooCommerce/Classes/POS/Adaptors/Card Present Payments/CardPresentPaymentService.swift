@@ -130,6 +130,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     @MainActor
+    func updateCardReaderSoftware() async throws {
+        let action = CardPresentPaymentAction.startCardReaderUpdate
+        stores.dispatch(action)
+    }
+
+    @MainActor
     func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         paymentTask?.cancel()
 

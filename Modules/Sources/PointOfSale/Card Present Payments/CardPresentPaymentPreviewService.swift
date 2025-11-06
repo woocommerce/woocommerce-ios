@@ -35,6 +35,10 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
     func cancelPayment() {
         // no-op
     }
+
+    func updateCardReaderSoftware() async throws {
+        // no-op
+    }
 }
 
 #endif

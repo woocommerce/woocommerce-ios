@@ -30,6 +30,11 @@ struct POSSettingsHardwareDetailView: View {
             return Localization.batteryLevelUnknown
         }
     }
+    
+    // TODO
+    private var formattedCardReaderFirmware: String {
+        "Unknown"
+    }
 
     private var backgroundColor: Color {
         Color.posSurface
@@ -156,8 +161,15 @@ private extension POSSettingsHardwareDetailView {
                                 })
 
                                 POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
-                                                           value: formattedBatteryLevel,
-                                                           showSeparator: false)
+                                                           value: formattedBatteryLevel)
+
+                                POSInformationCardFieldRow(label: Localization.firmwareTitle,
+                                                           value: formattedCardReaderFirmware,
+                                                           showSeparator: false,
+                                                           buttonTitle: Localization.updateFirmwareButtontitle,
+                                                           buttonAction: {
+                                    posModel.updateCardReaderSoftware()
+                                })
                             }
                             .padding(.bottom, POSPadding.medium)
                         }
@@ -388,15 +400,35 @@ private extension POSSettingsHardwareDetailView {
             value: "Configure barcode scanner settings",
             comment: "Description of Barcode scanner settings configuration."
         )
+
         static let cardReaderConnectTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
             value: "Connect card reader",
             comment: "Title for card reader connect button when no reader is connected."
         )
+
+        static let cardReaderDisconnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderDisconnectTitle",
+            value: "Disconnect reader",
+            comment: "Title for card reader disconnect button when reader is already connected."
+        )
+
         static let cardReaderConnectSubtitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle",
             value: "Connect your card reader and start accepting payments",
             comment: "Subtitle for card reader connect button when no reader is connected."
+        )
+
+        static let firmwareTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.firmwareTitle",
+            value: "Firmware",
+            comment: "Title for the card reader firmware section in Point of Sale settings."
+        )
+        
+        static let updateFirmwareButtontitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle",
+            value: "Update firmware",
+            comment: "Title of the button to update firmware in Point of Sale settings."
         )
 
         static let supportCancel = NSLocalizedString(

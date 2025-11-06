@@ -479,12 +479,12 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_wpcom_site() {
+    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_sso_site() {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
-        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: true)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, hasSSOEnabled: true)
         sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 

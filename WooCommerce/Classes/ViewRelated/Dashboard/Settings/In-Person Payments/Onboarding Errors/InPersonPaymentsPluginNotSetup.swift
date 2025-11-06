@@ -1,7 +1,6 @@
 import SwiftUI
 import Yosemite
 import WooFoundation
-import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin

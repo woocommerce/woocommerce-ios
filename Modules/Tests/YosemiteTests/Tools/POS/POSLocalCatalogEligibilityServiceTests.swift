@@ -14,8 +14,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -29,8 +31,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 600, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -46,8 +50,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 501, variationCount: 500))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -77,8 +83,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .failure(expectedError)
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -106,8 +114,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -129,8 +139,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -152,8 +164,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -190,8 +204,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: false,
             catalogSizeLimit: 1000
         )
@@ -220,8 +236,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 100, variationCount: 50))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 100 // Custom lower limit
         )
@@ -250,8 +268,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -280,8 +300,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 2000, variationCount: 0))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -309,8 +331,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
         )
+        let systemStatusService = MockPOSSystemStatusService()
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
             catalogSizeLimit: 1000
         )
@@ -323,5 +347,119 @@ struct POSLocalCatalogEligibilityServiceTests {
 
         // Should have checked catalog size since POS was eligible
         #expect(sizeChecker.checkCatalogSizeCallCount == 1)
+    }
+
+    // MARK: - WooCommerce Version Checking
+
+    @Test("WooCommerce version eligibility",
+          arguments: [
+            ("10.2.0", true, false, 0),         // Below minimum
+            ("10.3.0-beta", true, true, 1),     // At minimum (beta)
+            ("10.3.0", true, true, 1),          // At minimum (stable)
+            ("11.0.0", true, true, 1),          // Above minimum
+          ])
+    func testWooCommerceVersionEligibility(
+        version: String,
+        isActive: Bool,
+        expectEligible: Bool,
+        expectedSizeCheckCount: Int
+    ) async throws {
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
+        )
+        let systemStatusService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .success(
+                POSPluginAndFeatureInfo(
+                    wcPlugin: SystemPlugin(
+                        siteID: siteID,
+                        plugin: "woocommerce/woocommerce.php",
+                        name: "WooCommerce",
+                        version: version,
+                        versionLatest: "11.0.0",
+                        url: "https://woocommerce.com",
+                        authorName: "WooCommerce",
+                        authorUrl: "https://woocommerce.com",
+                        networkActivated: false,
+                        active: isActive
+                    ),
+                    featureValue: true
+                )
+            )
+        )
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        let state = try await service.catalogEligibility(for: siteID)
+
+        if expectEligible {
+            #expect(state == .eligible)
+        } else {
+            guard case .ineligible(let reason) = state else {
+                Issue.record("Expected ineligible state for version \(version)")
+                return
+            }
+            guard case .unsupportedWooCommerceVersion(let minimumVersion) = reason else {
+                Issue.record("Expected unsupportedWooCommerceVersion reason for version \(version)")
+                return
+            }
+            #expect(minimumVersion == "10.3.0-beta")
+        }
+        #expect(sizeChecker.checkCatalogSizeCallCount == expectedSizeCheckCount)
+    }
+
+    @Test("WooCommerce plugin states",
+          arguments: [
+            (nil, POSLocalCatalogIneligibleReason.posTabNotEligible),           // Plugin not found
+            (false, POSLocalCatalogIneligibleReason.posTabNotEligible),         // Plugin inactive
+          ])
+    func testWooCommercePluginStates(
+        isActive: Bool?,
+        expectedReason: POSLocalCatalogIneligibleReason
+    ) async throws {
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
+        )
+
+        let wcPlugin: SystemPlugin? = isActive.map { active in
+            SystemPlugin(
+                siteID: siteID,
+                plugin: "woocommerce/woocommerce.php",
+                name: "WooCommerce",
+                version: "10.3.0",
+                versionLatest: "10.3.0",
+                url: "https://woocommerce.com",
+                authorName: "WooCommerce",
+                authorUrl: "https://woocommerce.com",
+                networkActivated: false,
+                active: active
+            )
+        }
+
+        let systemStatusService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .success(
+                POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: true)
+            )
+        )
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        let state = try await service.catalogEligibility(for: siteID)
+
+        guard case .ineligible(let reason) = state else {
+            Issue.record("Expected ineligible state")
+            return
+        }
+        #expect(reason == expectedReason)
+        #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
 }

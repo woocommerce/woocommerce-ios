@@ -14,6 +14,7 @@ public enum POSLocalCatalogEligibilityState: Equatable {
 public enum POSLocalCatalogIneligibleReason: Equatable {
     case posTabNotEligible
     case featureFlagDisabled
+    case unsupportedWooCommerceVersion(minimumVersion: String)
     case catalogSizeTooLarge(totalCount: Int, limit: Int)
     case catalogSizeCheckFailed(underlyingError: String)
 }

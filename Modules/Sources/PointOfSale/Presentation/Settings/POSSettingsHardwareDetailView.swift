@@ -24,8 +24,7 @@ struct POSSettingsHardwareDetailView: View {
 
     private var formattedBatteryLevel: String {
         if let batteryLevel = settingsController.connectedCardReader?.batteryLevel {
-            let percentage = Int(batteryLevel * 100)
-            return "\(percentage)%"
+            return String(format: Localization.batteryLevelFormat, 100 * batteryLevel)
         } else {
             return Localization.batteryLevelUnknown
         }
@@ -321,6 +320,13 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle",
             value: "Battery",
             comment: "Text displayed on Point of Sale settings pointing to the card reader battery."
+        )
+
+        static let batteryLevelFormat = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat",
+            value: "%.0f%%",
+            comment: "Format string for displaying battery level percentage in Point of Sale settings. " +
+                "Please leave the %.0f%% intact, as it represents the battery percentage."
         )
 
         static let cardReaderNotConnected = NSLocalizedString(

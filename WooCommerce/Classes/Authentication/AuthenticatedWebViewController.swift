@@ -321,6 +321,10 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         viewModel.didFailProvisionalNavigation(with: error)
         activityIndicator.stopAnimating()
+        // attempt reloading without authentication when provisioning fails
+        if let url = viewModel.initialURL {
+            webView.load(URLRequest(url: url))
+        }
     }
 }
 

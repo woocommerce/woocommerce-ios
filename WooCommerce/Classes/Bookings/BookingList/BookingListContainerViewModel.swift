@@ -1,9 +1,12 @@
 import Foundation
 import Combine
+import Yosemite
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
     private let siteID: Int64
+    private let stores: StoresManager
+
     private let todayListViewModel: BookingListViewModel
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
@@ -32,8 +35,9 @@ final class BookingListContainerViewModel: ObservableObject {
         BookingFiltersViewModel(filter: filters, siteID: siteID)
     }
 
-    init(siteID: Int64) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
+        self.stores = stores
 
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
         self.todayListViewModel = BookingListViewModel(
@@ -81,6 +85,8 @@ final class BookingListContainerViewModel: ObservableObject {
                 upcomingSearchViewModel.updateSortOrder(sortBy)
                 allSearchViewModel.updateSortOrder(sortBy)
             }
+
+        restorePersistedFilters()
     }
 
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {
@@ -105,11 +111,68 @@ final class BookingListContainerViewModel: ObservableObject {
         }
     }
 
-    func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
+    func updateFilters(_ filters: BookingFiltersViewModel.Filters, shouldPersist: Bool = true) {
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
         allListViewModel.updateFilters(filters)
         allSearchViewModel.updateFilters(filters)
+        if shouldPersist {
+            saveFilters(filters)
+        }
+    }
+}
+
+private extension BookingListContainerViewModel {
+    func restorePersistedFilters() {
+        Task { @MainActor in
+            guard let storedFilters = await loadPersistedFilters() else {
+                return
+            }
+            let filters = BookingFiltersViewModel.Filters(
+                teamMembers: storedFilters.teamMembers,
+                products: storedFilters.products,
+                attendanceStatuses: storedFilters.attendanceStatuses,
+                paymentStatuses: storedFilters.paymentStatuses,
+                customers: storedFilters.customers,
+                dateRange: storedFilters.dateRange,
+                numberOfActiveFilters: storedFilters.numberOfActiveFilters
+            )
+            updateFilters(filters, shouldPersist: false)
+        }
+    }
+
+    /// Loads persisted booking filters from AppSettings.
+    /// Returns the loaded filters, or nil if none are persisted.
+    @MainActor
+    func loadPersistedFilters() async -> StoredBookingFilters.Filters? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadBookingFilters(siteID: siteID) { result in
+                if case .success(let filters) = result {
+                    continuation.resume(returning: filters)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Saves booking filters to AppSettings for persistence.
+    private func saveFilters(_ filters: BookingFiltersViewModel.Filters) {
+        let persistedFilters = StoredBookingFilters.Filters(
+            teamMembers: filters.teamMembers,
+            products: filters.products,
+            attendanceStatuses: filters.attendanceStatuses,
+            paymentStatuses: filters.paymentStatuses,
+            customers: filters.customers,
+            dateRange: filters.dateRange
+        )
+        let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: persistedFilters) { error in
+            if let error = error {
+                DDLogError("⛔️ Error saving booking filters: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

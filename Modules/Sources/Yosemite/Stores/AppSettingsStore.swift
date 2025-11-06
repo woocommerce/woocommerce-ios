@@ -83,6 +83,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productFilterHistory)
     }()
 
+    /// URL to the plist file that we use to determine the booking filters
+    ///
+    private lazy var bookingFiltersURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.bookingFilters)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -179,6 +186,12 @@ public class AppSettingsStore: Store {
             removeFromProductFilterHistory(filter: filter, onCompletion: onCompletion)
         case let .resetProductFilterHistory(siteID, onCompletion):
             resetProductFilterHistory(siteID: siteID, onCompletion: onCompletion)
+        case .loadBookingFilters(let siteID, let onCompletion):
+            loadBookingFilters(siteID: siteID, onCompletion: onCompletion)
+        case .upsertBookingFilters(let siteID, let filters, let onCompletion):
+            upsertBookingFilters(siteID: siteID, filters: filters, onCompletion: onCompletion)
+        case .resetBookingFilters:
+            resetBookingFilters()
         case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
@@ -1006,6 +1019,46 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Booking Filters
+//
+private extension AppSettingsStore {
+    func loadBookingFilters(siteID: Int64, onCompletion: (Result<StoredBookingFilters.Filters, Error>) -> Void) {
+        guard let allSavedFilters: StoredBookingFilters = try? fileStorage.data(for: bookingFiltersURL),
+              let filtersUnwrapped = allSavedFilters.filters[siteID] else {
+            let error = AppSettingsStoreErrors.noBookingFilters
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(filtersUnwrapped))
+    }
+
+    func upsertBookingFilters(siteID: Int64, filters: StoredBookingFilters.Filters, onCompletion: (Error?) -> Void) {
+        var existingFilters: [Int64: StoredBookingFilters.Filters] = [:]
+        if let storedFilters: StoredBookingFilters = try? fileStorage.data(for: bookingFiltersURL) {
+            existingFilters = storedFilters.filters
+        }
+
+        existingFilters[siteID] = filters
+
+        let newStoredBookingFilters = StoredBookingFilters(filters: existingFilters)
+        do {
+            try fileStorage.write(newStoredBookingFilters, to: bookingFiltersURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeBookingFilters)
+        }
+    }
+
+    func resetBookingFilters() {
+        do {
+            try fileStorage.deleteFile(at: bookingFiltersURL)
+        } catch {
+            DDLogError("⛔️ Deleting the booking filters file failed. Error: \(error)")
+        }
+    }
+}
+
 // MARK: - Store settings
 //
 private extension AppSettingsStore {
@@ -1423,6 +1476,8 @@ enum AppSettingsStoreErrors: Error {
     case writeOrderFilterHistory
     case writeProductsSettings
     case writeProductFilterHistory
+    case noBookingFilters
+    case writeBookingFilters
     case noEligibilityErrorInfo
 }
 
@@ -1440,4 +1495,5 @@ private enum Constants {
     static let productsSettings = "products-settings.plist"
     static let orderFilterHistory = "order-filter-history.plist"
     static let productFilterHistory = "product-filter-history.plist"
+    static let bookingFilters = "booking-filters.plist"
 }

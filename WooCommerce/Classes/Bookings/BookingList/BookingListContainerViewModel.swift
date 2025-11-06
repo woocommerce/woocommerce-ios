@@ -135,7 +135,7 @@ private extension BookingListContainerViewModel {
                 paymentStatuses: storedFilters.paymentStatuses,
                 customers: storedFilters.customers,
                 dateRange: storedFilters.dateRange,
-                numberOfActiveFilters: storedFilters.numberOfActiveFilters()
+                numberOfActiveFilters: storedFilters.numberOfActiveFilters
             )
             updateFilters(filters, shouldPersist: false)
         }

@@ -6,7 +6,7 @@ import Codegen
 ///
 public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
 
-    /// SiteID: BookingFilters
+    /// SiteID: Booking Filters
     public let filters: [Int64: Filters]
 
     public init(filters: [Int64: Filters]) {
@@ -20,6 +20,7 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
         public let paymentStatuses: [BookingStatus]
         public let customers: [BookingCustomerFilter]
         public let dateRange: BookingDateRangeFilter?
+        public let numberOfActiveFilters: Int
 
         public init(teamMembers: [BookingTeamMemberFilter],
                     products: [BookingProductFilter],
@@ -33,30 +34,29 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
             self.paymentStatuses = paymentStatuses
             self.customers = customers
             self.dateRange = dateRange
-        }
+            self.numberOfActiveFilters = {
+                var total = 0
+                if teamMembers.isNotEmpty {
+                    total += 1
+                }
+                if products.isNotEmpty {
+                    total += 1
+                }
+                if attendanceStatuses.isNotEmpty {
+                    total += 1
+                }
+                if customers.isNotEmpty {
+                    total += 1
+                }
+                if paymentStatuses.isNotEmpty {
+                    total += 1
+                }
+                if dateRange != nil {
+                    total += 1
+                }
 
-        public func numberOfActiveFilters() -> Int {
-            var total = 0
-            if teamMembers.isNotEmpty {
-                total += 1
-            }
-            if products.isNotEmpty {
-                total += 1
-            }
-            if attendanceStatuses.isNotEmpty {
-                total += 1
-            }
-            if customers.isNotEmpty {
-                total += 1
-            }
-            if paymentStatuses.isNotEmpty {
-                total += 1
-            }
-            if dateRange != nil {
-                total += 1
-            }
-
-            return total
+                return total
+            }()
         }
     }
 }

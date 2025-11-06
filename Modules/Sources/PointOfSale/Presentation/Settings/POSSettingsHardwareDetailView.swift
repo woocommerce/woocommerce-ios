@@ -146,25 +146,16 @@ private extension POSSettingsHardwareDetailView {
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
                     if case .connected = posModel.cardReaderConnectionStatus {
-                        VStack(spacing: POSPadding.xSmall) {
-                            HStack {
-                                Text(Localization.readerModelTitle)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Text(cardReaderName)
-                                    .foregroundStyle(.secondary)
+                        POSInformationCard {
+                            VStack(spacing: POSSpacing.medium) {
+                                POSInformationCardFieldRow(label: Localization.readerModelTitle,
+                                                           value: cardReaderName)
+                                POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
+                                                           value: formattedBatteryLevel,
+                                                           showSeparator: false)
                             }
-                            .padding()
-                            HStack {
-                                Text(Localization.readerBatteryTitle)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Text(formattedBatteryLevel)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding()
+                            .padding(.bottom, POSPadding.medium)
                         }
-                        .font(.posBodyMediumRegular())
                     } else {
                         POSSettingsCard(title: Localization.cardReaderConnectTitle,
                                             subtitle: Localization.cardReaderConnectSubtitle,
@@ -292,8 +283,8 @@ private extension POSSettingsHardwareDetailView {
 
     enum Localization {
         static let readerModelTitle = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
-            value: "Model",
+            "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1",
+            value: "Device name",
             comment: "Text displayed on Point of Sale settings pointing to the card reader model."
         )
 

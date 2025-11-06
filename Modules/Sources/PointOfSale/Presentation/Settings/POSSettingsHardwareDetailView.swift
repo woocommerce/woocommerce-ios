@@ -448,13 +448,13 @@ private extension POSSettingsHardwareDetailView {
             value: "Update firmware",
             comment: "Title of the button to update firmware in Point of Sale settings."
         )
-        
+
         static let updateFirmwareBannerTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle",
             value: "Update firmware version",
             comment: "Title for the CTA banner to update firmware in Point of Sale settings."
         )
-        
+
         static let updateFirmwareBannerSubtitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle",
             value: "Update the firmware version to continue accepting payments.",

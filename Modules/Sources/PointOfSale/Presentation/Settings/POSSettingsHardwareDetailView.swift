@@ -159,8 +159,8 @@ private extension POSSettingsHardwareDetailView {
                 VStack(spacing: POSSpacing.small) {
                     if case .connected = posModel.cardReaderConnectionStatus {
                         if shouldShowUpdateFirmwareButton {
-                            POSSettingsCardWithIcon(title: "Update firmware version",
-                                                    subtitle: "Update the firmware version to continue accepting payments.")
+                            POSSettingsCardWithIcon(title: Localization.updateFirmwareBannerTitle,
+                                                    subtitle: Localization.updateFirmwareBannerSubtitle)
                         }
                         POSInformationCard {
                             VStack(spacing: POSSpacing.medium) {
@@ -447,6 +447,18 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle",
             value: "Update firmware",
             comment: "Title of the button to update firmware in Point of Sale settings."
+        )
+        
+        static let updateFirmwareBannerTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle",
+            value: "Update firmware version",
+            comment: "Title for the CTA banner to update firmware in Point of Sale settings."
+        )
+        
+        static let updateFirmwareBannerSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle",
+            value: "Update the firmware version to continue accepting payments.",
+            comment: "Subtitle for the CTA banner to update firmware in Point of Sale settings."
         )
 
         static let supportCancel = NSLocalizedString(

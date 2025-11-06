@@ -337,7 +337,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             attendanceStatusKey: "booked",
             localTimezone: "America/New_York",
             currency: "USD",
-            orderInfo: nil
+            orderInfo: nil,
+            note: ""
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

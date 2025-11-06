@@ -4,7 +4,7 @@ import XCTest
 final class PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests: XCTestCase {
 
     func test_manual_hashable_conformance_number_of_properties_unchanged() {
-        let sut = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel()
+        let sut = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel(doneAction: { })
 
         XCTAssertPropertyCount(sut,
                                expectedCount: 2,
@@ -12,7 +12,7 @@ final class PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTes
     }
 
     func test_manual_equatable_conformance_number_of_properties_unchanged() {
-        let sut = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel()
+        let sut = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel(doneAction: { })
 
         XCTAssertPropertyCount(sut,
                                expectedCount: 2,

@@ -149,7 +149,12 @@ private extension POSSettingsHardwareDetailView {
                         POSInformationCard {
                             VStack(spacing: POSSpacing.medium) {
                                 POSInformationCardFieldRow(label: Localization.readerModelTitle,
-                                                           value: cardReaderName)
+                                                           value: cardReaderName,
+                                                           buttonTitle: Localization.cardReaderDisconnectTitle,
+                                                           buttonAction: {
+                                    posModel.disconnectCardReader()
+                                })
+
                                 POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
                                                            value: formattedBatteryLevel,
                                                            showSeparator: false)

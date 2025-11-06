@@ -125,7 +125,8 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
 
         case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
             if progress == 1.0 {
-                self = .alert(.readerUpdateCompletion(viewModel: .init()))
+                self = .alert(.readerUpdateCompletion(
+                    viewModel: .init(doneAction: dependencies.dismissReaderConnectionModal)))
             } else {
                 self = requiredUpdate ?
                     .alert(.requiredReaderUpdateInProgress(

@@ -38,7 +38,7 @@ struct POSSettingsHardwareDetailView: View {
             return Localization.firmwareVersionUnknown
         }
     }
-    
+
     private var shouldShowUpdateFirmwareButton: Bool {
         posModel.isCardReaderUpdateAvailable
     }

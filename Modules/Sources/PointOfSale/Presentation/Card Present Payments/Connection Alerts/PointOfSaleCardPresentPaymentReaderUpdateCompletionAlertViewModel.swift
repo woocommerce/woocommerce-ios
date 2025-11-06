@@ -4,19 +4,28 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel {
     let title: String = Localization.title
     let progressTitle: String = .init(format: Localization.percentCompleteFormat, 100.0)
+    let buttonViewModel: CardPresentPaymentsModalButtonViewModel
+
+    init(doneAction: @escaping () -> Void) {
+        self.buttonViewModel = CardPresentPaymentsModalButtonViewModel(
+            title: "",
+            actionHandler: doneAction)
+    }
 }
 
 extension PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel: Hashable, Equatable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(title)
         hasher.combine(progressTitle)
+        hasher.combine(buttonViewModel)
     }
 
     /// This can be synthesised – implemented manually to ensure it matches the `hash` function.
     static func ==(lhs: PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel,
                    rhs: PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel) -> Bool {
         return lhs.title == rhs.title &&
-        lhs.progressTitle == rhs.progressTitle
+        lhs.progressTitle == rhs.progressTitle &&
+        lhs.buttonViewModel == rhs.buttonViewModel
     }
 }
 

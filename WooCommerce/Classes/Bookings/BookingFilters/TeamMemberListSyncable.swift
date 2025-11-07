@@ -5,7 +5,7 @@ import Yosemite
 struct TeamMemberListSyncable: ListSyncable {
     typealias StorageType = StorageBookingResource
     typealias ModelType = BookingResource
-    typealias ListFilterType = BookingResource
+    typealias ListFilterType = BookingTeamMemberFilter
 
     let siteID: Int64
 
@@ -65,8 +65,8 @@ struct TeamMemberListSyncable: ListSyncable {
 
     func selectionEnabled(for item: BookingResource) -> Bool { true }
 
-    func filterItem(for item: BookingResource) -> BookingResource {
-        item
+    func filterItem(for item: BookingResource) -> BookingTeamMemberFilter {
+        BookingTeamMemberFilter(resourceID: item.resourceID, name: item.name)
     }
 }
 

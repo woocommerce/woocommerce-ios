@@ -64,7 +64,7 @@ struct BookingDetailsView: View {
                         print("On mark as paid tap")
                     }
                     Button(Localization.viewOrder) {
-                        print("On view order tap")
+                        viewModel.navigateToOrderDetails()
                     }
                     Button(Localization.cancelBookingAction, role: .destructive) {
                         print("On cancel booking tap")
@@ -217,7 +217,11 @@ private extension BookingDetailsView {
             VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
                 ForEach(content.actions) { action in
                     Button {
-                        /// On action tap
+                        if action == .viewOrder {
+                            viewModel.navigateToOrderDetails()
+                        } else {
+                            /// On action tap
+                        }
                     } label: {
                         Text(action.buttonTitle)
                     }

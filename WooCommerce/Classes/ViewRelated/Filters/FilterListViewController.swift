@@ -381,9 +381,9 @@ private extension FilterListViewController {
 
                 self.listSelector.navigationController?.pushViewController(controller, animated: true)
             case .bookingResource(let siteID):
-                let selectedMembers: [BookingResource] = {
+                let selectedMembers: [BookingTeamMemberFilter] = {
                     if let wrapper = selected.selectedValue as? MultipleFilterSelection {
-                        return wrapper.items.compactMap { $0 as? BookingResource }
+                        return wrapper.items.compactMap { $0 as? BookingTeamMemberFilter }
                     }
                     return []
                 }()

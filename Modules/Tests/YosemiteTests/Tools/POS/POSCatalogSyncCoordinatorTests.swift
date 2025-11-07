@@ -594,10 +594,12 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
 
     private(set) var startFullSyncCallCount = 0
     private(set) var lastSyncSiteID: Int64?
+    private(set) var lastAllowCellular: Bool?
 
-    func startFullSync(for siteID: Int64, regenerateCatalog: Bool) async throws -> POSCatalog {
+    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool) async throws -> POSCatalog {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
+        lastAllowCellular = allowCellular
 
         // If we should block, wait for continuation to be resumed
         if shouldBlockSync {
@@ -934,6 +936,57 @@ extension POSCatalogSyncCoordinatorTests {
 
         // Then - past threshold should be stale
         #expect(isStale == true)
+    }
+
+    // MARK: - Cellular Data Tests
+
+    @Test func performFullSync_allows_cellular_for_first_sync() async throws {
+        // Given - No previous sync (first sync)
+        mockSiteSettings.mockPOSLocalCatalogCellularDataAllowed = false
+
+        // When
+        try await sut.performFullSync(for: sampleSiteID)
+
+        // Then - Should allow cellular for first sync regardless of setting
+        #expect(mockSyncService.lastAllowCellular == true)
+    }
+
+    @Test func performFullSync_respects_cellular_setting_for_subsequent_syncs_when_true() async throws {
+        // Given - Previous sync exists
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        mockSiteSettings.mockPOSLocalCatalogCellularDataAllowed = true
+
+        // When
+        try await sut.performFullSync(for: sampleSiteID, regenerateCatalog: true)
+
+        // Then - Should use the setting value
+        #expect(mockSyncService.lastAllowCellular == true)
+        #expect(mockSiteSettings.getPOSLocalCatalogCellularDataAllowedCalled == true)
+    }
+
+    @Test func performFullSync_respects_cellular_setting_for_subsequent_syncs_when_false() async throws {
+        // Given - Previous sync exists
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
+        mockSiteSettings.mockPOSLocalCatalogCellularDataAllowed = false
+
+        // When
+        try await sut.performFullSync(for: sampleSiteID, regenerateCatalog: true)
+
+        // Then - Should use the setting value
+        #expect(mockSyncService.lastAllowCellular == false)
+        #expect(mockSiteSettings.getPOSLocalCatalogCellularDataAllowedCalled == true)
+    }
+
+    @Test func performFullSync_allows_cellular_for_first_sync_even_when_setting_is_false() async throws {
+        // Given - No previous sync AND setting is explicitly false
+        mockSiteSettings.mockPOSLocalCatalogCellularDataAllowed = false
+
+        // When
+        try await sut.performFullSync(for: sampleSiteID)
+
+        // Then - Should allow cellular for first sync, overriding the setting
+        #expect(mockSyncService.lastAllowCellular == true)
+        // Setting should not be checked for first sync (it's overridden)
     }
 }
 

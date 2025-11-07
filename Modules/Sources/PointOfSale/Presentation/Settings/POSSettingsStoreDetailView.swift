@@ -86,7 +86,6 @@ struct POSSettingsStoreDetailView: View {
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
                 .padding(.vertical, POSPadding.small)
         }
     }
@@ -104,7 +103,6 @@ struct POSSettingsStoreDetailView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder

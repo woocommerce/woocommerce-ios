@@ -162,7 +162,7 @@ private extension POSSettingsHardwareDetailView {
                                                     subtitle: Localization.updateFirmwareBannerSubtitle)
                         }
                         POSInformationCard {
-                            VStack(spacing: POSSpacing.medium) {
+                            VStack(spacing: POSSpacing.small) {
                                 POSInformationCardFieldRow(label: Localization.readerModelTitle,
                                                            value: cardReaderName,
                                                            buttonTitle: Localization.cardReaderDisconnectTitle,
@@ -182,7 +182,6 @@ private extension POSSettingsHardwareDetailView {
                                 } : nil,
                                                            buttonStyle: .primary)
                             }
-                            .padding(.bottom, POSPadding.medium)
                         }
                     } else {
                         POSSettingsCard(title: Localization.cardReaderConnectTitle,

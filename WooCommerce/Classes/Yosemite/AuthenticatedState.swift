@@ -189,6 +189,12 @@ class AuthenticatedState: StoresManagerState {
                     selectedSite: site,
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
                 ),
+                systemStatusService: POSSystemStatusService(
+                    credentials: credentials,
+                    selectedSite: site,
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                    storageManager: ServiceLocator.storageManager
+                ),
                 isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled
             )
             posCatalogEligibilityChecker = eligibilityService

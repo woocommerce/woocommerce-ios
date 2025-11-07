@@ -134,7 +134,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         ]
 
         let request = JetpackRequest(
-            wooApiVersion: .wcAnalytics,
+            wooApiVersion: .mark3,
             method: .get,
             siteID: siteID,
             path: path,
@@ -249,7 +249,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         ]
 
         let request = JetpackRequest(
-            wooApiVersion: .wcAnalytics,
+            wooApiVersion: .mark3,
             method: .get,
             siteID: siteID,
             path: path,
@@ -303,7 +303,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         ]
 
         let request = JetpackRequest(
-            wooApiVersion: .wcAnalytics,
+            wooApiVersion: .mark3,
             method: .get,
             siteID: siteID,
             path: path,

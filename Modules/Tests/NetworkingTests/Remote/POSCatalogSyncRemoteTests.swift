@@ -584,7 +584,6 @@ struct POSCatalogSyncRemoteTests {
         _ = try? await remote.getProductVariationCount(siteID: sampleSiteID)
 
         // Then - verify API versions match the data endpoints
-        // Products should use .mark3, variations should use .wcAnalytics (based on the load endpoints)
         // This is verified by checking that the correct paths are called
         let requests = network.requestsForResponseData.compactMap { $0 as? JetpackRequest }
         #expect(requests.contains { $0.path.contains("products") })

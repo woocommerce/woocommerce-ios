@@ -1,8 +1,10 @@
 import Foundation
 import Alamofire
+import WooFoundationCore
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
+    private let systemStatusService: POSSystemStatusServiceProtocol
     private let catalogSizeLimit: Int
     private let isLocalCatalogFeatureFlagEnabled: Bool
 
@@ -15,14 +17,17 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     /// Initialize eligibility service
     /// - Parameters:
     ///   - catalogSizeChecker: Service to check catalog size for sites
+    ///   - systemStatusService: Service to check WooCommerce plugin version
     ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
     public init(
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
+        systemStatusService: POSSystemStatusServiceProtocol,
         isLocalCatalogFeatureFlagEnabled: Bool,
         catalogSizeLimit: Int? = nil
     ) {
         self.catalogSizeChecker = catalogSizeChecker
+        self.systemStatusService = systemStatusService
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
     }
@@ -76,6 +81,41 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
+        // Check WooCommerce version - local catalog requires 10.3.0 or higher
+        do {
+            let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
+
+            guard let wcPlugin = pluginInfo.wcPlugin, wcPlugin.active else {
+                let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+                eligibilityStates[siteID] = state
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce plugin not found or inactive for site \(siteID)")
+                return state
+            }
+
+            guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                    minimumRequired: Constants.wcPluginMinimumVersionForLocalCatalog) else {
+                let state = POSLocalCatalogEligibilityState.ineligible(
+                    reason: .unsupportedWooCommerceVersion(minimumVersion: Constants.wcPluginMinimumVersionForLocalCatalog)
+                )
+                eligibilityStates[siteID] = state
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) below minimum" +
+                          "\(Constants.wcPluginMinimumVersionForLocalCatalog) for site \(siteID)")
+                return state
+            }
+
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) meets minimum requirement for site \(siteID)")
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        } catch {
+            let errorString = String(describing: error)
+            let state = POSLocalCatalogEligibilityState.ineligible(
+                reason: .catalogSizeCheckFailed(underlyingError: errorString)
+            )
+            eligibilityStates[siteID] = state
+            DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check WooCommerce version for site \(siteID): \(error)")
+            return state
+        }
+
         // Fetch remote catalog size and check against limit
         do {
             let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
@@ -112,5 +152,6 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 private extension POSLocalCatalogEligibilityService {
     enum Constants {
         static let defaultCatalogSizeLimit = 1000
+        static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
     }
 }

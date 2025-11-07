@@ -197,35 +197,23 @@ platform :ios do
     # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
-    # Use provided version from release tool, or fall back to computed version
-    computed_version = release_version_next
-    new_version = version || computed_version
-
-    # Fail if provided version differs from computed version
-    if version && version != computed_version
-      error_message = <<~ERROR
-        ❌ Version mismatch detected!
-
-        The explicitly-provided version from the release tool is '#{version}' but the computed version from the codebase is '#{computed_version}'.
-
-        This mismatch must be resolved before proceeding with the code freeze. Please investigate and ensure the versions are aligned.
-      ERROR
-      buildkite_annotate(style: 'error', context: 'start-code-freeze-version-mismatch', message: error_message) if is_ci
-      UI.user_error!(error_message)
-    end
+    # If a new version is passed, use it as source of truth from now on
+    new_version = version || release_version_next
+    new_release_branch = "release/#{new_version}"
+    new_build_code = build_code_code_freeze(version_short: new_version)
 
     UI.important <<-MESSAGE
 
       Code Freeze:
-      • New release branch from #{DEFAULT_BRANCH}: release/#{new_version}
+      • New release branch from #{DEFAULT_BRANCH}: #{new_release_branch}
+
       • Current release version and build code: #{release_version_current} (#{build_code_current}).
-      • New release version and build code: #{new_version} (#{build_code_code_freeze}).
+      • New release version and build code: #{new_version} (#{new_build_code}).
 
     MESSAGE
     UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     # Create the release branch
-    new_release_branch = "release/#{new_version}"
     ensure_branch_does_not_exist!(new_release_branch)
 
     UI.message('Creating release branch...')
@@ -235,8 +223,8 @@ platform :ios do
     # Bump the release version and build code and write it to the `xcconfig` file
     UI.message('Bumping release version and build code...')
     VERSION_FILE.write(
-      version_short: release_version_next,
-      version_long: build_code_code_freeze
+      version_short: new_version,
+      version_long: new_build_code
     )
     commit_version_bump
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
@@ -260,7 +248,7 @@ platform :ios do
     copy_branch_protection(
       repository: GITHUB_REPO,
       from_branch: DEFAULT_BRANCH,
-      to_branch: "release/#{new_version}"
+      to_branch: new_release_branch
     )
 
     begin
@@ -1443,15 +1431,14 @@ end
 
 # Returns the build code of the app for the code freeze. It is the release version name plus sets the build number to 0
 #
-def build_code_code_freeze
+def build_code_code_freeze(version_short: nil)
+  version_short ||= VERSION_FILE.read_release_version
   # Read the current build code from the .xcconfig file and parse it into an AppVersion object
   # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
   # calculator can be used to calculate the next four-part version
-  release_version_current = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
-  # Calculate the next release version, which will be used as the basis of the new build code
-  build_code_code_freeze = VERSION_CALCULATOR.next_release_version(version: release_version_current)
+  release_version_current = VERSION_FORMATTER.parse(version_short)
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version: build_code_code_freeze)
+  BUILD_CODE_FORMATTER.build_code(version: release_version_current)
 end
 
 # Returns the next build code of the app

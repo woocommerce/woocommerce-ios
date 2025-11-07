@@ -195,12 +195,8 @@ struct POSCatalogSyncCoordinatorTests {
         try await Task.sleep(nanoseconds: 10_000_000) // 10ms
 
         // When - try to start second sync while first is blocked
-        do {
+        await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
             _ = try await sut.performFullSync(for: sampleSiteID)
-            #expect(Bool(false), "Should have thrown syncAlreadyInProgress error")
-        } catch let error as POSCatalogSyncError {
-            // Then
-            #expect(error == POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
         }
 
         let currentState = await sut.loadLastFullSyncState(for: sampleSiteID)
@@ -370,12 +366,8 @@ struct POSCatalogSyncCoordinatorTests {
         try await Task.sleep(nanoseconds: 10_000_000) // 10ms
 
         // When - try to start second incremental sync while first is blocked
-        do {
-            _ = try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
-            #expect(Bool(false), "Should have thrown syncAlreadyInProgress error")
-        } catch let error as POSCatalogSyncError {
-            // Then
-            #expect(error == POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
+        await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
+            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         }
 
         // Cleanup

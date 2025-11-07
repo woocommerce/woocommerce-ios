@@ -173,7 +173,7 @@ struct CustomFieldsListView: View {
 						}) {
                             CustomFieldRow(title: customField.key,
                                            content: customField.value.removedHTMLTags,
-                                           contentURL: nil)
+                                           contentURL: customField.valueURL)
                         }
                     }
                     .listStyle(.plain)
@@ -225,9 +225,11 @@ private struct CustomFieldRow: View {
                     Text(content)
                         .font(.footnote)
                         .foregroundColor(Color(.textLink))
-                        .safariSheet(url: $displayedURL)
+                        .sheet(item: $displayedURL) { url in
+                            AuthenticatableWebView(url: url)
+                        }
                         .onTapGesture {
-                            switch url.scheme {
+                            switch url.scheme?.lowercased() {
                             case "http", "https":
                                 displayedURL = url // Open in `SafariSheet` in app
                             default:

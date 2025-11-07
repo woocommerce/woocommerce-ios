@@ -2,17 +2,21 @@ import Foundation
 import struct Yosemite.Booking
 
 extension Booking {
-    func summaryText(separateLines: Bool) -> String {
-        let productName = orderInfo?.productInfo?.name
-        let customerName: String = {
-            guard let name = orderInfo?.customerInfo?.billingAddress.fullName else {
-                return Localization.guest
-            }
-            return name.isEmpty ? Localization.guest : name
-        }()
+    var productName: String? {
+        orderInfo?.productInfo?.name
+    }
+
+    var customerName: String {
+        guard let name = orderInfo?.customerInfo?.billingAddress.fullName else {
+            return Localization.guest
+        }
+        return name.isEmpty ? Localization.guest : name
+    }
+
+    var summaryText: String {
         return [productName, customerName]
             .compactMap { $0 }
-            .joined(separator: separateLines ? "\n" : "  •  ")
+            .joined(separator: "  •  ")
     }
 
     private enum Localization {

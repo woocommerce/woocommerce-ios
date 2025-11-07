@@ -128,7 +128,7 @@ private extension BookingListView {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.primary)
 
-                Text(booking.summaryText(separateLines: false))
+                Text(booking.summaryText)
                     .font(.footnote)
                     .fontWeight(.medium)
                     .foregroundStyle(Color.secondary)

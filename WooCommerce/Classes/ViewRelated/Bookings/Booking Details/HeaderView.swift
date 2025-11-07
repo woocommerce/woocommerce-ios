@@ -11,9 +11,14 @@ extension BookingDetailsView {
                         .font(TextFont.bodyMedium)
                         .foregroundColor(.primary)
                 }
-                if !content.serviceAndCustomerLine.isEmpty {
-                    Text(content.serviceAndCustomerLine)
-                        .font(.footnote.weight(.medium))
+                if !content.serviceLine.isEmpty {
+                    Text(content.serviceLine)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                if !content.customerLine.isEmpty {
+                    Text(content.customerLine)
+                        .font(.body)
                         .foregroundColor(.secondary)
                 }
                 HStack {

@@ -16,19 +16,12 @@ struct BookingListContainerView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        BookingListView(
+            viewModel: viewModel.listViewModel(for: viewModel.selectedTab),
+            searchViewModel: viewModel.searchViewModel(for: viewModel.selectedTab),
+            selectedBooking: $selectedBooking
+        ) {
             headerView
-            TabView(selection: $viewModel.selectedTab) {
-                ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
-                    BookingListView(
-                        viewModel: viewModel.listViewModel(for: tab),
-                        searchViewModel: viewModel.searchViewModel(for: tab),
-                        selectedBooking: $selectedBooking
-                    )
-                    .tag(tab)
-                }
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .navigationTitle(Localization.viewTitle)
         .if(isSearching, transform: { view in

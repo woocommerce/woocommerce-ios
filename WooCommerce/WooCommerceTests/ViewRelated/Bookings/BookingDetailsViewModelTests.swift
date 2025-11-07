@@ -159,7 +159,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(headerContent.serviceAndCustomerLine, "Massage Therapy  •  Jane Smith")
+        XCTAssertEqual(headerContent.serviceAndCustomerLine, "Massage Therapy\nJane Smith")
     }
 
     func test_customer_content_populated_from_billing_address() {

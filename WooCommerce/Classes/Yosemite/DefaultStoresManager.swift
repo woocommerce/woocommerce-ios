@@ -300,6 +300,13 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
+        // Stop any ongoing catalog sync tasks before resetting session
+        if let siteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+            }
+        }
+
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()

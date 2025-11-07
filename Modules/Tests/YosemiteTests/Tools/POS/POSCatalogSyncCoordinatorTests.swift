@@ -930,6 +930,125 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(isStale == true)
     }
 
+    // MARK: - Stop Ongoing Syncs Tests
+
+    @Test func stopOngoingSyncs_clears_incremental_sync_tracking() async throws {
+        // Given - start an incremental sync
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+        mockIncrementalSyncService.blockNextSync()
+
+        let syncTask = Task {
+            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        }
+
+        // Give sync a moment to start
+        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+
+        // When - stop ongoing syncs
+        await sut.stopOngoingSyncs(for: sampleSiteID)
+
+        // Then - incremental sync tracking should be cleared
+        // Attempting to start another sync should succeed (not throw syncAlreadyInProgress)
+        mockIncrementalSyncService.resumeBlockedSync()
+        _ = try? await syncTask.value
+
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
+    }
+
+    @Test func stopOngoingSyncs_updates_full_sync_state_when_sync_in_progress() async throws {
+        // Given - start a full sync
+        mockSyncService.blockNextSync()
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+
+        let syncTask = Task {
+            try await sut.performFullSync(for: sampleSiteID)
+        }
+
+        // Give sync a moment to start
+        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+
+        // Verify sync is in progress
+        let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
+        let isSyncInProgress: Bool = switch stateBeforeStop {
+        case .initialSyncStarted, .syncStarted: true
+        default: false
+        }
+        #expect(isSyncInProgress)
+
+        // When - stop ongoing syncs
+        await sut.stopOngoingSyncs(for: sampleSiteID)
+
+        // Then - sync state should be updated to failed with requestCancelled
+        let stateAfterStop = await sut.loadLastFullSyncState(for: sampleSiteID)
+        let isFailed: Bool = switch stateAfterStop {
+        case .syncFailed(let siteID, let error):
+            siteID == sampleSiteID && (error as? POSCatalogSyncError) == .requestCancelled
+        case .initialSyncFailed(let siteID, let error):
+            siteID == sampleSiteID && (error as? POSCatalogSyncError) == .requestCancelled
+        default: false
+        }
+        #expect(isFailed)
+
+        // Cleanup
+        mockSyncService.resumeBlockedSync()
+        _ = try? await syncTask.value
+    }
+
+    @Test func stopOngoingSyncs_does_nothing_when_no_sync_in_progress() async throws {
+        // Given - no sync in progress
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-3600))
+
+        let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
+
+        // When - stop ongoing syncs
+        await sut.stopOngoingSyncs(for: sampleSiteID)
+
+        // Then - state should remain unchanged
+        let stateAfterStop = await sut.loadLastFullSyncState(for: sampleSiteID)
+        #expect(stateBeforeStop == stateAfterStop)
+    }
+
+    @Test func stopOngoingSyncs_handles_different_sites_independently() async throws {
+        // Given - syncs for two different sites
+        let siteA: Int64 = 123
+        let siteB: Int64 = 456
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+
+        try createSiteInDatabase(siteID: siteA, lastFullSyncDate: fullSyncDate)
+        try createSiteInDatabase(siteID: siteB, lastFullSyncDate: fullSyncDate)
+
+        mockIncrementalSyncService.blockNextSync()
+
+        // Start syncs for both sites
+        let syncTaskA = Task {
+            try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
+        }
+        let syncTaskB = Task {
+            try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
+        }
+
+        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+
+        // When - stop syncs only for siteA
+        await sut.stopOngoingSyncs(for: siteA)
+
+        // Then - siteB sync should still throw syncAlreadyInProgress
+        await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: siteB)) {
+            try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
+        }
+
+        // But siteA should allow new sync
+        mockIncrementalSyncService.resumeBlockedSync()
+        _ = try? await syncTaskA.value
+        _ = try? await syncTaskB.value
+
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
+    }
+
     // MARK: - Cellular Data Tests
 
     @Test func performFullSync_allows_cellular_for_first_sync() async throws {

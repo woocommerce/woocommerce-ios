@@ -157,6 +157,30 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(cardPresentPaymentOnboardingStateCache.invalidateCalled)
     }
 
+    /// Verifies that `deauthenticate` handles catalog sync cleanup gracefully when there is a default store.
+    ///
+    @MainActor
+    func testDeauthenticate_handles_catalog_sync_cleanup_with_default_store() async {
+        // Arrange
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+
+        XCTAssertEqual(sessionManager.defaultStoreID, 123, "Store ID should be set before deauthentication")
+
+        // Action - should not crash even with default store ID set
+        manager.deauthenticate()
+
+        // Give any async cleanup time to execute
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // Assert - verify deauthentication completed successfully
+        XCTAssertFalse(manager.isAuthenticated, "Manager should be deauthenticated")
+        XCTAssertNil(sessionManager.defaultStoreID, "Default store ID should be cleared after deauthentication")
+    }
+
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {

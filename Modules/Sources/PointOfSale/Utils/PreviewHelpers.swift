@@ -641,6 +641,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
         return false
     }
+
+    func stopOngoingSyncs(for siteID: Int64) async {
+        // Preview implementation - no-op
+    }
 }
 
 #endif

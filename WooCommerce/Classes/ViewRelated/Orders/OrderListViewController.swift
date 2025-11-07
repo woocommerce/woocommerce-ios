@@ -627,7 +627,8 @@ extension OrderListViewController {
     /// Used when opening an order with deep link
     /// - Parameter orderID: ID of the order to select in the list.
     /// - Parameter isTriggeredByUserAction: Reflects if the order selection was triggered by a manual user action and not a view lifecycle update
-    /// Practically if the `isTriggeredByUserAction` is true, then the order details will be force presented even if `selectedOrderID` is the same as the new `orderID`
+    /// Practically if the `isTriggeredByUserAction` is true, then the order details will be force presented
+    /// even if `selectedOrderID` is the same as the new `orderID`
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     func selectOrderFromListIfPossible(
         for orderID: Int64,

@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
-import enum Hardware.CardReaderSoftwareUpdateState
+import enum Yosemite.CardReaderSoftwareUpdateState
 
 #if DEBUG
 

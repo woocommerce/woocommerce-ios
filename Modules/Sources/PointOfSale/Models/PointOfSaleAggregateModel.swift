@@ -2,7 +2,6 @@ import CocoaLumberjackSwift
 import Foundation
 import Combine
 import Observation
-import enum Hardware.CardReaderSoftwareUpdateState
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
@@ -17,6 +16,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSyncCoordinator
+import enum Yosemite.CardReaderSoftwareUpdateState
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }

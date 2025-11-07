@@ -1,7 +1,7 @@
 import Foundation
 import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
-import enum Hardware.CardReaderSoftwareUpdateState
+import enum Yosemite.CardReaderSoftwareUpdateState
 import Combine
 
 public protocol CardPresentPaymentFacade {

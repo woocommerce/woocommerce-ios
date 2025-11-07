@@ -62,7 +62,7 @@ final class POSNotificationScheduler: POSNotificationScheduling {
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) else { return }
 
-        let isScheduled = await isNotificationScheduled(for: merchantType)
+        let isScheduled = await isNotificationAlreadyScheduled(for: merchantType)
         guard !isScheduled else { return }
         guard isCountryEligible() else { return }
 
@@ -84,7 +84,23 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         }
     }
 
-    private func isNotificationScheduled(for merchantType: MerchantType) async -> Bool {
+    private func isNotificationAlreadyScheduled(for merchantType: MerchantType) async -> Bool {
+        // Check if the specific notification type is already scheduled
+        let isCurrentMerchantTypeScheduled = await checkIfScheduled(for: merchantType)
+        if isCurrentMerchantTypeScheduled {
+            return true
+        }
+
+        // Don't schedule notification for potential merchant if the user is already marked as current merchant
+        guard merchantType == .potentialMerchant else {
+            return false
+        }
+
+        let isCurrentMerchantScheduled = await checkIfScheduled(for: .currentMerchant)
+        return isCurrentMerchantScheduled
+    }
+
+    private func checkIfScheduled(for merchantType: MerchantType) async -> Bool {
         await withCheckedContinuation { continuation in
             let action: AppSettingsAction
             switch merchantType {

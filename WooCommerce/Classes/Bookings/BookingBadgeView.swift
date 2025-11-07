@@ -11,7 +11,14 @@ struct BookingBadgeView: View {
                   customizations: .init(textColor: Color(UIColor.label.resolvedColor(with: .init(userInterfaceStyle: .light))),
                                         backgroundColor: color,
                                         bordered: false,
-                                        bold: false))
+                                        bold: false),
+                  backgroundShape: .roundedRectangle(cornerRadius: Layout.cornerRadius))
+    }
+}
+
+private extension BookingBadgeView {
+    enum Layout {
+        static let cornerRadius: CGFloat = 4
     }
 }
 

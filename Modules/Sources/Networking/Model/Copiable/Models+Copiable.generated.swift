@@ -1367,7 +1367,8 @@ extension Networking.POSProduct {
         attributes: CopiableProp<[ProductAttribute]> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
-        stockStatusKey: CopiableProp<String> = .copy
+        stockStatusKey: CopiableProp<String> = .copy,
+        variationIDs: CopiableProp<[Int64]> = .copy
     ) -> Networking.POSProduct {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1385,6 +1386,7 @@ extension Networking.POSProduct {
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+        let variationIDs = variationIDs ?? self.variationIDs
 
         return Networking.POSProduct(
             siteID: siteID,
@@ -1402,7 +1404,8 @@ extension Networking.POSProduct {
             attributes: attributes,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
+            stockStatusKey: stockStatusKey,
+            variationIDs: variationIDs
         )
     }
 }

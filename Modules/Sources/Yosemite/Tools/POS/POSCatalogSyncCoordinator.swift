@@ -105,12 +105,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.shouldNotSync
         }
 
-        switch fullSyncStateModel.state[siteID] {
-        case .syncStarted, .initialSyncStarted:
+        if await fullSyncInProgress(for: siteID) {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
-        default:
-            break
         }
 
         let isFirstSync = await lastFullSyncDate(for: siteID) == nil
@@ -199,6 +196,19 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         return shouldSync
     }
 
+    private func fullSyncInProgress(for siteID: Int64) async -> Bool {
+        switch fullSyncStateModel.state[siteID] {
+        case .syncStarted, .initialSyncStarted:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private func ongoingSyncInProgress(for siteID: Int64) async -> Bool {
+        ongoingIncrementalSyncs.contains(siteID)
+    }
+
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
@@ -213,8 +223,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             return
         }
 
-        if ongoingIncrementalSyncs.contains(siteID) {
+        if await ongoingSyncInProgress(for: siteID) {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Incremental sync already in progress for site \(siteID)")
+            throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
+        }
+
+        if await fullSyncInProgress(for: siteID) {
+            DDLogInfo("⚠️ POSCatalogSyncCoordinator: Full sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
         }
 

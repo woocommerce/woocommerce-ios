@@ -50,10 +50,9 @@ struct POSSettingsStoreDetailView: View {
                 sectionHeaderView(title: Localization.storeInformation)
 
                 VStack(spacing: POSSpacing.medium) {
-                    fieldRowView(label: Localization.storeName, value: viewModel.storeName)
-                    fieldRowView(label: Localization.address, value: viewModel.storeAddress, showSeparator: false)
+                    POSInformationCardFieldRow(label: Localization.storeName, value: viewModel.storeName)
+                    POSInformationCardFieldRow(label: Localization.address, value: viewModel.storeAddress, showSeparator: false)
                 }
-                .padding(.bottom, POSPadding.medium)
             }
         }
     }
@@ -86,27 +85,8 @@ struct POSSettingsStoreDetailView: View {
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
                 .padding(.vertical, POSPadding.small)
         }
-    }
-
-    @ViewBuilder
-    private func fieldRowView(label: String, value: String, showSeparator: Bool = true) -> some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            Text(label)
-                .font(.posBodyMediumRegular())
-            Text(value)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(.secondary)
-
-            if showSeparator {
-                Divider()
-                    .padding(.top, POSPadding.medium)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder
@@ -118,11 +98,10 @@ struct POSSettingsStoreDetailView: View {
 
             if showSeparator {
                 Divider()
-                    .padding(.top, POSPadding.medium)
+                    .padding(.top, POSPadding.small)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder
@@ -138,22 +117,6 @@ struct POSSettingsStoreDetailView: View {
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(.secondary)
         }
-    }
-}
-
-private struct POSInformationCard<Content: View>: View {
-    let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        content
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.posSurfaceContainerLowest)
-            .posItemCardBorderStyles()
     }
 }
 

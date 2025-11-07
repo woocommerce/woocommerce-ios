@@ -16,6 +16,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSyncCoordinator
+import enum Yosemite.CardReaderSoftwareUpdateState
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -28,11 +29,19 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+    private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     private var onOnboardingCancellation: (() -> Void)?
+
+    var isCardReaderUpdateAvailable: Bool {
+        if case .available = cardReaderUpdateState {
+            return true
+        }
+        return false
+    }
 
     private(set) var cart: Cart = .init()
 
@@ -127,6 +136,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
         publishCardReaderConnectionStatus()
+        publishCardReaderUpdateState()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
@@ -303,6 +313,14 @@ extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
     }
 
+    private func publishCardReaderUpdateState() {
+        cardPresentPaymentService.cardReaderUpdateStatePublisher
+            .sink(receiveValue: { [weak self] updateState in
+                self?.cardReaderUpdateState = updateState
+            })
+            .store(in: &cancellables)
+    }
+
     func connectCardReader() {
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor [weak self] in
@@ -314,6 +332,13 @@ extension PointOfSaleAggregateModel {
         analytics.track(.cardReaderDisconnectTapped)
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.disconnectReader()
+        }
+    }
+
+    func updateCardReaderSoftware() {
+        //TODO: analytics.track(.cardReaderUpdateTapped)
+        Task { @MainActor [weak self] in
+            try? await self?.cardPresentPaymentService.updateCardReaderSoftware()
         }
     }
 

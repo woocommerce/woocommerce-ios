@@ -6,12 +6,15 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
+import enum Hardware.CardReaderSoftwareUpdateState
 import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
+
+    let cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never>
 
     private let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
@@ -77,6 +80,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+
+        let updateStatePublisher = await Self.createUpdateStatePublisher(stores: stores)
+        self.cardReaderUpdateStatePublisher = updateStatePublisher
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     @MainActor
@@ -89,7 +97,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         switch preflightResult {
         case .completed(let cardReader, _):
             let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
-                                                               batteryLevel: cardReader.batteryLevel)
+                                                               batteryLevel: cardReader.batteryLevel,
+                                                               softwareVersion: cardReader.softwareVersion)
             paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
                 self?.paymentEventSubject.send(.idle)
             })))
@@ -127,6 +136,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             }
             stores.dispatch(action)
         }
+    }
+
+    @MainActor
+    func updateCardReaderSoftware() async throws {
+        let action = CardPresentPaymentAction.startCardReaderUpdate
+        stores.dispatch(action)
     }
 
     @MainActor
@@ -199,12 +214,26 @@ private extension CardPresentPaymentService {
                             return nil
                         }
                         return CardPresentPaymentCardReader(name: reader.name ?? reader.id,
-                                                            batteryLevel: reader.batteryLevel)
+                                                            batteryLevel: reader.batteryLevel,
+                                                            softwareVersion: reader.softwareVersion)
                     }
                     .receive(on: DispatchQueue.main)
                     .eraseToAnyPublisher()
 
                 nillableContinuation?.resume(returning: readerConnectionPublisher)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    static func createUpdateStatePublisher(stores: StoresManager) async -> AnyPublisher<CardReaderSoftwareUpdateState, Never> {
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<AnyPublisher<CardReaderSoftwareUpdateState, Never>, Never>? = continuation
+
+            let action = CardPresentPaymentAction.observeCardReaderUpdateState { updateStatePublisher in
+                nillableContinuation?.resume(returning: updateStatePublisher)
                 nillableContinuation = nil
             }
             stores.dispatch(action)

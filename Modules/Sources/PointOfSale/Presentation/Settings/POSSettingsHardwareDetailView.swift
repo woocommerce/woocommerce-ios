@@ -24,11 +24,22 @@ struct POSSettingsHardwareDetailView: View {
 
     private var formattedBatteryLevel: String {
         if let batteryLevel = settingsController.connectedCardReader?.batteryLevel {
-            let percentage = Int(batteryLevel * 100)
-            return "\(percentage)%"
+            return String(format: Localization.batteryLevelFormat, 100 * batteryLevel)
         } else {
             return Localization.batteryLevelUnknown
         }
+    }
+
+    private var formattedCardReaderFirmware: String {
+        if let softwareVersion = settingsController.connectedCardReader?.softwareVersion {
+            return softwareVersion
+        } else {
+            return Localization.firmwareVersionUnknown
+        }
+    }
+
+    private var shouldShowUpdateFirmwareButton: Bool {
+        posModel.isCardReaderUpdateAvailable
     }
 
     private var backgroundColor: Color {
@@ -146,25 +157,32 @@ private extension POSSettingsHardwareDetailView {
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
                     if case .connected = posModel.cardReaderConnectionStatus {
-                        VStack(spacing: POSPadding.xSmall) {
-                            HStack {
-                                Text(Localization.readerModelTitle)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Text(cardReaderName)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding()
-                            HStack {
-                                Text(Localization.readerBatteryTitle)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Text(formattedBatteryLevel)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding()
+                        if shouldShowUpdateFirmwareButton {
+                            POSSettingsCardWithIcon(title: Localization.updateFirmwareBannerTitle,
+                                                    subtitle: Localization.updateFirmwareBannerSubtitle)
                         }
-                        .font(.posBodyMediumRegular())
+                        POSInformationCard {
+                            VStack(spacing: POSSpacing.small) {
+                                POSInformationCardFieldRow(label: Localization.readerModelTitle,
+                                                           value: cardReaderName,
+                                                           buttonTitle: Localization.cardReaderDisconnectTitle,
+                                                           buttonAction: {
+                                    posModel.disconnectCardReader()
+                                })
+
+                                POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
+                                                           value: formattedBatteryLevel)
+
+                                POSInformationCardFieldRow(label: Localization.firmwareTitle,
+                                                           value: formattedCardReaderFirmware,
+                                                           showSeparator: false,
+                                                           buttonTitle: shouldShowUpdateFirmwareButton ? Localization.updateFirmwareButtontitle : nil,
+                                                           buttonAction: shouldShowUpdateFirmwareButton ? {
+                                    posModel.updateCardReaderSoftware()
+                                } : nil,
+                                                           buttonStyle: .primary)
+                            }
+                        }
                     } else {
                         POSSettingsCard(title: Localization.cardReaderConnectTitle,
                                             subtitle: Localization.cardReaderConnectSubtitle,
@@ -174,8 +192,8 @@ private extension POSSettingsHardwareDetailView {
                     }
 
                     POSSettingsCard(title: Localization.cardReaderDocumentationTitle,
-                                        subtitle: Localization.cardReaderDocumentationSubtitle,
-                                        action: { showCardReaderDocumentationModal = true })
+                                    subtitle: Localization.cardReaderDocumentationSubtitle,
+                                    action: { showCardReaderDocumentationModal = true })
                     .accessibilityAddTraits(.isButton)
                 }
                 .padding(.horizontal, POSPadding.medium)
@@ -292,8 +310,8 @@ private extension POSSettingsHardwareDetailView {
 
     enum Localization {
         static let readerModelTitle = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
-            value: "Model",
+            "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1",
+            value: "Device name",
             comment: "Text displayed on Point of Sale settings pointing to the card reader model."
         )
 
@@ -301,6 +319,13 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle",
             value: "Battery",
             comment: "Text displayed on Point of Sale settings pointing to the card reader battery."
+        )
+
+        static let batteryLevelFormat = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat",
+            value: "%.0f%%",
+            comment: "Format string for displaying battery level percentage in Point of Sale settings. " +
+                "Please leave the %.0f%% intact, as it represents the battery percentage."
         )
 
         static let cardReaderNotConnected = NSLocalizedString(
@@ -313,6 +338,12 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown",
             value: "Unknown",
             comment: "Text displayed on Point of Sale settings when card reader battery is unknown."
+        )
+
+        static let firmwareVersionUnknown = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown",
+            value: "Unknown",
+            comment: "Text displayed on Point of Sale settings when card reader firmware version is unknown."
         )
 
         static let hardwareTitle = NSLocalizedString(
@@ -392,15 +423,47 @@ private extension POSSettingsHardwareDetailView {
             value: "Configure barcode scanner settings",
             comment: "Description of Barcode scanner settings configuration."
         )
+
         static let cardReaderConnectTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
             value: "Connect card reader",
             comment: "Title for card reader connect button when no reader is connected."
         )
+
+        static let cardReaderDisconnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderDisconnectTitle",
+            value: "Disconnect reader",
+            comment: "Title for card reader disconnect button when reader is already connected."
+        )
+
         static let cardReaderConnectSubtitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle",
             value: "Connect your card reader and start accepting payments",
             comment: "Subtitle for card reader connect button when no reader is connected."
+        )
+
+        static let firmwareTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.firmwareTitle",
+            value: "Firmware",
+            comment: "Title for the card reader firmware section in Point of Sale settings."
+        )
+
+        static let updateFirmwareButtontitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle",
+            value: "Update firmware",
+            comment: "Title of the button to update firmware in Point of Sale settings."
+        )
+
+        static let updateFirmwareBannerTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle",
+            value: "Update firmware version",
+            comment: "Title for the CTA banner to update firmware in Point of Sale settings."
+        )
+
+        static let updateFirmwareBannerSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle",
+            value: "Update the firmware version to continue accepting payments.",
+            comment: "Subtitle for the CTA banner to update firmware in Point of Sale settings."
         )
 
         static let supportCancel = NSLocalizedString(
@@ -408,6 +471,42 @@ private extension POSSettingsHardwareDetailView {
             value: "Cancel",
             comment: "Button to dismiss the support form from POS settings."
         )
+    }
+}
+
+private extension POSSettingsHardwareDetailView {
+    struct POSSettingsCardWithIcon: View {
+        let title: String
+        let subtitle: String
+
+        init(title: String, subtitle: String) {
+            self.title = title
+            self.subtitle = subtitle
+        }
+
+        var body: some View {
+            HStack(alignment: .center, spacing: POSPadding.medium) {
+                Image(systemName: "info.circle")
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .frame(width: 36, height: 36)
+
+                VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                    Text(title)
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                    Text(subtitle)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.posSurfaceContainerLowest)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .posItemCardBorderStyles()
+            .accessibilityLabel("\(title), \(subtitle)")
+        }
     }
 }
 

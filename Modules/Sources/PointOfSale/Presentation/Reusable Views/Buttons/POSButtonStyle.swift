@@ -5,6 +5,7 @@ import struct WooFoundation.IndefiniteCircularProgressViewStyle
 enum POSButtonSize {
     case normal
     case extraSmall
+    case compact
 }
 
 /// Button state for different visual presentations
@@ -51,11 +52,37 @@ struct POSOutlinedButtonStyle: ButtonStyle {
     }
 }
 
+/// Info card button style with default and primary variants.
+/// Use with .compact size for info card buttons.
+struct POSInfoCardButtonStyle: ButtonStyle {
+    enum Variant {
+        case `default`
+        case primary
+    }
+
+    private let size: POSButtonSize
+    private let variant: Variant
+    private let state: POSButtonState
+
+    init(size: POSButtonSize, variant: Variant, isLoading: Bool = false) {
+        self.size = size
+        self.variant = variant
+        self.state = isLoading ? .loading : .idle
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        let buttonVariant: POSButtonVariant = variant == .primary ? .filled : .infoCardOutlined
+        return POSButtonStyleInternal(configuration: configuration, variant: buttonVariant, size: size, state: state)
+            .disabled(state != .idle)
+    }
+}
+
 
 /// The visual variant of the POS button.
 fileprivate enum POSButtonVariant {
     case filled
     case outlined
+    case infoCardOutlined
 }
 
 private struct POSButtonStyleInternal: View {
@@ -87,7 +114,7 @@ private struct POSButtonStyleInternal: View {
         .overlay(borderOverlay)
         // Makes the entire area tappable, otherwise the area with clear background is not tappable.
         .contentShape(Rectangle())
-        .cornerRadius(Constants.cornerRadius)
+        .cornerRadius(size.cornerRadius)
         .opacity(configuration.isPressed ? 0.7 : 1.0)
         .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
@@ -101,7 +128,7 @@ private struct POSButtonStyleInternal: View {
                 content()
                 Spacer()
             }
-        case .extraSmall:
+        case .extraSmall, .compact:
             content()
         }
     }
@@ -125,6 +152,8 @@ private struct POSButtonStyleInternal: View {
                 state != .idle ? .posPrimaryContainer : .posDisabledContainer
         case (.outlined, _):
                 .clear
+        case (.infoCardOutlined, _):
+                .posSurfaceContainerLowest
         }
     }
 
@@ -138,14 +167,22 @@ private struct POSButtonStyleInternal: View {
                 .posOnSurface
         case (.outlined, false):
                 .posOnDisabledContainer
+        case (.infoCardOutlined, true):
+                .posOnSurface
+        case (.infoCardOutlined, false):
+                .posOnDisabledContainer
         }
     }
 
     @ViewBuilder
     private var borderOverlay: some View {
         if variant == .outlined {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
+            RoundedRectangle(cornerRadius: size.cornerRadius)
                 .strokeBorder(isEnabled ? Color.posInverseSurface : .posDisabledContainer,
+                              lineWidth: Constants.borderStrokeWidth)
+        } else if variant == .infoCardOutlined {
+            RoundedRectangle(cornerRadius: size.cornerRadius)
+                .strokeBorder(isEnabled ? Color.posOnSurface : .posDisabledContainer,
                               lineWidth: Constants.borderStrokeWidth)
         }
     }
@@ -155,7 +192,6 @@ private struct POSButtonStyleInternal: View {
 
 private extension POSButtonStyleInternal {
     enum Constants {
-        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let borderStrokeWidth: CGFloat = 2.0
     }
 }
@@ -169,6 +205,8 @@ private extension POSButtonSize {
             (vertical: POSPadding.large, horizontal: POSPadding.large)
         case .extraSmall:
             (vertical: POSPadding.small, horizontal: POSPadding.medium)
+        case .compact:
+            (vertical: POSPadding.small, horizontal: POSPadding.medium)
         }
     }
 
@@ -178,6 +216,17 @@ private extension POSButtonSize {
                 .posBodyLargeBold
         case .extraSmall:
                 .posBodyMediumBold
+        case .compact:
+                .posBodySmallBold()
+        }
+    }
+
+    var cornerRadius: CGFloat {
+        switch self {
+        case .normal, .extraSmall:
+            POSCornerRadiusStyle.medium.value
+        case .compact:
+            POSCornerRadiusStyle.small.value
         }
     }
 }
@@ -189,6 +238,8 @@ private extension POSButtonSize {
             (size: 32, lineWidth: 10)
         case .extraSmall:
             (size: 20, lineWidth: 6)
+        case .compact:
+            (size: 16, lineWidth: 4)
         }
     }
 }
@@ -256,6 +307,13 @@ struct POSButtonStyle_Previews: View {
 
                 Button("Disabled Button") {}
                     .buttonStyle(POSOutlinedButtonStyle(size: size))
+                    .disabled(true)
+            case .infoCardOutlined:
+                Button("Enabled Button") {}
+                    .buttonStyle(POSInfoCardButtonStyle(size: size, variant: .default))
+
+                Button("Disabled Button") {}
+                    .buttonStyle(POSInfoCardButtonStyle(size: size, variant: .default))
                     .disabled(true)
             }
         }

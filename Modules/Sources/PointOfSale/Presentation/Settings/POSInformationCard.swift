@@ -63,12 +63,12 @@ struct POSInformationCardFieldRow: View {
 
                         Button(action: buttonAction) {
                             Text(buttonTitle)
-                                .font(.posBodyMediumRegular())
+                                .font(.posBodySmallBold())
                                 .foregroundStyle(buttonStyle == .default ? Color.posOnSurface : Color.posOnPrimaryContainer)
                         }
                         .buttonStyle(.plain)
-                        .padding(.horizontal, POSPadding.small)
-                        .padding(.vertical, POSPadding.xSmall)
+                        .padding(.horizontal, POSPadding.medium)
+                        .padding(.vertical, POSPadding.small)
                         .background(buttonStyle == .primary ? Color.posPrimaryContainer : Color.posSurfaceContainerLowest)
                         .overlay {
                             RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)

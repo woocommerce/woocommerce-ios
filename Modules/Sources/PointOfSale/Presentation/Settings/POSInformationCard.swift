@@ -57,19 +57,11 @@ struct POSInformationCardFieldRow: View {
                 Spacer()
 
                 if let buttonTitle, let buttonAction {
-                    Button(action: buttonAction) {
-                        Text(buttonTitle)
-                            .font(.posBodySmallBold())
-                            .foregroundStyle(buttonStyle == .default ? Color.posOnSurface : Color.posOnPrimaryContainer)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.small)
-                    .background(buttonStyle == .primary ? Color.posPrimaryContainer : Color.posSurfaceContainerLowest)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
-                            .stroke(buttonStyle == .default ? Color.posOnSurface : Color.posPrimaryContainer, lineWidth: 2)
-                    }
+                    Button(buttonTitle, action: buttonAction)
+                        .buttonStyle(POSInfoCardButtonStyle(
+                            size: .compact,
+                            variant: buttonStyle == .primary ? .primary : .default
+                        ))
                 }
             }
 

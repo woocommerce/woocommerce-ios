@@ -19,7 +19,7 @@ extension BookingDetailsViewModel {
                 timeStyle: .short,
                 timeZone: BookingListTab.utcTimeZone
             )
-            serviceAndCustomerLine = booking.summaryText
+            serviceAndCustomerLine = booking.summaryText(separateLines: true)
             attendanceStatus = booking.attendanceStatus
             bookingStatus = booking.bookingStatus
         }

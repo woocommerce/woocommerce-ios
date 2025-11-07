@@ -2,7 +2,7 @@ import Foundation
 import struct Yosemite.Booking
 
 extension Booking {
-    var summaryText: String {
+    func summaryText(separateLines: Bool) -> String {
         let productName = orderInfo?.productInfo?.name
         let customerName: String = {
             guard let name = orderInfo?.customerInfo?.billingAddress.fullName else {
@@ -12,7 +12,7 @@ extension Booking {
         }()
         return [productName, customerName]
             .compactMap { $0 }
-            .joined(separator: "  •  ")
+            .joined(separator: separateLines ? "\n" : "  •  ")
     }
 
     private enum Localization {

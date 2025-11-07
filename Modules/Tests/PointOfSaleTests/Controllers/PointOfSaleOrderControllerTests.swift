@@ -60,18 +60,44 @@ struct PointOfSaleOrderControllerTests {
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
         mockOrderService.simulateSyncing = true
-        Task {
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
+
+        // Use a continuation to wait until the first sync has definitely started
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            Task { @MainActor in
+                // Start observing state changes
+                @Sendable func observeOrderState() {
+                    withObservationTracking {
+                        _ = sut.orderState
+                    } onChange: {
+                        Task { @MainActor in
+                            if sut.orderState.isSyncing {
+                                // State is now syncing, resume the test
+                                continuation.resume()
+                            } else {
+                                // Keep observing
+                                observeOrderState()
+                            }
+                        }
+                    }
+                }
+                observeOrderState()
+
+                // Start the first sync in a background task
+                Task {
+                    await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
+                }
+            }
         }
-        try await Task.sleep(nanoseconds: UInt64(100 * Double(NSEC_PER_MSEC)))
+
+        // Reset the flag after confirming the sync has started
         mockOrderService.syncOrderWasCalled = false
 
-        // When
+        // When - try to sync while already syncing
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2),
                                                           makeItem(quantity: 5)]),
                             retryHandler: {})
 
-        // Then
+        // Then - the second sync should have been skipped
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 

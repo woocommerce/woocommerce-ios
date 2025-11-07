@@ -33,6 +33,8 @@ final class BookingDetailsViewModel: ObservableObject {
         booking.attendanceStatus
     }
 
+    var note: String { booking.note }
+
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {
@@ -379,9 +381,9 @@ private extension BookingDetailsViewModel {
         )
 
         static let bookingNotesSectionHeaderTitle = NSLocalizedString(
-            "BookingDetailsView.bookingNotes.headerTitle",
-            value: "Booking notes",
-            comment: "Header title for the 'Booking notes' section in the booking details screen."
+            "BookingDetailsView.bookingNote.headerTitle",
+            value: "Booking note",
+            comment: "Header title for the 'Booking note' section in the booking details screen."
         )
 
         static let cancelBookingAlertMessage = NSLocalizedString(

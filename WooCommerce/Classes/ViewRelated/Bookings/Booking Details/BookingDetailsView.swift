@@ -239,17 +239,29 @@ private extension BookingDetailsView {
     }
 
     func bookingNotesView() -> some View {
-        HStack(spacing: Layout.contentSidePadding) {
-            Image(systemName: "plus")
-                .font(.title3.weight(.medium))
-            Text(Localization.bookingNotesRowText)
-                .rowTextStyle()
-            Spacer()
-        }
-        .foregroundStyle(Color.accentColor)
-        .padding(.vertical, Layout.rowTextVerticalPadding)
-        .tappable {
-            print("On Add a note tap")
+        NavigationLink {
+            // TODO: push booking notes editor
+            Text(viewModel.note)
+        } label: {
+            HStack(alignment: .center, spacing: Layout.contentSidePadding) {
+                if viewModel.note.isEmpty {
+                    Image(systemName: "plus")
+                        .font(.title3.weight(.medium))
+
+                    Text(Localization.bookingNotesRowText)
+                        .rowTextStyle()
+                        .foregroundColor(.accentColor)
+                } else {
+                    Text(viewModel.note)
+                        .rowTextStyle()
+                        .multilineTextAlignment(.leading)
+                }
+
+                Spacer()
+
+                DisclosureIndicator()
+            }
+            .padding(.vertical, Layout.rowTextVerticalPadding)
         }
     }
 }
@@ -305,9 +317,9 @@ extension BookingDetailsView {
 
         /// Booking notes
         static let bookingNotesRowText = NSLocalizedString(
-            "BookingDetailsView.bookingNotes.addANoteRow.title",
+            "BookingDetailsView.bookingNote.addANoteRow.title",
             value: "Add a note",
-            comment: "Add a note row title in booking notes section in booking details view."
+            comment: "Add a booking note section in booking details view."
         )
     }
 }
@@ -338,7 +350,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             localTimezone: "America/New_York",
             currency: "USD",
             orderInfo: nil,
-            note: ""
+//            note: ""
+            note: "note note 123 note note note note note note note note note note note note note n312 ote note note note note note note note 123 note note note note note note note note note note note note note note note note note note note note note note note note note note "
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

@@ -83,7 +83,7 @@ struct POSInformationCardFieldRow: View {
 
             if showSeparator {
                 Divider()
-                    .padding(.top, POSPadding.medium)
+                    .padding(.top, POSPadding.small)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

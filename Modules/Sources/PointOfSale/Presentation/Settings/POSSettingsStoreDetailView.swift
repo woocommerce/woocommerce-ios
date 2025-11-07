@@ -53,7 +53,6 @@ struct POSSettingsStoreDetailView: View {
                     POSInformationCardFieldRow(label: Localization.storeName, value: viewModel.storeName)
                     POSInformationCardFieldRow(label: Localization.address, value: viewModel.storeAddress, showSeparator: false)
                 }
-                .padding(.bottom, POSPadding.medium)
             }
         }
     }
@@ -99,7 +98,7 @@ struct POSSettingsStoreDetailView: View {
 
             if showSeparator {
                 Divider()
-                    .padding(.top, POSPadding.medium)
+                    .padding(.top, POSPadding.small)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

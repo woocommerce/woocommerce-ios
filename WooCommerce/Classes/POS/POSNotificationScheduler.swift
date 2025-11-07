@@ -3,12 +3,10 @@ import UserNotifications
 import Yosemite
 import Experiments
 
-// periphery: ignore - work in progress
 protocol POSNotificationScheduling {
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async
 }
 
-// periphery: ignore - work in progress
 final class POSNotificationScheduler: POSNotificationScheduling {
     enum MerchantType {
         case potentialMerchant

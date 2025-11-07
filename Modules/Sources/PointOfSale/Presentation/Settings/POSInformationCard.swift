@@ -45,7 +45,7 @@ struct POSInformationCardFieldRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSPadding.small) {
-            HStack(alignment: .top, spacing: POSSpacing.medium) {
+            HStack(alignment: .center, spacing: POSSpacing.medium) {
                 VStack(alignment: .leading, spacing: POSPadding.small) {
                     Text(label)
                         .font(.posBodyMediumRegular())
@@ -57,26 +57,18 @@ struct POSInformationCardFieldRow: View {
                 Spacer()
 
                 if let buttonTitle, let buttonAction {
-                    VStack {
-                        Spacer()
-                            .frame(height: POSPadding.xSmall)
-
-                        Button(action: buttonAction) {
-                            Text(buttonTitle)
-                                .font(.posBodySmallBold())
-                                .foregroundStyle(buttonStyle == .default ? Color.posOnSurface : Color.posOnPrimaryContainer)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, POSPadding.medium)
-                        .padding(.vertical, POSPadding.small)
-                        .background(buttonStyle == .primary ? Color.posPrimaryContainer : Color.posSurfaceContainerLowest)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
-                                .stroke(buttonStyle == .default ? Color.posOnSurface : Color.posPrimaryContainer, lineWidth: 2)
-                        }
-
-                        Spacer()
-                            .frame(height: POSPadding.xSmall)
+                    Button(action: buttonAction) {
+                        Text(buttonTitle)
+                            .font(.posBodySmallBold())
+                            .foregroundStyle(buttonStyle == .default ? Color.posOnSurface : Color.posOnPrimaryContainer)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.small)
+                    .background(buttonStyle == .primary ? Color.posPrimaryContainer : Color.posSurfaceContainerLowest)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
+                            .stroke(buttonStyle == .default ? Color.posOnSurface : Color.posPrimaryContainer, lineWidth: 2)
                     }
                 }
             }

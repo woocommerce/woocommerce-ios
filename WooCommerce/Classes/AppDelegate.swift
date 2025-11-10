@@ -155,6 +155,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // In a production implementation, this would be passed to the BackgroundDownloadService
             // For now, we store it and the service will need to retrieve it
             // TODO: WOOMOB-1173 - Wire this to BackgroundDownloadService.setBackgroundCompletionHandler
+            // TODO: WOOMOB-1677 - Catalog parsing happens in the ~30s window after download completes.
+            // For very large catalogs, consider hybrid approach: try immediate parse, defer if timeout.
             DDLogInfo("🟣 Background catalog download session completion handler stored")
             completionHandler()
         } else {

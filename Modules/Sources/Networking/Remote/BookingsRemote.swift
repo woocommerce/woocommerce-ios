@@ -19,7 +19,8 @@ public protocol BookingsRemoteProtocol {
     func updateBooking(
         from siteID: Int64,
         bookingID: Int64,
-        attendanceStatus: BookingAttendanceStatus
+        attendanceStatus: BookingAttendanceStatus?,
+        bookingStatus: BookingStatus?
     ) async throws -> Booking?
 
     func fetchResource(resourceID: Int64,
@@ -150,12 +151,20 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     public func updateBooking(
         from siteID: Int64,
         bookingID: Int64,
-        attendanceStatus: BookingAttendanceStatus
+        attendanceStatus: BookingAttendanceStatus?,
+        bookingStatus: BookingStatus?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
-        let parameters = [
-            ParameterKey.attendanceStatus: attendanceStatus.rawValue
-        ]
+        var parameters: [String: String] = [:]
+
+        if let attendanceStatus {
+            parameters[ParameterKey.attendanceStatus] = attendanceStatus.rawValue
+        }
+
+        if let bookingStatus {
+            parameters[ParameterKey.status] = bookingStatus.rawValue
+        }
+
         let request = JetpackRequest(
             wooApiVersion: .wcBookings,
             method: .put,
@@ -249,5 +258,6 @@ public extension BookingsRemote {
         static let resource: String        = "resource"
         static let bookingStatus: String   = "booking_status"
         static let attendanceStatus        = "attendance_status"
+        static let status: String          = "status"
     }
 }

@@ -157,44 +157,8 @@ private extension BookingListView {
             ScrollView {
                 LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
                     Section {
-                        VStack(spacing: BookingListViewLayout.emptyStatePadding) {
-                            Spacer()
-                            Image(uiImage: isSearching ? .magnifyingGlassNotFound : .noBookings)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: BookingListViewLayout.emptyStateImageWidth * scale)
-                                .padding(.bottom, BookingListViewLayout.viewPadding)
-                            if isSearching {
-                                Text(BookingListViewLocalization.emptySearchText)
-                                    .font(.body)
-                                    .foregroundStyle(Color.secondary)
-                            } else {
-                                VStack(spacing: BookingListViewLayout.textVerticalPadding) {
-                                    Text(viewModel.emptyStateTitle)
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(.primary)
-                                    Text(viewModel.emptyStateDescription)
-                                        .font(.title3)
-                                        .foregroundStyle(.secondary)
-                                }
-                                if viewModel.hasFilters {
-                                    VStack(spacing: BookingListViewLayout.textVerticalPadding) {
-                                        Button("Change filters") {
-                                            // TODO
-                                        }
-                                        .buttonStyle(PrimaryButtonStyle())
-                                        Button("Clear filters") {
-                                            // TODO
-                                        }
-                                    }
-                                }
-                                Spacer()
-                            }
-                        }
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, BookingListViewLayout.emptyStatePadding)
-                        .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
+                        emptyStateContent(isSearching: isSearching)
+                            .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
                     } header: {
                         header
                     }
@@ -205,6 +169,46 @@ private extension BookingListView {
             }
         }
         .background(Color(.systemBackground))
+    }
+
+    func emptyStateContent(isSearching: Bool) -> some View {
+        VStack(spacing: BookingListViewLayout.emptyStatePadding) {
+            Spacer()
+            Image(uiImage: isSearching ? .magnifyingGlassNotFound : .noBookings)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: BookingListViewLayout.emptyStateImageWidth * scale)
+                .padding(.bottom, BookingListViewLayout.viewPadding)
+            if isSearching {
+                Text(BookingListViewLocalization.emptySearchText)
+                    .font(.body)
+                    .foregroundStyle(Color.secondary)
+            } else {
+                VStack(spacing: BookingListViewLayout.textVerticalPadding) {
+                    Text(viewModel.emptyStateTitle)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                    Text(viewModel.emptyStateDescription)
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+                if viewModel.hasFilters {
+                    VStack(spacing: BookingListViewLayout.textVerticalPadding) {
+                        Button("Change filters") {
+                            // TODO
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        Button("Clear filters") {
+                            // TODO
+                        }
+                    }
+                }
+            }
+            Spacer()
+        }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, BookingListViewLayout.emptyStatePadding)
     }
 
     func errorSnackBar(onTap: @escaping () -> Void) -> some View {
@@ -223,7 +227,7 @@ private extension BookingListView {
     }
 }
 
-private enum BookingListViewLayout {
+fileprivate enum BookingListViewLayout {
     static let textVerticalPadding: CGFloat = 8
     static let viewPadding: CGFloat = 16
     static let emptyStatePadding: CGFloat = 24
@@ -231,7 +235,7 @@ private enum BookingListViewLayout {
     static let cornerRadius: CGFloat = 8
 }
 
-private enum BookingListViewLocalization {
+fileprivate enum BookingListViewLocalization {
     static let errorMessage = NSLocalizedString(
         "bookingList.errorMessage",
         value: "Error fetching bookings",

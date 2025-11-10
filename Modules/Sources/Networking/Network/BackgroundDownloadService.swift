@@ -93,39 +93,29 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
         }
 
         do {
-            // Get file size first to make informed decision
-            let fileAttributes = try fileManager.attributesOfItem(atPath: location.path)
-            let fileSize = fileAttributes[.size] as? Int64 ?? 0
+            // Move downloaded file to temporary directory to prevent iOS from cleaning it up
+            // before parsing completes. The temp location returned by URLSession is cleaned
+            // immediately after this delegate method returns, but we need the file to persist
+            // until async parsing completes.
+            let tempDirectory = fileManager.temporaryDirectory
+            let fileName = downloadTask.originalRequest?.url?.lastPathComponent ?? "catalog_\(UUID().uuidString).json"
+            let persistentTempURL = tempDirectory.appendingPathComponent(fileName)
 
-            // For very large files (>100MB), move to permanent location to avoid memory issues
-            if fileSize > 100 * 1024 * 1024 {
-                guard let documentsURL = fileManager.urls(for: .documentDirectory,
-                                                          in: .userDomainMask).first else {
-                    throw BackgroundDownloadError.sessionCreationFailed
-                }
-
-                let fileName = downloadTask.originalRequest?.url?.lastPathComponent ?? "downloaded_catalog"
-                let permanentURL = documentsURL.appendingPathComponent(fileName)
-
-                // Remove existing file if it exists
-                if fileManager.fileExists(atPath: permanentURL.path) {
-                    try fileManager.removeItem(at: permanentURL)
-                }
-
-                // Move the downloaded file to permanent location
-                try fileManager.moveItem(at: location, to: permanentURL)
-
-                handleDownloadCompletion(for: sessionIdentifier,
-                                         fileURL: permanentURL,
-                                         error: nil)
-            } else {
-                // For smaller files, returns the temporary location directly.
-                // The parsing code will handle cleanup, and iOS will auto-clean temp files.
-                handleDownloadCompletion(for: sessionIdentifier,
-                                         fileURL: location,
-                                         error: nil)
+            // Remove existing file if it exists
+            if fileManager.fileExists(atPath: persistentTempURL.path) {
+                try fileManager.removeItem(at: persistentTempURL)
             }
+
+            // Move the downloaded file to our managed temp location
+            try fileManager.moveItem(at: location, to: persistentTempURL)
+
+            DDLogInfo("🟣 Background download completed, file moved to: \(persistentTempURL.path)")
+
+            handleDownloadCompletion(for: sessionIdentifier,
+                                     fileURL: persistentTempURL,
+                                     error: nil)
         } catch {
+            DDLogError("🟣 Failed to move downloaded file: \(error.localizedDescription)")
             handleDownloadCompletion(for: sessionIdentifier,
                                      fileURL: nil,
                                      error: error)

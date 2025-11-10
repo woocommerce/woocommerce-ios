@@ -216,13 +216,11 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     private func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
         let data = try Data(contentsOf: fileURL)
 
-        // Cleans up the downloaded file after reading if it's in Documents directory.
-        // Temporary files are auto-cleaned by iOS.
+        // Clean up the downloaded file after reading.
+        // Background downloads are moved to temporary directory by BackgroundDownloadService,
+        // so we always clean them up after parsing.
         defer {
-            if let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first,
-               fileURL.path.starts(with: documentsURL.path) {
-                try? fileManager.removeItem(at: fileURL)
-            }
+            try? fileManager.removeItem(at: fileURL)
         }
 
         let mapper = ListMapper<POSProduct>(siteID: siteID)

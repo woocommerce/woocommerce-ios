@@ -363,13 +363,13 @@ private extension BookingStore {
     ) {
         Task { @MainActor in
             do {
-                if let remoteBooking = try await self.remote.updateBooking(
+                if let remoteBooking = try await remote.updateBooking(
                     from: siteID,
                     bookingID: bookingID,
                     attendanceStatus: nil,
                     bookingStatus: .cancelled
                 ) {
-                    await self.upsertStoredBookingsInBackground(
+                    await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],
                         readOnlyOrders: [],
                         siteID: siteID

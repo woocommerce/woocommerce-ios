@@ -15,22 +15,33 @@ struct MultilineEditableTextRow: View {
         NavigationLink {
             MultilineEditableTextDetailView(text: $value, title: detailTitle)
         } label: {
-            HStack(alignment: .center, spacing: Layout.spacing) {
-                if value.isEmpty {
-                    Text(placeholder)
-                        .rowTextStyle()
-                        .foregroundStyle(Color(.textSubtle))
-                } else {
-                    Text(value)
-                        .multilineTextAlignment(.leading)
-                        .foregroundStyle(Color.primary)
-                }
+            content
+        }
+    }
 
-                Spacer()
+    @ViewBuilder
+    private var content: some View {
+        HStack(alignment: .center, spacing: Layout.spacing) {
+            label
 
-                DisclosureIndicator()
-            }
-            .padding(.vertical, Layout.padding)
+            Spacer()
+
+            DisclosureIndicator()
+        }
+        .padding(.vertical, Layout.padding)
+    }
+
+    @ViewBuilder
+    private var label: some View {
+        if value.isEmpty {
+            Text(placeholder)
+                .rowTextStyle()
+                .foregroundStyle(Color(.textSubtle))
+
+        } else {
+            Text(value)
+                .multilineTextAlignment(.leading)
+                .foregroundStyle(Color.primary)
         }
     }
 }

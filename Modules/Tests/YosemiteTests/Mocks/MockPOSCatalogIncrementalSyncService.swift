@@ -9,8 +9,9 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
     private(set) var lastFullSyncDate: Date?
     private(set) var lastIncrementalSyncDate: Date?
 
-    private var syncContinuation: CheckedContinuation<Void, Never>?
+    private var syncContinuations: [CheckedContinuation<Void, Never>] = []
     private var shouldBlockSync = false
+    private var syncBlockedContinuations: [CheckedContinuation<Void, Never>] = []
 
     func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws {
         startIncrementalSyncCallCount += 1
@@ -20,7 +21,11 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
 
         if shouldBlockSync {
             await withCheckedContinuation { continuation in
-                syncContinuation = continuation
+                syncContinuations.append(continuation)
+                // Signal that a sync is now blocked and ready
+                if !syncBlockedContinuations.isEmpty {
+                    syncBlockedContinuations.removeFirst().resume()
+                }
             }
         }
 
@@ -38,9 +43,15 @@ extension MockPOSCatalogIncrementalSyncService {
         shouldBlockSync = true
     }
 
+    func waitUntilSyncBlocked() async {
+        await withCheckedContinuation { continuation in
+            syncBlockedContinuations.append(continuation)
+        }
+    }
+
     func resumeBlockedSync() {
-        syncContinuation?.resume()
-        syncContinuation = nil
+        syncContinuations.forEach { $0.resume() }
+        syncContinuations.removeAll()
         shouldBlockSync = false
     }
 }

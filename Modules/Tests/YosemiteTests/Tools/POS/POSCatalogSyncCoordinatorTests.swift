@@ -191,8 +191,8 @@ struct POSCatalogSyncCoordinatorTests {
             try await sut.performFullSync(for: sampleSiteID)
         }
 
-        // Give first sync a moment to start and get blocked
-        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        // Wait until sync is actually blocked
+        await mockSyncService.waitUntilSyncBlocked()
 
         // When - try to start second sync while first is blocked
         await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
@@ -362,8 +362,8 @@ struct POSCatalogSyncCoordinatorTests {
             try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         }
 
-        // Give first sync a moment to start and get blocked
-        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        // Wait until sync is actually blocked
+        await mockIncrementalSyncService.waitUntilSyncBlocked()
 
         // When - try to start second incremental sync while first is blocked
         await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
@@ -581,8 +581,9 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     var syncDelay: UInt64 = 0 // nanoseconds to delay before returning
 
     // Controlled sync mechanism
-    private var syncContinuation: CheckedContinuation<Void, Never>?
+    private var syncContinuations: [CheckedContinuation<Void, Never>] = []
     private var shouldBlockSync = false
+    private var syncBlockedContinuations: [CheckedContinuation<Void, Never>] = []
 
     private(set) var startFullSyncCallCount = 0
     private(set) var lastSyncSiteID: Int64?
@@ -596,7 +597,11 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         // If we should block, wait for continuation to be resumed
         if shouldBlockSync {
             await withCheckedContinuation { continuation in
-                syncContinuation = continuation
+                syncContinuations.append(continuation)
+                // Signal that a sync is now blocked and ready
+                if !syncBlockedContinuations.isEmpty {
+                    syncBlockedContinuations.removeFirst().resume()
+                }
             }
         }
 
@@ -617,9 +622,15 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         shouldBlockSync = true
     }
 
+    func waitUntilSyncBlocked() async {
+        await withCheckedContinuation { continuation in
+            syncBlockedContinuations.append(continuation)
+        }
+    }
+
     func resumeBlockedSync() {
-        syncContinuation?.resume()
-        syncContinuation = nil
+        syncContinuations.forEach { $0.resume() }
+        syncContinuations.removeAll()
         shouldBlockSync = false
     }
 }
@@ -942,8 +953,8 @@ extension POSCatalogSyncCoordinatorTests {
             try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         }
 
-        // Give sync a moment to start
-        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        // Wait until sync is actually blocked
+        await mockIncrementalSyncService.waitUntilSyncBlocked()
 
         // When - stop ongoing syncs
         await sut.stopOngoingSyncs(for: sampleSiteID)
@@ -967,8 +978,8 @@ extension POSCatalogSyncCoordinatorTests {
             try await sut.performFullSync(for: sampleSiteID)
         }
 
-        // Give sync a moment to start
-        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        // Wait until sync is actually blocked
+        await mockSyncService.waitUntilSyncBlocked()
 
         // Verify sync is in progress
         let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
@@ -1026,11 +1037,17 @@ extension POSCatalogSyncCoordinatorTests {
         let syncTaskA = Task {
             try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
         }
+
+        // Wait for first sync to block
+        await mockIncrementalSyncService.waitUntilSyncBlocked()
+
+        // Now start second sync (will also block since shouldBlockSync is still true)
         let syncTaskB = Task {
             try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
         }
 
-        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        // Wait for second sync to block
+        await mockIncrementalSyncService.waitUntilSyncBlocked()
 
         // When - stop syncs only for siteA
         await sut.stopOngoingSyncs(for: siteA)

@@ -296,8 +296,8 @@ extension BookingDetailsView {
 
         /// Booking notes
         static let bookingNotesRowText = NSLocalizedString(
-            "BookingDetailsView.bookingNote.addANoteRow.title",
-            value: "Add a note",
+            "BookingDetailsView.bookingNote.addNoteRow.title",
+            value: "Add note",
             comment: "Add a booking note section in booking details view."
         )
 

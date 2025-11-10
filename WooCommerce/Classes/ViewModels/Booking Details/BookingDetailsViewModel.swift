@@ -27,6 +27,7 @@ final class BookingDetailsViewModel: ObservableObject {
 
     @Published private(set) var navigationTitle = ""
     @Published private(set) var sections: [Section] = []
+    @Published private(set) var isViewOrderAvailable = true
     @Published var notice: Notice?
 
     var bookingAttendanceStatus: BookingAttendanceStatus {
@@ -83,6 +84,7 @@ private extension BookingDetailsViewModel {
 
     func updateDisplayProperties(from booking: Booking) {
         navigationTitle = Self.navigationTitle(for: booking)
+        isViewOrderAvailable = booking.isOrderValid
 
         headerContent.update(with: booking)
 

@@ -19,6 +19,10 @@ extension Booking {
             .joined(separator: "  •  ")
     }
 
+    var isOrderValid: Bool {
+        return orderID != 0
+    }
+
     private enum Localization {
         static let guest = NSLocalizedString(
             "bookings.guest",

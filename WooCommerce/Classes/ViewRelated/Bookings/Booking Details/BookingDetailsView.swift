@@ -63,8 +63,10 @@ struct BookingDetailsView: View {
                     Button(Localization.markAsPaid) {
                         print("On mark as paid tap")
                     }
-                    Button(Localization.viewOrder) {
-                        viewModel.navigateToOrderDetails()
+                    if viewModel.isViewOrderAvailable {
+                        Button(Localization.viewOrder) {
+                            viewModel.navigateToOrderDetails()
+                        }
                     }
                     Button(Localization.cancelBookingAction, role: .destructive) {
                         print("On cancel booking tap")

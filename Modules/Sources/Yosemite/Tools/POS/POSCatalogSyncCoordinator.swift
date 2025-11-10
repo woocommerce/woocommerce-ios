@@ -42,6 +42,10 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - maxDays: Maximum number of days before a sync is considered stale
     /// - Returns: True if the last sync is older than the specified days or if there has been no sync
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool
+
+    /// Stops all ongoing sync tasks for the specified site
+    /// - Parameter siteID: The site ID to stop syncs for
+    func stopOngoingSyncs(for siteID: Int64) async
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -81,6 +85,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
 
+    /// Tracks ongoing full sync tasks by site ID for cancellation
+    private var ongoingFullSyncTasks: [Int64: Task<Void, Error>] = [:]
+
+    /// Tracks ongoing incremental sync tasks by site ID for cancellation
+    private var ongoingIncrementalSyncTasks: [Int64: Task<Void, Error>] = [:]
+
     /// Observable model for full sync state updates
     public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
 
@@ -117,10 +127,22 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
-        do {
+        // Create a task to perform the sync
+        let syncTask = Task<Void, Error> {
             _ = try await fullSyncService.startFullSync(for: siteID,
                                                         regenerateCatalog: regenerateCatalog,
                                                         allowCellular: allowCellular)
+        }
+
+        // Store the task for potential cancellation
+        ongoingFullSyncTasks[siteID] = syncTask
+
+        defer {
+            ongoingFullSyncTasks.removeValue(forKey: siteID)
+        }
+
+        do {
+            try await syncTask.value
             emitSyncState(.syncCompleted(siteID: siteID))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
@@ -245,10 +267,22 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting incremental sync for site \(siteID)")
 
-        do {
+        // Create a task to perform the sync
+        let syncTask = Task<Void, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
-                                                                  lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
+                                                                  lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID))
+        }
+
+        // Store the task for potential cancellation
+        ongoingIncrementalSyncTasks[siteID] = syncTask
+
+        defer {
+            ongoingIncrementalSyncTasks.removeValue(forKey: siteID)
+        }
+
+        do {
+            try await syncTask.value
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         }
@@ -348,6 +382,42 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         return lastFullSync < thresholdDate
+    }
+
+    public func stopOngoingSyncs(for siteID: Int64) async {
+        DDLogInfo("🛑 POSCatalogSyncCoordinator: Stopping ongoing syncs for site \(siteID)")
+
+        // Cancel ongoing full sync task if exists
+        if let fullSyncTask = ongoingFullSyncTasks[siteID] {
+            fullSyncTask.cancel()
+            ongoingFullSyncTasks.removeValue(forKey: siteID)
+            DDLogInfo("🛑 POSCatalogSyncCoordinator: Cancelled full sync task for site \(siteID)")
+        }
+
+        // Cancel ongoing incremental sync task if exists
+        if let incrementalSyncTask = ongoingIncrementalSyncTasks[siteID] {
+            incrementalSyncTask.cancel()
+            ongoingIncrementalSyncTasks.removeValue(forKey: siteID)
+            DDLogInfo("🛑 POSCatalogSyncCoordinator: Cancelled incremental sync task for site \(siteID)")
+        }
+
+        // Clean up incremental sync tracking
+        if ongoingIncrementalSyncs.contains(siteID) {
+            ongoingIncrementalSyncs.remove(siteID)
+            DDLogInfo("🛑 POSCatalogSyncCoordinator: Cleaned up incremental sync tracking for site \(siteID)")
+        }
+
+        // Update sync state to reflect that syncs are being stopped
+        // This will prevent new syncs from starting for this site
+        if let currentState = fullSyncStateModel.state[siteID] {
+            switch currentState {
+            case .initialSyncStarted, .syncStarted:
+                emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                DDLogInfo("🛑 POSCatalogSyncCoordinator: Updated sync state to cancelled for site \(siteID)")
+            default:
+                break
+            }
+        }
     }
 }
 

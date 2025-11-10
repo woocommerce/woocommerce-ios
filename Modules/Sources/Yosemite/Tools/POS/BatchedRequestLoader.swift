@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import Alamofire
 
 /// Protocol for determining which errors should be retried.
 protocol RetryErrorEvaluator {
@@ -9,6 +10,15 @@ protocol RetryErrorEvaluator {
 /// Default implementation that retries network errors and server errors.
 struct DefaultRetryErrorEvaluator: RetryErrorEvaluator {
     func shouldRetry(_ error: Error) -> Bool {
+        // Don't retry cancellation errors
+        if error is CancellationError {
+            return false
+        }
+
+        if let afError = error as? AFError, case .explicitlyCancelled = afError {
+            return false
+        }
+
         if let networkError = error as? NetworkError {
             switch networkError {
             case .invalidCookieNonce:

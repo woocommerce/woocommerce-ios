@@ -74,4 +74,6 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
         return isSyncStaleResult
     }
+
+    func stopOngoingSyncs(for siteID: Int64) async {}
 }

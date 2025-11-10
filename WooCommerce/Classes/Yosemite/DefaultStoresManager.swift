@@ -300,6 +300,13 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
+        // Stop any ongoing catalog sync tasks before resetting session
+        if let siteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+            }
+        }
+
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()
@@ -309,10 +316,14 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+            // Reset GRDB on a background thread to avoid blocking logout
+            // when there's a large catalog to delete
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try ServiceLocator.grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 

@@ -262,6 +262,39 @@ extension BookingDetailsViewModel {
     }
 }
 
+/// Cancel booking
+extension BookingDetailsViewModel {
+    var isBookingCancellable: Bool {
+        let ineligibleStatuses: [BookingStatus] = [.cancelled, .complete, .unknown]
+        return !ineligibleStatuses.contains(booking.bookingStatus)
+    }
+
+    @MainActor
+    func cancelBooking() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            })
+        }
+    }
+
+    func displayBookingCancellationErrorNotice(onRetry: @escaping () -> Void) {
+        let text = String.localizedStringWithFormat(
+            Localization.bookingCancellationFailedMessage,
+            booking.bookingID
+        )
+        self.notice = Notice(
+            message: text,
+            feedbackType: .error,
+            actionTitle: Localization.retryActionTitle
+        ) { onRetry() }
+    }
+}
+
 private extension BookingDetailsViewModel {
     @MainActor
     func fetchResource() async -> BookingResource? {
@@ -302,22 +335,17 @@ private extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     var cancellationAlertMessage: String {
-        let productName = booking.orderInfo?.productInfo?.name ?? ""
+        let productName = booking.productName ?? ""
+        let customerName = booking.customerName
 
-        let customerName: String = {
-            guard let address = booking.orderInfo?.customerInfo?.billingAddress else {
-                return ""
-            }
-            return [address.firstName, address.lastName]
-                .compactMap { $0 }
-                .joined(separator: " ")
-        }()
+        guard productName.isNotEmpty, customerName.isNotEmpty else {
+            return Localization.cancelBookingAlertGenericMessage
+        }
 
         let date = booking.startDate.formatted(
             date: .long,
             time: .shortened
         )
-
         return String(
             format: Localization.cancelBookingAlertMessage,
             customerName,
@@ -390,11 +418,25 @@ private extension BookingDetailsViewModel {
             comment: "Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date."
         )
 
+        static let cancelBookingAlertGenericMessage = NSLocalizedString(
+            "BookingDetailsView.cancelation.alert.genericMessage",
+            value: "Are you sure you want to cancel this booking?",
+            comment: "Generic message for the booking cancellation confirmation alert."
+        )
+
         static let bookingAttendanceStatusUpdateFailedMessage = NSLocalizedString(
             "BookingDetailsView.attendanceStatus.updateFailed.message",
             value: "Unable to change attendance status of Booking #%1$d",
             comment: "Content of error presented when updating the attendance status of a Booking fails. "
             + "It reads: Unable to change status of Booking #{Booking number}. "
+            + "Parameters: %1$d - Booking number"
+        )
+
+        static let bookingCancellationFailedMessage = NSLocalizedString(
+            "BookingDetailsView.cancellation.failureMessage",
+            value: "Unable to cancel Booking #%1$d",
+            comment: "Content of error presented when cancelling a Booking fails. "
+            + "It reads: Unable cancel Booking #{Booking number}. "
             + "Parameters: %1$d - Booking number"
         )
 

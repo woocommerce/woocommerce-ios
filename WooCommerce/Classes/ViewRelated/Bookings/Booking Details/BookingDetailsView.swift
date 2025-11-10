@@ -7,6 +7,7 @@ struct BookingDetailsView: View {
     @State private var showingOptions = false
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
+    @State private var cancellingBooking = false
     @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
@@ -67,8 +68,9 @@ struct BookingDetailsView: View {
                         viewModel.navigateToOrderDetails()
                     }
                     Button(Localization.cancelBookingAction, role: .destructive) {
-                        print("On cancel booking tap")
+                        showingCancelAlert = true
                     }
+                    .renderedIf(viewModel.isBookingCancellable)
                 }
             }
         }
@@ -91,7 +93,7 @@ struct BookingDetailsView: View {
         ) {
             Button(Localization.cancelBookingAlertCancelAction, role: .cancel) {}
             Button(Localization.cancelBookingAlertConfirmAction, role: .destructive) {
-                print("On cancel booking confirmation tap")
+                cancelBooking()
             }
         } message: {
             Text(viewModel.cancellationAlertMessage)
@@ -187,8 +189,9 @@ private extension BookingDetailsView {
             } label: {
                 Text(Localization.cancelBooking)
             }
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: cancellingBooking))
             .padding(.vertical, Layout.contentVerticalPadding)
+            .renderedIf(viewModel.isBookingCancellable)
         }
     }
 
@@ -250,6 +253,20 @@ private extension BookingDetailsView {
         .padding(.vertical, Layout.rowTextVerticalPadding)
         .tappable {
             print("On Add a note tap")
+        }
+    }
+}
+
+extension BookingDetailsView {
+    func cancelBooking() {
+        Task { @MainActor in
+            cancellingBooking = true
+            do {
+                try await viewModel.cancelBooking()
+            } catch {
+                viewModel.displayBookingCancellationErrorNotice(onRetry: cancelBooking)
+            }
+            cancellingBooking = false
         }
     }
 }

@@ -28,11 +28,27 @@ struct MultilineEditableTextDetailView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
+        .toolbar { toolbar }
+        .wooNavigationBarStyle()
+        .onAppear { isFocused = true }
+    }
+
+    private var toolbar: some ToolbarContent {
+        Group {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: handleBackButtonTap) {
                     Image(systemName: "chevron.backward")
                         .font(.body.weight(.semibold))
+                }
+                .confirmationDialog(
+                    Localization.discardChangesAlertTitle,
+                    isPresented: $showDiscardChangesDialog,
+                    titleVisibility: .visible
+                ) {
+                    Button(Localization.discardChangesActionTitle, role: .destructive) {
+                        dismiss()
+                    }
+                    Button(Localization.cancelActionTitle, role: .cancel) {}
                 }
             }
 
@@ -46,18 +62,6 @@ struct MultilineEditableTextDetailView: View {
                 }
             }
         }
-        .confirmationDialog(
-            Localization.discardChangesAlertTitle,
-            isPresented: $showDiscardChangesDialog,
-            titleVisibility: .visible
-        ) {
-            Button(Localization.discardChangesActionTitle, role: .destructive) {
-                dismiss()
-            }
-            Button(Localization.cancelActionTitle, role: .cancel) {}
-        }
-        .wooNavigationBarStyle()
-        .onAppear { isFocused = true }
     }
 
     private func handleBackButtonTap() {

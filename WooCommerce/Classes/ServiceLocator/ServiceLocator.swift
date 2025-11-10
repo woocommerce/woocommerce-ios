@@ -61,6 +61,10 @@ final class ServiceLocator {
     ///
     private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: crashLogging)
 
+    /// GRDB Manager for local catalog persistence
+    ///
+    private static var _grdbManager: GRDBManagerProtocol?
+
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
@@ -191,6 +195,35 @@ final class ServiceLocator {
         return _storageManager
     }
 
+    /// Provides the access point to the GRDBManager for local catalog persistence.
+    /// - Returns: An instance of GRDBManagerProtocol when the pointOfSaleLocalCatalogi1 feature flag is enabled
+    /// - Throws: Fatal error if GRDBManager initialization fails
+    static var grdbManager: GRDBManagerProtocol {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+            fatalError("GRDBManager accessed when pointOfSaleLocalCatalogi1 feature flag is disabled")
+        }
+
+        guard let grdbManager = _grdbManager else {
+            do {
+                guard let documentsPath = FileManager.default.urls(
+                    for: .documentDirectory,
+                    in: .userDomainMask).first else {
+                    fatalError("Failed to get the path to the documents directory.")
+                }
+
+                let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
+                let manager = try GRDBManager(databasePath: databasePath)
+                DDLogInfo("Started GRDBManager with database path: \(databasePath)")
+                _grdbManager = manager
+                return manager
+            } catch {
+                fatalError("Failed to initialize GRDBManager: \(error)")
+            }
+        }
+
+        return grdbManager
+    }
+
     /// Provides the access point to the FileLogger.
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
@@ -265,6 +298,17 @@ final class ServiceLocator {
     ///
     static var startupWaitingTimeTracker: AppStartupWaitingTimeTracker {
         _startupWaitingTimeTracker
+    }
+
+    /// Provides access point to the `POSCatalogSyncCoordinator`.
+    /// Returns nil if feature flag is disabled or user is not authenticated.
+    ///
+    static var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+            return nil
+        }
+
+        return stores.posCatalogSyncCoordinator
     }
 }
 
@@ -416,6 +460,15 @@ extension ServiceLocator {
         }
 
         _productImageUploader = mock
+    }
+
+    /// periphery:ignore - for use in future tests.
+    static func setGRDBManager(_ testInstance: GRDBManagerProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _grdbManager = testInstance
     }
 }
 

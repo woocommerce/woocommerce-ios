@@ -10,6 +10,11 @@ extension WooAnalyticsEvent {
             static let hide = "hide"
         }
 
+        enum Source: String {
+            case onboardingList = "onboarding_list"
+            case settings
+        }
+
         static func storeOnboardingShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .storeOnboardingShown, properties: [:])
         }
@@ -34,13 +39,6 @@ extension WooAnalyticsEvent {
                                            Key.source: source.rawValue,
                                            Key.pendingTasks: pendingTasks.map({ $0.analyticsValue }).sorted().joined(separator: ",")])
         }
-    }
-}
-
-extension WooAnalyticsEvent.StoreOnboarding {
-    enum Source: String {
-        case onboardingList = "onboarding_list"
-        case settings
     }
 }
 

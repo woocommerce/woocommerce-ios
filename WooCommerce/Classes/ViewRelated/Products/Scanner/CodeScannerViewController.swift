@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import UIKit
 import Vision
 
@@ -36,6 +37,8 @@ final class CodeScannerViewController: UIViewController {
     private let sessionQueue = DispatchQueue(label: "qrlogincamerasession.queue.serial")
     private let session = AVCaptureSession()
     private var requests = [VNRequest]()
+    private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
+    private var cancellables = Set<AnyCancellable>()
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
 
@@ -160,10 +163,8 @@ private extension CodeScannerViewController {
     /// Enables and starts live stream video, if available.
     func startLiveVideo() {
         session.sessionPreset = .photo
-        if #available(iOS 16.0, *) {
-            if session.isMultitaskingCameraAccessSupported {
-                session.isMultitaskingCameraAccessEnabled = true
-            }
+        if session.isMultitaskingCameraAccessSupported {
+            session.isMultitaskingCameraAccessEnabled = true
         }
 
         guard let captureDevice = AVCaptureDevice.default(for: .video),
@@ -187,6 +188,15 @@ private extension CodeScannerViewController {
         previewLayer.videoGravity = .resizeAspectFill
         previewLayer.frame = videoOutputImageView.bounds
         videoOutputImageView.layer.addSublayer(previewLayer)
+        rotationCoordinator = AVCaptureDevice.RotationCoordinator(device: captureDevice, previewLayer: previewLayer)
+
+        rotationCoordinator?.publisher(for: \.videoRotationAngleForHorizonLevelPreview)
+            .sink { [weak self] angle in
+                guard let self = self,
+                      let connection = self.previewLayer?.connection else { return }
+                connection.videoRotationAngle = angle
+            }
+            .store(in: &cancellables)
 
         sessionQueue.async { [weak self] in
             self?.session.startRunning()
@@ -289,28 +299,35 @@ private extension CodeScannerViewController {
 // MARK: Orientation Handling
 //
 private extension CodeScannerViewController {
+    enum VideoRotationAngle {
+        static let portrait: CGFloat = 90
+        static let landscapeRight: CGFloat = 0
+        static let landscapeLeft: CGFloat = 180
+        static let portraitUpsideDown: CGFloat = 270
+    }
+
     func updatePreviewLayerOrientation() {
-        if let connection = previewLayer?.connection, connection.isVideoOrientationSupported {
+        if let connection = previewLayer?.connection {
             let orientation = view.window?.windowScene?.interfaceOrientation
-            let videoOrientation: AVCaptureVideoOrientation
+            let videoRotationAngle: CGFloat
             switch orientation {
             case .portrait:
-                videoOrientation = .portrait
+                videoRotationAngle = VideoRotationAngle.portrait
             case .landscapeRight:
-                videoOrientation = .landscapeRight
+                videoRotationAngle = VideoRotationAngle.landscapeRight
             case .landscapeLeft:
-                videoOrientation = .landscapeLeft
+                videoRotationAngle = VideoRotationAngle.landscapeLeft
             case .portraitUpsideDown:
-                videoOrientation = .portraitUpsideDown
+                videoRotationAngle = VideoRotationAngle.portraitUpsideDown
             default:
-                videoOrientation = .portrait
+                videoRotationAngle = VideoRotationAngle.portrait
             }
-            updatePreviewLayerVideoOrientation(connection: connection, orientation: videoOrientation)
+            updatePreviewLayerVideoRotationAngle(connection: connection, angle: videoRotationAngle)
         }
     }
 
-    func updatePreviewLayerVideoOrientation(connection: AVCaptureConnection, orientation: AVCaptureVideoOrientation) {
-        connection.videoOrientation = orientation
+    func updatePreviewLayerVideoRotationAngle(connection: AVCaptureConnection, angle: CGFloat) {
+        connection.videoRotationAngle = angle
     }
 }
 

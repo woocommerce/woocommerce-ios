@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///
@@ -93,8 +94,20 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     public let hasSSOEnabled: Bool
 
     /// Whether application password authentication is available
-    /// periphery: ignore - to be used as part of WOOMOB-1123
+    ///
     public let applicationPasswordAvailable: Bool
+
+    /// Whether the site is running on Garden architecture
+    ///
+    public let isGarden: Bool
+
+    /// The site Garden name is present
+    ///
+    public let gardenName: String?
+
+    /// The site Garden partner if present
+    ///
+    public let gardenPartner: String?
 
     /// Decodable Conformance.
     ///
@@ -104,7 +117,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let siteID = try siteContainer.decode(Int64.self, forKey: .siteID)
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
-        let url = try siteContainer.decode(String.self, forKey: .url)
+        let url = Self.safeURL(try siteContainer.decode(String.self, forKey: .url))
         let capabilitiesContainer = try siteContainer.nestedContainer(keyedBy: CapabilitiesKeys.self, forKey: .capabilities)
         let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
         let isAdmin = try capabilitiesContainer.decode(Bool.self, forKey: .isAdmin)
@@ -117,8 +130,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
         let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
-        let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL)
-        let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
+        let adminURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .adminURL))
+        let loginURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .loginURL))
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
         let canBlaze = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .canBlaze) ?? false
         let visibility = optionsContainer.failsafeDecodeIfPresent(SiteVisibility.self, forKey: .visibility) ?? .privateSite
@@ -138,6 +151,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
             let jetpackModules = (try? siteContainer.decodeIfPresent([String].self, forKey: SiteKeys.jetpackModules)) ?? []
             return jetpackModules.contains(OptionKeys.sso.rawValue) == true
         }()
+
+        let isGarden = try siteContainer.decodeIfPresent(Bool.self, forKey: .isGarden) ?? false
+        let gardenName = try siteContainer.decodeIfPresent(String.self, forKey: .gardenName)
+        let gardenPartner = try siteContainer.decodeIfPresent(String.self, forKey: .gardenPartner)
 
         self.init(siteID: siteID,
                   name: name,
@@ -161,7 +178,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   isAdmin: isAdmin,
                   wasEcommerceTrial: wasEcommerceTrial,
                   hasSSOEnabled: hasSSOEnabled,
-                  applicationPasswordAvailable: false) // to be updated by fetching SiteAPI
+                  applicationPasswordAvailable: false, // to be updated by fetching SiteAPI
+                  isGarden: isGarden,
+                  gardenName: gardenName,
+                  gardenPartner: gardenPartner)
     }
 
     /// Designated Initializer.
@@ -188,7 +208,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                 isAdmin: Bool,
                 wasEcommerceTrial: Bool,
                 hasSSOEnabled: Bool,
-                applicationPasswordAvailable: Bool) {
+                applicationPasswordAvailable: Bool,
+                isGarden: Bool,
+                gardenName: String?,
+                gardenPartner: String?) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -212,6 +235,9 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         self.wasEcommerceTrial = wasEcommerceTrial
         self.hasSSOEnabled = hasSSOEnabled
         self.applicationPasswordAvailable = applicationPasswordAvailable
+        self.isGarden = isGarden
+        self.gardenName = gardenName
+        self.gardenPartner = gardenPartner
     }
 }
 
@@ -239,12 +265,6 @@ public extension Site {
     var isSimpleSite: Bool {
         plan == WooConstants.freePlanSlug
     }
-
-    /// Whether the site is running a free trial WooExpress plan
-    ///
-    var isFreeTrialSite: Bool {
-        plan == WooConstants.freeTrialPlanSlug
-    }
 }
 
 /// Defines all of the Site CodingKeys.
@@ -263,6 +283,9 @@ private extension Site {
         case isJetpackConnected          = "jetpack_connection"
         case wasEcommerceTrial           = "was_ecommerce_trial"
         case jetpackModules = "jetpack_modules"
+        case isGarden = "is_garden"
+        case gardenName = "garden_name"
+        case gardenPartner = "garden_partner"
     }
 
     enum PlanInfo: String, CodingKey {
@@ -310,6 +333,20 @@ public enum SiteVisibility: Int, Codable, GeneratedFakeable {
 ///
 public extension Site {
 
+    /// Force URL to use HTTPS if possible to avoid App Transport Security errors
+    private static func safeURL(_ url: String) -> String {
+        guard let originalURL = URL(string: url),
+              originalURL.scheme?.lowercased() == "http"
+        else {
+            return url
+        }
+
+        var components = URLComponents(url: originalURL, resolvingAgainstBaseURL: false)
+        components?.scheme = "https"
+
+        return components?.string ?? url
+    }
+
     /// Returns the TimeZone using the gmtOffset
     ///
     var siteTimezone: TimeZone {
@@ -321,6 +358,10 @@ public extension Site {
     ///
     var isPrivateWPCOMSite: Bool {
         return isWordPressComStore && (visibility == .privateSite)
+    }
+
+    func toJetpackSite() -> JetpackSite {
+        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

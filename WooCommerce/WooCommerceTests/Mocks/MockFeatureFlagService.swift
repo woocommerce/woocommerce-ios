@@ -1,7 +1,8 @@
 @testable import WooCommerce
 import Experiments
+import protocol PointOfSale.POSFeatureFlagProviding
 
-final class MockFeatureFlagService: FeatureFlagService {
+final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isInboxOn: Bool
     var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
@@ -14,7 +15,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var isSubscriptionsInOrderCreationCustomersEnabled: Bool
     var isSubscriptionsInOrderCreationUIEnabled: Bool
     var isPointOfSaleEnabled: Bool
-    var isPointOfSaleAsATabi2Enabled: Bool
     var googleAdsCampaignCreationOnWebView: Bool
     var blazeEvergreenCampaigns: Bool
     var blazeCampaignObjective: Bool
@@ -25,6 +25,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var allowMerchantAIAPIKey: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
+    var isCIABBookingsEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -38,7 +39,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isSubscriptionsInOrderCreationUIEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         isPointOfSaleAsATabi2Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
@@ -47,7 +47,8 @@ final class MockFeatureFlagService: FeatureFlagService {
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
          allowMerchantAIAPIKey: Bool = false,
-         isProductImageOptimizedHandlingEnabled: Bool = false) {
+         isProductImageOptimizedHandlingEnabled: Bool = false,
+         isCIABBookingsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -60,7 +61,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isSubscriptionsInOrderCreationUIEnabled = isSubscriptionsInOrderCreationUIEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.isPointOfSaleAsATabi2Enabled = isPointOfSaleAsATabi2Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
@@ -70,6 +70,7 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.notificationSettings = notificationSettings
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
+        self.isCIABBookingsEnabled = isCIABBookingsEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -104,8 +105,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return isSubscriptionsInOrderCreationUIEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .pointOfSaleAsATabi2:
-            return isPointOfSaleAsATabi2Enabled
         case .googleAdsCampaignCreationOnWebView:
             return googleAdsCampaignCreationOnWebView
         case .blazeEvergreenCampaigns:
@@ -124,6 +123,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return allowMerchantAIAPIKey
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
+        case .ciabBookings:
+            return isCIABBookingsEnabled
         default:
             return false
         }

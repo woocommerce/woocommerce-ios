@@ -162,9 +162,5 @@ private extension AddressMapPickerView {
 }
 
 #Preview {
-    if #available(iOS 17, *) {
-        AddressMapPickerView(fields: .constant(.init()), countryByCode: { _ in nil })
-    } else {
-        EmptyView()
-    }
+    AddressMapPickerView(fields: .constant(.init()), countryByCode: { _ in nil })
 }

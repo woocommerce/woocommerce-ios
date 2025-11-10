@@ -489,7 +489,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.customFields.first?.value.stringValue, "10")
     }
 
-    /// Test that metadata and subscription are properly encoded.
+    /// Test that only subscription details are encoded for metadata.
     ///
     func test_metadata_and_subscription_are_properly_encoded() throws {
         // Given
@@ -524,7 +524,7 @@ final class ProductMapperTests: XCTestCase {
         // Then
         XCTAssertNotNil(encodedJSON)
         let encodedMetadata = encodedJSON?["meta_data"] as? [[String: Any]]
-        XCTAssertEqual(encodedMetadata?.count, customFields.count + subscription.toKeyValuePairs().count) // Including subscription metadata
+        XCTAssertEqual(encodedMetadata?.count, subscription.toKeyValuePairs().count) // Including only subscription metadata
         XCTAssertEqual(encodedMetadata?[0]["key"] as? String, "_subscription_length")
         XCTAssertEqual(encodedMetadata?[0]["value"] as? String, subscription.length)
         XCTAssertEqual(encodedMetadata?[1]["key"] as? String, "_subscription_period")
@@ -541,12 +541,6 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(encodedMetadata?[6]["value"] as? String, subscription.trialPeriod.rawValue)
         XCTAssertEqual(encodedMetadata?[7]["key"] as? String, "_subscription_one_time_shipping")
         XCTAssertEqual(encodedMetadata?[7]["value"] as? String, subscription.oneTimeShipping ? "yes" : "no")
-        XCTAssertEqual(Int64(encodedMetadata?[8]["id"] as? String ?? ""), customFields[0].metadataID)
-        XCTAssertEqual(encodedMetadata?[8]["key"] as? String, customFields[0].key)
-        XCTAssertEqual(encodedMetadata?[8]["value"] as? String, customFields[0].value.stringValue)
-        XCTAssertEqual(Int64(encodedMetadata?[9]["id"] as? String ?? ""), customFields[1].metadataID)
-        XCTAssertEqual(encodedMetadata?[9]["key"] as? String, customFields[1].key)
-        XCTAssertEqual(encodedMetadata?[9]["value"] as? String, customFields[1].value.stringValue)
     }
 
     /// Test that attributes are properly encoded.
@@ -592,6 +586,60 @@ final class ProductMapperTests: XCTestCase {
             XCTAssertEqual(encodedAttributes?[index]["variation"] as? Bool, attribute.variation)
             XCTAssertEqual(encodedAttributes?[index]["options"] as? [String], attribute.options)
         }
+    }
+
+    /// Test that metadata can be decoded from both array and dictionary formats
+    ///
+    func test_metadata_flexible_decoding_array_format() throws {
+        // Given - JSON with metadata as array (current format)
+        guard let data = Loader.contentsOf("minimal-product-array-metadata") else {
+            XCTFail("Unable to load test data")
+            return
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        decoder.userInfo[.siteID] = dummySiteID
+
+        // When
+        let product = try decoder.decode(Product.self, from: data)
+
+        // Then
+        XCTAssertEqual(product.customFields.count, 2)
+        XCTAssertEqual(product.customFields[0].metadataID, 1001)
+        XCTAssertEqual(product.customFields[0].key, "custom_field_1")
+        XCTAssertEqual(product.customFields[0].value.stringValue, "value1")
+        XCTAssertEqual(product.customFields[1].metadataID, 1002)
+        XCTAssertEqual(product.customFields[1].key, "custom_field_2")
+        XCTAssertEqual(product.customFields[1].value.stringValue, "value2")
+    }
+
+    /// Test that metadata can be decoded from object format keyed by index strings
+    ///
+    func test_metadata_flexible_decoding_dictionary_format() throws {
+        // Given - JSON with metadata as object keyed by index strings (new format)
+        guard let data = Loader.contentsOf("minimal-product-dictionary-metadata") else {
+            XCTFail("Unable to load test data")
+            return
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        decoder.userInfo[.siteID] = dummySiteID
+
+        // When
+        let product = try decoder.decode(Product.self, from: data)
+
+        // Then
+        XCTAssertEqual(product.customFields.count, 2)
+        // Since dictionary values don't have a guaranteed order, we need to check by key
+        let field1 = product.customFields.first { $0.key == "custom_field_1" }
+        let field2 = product.customFields.first { $0.key == "custom_field_2" }
+
+        XCTAssertNotNil(field1)
+        XCTAssertNotNil(field2)
+        XCTAssertEqual(field1?.metadataID, 1001)
+        XCTAssertEqual(field1?.value.stringValue, "value1")
+        XCTAssertEqual(field2?.metadataID, 1002)
+        XCTAssertEqual(field2?.value.stringValue, "value2")
     }
 }
 

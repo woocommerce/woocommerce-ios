@@ -1,1 +1,1 @@
-Managing your store just got smoother with a more reliable shipping label workflow! Jetpack setup has also been improved for a faster, easier connection. Update now and enjoy the improvements!
+This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.

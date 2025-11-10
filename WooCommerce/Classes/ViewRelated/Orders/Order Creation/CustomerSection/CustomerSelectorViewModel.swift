@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import class WooFoundation.VersionHelpers
 
 final class CustomerSelectorViewModel {
     private let stores: StoresManager

@@ -193,8 +193,8 @@ final class CoreDataManagerTests: XCTestCase {
         // recreate the database.
         let invalidModelsInventory = ManagedObjectModelsInventory(
             packageURL: modelsInventory.packageURL,
-            currentModel: try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 30"))),
-            versions: [.init(name: "Model 30")]
+            currentModel: try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 80"))),
+            versions: [.init(name: "Model 80")]
         )
 
         manager = try makeManager(using: invalidModelsInventory, deletingExistingStoreFiles: false)
@@ -211,19 +211,19 @@ final class CoreDataManagerTests: XCTestCase {
         insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 2)
 
-        // The OrderFeeLine entity does not exist in Model 30, was introduced in Model 42
-        // This proves that the store was reset to Model 30.
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: OrderFeeLine.entityName,
+        // The ProductCompositeComponent entity does not exist in Model 80, was introduced in Model 82
+        // This proves that the store was reset to Model 80.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: ProductCompositeComponent.entityName,
                                                 in: manager.viewStorage as! NSManagedObjectContext))
     }
 
     func test_accessing_persistentContainer_will_automatically_migrate_the_database() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
-        // Create an inventory with up to Model 33 only. This is what we'll load first.
+        // Create an inventory with up to Model 83 only. This is what we'll load first.
         let olderModelsInventory: ManagedObjectModelsInventory = try {
-            let model33Index = try XCTUnwrap(modelsInventory.versions.firstIndex(of: .init(name: "Model 33")))
-            let versions = Array(modelsInventory.versions.prefix(through: model33Index))
+            let model83Index = try XCTUnwrap(modelsInventory.versions.firstIndex(of: .init(name: "Model 83")))
+            let versions = Array(modelsInventory.versions.prefix(through: model83Index))
 
             return ManagedObjectModelsInventory(
                 packageURL: modelsInventory.packageURL,
@@ -243,8 +243,8 @@ final class CoreDataManagerTests: XCTestCase {
         }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
-        // The ShippineLineTax entity does not exist in Model 33.
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: ShippingLineTax.entityName,
+        // The OrderItemProductAddOn entity does not exist in Model 83.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: OrderItemProductAddOn.entityName,
                                                 in: manager.viewStorage as! NSManagedObjectContext))
 
         try assertThat(manager, isCompatibleWith: olderModelsInventory.currentModel)

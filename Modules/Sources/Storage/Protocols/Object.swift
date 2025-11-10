@@ -11,6 +11,7 @@ public protocol Object: AnyObject {
 
     /// Returns an instance of ObjectID: expected to identify the current instance, unequivocally.
     ///
+    // periphery:ignore - Used in tests, no changes but mysteriously stopped being ignored.
     var objectID: ObjectID { get }
 
     /// Returns the receiver's Entity Name.

@@ -18,9 +18,9 @@ public class BackgroundDownloadService: NSObject {
 // MARK: - BackgroundDownloadProtocol
 
 extension BackgroundDownloadService: BackgroundDownloadProtocol {
-    public func downloadFile(from url: URL, sessionIdentifier: String) async throws -> URL {
+    public func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL {
         try await withCheckedThrowingContinuation { continuation in
-            let session = createBackgroundSession(identifier: sessionIdentifier)
+            let session = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
             let downloadTask = session.downloadTask(with: url)
 
             // Stores the continuation for later use in delegate methods.
@@ -49,13 +49,13 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
 
     // MARK: - Private Methods
 
-    private func createBackgroundSession(identifier: String) -> URLSession {
+    private func createBackgroundSession(identifier: String, allowCellular: Bool) -> URLSession {
         let config = URLSessionConfiguration.background(withIdentifier: identifier)
 
         // Configure for background downloads as per Apple guidelines
         config.sessionSendsLaunchEvents = true
         config.isDiscretionary = false  // Don't wait for optimal conditions
-        config.allowsCellularAccess = true
+        config.allowsCellularAccess = allowCellular
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 300  // 5 minutes
 

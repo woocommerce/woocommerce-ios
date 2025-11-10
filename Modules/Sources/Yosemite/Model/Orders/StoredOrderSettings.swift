@@ -42,7 +42,7 @@ public struct StoredOrderSettings: Codable, Equatable {
             if customerFilter != nil {
                 total += 1
             }
-            if let salesChannelFilter = salesChannelFilter, case .pointOfSale = salesChannelFilter {
+            if let salesChannelFilter = salesChannelFilter, salesChannelFilter != .any {
                 total += 1
             }
 

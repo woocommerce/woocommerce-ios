@@ -1,8 +1,15 @@
 import Foundation
 
+public protocol OrdersRemoteProtocol {
+    func loadOrders(
+        for siteID: Int64,
+        orderIDs: [Int64]
+    ) async throws -> [Order]
+}
+
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote {
+public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement
@@ -109,6 +116,41 @@ public class OrdersRemote: Remote {
         let mapper = OrderMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves specific `Order`s.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - orderIDs: The IDs of the orders to fetch.
+    /// - Returns: Array of orders.
+    /// - Throws: Network or parsing errors.
+    ///
+    public func loadOrders(
+        for siteID: Int64,
+        orderIDs: [Int64]
+    ) async throws -> [Order] {
+        guard !orderIDs.isEmpty else {
+            return []
+        }
+
+        let parameters: [String: Any] = [
+            ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
+            ParameterKeys.fields: ParameterValues.fieldValues
+        ]
+
+        let path = Constants.ordersPath
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+        let mapper = OrderListMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves the notes for a specific `Order`
@@ -450,6 +492,68 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             }
         }
     }
+
+    public func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
+        let parameters: [String: Any] = [
+            "billing": [
+                "email": emailAddress
+            ]
+        ]
+
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        try await enqueue(request)
+    }
+
+    public func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        let parameters: [String: Any] = [
+            ParameterKeys.page: String(pageNumber),
+            ParameterKeys.perPage: String(pageSize),
+            ParameterKeys.statusKey: Defaults.statusAny,
+            ParameterKeys.usesGMTDates: true,
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.createdVia: ParameterValues.posFilter
+        ]
+
+        let path = Constants.ordersPath
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .get,
+                                   siteID: siteID,
+                                   path: path,
+                                   parameters: parameters,
+                                   availableAsRESTRequest: true)
+        let mapper = OrderListMapper(siteID: siteID)
+        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
+    }
+
+    public func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        let parameters: [String: Any] = [
+            ParameterKeys.keyword: searchTerm,
+            ParameterKeys.page: String(pageNumber),
+            ParameterKeys.perPage: String(pageSize),
+            ParameterKeys.statusKey: Defaults.statusAny,
+            ParameterKeys.usesGMTDates: true,
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.createdVia: ParameterValues.posFilter
+        ]
+        let path = Constants.ordersPath
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .get,
+                                   siteID: siteID,
+                                   path: path,
+                                   parameters: parameters,
+                                   availableAsRESTRequest: true)
+        let mapper = OrderListMapper(siteID: siteID)
+        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
+    }
 }
 
 
@@ -472,6 +576,7 @@ public extension OrdersRemote {
         static let addedByUser: String      = "added_by_user"
         static let customerNote: String     = "customer_note"
         static let keyword: String          = "search"
+        static let include: String          = "include"
         static let note: String             = "note"
         static let page: String             = "page"
         static let perPage: String          = "per_page"
@@ -498,6 +603,7 @@ public extension OrdersRemote {
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
         ]
         static let dateModifiedField = "date_modified_gmt"
+        static let posFilter = "pos-rest-api"
     }
 
     enum NestedFieldKeys {
@@ -534,6 +640,24 @@ public extension OrdersRemote {
         case customerNote
         case customerID
         case currency
+    }
+
+    /// Loads a single order asynchronously for POS
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the order.
+    ///   - orderID: ID of the order to load.
+    /// - Returns: The loaded Order.
+    /// - Throws: Network or parsing errors.
+    func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .get,
+                                   siteID: siteID,
+                                   path: path,
+                                   availableAsRESTRequest: true)
+        let mapper = OrderMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

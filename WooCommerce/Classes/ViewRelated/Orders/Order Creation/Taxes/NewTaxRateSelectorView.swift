@@ -113,10 +113,14 @@ struct NewTaxRateSelectorView: View {
                 }
         }
         .wooNavigationBarStyle()
-        .safariSheet(isPresented: $showingWPAdminWebView, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+        .sheet(isPresented: $showingWPAdminWebView, onDismiss: {
             viewModel.onRefreshAction()
             onDismissWpAdminWebView()
             showingWPAdminWebView = false
+        }, content: {
+            if let url = viewModel.wpAdminTaxSettingsURL {
+                AuthenticatableWebView(url: url, title: Localization.editTaxRatesInWpAdminButtonTitle)
+            }
         })
     }
 }

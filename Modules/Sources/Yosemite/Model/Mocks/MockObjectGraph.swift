@@ -222,6 +222,7 @@ extension MockObjectGraph {
             totalTax: "0",
             attributes: [],
             addOns: [],
+            image: nil,
             parent: nil,
             bundleConfiguration: []
         )

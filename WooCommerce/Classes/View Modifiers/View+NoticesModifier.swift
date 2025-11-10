@@ -120,7 +120,7 @@ struct NoticeModifier: ViewModifier {
                             performClearNoticeTask()
                         })
                     )
-                    .onChange(of: notice) { _ in
+                    .onChange(of: notice) {
                         provideHapticFeedbackIfNecessary(notice.feedbackType)
                         dispatchClearNoticeTask()
                     }

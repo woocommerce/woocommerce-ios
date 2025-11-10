@@ -1,5 +1,6 @@
 import Combine
 import Experiments
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import Yosemite
@@ -20,7 +21,6 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
-    private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -41,7 +41,6 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
@@ -61,12 +60,13 @@ final class AppCoordinator {
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-        self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
+
+        schedulePOSSurveyNotificationIfNeeded()
     }
 
     func start() {
@@ -104,6 +104,14 @@ final class AppCoordinator {
 }
 
 private extension AppCoordinator {
+    func schedulePOSSurveyNotificationIfNeeded() {
+        Task { @MainActor in
+            await POSNotificationScheduler(stores: stores).scheduleLocalNotificationIfEligible(for: .currentMerchant)
+        }
+    }
+}
+
+private extension AppCoordinator {
     // Fetch latest site properties and update the default store if anything has changed:
     //
     func updateSitePropertiesIfNeeded() {
@@ -131,8 +139,30 @@ private extension AppCoordinator {
             return
         }
 
+        let posSurveyScenarios = [
+            LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
+            LocalNotification.Scenario.pointOfSaleCurrentMerchant.identifier,
+        ]
+
+        if posSurveyScenarios.contains(identifier),
+           let surveyURLString = userInfo[LocalNotification.UserInfoKey.surveyURL] as? String,
+           let surveyURL = URL(string: surveyURLString) {
+            presentSurveyWebView(url: surveyURL)
+        }
+
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
+    }
+
+    private func presentSurveyWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        // POS mode is presented via a UIHostingController as full-screen view on top of the tabBarController, so
+        // we have to target the topmost VC if we want to present a web view on top of this when tapping on the local notification.
+        if let topmostPresentedViewController = window.topmostPresentedViewController {
+            topmostPresentedViewController.present(safariViewController, animated: true)
+        } else {
+            tabBarController.present(safariViewController, animated: true)
+        }
     }
 }
 

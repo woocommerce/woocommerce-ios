@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View where AlwaysVisibleContent: View, ExpandableContent: View {
     @State private var isExpanded: Bool = false
@@ -59,11 +60,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         }
                     }
                     .trackSize(size: $expandingContentSize)
-                    .onChange(of: expandingContentSize, perform: { _ in
+                    .onChange(of: expandingContentSize) {
                         withAnimation {
                             panelHeight = calculateHeight()
                         }
-                    })
+                    }
                 }
                 .scrollVerticallyIfNeeded()
 
@@ -79,7 +80,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             // Always visible content
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
-                .onChange(of: fixedContentSize, perform: { [fixedContentSize] _ in
+                .onChange(of: fixedContentSize) {
                     guard fixedContentSize.width > 0,
                           fixedContentSize.height > 0 else {
                         // No animation for initial load
@@ -88,7 +89,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     withAnimation {
                         panelHeight = calculateHeight()
                     }
-                })
+                }
                 .contentShape(Rectangle())
                 .onTapGesture {
                     withAnimation {
@@ -104,8 +105,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         panelHeight = calculateHeight()
                     }
                 })
-                .onChange(of: geometryProxy.size.height,
-                          perform: { newValue in
+                .onChange(of: geometryProxy.size.height) { _, newValue in
                     if !isDragging {
                         DispatchQueue.main.async {
                             withAnimation {
@@ -113,16 +113,16 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                             }
                         }
                     }
-                })
+                }
         })
-        .onChange(of: isExpanded, perform: { newValue in
+        .onChange(of: isExpanded) { _, newValue in
             onChangeOfExpansion?(newValue)
             DispatchQueue.main.async {
                 withAnimation {
                     panelHeight = calculateHeight()
                 }
             }
-        })
+        }
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
         .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
         .cornerRadius(Layout.sheetCornerRadius)
@@ -207,28 +207,5 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
             Text("Can be hidden")
         }
 
-    }
-}
-
-struct SizeTracker: ViewModifier {
-    @Binding var size: CGSize
-
-    func body(content: Content) -> some View {
-        content
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        self.size = proxy.size
-                    }
-                    .onChange(of: proxy.size) { newSize in
-                        self.size = newSize
-                    }
-            })
-    }
-}
-
-extension View {
-    func trackSize(size: Binding<CGSize>) -> some View {
-        modifier(SizeTracker(size: size))
     }
 }

@@ -17,14 +17,12 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
     public let attributes: [ProductVariationAttribute]
     public let image: ProductImage?
 
+    // periphery:ignore - Will be used for search in future
+    public let fullDescription: String?
     public let sku: String?
     public let globalUniqueID: String?
 
     public let price: String
-    public let regularPrice: String?
-    public let salePrice: String?
-    public let onSale: Bool
-
     public let downloadable: Bool
 
     public let manageStock: Bool
@@ -40,12 +38,10 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 productVariationID: Int64,
                 attributes: [ProductVariationAttribute],
                 image: ProductImage?,
+                fullDescription: String?,
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
-                regularPrice: String?,
-                salePrice: String?,
-                onSale: Bool,
                 downloadable: Bool,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
@@ -55,12 +51,10 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         self.productVariationID = productVariationID
         self.attributes = attributes
         self.image = image
+        self.fullDescription = fullDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.price = price
-        self.regularPrice = regularPrice
-        self.salePrice = salePrice
-        self.onSale = onSale
         self.downloadable = downloadable
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
@@ -81,6 +75,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         let productID = try container.decode(Int64.self, forKey: .productID)
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
+        let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
         let sku = container.failsafeDecodeIfPresent(
             targetType: String.self,
             forKey: .sku,
@@ -90,18 +85,6 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
             targetType: String.self,
             forKey: .price,
             alternativeTypes: [decimalString]) ?? ""
-        let regularPrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .regularPrice,
-            alternativeTypes: [decimalString])
-        let salePrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .salePrice,
-            alternativeTypes: [decimalString])
-        let onSale = container.failsafeDecodeIfPresent(
-            targetType: Bool.self,
-            forKey: .onSale,
-            alternativeTypes: [.string(transform: { NSString(string: $0).boolValue })]) ?? false
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
         let manageStock = container.failsafeDecodeIfPresent(
             targetType: Bool.self,
@@ -111,7 +94,8 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                     guard value.lowercased() == Values.manageStockParent else {
                         let message = "Unexpected manage stock value: \(value)"
                         assertionFailure(message)
-                        DDLogError(message)
+                        let formattedMessage = DDLogMessageFormat(stringLiteral: message)
+                        DDLogError(formattedMessage)
                         return false
                     }
                     return false
@@ -125,12 +109,10 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                   productVariationID: productVariationID,
                   attributes: attributes,
                   image: image,
+                  fullDescription: fullDescription,
                   sku: sku,
                   globalUniqueID: globalUniqueID,
                   price: price,
-                  regularPrice: regularPrice,
-                  salePrice: salePrice,
-                  onSale: onSale,
                   downloadable: downloadable,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
@@ -158,9 +140,7 @@ private extension POSProductVariation {
         case attributes
         case image
         case price
-        case regularPrice = "regular_price"
-        case salePrice = "sale_price"
-        case onSale = "on_sale"
+        case fullDescription = "description"
         case sku
         case globalUniqueID = "global_unique_id"
         case downloadable

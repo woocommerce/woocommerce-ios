@@ -13,6 +13,10 @@ public enum WooConstants {
     ///
     static let databaseStackName = "WooCommerce"
 
+    /// Local SQLite Database Name
+    ///
+    static let localSQLiteDatabaseName = "woo-local.sqlite"
+
     /// Keychain Access's Service Name
     ///
     public static let keychainServiceName = "com.automattic.woocommerce"
@@ -246,10 +250,6 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
-        /// URL for Point of Sale documentation
-        ///
-        case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
-
         /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
@@ -279,14 +279,6 @@ extension WooConstants {
         /// URL with the USPS instructions when shipping from US to EU countries with specific customs rules.
         ///
         case shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
-
-        /// In-App Purchases subscriptions management URL
-        ///
-        case inAppPurchasesAccountSubscriptionsLink = "https://apps.apple.com/account/subscriptions"
-
-        /// URL for Woo Express, which shows plan details. Note that this includes links to start a free trial and pricing for plans, and is only
-        /// intended for use as a fallback. We should remove this when we fetch plan data from an API.
-        case fallbackWooExpressHome = "https://woocommerce.com/express"
 
         /// URL for USPS Hazmat instructions detailing to the user the possible categories and why declaring hazmat materials is mandatory
         ///

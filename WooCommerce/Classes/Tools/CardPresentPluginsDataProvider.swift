@@ -1,6 +1,7 @@
 import Yosemite
 import Foundation
 import Storage
+import class WooFoundation.VersionHelpers
 
 /// Provides information about which of the payment plugins (WCPay and Stripe) are installed and active
 ///

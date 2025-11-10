@@ -22,6 +22,25 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
+    var updatePOSOrderEmailCalled: Bool = false
+    var spyUpdatePOSOrderEmailSiteID: Int64?
+    var spyUpdatePOSOrderEmailOrderID: Int64?
+    var spyUpdatePOSOrderEmailAddress: String?
+    var updatePOSOrderEmailResult: Result<Void, Error> = .success(())
+
+    func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
+        updatePOSOrderEmailCalled = true
+        spyUpdatePOSOrderEmailSiteID = siteID
+        spyUpdatePOSOrderEmailOrderID = orderID
+        spyUpdatePOSOrderEmailAddress = emailAddress
+        switch updatePOSOrderEmailResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
     var createPOSOrderCalled: Bool = false
     var spyCreatePOSOrder: Order?
     var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
@@ -32,5 +51,61 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
         spyCreatePOSOrder = order
         spyCreatePOSOrderFields = fields
         return Order.fake()
+    }
+
+    var mockPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+    var loadPOSOrdersCalled = false
+    var spySiteID: Int64?
+    var spyPageNumber: Int?
+    var spyPageSize: Int?
+
+    func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        loadPOSOrdersCalled = true
+        spySiteID = siteID
+        spyPageNumber = pageNumber
+        spyPageSize = pageSize
+
+        switch mockPagedOrdersResult {
+        case .success(let pagedOrders):
+            return pagedOrders
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var mockSearchPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+    var searchPOSOrdersCalled = false
+    var spySearchTerm: String?
+
+    func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        searchPOSOrdersCalled = true
+        spySiteID = siteID
+        spySearchTerm = searchTerm
+        spyPageNumber = pageNumber
+        spyPageSize = pageSize
+
+        switch mockSearchPagedOrdersResult {
+        case .success(let pagedOrders):
+            return pagedOrders
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var loadPOSOrderCalled = false
+    var spyLoadPOSOrderID: Int64?
+    var loadPOSOrderResult: Result<Order, Error> = .success(Order.fake())
+
+    func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        loadPOSOrderCalled = true
+        spySiteID = siteID
+        spyLoadPOSOrderID = orderID
+
+        switch loadPOSOrderResult {
+        case .success(let order):
+            return order
+        case .failure(let error):
+            throw error
+        }
     }
 }

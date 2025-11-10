@@ -48,1434 +48,6 @@ final class MigrationTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 31")
-        let sourceContext = sourceContainer.viewContext
-
-        let attribute = sourceContext.insert(entityName: "Attribute", properties: [
-            "id": 9_753_134,
-            "key": "voluptatem",
-            "value": "veritatis"
-        ])
-        let variation = insertProductVariation(to: sourceContainer.viewContext)
-        variation.mutableOrderedSetValue(forKey: "attributes").add(attribute)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Attribute"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "ProductVariation"), 1)
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 32")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: targetContext))
-        XCTAssertEqual(try targetContext.count(entityName: "GenericAttribute"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "ProductVariation"), 1)
-
-        let migratedAttribute = try XCTUnwrap(targetContext.allObjects(entityName: "GenericAttribute").first)
-        XCTAssertEqual(migratedAttribute.value(forKey: "id") as? Int, 9_753_134)
-        XCTAssertEqual(migratedAttribute.value(forKey: "key") as? String, "voluptatem")
-        XCTAssertEqual(migratedAttribute.value(forKey: "value") as? String, "veritatis")
-
-        // The "attributes" relationship should have been migrated too
-        let migratedVariation = try XCTUnwrap(targetContext.allObjects(entityName: "ProductVariation").first)
-        let migratedVariationAttributes = migratedVariation.mutableOrderedSetValue(forKey: "attributes")
-        XCTAssertEqual(migratedVariationAttributes.count, 1)
-        XCTAssertEqual(migratedVariationAttributes.firstObject as? NSManagedObject, migratedAttribute)
-
-        // The migrated attribute can be accessed using the newly renamed `GenericAttribute` class.
-        let genericAttribute = try XCTUnwrap(targetContext.firstObject(ofType: GenericAttribute.self))
-        XCTAssertEqual(genericAttribute.id, 9_753_134)
-        XCTAssertEqual(genericAttribute.key, "voluptatem")
-        XCTAssertEqual(genericAttribute.value, "veritatis")
-    }
-
-    func test_migrating_from_32_to_33_sets_new_Product_attribute_date_to_dateCreated() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 32")
-        let sourceContext = sourceContainer.viewContext
-
-        let product = insertProduct(to: sourceContext, forModel: 32)
-        let dateCreated = Date(timeIntervalSince1970: 1603250786)
-        product.setValue(dateCreated, forKey: "dateCreated")
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 33")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
-
-        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
-        XCTAssertEqual(migratedProduct.value(forKey: "date") as? Date, dateCreated)
-        XCTAssertEqual(migratedProduct.value(forKey: "dateCreated") as? Date, dateCreated)
-    }
-
-    func test_migrating_from_34_to_35_enables_creating_new_OrderItemAttribute_and_adding_to_OrderItem_attributes_relationship() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 34")
-        let sourceContext = sourceContainer.viewContext
-
-        let order = insertOrder(to: sourceContext)
-        let orderItem = insertOrderItem(to: sourceContext)
-        orderItem.setValue(order, forKey: "order")
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "OrderItem"), 1)
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 35")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 0)
-
-        let migratedOrderItem = try XCTUnwrap(targetContext.first(entityName: "OrderItem"))
-
-        // Creates an `OrderItemAttribute` and adds it to `OrderItem`.
-        let orderItemAttribute = insertOrderItemAttribute(to: targetContext)
-        migratedOrderItem.setValue(NSOrderedSet(array: [orderItemAttribute]), forKey: "attributes")
-        try targetContext.save()
-
-        XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 1)
-        XCTAssertEqual(migratedOrderItem.value(forKey: "attributes") as? NSOrderedSet, NSOrderedSet(array: [orderItemAttribute]))
-    }
-
-    func test_migrating_from_35_to_36_mantains_values_for_transformable_properties() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 35")
-        let sourceContext = sourceContainer.viewContext
-
-        let product = insertProduct(to: sourceContext, forModel: 35)
-        product.setValue([1, 2, 3], forKey: "crossSellIDs")
-        product.setValue([4, 5, 6], forKey: "groupedProducts")
-        product.setValue([7, 8, 9], forKey: "relatedIDs")
-        product.setValue([10, 11, 12], forKey: "upsellIDs")
-        product.setValue([13, 14, 15], forKey: "variations")
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 36")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
-
-        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
-        XCTAssertEqual(migratedProduct.value(forKey: "crossSellIDs") as? [Int64], [1, 2, 3])
-        XCTAssertEqual(migratedProduct.value(forKey: "groupedProducts") as? [Int64], [4, 5, 6])
-        XCTAssertEqual(migratedProduct.value(forKey: "relatedIDs") as? [Int64], [7, 8, 9])
-        XCTAssertEqual(migratedProduct.value(forKey: "upsellIDs") as? [Int64], [10, 11, 12])
-        XCTAssertEqual(migratedProduct.value(forKey: "variations") as? [Int64], [13, 14, 15])
-    }
-
-    func test_migrating_from_36_to_37_creates_new_paymentMethodID_property_on_order_with_nil_value() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 36")
-        let sourceContext = sourceContainer.viewContext
-
-        let order = insertOrder(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(order.entity.attributesByName["paymentMethodID"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 37")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        XCTAssertNotNil(migratedOrder.entity.attributesByName["paymentMethodID"])
-        XCTAssertNil(migratedOrder.value(forKey: "paymentMethodID"))
-    }
-
-    func test_migrating_from_37_to_38_enables_creating_new_shipping_labels_entities() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 37")
-        let sourceContext = sourceContainer.viewContext
-
-        _ = insertOrder(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 38")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 0)
-
-        let order = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        // Creates a `ShippingLabel` with all relationships.
-        let originAddress = insertShippingLabelAddress(to: targetContext)
-        let destinationAddress = insertShippingLabelAddress(to: targetContext)
-        let shippingLabelRefund = insertShippingLabelRefund(to: targetContext)
-        let shippingLabel = insertShippingLabel(to: targetContext)
-        shippingLabel.setValue(originAddress, forKey: "originAddress")
-        shippingLabel.setValue(destinationAddress, forKey: "destinationAddress")
-        shippingLabel.setValue(shippingLabelRefund, forKey: "refund")
-        shippingLabel.setValue(order, forKey: "order")
-
-        // Creates a `ShippingLabelSettings`.
-        let shippingLabelSettings = insertShippingLabelSettings(to: targetContext)
-        shippingLabelSettings.setValue(order, forKey: "order")
-
-        XCTAssertNoThrow(try targetContext.save())
-
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 2)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 1)
-
-        let savedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-        XCTAssertEqual(savedOrder.value(forKey: "shippingLabels") as? Set<NSManagedObject>, [shippingLabel])
-        XCTAssertEqual(savedOrder.value(forKey: "shippingLabelSettings") as? NSManagedObject, shippingLabelSettings)
-    }
-
-    func test_migrating_from_38_to_39_creates_new_shipping_lines_relationship_on_refund() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 38")
-        let sourceContext = sourceContainer.viewContext
-
-        let order = insertRefund(to: sourceContext)
-        try sourceContext.save()
-
-        XCTAssertNil(order.entity.relationshipsByName["shippingLines"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 39")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedRefund = try XCTUnwrap(targetContext.first(entityName: "Refund"))
-
-        XCTAssertNotNil(migratedRefund.entity.relationshipsByName["shippingLines"])
-        XCTAssertEqual(migratedRefund.value(forKey: "supportShippingRefunds") as? Bool, false)
-    }
-
-    func test_migrating_from_39_to_40_deletes_ProductAttribute_objects() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 39")
-        let sourceContext = sourceContainer.viewContext
-
-        insertAccount(to: sourceContext)
-        let product = insertProduct(to: sourceContext, forModel: 39)
-        let productAttribute = insertProductAttribute(to: sourceContext)
-        product.mutableSetValue(forKey: "attributes").add(productAttribute)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "ProductAttribute"), 1)
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 40")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
-        // Product attributes should be deleted.
-        XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 0)
-
-        // The Product.attributes inverse relationship should be gone too.
-        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
-        XCTAssertEqual(migratedProduct.mutableSetValue(forKey: "attributes").count, 0)
-
-        // We should still be able to add new attributes.
-        let anotherAttribute = insertProductAttribute(to: targetContext)
-        migratedProduct.mutableSetValue(forKey: "attributes").add(anotherAttribute)
-        XCTAssertNoThrow(try targetContext.save())
-    }
-
-    func test_migrating_from_40_to_41_allow_use_to_create_ProductAttribute_terms() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 40")
-        let sourceContext = sourceContainer.viewContext
-
-        insertProductAttribute(to: sourceContext)
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 41")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        // Confidence-check
-        XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 1)
-
-        // Test we can add a term to a migrated `ProductAttribute`.
-        let migratedAttribute = try XCTUnwrap(targetContext.first(entityName: "ProductAttribute"))
-        let term = insertProductAttributeTerm(to: targetContext)
-        migratedAttribute.mutableSetValue(forKey: "terms").add(term)
-
-        XCTAssertNoThrow(try targetContext.save())
-        // The ProductAttribute.attribute inverse relationship should be updated.
-        XCTAssertEqual(term.value(forKey: "attribute") as? NSManagedObject, migratedAttribute)
-    }
-
-    func test_migrating_from_41_to_42_allow_use_to_create_Order_feeLines() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 41")
-        let sourceContext = sourceContainer.viewContext
-
-        insertOrder(to: sourceContext)
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 42")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        // Confidence-check
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 0)
-
-        // Test we can add a fee to a migrated `Order`.
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-        let fee = insertOrderFeeLine(to: targetContext)
-        migratedOrder.mutableSetValue(forKey: "fees").add(fee)
-
-        XCTAssertNoThrow(try targetContext.save())
-
-        // Confidence-check
-        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 1)
-
-        // The relationship between Order and OrderFeeLine should be updated.
-        XCTAssertEqual(migratedOrder.value(forKey: "fees") as? Set<NSManagedObject>, [fee])
-
-        // The OrderFeeLine.order inverse relationship should be updated.
-        XCTAssertEqual(fee.value(forKey: "order") as? NSManagedObject, migratedOrder)
-    }
-
-    func test_migrating_from_42_to_43_deletes_SiteVisitStats_and_TopEarnerStats_objects_and_requires_siteID_for_new_objects() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 42")
-        let sourceContext = sourceContainer.viewContext
-
-        insertSiteVisitStats(to: sourceContext)
-        insertTopEarnerStats(to: sourceContext)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "SiteVisitStats"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "TopEarnerStats"), 1)
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 43")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        // Pre-existing `SiteVisitStats` and `TopEarnerStats` objects should be deleted since model version 43 starts requiring a `siteID`.
-        XCTAssertEqual(try targetContext.count(entityName: "SiteVisitStats"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "TopEarnerStats"), 0)
-
-        // We should be able to add a new `SiteVisitStats` and `TopEarnerStats` with `siteID`.
-        let siteVisitStats = insertSiteVisitStats(to: targetContext)
-        siteVisitStats.setValue(66, forKey: "siteID")
-        let topEarnerStats = insertTopEarnerStats(to: targetContext)
-        topEarnerStats.setValue(66, forKey: "siteID")
-        XCTAssertNoThrow(try targetContext.save())
-    }
-
-    func test_migrating_from_43_to_44_migrates_SiteVisitStats_with_empty_timeRange() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 43")
-        let sourceContext = sourceContainer.viewContext
-
-        insertSiteVisitStats(to: sourceContext)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "SiteVisitStats"), 1)
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 44")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "SiteVisitStats"), 1)
-
-        let migratedSiteVisitStats = try XCTUnwrap(targetContext.first(entityName: "SiteVisitStats"))
-        XCTAssertEqual(migratedSiteVisitStats.value(forKey: "timeRange") as? String, "")
-
-        // We should be able to set `SiteVisitStats`'s `timeRange` to a different value.
-        migratedSiteVisitStats.setValue("today", forKey: "timeRange")
-        XCTAssertNoThrow(try targetContext.save())
-    }
-
-    func test_migrating_from_44_to_45_migrates_AccountSettings_with_empty_firstName_and_lastName() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 44")
-        let sourceContext = sourceContainer.viewContext
-
-        insertAccountSettingsWithoutFirstNameAndLastName(to: sourceContext)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "AccountSettings"), 1)
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 45")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "AccountSettings"), 1)
-
-        let migratedSiteVisitStats = try XCTUnwrap(targetContext.first(entityName: "AccountSettings"))
-        XCTAssertNil(migratedSiteVisitStats.value(forKey: "firstName") as? String)
-        XCTAssertNil(migratedSiteVisitStats.value(forKey: "lastName") as? String)
-
-        // We should be able to set `AccountSetttings`'s `firstName` and `lastName` to a different value.
-        migratedSiteVisitStats.setValue("Mario", forKey: "firstName")
-        migratedSiteVisitStats.setValue("Rossi", forKey: "lastName")
-        XCTAssertNoThrow(try targetContext.save())
-    }
-
-    func test_migrating_from_45_to_46_migrates_ProductVariation_stockQuantity_from_Int64_to_Decimal() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 45")
-        let sourceContext = sourceContainer.viewContext
-
-        let productVariation = insertProductVariation(to: sourceContext)
-        productVariation.setValue(10, forKey: "stockQuantity")
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "ProductVariation"), 1)
-        XCTAssertEqual(productVariation.entity.attributesByName["stockQuantity"]?.attributeType, .integer64AttributeType)
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 46")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "ProductVariation"), 1)
-
-        // Make sure stock quantity value is migrated as Decimal attribute type
-        let migratedVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
-        XCTAssertEqual(migratedVariation.entity.attributesByName["stockQuantity"]?.attributeType, .decimalAttributeType)
-    }
-
-    func test_migrating_from_49_to_50_enables_creating_new_sitePlugin_entities() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 49")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 50")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 0)
-
-        let plugin = insertSitePlugin(to: targetContext)
-        let insertedPlugin = try XCTUnwrap(targetContext.firstObject(ofType: SitePlugin.self))
-
-        XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 1)
-        XCTAssertEqual(insertedPlugin, plugin)
-    }
-
-    func test_migrating_from_50_to_51_removes_OrderCount_entities() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 50")
-        let sourceContext = sourceContainer.viewContext
-
-        let orderCount = insertOrderCount(to: sourceContext)
-        let orderCountItem1 = insertOrderCountItem(slug: "processing", to: sourceContext)
-        let orderCountItem2 = insertOrderCountItem(slug: "completed", to: sourceContext)
-        orderCount.mutableSetValue(forKey: "items").add(orderCountItem1)
-        orderCount.mutableSetValue(forKey: "items").add(orderCountItem2)
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "OrderCount"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "OrderCountItem"), 2)
-
-        let sourceEntitiesNames = sourceContainer.managedObjectModel.entitiesByName.keys
-        XCTAssertTrue(sourceEntitiesNames.contains("OrderCount"))
-        XCTAssertTrue(sourceEntitiesNames.contains("OrderCountItem"))
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 51")
-        let targetEntitiesNames = targetContainer.managedObjectModel.entitiesByName.keys
-
-        // Assert
-        XCTAssertFalse(targetEntitiesNames.contains("OrderCount"))
-        XCTAssertFalse(targetEntitiesNames.contains("OrderCountItem"))
-    }
-
-    func test_migrating_from_51_to_52_enables_creating_new_paymentGatewayAccount_entities() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 51")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 52")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 0)
-
-        let paymentGatewayAccount = insertPaymentGatewayAccount(to: targetContext)
-        let insertedAccount = try XCTUnwrap(targetContext.firstObject(ofType: PaymentGatewayAccount.self))
-
-        XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 1)
-        XCTAssertEqual(insertedAccount, paymentGatewayAccount)
-    }
-
-    func test_migrating_from_52_to_53_enables_creating_new_StateOfACountry_and_adding_to_Country_attributes_relationship() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 52")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 53")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "Country"), 0)
-
-        let stateOfCountry1 = insertStateOfACountry(code: "DZ-01", name: "Adrar", to: targetContext)
-        let stateOfCountry2 = insertStateOfACountry(code: "DZ-02", name: "Chlef", to: targetContext)
-        let country = insertCountry(to: targetContext)
-        country.mutableSetValue(forKey: "states").add(stateOfCountry1)
-        country.mutableSetValue(forKey: "states").add(stateOfCountry2)
-        let insertedCountry = try XCTUnwrap(targetContext.firstObject(ofType: Country.self))
-
-        XCTAssertEqual(try targetContext.count(entityName: "Country"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "StateOfACountry"), 2)
-        XCTAssertEqual(insertedCountry, country)
-    }
-
-    func test_migrating_from_53_to_54_enables_creating_new_systemPlugin_entities() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 53")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 54")
-        let targetContext = targetContainer.viewContext
-
-        // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "SystemPlugin"), 0)
-
-        let systemPlugin = insertSystemPlugin(to: targetContext)
-        let insertedSystemPlugin = try XCTUnwrap(targetContext.firstObject(ofType: SystemPlugin.self))
-
-        XCTAssertEqual(try targetContext.count(entityName: "SystemPlugin"), 1)
-        XCTAssertEqual(insertedSystemPlugin, systemPlugin)
-    }
-
-    func test_migrating_from_54_to_55_adds_new_attribute_commercialInvoiceURL_with_nil_value() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 54")
-        let sourceContext = sourceContainer.viewContext
-
-        let shippingLabel = insertShippingLabel(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(shippingLabel.entity.attributesByName["commercialInvoiceURL"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 55")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedShippingLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
-
-        XCTAssertNotNil(migratedShippingLabel.entity.attributesByName["commercialInvoiceURL"])
-        XCTAssertNil(migratedShippingLabel.value(forKey: "commercialInvoiceURL"))
-    }
-
-    func test_migrating_from_55_to_56_adds_new_systemplugin_attribute_active_with_true_value() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 55")
-        let sourceContext = sourceContainer.viewContext
-
-        let systemPlugin = insertSystemPlugin(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(systemPlugin.entity.attributesByName["active"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 56")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedSystemPlugin = try XCTUnwrap(targetContext.first(entityName: "SystemPlugin"))
-
-        XCTAssertNotNil(migratedSystemPlugin.entity.attributesByName["active"])
-        XCTAssertEqual(migratedSystemPlugin.value(forKey: "active") as? Bool, true)
-    }
-
-    func test_migrating_from_56_to_57_adds_new_PaymentGatewayAccount_attributes() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 56")
-        let sourceContext = sourceContainer.viewContext
-
-        let paymentGatewayAccount = insertPaymentGatewayAccount(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(paymentGatewayAccount.entity.attributesByName["isLive"])
-        XCTAssertNil(paymentGatewayAccount.entity.attributesByName["isInTestMode"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 57")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedPaymentGatewayAccount = try XCTUnwrap(targetContext.first(entityName: "PaymentGatewayAccount"))
-
-        XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isLive"])
-        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isLive") as? Bool, true)
-        XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isInTestMode"])
-        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isInTestMode") as? Bool, false)
-    }
-
-    func test_migrating_from_57_to_58_adds_new_site_jetpack_attributes() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 57")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertSite(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["isJetpackConnected"])
-        XCTAssertNil(site.entity.attributesByName["isJetpackThePluginInstalled"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 58")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
-
-        let isJetpackConnected = try XCTUnwrap(migratedSite.value(forKey: "isJetpackConnected") as? Bool)
-        XCTAssertFalse(isJetpackConnected)
-        let isJetpackThePluginInstalled = try XCTUnwrap(migratedSite.value(forKey: "isJetpackThePluginInstalled") as? Bool)
-        XCTAssertFalse(isJetpackThePluginInstalled)
-    }
-
-    func test_migrating_from_58_to_59_adds_site_jetpack_connection_active_plugins_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 58")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertSite(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["jetpackConnectionActivePlugins"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 59")
-        let targetContext = targetContainer.viewContext
-
-        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
-        let defaultJetpackConnectionActivePlugins = migratedSite.value(forKey: "jetpackConnectionActivePlugins")
-
-        let plugins = ["jetpack", "woocommerce-payments"]
-        migratedSite.setValue(plugins, forKey: "jetpackConnectionActivePlugins")
-
-        // Then
-        // Default value is nil.
-        XCTAssertNil(defaultJetpackConnectionActivePlugins)
-
-        let jetpackConnectionActivePlugins = try XCTUnwrap(migratedSite.value(forKey: "jetpackConnectionActivePlugins") as? [String])
-        XCTAssertEqual(jetpackConnectionActivePlugins, plugins)
-    }
-
-    func test_migrating_from_58_to_59_adds_adminURL_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 58")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertSite(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["adminURL"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 59")
-        let targetContext = targetContainer.viewContext
-
-        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
-        let defaultAdminURL = migratedSite.value(forKey: "adminURL")
-
-        let adminURL = "https://test.blog/wp-admin"
-        migratedSite.setValue(adminURL, forKey: "adminURL")
-
-        // Then
-        // Default value is nil.
-        XCTAssertNil(defaultAdminURL)
-
-        let newAdminURL = try XCTUnwrap(migratedSite.value(forKey: "adminURL") as? String)
-        XCTAssertEqual(newAdminURL, adminURL)
-    }
-
-    func test_migrating_from_59_to_60_adds_order_orderKey_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 59")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertOrder(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["orderKey"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 60")
-        let targetContext = targetContainer.viewContext
-
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-        let defaultOrderKey = migratedOrder.value(forKey: "orderKey")
-
-        let orderValue = "frtgyh87654567"
-        migratedOrder.setValue(orderValue, forKey: "orderKey")
-
-        // Then
-        // Default value is empty
-        XCTAssertEqual(defaultOrderKey as? String, "")
-
-        let newOrderKey = try XCTUnwrap(migratedOrder.value(forKey: "orderKey") as? String)
-        XCTAssertEqual(newOrderKey, orderValue)
-    }
-
-    func test_migrating_from_59_to_60_enables_creating_new_Coupon() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 59")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 60")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
-
-        // Creates an `Coupon`
-        let coupon = insertCoupon(to: targetContext)
-
-        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
-        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
-    }
-
-    func test_migrating_from_60_to_61_adds_tax_lines_as_a_property_to_order() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 60")
-        let sourceContext = sourceContainer.viewContext
-
-        let order = insertOrder(to: sourceContext)
-        try sourceContext.save()
-
-        // `taxes` should not be present before migration
-        XCTAssertNil(order.entity.relationshipsByName["taxes"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 61")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        // Confidence-check
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 0)
-
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        // `taxes` should be present in `migratedOrder`
-        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["taxes"])
-
-        // Test adding tax to a migrated `Order`.
-        let tax = insertOrderTaxLine(to: targetContext)
-        migratedOrder.mutableSetValue(forKey: "taxes").add(tax)
-
-        XCTAssertNoThrow(try targetContext.save())
-
-        // Confidence-check
-        XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 1)
-
-        // The relationship between Order and OrderTaxLine should be updated.
-        XCTAssertEqual(migratedOrder.value(forKey: "taxes") as? Set<NSManagedObject>, [tax])
-
-        // The OrderTaxLine.order inverse relationship should be updated.
-        XCTAssertEqual(tax.value(forKey: "order") as? NSManagedObject, migratedOrder)
-    }
-
-    func test_migrating_from_61_to_62_adds_new_attribute_searchResults_to_coupon() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 61")
-        let sourceContext = sourceContainer.viewContext
-
-        // `searchResults` should not be present before the migration
-        let coupon = insertCoupon(to: sourceContext)
-        XCTAssertNil(coupon.entity.relationshipsByName["searchResults"])
-        XCTAssertNoThrow(try sourceContext.save())
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 62")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedCoupon = try XCTUnwrap(targetContext.first(entityName: "Coupon"))
-        XCTAssertNotNil(migratedCoupon.entity.relationshipsByName["searchResults"])
-
-        // Creates a `CouponSearchResult`
-        let searchResult = insertCouponSearchResult(to: targetContext)
-        migratedCoupon.mutableSetValue(forKey: "searchResults").add(searchResult)
-
-        XCTAssertNoThrow(try targetContext.save())
-        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: CouponSearchResult.self)), searchResult)
-
-        // The relationship between Coupon and CouponSearchResult should be updated.
-        XCTAssertEqual(migratedCoupon.value(forKey: "searchResults") as? Set<NSManagedObject>, [searchResult])
-
-        // The CouponSearchResult.coupons inverse relationship should be updated.
-        XCTAssertEqual(searchResult.value(forKey: "coupons") as? Set<NSManagedObject>, [migratedCoupon])
-    }
-
-    func test_migrating_from_62_to_63_adds_new_attribute_chargeID_to_order() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 62")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertOrder(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["chargeID"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 63")
-        let targetContext = targetContainer.viewContext
-
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-        let defaultChargeID = migratedOrder.value(forKey: "chargeID")
-
-        let orderValue = "ch_3KMtak2EdyGr1FMV02G9Qqq1"
-        migratedOrder.setValue(orderValue, forKey: "chargeID")
-
-        // Then
-        // Default value is nil
-        XCTAssertNil(defaultChargeID)
-
-        let newOrderKey = try XCTUnwrap(migratedOrder.value(forKey: "chargeID") as? String)
-        XCTAssertEqual(newOrderKey, orderValue)
-    }
-
-    func test_migrating_from_63_to_64_enables_creating_new_InboxNote() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 63")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 64")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 0)
-
-        // Creates a `InboxNote`
-        let inboxNote = insertInboxNote(to: targetContext)
-
-        // Creates an `InboxAction` and adds it to `InboxNote`.
-        let inboxAction = insertInboxAction(to: targetContext)
-        inboxNote.setValue(NSSet(array: [inboxAction]), forKey: "actions")
-        try targetContext.save()
-
-        XCTAssertNotNil(inboxNote.entity.relationshipsByName["actions"])
-        XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 1)
-        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: InboxNote.self)), inboxNote)
-    }
-
-    func test_migrating_from_64_to_65_enables_creating_new_WCPayCharge_withCardPaymentDetails() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 64")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 65")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPaymentDetails"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 0)
-
-        // Creates nested cardPresent objects
-        let payment = insertWCPayCardPaymentDetails(to: targetContext)
-
-        // Creates an `WCPayCharge`
-        let wcPayCharge = insertWCPayCharge(to: targetContext)
-        wcPayCharge.setValue(payment, forKey: "cardDetails")
-
-
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPaymentDetails"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 1)
-        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: WCPayCharge.self)), wcPayCharge)
-        XCTAssertEqual(wcPayCharge.value(forKey: "cardDetails") as? WCPayCardPaymentDetails, payment)
-    }
-
-    func test_migrating_from_64_to_65_enables_creating_new_WCPayCharge_withCardPresentPaymentDetails() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 64")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 65")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentReceiptDetails"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentPaymentDetails"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 0)
-
-        // Creates nested cardPresent objects
-        let receipt = insertWCPayCardPresentReceiptDetails(to: targetContext)
-        let payment = insertWCPayCardPresentPaymentDetails(to: targetContext)
-
-        payment.setValue(receipt, forKey: "receipt")
-
-        // Creates an `WCPayCharge`
-        let wcPayCharge = insertWCPayCharge(to: targetContext)
-        wcPayCharge.setValue(payment, forKey: "cardPresentDetails")
-
-
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentReceiptDetails"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentPaymentDetails"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 1)
-        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: WCPayCharge.self)), wcPayCharge)
-        XCTAssertEqual(wcPayCharge.value(forKey: "cardPresentDetails") as? WCPayCardPresentPaymentDetails, payment)
-        XCTAssertEqual(payment.value(forKey: "receipt") as? WCPayCardPresentReceiptDetails, receipt)
-    }
-
-    func test_migrating_from_65_to_66_makes_items_ordered_in_order() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 65")
-        let sourceContext = sourceContainer.viewContext
-
-        let _ = insertOrder(to: sourceContext)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "OrderItem"), 0)
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 66")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 0)
-
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        // Creates an `OrderItem` and adds it to `Order`.
-        let orderItem1 = insertOrderItem(itemID: 1, to: targetContext)
-        let orderItem2 = insertOrderItem(itemID: 2, to: targetContext)
-        let orderItem3 = insertOrderItem(itemID: 3, to: targetContext)
-        migratedOrder.setValue(NSOrderedSet(array: [orderItem1, orderItem3, orderItem2]), forKey: "items")
-        try targetContext.save()
-
-        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 3)
-        XCTAssertEqual(migratedOrder.value(forKey: "items") as? NSOrderedSet, NSOrderedSet(array: [orderItem1, orderItem3, orderItem2]))
-    }
-
-    func test_migrating_from_66_to_67_adds_paymentURL_field() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 66")
-        let sourceContext = sourceContainer.viewContext
-
-        let _ = insertOrder(to: sourceContext)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 67")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        // Checks for nil URL value.
-        XCTAssertNil(migratedOrder.value(forKey: "paymentURL"))
-
-        // Set a random URL
-        let url = NSURL(string: "www.automattic.com") ?? NSURL()
-        migratedOrder.setValue(url, forKey: "paymentURL")
-
-        // Check URL is correctly set.
-        XCTAssertEqual(migratedOrder.value(forKey: "paymentURL") as? NSURL, url)
-    }
-
-    func test_migrating_from_67_to_68_enables_creating_new_Coupon_with_some_fields_optional() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 67")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 68")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
-
-        // Creates an `Coupon`
-        let coupon = insertCoupon(to: targetContext,
-                                  limitUsageToXItems: nil,
-                                  usageLimitPerUser: nil,
-                                  usageLimit: nil)
-
-        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
-
-        let couponFetched = try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self))
-        XCTAssertNil(couponFetched.value(forKey: "limitUsageToXItems"))
-        XCTAssertNil(couponFetched.value(forKey: "usageLimitPerUser"))
-        XCTAssertNil(couponFetched.value(forKey: "usageLimit"))
-        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
-    }
-
-    func test_migrating_from_68_to_69_adds_new_order_properties() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 68")
-        let sourceContext = sourceContainer.viewContext
-
-        let _ = insertOrder(to: sourceContext)
-
-        try sourceContext.save()
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 69")
-        let targetContext = targetContainer.viewContext
-
-        // Then
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        // Checks for default values.
-        XCTAssertEqual(migratedOrder.value(forKey: "isEditable") as? Bool, false)
-        XCTAssertEqual(migratedOrder.value(forKey: "needsPayment") as? Bool, false)
-        XCTAssertEqual(migratedOrder.value(forKey: "needsProcessing") as? Bool, false)
-    }
-
-    func test_migrating_from_69_to_70_adds_refundedItemID_property_to_OrderItemRefund() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 69")
-        let sourceContext = sourceContainer.viewContext
-
-        let orderItemRefund = insertOrderItemRefund(to: sourceContext)
-
-        // Confidence check:
-        // The `itemID` property already exists on Model 69, but the `refundedItemID` does not
-        XCTAssertNotNil(orderItemRefund.entity.attributesByName["itemID"])
-        XCTAssertNil(orderItemRefund.entity.attributesByName["refundedItemID"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 70")
-        let targetContext = targetContainer.viewContext
-        let migratedOrderItemRefund = insertOrderItemRefund(to: targetContext)
-
-        // Confirms the `refundedItemID` property now exists on Model 70
-        XCTAssertNotNil(migratedOrderItemRefund.entity.attributesByName["refundedItemID"])
-    }
-
-    func test_migrating_from_70_to_71_adds_custom_fields_property_to_order() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 70")
-        let sourceContext = sourceContainer.viewContext
-
-        let order = insertOrder(to: sourceContext)
-        try sourceContext.save()
-
-        // `customFields` should not be present before migration
-        XCTAssertNil(order.entity.relationshipsByName["customFields"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 71")
-        let targetContext = targetContainer.viewContext
-
-        // Confidence check
-        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "OrderMetaData"), 0)
-
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
-
-        // `customFields` should be present in `migratedOrder`
-        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["customFields"])
-
-        // Test adding custom fields to a migrated `Order`.
-        let customField = insertOrderMetaData(to: targetContext)
-        migratedOrder.mutableSetValue(forKey: "customFields").add(customField)
-
-        XCTAssertNoThrow(try targetContext.save())
-
-        // Confidence check
-        XCTAssertEqual(try targetContext.count(entityName: "OrderMetaData"), 1)
-
-        // The relationship between Order and OrderMetaData should be updated.
-        XCTAssertEqual(migratedOrder.value(forKey: "customFields") as? Set<NSManagedObject>, [customField])
-
-        // The OrderMetaData.order inverse relationship should be updated.
-        XCTAssertEqual(customField.value(forKey: "order") as? NSManagedObject, migratedOrder)
-    }
-
-    func test_migrating_from_71_to_72_adds_instructions_attribute_to_PaymentGateway() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 71")
-        let sourceContext = sourceContainer.viewContext
-
-        let paymentGateway = insertPaymentGateway(to: sourceContext)
-        try sourceContext.save()
-
-        // `instructions` should not be present before migration
-        XCTAssertNil(paymentGateway.entity.relationshipsByName["instructions"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 72")
-        let targetContext = targetContainer.viewContext
-
-        // Confidence check
-        XCTAssertEqual(try targetContext.count(entityName: "PaymentGateway"), 1)
-
-        let migratedPaymentGateway = try XCTUnwrap(targetContext.first(entityName: "PaymentGateway"))
-
-        // The instructions should be nil after migration: it's an optional field.
-        XCTAssertNil(migratedPaymentGateway.value(forKey: "instructions"))
-
-        // Set a test instructions
-        migratedPaymentGateway.setValue("payment gateway instructions", forKey: "instructions")
-
-        // Check instructions are correctly set.
-        assertEqual("payment gateway instructions", migratedPaymentGateway.value(forKey: "instructions") as? String)
-    }
-
-    func test_migrating_from_72_to_73_adds_filterKey_attribute_to_ProductSearchResults() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 72")
-        let sourceContext = sourceContainer.viewContext
-
-        let productSearchResults = insertProductSearchResults(to: sourceContext)
-        try sourceContext.save()
-
-        // `filterKey` should not be present before migration.
-        XCTAssertNil(productSearchResults.entity.attributesByName["filterKey"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 73")
-        let targetContext = targetContainer.viewContext
-
-        XCTAssertEqual(try targetContext.count(entityName: "ProductSearchResults"), 1)
-        let migratedProductSearchResults = try XCTUnwrap(targetContext.first(entityName: "ProductSearchResults"))
-
-        // Checks for nil URL value.
-        XCTAssertNil(migratedProductSearchResults.value(forKey: "filterKey"))
-
-        // Sets a random `filterKey`.
-        migratedProductSearchResults.setValue("sku", forKey: "filterKey")
-        try targetContext.save()
-
-        // Check `filterKey` is correctly set.
-        XCTAssertEqual(migratedProductSearchResults.value(forKey: "filterKey") as? String, "sku")
-    }
-
-    func test_migrating_from_73_to_74_adds_Customer_and_CustomerSearchResult_entities() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 73")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // Confidence Check. These entities should not exist in Model 73
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Customer", in: sourceContext))
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: sourceContext))
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 74")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-
-        // These entities should exist in Model 74
-        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "Customer", in: targetContext))
-        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "CustomerSearchResult", in: targetContext))
-        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
-
-        // Insert a new Customer
-        let customer = insertCustomer(to: targetContext, forModel: 74)
-        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
-        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
-
-        // Insert a new CustomerSearchResult
-        let customerSearchResult = targetContext.insert(
-            entityName: "CustomerSearchResult",
-            properties: ["customerID": 1]
-        )
-        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 1)
-        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
-
-        // Check all attributes
-        XCTAssertEqual(customerSearchResult.value(forKey: "customerID") as? Int64, 1)
-        XCTAssertNotNil(customer.entity.attributesByName["email"])
-        XCTAssertNotNil(customer.entity.attributesByName["firstName"])
-        XCTAssertNotNil(customer.entity.attributesByName["lastName"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingAddress1"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingAddress2"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingCity"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingCompany"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingCountry"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingEmail"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingFirstName"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingLastName"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingPhone"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingPostcode"])
-        XCTAssertNotNil(customer.entity.attributesByName["billingState"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress1"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingAddress2"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingCity"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingCompany"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingCountry"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingEmail"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingFirstName"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingLastName"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingPhone"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingPostcode"])
-        XCTAssertNotNil(customer.entity.attributesByName["shippingState"])
-    }
-
-    func test_migrating_from_74_to_75_adds_siteID_and_keyword_attributes_to_Customer_and_CustomerSearchResult() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 74")
-        let sourceContext = sourceContainer.viewContext
-
-        let customer = insertCustomer(to: sourceContext, forModel: 74)
-        let customerSearchResult = sourceContext.insert(
-            entityName: "CustomerSearchResult",
-            properties: ["customerID": 1]
-        )
-        try sourceContext.save()
-
-        // Confidence Check: siteID or keyword attributes should not exist in Model 74 for those entities
-        XCTAssertNil(customer.entity.attributesByName["siteID"])
-        XCTAssertNil(customerSearchResult.entity.attributesByName["siteID"])
-        XCTAssertNil(customerSearchResult.entity.attributesByName["keyword"])
-        // Confidence Check: These entities should exist in Model 74:
-        XCTAssertEqual(try sourceContext.count(entityName: "Customer"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "CustomerSearchResult"), 1)
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 75")
-        let targetContext = targetContainer.viewContext
-
-        // Then
-        // After migration, we're deleting the entities and regenerating them due to heavyweight migration
-        // in WooCommerceModelV74toV75, as the new ones have siteID
-        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 0)
-        XCTAssertEqual(try targetContext.count(entityName: "CustomerSearchResult"), 0)
-        // Inserting new objects after the migration to confirm the new attributes are correct
-        let newCustomer = insertCustomer(to: targetContext, forModel: 75)
-        let newCustomerSearchResult = targetContext.insert(
-            entityName: "CustomerSearchResult",
-            properties: [
-                "siteID": 1,
-                "keyword": ""
-            ]
-        )
-        try targetContext.save()
-
-        // Check for Customer and CustomerSearchResult attributes after migration
-        XCTAssertNotNil(newCustomer.entity.attributesByName["siteID"])
-        XCTAssertNotNil(newCustomer.entity.attributesByName["customerID"])
-        XCTAssertEqual(newCustomer.value(forKey: "siteID") as? Int64, 1)
-        XCTAssertEqual(newCustomer.value(forKey: "customerID") as? Int64, 1)
-
-        // Check for CustomerSearchResult attributes after migration
-        XCTAssertNotNil(newCustomerSearchResult.entity.attributesByName["siteID"])
-        XCTAssertNotNil(newCustomerSearchResult.entity.attributesByName["keyword"])
-        XCTAssertEqual(newCustomerSearchResult.value(forKey: "siteID") as? Int64, 1)
-        XCTAssertEqual(newCustomerSearchResult.value(forKey: "keyword") as? String, "")
-    }
-
-    func test_migrating_from_75_to_76_adds_loginURL_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 75")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertSite(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["loginURL"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 76")
-        let targetContext = targetContainer.viewContext
-
-        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
-        let defaultLoginURL = migratedSite.value(forKey: "loginURL")
-
-        let loginURL = "https://test.blog/wp-login.php"
-        migratedSite.setValue(loginURL, forKey: "loginURL")
-
-        // Then
-        // Default value is nil.
-        XCTAssertNil(defaultLoginURL)
-
-        let newLoginURL = try XCTUnwrap(migratedSite.value(forKey: "loginURL") as? String)
-        XCTAssertEqual(newLoginURL, loginURL)
-    }
-
-    func test_migrating_from_76_to_77_adds_frameNonce_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 76")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertSite(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["frameNonce"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 77")
-        let targetContext = targetContainer.viewContext
-
-        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
-        let defaultFrameNonce = migratedSite.value(forKey: "frameNonce")
-
-        let frameNonce = "e7bfd785f0"
-        migratedSite.setValue(frameNonce, forKey: "frameNonce")
-
-        // Then
-        // Default value is nil.
-        XCTAssertNil(defaultFrameNonce)
-
-        let newFrameNonce = try XCTUnwrap(migratedSite.value(forKey: "frameNonce") as? String)
-        XCTAssertEqual(newFrameNonce, frameNonce)
-    }
-
-    func test_migrating_from_77_to_78_adds_averageOrderValue_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 77")
-        let sourceContext = sourceContainer.viewContext
-
-        let orderStatsV4Totals = insertOrderStatsTotals(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(orderStatsV4Totals.entity.attributesByName["averageOrderValue"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 78")
-        let targetContext = targetContainer.viewContext
-
-        let migratedOrderStatsV4Totals = try XCTUnwrap(targetContext.first(entityName: "OrderStatsV4Totals"))
-        let defaultAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
-
-        let averageOrderValue = 123.45
-        migratedOrderStatsV4Totals.setValue(averageOrderValue, forKey: "averageOrderValue")
-
-        // Then
-        // Default value is 0.
-        XCTAssertEqual(defaultAverageOrderValue, 0)
-
-        let newAverageOrderValue = try XCTUnwrap(migratedOrderStatsV4Totals.value(forKey: "averageOrderValue") as? Double)
-        XCTAssertEqual(newAverageOrderValue, averageOrderValue)
-    }
-
-    func test_migrating_from_78_to_79_adds_views_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 78")
-        let sourceContext = sourceContainer.viewContext
-
-        let siteVisitStatsItem = insertSiteVisitStatsItem(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(siteVisitStatsItem.entity.attributesByName["views"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 79")
-        let targetContext = targetContainer.viewContext
-
-        let migratedSiteVisitStatsItem = try XCTUnwrap(targetContext.first(entityName: "SiteVisitStatsItem"))
-        let defaultViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
-
-        let viewsCount = 12
-        migratedSiteVisitStatsItem.setValue(viewsCount, forKey: "views")
-
-        // Then
-        // Default value is 0.
-        XCTAssertEqual(defaultViewsCount, 0)
-
-        let newViewsCount = try XCTUnwrap(migratedSiteVisitStatsItem.value(forKey: "views") as? Int)
-        XCTAssertEqual(newViewsCount, viewsCount)
-    }
-
-    func test_migrating_from_79_to_80_enables_creating_new_SiteSummaryStats_entity() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 79")
-        let sourceContext = sourceContainer.viewContext
-
-        try sourceContext.save()
-
-        // Confidence Check. This entity should not exist in Model 79
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "SiteSummaryStats", in: sourceContext))
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 80")
-        let targetContext = targetContainer.viewContext
-
-        // Then
-        XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 0)
-
-        let summaryStats = insertSiteSummaryStats(to: targetContext)
-        let insertedStats = try XCTUnwrap(targetContext.firstObject(ofType: SiteSummaryStats.self))
-
-        XCTAssertEqual(try targetContext.count(entityName: "SiteSummaryStats"), 1)
-        XCTAssertEqual(insertedStats, summaryStats)
-    }
-
     func test_migrating_from_80_to_81_adds_new_product_bundle_attributes_and_ProductBundleItem_entity() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 80")
@@ -3468,6 +2040,278 @@ final class MigrationTests: XCTestCase {
         let urlValue = migratedObject.value(forKey: "addPaymentMethodURL") as? String
         XCTAssertEqual(urlValue, "https://example.com")
     }
+
+    func test_migrating_from_124_to_125_adds_new_attribute_hazmatCategory_to_shippingLabel() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 124")
+        let sourceContext = sourceContainer.viewContext
+
+        let label = insertShippingLabel(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(label.entity.attributesByName["hazmatCategory"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 125")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
+
+        // `hazmatCategory` should be present in `migratedLabel`
+        XCTAssertNotNil(migratedLabel.entity.attributesByName["hazmatCategory"])
+
+        let hazmatCategory = migratedLabel.value(forKey: "hazmatCategory") as? String
+        XCTAssertNil(hazmatCategory) // default value
+
+        let category = "1"
+        migratedLabel.setValue(category, forKey: "hazmatCategory")
+        try targetContext.save()
+
+        let updatedCategory = migratedLabel.value(forKey: "hazmatCategory") as? String
+        XCTAssertEqual(updatedCategory, category)
+    }
+
+    func test_migrating_126_to_127_adds_new_booking_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 126")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. Booking should not exist in Model 126
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Booking", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 127")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Booking"), 0)
+
+        let booking = insertBooking(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "Booking"), 1)
+        let insertedBooking = try XCTUnwrap(targetContext.firstObject(ofType: Booking.self))
+        XCTAssertEqual(insertedBooking, booking)
+        XCTAssertEqual(insertedBooking.parentID, 0) // default value
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingOrderInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingOrderInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingOrderInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingOrderInfo"), 0)
+
+        let orderInfo = insertBookingOrderInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingOrderInfo"), 1)
+        let insertedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+        XCTAssertEqual(insertedOrderInfo, orderInfo)
+
+        // Verify customerInfo relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["customerInfo"])
+        let customerInfo = insertBookingCustomerInfo(to: targetContext)
+        orderInfo.setValue(customerInfo, forKey: "customerInfo")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "customerInfo") as? NSManagedObject, customerInfo)
+
+        // Verify productInfo relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["productInfo"])
+        let productInfo = insertBookingProductInfo(to: targetContext)
+        orderInfo.setValue(productInfo, forKey: "productInfo")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "productInfo") as? NSManagedObject, productInfo)
+
+        // Verify paymentInfo relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["paymentInfo"])
+        let paymentInfo = insertBookingPaymentInfo(to: targetContext)
+        orderInfo.setValue(paymentInfo, forKey: "paymentInfo")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "paymentInfo") as? NSManagedObject, paymentInfo)
+
+        // Verify booking relationship exists and can be set
+        XCTAssertNotNil(orderInfo.entity.relationshipsByName["booking"])
+        let booking = insertBooking(to: targetContext)
+        orderInfo.setValue(booking, forKey: "booking")
+        try targetContext.save()
+        XCTAssertEqual(orderInfo.value(forKey: "booking") as? NSManagedObject, booking)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingCustomerInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingCustomerInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingCustomerInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingCustomerInfo"), 0)
+
+        let customerInfo = insertBookingCustomerInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingCustomerInfo"), 1)
+        let insertedCustomerInfo = try XCTUnwrap(targetContext.first(entityName: "BookingCustomerInfo"))
+        XCTAssertEqual(insertedCustomerInfo, customerInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingProductInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingProductInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingProductInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingProductInfo"), 0)
+
+        let productInfo = insertBookingProductInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingProductInfo"), 1)
+        let insertedProductInfo = try XCTUnwrap(targetContext.first(entityName: "BookingProductInfo"))
+        XCTAssertEqual(insertedProductInfo, productInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingPaymentInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingPaymentInfo should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingPaymentInfo", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingPaymentInfo"), 0)
+
+        let paymentInfo = insertBookingPaymentInfo(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingPaymentInfo"), 1)
+        let insertedPaymentInfo = try XCTUnwrap(targetContext.first(entityName: "BookingPaymentInfo"))
+        XCTAssertEqual(insertedPaymentInfo, paymentInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_relationship_orderInfo_to_booking() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        let booking = insertBooking(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(booking.entity.relationshipsByName["orderInfo"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedBooking = try XCTUnwrap(targetContext.first(entityName: "Booking"))
+
+        // `orderInfo` should be present in `migratedBooking`
+        XCTAssertNotNil(migratedBooking.entity.relationshipsByName["orderInfo"])
+
+        let savedOrderInfo = migratedBooking.value(forKey: "orderInfo") as? NSManagedObject
+        XCTAssertNil(savedOrderInfo) // default value
+
+        let orderInfo = insertBookingOrderInfo(to: targetContext)
+        migratedBooking.setValue(orderInfo, forKey: "orderInfo")
+        try targetContext.save()
+
+        let updatedOrderInfo = migratedBooking.value(forKey: "orderInfo") as? NSManagedObject
+        XCTAssertEqual(updatedOrderInfo, orderInfo)
+    }
+
+    func test_migrating_127_to_128_adds_new_bookingResource_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 127")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. BookingResource should not exist in Model 127
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BookingResource", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 128")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "BookingResource"), 0)
+
+        let resource = insertBookingResource(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "BookingResource"), 1)
+        let insertedResource = try XCTUnwrap(targetContext.first(entityName: "BookingResource"))
+        XCTAssertEqual(insertedResource, resource)
+    }
+
+    func test_migrating_from_128_to_129_adds_new_attendanceStatusKey_attribute_to_booking() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 128")
+        let sourceContext = sourceContainer.viewContext
+
+        let booking = insertBooking(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(booking.entity.attributesByName["attendanceStatusKey"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 129")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedBooking = try XCTUnwrap(targetContext.first(entityName: "Booking"))
+
+        // `attendanceStatusKey` should be present in `migratedBooking`
+        XCTAssertNotNil(migratedBooking.entity.attributesByName["attendanceStatusKey"])
+
+        // `attendanceStatusKey` value should default as "" in model 129
+        let value = migratedBooking.value(forKey: "attendanceStatusKey") as? String
+        XCTAssertEqual(value, "")
+
+        // `attendanceStatusKey` must be settable
+        migratedBooking.setValue("checked_in", forKey: "attendanceStatusKey")
+        try targetContext.save()
+        let updatedValue = migratedBooking.value(forKey: "attendanceStatusKey") as? String
+        XCTAssertEqual(updatedValue, "checked_in")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -4390,6 +3234,64 @@ private extension MigrationTests {
         context.insert(entityName: "WooShippingOriginAddress", properties: [
             "siteID": 1,
             "id": "test-address"
+        ])
+    }
+
+    @discardableResult
+    func insertBooking(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Booking", properties: [
+            "siteID": 1,
+            "bookingID": 23
+        ])
+    }
+
+    @discardableResult
+    func insertBookingOrderInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingOrderInfo", properties: [
+            "statusKey": "completed"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingCustomerInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingCustomerInfo", properties: [
+            "billingFirstName": "John",
+            "billingLastName": "Doe",
+            "billingEmail": "john.doe@example.com",
+            "billingAddress1": "123 Main St",
+            "billingCity": "San Francisco",
+            "billingState": "CA",
+            "billingPostcode": "94102",
+            "billingCountry": "US"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingProductInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingProductInfo", properties: [
+            "name": "Sample Product"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingPaymentInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingPaymentInfo", properties: [
+            "paymentMethodID": "credit_card",
+            "paymentMethodTitle": "Credit Card",
+            "subtotal": "100.00",
+            "subtotalTax": "10.00",
+            "total": "110.00",
+            "totalTax": "10.00"
+        ])
+    }
+
+    @discardableResult
+    func insertBookingResource(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "BookingResource", properties: [
+            "siteID": 1,
+            "resourceID": 22,
+            "name": "Joel (Sample resource)",
+            "quantity": 1
         ])
     }
 }

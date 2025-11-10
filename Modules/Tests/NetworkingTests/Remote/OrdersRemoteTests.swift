@@ -146,6 +146,55 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    // MARK: - Load Orders by IDs Tests
+
+    func test_loadOrders_by_ids_when_request_succeeds_returns_parsed_orders() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderIDs: [Int64] = [1, 2, 3]
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        let orders = try await remote.loadOrders(for: sampleSiteID, orderIDs: orderIDs)
+
+        // Then
+        XCTAssertEqual(orders.count, 4) // The sample file has 4 orders
+    }
+
+    func test_loadOrders_by_ids_when_invoked_sends_correct_parameters() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderIDs: [Int64] = [1, 2, 3, 2] // with duplicate
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.loadOrders(for: sampleSiteID, orderIDs: orderIDs)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        let includeValue = parameters["include"] as? String
+        let includedIDs = includeValue?.split(separator: ",").map { String($0) }
+        XCTAssertNotNil(includeValue)
+        XCTAssertEqual(Set(includedIDs ?? []), Set(["1", "2", "3"])) // check for unique ids
+
+        XCTAssertNotNil(parameters["_fields"])
+        XCTAssertNil(parameters["per_page"]) // verify per_page is not sent
+    }
+
+    func test_loadOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        let orders = try await remote.loadOrders(for: sampleSiteID, orderIDs: [])
+
+        // Then
+        XCTAssertTrue(orders.isEmpty)
+        XCTAssertTrue(network.requestsForResponseData.isEmpty) // No network request should be made
+    }
+
     // MARK: - Load Order Tests
 
     /// Verifies that loadOrder properly parses the `order` sample response.
@@ -915,6 +964,43 @@ final class OrdersRemoteTests: XCTestCase {
                                                   "key": "_cash_change_amount",
                                                   "value": cashPaymentChangeDueAmount]]
         assertEqual(received, expected)
+    }
+
+    func test_searchPOSOrders_sends_correct_parameters() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let searchTerm = "test search"
+        let pageNumber = 2
+        let pageSize = 10
+
+        // When
+        _ = try? await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: searchTerm, pageNumber: pageNumber, pageSize: pageSize)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["search"] as? String, searchTerm)
+        XCTAssertEqual(parameters["page"] as? String, String(pageNumber))
+        XCTAssertEqual(parameters["per_page"] as? String, String(pageSize))
+        XCTAssertEqual(parameters["status"] as? String, "any")
+        XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
+        XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
+        XCTAssertNotNil(parameters["_fields"] as? String)
+    }
+
+    func test_searchPOSOrders_properly_relays_networking_error() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        do {
+            // When
+            _ = try await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: "test", pageNumber: 1, pageSize: 25)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
+        }
     }
 }
 

@@ -105,6 +105,22 @@ public enum AppSettingsAction: Action {
     /// Clears all the product filter history for a given site
     case resetProductFilterHistory(siteID: Int64, onCompletion: (Error?) -> Void)
 
+    // MARK: - Bookings Filters
+
+    /// Loads the booking filters
+    ///
+    case loadBookingFilters(siteID: Int64, onCompletion: (Result<StoredBookingFilters.Filters, Error>) -> Void)
+
+    /// Add or Update booking filters
+    ///
+    case upsertBookingFilters(siteID: Int64,
+                              filters: StoredBookingFilters.Filters,
+                              onCompletion: (Error?) -> Void)
+
+    /// Clears all the booking filters
+    ///
+    case resetBookingFilters
+
     // MARK: - General App Settings
 
     /// Saves the `date` as the last known date that the app was installed. This does not do
@@ -356,4 +372,69 @@ public enum AppSettingsAction: Action {
     /// Loads the favorite products.
     ///
     case loadFavoriteProductIDs(siteID: Int64, onCompletion: ([Int64]) -> Void)
+
+    // MARK: - Application passwords Experiment feature
+
+    /// Sets the state of the App Passwords Experiment feature
+    ///
+    case setAppPasswordsExperimentSettingState(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads Loads the state of the App Passwords Experiment feature
+    ///
+    case getAppPasswordsExperimentSettingState(onCompletion: (Bool) -> Void)
+
+    // MARK: - Point of Sale Surveys
+
+    /// Sets the POS survey notification as scheduled for potential merchants
+    ///
+    case setPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether the POS survey notification has been scheduled for potential merchants
+    ///
+    case getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion: (Bool) -> Void)
+
+    /// Sets the POS survey notification as scheduled for current merchants
+    ///
+    case setPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether the POS survey notification has been scheduled for current merchants
+    ///
+    case getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion: (Bool) -> Void)
+
+    /// Sets that POS mode has been opened at least once
+    ///
+    case setHasPOSBeenOpenedAtLeastOnce(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Gets whether POS mode has been opened at least once
+    ///
+    case getHasPOSBeenOpenedAtLeastOnce(onCompletion: (Bool) -> Void)
+
+    /// Resets all POS survey notification scheduled states
+    /// At the moment this one is used for testing only. To remove in WOOMOB-1480
+    case resetPOSSurveyNotificationScheduled(onCompletion: (Result<Void, Error>) -> Void)
+
+    // MARK: - POS Sync Eligibility Tracking
+
+    /// Sets the last time POS was opened for a specific site
+    ///
+    case setPOSLastOpenedDate(siteID: Int64, date: Date, onCompletion: () -> Void)
+
+    /// Gets the last time POS was opened for a specific site
+    ///
+    case getPOSLastOpenedDate(siteID: Int64, onCompletion: (Date?) -> Void)
+
+    /// Sets the date of the first POS catalog sync for a specific site
+    ///
+    case setFirstPOSCatalogSyncDate(siteID: Int64, date: Date, onCompletion: () -> Void)
+
+    /// Gets the date of the first POS catalog sync for a specific site
+    ///
+    case getFirstPOSCatalogSyncDate(siteID: Int64, onCompletion: (Date?) -> Void)
+
+    /// Sets whether we should allow cellular data use downloading POS catalogs for a specific site
+    ///
+    case setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool, onCompletion: () -> Void)
+
+    /// Gets whether we should allow cellular data use downloading POS catalogs for a specific site
+    case getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void)
 }

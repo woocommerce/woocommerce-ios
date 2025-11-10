@@ -82,13 +82,13 @@ struct InPersonPaymentsMenu: View {
                             viewModel.purchaseCardReaderTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                        title: Localization.purchaseCardReader,
-                                        isActive: $viewModel.presentPurchaseCardReader) {
-                                AuthenticatedWebView(isPresented: .constant(true),
-                                                     viewModel: viewModel.purchaseCardReaderWebViewModel)
-                            }
+                                        title: Localization.purchaseCardReader)
                         }
                         .buttonStyle(.scrollViewRow)
+                        .navigationDestination(isPresented: $viewModel.presentPurchaseCardReader) {
+                            AuthenticatedWebView(isPresented: .constant(true),
+                                                 viewModel: viewModel.purchaseCardReaderWebViewModel)
+                        }
 
                         Button {
                             viewModel.manageCardReadersTapped()
@@ -118,12 +118,12 @@ struct InPersonPaymentsMenu: View {
                             viewModel.cardReaderManualsTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                        title: Localization.cardReaderManuals,
-                                        isActive: $viewModel.presentCardReaderManuals) {
-                                CardReaderManualsView()
-                            }
+                                        title: Localization.cardReaderManuals)
                         }
                         .buttonStyle(.scrollViewRow)
+                        .navigationDestination(isPresented: $viewModel.presentCardReaderManuals) {
+                            CardReaderManualsView()
+                        }
                         .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
@@ -179,8 +179,10 @@ struct InPersonPaymentsMenu: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
-                                  style: .medium)
+                if viewModel.backgroundOnboardingInProgress {
+                    ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
+                                      style: .medium)
+                }
             }
         }
         .navigationTitle(CardPresentPaymentsOnboardingView.Localization.title)
@@ -334,7 +336,18 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: 0, credentials: .init(authToken: ""))))
+            wooPaymentsPayoutService: WooPaymentsPayoutService(
+                siteID: 0,
+                credentials: .init(authToken: ""),
+                selectedSite: ServiceLocator.stores.sessionManager.defaultSitePublisher
+                    .map { $0?.toJetpackSite() }
+                    .eraseToAnyPublisher(),
+                appPasswordSupportState: ApplicationPasswordsExperimentState()
+                    .$isAvailableAndEnabled
+                    .eraseToAnyPublisher()
+            )
+        )
+    )
     static var previews: some View {
         NavigationStack {
             InPersonPaymentsMenu(viewModel: viewModel)

@@ -25,11 +25,21 @@ public typealias BlazeTargetLanguage = Networking.BlazeTargetLanguage
 public typealias BlazeTargetOptions = Networking.BlazeTargetOptions
 public typealias BlazeTargetLocation = Networking.BlazeTargetLocation
 public typealias BlazeTargetTopic = Networking.BlazeTargetTopic
+public typealias Booking = Networking.Booking
+public typealias BookingFilters = Networking.BookingFilters
+public typealias BookingStatus = Networking.BookingStatus
+public typealias BookingOrderInfo = Networking.BookingOrderInfo
+public typealias BookingCustomerInfo = Networking.BookingCustomerInfo
+public typealias BookingPaymentInfo = Networking.BookingPaymentInfo
+public typealias BookingProductInfo = Networking.BookingProductInfo
+public typealias BookingResource = Networking.BookingResource
+public typealias BookingAttendanceStatus = Networking.BookingAttendanceStatus
 public typealias CreateBlazeCampaign = Networking.CreateBlazeCampaign
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
 public typealias CompositeComponentOptionType = Networking.CompositeComponentOptionType
 public typealias Coupon = Networking.Coupon
+public typealias CouponDiscountType = Networking.Coupon.DiscountType
 public typealias CouponReport = Networking.CouponReport
 public typealias Country = Networking.Country
 public typealias CreateAccountResult = Networking.CreateAccountResult
@@ -82,6 +92,7 @@ public typealias OrderStatsV4Totals = Networking.OrderStatsV4Totals
 public typealias OrderStatus = Networking.OrderStatus
 public typealias OrderUpdateField = Networking.OrdersRemote.UpdateOrderField
 public typealias OrderCreateField = Networking.OrdersRemote.CreateOrderField
+public typealias OrderSalesChannel = Networking.SalesChannel
 public typealias PaymentGateway = Networking.PaymentGateway
 public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
@@ -265,6 +276,9 @@ public typealias StorageBlazeCampaignListItem = Storage.BlazeCampaignListItem
 public typealias StorageBlazeTargetDevice = Storage.BlazeTargetDevice
 public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
 public typealias StorageBlazeTargetTopic = Storage.BlazeTargetTopic
+// periphery: ignore
+public typealias StorageBooking = Storage.Booking
+public typealias StorageBookingResource = Storage.BookingResource
 public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer
@@ -348,6 +362,22 @@ public typealias StorageWooShippingCustomPackage = Storage.WooShippingCustomPack
 public typealias StorageWooShippingSavedPredefinedPackage = Storage.WooShippingSavedPredefinedPackage
 public typealias StorageWooShippingShipment = Storage.WooShippingShipment
 public typealias StorageWooShippingOriginAddress = Storage.WooShippingOriginAddress
+
+// MARK: - GRDB Persisted Models
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedSite = Storage.PersistedSite
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProduct = Storage.PersistedProduct
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductAttribute = Storage.PersistedProductAttribute
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductImage = Storage.PersistedProductImage
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductVariation = Storage.PersistedProductVariation
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductVariationAttribute = Storage.PersistedProductVariationAttribute
+// periphery:ignore - TODO: remove ignore when populating database
+public typealias PersistedProductVariationImage = Storage.PersistedProductVariationImage
 
 // MARK: - Internal ReadOnly Models
 

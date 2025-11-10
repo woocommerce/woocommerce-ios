@@ -239,11 +239,15 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
+            isApplicationPasswordsSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
             isEUShippingNoticeDismissed: false,
-            isCustomFieldsTopBannerDismissed: false)
+            isCustomFieldsTopBannerDismissed: false,
+            isPOSSurveyPotentialMerchantNotificationScheduled: false,
+            isPOSSurveyCurrentMerchantNotificationScheduled: false,
+            hasPOSBeenOpenedAtLeastOnce: false)
         return settings
     }
 }

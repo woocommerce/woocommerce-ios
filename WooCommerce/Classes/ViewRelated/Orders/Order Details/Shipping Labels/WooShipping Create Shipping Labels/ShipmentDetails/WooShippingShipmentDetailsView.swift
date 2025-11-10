@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct WooShippingShipmentDetailsView: View {
     @ObservedObject private var viewModel: WooShippingShipmentDetailsViewModel

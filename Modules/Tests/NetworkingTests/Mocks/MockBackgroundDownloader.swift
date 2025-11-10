@@ -8,6 +8,7 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
     var downloadCallCount = 0
     var lastDownloadURL: URL?
     var lastSessionIdentifier: String?
+    var lastAllowCellular: Bool?
     var backgroundCompletionHandler: (() -> Void)?
     var cancelCallCount = 0
     var lastCancelledSessionIdentifier: String?
@@ -20,10 +21,11 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
 
     // MARK: - BackgroundDownloadProtocol
 
-    func downloadFile(from url: URL, sessionIdentifier: String) async throws -> URL {
+    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL {
         downloadCallCount += 1
         lastDownloadURL = url
         lastSessionIdentifier = sessionIdentifier
+        lastAllowCellular = allowCellular
 
         // Simulates async behavior
         try await Task.sleep(nanoseconds: 1_000_000) // 1ms
@@ -65,6 +67,7 @@ extension MockBackgroundDownloader {
         downloadCallCount = 0
         lastDownloadURL = nil
         lastSessionIdentifier = nil
+        lastAllowCellular = nil
         backgroundCompletionHandler = nil
         cancelCallCount = 0
         lastCancelledSessionIdentifier = nil

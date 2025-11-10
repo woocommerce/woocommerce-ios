@@ -8,6 +8,7 @@ import KeychainAccess
 import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - DefaultStoresManager
 //
@@ -45,6 +46,14 @@ class DefaultStoresManager: StoresManager {
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
+    /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
+    ///
+    private var trackedEligibleSites: Set<Int64> = []
+
+    /// Network switching notification observers
+    ///
+    private var networkNotificationObservers: [NSObjectProtocol]?
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -77,6 +86,14 @@ class DefaultStoresManager: StoresManager {
     ///
     var isAuthenticated: Bool {
         return state is AuthenticatedState
+    }
+
+    /// Authentication mode for network requests
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        guard let state = state as? AuthenticatedState else {
+            return nil
+        }
+        return state.requestAuthenticationMode
     }
 
     /// Indicates if the StoresManager is currently authenticated with site credentials only.
@@ -120,6 +137,23 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSitePublisher
     }
 
+    /// Provides access to the session-scoped POS catalog sync coordinator
+    ///
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        (state as? AuthenticatedState)?.posCatalogSyncCoordinator
+    }
+
+    /// Provides access to the session-scoped POS catalog eligibility checker
+    ///
+    var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
+        get {
+            (state as? AuthenticatedState)?.posCatalogEligibilityChecker
+        }
+        set {
+            (state as? AuthenticatedState)?.posCatalogEligibilityChecker = newValue
+        }
+    }
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
@@ -133,6 +167,9 @@ class DefaultStoresManager: StoresManager {
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
         isLoggedIn = isAuthenticated
+        if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
+            startObservingNetworkNotifications()
+        }
     }
 
     /// This should only be invoked after all the ServiceLocator dependencies in this function are initialized to avoid circular reference.
@@ -161,11 +198,21 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(credentials: credentials)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        state = AuthenticatedState(credentials: credentials,
+                                   sessionManager: sessionManager,
+                                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
         sessionManager.defaultCredentials = credentials
 
-        listenToApplicationPasswordGenerationFailureNotification()
-        listenToWPCOMInvalidWPCOMTokenNotification()
+        if case .wpcom = credentials {
+            listenToWPCOMInvalidWPCOMTokenNotification()
+            applicationPasswordGenerationFailureObserver = nil
+            startObservingNetworkNotifications()
+        } else {
+            listenToApplicationPasswordGenerationFailureNotification()
+            invalidWPCOMTokenNotificationObserver = nil
+            stopObservingNetworkNotifications()
+        }
 
         return self
     }
@@ -220,7 +267,7 @@ class DefaultStoresManager: StoresManager {
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore() {
-        sessionManager.deleteApplicationPassword()
+        sessionManager.deleteApplicationPassword(locally: true)
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
@@ -244,18 +291,42 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
+        invalidWPCOMTokenNotificationObserver = nil
+        stopObservingNetworkNotifications()
+        trackedEligibleSites.removeAll()
 
         if isAuthenticated {
             let resetAction = CardPresentPaymentAction.reset
             dispatch(resetAction)
         }
 
+        // Stop any ongoing catalog sync tasks before resetting session
+        if let siteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+            }
+        }
+
+        sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()
 
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+            // Reset GRDB on a background thread to avoid blocking logout
+            // when there's a large catalog to delete
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try ServiceLocator.grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
+            }
+        }
+
         ServiceLocator.productImageUploader.reset()
 
         updateAndReloadWidgetInformation(with: nil)
@@ -318,10 +389,8 @@ class DefaultStoresManager: StoresManager {
     }
 
     func shouldAuthenticateAdminPage(for site: Site) -> Bool {
-        /// If the site is self-hosted and user is authenticated with WPCom,
-        /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
-        /// This should be prevented 💀⛔️
-        guard site.isWordPressComStore || isAuthenticatedWithoutWPCom else {
+        /// Auto-authentication for web view works if the site has SSO or if user is authenticated with site credentials
+        guard site.hasSSOEnabled || isAuthenticatedWithoutWPCom else {
             return false
         }
         return true
@@ -726,6 +795,9 @@ private extension DefaultStoresManager {
             guard case .success(let site) = result else {
                 return
             }
+            sessionManager.defaultSite = site
+            updateAndReloadWidgetInformation(with: siteID)
+
             /// Triggers root endpoint to check if application password is available
             dispatch(SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
                 guard let self else { return }
@@ -734,9 +806,8 @@ private extension DefaultStoresManager {
                     let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                     sessionManager.defaultSite = updatedSite
                     updateAndReloadWidgetInformation(with: siteID)
-                case .failure:
-                    sessionManager.defaultSite = site
-                    updateAndReloadWidgetInformation(with: siteID)
+                case .failure(let error):
+                    DDLogError("⛔️ Cannot trigger root endpoint: \(error)")
                 }
             })
         }
@@ -791,6 +862,62 @@ private extension DefaultStoresManager {
                                           numberOfProducts: numberOfProducts,
                                           systemPlugins: systemPlugins)
         }
+    }
+
+    /// Sets up network switching notification observers
+    ///
+    func startObservingNetworkNotifications() {
+        let eligibleSiteObserver = notificationCenter.addObserver(
+            forName: .JetpackSiteEligibleForAppPasswordSupport,
+            object: nil,
+            queue: .main) { [weak self] note in
+                self?.trackJetpackSiteEligible(note: note)
+            }
+
+        let siteFlaggedObserver = notificationCenter.addObserver(
+            forName: .JetpackSiteFlaggedUnsupportedForApplicationPassword,
+            object: nil,
+            queue: .main) { [weak self] note in
+                self?.trackJetpackSiteFlagged(note: note)
+            }
+
+        networkNotificationObservers = [eligibleSiteObserver, siteFlaggedObserver]
+    }
+
+    /// Removes network switching notification observers
+    ///
+    func stopObservingNetworkNotifications() {
+        networkNotificationObservers?.forEach { observer in
+            notificationCenter.removeObserver(observer)
+        }
+        networkNotificationObservers = nil
+    }
+
+    /// Tracks Jetpack site eligible for app password support with deduplication
+    ///
+    func trackJetpackSiteEligible(note: Notification) {
+        guard let siteID = note.object as? Int64,
+              sessionManager.defaultSite?.siteID == siteID else {
+            return
+        }
+        // Only track if we haven't already tracked this site
+        if !trackedEligibleSites.contains(siteID) {
+            trackedEligibleSites.insert(siteID)
+            ServiceLocator.analytics.track(.jetpackSiteEligibleForAppPasswordSupport)
+        }
+    }
+
+    /// Tracks Jetpack site flagged as unsupported and removes from eligible tracking
+    ///
+    private func trackJetpackSiteFlagged(note: Notification) {
+        guard let properties = note.object as? [String: Any] else {
+            return
+        }
+        // Get the current site ID and remove from tracked sites
+        if let siteID = sessionManager.defaultStoreID {
+            trackedEligibleSites.remove(siteID)
+        }
+        ServiceLocator.analytics.track(.jetpackSiteFlaggedUnsupportedForAppPasswords, withProperties: properties)
     }
 }
 

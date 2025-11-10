@@ -1,0 +1,157 @@
+import Foundation
+import Alamofire
+import WooFoundationCore
+
+public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
+    private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
+    private let systemStatusService: POSSystemStatusServiceProtocol
+    private let catalogSizeLimit: Int
+    private let isLocalCatalogFeatureFlagEnabled: Bool
+
+    // Eligibility states cached per site
+    private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
+
+    // POS eligibility states cached per site
+    private var posEligibilityStates: [Int64: Bool] = [:]
+
+    /// Initialize eligibility service
+    /// - Parameters:
+    ///   - catalogSizeChecker: Service to check catalog size for sites
+    ///   - systemStatusService: Service to check WooCommerce plugin version
+    ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
+    ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
+    public init(
+        catalogSizeChecker: POSCatalogSizeCheckerProtocol,
+        systemStatusService: POSSystemStatusServiceProtocol,
+        isLocalCatalogFeatureFlagEnabled: Bool,
+        catalogSizeLimit: Int? = nil
+    ) {
+        self.catalogSizeChecker = catalogSizeChecker
+        self.systemStatusService = systemStatusService
+        self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
+        self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
+    }
+
+    /// Get catalog eligibility for a specific site
+    /// If not cached, refreshes eligibility and returns the result
+    public func catalogEligibility(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState {
+        if let cached = eligibilityStates[siteID] {
+            return cached
+        }
+        // Not cached yet, refresh and return
+        return try await refreshEligibilityState(for: siteID)
+    }
+
+    /// Update POS eligibility and refresh catalog eligibility for the specified site
+    /// - Parameters:
+    ///   - isEligible: Whether POS is eligible
+    ///   - siteID: The site ID to refresh eligibility for
+    public func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async throws {
+        // Store the POS eligibility state for this site
+        posEligibilityStates[siteID] = isEligible
+        // Refresh eligibility for the current site now that POS eligibility has changed
+        try await refreshEligibilityState(for: siteID)
+    }
+
+    /// Refresh eligibility state for a specific site
+    @discardableResult
+    public func refreshEligibilityState(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState {
+        // Check POS tab eligibility FIRST - no point in checking catalog if POS isn't eligible
+        guard let isPOSEligible = posEligibilityStates[siteID] else {
+            // We don't have POS eligibility info yet - don't cache this state
+            // Return ineligible but allow it to be refreshed later when eligibility is known
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS eligibility unknown for site \(siteID), assuming ineligible")
+            return state
+        }
+
+        guard isPOSEligible else {
+            // We know POS is explicitly ineligible - cache this state
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+            eligibilityStates[siteID] = state
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: POS not eligible for site \(siteID)")
+            return state
+        }
+
+        // Check feature flag - if disabled, no need to check catalog size
+        guard isLocalCatalogFeatureFlagEnabled else {
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
+            eligibilityStates[siteID] = state
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flag disabled for site \(siteID)")
+            return state
+        }
+
+        // Check WooCommerce version - local catalog requires 10.3.0 or higher
+        do {
+            let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
+
+            guard let wcPlugin = pluginInfo.wcPlugin, wcPlugin.active else {
+                let state = POSLocalCatalogEligibilityState.ineligible(reason: .posTabNotEligible)
+                eligibilityStates[siteID] = state
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce plugin not found or inactive for site \(siteID)")
+                return state
+            }
+
+            guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                    minimumRequired: Constants.wcPluginMinimumVersionForLocalCatalog) else {
+                let state = POSLocalCatalogEligibilityState.ineligible(
+                    reason: .unsupportedWooCommerceVersion(minimumVersion: Constants.wcPluginMinimumVersionForLocalCatalog)
+                )
+                eligibilityStates[siteID] = state
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) below minimum" +
+                          "\(Constants.wcPluginMinimumVersionForLocalCatalog) for site \(siteID)")
+                return state
+            }
+
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) meets minimum requirement for site \(siteID)")
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        } catch {
+            let errorString = String(describing: error)
+            let state = POSLocalCatalogEligibilityState.ineligible(
+                reason: .catalogSizeCheckFailed(underlyingError: errorString)
+            )
+            eligibilityStates[siteID] = state
+            DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check WooCommerce version for site \(siteID): \(error)")
+            return state
+        }
+
+        // Fetch remote catalog size and check against limit
+        do {
+            let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
+
+            if size.totalCount > catalogSizeLimit {
+                let state = POSLocalCatalogEligibilityState.ineligible(
+                    reason: .catalogSizeTooLarge(totalCount: size.totalCount, limit: catalogSizeLimit)
+                )
+                eligibilityStates[siteID] = state
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) exceeds limit \(catalogSizeLimit)")
+                return state
+            }
+
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) is within limit \(catalogSizeLimit)")
+            eligibilityStates[siteID] = .eligible
+            return .eligible
+
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSCatalogSyncError.requestCancelled
+        } catch {
+            let errorString = String(describing: error)
+            let state = POSLocalCatalogEligibilityState.ineligible(
+                reason: .catalogSizeCheckFailed(underlyingError: errorString)
+            )
+            eligibilityStates[siteID] = state
+            DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
+            return state
+        }
+    }
+}
+
+// MARK: - Constants
+
+private extension POSLocalCatalogEligibilityService {
+    enum Constants {
+        static let defaultCatalogSizeLimit = 1000
+        static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
+    }
+}

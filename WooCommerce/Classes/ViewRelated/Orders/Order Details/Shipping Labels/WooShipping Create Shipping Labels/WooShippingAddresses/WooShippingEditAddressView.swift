@@ -85,7 +85,7 @@ struct WooShippingEditAddressView: View {
                 }
             }
             .padding()
-            .onChange(of: focusedField) { newField in
+            .onChange(of: focusedField) { _, newField in
                 if let previousFocusedField {
                     viewModel.validate(previousFocusedField)
                 }
@@ -262,7 +262,7 @@ struct WooShippingEditAddressView: View {
                 TextField(Localization.title(for: field.type), text: $field.value, prompt: Text(field.required ? "" : Localization.optional))
                     .keyboardType(keyboardType)
                     .focused($focused, equals: field.type)
-                    .onChange(of: field.value) { _ in
+                    .onChange(of: field.value) {
                         field.clearError()
                     }
                     .padding()

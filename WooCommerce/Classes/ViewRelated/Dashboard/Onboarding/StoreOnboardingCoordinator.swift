@@ -159,8 +159,8 @@ private extension StoreOnboardingCoordinator {
     /// Navigates the user to the plan subscription details view.
     ///
     func showPlanView() {
-        let subscriptionController = SubscriptionsHostingController(siteID: site.siteID)
-        navigationController.show(subscriptionController, sender: self)
+        // No longer needed.
+        // To be removed with continuation of 12401-gh
     }
 }
 

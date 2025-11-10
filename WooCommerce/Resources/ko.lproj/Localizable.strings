@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-08-13 09:54:07+0000 */
+/* Translation-Revision-Date: 2025-11-04 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -121,9 +121,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
 "%1$d\/%2$d completed" = "%1$d\/%2$d개 완료됨";
 
-/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day' */
-"%1$ld day" = "%1$ld일";
-
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld개 변형";
@@ -132,17 +129,11 @@ which should be translated separately and considered part of this sentence. */
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld개 변형";
 
-/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days' */
-"%1ld days" = "%1ld일";
-
 /* 1 Item */
 "%@ Item" = "%@개 항목";
 
 /* For example, '5 Items' */
 "%@ Items" = "%@개 항목";
-
-/* Reads like: eCommerce ended */
-"%@ ended" = "%@ 종료됨";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "%@ 레이블 환불 요청됨";
@@ -230,26 +221,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1개 아이템 선택됨";
 
-/* Disclaimer regarding some of the features related to payments. */
-"1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 우커머스 결제에서 표준으로 사용 가능(제한 사항 적용) – 다른 결제 제공업체의 경우에는 추가 확장 기능이 필요할 수 있습니다.";
-
-/* Disclaimer regarding some of the features related to shipping. */
-"2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 미국에서만 이용 가능 – 다른 국가의 경우에는 추가 확장 기능이 필요합니다.";
-
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. 연결이 완료되면 스토어에 로그인됩니다.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4~6분";
 
-/* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
-"50 GB" = "50GB";
-
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
-
-/* Error message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"A WooCommerce app store subscription with your Apple ID already exists" = "Apple ID의 우커머스 앱 스토어 구독이 이미 있습니다.";
 
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "워드프레스닷컴 계정이 스토어 자격 증명에 연결되어 있습니다. 계속하시겠다면 위의 이메일 주소에 대한 확인 링크를 보내드리겠습니다.";
@@ -284,14 +263,8 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "옵션 추가";
 
-/* No comment provided by engineer. */
-"Abandoned cart recovery" = "중단된 장바구니 복구";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "앱 정보";
-
-/* No comment provided by engineer. */
-"Accept local payments'" = "지역 결제 수단 수락'";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "설정 중 서비스 약관에 동의하세요.";
@@ -323,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "활성";
-
-/* No comment provided by engineer. */
-"Ad-free experience" = "광고 없는 환경";
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
@@ -535,17 +505,8 @@ which should be translated separately and considered part of this sentence. */
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "성인 서명 필수(+%1$@)";
 
-/* No comment provided by engineer. */
-"Advanced SEO tools" = "고급 SEO 도구";
-
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "앱 상태를 검토하는 고급 도구";
-
-/* No comment provided by engineer. */
-"Advertise on Google" = "Google에서 광고";
-
-/* Country option for a site address. */
-"Afghanistan" = "아프가니스탄";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "항공 적격 에탄올 패키지 - (승인된 향수 및 손 소독제 배송)";
@@ -553,14 +514,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Country option for a site address. */
-"Albania" = "알바니아";
-
 /* Description of albums in the photo libraries */
 "Albums" = "앨범";
-
-/* Country option for a site address. */
-"Algeria" = "알제리";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "모든 주문";
@@ -610,9 +565,6 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "또는:";
 
-/* Country option for a site address. */
-"American Samoa" = "아메리칸사모아";
-
 /* Title above the amount field on the add custom amount view in orders.
    Title of the Amount label on Coupon Details screen */
 "Amount" = "금액";
@@ -625,9 +577,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "환불 가능 금액";
-
-/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"An Apple ID can only be used to upgrade one store" = "Apple ID는 하나의 스토어 업그레이드에만 사용할 수 있습니다.";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "HTTP 오류 코드(%i)가 반환되었습니다.";
@@ -655,24 +604,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "분석이 활성화되었습니다.";
-
-/* Country option for a site address. */
-"Andorra" = "안도라";
-
-/* Country option for a site address. */
-"Angola" = "앙골라";
-
-/* Country option for a site address. */
-"Anguilla" = "앵귈라";
-
-/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
-"Annually (Save 35%)" = "연간(35% 절약)";
-
-/* Country option for a site address. */
-"Antarctica" = "남극";
-
-/* Country option for a site address. */
-"Antigua and Barbuda" = "앤티가바부다";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
@@ -757,15 +688,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "계속할까요? 받은 편지함 메시지가 영원히 무시됩니다.";
 
-/* Country option for a site address. */
-"Argentina" = "아르헨티나";
-
-/* Country option for a site address. */
-"Armenia" = "아르메니아";
-
-/* Country option for a site address. */
-"Aruba" = "아루바";
-
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "속성 이름";
 
@@ -779,12 +701,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "오디오, %@";
 
-/* Country option for a site address. */
-"Australia" = "오스트레일리아";
-
-/* Country option for a site address. */
-"Austria" = "오스트리아";
-
 /* No comment provided by engineer. */
 "Authenticating" = "인증하기";
 
@@ -794,12 +710,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "호스트 인증 필요: %@";
-
-/* No comment provided by engineer. */
-"Automated backup + quick restore" = "자동 백업 + 빠른 복원";
-
-/* No comment provided by engineer. */
-"Automated sales taxes" = "판매세 자동 부과";
 
 /* Title for the bottom sheet when there is a tax rate stored */
 "Automatically adding tax rate" = "자동으로 세율 추가하기";
@@ -825,16 +735,10 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "%@을(를) 통한 결제 대기 중";
 
-/* Country option for a site address. */
-"Azerbaijan" = "아제르바이잔";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
 "Back" = "뒤로";
-
-/* No comment provided by engineer. */
-"Back in stock emails" = "재입고 이메일";
 
 /* Accessibility announcement message when device goes back online */
 "Back online" = "온라인 복구";
@@ -855,44 +759,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "이월 주문";
 
-/* Country option for a site address. */
-"Bahamas" = "바하마";
-
-/* Country option for a site address. */
-"Bahrain" = "바레인";
-
-/* Country option for a site address. */
-"Bangladesh" = "방글라데시";
-
-/* Country option for a site address. */
-"Barbados" = "바베이도스";
-
 /* Title for the instructions on the Woo payments setup instructions screen. */
 "Before you start setup" = "설정을 시작하기 전에";
 
 /* Title on the action button on the Woo payments setup instructions screen. */
 "Begin Setup" = "설정 시작";
-
-/* Country option for a site address. */
-"Belarus" = "벨라루스";
-
-/* Country option for a site address. */
-"Belau" = "벨라우";
-
-/* Country option for a site address. */
-"Belgium" = "벨기에";
-
-/* Country option for a site address. */
-"Belize" = "벨리즈";
-
-/* Country option for a site address. */
-"Benin" = "베냉";
-
-/* Country option for a site address. */
-"Bermuda" = "버뮤다";
-
-/* Country option for a site address. */
-"Bhutan" = "부탄";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data */
@@ -922,11 +793,128 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "굵게";
 
-/* Country option for a site address. */
-"Bolivia" = "볼리비아";
+/* Title for 'Booked' booking attendance status. */
+"BookingAttendanceStatus.booked" = "예약됨";
 
-/* Country option for a site address. */
-"Bonaire, Saint Eustatius and Saba" = "보나이러, 세인트 유스타티우스 및 사바";
+/* Title for 'Cancelled' booking attendance status. */
+"BookingAttendanceStatus.cancelled" = "취소됨";
+
+/* Title for 'Unknown' booking attendance status. */
+"BookingAttendanceStatus.unknown" = "알 수 없음";
+
+/* Assigned staff row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.assignedStaff.title" = "할당된 직원";
+
+/* Date row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.dateRow.title" = "날짜";
+
+/* Duration row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.durationRow.title" = "지속 시간";
+
+/* Header title for the 'Appointment Details' section in the booking details screen. */
+"BookingDetailsView.appointmentDetails.headerTitle" = "예약 상세 정보";
+
+/* Location row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.locationRow.title" = "위치";
+
+/* Price row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.priceRow.title" = "가격";
+
+/* Time row title in appointment details section in booking details view. */
+"BookingDetailsView.appointmentDetails.timeRow.title" = "시간";
+
+/* Footer text for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.footerText" = "참석자를 표시하여 보고서의 정확성을 유지하고 예약 추세를 파악하세요.";
+
+/* Header title for the 'Attendance' section in the booking details screen. */
+"BookingDetailsView.attendance.headerTitle" = "참석자";
+
+/* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.attendanceStatus.updateFailed.message" = "%1$d번 예약의 참석 상태를 변경할 수 없음";
+
+/* Add a note row title in booking notes section in booking details view. */
+"BookingDetailsView.bookingNotes.addANoteRow.title" = "메모 추가";
+
+/* Header title for the 'Booking notes' section in the booking details screen. */
+"BookingDetailsView.bookingNotes.headerTitle" = "예약 메모";
+
+/* Cancel button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.cancelAction" = "아니요, 유지합니다";
+
+/* Confirm button title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.confirmAction" = "예, 취소합니다";
+
+/* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
+"BookingDetailsView.cancelation.alert.message" = "%1$@ 님은 더 이상 %3$@에 열리는 \"%2$@\"에 참석할 수 없습니다.";
+
+/* Title for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.title" = "예약 취소";
+
+/* Billing address row title in customer section in booking details view. */
+"BookingDetailsView.customer.billingAddress.title" = "청구 주소";
+
+/* 'Cancel booking' button title in appointment details section in booking details view. */
+"BookingDetailsView.customer.cancelBookingButton.title" = "예약 취소";
+
+/* Toast message shown when the user copies the customer's email address. */
+"BookingDetailsView.customer.emailCopied.toastMessage" = "이메일 주소 복사됨";
+
+/* Header title for the 'Customer' section in the booking details screen. */
+"BookingDetailsView.customer.headerTitle" = "고객";
+
+/* 'Status' row title in attendance section in booking details view. */
+"BookingDetailsView.customer.status.title" = "상태";
+
+/* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
+"BookingDetailsView.navTitle" = "예약 #%1$d";
+
+/* Action sheet option to cancel a booking. */
+"BookingDetailsView.options.cancelBooking" = "예약 취소";
+
+/* Action sheet option to mark a booking as paid. */
+"BookingDetailsView.options.markAsPaid" = "결제됨으로 표시";
+
+/* Action sheet option to view the order for a booking. */
+"BookingDetailsView.options.viewOrder" = "주문 보기";
+
+/* Discount row title in payment section in booking details view. */
+"BookingDetailsView.payment.discountRow.title" = "할인";
+
+/* Header title for the 'Payment' section in the booking details screen. */
+"BookingDetailsView.payment.headerTitle" = "결제";
+
+/* Title for 'Issue refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.issueRefund.title" = "환불 발행";
+
+/* Title for 'Mark as paid' button in payment section in booking details view. */
+"BookingDetailsView.payment.markAsPaid.title" = "결제됨으로 표시";
+
+/* Service row title in payment section in booking details view. */
+"BookingDetailsView.payment.serviceRow.title" = "서비스";
+
+/* Tax row title in payment section in booking details view. */
+"BookingDetailsView.payment.taxRow.title" = "세금";
+
+/* Total row title in payment section in booking details view. */
+"BookingDetailsView.payment.totalRow.title" = "합계";
+
+/* Title for 'View order' button in payment section in booking details view. */
+"BookingDetailsView.payment.viewOrder.title" = "주문 보기";
+
+/* Action to call the phone number. */
+"BookingDetailsView.phoneNumberOptions.call" = "전화";
+
+/* Notice message shown when the phone number is copied. */
+"BookingDetailsView.phoneNumberOptions.copied" = "전화번호 복사됨";
+
+/* Action to copy the phone number. */
+"BookingDetailsView.phoneNumberOptions.copy" = "복사";
+
+/* Notice message shown when a phone call cannot be initiated. */
+"BookingDetailsView.phoneNumberOptions.error" = "이 번호로 전화를 걸 수 없습니다.";
+
+/* Retry Action */
+"BookingDetailsView.retry.action" = "다시 시도";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "특별 행사로 판매 촉진";
@@ -937,32 +925,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "연결 상품으로 매출 증대";
 
-/* Country option for a site address. */
-"Bosnia and Herzegovina" = "보스니아헤르체고비나";
-
-/* Country option for a site address. */
-"Botswana" = "보츠와나";
-
-/* Country option for a site address. */
-"Bouvet Island" = "부베섬";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "상자";
-
-/* Country option for a site address. */
-"Brazil" = "브라질";
-
-/* Country option for a site address. */
-"British Indian Ocean Territory" = "영국령 인도양 식민지";
-
-/* Country option for a site address. */
-"British Virgin Islands" = "영국령 버진아일랜드";
-
-/* Country option for a site address. */
-"Brunei" = "브루나이";
-
-/* Country option for a site address. */
-"Bulgaria" = "불가리아";
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
@@ -982,12 +946,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
 "Bundles Sold" = "판매된 번들";
-
-/* Country option for a site address. */
-"Burkina Faso" = "부르키나파소";
-
-/* Country option for a site address. */
-"Burundi" = "부룬디";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "버튼 텍스트";
@@ -1023,9 +981,6 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "전화";
 
-/* Country option for a site address. */
-"Cambodia" = "캄보디아";
-
 /* Accessibility label for the camera tile in the collection view */
 "Camera" = "카메라";
 
@@ -1041,9 +996,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action sheet button that links to settings for camera access */
 "Camera permissions" = "카메라 권한";
 
-/* Country option for a site address. */
-"Cameroon" = "카메룬";
-
 /* Title of the Blaze campaign details view. */
 "Campaign Details" = "캠페인 상세 정보";
 
@@ -1055,9 +1007,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "%1$d회 사용 가능";
-
-/* Country option for a site address. */
-"Canada" = "캐나다";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
@@ -1137,10 +1086,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "설치 취소";
 
-/* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
-   Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
-"Cancel Upgrade" = "업그레이드 취소";
-
 /* Display label for the subscription status type */
 "Cancelled" = "취소됨";
 
@@ -1182,9 +1127,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "사이트의 우커머스 설치를 확인할 수 없습니다.";
-
-/* Country option for a site address. */
-"Cape Verde" = "카보베르데";
 
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
@@ -1234,20 +1176,11 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "카테고리";
 
-/* Country option for a site address. */
-"Cayman Islands" = "케이맨 제도";
-
-/* Country option for a site address. */
-"Central African Republic" = "중앙아프리카공화국";
-
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "특정 필수 필드를 유의해야 합니다.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "인증서 오류";
-
-/* Country option for a site address. */
-"Chad" = "차드";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "제품 유형 변경";
@@ -1280,12 +1213,6 @@ which should be translated separately and considered part of this sentence. */
 /* Bottom title of the alert presented with a spinner while the order is being validated */
 "Checking order" = "주문 확인하기";
 
-/* Country option for a site address. */
-"Chile" = "칠레";
-
-/* Country option for a site address. */
-"China" = "중국";
-
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "용지 크기 선택";
 
@@ -1312,9 +1239,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "결제 수단 선택";
-
-/* Country option for a site address. */
-"Christmas Island" = "크리스마스 섬";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -1400,9 +1324,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "계정 종료 중…";
 
-/* Country option for a site address. */
-"Cocos (Keeling) Islands" = "코코스(킬링) 제도";
-
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "축소됨";
 
@@ -1446,14 +1367,8 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "결제받기, Tap to Pay 설정, 주문 카드 리더 등.";
 
-/* Country option for a site address. */
-"Colombia" = "콜롬비아";
-
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "곧 다시 오셔서 더 많은 스토어 성장 팁과 인사이트를 확인하세요.";
-
-/* Country option for a site address. */
-"Comoros" = "코모로";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1494,12 +1409,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "결제 수단 확인";
 
-/* Country option for a site address. */
-"Congo (Brazzaville)" = "콩고(브라자빌)";
-
-/* Country option for a site address. */
-"Congo (Kinshasa)" = "콩고(킨샤사)";
-
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "수고하셨습니다. 다 읽으셨습니다!";
 
@@ -1534,9 +1443,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
-
-/* No comment provided by engineer. */
-"Connect with Facebook" = "페이스북과 연결";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "카드 리더 연결";
@@ -1651,9 +1557,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "전환율";
 
-/* Country option for a site address. */
-"Cook Islands" = "쿡 제도";
-
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "쿠키 정책";
 
@@ -1675,9 +1578,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "추적 번호 복사";
-
-/* Country option for a site address. */
-"Costa Rica" = "코스타리카";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "워드프레스 사이트에 연결할 수 없습니다. 이 주소에 유효한 워드프레스 사이트가 없습니다. 입력한 사이트 주소(URL)를 확인하세요.";
@@ -1757,8 +1657,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "쿠폰 생성";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "배송 레이블 만들기";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1815,18 +1714,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "워드프레스닷컴 계정 %1$@<%2$@>에서 신용카드가 검색되었습니다.";
 
-/* Country option for a site address. */
-"Croatia" = "크로아티아";
-
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "교차 판매";
-
-/* Country option for a site address. */
-"Cuba" = "쿠바";
-
-/* Country option for a site address. */
-"Curacao" = "퀴라소";
 
 /* Cell title: the current date. */
 "Current" = "현재";
@@ -1842,9 +1732,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the footer of bulk price setting screen, when products have different price values.
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "현재 가격이 뒤섞였습니다.";
-
-/* Reads like: Current: Free Trial */
-"Current: %@" = "현재: %@";
 
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "현재 최대 100개 변형의 생성이 지원됩니다. 이 상품의 변형을 생성하면 %d개 변형이 생성됩니다.";
@@ -1885,12 +1772,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "세관 양식에 10자리 전화번호 필요";
 
-/* No comment provided by engineer. */
-"Custom order emails" = "사용자 정의 주문 이메일";
-
-/* No comment provided by engineer. */
-"Custom product kits" = "사용자 정의 상품 키트";
-
 /* Customer info section title
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
@@ -1904,9 +1785,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the edit customer provided note screen
    Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "고객이 남긴 메모";
-
-/* No comment provided by engineer. */
-"Customer birthday emails" = "고객 생일 이메일";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "배송에 대해 고객이 결제한 %1$@\/%2$@";
@@ -1926,15 +1804,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "세관 양식을 인쇄하고 이러한 국제 배송에 포함해야 함";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "집에서 모바일 장치로 배송 레이블을 할인된 요금으로 인쇄하여 우체국에 가는 시간을 줄이세요!";
-
-/* Country option for a site address. */
-"Cyprus" = "사이프러스";
-
-/* Country option for a site address. */
-"Czech Republic" = "체코";
 
 /* Details section title in the Edit Address Form */
 "DETAILS" = "상세 정보";
@@ -1975,9 +1844,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Delete tracking button title */
 "Delete Tracking" = "추적 삭제";
-
-/* Country option for a site address. */
-"Denmark" = "덴마크";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "제품 설명";
@@ -2037,9 +1903,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "할인률";
 
-/* No comment provided by engineer. */
-"Discounted shipping²" = "할인된 배송²";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "할인 이용 불가";
 
@@ -2093,9 +1956,6 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Division 6.2 - 위험물질 - 생물학적 물질(예: 실험실 테스트 키트, 승인된 코로나19 진단 키트 반품)";
 
-/* Country option for a site address. */
-"Djibouti" = "지부티";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "웹 체크아웃에 대면 결제를 추가하시겠습니까?";
 
@@ -2114,17 +1974,8 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "문서";
 
-/* Country option for a site address. */
-"Dominica" = "도미니카";
-
-/* Country option for a site address. */
-"Dominican Republic" = "도미니카공화국";
-
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
-
-/* Text within the Upgrades summary card, informing the merchant their Free Trial has expired. */
-"Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. Unlock more features, launch and start selling, and make your ecommerce business a reality." = "그동안의 수고를 물거품으로 만들지 마세요! 유료 요금제로 업그레이드하여 스토어 작업을 계속하세요. 더 많은 기능을 활용하고 판매를 시작하며 회원님의 전자상거래 비즈니스를 실현하세요.";
 
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -2142,7 +1993,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
-   Done button on the screen that is shown after a successful plan upgrade.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2217,9 +2067,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
 
-/* Country option for a site address. */
-"Ecuador" = "에콰도르";
-
 /* Button to edit a product category
    Button to edit an order on Order Details screen
    Title text of the button that edits a note when creating a simple payment */
@@ -2277,12 +2124,6 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "한 번에 여러 상품의 상태 또는 가격 편집";
 
-/* Country option for a site address. */
-"Egypt" = "이집트";
-
-/* Country option for a site address. */
-"El Salvador" = "엘살바도르";
-
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "무료 수령에 적합";
 
@@ -2308,9 +2149,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "이메일 영수증";
-
-/* No comment provided by engineer. */
-"Email support" = "이메일 지원";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "%3$@에 %1$@(%2$@)(으)로 레이블 구매 영수증을 이메일로 보내기";
@@ -2492,20 +2330,11 @@ which should be translated separately and considered part of this sentence. */
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "봉투";
 
-/* Country option for a site address. */
-"Equatorial Guinea" = "적도 기니";
-
-/* Country option for a site address. */
-"Eritrea" = "에리트레아";
-
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "오류";
 
 /* Error title when Jetpack activation fails */
 "Error activating Jetpack" = "젯팩 활성화 중 오류 발생";
-
-/* Error message displayed when plan activation fails after purchasing a plan. */
-"Error activating plan" = "요금제 활성화 중 오류 발생";
 
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "젯팩에 연결하는 권한 부여 중 오류 발생";
@@ -2516,17 +2345,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "사이트의 젯팩 연결 확인 중 오류 발생";
 
-/* A string shown on the error screen when there's an issue purchasing a plan, to inform the user of the error code for use with Support. %1$@ will be replaced with the error code and must be included in the translations. */
-"Error code %1$@" = "오류 코드 %1$@";
-
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "오류 코드 %1$d";
-
-/* Error message displayed when a payment fails when attempting to purchase a plan. */
-"Error confirming payment" = "결제 확인 중 오류 발생";
-
-/* Title of an unknown error after purchasing a plan */
-"Error during purchase" = "구매 중 오류 발생";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "분석을 활성화하는 동안 오류가 발생했습니다. 다시 시도하세요.";
@@ -2573,18 +2393,9 @@ which should be translated separately and considered part of this sentence. */
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "예상 설정 시간";
 
-/* Country option for a site address. */
-"Estonia" = "에스토니아";
-
-/* Country option for a site address. */
-"Ethiopia" = "에티오피아";
-
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "누구나 좋아하는 딜";
-
-/* Title for the Performance plan features list. Is followed by a list of the plan features. */
-"Everything in Essential, plus:" = "Essential의 모든 기능에 다음 추가:";
 
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "예: 화분, 선인장, 식물, 장식용, 손쉬운 관리";
@@ -2640,9 +2451,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is expanded */
 "Expanded" = "확장됨";
 
-/* Title for the features list in the Subscriptions Screen */
-"Experience more of our features and services beyond the app" = "앱 너머의 더 많은 기능과 서비스 경험";
-
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "실험 특성";
@@ -2693,12 +2501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "주문 #%1$d 처리 실행 취소 실패";
 
-/* Country option for a site address. */
-"Falkland Islands" = "포클랜드 제도";
-
-/* Country option for a site address. */
-"Faroe Islands" = "페로 제도";
-
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -2716,9 +2518,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Your Site Orders connectivity tool card */
 "Fetching your site orders" = "사이트 주문 가져오기";
-
-/* Country option for a site address. */
-"Fiji" = "피지";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2773,9 +2572,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "스토어 관리자에서 %1$@ 설정 마무리";
 
-/* Country option for a site address. */
-"Finland" = "핀란드";
-
 /* Text field name in Edit Address Form */
 "First name" = "이름";
 
@@ -2806,23 +2602,8 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "전달";
 
-/* Country option for a site address. */
-"France" = "프랑스";
-
-/* No comment provided by engineer. */
-"Free SSL certificate" = "무료 SSL 인증서";
-
 /* Plan name for an active free trial */
 "Free Trial" = "무료 평가판";
-
-/* Country option for a site address. */
-"French Guiana" = "프랑스령 기아나";
-
-/* Country option for a site address. */
-"French Polynesia" = "프랑스령 폴리네시아";
-
-/* Country option for a site address. */
-"French Southern Territories" = "프랑스 남부 영토";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "발신:";
@@ -2836,20 +2617,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "우커머스 배송으로 주문 처리";
 
-/* Title of the view which shows the full feature list for paid plans. */
-"Full Feature List" = "전체 기능 목록";
-
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "%1$d일 대기 후 자금을 이용할 수 있게 됩니다.";
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
 "GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
-
-/* Country option for a site address. */
-"Gabon" = "가봉";
-
-/* Country option for a site address. */
-"Gambia" = "감비아";
 
 /* General section title in the hub menu */
 "General" = "일반";
@@ -2877,15 +2649,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "생성 한도 초과됨";
-
-/* No comment provided by engineer. */
-"Generous storage" = "넉넉한 저장 공간";
-
-/* Country option for a site address. */
-"Georgia" = "그루지야";
-
-/* Country option for a site address. */
-"Germany" = "독일";
 
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
@@ -2915,12 +2678,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "몇 분 만에 시작하기";
 
-/* Button title to allow merchants to open the support screens when there's an error with their plan purchase
-   Button to contact support when Jetpack setup fails */
+/* Button to contact support when Jetpack setup fails */
 "Get support" = "지원받기";
-
-/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
-"Get the most out of %1$@" = "%1$@ 최대한 활용";
 
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "스토어 최대한 활용하기";
@@ -2936,12 +2695,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "결제받기 준비하기";
 
-/* Country option for a site address. */
-"Ghana" = "가나";
-
-/* Country option for a site address. */
-"Gibraltar" = "지브롤터";
-
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "선물";
 
@@ -2954,9 +2707,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "상품권 코드";
-
-/* No comment provided by engineer. */
-"Gift cards" = "상품권";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    Title of the button to give feedback about the add-ons feature
@@ -2979,9 +2729,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "스토어로 이동";
 
-/* No comment provided by engineer. */
-"Google Analytics" = "Google 애널리틱스";
-
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 가입에 실패했습니다.";
 
@@ -2991,15 +2738,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title in AI product description celebration screen. */
 "Great start!" = "시작이 좋습니다!";
-
-/* Country option for a site address. */
-"Greece" = "그리스";
-
-/* Country option for a site address. */
-"Greenland" = "그린란드";
-
-/* Country option for a site address. */
-"Grenada" = "그레나다";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "육상 전용 유해물질(목록에 없지만 표면으로만 제한된 아이템의 경우)";
@@ -3016,27 +2754,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "그룹화된 제품";
 
-/* Country option for a site address. */
-"Guadeloupe" = "과들루프";
-
-/* Country option for a site address. */
-"Guam" = "괌";
-
-/* Country option for a site address. */
-"Guatemala" = "과테말라";
-
-/* Country option for a site address. */
-"Guernsey" = "건지";
-
-/* Country option for a site address. */
-"Guinea" = "기니";
-
-/* Country option for a site address. */
-"Guinea-Bissau" = "기니비사우";
-
-/* Country option for a site address. */
-"Guyana" = "가이아나";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
 
@@ -3051,9 +2768,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 콘텐츠";
-
-/* Country option for a site address. */
-"Haiti" = "아이티";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "스토어 자격 증명을 준비하세요.";
@@ -3097,9 +2811,6 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "헤딩 6";
 
-/* Country option for a site address. */
-"Heard Island and McDonald Islands" = "허드 아일랜드와 맥도널드 제도";
-
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "높이";
@@ -3135,17 +2846,8 @@ which should be translated separately and considered part of this sentence. */
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "맞춤형 설명에 대한 키워드로 상품의 고유한 기능과 잠재 고객을 강조 표시하세요.";
 
-/* Country option for a site address. */
-"Honduras" = "온두라스";
-
-/* Country option for a site address. */
-"Hong Kong" = "홍콩";
-
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "어떻게 개선할 수 있을까요?";
-
-/* Country option for a site address. */
-"Hungary" = "헝가리";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "도움말이 필요한 영역";
@@ -3164,9 +2866,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "가격이 관세 번호당 $2,500를 초과하는 아이템을 배송하려면 ITN이 필요합니다.";
-
-/* Country option for a site address. */
-"Iceland" = "아이슬란드";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
@@ -3207,17 +2906,11 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "%1$@의 경우 카드로 비접촉 한도까지의 거래에만 Tap to Pay를 사용 가능할 수 있습니다.";
 
-/* Accessibility label for an indeterminate loading indicator */
-"In progress" = "진행 중";
-
 /* Display label for the bundle item's inventory stock status */
 "In stock" = "재고 있음";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "사이트 관리자의 연결 > 계정 연결 아래 Jetpack 대시보드에서 워드프레스닷컴에 연결하는 데 사용한 이메일을 찾을 수 있습니다.";
-
-/* Error message displayed when In-App Purchases are not supported. */
-"In-App Purchases not supported" = "앱 내 구매 지원 안 됨";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "%2$@ blog_id %3$@에 대한 주문 #%1$@의 대면 결제";
@@ -3248,9 +2941,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "상향 판매 및 교차 판매로 판매 늘리기";
 
-/* Country option for a site address. */
-"India" = "인도";
-
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "개별 사용만";
 
@@ -3259,9 +2949,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "개별적으로 배송한 아이템";
-
-/* Country option for a site address. */
-"Indonesia" = "인도네시아";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "삽입";
@@ -3317,12 +3004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "보험(최대 %1$@)";
-
-/* No comment provided by engineer. */
-"Integrated payments" = "통합 결제";
-
-/* No comment provided by engineer. */
-"International payments'" = "해외 결제'";
 
 /* Title for the internet connection connectivity tool card */
 "Internet Connection" = "인터넷 연결";
@@ -3384,26 +3065,11 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments isn't available for this store" = "이 스토어에서 대면 결제 사용 불가능";
 
-/* Country option for a site address. */
-"Iran" = "이란";
-
-/* Country option for a site address. */
-"Iraq" = "이라크";
-
-/* Country option for a site address. */
-"Ireland" = "아일랜드";
-
 /* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
 "Is the generated description helpful?" = "생성한 설명이 유용한가요?";
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "생성한 메시지가 유용한가요?";
-
-/* Country option for a site address. */
-"Isle of Man" = "맨섬";
-
-/* Country option for a site address. */
-"Israel" = "이스라엘";
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "환불 발행";
@@ -3445,9 +3111,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "이탤릭체";
 
-/* Country option for a site address. */
-"Italy" = "이탈리아";
-
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "아이템 설명이 필요합니다.";
 
@@ -3464,18 +3127,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "판매된 아이템";
 
-/* Country option for a site address. */
-"Ivory Coast" = "아이보리 해안";
-
-/* Country option for a site address. */
-"Jamaica" = "자메이카";
-
-/* Country option for a site address. */
-"Japan" = "일본";
-
-/* Country option for a site address. */
-"Jersey" = "저지";
-
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "젯팩 설정";
 
@@ -3488,12 +3139,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "어디서나 참여";
 
-/* Country option for a site address. */
-"Jordan" = "요르단";
-
-/* Country option for a site address. */
-"Kazakhstan" = "카자흐스탄";
-
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "편집 계속";
 
@@ -3503,26 +3148,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "이것은 지원 티켓이 아니며 저희는 개별적인 피드백을 해결할 수 없습니다.";
 
-/* Country option for a site address. */
-"Kenya" = "케냐";
-
-/* Country option for a site address. */
-"Kiribati" = "키리바시";
-
-/* Country option for a site address. */
-"Kuwait" = "쿠웨이트";
-
-/* Country option for a site address. */
-"Kyrgyzstan" = "키르기스스탄";
-
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "레이블(4 x 6in)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "레이블 형식 옵션";
-
-/* Country option for a site address. */
-"Laos" = "라오스";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "마지막 2일";
@@ -3562,12 +3192,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text field name in Edit Address Form */
 "Last name" = "성";
 
-/* Country option for a site address. */
-"Latvia" = "라트비아";
-
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "Wormholy 디버그 시작";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "스토어 시작";
 
@@ -3578,8 +3202,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@에서 USPS®를 통해 HAZMAT를 안전하게 포장하고, 레이블을 부착하고, 배송하는 방법을 알아보세요.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3601,18 +3224,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "카드 리더에 대해 더 알아보기";
 
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "모바일 장치로 레이블 만들기에 대해 자세히 알아보기";
-
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "역할 및 권한에 대해 더 알아보기";
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "이 데이터 공유를 제어하려고 당사에서 수집하는 회원님의 스토어와 옵션에 대한 데이터에 대해 자세히 알아보세요.";
-
-/* Country option for a site address. */
-"Lebanon" = "레바논";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "법률 문서(8.5 x 14in)";
@@ -3624,23 +3241,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "길이";
 
-/* Country option for a site address. */
-"Lesotho" = "레소토";
-
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "편지지(8.5 x 11in)";
 
 /* Title to let the user know what do we want on the support screen. */
 "Let’s get this sorted" = "상황 정리";
-
-/* Country option for a site address. */
-"Liberia" = "라이베리아";
-
-/* Country option for a site address. */
-"Libya" = "리비아";
-
-/* Country option for a site address. */
-"Liechtenstein" = "리히텐슈타인";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Lighters Package - Authorized Lighters" = "라이터 패키지 - 승인된 라이터";
@@ -3677,21 +3282,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "제품 이미지 목록";
 
-/* No comment provided by engineer. */
-"List products by brand" = "브랜드별 상품 나열";
-
-/* No comment provided by engineer. */
-"List unlimited products" = "무제한 상품 나열";
-
-/* Country option for a site address. */
-"Lithuania" = "리투아니아";
-
-/* No comment provided by engineer. */
-"Live chat support" = "실시간 채팅 지원";
-
-/* No comment provided by engineer. */
-"Live shipping rates" = "실시간 배송비";
-
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "로드하기";
 
@@ -3703,9 +3293,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "콘텐츠 로드 중";
-
-/* Accessibility label for the initial loading state of the Upgrades view */
-"Loading plan details" = "요금제 상세 정보 로딩 중";
 
 /* Accessibility label for placeholder rows while product variations are loading */
 "Loading product variations" = "상품 변형 로드하기";
@@ -3795,21 +3382,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button. */
 "Lost your password?" = "비밀번호 분실?";
 
-/* No comment provided by engineer. */
-"Loyalty points programs" = "충성도 포인트 프로그램";
-
-/* Country option for a site address. */
-"Luxembourg" = "룩셈부르크";
-
-/* Country option for a site address. */
-"Macao S.A.R., China" = "마카오 특별 행정구 중국";
-
-/* Country option for a site address. */
-"Macedonia" = "마케도니아";
-
-/* Country option for a site address. */
-"Madagascar" = "마다가스카르";
-
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "많은 사랑을 받는 Automattic 제품 <a href=\"https:\/\/automattic.com\/work-with-us\/\">함께할 직원을 채용 중입니다!<\/a>";
 
@@ -3825,21 +3397,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "태그를 사용하여 제품을 더 쉽게 찾을 수 있습니다.";
 
-/* Country option for a site address. */
-"Malawi" = "말라위";
-
-/* Country option for a site address. */
-"Malaysia" = "말레이시아";
-
-/* Country option for a site address. */
-"Maldives" = "몰디브";
-
-/* Country option for a site address. */
-"Mali" = "말리";
-
-/* Country option for a site address. */
-"Malta" = "몰타";
-
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
    Settings > Manage Card Reader > Title for the reader connected screen in settings. */
@@ -3850,9 +3407,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the privacy banner */
 "Manage Privacy" = "개인정보 관리";
-
-/* Title for the button to manage subscriptions */
-"Manage Your Subscription" = "구독 관리";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "항상 주문 관리 및 편집";
@@ -3868,9 +3422,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "재고 관리";
-
-/* Description of one of the hub menu options */
-"Manage your subscription" = "구독 관리";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "수동 환불";
@@ -3900,24 +3451,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "이 주문을 완료로 표시하고 고객에게 알립니다.";
 
-/* No comment provided by engineer. */
-"Marketing & Email" = "마케팅 및 이메일";
-
-/* No comment provided by engineer. */
-"Marketing automation" = "마케팅 자동화";
-
-/* Country option for a site address. */
-"Marshall Islands" = "마셜 제도";
-
-/* Country option for a site address. */
-"Martinique" = "마르티니크";
-
-/* Country option for a site address. */
-"Mauritania" = "모리타니";
-
-/* Country option for a site address. */
-"Mauritius" = "모리셔스";
-
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "최대 지출(%1$@)";
 
@@ -3932,9 +3465,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dismiss button title for modally presented Just in Time Messages */
 "Maybe Later" = "나중에";
-
-/* Country option for a site address. */
-"Mayotte" = "마요트";
 
 /* Title for alert when access to media capture is not granted */
 "Media Capture" = "미디어 캡처";
@@ -3966,20 +3496,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message phone number button title */
 "Message" = "메시지";
 
-/* Country option for a site address. */
-"Mexico" = "멕시코";
-
-/* Country option for a site address. */
-"Micronesia" = "미크로네시아";
-
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "최소 지출(%1$@)";
-
-/* No comment provided by engineer. */
-"Min\/Max order quantity" = "최소\/최대 주문 수량";
 
 /* Title for the minimum quantity setting in the quantity rules screen. */
 "Minimum quantity" = "최소 수량";
@@ -3996,26 +3517,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the mobile app support area option */
 "Mobile App" = "모바일 앱";
 
-/* Country option for a site address. */
-"Moldova" = "몰도바";
-
-/* Country option for a site address. */
-"Monaco" = "모나코";
-
-/* Country option for a site address. */
-"Mongolia" = "몽골";
-
-/* Country option for a site address. */
-"Montenegro" = "몬테네그로";
-
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "월간 누계";
-
-/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
-"Monthly" = "월간";
-
-/* Country option for a site address. */
-"Montserrat" = "몬세라트";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -4037,9 +3540,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* More Privacy toggle section in the privacy screen. */
 "More privacy options available for woocommerce.com users. Check here to learn more." = "Woocommerce.com 사용자는 추가 개인정보 옵션을 사용할 수 있습니다. 여기에서 자세히 알아보세요.";
 
-/* Country option for a site address. */
-"Morocco" = "모로코";
-
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "이동";
 
@@ -4055,9 +3555,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "댓글을 휴지통으로 이동";
 
-/* Country option for a site address. */
-"Mozambique" = "모잠비크";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "여러 스토어";
 
@@ -4065,9 +3562,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "내 스토어";
-
-/* Country option for a site address. */
-"Myanmar" = "미얀마";
 
 /* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "해당 없음";
@@ -4080,12 +3574,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "이름 누락";
-
-/* Country option for a site address. */
-"Namibia" = "나미비아";
-
-/* Country option for a site address. */
-"Nauru" = "나우루";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "배송 레이블이 필요하신가요?";
@@ -4110,9 +3598,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "도움말이 필요하신가요? %1$@";
 
-/* Country option for a site address. */
-"Nepal" = "네팔";
-
 /* The title for the net amount paid cell */
 "Net Payment" = "순 결제";
 
@@ -4121,9 +3606,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "순매출액: %@";
-
-/* Country option for a site address. */
-"Netherlands" = "네덜란드";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "만료 기간 없음";
@@ -4134,14 +3616,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "새 속성 이름";
 
-/* Country option for a site address. */
-"New Caledonia" = "뉴칼레도니아";
-
 /* Title for the order creation screen */
 "New Order" = "새 주문";
-
-/* Country option for a site address. */
-"New Zealand" = "뉴질랜드";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "새로운 분석 보기에서 방문자, 보고서 등을 확인할 수 있습니다.";
@@ -4163,18 +3639,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
 "Next" = "다음";
-
-/* Country option for a site address. */
-"Nicaragua" = "니카라과";
-
-/* Country option for a site address. */
-"Niger" = "니제르";
-
-/* Country option for a site address. */
-"Nigeria" = "나이지리아";
-
-/* Country option for a site address. */
-"Niue" = "니우에";
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "(승인된) 리뷰 없음";
@@ -4247,9 +3711,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "선택된 주문이 없습니다.";
 
-/* Bolded message confirming that no payment has been taken when the upgrade failed. */
-"No payment has been taken" = "결제가 이루어지지 않았습니다.";
-
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
 
@@ -4294,18 +3755,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "없음";
-
-/* Country option for a site address. */
-"Norfolk Island" = "노퍽섬";
-
-/* Country option for a site address. */
-"North Korea" = "북한";
-
-/* Country option for a site address. */
-"Northern Mariana Islands" = "북마리아나 제도";
-
-/* Country option for a site address. */
-"Norway" = "노르웨이";
 
 /* Description when no 'group of' quantity is set in quantity rules. */
 "Not grouped" = "그룹화되지 않음";
@@ -4368,9 +3817,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Weeks Section Header */
 "Older than a Week" = "1주 이상 지남";
-
-/* Country option for a site address. */
-"Oman" = "오만";
 
 /* Display label for the subscription status type */
 "On Hold" = "보류 중";
@@ -4628,23 +4074,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Rich order notification text, will read as: Paid with Visa credit card */
 "Paid with %@" = "%@(으)로 결제됨";
 
-/* Country option for a site address. */
-"Pakistan" = "파키스탄";
-
-/* Country option for a site address. */
-"Palestinian Territory" = "팔레스타인 영토";
-
-/* Country option for a site address. */
-"Panama" = "파나마";
-
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "용지 크기";
-
-/* Country option for a site address. */
-"Papua New Guinea" = "파푸아뉴기니";
-
-/* Country option for a site address. */
-"Paraguay" = "파라과이";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "상위 카테고리";
@@ -4730,17 +4161,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "실적";
 
-/* Indicates a feature is part of the performance plan. */
-"Performance plan only" = "성과 요금제 전용";
-
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "영구적으로 계정 종료";
-
-/* Country option for a site address. */
-"Peru" = "페루";
-
-/* Country option for a site address. */
-"Philippines" = "필리핀";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -4764,14 +4186,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "주문을 픽업한 다음에 결제하고 인쇄하고 포장하고 글을 작성하시면 됩니다.";
 
-/* Country option for a site address. */
-"Pitcairn" = "핏케언";
-
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
-
-/* Detail text shown after an In-App Purchase for a Woo Express plan, shown while we upgrade the site. %1$@ is replaced with the short plan name. Reads as: 'Please bear with us while we process the payment for your Essential plan.' */
-"Please bear with us while we process the payment for your %1$@ plan." = "%1$@ 요금제 결제를 처리하는 동안 기다려 주세요.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
@@ -4782,15 +4198,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "이 앱에서 스토어에 접근하려면 해당 스토어를 젯팩에 연결하세요.";
 
-/* Bolded message advising the merchant to contact support when the plan activation failed.
-   Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
-"Please contact support for assistance." = "도움이 필요한 경우 지원팀에 문의하세요.";
-
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "상점 관리자 또는 앱을 사용하는 관리자로 사이트에 초대받으려면 사이트 소유자에게 문의하세요.";
-
-/* Text describing that only the site owner can upgrade the site's plan. */
-"Please contact the store owner to upgrade your plan." = "요금제를 업그레이드하려면 스토어 소유자에게 문의하세요.";
 
 /* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
 "Please contact your shop manager or administrator for help." = "도움말은 매장 관리자에게 문의하세요.";
@@ -4888,9 +4297,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
-/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
-"Please try again, or contact support for assistance" = "다시 시도하거나 지원팀에 도움을 문의하세요.";
-
 /* Account creation error when an unexpected error occurs. */
 "Please try again." = "다시 시도하세요.";
 
@@ -4955,15 +4361,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "플러그인";
 
-/* Country option for a site address. */
-"Poland" = "폴란드";
-
-/* Section title for popular products on the Select Product screen.
-   The text of the badge that indicates the most popular choice when purchasing a Plan */
+/* Section title for popular products on the Select Product screen. */
 "Popular" = "인기순";
-
-/* Country option for a site address. */
-"Portugal" = "포르투갈";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -4980,9 +4379,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Automattic 제공";
-
-/* No comment provided by engineer. */
-"Premium themes included" = "프리미엄 테마 포함됨";
 
 /* Title label for modal dialog that appears when connecting to a built in card reader */
 "Preparing Tap to Pay on iPhone" = "iPhone의 Tap to Pay 준비하기";
@@ -5064,9 +4460,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "영수증 인쇄";
 
-/* No comment provided by engineer. */
-"Print shipping labels²" = "배송 레이블 인쇄²";
-
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "레이블 인쇄";
 
@@ -5112,9 +4505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the product add-ons screen */
 "Product Add-ons" = "상품 애드온";
 
-/* No comment provided by engineer. */
-"Product Bundles" = "상품 번들";
-
 /* Row title for filtering products by product category. */
 "Product Category" = "상품 카테고리";
 
@@ -5148,9 +4538,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "상품 공개됨";
-
-/* No comment provided by engineer. */
-"Product recommendations" = "상품 추천";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "상품 저장됨";
@@ -5205,9 +4592,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "현재 보이는 제품 대신에 프로모션하는 제품(즉, 수익성이 더 높은 제품)";
 
-/* No comment provided by engineer. */
-"Promote on TikTok" = "TikTok에서 홍보";
-
 /* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "Blaze로 제품 홍보";
 
@@ -5232,12 +4616,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "제품을 게시하는 중...";
 
-/* Country option for a site address. */
-"Puerto Rico" = "푸에르토리코";
-
-/* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
-"Purchase %1$@" = "%1$@ 구매";
-
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "구매 날짜";
 
@@ -5259,9 +4637,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Quantity abbreviation for section title */
 "QTY" = "수량";
-
-/* Country option for a site address. */
-"Qatar" = "카타르";
 
 /* Quantity abbreviation for section title */
 "Qty" = "수량";
@@ -5319,12 +4694,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The title of the view containing a receipt preview */
 "Receipt" = "영수증";
-
-/* No comment provided by engineer. */
-"Recurring payments'" = "반복 결제'";
-
-/* No comment provided by engineer. */
-"Referral programs" = "추천 프로그램";
 
 /* Button label to refresh a web page
    Button to refresh the state of the in-person payments setup
@@ -5473,9 +4842,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "충돌 보고";
 
-/* Title for the button to contact support on the Subscriptions view */
-"Report Subscription Issue" = "구독 문제 신고";
-
 /* Title of the report section on the privacy screen */
 "Reports" = "보고서";
 
@@ -5532,12 +4898,10 @@ If your translation of that term also happens to contains a hyphen, please be su
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
    Retry action title
-   Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
    Retry button title when the scanner cannot finda matching product and create a new order
    Retry the last action
-   Retry title on the notice action button
-   Title of the button to attempt a retry when fetching or purchasing plans fails. */
+   Retry title on the notice action button */
 "Retry" = "재실행";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -5550,14 +4914,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Retry connection button in the connectivity tool screen */
 "Retry connection" = "연결 재시도";
 
-/* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
-"Return to My Store" = "내 스토어로 돌아가기";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
-
-/* Country option for a site address. */
-"Reunion" = "레위니옹";
 
 /* Title of Review Order screen */
 "Review Order" = "주문 검토";
@@ -5576,17 +4934,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Post Rich content */
 "Rich Content" = "풍부한 콘텐츠";
 
-/* Country option for a site address. */
-"Romania" = "루마니아";
-
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "테스트 주문을 실행하여 우커머스 프로세스에서 원활한 고객 경험이 제공되는지 확인합니다.";
-
-/* Country option for a site address. */
-"Russia" = "러시아";
-
-/* Country option for a site address. */
-"Rwanda" = "르완다";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "세션";
@@ -5609,30 +4958,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button label to open web page in Safari */
 "Safari" = "사파리";
 
-/* Country option for a site address. */
-"Saint Barthélemy" = "생바르텔레미";
-
-/* Country option for a site address. */
-"Saint Helena" = "세인트헬레나";
-
-/* Country option for a site address. */
-"Saint Kitts and Nevis" = "세인트키츠네비스";
-
-/* Country option for a site address. */
-"Saint Lucia" = "세인트루시아";
-
-/* Country option for a site address. */
-"Saint Martin (Dutch part)" = "세인트마틴(네덜란드령)";
-
-/* Country option for a site address. */
-"Saint Martin (French part)" = "세인트마틴(프랑스령)";
-
-/* Country option for a site address. */
-"Saint Pierre and Miquelon" = "생피에르앤드미클롱";
-
-/* Country option for a site address. */
-"Saint Vincent and the Grenadines" = "세인트빈센트그레나딘";
-
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "판매 날짜: %@";
 
@@ -5645,23 +4970,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "할인 가격: %@";
 
-/* No comment provided by engineer. */
-"Sales reports" = "판매 보고서";
-
-/* Country option for a site address. */
-"Samoa" = "사모아";
-
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "샘플";
 
-/* Country option for a site address. */
-"San Marino" = "산마리노";
-
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "위생\/식물검역 검사";
-
-/* Country option for a site address. */
-"Saudi Arabia" = "사우디아라비아";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -5690,9 +5003,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "시간과 돈 절약";
-
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce 배송으로 처리하여 시간과 비용 절약";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "제품 저장...";
@@ -5774,9 +5084,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "레이아웃 및 용지 크기 옵션 참조";
 
-/* Title for a link to view Woo Express plan details on the web, as a fallback. */
-"See plan details" = "요금제 상세 정보 참조";
-
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
 "Select %1$d Categories" = "%1$d개 카테고리 선택";
 
@@ -5810,9 +5117,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "패키지 선택";
-
-/* The title of the button to purchase a Plan when no plan is selected yet. */
-"Select a plan" = "요금제 선택";
 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "제품 유형 선택";
@@ -5880,12 +5184,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "이메일 확인 링크 보내기";
 
-/* Country option for a site address. */
-"Senegal" = "세네갈";
-
-/* Country option for a site address. */
-"Serbia" = "세르비아";
-
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "서비스 패키지";
 
@@ -5938,9 +5236,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "리더를 몇 개 찾음";
 
-/* Country option for a site address. */
-"Seychelles" = "세이셸";
-
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
    Button label to share a web page
@@ -5989,9 +5284,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title of shipping label details */
 "Shipment Details" = "배송 상세 정보";
-
-/* No comment provided by engineer. */
-"Shipment tracking" = "배송 추적";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -6080,9 +5372,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "옵션 더 보기.";
 
-/* Country option for a site address. */
-"Sierra Leone" = "시에라리온";
-
 /* View title during the sign up process. */
 "Sign Up" = "가입";
 
@@ -6107,9 +5396,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@(으)로 로그인됨";
 
-/* Country option for a site address. */
-"Singapore" = "싱가포르";
-
 /* Site Address title on the support form */
 "Site Address" = "사이트 주소";
 
@@ -6129,12 +5415,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "지금은 건너뛰기";
 
-/* Country option for a site address. */
-"Slovakia" = "슬로바키아";
-
-/* Country option for a site address. */
-"Slovenia" = "슬로베니아";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
@@ -6146,20 +5426,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "소프트웨어 업데이트됨";
 
-/* Country option for a site address. */
-"Solomon Islands" = "솔로몬 제도";
-
-/* Country option for a site address. */
-"Somalia" = "소말리아";
-
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "일부 이메일 주소가 유효하지 않습니다.";
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
-
-/* Description of an unknown error after purchasing a plan */
-"Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "구매 중 문제가 발생했으며, 결제가 완료되었거나 스토어 요금제가 업그레이드되었는지 알 수 없습니다.";
 
 /* Notice title when validating a coupon code fails. */
 "Something went wrong when validating your coupon code. Please try again" = "쿠폰 코드 유효성 검사 중 문제가 발생했습니다. 다시 시도하세요.";
@@ -6244,29 +5515,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "정렬 기준";
 
-/* Country option for a site address. */
-"South Africa" = "남아프리카공화국";
-
-/* Country option for a site address. */
-"South Georgia\/Sandwich Islands" = "사우스조지아\/샌드위치 제도";
-
-/* Country option for a site address. */
-"South Korea" = "대한민국";
-
-/* Country option for a site address. */
-"South Sudan" = "남수단";
-
-/* Country option for a site address. */
-"Spain" = "스페인";
-
 /* Verb, spam a comment */
 "Spam" = "스팸";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
-
-/* Country option for a site address. */
-"Sri Lanka" = "스리랑카";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "표준 요율";
@@ -6318,9 +5571,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when the user disables adding tax rates automatically */
 "Stopped automatically adding tax rate" = "중지된 자동으로 세율 추가하기";
 
-/* Title of one of the features of the Paid plans, regarding site storage. */
-"Storage" = "저장 공간";
-
 /* Navigates to the Store name setup screen */
 "Store Name" = "스토어 이름";
 
@@ -6342,12 +5592,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title to submit a support request. */
 "Submit Support Request" = "지원 요청 제출";
 
-/* Title for the plan section on the subscriptions view. Uppercased */
-"Subscription Status" = "구독 상태";
-
-/* Subscriptions section title
-   Title for the Subscriptions / Upgrades view
-   Title of one of the hub menu options */
+/* Subscriptions section title */
 "Subscriptions" = "구독";
 
 /* Create Shipping Label form -> Subtotal label
@@ -6361,26 +5606,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice text after updating the order successfully */
 "Successfully updated" = "업데이트 성공";
 
-/* Country option for a site address. */
-"Sudan" = "수단";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "제품 및 패키지 무게 합계";
 
 /* In Order Details, the name of the billed person when there are no name and last name. */
 "SummaryTableViewCellViewModel.guestName" = "비회원";
-
-/* Country option for a site address. */
-"Suriname" = "수리남";
-
-/* Country option for a site address. */
-"Svalbard and Jan Mayen" = "스발바르와 얀마옌";
-
-/* Country option for a site address. */
-"Swaziland" = "스와질란드";
-
-/* Country option for a site address. */
-"Sweden" = "스웨덴";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "스토어 전환";
@@ -6409,17 +5639,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "기본 글꼴 크기로 전환";
 
-/* Country option for a site address. */
-"Switzerland" = "스위스";
-
-/* No comment provided by engineer. */
-"Sync with Pinterest" = "Pinterest와 동기화";
-
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "데이터 동기화 중";
-
-/* Country option for a site address. */
-"Syria" = "시리아";
 
 /* View system status report cell title on Help screen */
 "System Status Report" = "시스템 상태 보고서";
@@ -6427,19 +5648,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "클립보드에 시스템 상태 보고서 복사됨";
 
-/* Country option for a site address. */
-"São Tomé and Príncipe" = "상투메 프린시페";
-
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "태그";
-
-/* Country option for a site address. */
-"Taiwan" = "대만";
-
-/* Country option for a site address. */
-"Tajikistan" = "타지키스탄";
 
 /* Title for the simple payments screen */
 "Take Payment" = "결제하기";
@@ -6456,9 +5668,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "결제 수령으로 다시 이동하기";
-
-/* Country option for a site address. */
-"Tanzania" = "탄자니아";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "결제할 카드 누르기";
@@ -6496,9 +5705,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "아이템 환불 수량을 눌러서 수정";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "눌러서 배송 레이블 만들기에 대한 정보 표시";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "모바일 장치에서 배송 레이블을 인쇄하는 방법에 대한 지침을 눌러서 표시";
@@ -6612,9 +5818,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The button's title text to send a 2FA code via SMS text message. */
 "Text me a code via SMS" = "나에게 SMS 문자 메시지로 코드 보내기";
 
-/* Country option for a site address. */
-"Thailand" = "태국";
-
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "의견을 공유해 주셔서 감사합니다.";
 
@@ -6707,9 +5910,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "결제 수단에서 자동 환불을 지원하지 않습니다. 고객에게 금액을 수동으로 송금하여 환불을 완료하세요.";
-
-/* Message shown if a payment cancellation is shown as an error. */
-"The payment was cancelled." = "결제가 취소되었습니다.";
 
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "결제가 중단되었으며 계속할 수 없습니다. 주문 화면에서 결제를 다시 시도하실 수 있습니다.";
@@ -6824,9 +6024,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "There was an error connecting your site to Jetpack." = "사이트를 젯팩에 연결하는 중 오류가 발생했습니다.";
-
-/* Error shown when failing to fetch the plan details in the upgrades view. */
-"There was an error fetching your plan details, please try again later." = "요금제 상세 정보를 가져오는 중 오류가 발생했습니다. 나중에 다시 시도하세요.";
 
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "프라이버시 설정 가져오기 중 오류가 발생했습니다.";
@@ -6953,9 +6150,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "시간이 다 되었지만, 걱정하지 마세요. 보안이 무엇보다 중요합니다. 다시 시도해 보세요!";
 
-/* Country option for a site address. */
-"Timor-Leste" = "동티모르";
-
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "팁";
 
@@ -7036,15 +6230,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "순서 없는 목록 스타일 전환";
 
-/* Country option for a site address. */
-"Togo" = "토고";
-
-/* Country option for a site address. */
-"Tokelau" = "토켈라우";
-
-/* Country option for a site address. */
-"Tonga" = "통가";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "총 주문 수";
 
@@ -7084,20 +6269,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Move a comment to the trash */
 "Trash" = "휴지통";
 
-/* Plan name for an expired free trial */
-"Trial ended" = "평가판 종료됨";
-
-/* Country option for a site address. */
-"Trinidad and Tobago" = "트리니다드 토바고";
-
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "문제 해결";
 
 /* Screen title for the connectivity tool */
 "Troubleshoot Connection" = "연결 문제 해결";
-
-/* Title for the section to contact support on the subscriptions view. Uppercased */
-"Troubleshooting" = "문제 해결";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "신뢰함";
@@ -7129,9 +6305,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
 "Try Out Tap to Pay on iPhone" = "Tap to Pay on iPhone 사용해 보기";
-
-/* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
-"Try Payment Again" = "다시 결제 시도";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
 "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "체크카드 또는 신용카드로 %1$@ 결제를 시도해 보세요. 완료하면 결제에 대한 환불이 가능합니다.";
@@ -7167,18 +6340,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "사이트 주소로 시도";
 
-/* Country option for a site address. */
-"Tunisia" = "튀니지";
-
-/* Country option for a site address. */
-"Turkey" = "터키";
-
-/* Country option for a site address. */
-"Turkmenistan" = "투르크메니스탄";
-
-/* Country option for a site address. */
-"Turks and Caicos Islands" = "터크스 케이커스 제도";
-
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "카드 리더 켜기 및 모바일 장치 옆에 놓기";
 
@@ -7190,9 +6351,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "쿠폰을 세일 아이템에 적용하지 않으려면 이 기능을 사용하세요. 세일 아이템이 아닌 경우에만 아이템당 쿠폰이 적용됩니다. 장바구니에 있는 아이템이 세일 아이템이 아닌 경우에만 장바구니당 쿠폰이 적용됩니다.";
-
-/* Country option for a site address. */
-"Tuvalu" = "투발루";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "내용물 유형";
@@ -7206,12 +6364,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A clickable text link that willredirect the user to a website */
 "USPS HAZMAT Search Tool" = "USPS HAZMAT 검색 도구";
-
-/* Country option for a site address. */
-"Uganda" = "우간다";
-
-/* Country option for a site address. */
-"Ukraine" = "우크라이나";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "연결할 수 없음";
@@ -7312,21 +6464,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "리뷰를 %@(으)로 표시할 수 없습니다.";
 
-/* Error message when the order amount is below the minimum amount allowed. */
-"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "결제를 처리할 수 없습니다. 주문 총액이 청구할 수 있는 최소 금액(%1$@) 미만입니다.";
-
-/* Error message when the order amount is not valid. */
-"Unable to process payment. Order total amount is not valid." = "결제를 처리할 수 없습니다. 주문 총액이 유효하지 않습니다.";
-
-/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
-"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "결제를 처리할 수 없습니다. 이 주문은 이미 결제되어서 추가로 결제하면 고객에게 주문 금액이 두 번 청구됩니다.";
-
-/* Error message shown during In-Person Payments when the payment gateway is not available. */
-"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "결제를 처리할 수 없습니다. 결제 시스템에 연결할 수 없었습니다. 이 오류가 계속 발생하면 지원팀에 문의하세요.";
-
-/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "결제를 처리할 수 없습니다. 마지막 주문 상세 정보를 가져올 수 없었습니다. 네트워크 연결을 확인하고 다시 시도하세요. 근원적인 오류: %1$@";
-
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "해당 URL에서 워드프레스 사이트를 읽을 수 없습니다. '더 많은 도움이 필요하세요?'를 눌러 FAQ를 보세요.";
 
@@ -7378,21 +6515,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "예기치 않은 오류";
 
-/* Country option for a site address. */
-"United Arab Emirates" = "아랍에미리트";
-
-/* Country option for a site address. */
-"United Kingdom" = "영국";
-
-/* Country option for a site address. */
-"United States" = "미국";
-
-/* Country option for a site address. */
-"United States Minor Outlying Islands" = "미국령 군소 제도";
-
-/* Country option for a site address. */
-"United States Virgin Islands" = "미국령 버진아일랜드";
-
 /* Unknown Application State
    Unknown product name, displayed in a review */
 "Unknown" = "알 수 없음";
@@ -7402,9 +6524,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "알 수 없는 소프트웨어 버전";
-
-/* Fallback country option for a site address. */
-"Unknown country" = "알 수 없는 국가";
 
 /* Label to use when creation date from media asset is not know. */
 "Unknown creation date" = "알 수 없는 생성일";
@@ -7417,9 +6536,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "무제한";
-
-/* No comment provided by engineer. */
-"Unlimited admin accounts" = "무제한 관리자 계정";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "이름 없는 제품";
@@ -7489,6 +6605,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "기본 설정 업데이트";
 
+/* Description for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.description" = "약속이 예정되었지만 실제로 이루어지지는 않았습니다.";
+
+/* Title for the 'Booked' attendance status. */
+"UpdateAttendanceStatusView.booked.title" = "예약";
+
+/* Description for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.description" = "고객이 도착했고 세션이 계획대로 실시되었습니다.";
+
+/* Title for the 'Checked-in' attendance status. */
+"UpdateAttendanceStatusView.checkedIn.title" = "체크인";
+
+/* Description for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.description" = "고객이 사전 취소 없이 약속에 참석하지 않았습니다.";
+
+/* Title for the 'No-show' attendance status. */
+"UpdateAttendanceStatusView.noShow.title" = "노쇼";
+
+/* Title of the update attendance status bottom sheet. */
+"UpdateAttendanceStatusView.title" = "참석자 상태 업데이트";
+
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "소프트웨어 업데이트 중";
 
@@ -7501,15 +6638,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "상품 업데이트 중...";
 
-/* Navigation title for the Upgrades screen */
-"Upgrade" = "업그레이드";
-
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "상향 판매";
-
-/* Country option for a site address. */
-"Uruguay" = "우루과이";
 
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "사용 상세 정보";
@@ -7570,17 +6701,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "사용자명은 최소한 4글자 이상이어야 합니다.";
 
-/* Country option for a site address. */
-"Uzbekistan" = "우즈베키스탄";
-
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "확인 중";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "가격(개당 %1$@)";
-
-/* Country option for a site address. */
-"Vanuatu" = "바누아투";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "변형 #%1$@";
@@ -7602,12 +6727,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "사이트에 대한 다양한 시스템 정보";
 
-/* Country option for a site address. */
-"Vatican" = "바티칸";
-
-/* Country option for a site address. */
-"Venezuela" = "베네수엘라";
-
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
 
@@ -7626,15 +6745,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
 "Video, %@" = "비디오, %@";
 
-/* Country option for a site address. */
-"Vietnam" = "베트남";
-
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "보기";
-
-/* Title for the button to expand plan details on the Upgrade plan screen. Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with the plan name. */
-"View %1$@ features" = "%1$@ 기능 보기";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons
@@ -7651,9 +6764,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for the 'View Custom Fields' button
    Custom Fields section title */
 "View Custom Fields" = "사용자 정의 필드 보기";
-
-/* The title of the button to view a list of all features that plans offer. */
-"View Full Feature List" = "전체 기능 목록 보기";
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "스토어에서 제품 보기";
@@ -7711,9 +6821,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* View title during the Google auth process. */
 "Waiting..." = "대기 중...";
-
-/* Country option for a site address. */
-"Wallis and Futuna" = "월리스푸투나 제도";
 
 /* Error message when the merchant's payment account has been rejected
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -7782,12 +6889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "분석을 로드하는 동안 문제가 발생했습니다.";
-
-/* Error description displayed when a payment fails when attempting to purchase a plan. */
-"We encountered an error confirming your payment." = "결제 확인 중 오류가 발생했습니다.";
-
-/* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
-"We encountered an error loading plan information" = "요금제 정보 로드 중 오류가 발생했습니다.";
 
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "회원님의 스토어를 일시 중지했습니다. 브라우저에서 워드프레스닷컴에 로그인하여 다른 요금제를 구매하실 수 있습니다.";
@@ -7878,9 +6979,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "무게: %1$@%2$@";
 
-/* Country option for a site address. */
-"Western Sahara" = "서사하라";
-
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "정보가 있으면 배송, 세금 및 결제 설정을 일찍 시작할 수 있습니다.";
 
@@ -7931,9 +7029,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "가로";
 
-/* Text shown when a plan upgrade has been successfully purchased. */
-"Woo! You’re off to a great start!" = "좋아요! 바로 시작하실 수 있습니다!";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -7958,31 +7053,16 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "우커머스 설정";
 
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce 배송";
-
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce 배송에서는 현재 %1$@을(를) 통한 HAZMAT 배송이 지원되지 않습니다.";
-
-/* No comment provided by engineer. */
-"WooCommerce mobile app" = "우커머스 모바일 앱";
-
-/* No comment provided by engineer. */
-"WooCommerce store" = "우커머스 스토어";
 
 /* Highlighted header text on the store onboarding WCPay setup screen.
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
-/* No comment provided by engineer. */
-"WordPress CMS" = "워드프레스 CMS";
-
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "워드프레스 미디어 라이브러리";
-
-/* No comment provided by engineer. */
-"WordPress mobile app" = "워드프레스 모바일 앱";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "워드프레스 버전이 너무 오래됐습니다. %1$@의 사이트는 워드프레스 %2$@을(를) 사용합니다. 최신 버전 또는 %3$@ 이상으로 업데이트하세요.";
@@ -8017,9 +7097,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "연간 누계";
 
-/* Country option for a site address. */
-"Yemen" = "예멘";
-
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "예. 변경합니다.";
 
@@ -8027,17 +7104,11 @@ If your translation of that term also happens to contains a hyphen, please be su
    Yesterday Section Header */
 "Yesterday" = "어제";
 
-/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
-"You are in the %1$d-day free trial. The free trial will end in %2$d days. " = "무료 평가판을 %1$d일째 사용 중입니다. %2$d일 후 무료 평가판이 종료됩니다. ";
-
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "이 블로그에 접근할 권한이 없습니다.";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "젯팩을 설치하실 권한이 없습니다.";
-
-/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
-"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "%1$@ 요금제를 구독하셨습니다! %2$@까지 모든 기능에 접근하실 수 있습니다.";
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "웹 대시보드에서 번들 제품을 편집하실 수 있습니다.";
@@ -8054,9 +7125,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "빠르고 쉽게 관리할 수 있습니다.";
 
-/* Instructions guiding the merchant to manage a site's plan upgrade. */
-"You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "iPhone의 설정 → 이름 → 구독에서 구독을 관리하실 수 있습니다.";
-
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "웹 알림판에서 가변 구독만 추가할 수 있습니다.";
 
@@ -8071,9 +7139,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "해당 이메일 주소를 회원가입하는데 사용할 수 없습니다. 우리의 이메일을 차단하는 문제를 일으킵니다. 다른 이메일 제공자를 사용하세요.";
-
-/* Text describing that is not possible to upgrade the site's plan. */
-"You can’t upgrade because you are not the store owner" = "스토어 소유자가 아니어서 업그레이드하실 수 없습니다.";
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "현재 이 스토어의 쿠폰이 비활성화되어 있습니다. 시작하려면 쿠폰을 활성화하세요.";
@@ -8106,14 +7171,8 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "계정 검토를 완료하는 즉시 대면 결제를 수락할 수 있습니다.";
 
-/* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
-"You're in a free trial" = "무료 평가판 사용 중";
-
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "계정을 종료할 권한이 없습니다.";
-
-/* No comment provided by engineer. */
-"Your Store" = "회원님의 스토어";
 
 /* First instruction on the Woo payments setup instructions screen. */
 "Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "WooPayments 알림은 워드프레스닷컴 계정 이메일로 전송됩니다. 새 계정을 선호하시나요? 여기에서 자세히 알아보세요.";
@@ -8129,15 +7188,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "해당 이메일은 워드프레스닷컴 계정에서 사용되지 않습니다.";
-
-/* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
-"Your free trial has ended" = "무료 평가판이 종료되었습니다.";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "무료 평가판이 종료되었으며, 모든 기능에 대한 접근 권한이 제한되었습니다. 지금 Woo Express 요금제를 구독하세요.";
-
-/* Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade. */
-"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "%1$@일 후 무료 평가판이 종료됩니다. %2$@일까지 요금제를 업그레이드하여 새로운 기능을 활용하고 판매를 시작하세요.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone을 카드 리더로 사용하거나, 블루투스를 통해 외부 리더에 연결할 수 있습니다.";
@@ -8157,9 +7207,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "곧 스마트폰으로 결제받을 준비가 완료됩니다...";
 
-/* Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by the plan name, and should be included in the translated string. */
-"Your purchase is complete and you're on the %1$@ plan." = "구매가 완료되었으며 %1$@ 요금제가 적용되고 있습니다.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "업데이트를 완료하면 리더가 자동으로 다시 시작하고 다시 연결됩니다.";
 
@@ -8178,17 +7225,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a timeout error in the recovery tool */
 "Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "사이트의 응답이 너무 오래 걸립니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
 
-/* Title on the banner when the site's WooExpress plan has expired */
-"Your site plan has ended." = "사이트 요금제가 종료되었습니다.";
-
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "스토어가 실행되고 있습니다.";
-
-/* Info details for an expired plan */
-"Your subscription has ended and you have limited access to all the features." = "구독이 종료되었으며, 모든 기능에 대한 접근 권한이 제한되었습니다.";
-
-/* Error description displayed when plan activation fails after purchasing a plan. */
-"Your subscription is active, but there was an error activating the plan on your store." = "구독은 활성 상태인데 스토어의 요금제를 활성화하는 중 오류가 발생했습니다.";
 
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "세율은 현재 고객 청구 주소를 기준으로 계산됨:";
@@ -8208,19 +7246,10 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "대면 결제를 수락하려면 스토어에 무료 WooCommerce 결제 확장 기능을 설치해야 합니다.";
 
-/* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
-"You’re almost there" = "거의 다 되었습니다.";
-
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "거의 완료되었습니다! 직접 결제를 수락하려면 %1$@ 설정을 마무리하세요.";
-
-/* Country option for a site address. */
-"Zambia" = "잠비아";
-
-/* Country option for a site address. */
-"Zimbabwe" = "짐바브웨";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "취소";
@@ -9264,6 +8293,162 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "다시 시도";
 
+/* Title of the booking customer selector view */
+"bookingCustomerSelectorView.emptyItemTitlePlaceholder" = "이름 없음";
+
+/* Message on the empty search result view of the booking customer selector view */
+"bookingCustomerSelectorView.emptySearchDescription" = "더 많은 결과를 참조하려면 검색어를 조정해 보세요.";
+
+/* Text on the empty view of the booking customer selector view */
+"bookingCustomerSelectorView.noCustomersFound" = "고객을 찾을 수 없음";
+
+/* Prompt in the search bar of the booking customer selector view */
+"bookingCustomerSelectorView.searchPrompt" = "고객 검색";
+
+/* Error message when selecting guest customer in booking filtering */
+"bookingCustomerSelectorView.selectionDisabledMessage" = "이 사용자는 비회원이며, 비회원은 예약 필터링에 사용할 수 없습니다.";
+
+/* Title of the booking customer selector view */
+"bookingCustomerSelectorView.title" = "고객";
+
+/* Title of the Date row in the date time picker for booking filter */
+"bookingDateTimeFilterView.date" = "날짜";
+
+/* Title of From section in the date time picker for booking filter */
+"bookingDateTimeFilterView.from" = "시작";
+
+/* Title of the Time row in the date time picker for booking filter */
+"bookingDateTimeFilterView.time" = "시각";
+
+/* Title of the date time picker for booking filter */
+"bookingDateTimeFilterView.title" = "날짜 및 시각";
+
+/* Title of the To section in the date time picker for booking filter */
+"bookingDateTimeFilterView.to" = "종료";
+
+/* Button title for applying filters to a list of bookings. */
+"bookingFilters.filterActionTitle" = "예약 보기";
+
+/* Row title for filtering bookings by customer. */
+"bookingFilters.rowCustomer" = "고객";
+
+/* Row title for filtering bookings by attendance status. */
+"bookingFilters.rowTitleAttendanceStatus" = "참석 상태";
+
+/* Row title for filtering bookings by date range. */
+"bookingFilters.rowTitleDateTime" = "날짜 및 시각";
+
+/* Row title for filtering bookings by payment status. */
+"bookingFilters.rowTitlePaymentStatus" = "결제 상태";
+
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleProduct" = "서비스\/이벤트";
+
+/* Row title for filtering bookings by team member. */
+"bookingFilters.rowTitleTeamMember" = "팀 구성원";
+
+/* Description for booking date range filter with no dates selected */
+"bookingFiltersViewModel.dateRangeFilter.any" = "모두";
+
+/* Description for booking date range filter with only start date. Placeholder is a date. Reads as: From October 27, 2025. */
+"bookingFiltersViewModel.dateRangeFilter.from" = "%1$@부터";
+
+/* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
+"bookingFiltersViewModel.dateRangeFilter.until" = "%1$@까지";
+
+/* Message displayed when searching bookings by keyword yields no results. */
+"bookingList.emptySearchText" = "해당 이름으로 된 예약을 찾을 수 없습니다. 더 많은 결과를 보려면 검색어를 조정해 보세요.";
+
+/* Error message when fetching bookings fails */
+"bookingList.errorMessage" = "설정을 가져오는 중 오류 발생";
+
+/* Option to sort bookings from newest to oldest */
+"bookingList.sort.newestToOldest" = "날짜: 최신 순";
+
+/* Option to sort bookings from oldest to newest */
+"bookingList.sort.oldestToNewest" = "날짜: 오래된 순";
+
+/* Tab title for all bookings */
+"bookingListView.all" = "전체";
+
+/* Description for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.description" = "필터와 일치하는 예약이 없습니다. 조정해서 더 많은 결과를 확인하세요.";
+
+/* Title for the empty state when there's no bookings for the given filter */
+"bookingListView.emptyState.filter.title" = "예약 없음";
+
+/* Description for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.description" = "오늘은 예정된 약속이나 이벤트가 없습니다.";
+
+/* Title for the empty state when no bookings for today is found */
+"bookingListView.emptyState.today.title" = "오늘 예약 없음";
+
+/* Description for the empty state when there's no upcoming bookings */
+"bookingListView.emptyState.upcoming.description" = "아직 예정된 약속이나 이벤트가 없습니다.";
+
+/* Title for the empty state when there's no bookings for today */
+"bookingListView.emptyState.upcoming.title" = "예정된 예약 없음";
+
+/* Button to filter the booking list */
+"bookingListView.filter" = "필터";
+
+/* Button to filter the booking list with number of active filters */
+"bookingListView.filter.withCount" = "필터(%1$d)";
+
+/* Prompt in the search bar on top of the booking list */
+"bookingListView.search.prompt" = "예약 검색";
+
+/* Button to select the order of the booking list */
+"bookingListView.sortBy" = "정렬 기준";
+
+/* Tab title for today's bookings */
+"bookingListView.today" = "오늘";
+
+/* Tab title for upcoming bookings */
+"bookingListView.upcoming" = "다음";
+
+/* Title of the booking list view */
+"bookingListView.view.title" = "예약";
+
+/* Text on the empty view of the booking service/event selector view */
+"bookingServiceEventSelectorView.noMembersFound" = "서비스 또는 이벤트를 찾을 수 없음";
+
+/* Title of the booking service/event selector view */
+"bookingServiceEventSelectorView.title" = "서비스\/이벤트";
+
+/* Status of a canceled booking */
+"bookingStatus.title.canceled" = "취소됨";
+
+/* Status of a complete booking */
+"bookingStatus.title.complete" = "완료";
+
+/* Status of a confirmed booking */
+"bookingStatus.title.confirmed" = "확인됨";
+
+/* Status of a paid booking */
+"bookingStatus.title.paid" = "결제됨";
+
+/* Status of a pending confirmation booking */
+"bookingStatus.title.pendingConfirmation" = "확인 대기 중";
+
+/* Status of a booking with unexpected status */
+"bookingStatus.title.unknown" = "알 수 없음";
+
+/* Status of an unpaid booking */
+"bookingStatus.title.unpaid" = "미결제";
+
+/* Text on the empty view of the booking team member selector view */
+"bookingTeamMemberSelectorView.noMembersFound" = "팀 구성원을 찾을 수 없음";
+
+/* Title of the booking team member selector view */
+"bookingTeamMemberSelectorView.title" = "팀 구성원";
+
+/* Displayed name on the booking list when no customer is associated with a booking. */
+"bookings.guest" = "비회원";
+
+/* Title of the Bookings tab */
+"bookingsTabViewHostingController.tab.title" = "예약";
+
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "bottomSheetProductType.affiliate.description" = "상품을 외부 웹사이트로 연결";
 
@@ -9311,9 +8496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "가변 구독";
-
-/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
-"card.waves.progressView.accessibilityLabel" = "진행 중";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "취소";
@@ -9442,18 +8624,6 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
-"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "결제를 시작한 이후로 주문 총액이 변경되었습니다. 돌아가서 주문이 정확한지 확인하고 다시 결제를 시도해 주세요.";
-
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "금액은 총액 이상이어야 합니다.";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "변경 기한: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "결제 처리 시도 중 오류가 발생했습니다. 다시 시도하세요.";
-
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Blaze 캠페인용 상품을 선택합니다.";
 
@@ -9546,9 +8716,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "연결 문제 해결";
-
-/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
-"couponCardView.expirationText" = "%@에 만료됨";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "주소";
@@ -10022,6 +9189,15 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "상세 정보 표시";
 
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "Jetpack 연결을 통해서가 아니라 우커머스 사이트에서 직접 앱이 데이터를 가져오도록 하려면 %@을(를) 활성화하세요.";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "애플리케이션 비밀번호";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "애플리케이션 비밀번호";
+
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "확인";
 
@@ -10271,6 +9447,9 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "한정 수량 육상 패키지 - 에어로졸, 스프레이 소독제, 스프레이 페인트, 헤어스프레이, 프로판, 부탄, 세정제 등 - 향료, 매니큐어, 매니큐어 제거제, 용제, 손 소독제, 소독용 알코올, 에탄올 주성분 제품 등 - 기타 한정 수량 표면재(화장품, 세정제, 도료 등)";
 
+/* Option to select no filter on a list selector view */
+"listSelectorView.any" = "모두";
+
 /* Message on the local notification to remind to continue the Blaze campaign creation. */
 "localNotification.AbandonedCampaignCreation.body" = "Blaze를 통해 수백만 명에게 상품을 보여주고 매출 증대";
 
@@ -10282,6 +9461,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "매출 증대";
+
+/* Body of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.body" = "2분 정도 소요되는 설문 조사를 통해 경험을 공유하고 개선할 수 있도록 도와주세요.";
+
+/* Title of the local notification for current POS merchants survey. */
+"localNotification.PointOfSaleCurrentMerchant.title" = "POS가 잘 작동하나요?";
+
+/* Message body of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.body" = "마음에 드는 기능을 구현할 수 있도록 2분 정도 소요되는 설문 조사에 참여해 주세요.";
+
+/* Title of the local notification sent to potential Point of Sale merchants */
+"localNotification.PointOfSalePotentialMerchant.title" = "대면 판매를 생각하고 계신가요?";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
 "localNotification.ProductImageUploader.message" = "상품 이미지가 아직 백그라운드에서 업로드되고 있습니다. 업로드 속도가 느려지고 오류가 발생할 수 있습니다. 최상의 결과를 얻으려면 업로드가 완료될 때까지 앱을 열어 두세요.";
@@ -10443,6 +9634,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Default text for Most active coupons dashboard card when no data exists for a given period. */
 "mostActiveCouponsEmptyView.text" = "이 기간에 사용된 쿠폰 없음";
+
+/* Option to remove selections on multi selection list view */
+"multiSelectListView.any" = "모두";
+
+/* Display label for when no filter selected. */
+"multipleFilterSelection.any" = "모두";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "검색";
@@ -10727,12 +9924,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d개 아이템";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "세관 양식 인쇄";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "배송 레이블 인쇄(%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "환불 요청이 제출되었습니다. 새 레이블을 구매할 수 있습니다.";
 
@@ -10898,884 +10089,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "편집";
 
-/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
-"plan ended" = "요금제 종료됨";
-
 /* Title for the Close button within the Plugin List view. */
 "pluginListView.button.close" = "닫기";
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "플러그인";
 
-/* Error message shown when scan is too short. */
-"pointOfSale.barcodeScan.error.barcodeTooShort" = "바코드가 너무 짧음";
-
-/* Error message shown when scanner times out without sending end-of-line character. */
-"pointOfSale.barcodeScan.error.incompleteScan.2" = "스캐너가 줄 끝 문자를 보내지 않았음";
-
-/* Error message shown when there is an unknown networking error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.network" = "네트워크 요청 실패";
-
-/* Error message shown when there is an internet connection error while scanning a barcode. */
-"pointOfSale.barcodeScan.error.noInternetConnection" = "인터넷에 연결되지 않음";
-
-/* Error message shown when parent product is not found for a variation. */
-"pointOfSale.barcodeScan.error.noParentProduct" = "변형에 대한 상위 상품을 찾을 수 없음";
-
-/* Error message shown when a scanned item is not found in the store. */
-"pointOfSale.barcodeScan.error.notFound" = "스캔된 알 수 없는 아이템";
-
-/* Error message shown when parsing barcode data fails. */
-"pointOfSale.barcodeScan.error.parsingError" = "바코드를 읽을 수 없음";
-
-/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
-"pointOfSale.barcodeScan.error.scanFailed" = "스캔 실패";
-
-/* Error message shown when a scanned item is of an unsupported type. */
-"pointOfSale.barcodeScan.error.unsupportedProductType" = "지원되지 않는 아이템 유형";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "판독기에서 결제 취소됨";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "다시 결제 시도";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.subtitle" = "카드 삽입됨";
-
-/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
-"pointOfSale.cardPresent.cardInserted.title" = "결제 준비됨";
-
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.connectReader.button.title" = "리더 연결";
-
-/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
-"pointOfSale.cardPresent.displayReaderMessage.message" = "결제 처리 중";
-
-/* Label for a cancel button */
-"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "취소";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.instruction" = "카드 리더를 켜려면 전원 버튼만 누르면 됩니다.";
-
-/* Title label for modal dialog that appears when searching for a card reader */
-"pointOfSale.cardPresent.modalScanningForReader.title" = "리더 스캔 중";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "새 주문";
-
-/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "다시 결제 시도";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "네트워크 오류로 인해 결제가 성공했는지 확인할 수 없습니다. 네트워크가 제대로 연결된 기기에서 결제를 확인하세요. 실패한 경우 결제를 다시 시도하세요. 성공한 경우 새 주문을 시작하세요.";
-
-/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "결제 오류";
-
-/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "체크아웃으로 돌아가기";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.title" = "결제 실패";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
-"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "다른 결제 수단 시도";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "다시 결제 시도";
-
-/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "이 거래를 계속 처리하려면 결제를 다시 시도하세요.";
-
-/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "결제 실패";
-
-/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "다른 결제 수단 시도";
-
-/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "주문 수정";
-
-/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.title" = "결제 준비 오류";
-
-/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "다시 결제 시도";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.title" = "결제 처리 중";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.title" = "준비 중";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingReaderForPayment.message" = "결제용 리더 준비 중";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "카드 삽입";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "카드 제시";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "카드 가볍게 대기";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "카드 가볍게 대기 또는 삽입";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "카드 가볍게 대기, 긋기 또는 삽입";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "결제 준비";
-
-/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerNotConnected.title" = "리더가 연결되지 않음";
-
-/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
-"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "이 결제를 처리하려면 리더를 연결하거나 현금을 선택하세요.";
-
-/* Message shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.message" = "주문 확인하기";
-
-/* Title shown on the Point of Sale checkout while the order is being validated. */
-"pointOfSale.cardPresent.validatingOrder.title" = "준비 중";
-
-/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "주문 총액이 카드에 청구할 수 있는 최소 금액(%1$@) 미만입니다. 그 대신 현금 결제는 진행하실 수 있습니다.";
-
-/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
-"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "카드 결제 진행 불가";
-
-/* Title shown on the Point of Sale checkout while the order validation fails. */
-"pointOfSale.cardPresent.validatingOrderError.title" = "주문을 확인하는 중 오류 발생";
-
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "다시 시도";
-
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "기다려 주세요.";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "해제";
-
-/* Opens iOS's Device Settings for the app */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "기기 설정 열기";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "블루투스 권한 필수";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "취소";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "리더를 연결할 수 없음";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
-"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "다시 시도";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "취소";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "리더의 배터리 잔량이 너무 부족합니다. 배터리를 충전하거나 다른 리더를 사용해 보세요.";
-
-/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "다시 시도";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
-"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "리더를 연결할 수 없음";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "취소";
-
-/* Opens iOS's Device Settings for the app to access location services */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "기기 설정 열기";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "사기를 줄이고, 분쟁을 방지하고, 안전한 결제를 확보하려면 위치 서비스 권한이 필요합니다.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "결제가 허용되도록 위치 서비스 활성화";
-
-/* Button to dismiss. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "해제";
-
-/* Error message. Presented to users after collecting a payment fails */
-"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "연결 실패";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "취소";
-
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "주소 입력";
-
-/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "업데이트 후 다시 시도";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "계속하려면 스토어 주소를 수정하세요.";
-
-/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "취소";
-
-/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "wp 관리자 > 우커머스 > 설정(일반)에서 스토어의 우편번호를 설정할 수 있습니다.";
-
-/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "업데이트 후 다시 시도";
-
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "스토어의 우편번호를 수정하세요.";
-
-/* A title for CTA to present native location permission alert */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "계속";
-
-/* A notice at the bottom explaining that location services can be changed in the Settings app later */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "나중에 설정 앱에서 이 옵션을 변경할 수 있습니다.";
-
-/* A subtitle explaining why location services are needed to make a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "사기를 줄이고, 분쟁을 방지하고, 안전한 결제를 확보하려면 위치 서비스 권한이 필요합니다.";
-
-/* A title explaining the requirement of location services for making a payment */
-"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "결제가 허용되도록 위치 서비스 활성화";
-
-/* Label within the modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "기다려주세요...";
-
-/* Title label for modal dialog that appears when connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "리더에 연결 중";
-
-/* Button to dismiss the alert presented when successfully connected to a reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "완료";
-
-/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
-"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "리더 연결됨";
-
-/* Button to allow the user to close the modal without connecting. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "취소";
-
-/* Button in a cell to allow the user to connect to that reader for that cell */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "연결";
-
-/* Title of a modal presenting a list of readers to choose from. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "리더를 몇 개 찾음";
-
-/* Label for a cell informing the user that reader scanning is ongoing. */
-"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "리더 스캔 중";
-
-/* Label for a button that when tapped, cancels the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "취소";
-
-/* Label for a button that when tapped, starts the process of connecting to a card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "리더에 연결";
-
-/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
-"pointOfSale.cardPresentPayment.alert.foundReader.description" = "이 리더에 연결하시겠어요?";
-
-/* Label for a button that when tapped, continues searching for card readers */
-"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "계속 검색";
-
-/* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "%1$@을(를) 찾음";
-
-/* Label for a cancel button when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "취소";
-
-/* Label that displays when an optional software update is happening */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "업데이트를 완료하면 리더가 자동으로 다시 시작하고 다시 연결됩니다.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% 완료";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "소프트웨어 업데이트 중";
-
-/* Button to dismiss the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "이해했습니다.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% 완료";
-
-/* Dialog title that displays when a software update just finished installing */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "소프트웨어 업데이트됨";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "취소";
-
-/* Button to retry a software update. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "다시 시도";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "리더의 소프트웨어를 업데이트할 수 없습니다.";
-
-/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "배터리가 %.0f%% 충전되어 리더를 업데이트하지 못했습니다. 리더를 충전한 후 다시 시도해 주세요.";
-
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "취소";
-
-/* Message presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "배터리 잔량 부족으로 리더를 업데이트하지 못했습니다. 리더를 충전한 후 다시 시도해 주세요.";
-
-/* Button to retry the reader search when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "다시 시도";
-
-/* Title of the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "리더를 충전하세요.";
-
-/* Button to dismiss. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "해제";
-
-/* Error message. Presented to users when updating the card reader software fails */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "리더의 소프트웨어를 업데이트할 수 없습니다.";
-
-/* Label for a cancel button when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "강제 취소";
-
-/* Label that displays when a mandatory software update is happening */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
-
-/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% 완료";
-
-/* Dialog title that displays when a software update is being installed */
-"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "소프트웨어 업데이트 중";
-
-/* Button to dismiss the alert presented when finding a reader to connect to fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "해제";
-
-/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "리더를 연결하지 못했음";
-
-/* The default accessibility label for an `x` close button on a card reader connection modal. */
-"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "닫기";
-
-/* Message drawing attention to issue of payment capture maybe failing. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "네트워크 오류로 인해 결제 성공 여부를 알 수 없습니다.";
-
-/* No comment provided by engineer. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "계속하기 전에 네트워크에 연결된 기기에서 주문을 다시 확인하세요.";
-
-/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
-"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "이 주문은 실패했을 수 있습니다.";
-
-/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
-"pointOfSale.cashview.back.navigation.subtitle" = "합계: %1$@";
-
-/* Title for the cash payment view navigation back button */
-"pointOfSale.cashview.back.navigation.title" = "현금 결제";
-
-/* Button to mark a cash payment as completed */
-"pointOfSale.cashview.button.markpaymentcompleted.title" = "결제 완료로 표시";
-
-/* Error message when the system fails to collect a cash payment. */
-"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "결제 처리 시도 중 오류가 발생했습니다. 다시 시도하세요.";
-
-/* A message shown on the coupon if's not valid after attempting to apply it */
-"pointOfSale.couponRow.invalidCoupon" = "쿠폰이 적용되지 않음";
-
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "바코드 스캔 중";
-
-/* The title of the menu button to start a barcode scanner setup flow. */
-"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "최초 바코드 스캐너 설정";
-
-/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
-"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "기다려 주세요.";
-
-/* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "리더 연결 해제";
-
-/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
-"pointOfSale.floatingButtons.exit.button.title" = "POS 종료";
-
-/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
-"pointOfSale.floatingButtons.getSupport.button.title" = "고객 지원";
-
-/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
-"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "내 상품은 어디에 있나요?";
-
-/* The title of the floating button to indicate that reader is connected. */
-"pointOfSale.floatingButtons.readerConnected.title" = "리더 연결됨";
-
-/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
-"pointOfSale.floatingButtons.readerDisconnected.title" = "리더 연결";
-
-/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
-"pointOfSale.floatingButtons.readerDisconnecting.title" = "연결 해제 중";
-
-/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.viewDocumentation.button.title" = "설명서";
-
-/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "제거";
-
-/* Loading item accessibility label in POS */
-"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "로드 중";
-
-/* Button to come back to order editing when coupon validation fails. */
-"pointOfSale.orderSync.couponsError.editOrder" = "주문 수정";
-
-/* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle.2" = "쿠폰을 적용할 수 없음";
-
-/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupon" = "쿠폰 제거";
-
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.removeCoupons" = "쿠폰 제거";
-
-/* Title of the error when failing to synchronize order and calculate order totals */
-"pointOfSale.orderSync.error.title" = "합계를 로드할 수 없음";
-
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.tryAgain" = "다시 시도";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "%1$@의 카드 결제가 완료되었습니다.";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "%1$@의 현금 결제가 완료되었습니다.";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.paymentSuccessful.title" = "결제 성공";
-
-/* Button title for sending a receipt */
-"pointOfSale.sendreceipt.button.title" = "보내기";
-
-/* Text that shows at the top of the receipts screen along the back button. */
-"pointOfSale.sendreceipt.emailReceiptNavigationText" = "이메일로 영수증 보내기";
-
-/* Error message that is displayed when an invalid email is used when emailing a receipt. */
-"pointOfSale.sendreceipt.emailValidationErrorText" = "유효한 이메일을 입력하세요.";
-
-/* Generic error message that is displayed when there's an error emailing a receipt. */
-"pointOfSale.sendreceipt.sendReceiptErrorText" = "이 이메일 발송 시도 중 오류가 발생했습니다. 다시 시도하세요.";
-
-/* Placeholder for the view where an email address should be entered when sending receipts */
-"pointOfSale.sendreceipt.textfield.placeholder" = "이메일 주소 입력";
-
-/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
-"pointOfSaleDashboard.payments.onboarding.cancel" = "취소";
-
-/* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.cancel" = "취소";
-
-/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
-"pos.barcodeInfoModal.heading" = "바코드 스캔 중";
-
-/* New message about Bluetooth barcode scanner settings */
-"pos.barcodeInfoModal.i2.bluetoothMessage" = "• iOS 블루투스 설정에서 블루투스 바코드 스캐너를 조회합니다.";
-
-/* Accessible version of Bluetooth message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "첫째: iOS 블루투스 설정에서 블루투스 바코드 스캐너를 조회합니다.";
-
-/* New introductory message for barcode scanner information */
-"pos.barcodeInfoModal.i2.introMessage" = "외부 스캐너로 바코드를 스캔하여 빠르게 장바구니를 만들 수 있습니다.";
-
-/* New message about scanning barcodes on item list */
-"pos.barcodeInfoModal.i2.scanMessage" = "• 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
-
-/* Accessible version of scan message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.scanMessage.accessible" = "둘째: 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
-
-/* New message about ensuring search field is disabled during scanning */
-"pos.barcodeInfoModal.i2.searchMessage" = "• 바코드를 스캔하는 동안 검색 필드가 활성화되지 않았는지 확인합니다.";
-
-/* Accessible version of search message without bullet character for screen readers */
-"pos.barcodeInfoModal.i2.searchMessage.accessible" = "셋째: 바코드를 스캔하는 동안 검색 필드가 활성화되지 않았는지 확인합니다.";
-
-/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
-"pos.barcodeInfoModal.introMessage" = "외부 스캐너로 바코드를 스캔하여 빠르게 장바구니를 만들 수 있습니다.";
-
-/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
-"pos.barcodeInfoModal.moreDetailsLink" = "더 많은 상세 정보";
-
-/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
-"pos.barcodeInfoModal.moreDetailsLink.accessible" = "더 많은 상세 정보 링크입니다.";
-
-/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
-"pos.barcodeInfoModal.primaryMessage" = "• 상품 > 상품 상세 정보 > 재고의 \"GTIN, UPC, EAN, ISBN\" 필드에서 바코드를 설정합니다. ";
-
-/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.primaryMessage.accessible" = "첫째: 상품, 상품 상세 정보, 재고로 차례로 이동하여 \"G-T-I-N, U-P-C, E-A-N, I-S-B-N\" 필드에서 바코드를 설정합니다.";
-
-/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
-"pos.barcodeInfoModal.productSetup.linkText" = "설명서로 이동";
-
-/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
-"pos.barcodeInfoModal.productSetup.message" = "상품의 일람표 탭의 GTIN, UPC, EAN, ISBN 필드에서 바코드를 설정할 수 있습니다. 자세히 알아보려면 %1$@하세요.";
-
-/* Accessible version of product setup message, announcing link for screen readers */
-"pos.barcodeInfoModal.productSetup.message.accessible" = "상품의 일람표 탭의 G-T-I-N, U-P-C, E-A-N, I-S-B-N 필드에서 바코드를 설정할 수 있습니다. 자세한 내용은 설명서(링크)를 참조하세요.";
-
-/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
-"pos.barcodeInfoModal.quaternaryMessage" = "• 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
-
-/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.quaternaryMessage.accessible" = "넷째: 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
-
-/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
-"pos.barcodeInfoModal.quinaryMessage" = "스캐너에서는 키보드를 에뮬레이트하므로 소프트웨어 키보드가 표시되지 않을 때(예: 검색 중)도 있습니다. 다시 표시하려면 키보드 아이콘을 누릅니다.";
-
-/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage.2" = "• 블루투스 바코드 스캐너의 지침을 참조하여 HID 모드를 설정합니다. 일반적으로 매뉴얼에 있는 특수 바코드를 스캔해야 합니다.";
-
-/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "둘째: 블루투스 바코드 스캐너의 지침을 참조하여 H-I-D 모드를 설정합니다. 일반적으로 매뉴얼에 있는 특수 바코드를 스캔해야 합니다.";
-
-/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
-"pos.barcodeInfoModal.tertiaryMessage" = "• iOS 블루투스 설정에서 바코드 스캐너를 연결합니다.";
-
-/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.tertiaryMessage.accessible" = "셋째: iOS 블루투스 설정에서 바코드 스캐너를 연결합니다.";
-
-/* Title for the back button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.back.button.title" = "뒤로";
-
-/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
-"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "바코드 스캐너로 스캔할 코드의 이미지입니다.";
-
-/* Message shown when scanner setup is complete */
-"pos.barcodeScannerSetup.complete.instruction.2" = "상품 스캔을 시작할 준비가 되었습니다. 다음에 스캐너를 연결해야 할 때는 스캐너만 켜면 자동으로 다시 연결됩니다.";
-
-/* Title shown when scanner setup is successfully completed */
-"pos.barcodeScannerSetup.complete.title" = "스캐너가 설정되었습니다!";
-
-/* Title for the done button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.done.button.title" = "완료";
-
-/* Title for the back button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.back.button.title" = "뒤로";
-
-/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.error.instruction" = "스캐너의 설명서를 확인하고 공장 설정으로 초기화한 다음에 설정 절차를 다시 시도하세요.";
-
-/* Title for the retry button in barcode scanner setup error step */
-"pos.barcodeScannerSetup.error.retry.button.title" = "다시 시도";
-
-/* Title shown when there's an error during scanner setup */
-"pos.barcodeScannerSetup.error.title" = "스캔 문제 찾음";
-
-/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
-"pos.barcodeScannerSetup.hidSetup.instruction" = "바코드 스캐너로 아래의 코드를 스캔하여 블루투스 HID 모드를 활성화합니다.";
-
-/* Title for Netum 1228BC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
-
-/* Title for the next button in barcode scanner setup navigation */
-"pos.barcodeScannerSetup.next.button.title" = "다음";
-
-/* Title for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.title" = "기타";
-
-/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
-"pos.barcodeScannerSetup.pairSetup.instruction" = "바코드 스캐너로 아래의 코드를 스캔하여 페어링 모드로 전환합니다.";
-
-/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
-"pos.barcodeScannerSetup.pairing.instruction.format" = "블루투스를 활성화하고 OS 블루투스 설정에서 %1$@ 스캐너를 선택합니다. 페어링되면 스캐너에서 신호음이 울리며 단색 LED가 표시됩니다.";
-
-/* Button title to open device Settings for scanner pairing */
-"pos.barcodeScannerSetup.pairing.settingsButton.title" = "기기 설정으로 이동";
-
-/* Title for the scanner pairing step */
-"pos.barcodeScannerSetup.pairing.title" = "스캐너 페어링";
-
-/* Title format for a product barcode setup step */
-"pos.barcodeScannerSetup.productBarcodeInfo.title" = "상품에 대한 바코드를 설정하는 방법";
-
-/* Button title for accessing product barcode setup information */
-"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "상품에 대한 바코드를 설정하는 방법";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scanner.setup.title.format" = "스캐너 설정";
-
-/* Title format for barcode scanner setup step */
-"pos.barcodeScannerSetup.scannerInfo.title" = "스캐너 설정";
-
-/* Display name for Netum 1228BC barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
-
-/* Display name for other/unspecified barcode scanner models */
-"pos.barcodeScannerSetup.scannerType.other.name" = "기타 스캐너";
-
-/* Display name for Star BSH-20B barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
-
-/* Display name for Tera 1200 2D barcode scanner model */
-"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
-
-/* Heading for the barcode scanner setup selection screen */
-"pos.barcodeScannerSetup.selection.heading" = "바코드 스캐너 설정";
-
-/* Instruction message for selecting a barcode scanner model from the list */
-"pos.barcodeScannerSetup.selection.introMessage" = "목록에서 모델 선택:";
-
-/* Title for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
-
-/* Title for Tera 1200 2D scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
-
-/* Instruction for testing the scanner by scanning a barcode */
-"pos.barcodeScannerSetup.test.instruction" = "바코드를 스캔하여 스캐너를 테스트합니다.";
-
-/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
-"pos.barcodeScannerSetup.test.timeout.instruction" = "바코드를 스캔하여 스캐너를 테스트합니다. 문제가 계속되면 블루투스 설정을 확인하고 다시 시도하세요.";
-
-/* Title shown when scanner test times out without detecting a scan */
-"pos.barcodeScannerSetup.test.timeout.title" = "아직 스캔 데이터를 찾을 수 없음";
-
-/* Title for the scanner testing step */
-"pos.barcodeScannerSetup.test.title" = "스캐너 테스트";
-
-/* Hint to add products to the Cart when this is empty. */
-"pos.cartView.addItemsToCartHint" = "상품을 눌러 \n 장바구니에 추가";
-
-/* Title at the header for the Cart view. */
-"pos.cartView.cartTitle" = "장바구니";
-
-/* Title for the 'Checkout' button to process the Order. */
-"pos.cartView.checkoutButtonTitle" = "체크아웃";
-
-/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle.1" = "장바구니 지우기";
-
-/* Back button title in the child item list screen. */
-"pos.childItemList.back" = "뒤로";
-
-/* Title shown on a toast view that appears when there's no internet connection */
-"pos.connectivity.title" = "인터넷에 연결되지 않음";
-
-/* A button that dismisses coupon creation sheet */
-"pos.couponCreationSheet.selectCoupon.cancel" = "취소";
-
-/* A title for the view that selects the type of coupon to create */
-"pos.couponCreationSheet.selectCoupon.title" = "쿠폰 생성";
-
-/* Body text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitBody" = "진행 중인 주문이 모두 손실됩니다.";
-
-/* Button text of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitButtom" = "종료";
-
-/* Title of the exit Point of Sale modal alert */
-"pos.exitPOSModal.exitTitle" = "판매 지점 모드를 종료할까요?";
-
-/* Button title to dismiss POS ineligible view */
-"pos.ineligible.dismiss.button.title" = "POS 종료";
-
-/* Button title to enable the POS feature switch and refresh POS eligibility check */
-"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS 활성화";
-
-/* Button title to refresh POS eligibility check */
-"pos.ineligible.refresh.button.title" = "다시 시도";
-
-/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled.3" = "계속하려면 판매 지점을 활성화해야 합니다. 아래 또는 우커머스 설정 > 고급 > 기능의 워드프레스 관리자에서 POS 기능을 활성화하고 다시 시도하세요.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "앱을 다시 시작하여 이 문제를 해결해 보세요.";
-
-/* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "사이트 설정 정보를 로드할 수 없었습니다. 인터넷 연결을 확인하고 다시 시도하세요. 문제가 계속 발생하는 경우 도움이 필요하면 지원을 문의하세요.";
-
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency.1" = "스토어의 통화에는 POS 시스템을 사용할 수 없습니다. %1$@에서는 현재 %2$@만 지원됩니다. 스토어 통화 설정을 확인하거나 도움이 필요하면 지원을 문의해 주세요.";
-
-/* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "POS 시스템에는 iOS 17 이상이 필요합니다. 이 기능을 사용하려면 기기를 iOS 17 이상으로 업데이트하세요.";
-
-/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
-"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "회원님의 우커머스 버전은 지원되지 않습니다. POS 시스템에는 우커머스 버전 %1$@ 이상이 필요합니다. 우커머스를 최신 버전으로 업데이트하세요.";
-
-/* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "우커머스 플러그인 정보를 로드할 수 없습니다. 워드프레스 관리자에서 우커머스 플러그인이 설치되고 활성화되었는지 확인하세요. 문제가 계속 발생하는 경우 도움이 필요하면 지원을 문의하세요.";
-
-/* Title shown in POS ineligible view */
-"pos.ineligible.title" = "로드할 수 없음";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "인터넷 연결을 확인하고 다시 시도하세요.";
-
-/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle.2" = "쿠폰을 활성화할 수 없음";
-
-/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "추가 쿠폰을 로드할 수 없음";
-
-/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle.2" = "추가 상품을 로드할 수 없음";
-
-/* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle.2" = "상품을 로드할 수 없음";
-
-/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "추가 변형을 로드할 수 없음";
-
-/* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle.2" = "변형을 로드할 수 없음";
-
-/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle.2" = "쿠폰을 새로 고칠 수 없음";
-
-/* Generic subtitle appearing on error screens when there's an error. */
-"pos.itemList.genericErrorSubtitle" = "다시 시도해 주세요.";
-
-/* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction.2" = "쿠폰 활성화";
-
-/* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle.2" = "스토어에서 쿠폰 코드를 활성화하여 고객용 생성을 시작하세요.";
-
-/* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle.2" = "쿠폰 수락 시작";
-
-/* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle.2" = "쿠폰을 로드할 수 없음";
-
-/* Generic text for retry buttons appearing on error screens. */
-"pos.itemList.retryButtonTitle" = "다시 시도";
-
-/* Title at the top of the Point of Sale item list full screen. */
-"pos.itemListFullscreen.title" = "상품";
-
-/* Label/placeholder text for the search field for Coupons in Point of Sale. */
-"pos.itemListView.coupons.searchField.label" = "쿠폰 검색";
-
-/* Label/placeholder text for the search field for Products in Point of Sale. */
-"pos.itemListView.products.searchField.label.1" = "상품 검색";
-
-/* Fallback label/placeholder text for the search field in Point of Sale. */
-"pos.itemListView.searchField.label" = "검색";
-
-/* Title of the button at the top of Point of Sale to switch to Coupons list. */
-"pos.itemlistview.couponsTitle" = "쿠폰";
-
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.itemlistview.title" = "상품";
-
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.emptyListText" = "스토어 검색";
-
-/* Title for the list of popular products shown before a search term is typed in POS */
-"pos.itemsearch.before.search.popularProducts.title" = "인기 상품";
-
-/* Title for the list of recent searches shown before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.title" = "최근 검색 항목";
-
-/* Accessibility label for button to dismiss a notice banner */
-"pos.noticeView.dismiss.button.accessibiltyLabel" = "해제";
-
-/* Text indicating that there are options available for a parent product */
-"pos.parentProductCard.optionsAvailable" = "사용 가능한 옵션";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "해당 이름의 쿠폰을 찾을 수 없습니다. 검색어를 조정해 보세요.";
-
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "쿠폰은 비즈니스를 촉진하는 효과적인 방법이 될 수 있습니다. 만드시겠어요?";
-
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "쿠폰을 찾을 수 없음";
-
-/* Text for the button appearing on the products list screen when there are no products found. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "새로 고침";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "단순 상품을 추가하려면 POS를 종료하고 상품으로 이동하세요.";
-
-/* Text providing additional search tips when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "변형 이름은 검색할 수 없으니 상위 상품 이름을 사용하세요.";
-
-/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "일치하는 상품을 찾을 수 없습니다. 검색어를 조정해 보세요.";
-
-/* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "상품을 찾을 수 없음";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "현재 POS에서는 단순 및 변형 상품만 지원합니다.";
-
-/* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "지원되는 상품을 찾을 수 없음";
-
-/* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "변형을 추가하려면 POS를 종료하고 상품 탭에서 이 상품을 편집하세요.";
-
-/* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS에서는 다운로드할 수 없는 활성화된 변형만 지원합니다.";
-
-/* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "지원되는 변형을 찾을 수 없음";
-
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "쿠폰 생성";
-
-/* Title for the OK button on the pos information modal */
-"pos.posInformationModal.ok.button.title" = "확인";
-
-/* Accessibility label for the clear button in the Point of Sale search screen. */
-"pos.searchview.searchField.clearButton.accessibilityLabel" = "검색 지우기";
-
-/* Action text in the simple products information modal in POS */
-"pos.simpleProductsModal.action" = "스토어 관리에서 주문 생성";
-
-/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.hint.variableAndSimple" = "지원되지 않는 상품에 대한 결제를 받으려면 POS를 종료하고 주문 탭에서 새 주문을 생성하세요.";
-
-/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
-"pos.simpleProductsModal.message.future.variableAndSimple" = "기타 상품 유형은 향후 업데이트에서 이용할 수 있게 될 예정입니다.";
-
-/* Message in the simple products information modal in POS when variable products are supported */
-"pos.simpleProductsModal.message.issue.variableAndSimple" = "현재 POS에서는 다운로드할 수 없는 단순 및 변형 상품만 사용할 수 있습니다.";
-
-/* Title for the OK button on the simple products information modal in POS */
-"pos.simpleProductsModal.ok.button.title" = "확인";
-
-/* Title of the simple products information modal in POS */
-"pos.simpleProductsModal.title" = "왜 내 상품이 보이지 않나요?";
-
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ 재고 있음";
-
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "재고 없음";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
-
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "새 주문";
-
-/* Button title for the receipt button */
-"pos.totalsView.button.sendReceipt" = "이메일로 영수증 보내기";
-
-/* Title for the cash payment button title */
-"pos.totalsView.cash.button.title" = "현금 결제";
-
-/* Title for discount total amount field */
-"pos.totalsView.discountTotal2" = "할인 총 금액";
-
-/* Text for the banner requiring specific WooCommerce version. */
-"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "우커머스를 버전 9.5.0으로 업데이트하세요";
-
-/* Title for subtotal amount field */
-"pos.totalsView.subtotal" = "소계";
-
-/* Title for taxes amount field */
-"pos.totalsView.taxes" = "세금";
-
-/* Title for total amount field */
-"pos.totalsView.total" = "합계";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "판매 지점을 위해 더 많은 공간을 확보할 수 있도록 화면 분할을 조정해 주세요.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "이 화면 폭에서는 판매 지점이 지원되지 않습니다.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "닫기";
@@ -12218,6 +10539,12 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
 "salesChannelFilter.row.pos.description" = "판매 지점";
 
+/* Description for the Sales channel filter option, when selecting 'Web Checkout' orders */
+"salesChannelFilter.row.webCheckout.description" = "웹 결제";
+
+/* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
+"salesChannelFilter.row.wpAdmin.description" = "WP 관리자";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "취소";
 
@@ -12483,9 +10810,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "무료 평가판";
-
-/* Button to dismiss the support form. */
-"subscriptionsView.dismissSupport" = "완료";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "확인";
@@ -13834,9 +12158,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google로 로그인합니다.";
-
-/* Country option for a site address. */
-"Åland Islands" = "올란드 제도";
 
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 설정된 새 세율";

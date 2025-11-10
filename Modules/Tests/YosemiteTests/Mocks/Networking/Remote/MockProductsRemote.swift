@@ -286,6 +286,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func searchProducts(for siteID: Int64,
                         keyword: String,
+                        searchFields: [ProductSearchField],
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
@@ -370,6 +371,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         productStatus: ProductStatus?,
+                        productType: ProductType?,
                         completion: @escaping (Result<[Int64], Error>) -> Void) {
         // no-op
     }

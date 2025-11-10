@@ -12,13 +12,13 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let productID: Int64
     public let name: String
     public let productTypeKey: String
+    public let fullDescription: String?
+    // periphery:ignore - Will be used for search in future
+    public let shortDescription: String?
     public let sku: String?
     public let globalUniqueID: String?
 
     public let price: String
-    public let regularPrice: String?
-    public let salePrice: String?
-    public let onSale: Bool
 
     public let downloadable: Bool
 
@@ -43,34 +43,35 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
 
+    public let variationIDs: [Int64]
+
     public init(siteID: Int64,
                 productID: Int64,
                 name: String,
                 productTypeKey: String,
+                fullDescription: String?,
+                shortDescription: String?,
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
-                regularPrice: String?,
-                salePrice: String?,
-                onSale: Bool,
                 downloadable: Bool,
                 parentID: Int64,
                 images: [ProductImage],
                 attributes: [ProductAttribute],
                 manageStock: Bool,
                 stockQuantity: Decimal?,
-                stockStatusKey: String) {
+                stockStatusKey: String,
+                variationIDs: [Int64]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
         self.productTypeKey = productTypeKey
+        self.fullDescription = fullDescription
+        self.shortDescription = shortDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
 
         self.price = price
-        self.regularPrice = regularPrice
-        self.salePrice = salePrice
-        self.onSale = onSale
 
         self.downloadable = downloadable
 
@@ -83,6 +84,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+
+        self.variationIDs = variationIDs
     }
 
     public init(from decoder: any Decoder) throws {
@@ -101,6 +104,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         let productID = try container.decode(Int64.self, forKey: .productID)
         let name = try container.decode(String.self, forKey: .name)
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
+        let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
+        let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
         let sku = container.failsafeDecodeIfPresent(
             targetType: String.self,
             forKey: .sku,
@@ -111,24 +116,6 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
             targetType: String.self,
             forKey: .price,
             alternativeTypes: [decimalString]) ?? ""
-        let regularPrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .regularPrice,
-            alternativeTypes: [decimalString])
-        let onSale = container.failsafeDecodeIfPresent(
-            targetType: Bool.self,
-            forKey: .onSale,
-            alternativeTypes: [ .string(transform: { NSString(string: $0).boolValue })]) ?? false
-
-        // Even though a plain install of WooCommerce Core provides string values,
-        // some plugins alter the field value from String to Int or Decimal.
-        let salePrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .salePrice,
-            shouldDecodeTargetTypeFirst: false,
-            alternativeTypes: [
-                .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
-                decimalString])
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
 
@@ -142,23 +129,25 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
+        let variationIDs = try container.decodeIfPresent([Int64].self, forKey: .variationIDs) ?? []
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
                   productTypeKey: productTypeKey,
+                  fullDescription: fullDescription,
+                  shortDescription: shortDescription,
                   sku: sku,
                   globalUniqueID: globalUniqueID,
                   price: price,
-                  regularPrice: regularPrice,
-                  salePrice: salePrice,
-                  onSale: onSale,
                   downloadable: downloadable,
                   parentID: parentID,
                   images: images,
                   attributes: attributes,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
-                  stockStatusKey: stockStatusKey)
+                  stockStatusKey: stockStatusKey,
+                  variationIDs: variationIDs)
     }
 
     static let requestFields: [String] = {
@@ -179,12 +168,11 @@ private extension POSProduct {
         case productID = "id"
         case name
         case productTypeKey = "type"
+        case fullDescription = "description"
+        case shortDescription = "short_description"
         case sku
         case globalUniqueID = "global_unique_id"
         case price
-        case regularPrice = "regular_price"
-        case salePrice = "sale_price"
-        case onSale = "on_sale"
         case downloadable
         case parentID = "parent_id"
         case images
@@ -192,5 +180,6 @@ private extension POSProduct {
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"
         case stockStatusKey = "stock_status"
+        case variationIDs = "variations"
     }
 }

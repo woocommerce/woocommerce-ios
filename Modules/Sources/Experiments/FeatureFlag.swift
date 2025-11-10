@@ -179,14 +179,6 @@ public enum FeatureFlag: Int {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables sending POS specific email receipts for eligible stores
-    ///
-    case pointOfSaleReceipts
-
-    /// Enables displaying POS as a tab in the tab bar for stores in eligible countries
-    ///
-    case pointOfSaleAsATabi2
-
     /// Enables displaying Point Of Sale details in order list and order details
     ///
     case pointOfSaleOrdersi1
@@ -194,10 +186,6 @@ public enum FeatureFlag: Int {
     /// Enables displaying Point Of Sale as a filter in order list
     ///
     case pointOfSaleOrdersi2
-
-    /// Enables the entry point for Point of Sale Settings
-    ///
-    case pointOfSaleSettingsi1
 
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
@@ -211,4 +199,16 @@ public enum FeatureFlag: Int {
     /// It syncs products and variations to local storage and display them in POS for quick access.
     ///
     case pointOfSaleLocalCatalogi1
+
+    /// Enables a new Bookings tab for CIAB sites
+    ///
+    case ciabBookings
+
+    /// Enables surveys for potential and current POS merchants
+    ///
+    case pointOfSaleSurveys
+
+    /// Enables using the catalog API endpoint for Point of Sale catalog full sync
+    ///
+    case pointOfSaleCatalogAPI
 }

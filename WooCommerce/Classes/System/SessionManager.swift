@@ -7,6 +7,7 @@ import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import class Kingfisher.ImageCache
+import class Networking.AlamofireNetwork
 
 // MARK: - SessionManager Notifications
 //
@@ -53,6 +54,10 @@ final class SessionManager: SessionManagerProtocol {
     ///
     private let imageCache: ImageCache
 
+    /// Serial queue for thread-safe credentials access
+    ///
+    private let credentialsQueue = DispatchQueue(label: "com.woocommerce.session.credentials", qos: .userInitiated)
+
     /// Makes sure the credentials are in sync with the watch session.
     ///
     private lazy var watchDependenciesSynchronizer = {
@@ -75,20 +80,31 @@ final class SessionManager: SessionManagerProtocol {
     ///
     var defaultCredentials: Credentials? {
         get {
-            return loadCredentials()
+            credentialsQueue.sync {
+                loadCredentials()
+            }
         }
         set {
-            guard newValue != defaultCredentials else {
-                return
+            let shouldUpdateWatchSync = credentialsQueue.sync { () -> Bool in
+                let currentCredentials = loadCredentials()
+                guard newValue != currentCredentials else {
+                    return false
+                }
+
+                removeCredentials()
+
+                if let credentials = newValue {
+                    saveCredentials(credentials)
+                }
+
+                return true
             }
 
-            removeCredentials()
-
-            if let credentials = newValue {
-                saveCredentials(credentials)
+            // Update watch synchronizer outside the sync block to avoid potential deadlocks
+            // from @Published property triggering Combine subscribers that might read credentials
+            if shouldUpdateWatchSync {
+                watchDependenciesSynchronizer.credentials = newValue
             }
-
-            watchDependenciesSynchronizer.credentials = newValue
         }
     }
 
@@ -175,6 +191,10 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Keeps strong reference of the use case to keep the password deletion request alive
+    /// periphery: ignore
+    var applicationPasswordUseCase: ApplicationPasswordUseCase?
+
     /// Designated Initializer.
     ///
     init(defaults: UserDefaults,
@@ -200,7 +220,6 @@ final class SessionManager: SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset() {
-        deleteApplicationPassword()
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
@@ -221,32 +240,43 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.blazeSelectedCampaignObjective] = nil
         defaults[.wpcomSiteSuspended] = nil
         defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
+        defaults[.applicationPasswordUnsupportedList] = nil
+        defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
+        defaults[.ciabBookingsTabAvailable] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using credentials: Credentials?) {
-        let useCase: ApplicationPasswordUseCase? = {
-            switch credentials ?? loadCredentials() {
+    func deleteApplicationPassword(using creds: Credentials?, locally: Bool) {
+        let useCase: ApplicationPasswordUseCase? = credentialsQueue.sync {
+            let credentials = creds ?? loadCredentials()
+            switch credentials {
             case let .wporg(username, password, siteAddress):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
-                                                              siteAddress: siteAddress,
-                                                              keychain: keychain)
+                                                              siteAddress: siteAddress)
             case let .applicationPassword(_, _, siteAddress):
-                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
-            default:
+                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
+            case .wpcom:
+                guard let siteID = defaultStoreID else {
+                    return nil
+                }
+                let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+                return DefaultApplicationPasswordUseCase(type: .wpcom(siteID: siteID), network: network)
+            case .none:
                 return nil
             }
-        }()
+        }
         guard let useCase else {
             return
         }
 
-        Task {
-            try await useCase.deletePassword()
+        applicationPasswordUseCase = useCase
+        Task { @MainActor in
+            try await useCase.deletePassword(locally: locally)
+            applicationPasswordUseCase = nil
         }
     }
 }

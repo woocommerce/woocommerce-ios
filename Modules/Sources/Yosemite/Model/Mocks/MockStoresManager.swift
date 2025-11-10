@@ -1,5 +1,6 @@
 import Combine
 import Storage
+import enum NetworkingCore.RequestAuthenticationMode
 
 public class MockStoresManager: StoresManager {
 
@@ -223,6 +224,10 @@ public class MockStoresManager: StoresManager {
         false
     }
 
+    public var requestAuthenticationMode: RequestAuthenticationMode? {
+        .jetpackTunnel
+    }
+
     public var needsDefaultStore: Bool {
         sessionManager.defaultStoreID == nil
     }
@@ -252,6 +257,15 @@ public class MockStoresManager: StoresManager {
 
     public func shouldAuthenticateAdminPage(for site: Site) -> Bool {
         return false
+    }
+
+    public var posCatalogSyncCoordinator: (any POSCatalogSyncCoordinatorProtocol)? {
+        nil
+    }
+
+    public var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
+        get { nil }
+        set { }
     }
 }
 

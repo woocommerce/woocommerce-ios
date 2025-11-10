@@ -167,6 +167,64 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_generalElements_does_not_include_blaze_when_site_is_CIAB_site() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
+        )
+
+        // When
+        let viewModel = HubMenuViewModel(
+            siteID: sampleSiteID,
+            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+            stores: stores,
+            blazeEligibilityChecker: blazeEligibilityChecker,
+            siteCIABEligibilityChecker: mockCIABEligibilityChecker
+        )
+
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id }))
+    }
+
+    @MainActor
+    func test_generalElements_does_not_include_payments_when_site_is_CIAB_site() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
+        )
+
+        // When
+        let viewModel = HubMenuViewModel(
+            siteID: sampleSiteID,
+            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+            stores: stores,
+            blazeEligibilityChecker: blazeEligibilityChecker,
+            siteCIABEligibilityChecker: mockCIABEligibilityChecker
+        )
+
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
+
+    @MainActor
     func test_generalElements_does_not_include_blaze_when_default_site_is_not_set() {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -421,12 +479,12 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_wpcom_site() {
+    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_sso_site() {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
-        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: true)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, hasSSOEnabled: true)
         sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -475,61 +533,6 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
-    }
-
-    @MainActor
-    func test_menuElements_include_subscriptions_on_wp_com_sites_if_not_free_trial() {
-        // Given
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_does_not_include_subscriptions_on_wp_com_free_trial_sites() {
-        // Given
-        let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
-        // Given
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
     }
 
     @MainActor
@@ -595,7 +598,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
             .settings: HubMenuViewModel.Settings(),
             .payments: HubMenuViewModel.Payments(),
-            .subscriptions: HubMenuViewModel.Subscriptions(),
             .blaze: HubMenuViewModel.Blaze(),
             .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
             .viewStore: HubMenuViewModel.ViewStore(),
@@ -741,7 +743,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let otherMenuItems: [HubMenuItem] = [
             HubMenuViewModel.Settings(),
             HubMenuViewModel.Payments(),
-            HubMenuViewModel.Subscriptions(),
             HubMenuViewModel.Blaze(),
             HubMenuViewModel.WoocommerceAdmin(),
             HubMenuViewModel.ViewStore(),

@@ -1,6 +1,21 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.6
+This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.
+
+## 23.5
+This update brings smoother store management and better control. You can now filter orders by source, and manage all POS orders directly within the POS interface. Plus, we fixed a scrolling issue on the Create Coupon screen for a more seamless experience.
+
+## 23.4
+This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.
+
+## 23.3
+Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.
+
+## 23.2
+This update smooths your WooCommerce experience with improved cash payments, easier access to POS settings, and accurate HAZMAT details on shipping labels. Plus, we fixed a Blaze flow issue so campaigns behave as expected. Faster, clearer, and more reliable — just how you need it!
+
 ## 23.1
 Managing your store just got smoother with a more reliable shipping label workflow! Jetpack setup has also been improved for a faster, easier connection. Update now and enjoy the improvements!
 

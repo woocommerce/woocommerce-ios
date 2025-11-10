@@ -457,7 +457,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                                                                     // `true`
                                                                     value.lowercased() == Values.manageStockParent ? true : false
                                                                 })
-        ]) ?? false
+                                                            ]) ?? false
 
         // Even though WooCommerce Core returns Int or null values,
         // some plugins alter the field value from Int to Decimal or String.
@@ -535,15 +535,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
         // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
-        let customFields = (try? container.decode([MetaData].self, forKey: .metadata).filter({ !$0.key.hasPrefix("_")})) ?? []
+        // Support both array format and object keyed by index strings
+        let allMetaData = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
+        let customFields = allMetaData.filter { !$0.key.hasPrefix("_") }
 
         // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
         // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
-        let metaDataExtractor = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)
-        let isSampleItem = (metaDataExtractor?.extractStringValue(forKey: MetadataKeys.headStartPost) == Values.headStartValue)
+        let metaDataExtractor = ProductMetadataExtractor(metadata: allMetaData)
+        let isSampleItem = (metaDataExtractor.extractStringValue(forKey: MetadataKeys.headStartPost) == Values.headStartValue)
 
         // Product Bundle properties
         // Uses failsafe decoding because non-bundle product types can return unexpected value types.
@@ -561,7 +563,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
         // Subscription properties
-        let subscription = try? metaDataExtractor?.extractProductSubscription()
+        let subscription = try? metaDataExtractor.extractProductSubscription()
 
         // Min/Max Quantities properties
         let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
@@ -764,12 +766,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(password, forKey: .password)
 
         // Metadata
-        var metaDataValuePairs = buildMetaDataValuePairs()
-
-        // Add custom fields to metadata
-        let customFields = buildCustomFields()
-        metaDataValuePairs.append(contentsOf: customFields)
-
+        let metaDataValuePairs = buildMetaDataValuePairs()
+        // Custom fields will not be included in metadata - when updating products.
+        // They are saved separately with `MetaDataStore`.
         // Encode metadata if it's not empty
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
@@ -783,16 +782,6 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         }
         return metaDataArray
     }
-
-    // Function to get the custom fields
-    private func buildCustomFields() -> [[String: String]] {
-        var customFieldsArray: [[String: String]] = []
-        for customField in customFields {
-            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value.stringValue])
-        }
-        return customFieldsArray
-    }
-
 }
 
 /// Defines all of the Product CodingKeys

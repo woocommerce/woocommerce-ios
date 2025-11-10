@@ -28,6 +28,7 @@ public protocol PaymentRemoteProtocol {
 
 /// WPCOM Payment Endpoints
 ///
+// periphery:ignore
 public class PaymentRemote: Remote, PaymentRemoteProtocol {
     public func loadPlan(thatMatchesID productID: Int64) async throws -> WPComPlan {
         let path = Path.products
@@ -103,6 +104,7 @@ public struct WPComPlan: Decodable, Equatable {
 }
 
 /// Contains necessary data for a site's WPCOM plan.
+// periphery:ignore
 public struct WPComSitePlan: Equatable {
     /// ID of the WPCOM plan.
     ///

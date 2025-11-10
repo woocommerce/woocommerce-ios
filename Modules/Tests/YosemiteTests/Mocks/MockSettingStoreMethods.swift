@@ -9,9 +9,12 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     var retrieveAnalyticsSettingCalled = false
     var enableAnalyticsSettingCalled = false
     var retrieveTaxBasedOnSettingCalled = false
+    var retrievePointOfSaleSettingsCalled = false
 
     var couponsEnabled: Bool = true
     var featureEnabled: Result<Bool, Error> = .success(true)
+    var retrievePointOfSaleSettingsResult: Result<[SiteSetting], Error> = .success([])
+    var retrievePointOfSaleSettingsSiteID: Int64?
 
     func synchronizeGeneralSiteSettings(siteID: Int64,
                                       onCompletion: @escaping (Error?) -> Void) {
@@ -74,6 +77,13 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     }
 
     func retrievePointOfSaleSettings(siteID: Int64) async throws -> [SiteSetting] {
-        []
+        retrievePointOfSaleSettingsCalled = true
+        retrievePointOfSaleSettingsSiteID = siteID
+        switch retrievePointOfSaleSettingsResult {
+        case .success(let settings):
+            return settings
+        case .failure(let error):
+            throw error
+        }
     }
 }

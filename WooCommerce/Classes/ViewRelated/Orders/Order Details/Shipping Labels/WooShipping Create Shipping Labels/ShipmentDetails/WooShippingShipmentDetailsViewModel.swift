@@ -157,6 +157,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         if let shippingLabel {
             self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
             self.shippingLabel = shippingLabel
+            self.hazmatCategory = .init(rawValue: shippingLabel.hazmatCategory ?? "")
         }
 
         observeAddresses(originAddressPublisher: originAddress,

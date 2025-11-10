@@ -44,7 +44,7 @@ struct ModalOverlay<OverlayContent: View>: View {
                 .animation(.easeInOut(duration: 0.25), value: internalIsPresented)
             }
         }
-        .onChange(of: isPresented) { newValue in
+        .onChange(of: isPresented) { _, newValue in
             withAnimation {
                 internalIsPresented = newValue
             }

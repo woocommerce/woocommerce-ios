@@ -67,6 +67,10 @@ let package = Package(
             name: "Yosemite",
             targets: ["Yosemite"]
         ),
+        .library(
+            name: "PointOfSale",
+            targets: ["PointOfSale"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -83,6 +87,7 @@ let package = Package(
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
         // FIXME: This should be available via Tracks, but Tracks does not compile for watchOS
         .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.46.0"),
+        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
         .package(url: "https://github.com/jonreid/ViewControllerPresentationSpy", from: "7.0.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
@@ -159,7 +164,8 @@ let package = Package(
             name: "Storage",
             dependencies: [
                 "Codegen",
-                "WooFoundation"
+                "WooFoundation",
+                .product(name: "GRDB", package: "GRDB.swift")
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")]
@@ -177,7 +183,11 @@ let package = Package(
         ),
         .target(
             name: "WooFoundation",
-            dependencies: ["WooFoundationCore"]
+            dependencies: [
+                "WooFoundationCore",
+                .product(name: "Kingfisher", package: "Kingfisher")
+            ],
+            resources: [.process("Resources")]
         ),
         .target(
             name: "WooFoundationCore",
@@ -224,6 +234,18 @@ let package = Package(
                 .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                 .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
             ]
+        ),
+        .target(
+            name: "PointOfSale",
+            dependencies: [
+                "Experiments",
+                "WooFoundation",
+                "Yosemite",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
+            ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "ExperimentsTests",
@@ -290,7 +312,17 @@ let package = Package(
                 .process("Resources"),
                 .process("../NetworkingTests/Responses")
             ]
-        )
+        ),
+        .testTarget(
+            name: "PointOfSaleTests",
+            dependencies: [
+                .target(name: "PointOfSale"),
+                "Codegen",
+                "Fakes",
+                "TestKit",
+                "WooFoundation"
+            ]
+        ),
     ]
 )
 
@@ -369,6 +401,7 @@ enum XcodeSupport {
                     "WordPressUI",
                     "WPMediaPicker",
                     "Yosemite",
+                    "PointOfSale",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),

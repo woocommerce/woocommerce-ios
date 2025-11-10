@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension NetworkingCore.Account {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -270,6 +272,7 @@ extension NetworkingCore.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
+            image: .fake(),
             parent: .fake(),
             bundleConfiguration: .fake()
         )
@@ -455,7 +458,8 @@ extension NetworkingCore.ShippingLabel {
             productNames: .fake(),
             commercialInvoiceURL: .fake(),
             usedDate: .fake(),
-            expiryDate: .fake()
+            expiryDate: .fake(),
+            hazmatCategory: .fake()
         )
     }
 }
@@ -591,3 +595,5 @@ extension NetworkingCore.User {
         )
     }
 }
+
+// swiftlint:enable line_length

@@ -24,52 +24,52 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
     func test_steps_returns_MigrationSteps_from_source_to_the_target_model() throws {
         // Given
-        let modelVersion33 = ModelVersion(name: "Model 33")
-        let modelVersion41 = ModelVersion(name: "Model 41")
-        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion33))
-        let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion41))
+        let modelVersion83 = ModelVersion(name: "Model 83")
+        let modelVersion91 = ModelVersion(name: "Model 91")
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion83))
+        let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion91))
 
         // When
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
 
         // Then
         // There should be 8 steps:
-        //   - 33 to 34
-        //   - 34 to 35
-        //   - 35 to 36
-        //   - 36 to 37
-        //   - 37 to 38
-        //   - 38 to 39
-        //   - 39 to 40
-        //   - 40 to 41
+        //   - 83 to 84
+        //   - 84 to 85
+        //   - 85 to 86
+        //   - 86 to 87
+        //   - 87 to 88
+        //   - 88 to 89
+        //   - 89 to 90
+        //   - 90 to 91
         XCTAssertEqual(steps.count, 8)
 
         // Assert the values of first and last steps.
-        let modelVersion34 = ModelVersion(name: "Model 34")
+        let modelVersion84 = ModelVersion(name: "Model 84")
 
-        let expectedFirstStep = MigrationStep(sourceVersion: modelVersion33,
-                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion33)),
-                                              targetVersion: modelVersion34,
-                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion34)))
+        let expectedFirstStep = MigrationStep(sourceVersion: modelVersion83,
+                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion83)),
+                                              targetVersion: modelVersion84,
+                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion84)))
         let actualFirstStep = try XCTUnwrap(steps.first)
         XCTAssertEqual(actualFirstStep, expectedFirstStep)
 
-        let modelVersion40 = ModelVersion(name: "Model 40")
+        let modelVersion90 = ModelVersion(name: "Model 90")
 
-        let expectedLastStep = MigrationStep(sourceVersion: modelVersion40,
-                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion40)),
-                                              targetVersion: modelVersion41,
-                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion41)))
+        let expectedLastStep = MigrationStep(sourceVersion: modelVersion90,
+                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion90)),
+                                              targetVersion: modelVersion91,
+                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion91)))
         let actualLastStep = try XCTUnwrap(steps.last)
         XCTAssertEqual(actualLastStep, expectedLastStep)
     }
 
     func test_steps_returns_one_MigrationStep_if_the_source_and_target_are_next_to_each_other() throws {
         // Given
-        let sourceVersion = ModelVersion(name: "Model 37")
+        let sourceVersion = ModelVersion(name: "Model 87")
         let sourceModel = try XCTUnwrap(modelsInventory.model(for: sourceVersion))
 
-        let targetVersion = ModelVersion(name: "Model 38")
+        let targetVersion = ModelVersion(name: "Model 88")
         let targetModel = try XCTUnwrap(modelsInventory.model(for: targetVersion))
 
         // When
@@ -140,23 +140,23 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
     /// reach this condition because of the precondition checks in `CoreDataIterativeMigrator`.
     func test_steps_returns_source_to_latest_version_MigrationSteps_if_the_source_and_target_are_the_same() throws {
         // Given
-        let sourceModelName = "Model 37"
+        let sourceModelName = "Model 87"
         let modelVersion37 = ModelVersion(name: sourceModelName)
         let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion37))
 
-        // Find the index of Model 37 in the current inventory
-        // which only contains Models 30-124 as per latest update on https://github.com/woocommerce/woocommerce-ios/pull/15987
+        // Find the index of Model 87 in the current inventory
+        // which only contains Models 80-127 as per latest update on [https://github.com/woocommerce/woocommerce-ios/pull/16181]
         let sourceModelIndex = try XCTUnwrap(modelsInventory.versions.firstIndex { $0.name == sourceModelName },
-                                             "Model 37 should exist in the inventory")
+                                             "Model 87 should exist in the inventory")
         // When
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: sourceModel)
 
         // Then
         // Expected behavior (bug): When source == target, it returns steps from that model to the latest version
-        // This means: Model 37 → Model 38 → ... → Model 124
+        // This means: Model 87 → Model 88 → ... → Model 127
         // Calculation: total versions - source index - 1 (since we don't include the source model itself)
         let expectedStepCount = modelsInventory.versions.count - sourceModelIndex - 1
         XCTAssertEqual(steps.count, expectedStepCount,
-                       "Should return steps from Model 37 to the latest model (Model 124)")
+                       "Should return steps from Model 87 to the latest model (Model 127)")
     }
 }

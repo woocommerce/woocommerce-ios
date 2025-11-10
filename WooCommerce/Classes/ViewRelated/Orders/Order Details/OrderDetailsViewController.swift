@@ -96,7 +96,7 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
         syncEverything { [weak self] in
-            waitingTracker.end()
+            ServiceLocator.analytics.track(event: waitingTracker.end())
 
             self?.topLoaderView.isHidden = true
 
@@ -109,6 +109,14 @@ final class OrderDetailsViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         true
+    }
+
+    func isPresentingViewModelOrder(_ viewModel: OrderDetailsViewModel) -> Bool {
+        return self.viewModel.order.orderID == viewModel.order.orderID
+    }
+
+    func isQuickOrderNavigationSupported() -> Bool {
+        viewModels.count > 1
     }
 }
 

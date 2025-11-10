@@ -106,7 +106,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
     func test_it_will_not_migrate_if_the_database_file_does_not_exist() throws {
         // Given
-        let targetModel = try managedObjectModel(for: "Model 38")
+        let targetModel = try managedObjectModel(for: "Model 88")
         let databaseURL = documentsDirectory.appendingPathComponent("database-file-that-does-not-exist")
         let fileManager = MockFileManager()
 
@@ -139,14 +139,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     /// files using the wrong `NSManagedObjectModel`.
     func test_opening_a_store_with_a_different_model_fails() throws {
         // Given
-        let model30 = try managedObjectModel(for: "Model 30")
-        let model40 = try managedObjectModel(for: "Model 40")
+        let model80 = try managedObjectModel(for: "Model 80")
+        let model90 = try managedObjectModel(for: "Model 90")
 
         let storeURL = try urlForStore(withName: "Woo Test 30.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         // When
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: model30)
+        var psc = NSPersistentStoreCoordinator(managedObjectModel: model80)
         var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         XCTAssertNotNil(ps)
@@ -154,21 +154,21 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         try psc.remove(ps!)
 
         // Load using a different model
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model40)
+        psc = NSPersistentStoreCoordinator(managedObjectModel: model90)
         ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         // When
         XCTAssertNil(ps)
     }
 
-    /// Test the IterativeMigrator can migrate iteratively between model 30 to 40.
-    func test_iterativeMigrate_can_iteratively_migrate_from_model_30_to_model_40() throws {
+    /// Test the IterativeMigrator can migrate iteratively between model 80 to 90.
+    func test_iterativeMigrate_can_iteratively_migrate_from_model_80_to_model_90() throws {
         // Given
         let storeType = NSSQLiteStoreType
-        let sourceModel = try managedObjectModel(for: "Model 30")
-        let targetModel = try managedObjectModel(for: "Model 40")
+        let sourceModel = try managedObjectModel(for: "Model 80")
+        let targetModel = try managedObjectModel(for: "Model 90")
 
-        let storeURL = try urlForStore(withName: "Woo Test 30.sqlite", deleteIfExists: true)
+        let storeURL = try urlForStore(withName: "Woo Test 80.sqlite", deleteIfExists: true)
 
         let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
@@ -188,9 +188,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: targetModel)
 
         // There are 10 destroyed URLs because 9 migration steps should have happened between
-        // "Model 30" to "Model 40":
+        // "Model 60" to "Model 70":
         //
-        // 30 → 31 → ... → 40
+        // 60 → 61 → ... → 70
         //
         XCTAssertEqual(spyCoordinator.destroyedURLs.count, 10)
 
@@ -206,8 +206,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     func test_iterativeMigrate_replaces_the_original_SQLite_files() throws {
         // Given
         let storeType = NSSQLiteStoreType
-        let sourceModel = try managedObjectModel(for: "Model 41")
-        let targetModel = try managedObjectModel(for: "Model 42")
+        let sourceModel = try managedObjectModel(for: "Model 81")
+        let targetModel = try managedObjectModel(for: "Model 82")
 
         let storeFileName = "Woo_Migration_Replacement_Unit_Test.sqlite"
         let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
@@ -215,8 +215,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Start a container so the SQLite files will be created.
         let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
-        // Precondition: `OrderFeeLine` should not exist in `Model 41` yet.
-        assertThat(container: container, hasNoEntity: "OrderFeeLine")
+        // Precondition: `ProductCompositeComponent` should not exist in `Model 81` yet.
+        assertThat(container: container, hasNoEntity: "ProductCompositeComponent")
 
         let spyCoordinator = SpyPersistentStoreCoordinator(container.persistentStoreCoordinator)
 
@@ -239,14 +239,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(replacement.sourceURL.deletingLastPathComponent(),
                        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true))
 
-        // Assert that the same `storeURL` is using the new `Model 42`, which has the `OrderFeeLine` entity.
+        // Assert that the same `storeURL` is using the new `Model 82`, which has the `ProductCompositeComponent` entity.
         let migratedContainer = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: targetModel)
-        assertThat(container: migratedContainer, hasEntity: "OrderFeeLine")
+        assertThat(container: migratedContainer, hasEntity: "ProductCompositeComponent")
     }
 
     func test_iterativeMigrate_will_not_migrate_if_the_database_and_the_model_are_compatible() throws {
         // Given
-        let model = try managedObjectModel(for: "Model 38")
+        let model = try managedObjectModel(for: "Model 88")
 
         // Start a container to create an existing database file.
         let storeURL = try urlForStore(withName: "Woo_Compatibility_Test.sqlite", deleteIfExists: true)
@@ -275,14 +275,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
     func test_findSourceVersion_when_exists_then_returns_correct_version_for_existing_model() throws {
         // Given
-        let targetVersion = ManagedObjectModelsInventory.ModelVersion(name: "Model 30")
+        let targetVersion = ManagedObjectModelsInventory.ModelVersion(name: "Model 80")
         let targetModel = try XCTUnwrap(modelsInventory.model(for: targetVersion))
 
         // When
         let foundVersion = CoreDataMigratorUtils.findSourceVersion(for: targetModel, in: modelsInventory)
 
         // Then
-        XCTAssertEqual(foundVersion?.name, "Model 30")
+        XCTAssertEqual(foundVersion?.name, "Model 80")
     }
 
     func test_findSourceVersion_when_unknown_model_then_returns_nil() throws {

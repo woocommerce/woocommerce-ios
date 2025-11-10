@@ -169,9 +169,9 @@ struct ProductSelectorView: View {
             viewModel.onLoadTrigger.send()
             updateSyncApproach(for: horizontalSizeClass)
         }
-        .onChange(of: horizontalSizeClass, perform: { newSizeClass in
+        .onChange(of: horizontalSizeClass) { _, newSizeClass in
             updateSyncApproach(for: newSizeClass)
-        })
+        }
         // On the order form, this is not connected; the OrderForm displays the notices.
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
@@ -319,7 +319,7 @@ private extension ProductSelectorView {
             .onAppear(perform: {
                 adjustViewWidthIfNeeded(using: geometry.size.width)
             })
-            .onChange(of: geometry.size.width) { newViewWidth in
+            .onChange(of: geometry.size.width) { _, newViewWidth in
                 adjustViewWidthIfNeeded(using: newViewWidth)
             }
         }
@@ -336,7 +336,7 @@ private extension ProductSelectorView {
                 .submitLabel(.done)
                 .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                    ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
                 }
                 .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
                 .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }

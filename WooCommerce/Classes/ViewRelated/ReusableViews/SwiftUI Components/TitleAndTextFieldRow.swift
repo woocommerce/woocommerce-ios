@@ -12,7 +12,10 @@ struct TitleAndTextFieldRow: View {
     private let editable: Bool
     private let fieldAlignment: TextAlignment
     private let inputFormatter: UnitInputFormatter?
-    private let contentColor: Color
+    private let titleColor: Color
+    private let titleFont: Font
+    private let valueColor: Color
+    private let valueFont: Font
     private let minHeight: CGFloat
     private let horizontalPadding: CGFloat
 
@@ -33,7 +36,10 @@ struct TitleAndTextFieldRow: View {
          fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
          autocapitalization: TextInputAutocapitalization = .sentences,
-         contentColor: Color = Color(.label),
+         titleColor: Color = Color(.label),
+         titleFont: Font = .body,
+         valueColor: Color = Color(.label),
+         valueFont: Font = .body,
          inputFormatter: UnitInputFormatter? = nil,
          minHeight: CGFloat = Constants.height,
          horizontalPadding: CGFloat = Constants.padding,
@@ -47,7 +53,10 @@ struct TitleAndTextFieldRow: View {
         self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
         self.autocapitalization = autocapitalization
-        self.contentColor = contentColor
+        self.titleColor = titleColor
+        self.titleFont = titleFont
+        self.valueColor = valueColor
+        self.valueFont = valueFont
         self.inputFormatter = inputFormatter
         self.minHeight = minHeight
         self.horizontalPadding = horizontalPadding
@@ -57,29 +66,31 @@ struct TitleAndTextFieldRow: View {
     var body: some View {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
             Text(title)
-                .foregroundColor(contentColor)
-                .bodyStyle()
+                .foregroundColor(titleColor)
                 .lineLimit(1)
+                .font(titleFont)
                 .fixedSize()
                 .modifier(MaxWidthModifier())
                 .frame(width: titleWidth, alignment: .leading)
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
-                    .foregroundColor(contentColor)
-                    .onChange(of: text, perform: { newValue in
+                    .foregroundColor(valueColor)
+                    .onChange(of: text) { _, newValue in
                         text = formatText(newValue)
-                    })
+                    }
                     .onAppear {
                         text = formatText(text)
                     }
                     .multilineTextAlignment(fieldAlignment)
-                    .font(.body)
+                    .font(valueFont)
                     .keyboardType(keyboardType)
                     .disabled(!editable)
                     .textInputAutocapitalization(autocapitalization)
                 if let symbol = symbol {
                     Text(symbol)
                         .bodyStyle()
+                        .font(valueFont)
+                        .foregroundColor(valueColor)
                 }
             }
         }

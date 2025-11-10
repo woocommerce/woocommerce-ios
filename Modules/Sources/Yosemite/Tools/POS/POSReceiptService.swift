@@ -1,20 +1,26 @@
 import SwiftUI
 import Networking
+import struct Combine.AnyPublisher
 
 public protocol POSReceiptServiceProtocol {
-    func sendReceipt(order: Order, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws
+    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws
 }
 
 public final class POSReceiptService: POSReceiptServiceProtocol {
     private let siteID: Int64
     private let receiptsRemote: POSReceiptsRemoteProtocol
 
-    public convenience init?(siteID: Int64, credentials: Credentials?) {
+    public convenience init?(siteID: Int64,
+                             credentials: Credentials?,
+                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             appPasswordSupportState: AnyPublisher<Bool, Never>) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSReceiptService due to not finding credentials")
             return nil
         }
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   receiptsRemote: ReceiptRemote(network: network))
     }
@@ -25,12 +31,12 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
         self.receiptsRemote = receiptsRemote
     }
 
-    public func sendReceipt(order: Yosemite.Order, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {
+    public func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {
         do {
             if isEligibleForPOSReceipt {
-                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: order.orderID)
+                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
             } else {
-                try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+                try await receiptsRemote.sendReceipt(siteID: siteID, orderID: orderID)
             }
         } catch {
             throw POSReceiptServiceError.sendReceiptFailed(underlyingError: error as NSError)

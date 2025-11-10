@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension Yosemite.JustInTimeMessage {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -52,6 +54,17 @@ extension Yosemite.POSSimpleProduct {
         )
     }
 }
+extension Yosemite.POSSite {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Yosemite.POSSite {
+        .init(
+            siteID: .fake(),
+            lastIncrementalSyncDate: .fake(),
+            lastFullSyncDate: .fake()
+        )
+    }
+}
 extension Yosemite.ProductReviewFromNoteParcel {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -60,6 +73,15 @@ extension Yosemite.ProductReviewFromNoteParcel {
             note: .fake(),
             review: .fake(),
             product: .fake()
+        )
+    }
+}
+extension Yosemite.StoredBookingFilters {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Yosemite.StoredBookingFilters {
+        .init(
+            filters: .fake()
         )
     }
 }
@@ -88,3 +110,5 @@ extension Yosemite.WooPaymentsPayoutsOverviewByCurrency {
         )
     }
 }
+
+// swiftlint:enable line_length

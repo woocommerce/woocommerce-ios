@@ -7,6 +7,22 @@ extension WooAnalyticsEvent {
             static let type = "type"
         }
 
+        /// Trigger of the product list filter. The raw value is the event property value.
+        enum Source: String {
+            /// From the products tab.
+            case productsTab = "products_tab"
+            /// From order form > add products.
+            case orderForm = "order_form"
+            /// From coupon form > products.
+            case couponForm = "coupon_form"
+            /// From coupon form > usage restrictions > exclude products.
+            case couponRestrictions = "coupon_restrictions"
+            /// From Blaze campaign creation flow
+            case blaze = "blaze"
+            /// From orders > filter.
+            case orderFilter = "order_filter"
+        }
+
         /// Tracked when the user taps on the button to filter products.
         /// - Parameter source: Source of the product list filter.
         static func productListViewFilterOptionsTapped(source: Source) -> WooAnalyticsEvent {
@@ -26,23 +42,5 @@ extension WooAnalyticsEvent {
         static func productFilterListExploreButtonTapped(type: PromotableProductType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productFilterListExploreButtonTapped, properties: [Key.type: type.rawValue])
         }
-    }
-}
-
-extension WooAnalyticsEvent.ProductListFilter {
-    /// Trigger of the product list filter. The raw value is the event property value.
-    enum Source: String {
-        /// From the products tab.
-        case productsTab = "products_tab"
-        /// From order form > add products.
-        case orderForm = "order_form"
-        /// From coupon form > products.
-        case couponForm = "coupon_form"
-        /// From coupon form > usage restrictions > exclude products.
-        case couponRestrictions = "coupon_restrictions"
-        /// From Blaze campaign creation flow
-        case blaze = "blaze"
-        /// From orders > filter.
-        case orderFilter = "order_filter"
     }
 }

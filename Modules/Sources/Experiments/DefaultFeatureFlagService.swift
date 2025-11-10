@@ -84,24 +84,24 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .inventoryProductLabelsInPOS:
             return false
-        case .pointOfSaleReceipts:
-            return true
         case .productImageOptimizedHandling:
-            return true
-        case .pointOfSaleAsATabi2:
             return true
         case .pointOfSaleOrdersi1:
             return true
         case .pointOfSaleOrdersi2:
             return true
-        case .pointOfSaleSettingsi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderAddressMapSearch:
             return true
         case .pointOfSaleHistoricalOrdersi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .pointOfSaleLocalCatalogi1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .ciabBookings:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleSurveys:
+            return true
+        case .pointOfSaleCatalogAPI:
+            return false
         default:
             return true
         }

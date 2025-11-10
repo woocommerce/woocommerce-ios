@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import enum NetworkingCore.RequestAuthenticationMode
 
 /// Abstracts the Stores coordination
 ///
@@ -53,17 +54,29 @@ public protocol StoresManager {
     ///
     var isAuthenticatedWithoutWPCom: Bool { get }
 
+    /// Authentication mode for network requests
+    var requestAuthenticationMode: RequestAuthenticationMode? { get }
+
     /// Publishes signal that indicates if the user is currently logged in with credentials.
     ///
     var isLoggedInPublisher: AnyPublisher<Bool, Never> { get }
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///
+    /// periphery: ignore - used in tests
     var siteID: AnyPublisher<Int64?, Never> { get }
 
     /// Observable currently selected site.
     ///
     var site: AnyPublisher<Site?, Never> { get }
+
+    /// Provides access to the session-scoped POS catalog sync coordinator
+    ///
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? { get }
+
+    /// Provides access to the session-scoped POS catalog eligibility service
+    ///
+    var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? { get set }
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///

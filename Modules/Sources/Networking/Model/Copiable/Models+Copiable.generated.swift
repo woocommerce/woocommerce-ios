@@ -5,7 +5,9 @@ import Codegen
 import Foundation
 import WooFoundation
 import struct Alamofire.JSONEncoding
+import struct NetworkingCore.JetpackSite
 
+// swiftlint:disable line_length
 
 extension Networking.AIProduct {
     public func copy(
@@ -423,6 +425,114 @@ extension Networking.BlazeTargetTopic {
             id: id,
             name: name,
             locale: locale
+        )
+    }
+}
+
+extension Networking.Booking {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        bookingID: CopiableProp<Int64> = .copy,
+        allDay: CopiableProp<Bool> = .copy,
+        cost: CopiableProp<String> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
+        dateCreated: NullableCopiableProp<Date> = .copy,
+        dateModified: NullableCopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy,
+        googleCalendarEventID: NullableCopiableProp<String> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        orderItemID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        resourceID: CopiableProp<Int64> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        statusKey: CopiableProp<String> = .copy,
+        attendanceStatusKey: CopiableProp<String> = .copy,
+        localTimezone: CopiableProp<String> = .copy,
+        currency: CopiableProp<String> = .copy,
+        orderInfo: NullableCopiableProp<BookingOrderInfo> = .copy
+    ) -> Networking.Booking {
+        let siteID = siteID ?? self.siteID
+        let bookingID = bookingID ?? self.bookingID
+        let allDay = allDay ?? self.allDay
+        let cost = cost ?? self.cost
+        let customerID = customerID ?? self.customerID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let endDate = endDate ?? self.endDate
+        let googleCalendarEventID = googleCalendarEventID ?? self.googleCalendarEventID
+        let orderID = orderID ?? self.orderID
+        let orderItemID = orderItemID ?? self.orderItemID
+        let parentID = parentID ?? self.parentID
+        let productID = productID ?? self.productID
+        let resourceID = resourceID ?? self.resourceID
+        let startDate = startDate ?? self.startDate
+        let statusKey = statusKey ?? self.statusKey
+        let attendanceStatusKey = attendanceStatusKey ?? self.attendanceStatusKey
+        let localTimezone = localTimezone ?? self.localTimezone
+        let currency = currency ?? self.currency
+        let orderInfo = orderInfo ?? self.orderInfo
+
+        return Networking.Booking(
+            siteID: siteID,
+            bookingID: bookingID,
+            allDay: allDay,
+            cost: cost,
+            customerID: customerID,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            endDate: endDate,
+            googleCalendarEventID: googleCalendarEventID,
+            orderID: orderID,
+            orderItemID: orderItemID,
+            parentID: parentID,
+            productID: productID,
+            resourceID: resourceID,
+            startDate: startDate,
+            statusKey: statusKey,
+            attendanceStatusKey: attendanceStatusKey,
+            localTimezone: localTimezone,
+            currency: currency,
+            orderInfo: orderInfo
+        )
+    }
+}
+
+extension Networking.BookingResource {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        resourceID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        quantity: CopiableProp<Int64> = .copy,
+        role: CopiableProp<String> = .copy,
+        email: NullableCopiableProp<String> = .copy,
+        phoneNumber: NullableCopiableProp<String> = .copy,
+        imageID: CopiableProp<Int64> = .copy,
+        imageURL: NullableCopiableProp<String> = .copy,
+        description: NullableCopiableProp<String> = .copy
+    ) -> Networking.BookingResource {
+        let siteID = siteID ?? self.siteID
+        let resourceID = resourceID ?? self.resourceID
+        let name = name ?? self.name
+        let quantity = quantity ?? self.quantity
+        let role = role ?? self.role
+        let email = email ?? self.email
+        let phoneNumber = phoneNumber ?? self.phoneNumber
+        let imageID = imageID ?? self.imageID
+        let imageURL = imageURL ?? self.imageURL
+        let description = description ?? self.description
+
+        return Networking.BookingResource(
+            siteID: siteID,
+            resourceID: resourceID,
+            name: name,
+            quantity: quantity,
+            role: role,
+            email: email,
+            phoneNumber: phoneNumber,
+            imageID: imageID,
+            imageURL: imageURL,
+            description: description
         )
     }
 }
@@ -1246,30 +1356,29 @@ extension Networking.POSProduct {
         productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         productTypeKey: CopiableProp<String> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
+        shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
         attributes: CopiableProp<[ProductAttribute]> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
-        stockStatusKey: CopiableProp<String> = .copy
+        stockStatusKey: CopiableProp<String> = .copy,
+        variationIDs: CopiableProp<[Int64]> = .copy
     ) -> Networking.POSProduct {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
         let name = name ?? self.name
         let productTypeKey = productTypeKey ?? self.productTypeKey
+        let fullDescription = fullDescription ?? self.fullDescription
+        let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let parentID = parentID ?? self.parentID
         let images = images ?? self.images
@@ -1277,25 +1386,26 @@ extension Networking.POSProduct {
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+        let variationIDs = variationIDs ?? self.variationIDs
 
         return Networking.POSProduct(
             siteID: siteID,
             productID: productID,
             name: name,
             productTypeKey: productTypeKey,
+            fullDescription: fullDescription,
+            shortDescription: shortDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             parentID: parentID,
             images: images,
             attributes: attributes,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
+            stockStatusKey: stockStatusKey,
+            variationIDs: variationIDs
         )
     }
 }
@@ -1307,12 +1417,10 @@ extension Networking.POSProductVariation {
         productVariationID: CopiableProp<Int64> = .copy,
         attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
         image: NullableCopiableProp<ProductImage> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
@@ -1323,12 +1431,10 @@ extension Networking.POSProductVariation {
         let productVariationID = productVariationID ?? self.productVariationID
         let attributes = attributes ?? self.attributes
         let image = image ?? self.image
+        let fullDescription = fullDescription ?? self.fullDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
@@ -1340,12 +1446,10 @@ extension Networking.POSProductVariation {
             productVariationID: productVariationID,
             attributes: attributes,
             image: image,
+            fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
@@ -2755,7 +2859,10 @@ extension Networking.Site {
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy,
         hasSSOEnabled: CopiableProp<Bool> = .copy,
-        applicationPasswordAvailable: CopiableProp<Bool> = .copy
+        applicationPasswordAvailable: CopiableProp<Bool> = .copy,
+        isGarden: CopiableProp<Bool> = .copy,
+        gardenName: NullableCopiableProp<String> = .copy,
+        gardenPartner: NullableCopiableProp<String> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2780,6 +2887,9 @@ extension Networking.Site {
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
         let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
         let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
+        let isGarden = isGarden ?? self.isGarden
+        let gardenName = gardenName ?? self.gardenName
+        let gardenPartner = gardenPartner ?? self.gardenPartner
 
         return Networking.Site(
             siteID: siteID,
@@ -2804,7 +2914,10 @@ extension Networking.Site {
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial,
             hasSSOEnabled: hasSSOEnabled,
-            applicationPasswordAvailable: applicationPasswordAvailable
+            applicationPasswordAvailable: applicationPasswordAvailable,
+            isGarden: isGarden,
+            gardenName: gardenName,
+            gardenPartner: gardenPartner
         )
     }
 }
@@ -3861,3 +3974,5 @@ extension Networking.WordPressTheme {
         )
     }
 }
+
+// swiftlint:enable line_length

@@ -6,6 +6,8 @@ import Networking
 import Hardware
 import WooFoundation
 
+// swiftlint:disable line_length
+
 extension Networking.AIProduct {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -314,6 +316,52 @@ extension Networking.BlazeTargetTopic {
             id: .fake(),
             name: .fake(),
             locale: .fake()
+        )
+    }
+}
+extension Networking.Booking {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Booking {
+        .init(
+            siteID: .fake(),
+            bookingID: .fake(),
+            allDay: .fake(),
+            cost: .fake(),
+            customerID: .fake(),
+            dateCreated: .fake(),
+            dateModified: .fake(),
+            endDate: .fake(),
+            googleCalendarEventID: .fake(),
+            orderID: .fake(),
+            orderItemID: .fake(),
+            parentID: .fake(),
+            productID: .fake(),
+            resourceID: .fake(),
+            startDate: .fake(),
+            statusKey: .fake(),
+            attendanceStatusKey: .fake(),
+            localTimezone: .fake(),
+            currency: .fake(),
+            orderInfo: .fake()
+        )
+    }
+}
+extension Networking.BookingResource {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BookingResource {
+        .init(
+            siteID: .fake(),
+            resourceID: .fake(),
+            name: .fake(),
+            quantity: .fake(),
+            role: .fake(),
+            email: .fake(),
+            phoneNumber: .fake(),
+            imageID: .fake(),
+            imageURL: .fake(),
+            description: .fake()
         )
     }
 }
@@ -753,19 +801,19 @@ extension Networking.POSProduct {
             productID: .fake(),
             name: .fake(),
             productTypeKey: .fake(),
+            fullDescription: .fake(),
+            shortDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
             price: .fake(),
-            regularPrice: .fake(),
-            salePrice: .fake(),
-            onSale: .fake(),
             downloadable: .fake(),
             parentID: .fake(),
             images: .fake(),
             attributes: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),
-            stockStatusKey: .fake()
+            stockStatusKey: .fake(),
+            variationIDs: .fake()
         )
     }
 }
@@ -779,12 +827,10 @@ extension Networking.POSProductVariation {
             productVariationID: .fake(),
             attributes: .fake(),
             image: .fake(),
+            fullDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
             price: .fake(),
-            regularPrice: .fake(),
-            salePrice: .fake(),
-            onSale: .fake(),
             downloadable: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),
@@ -1777,7 +1823,10 @@ extension Networking.Site {
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
             hasSSOEnabled: .fake(),
-            applicationPasswordAvailable: .fake()
+            applicationPasswordAvailable: .fake(),
+            isGarden: .fake(),
+            gardenName: .fake(),
+            gardenPartner: .fake()
         )
     }
 }
@@ -2565,3 +2614,5 @@ extension Networking.WordPressTheme {
         )
     }
 }
+
+// swiftlint:enable line_length

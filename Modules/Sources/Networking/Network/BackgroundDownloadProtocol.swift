@@ -6,8 +6,9 @@ public protocol BackgroundDownloadProtocol {
     /// - Parameters:
     ///   - url: The URL to download from.
     ///   - sessionIdentifier: Unique identifier for the background session.
+    ///   - allowCellular: Whether cellular data should be allowed for this download.
     /// - Returns: Local file URL where the downloaded content is stored.
-    func downloadFile(from url: URL, sessionIdentifier: String) async throws -> URL
+    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL
 
     /// Sets up background app suspension handling.
     /// - Parameter completionHandler: Handler to call when background download completes.

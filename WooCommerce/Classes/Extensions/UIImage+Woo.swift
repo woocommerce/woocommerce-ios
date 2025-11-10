@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Gridicons
+import WooFoundation
 
 
 /// WooCommerce UIImage Assets
@@ -327,7 +328,7 @@ extension UIImage {
     /// Coupons Image
     ///
     static var couponsImage: UIImage {
-        return UIImage(named: "coupons")!
+        SharedImageAsset.coupons.uiImage!
     }
 
     /// Empty Inbox Notes Icon
@@ -355,7 +356,7 @@ extension UIImage {
     }
 
     static var shoppingBagsImage: UIImage {
-        UIImage(named: "shopping-bags")!
+        SharedImageAsset.shoppingBags.uiImage!
     }
 
     /// Image showing boxes
@@ -675,13 +676,13 @@ extension UIImage {
     /// Card Reader Update arrow
     ///
     static var cardReaderUpdateProgressArrow: UIImage {
-        return UIImage(named: "card-reader-update-progress-arrow")!
+        SharedImageAsset.cardReaderUpdateProgressArrow.uiImage!
     }
 
     /// Card Reader Update checkmark
     ///
     static var cardReaderUpdateProgressCheckmark: UIImage {
-        return UIImage(named: "card-reader-update-progress-checkmark")!
+        SharedImageAsset.cardReaderUpdateProgressCheckmark.uiImage!
     }
 
     /// Card Reader Low Battery
@@ -714,12 +715,6 @@ extension UIImage {
         return UIImage(named: "icon-shopping-cart")!
             .withRenderingMode(.alwaysTemplate)
             .imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Shopping cart Purple
-    ///
-    static var shoppingCartFilled: UIImage {
-        return UIImage(named: "icon-shopping-cart-filled")!
     }
 
     /// Bordered Custom Amount
@@ -829,6 +824,10 @@ extension UIImage {
     ///
     static var loginNoWordPressError: UIImage {
         return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    static var noBookings: UIImage {
+        UIImage(named: "no-bookings")!
     }
 
     static var incorrectRoleError: UIImage {
@@ -1369,7 +1368,7 @@ extension UIImage {
 	}
 
     static var cardReaderLocationImage: UIImage {
-        UIImage(named: "location")!
+        SharedImageAsset.location.uiImage!
     }
 }
 

@@ -5,7 +5,6 @@ extension WooAnalyticsEvent {
         /// Event property keys.
         private enum Key {
             static let source = "source"
-            static let step = "current_step"
             static let duration = "duration"
             static let totalBudget = "total_budget"
             static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
@@ -207,32 +206,6 @@ extension WooAnalyticsEvent {
     }
 }
 
-extension WooAnalyticsEvent.Blaze {
-    enum Step: Equatable {
-        case unspecified
-        case productList
-        case campaignList
-        case step1
-        case custom(step: String)
-    }
-}
-
-private extension WooAnalyticsEvent.Blaze.Step {
-    var analyticsValue: String {
-        switch self {
-        case .unspecified:
-            return "unspecified"
-        case .productList:
-            return "products-list"
-        case .campaignList:
-            return "campaigns-list"
-        case .step1:
-            return "step-1"
-        case .custom(let step):
-            return step
-        }
-    }
-}
 
 extension BlazeSource {
     var analyticsValue: String {

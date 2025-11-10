@@ -3,6 +3,7 @@
 import Codegen
 import Foundation
 
+// swiftlint:disable line_length
 
 extension Storage.AnalyticsCard {
     public func copy(
@@ -57,17 +58,22 @@ extension Storage.GeneralAppSettings {
         installationDate: NullableCopiableProp<Date> = .copy,
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
+        isApplicationPasswordsSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
         featureAnnouncementCampaignSettings: CopiableProp<[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]> = .copy,
         sitesWithAtLeastOneIPPTransactionFinished: CopiableProp<Set<Int64>> = .copy,
         isEUShippingNoticeDismissed: CopiableProp<Bool> = .copy,
-        isCustomFieldsTopBannerDismissed: CopiableProp<Bool> = .copy
+        isCustomFieldsTopBannerDismissed: CopiableProp<Bool> = .copy,
+        isPOSSurveyPotentialMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
+        isPOSSurveyCurrentMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
+        hasPOSBeenOpenedAtLeastOnce: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
+        let isApplicationPasswordsSwitchEnabled = isApplicationPasswordsSwitchEnabled ?? self.isApplicationPasswordsSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -75,18 +81,25 @@ extension Storage.GeneralAppSettings {
         let sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished ?? self.sitesWithAtLeastOneIPPTransactionFinished
         let isEUShippingNoticeDismissed = isEUShippingNoticeDismissed ?? self.isEUShippingNoticeDismissed
         let isCustomFieldsTopBannerDismissed = isCustomFieldsTopBannerDismissed ?? self.isCustomFieldsTopBannerDismissed
+        let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ?? self.isPOSSurveyPotentialMerchantNotificationScheduled
+        let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ?? self.isPOSSurveyCurrentMerchantNotificationScheduled
+        let hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce ?? self.hasPOSBeenOpenedAtLeastOnce
 
         return Storage.GeneralAppSettings(
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
+            isApplicationPasswordsSwitchEnabled: isApplicationPasswordsSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
             isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed
+            isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
+            isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
+            isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
         )
     }
 }
@@ -112,7 +125,10 @@ extension Storage.GeneralStoreSettings {
         lastSelectedOrderStatus: NullableCopiableProp<String> = .copy,
         favoriteProductIDs: CopiableProp<[Int64]> = .copy,
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
-        isPOSTabVisible: NullableCopiableProp<Bool> = .copy
+        isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
+        lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
+        firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
+        syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -134,6 +150,9 @@ extension Storage.GeneralStoreSettings {
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
         let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
+        let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
+        let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
+        let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -155,7 +174,12 @@ extension Storage.GeneralStoreSettings {
             lastSelectedOrderStatus: lastSelectedOrderStatus,
             favoriteProductIDs: favoriteProductIDs,
             searchTermsByKey: searchTermsByKey,
-            isPOSTabVisible: isPOSTabVisible
+            isPOSTabVisible: isPOSTabVisible,
+            lastPOSOpenedDate: lastPOSOpenedDate,
+            firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+            syncPOSCatalogOverCellular: syncPOSCatalogOverCellular
         )
     }
 }
+
+// swiftlint:enable line_length

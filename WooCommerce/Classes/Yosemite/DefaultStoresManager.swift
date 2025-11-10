@@ -316,10 +316,14 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+            // Reset GRDB on a background thread to avoid blocking logout
+            // when there's a large catalog to delete
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try ServiceLocator.grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 

@@ -239,30 +239,9 @@ private extension BookingDetailsView {
     }
 
     func bookingNotesView() -> some View {
-        NavigationLink {
-            // TODO: push booking notes editor
-            Text(viewModel.note)
-        } label: {
-            HStack(alignment: .center, spacing: Layout.contentSidePadding) {
-                if viewModel.note.isEmpty {
-                    Image(systemName: "plus")
-                        .font(.title3.weight(.medium))
-
-                    Text(Localization.bookingNotesRowText)
-                        .rowTextStyle()
-                        .foregroundColor(.accentColor)
-                } else {
-                    Text(viewModel.note)
-                        .rowTextStyle()
-                        .multilineTextAlignment(.leading)
-                }
-
-                Spacer()
-
-                DisclosureIndicator()
-            }
-            .padding(.vertical, Layout.rowTextVerticalPadding)
-        }
+        MultilineEditableTextRow(value: viewModel.note,
+                                 placeholder: Localization.bookingNotesRowText,
+                                 detailTitle: Localization.bookingNoteNavbarText)
     }
 }
 
@@ -321,6 +300,12 @@ extension BookingDetailsView {
             value: "Add a note",
             comment: "Add a booking note section in booking details view."
         )
+
+        static let bookingNoteNavbarText = NSLocalizedString(
+            "BookingDetailsView.bookingNote.navbar.title",
+            value: "Booking note",
+            comment: "Title of navigation bar when editing a booking note."
+        )
     }
 }
 
@@ -350,8 +335,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             localTimezone: "America/New_York",
             currency: "USD",
             orderInfo: nil,
-//            note: ""
-            note: "note note 123 note note note note note note note note note note note note note n312 ote note note note note note note note 123 note note note note note note note note note note note note note note note note note note note note note note note note note note "
+            note: ""
+//            note: "note note 123 note note note note note note note note note note note note note n312 ote note note note note note note note 123 note note note note note note note note note note note note note note note note note note note note note note note note note note "
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

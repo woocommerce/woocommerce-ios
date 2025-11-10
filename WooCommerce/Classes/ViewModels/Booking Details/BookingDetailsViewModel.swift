@@ -72,6 +72,7 @@ private extension BookingDetailsViewModel {
 
         let bookingNotes = Section(
             header: .title(Localization.bookingNotesSectionHeaderTitle.uppercased()),
+            footerText: "This is a private note. It'll not be shared with the customer.",
             content: .bookingNotes
         )
 

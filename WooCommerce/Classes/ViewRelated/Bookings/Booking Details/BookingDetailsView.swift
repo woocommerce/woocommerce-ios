@@ -14,8 +14,8 @@ struct BookingDetailsView: View {
     enum Layout {
         static let contentSidePadding: CGFloat = 16
         static let contentVerticalPadding: CGFloat = 16
-        static let headerContentVerticalPadding: CGFloat = 6
-        static let headerBadgesAdditionalTopPadding: CGFloat = 4
+        static let headerContentVerticalPadding: CGFloat = 2
+        static let headerBadgesAdditionalTopPadding: CGFloat = 6
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let rowTextVerticalPadding: CGFloat = 11
     }

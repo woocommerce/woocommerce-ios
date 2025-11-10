@@ -1044,6 +1044,9 @@ final class EditableOrderViewModel: ObservableObject {
             guard let self else { return }
             self.collectPayment(for: order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            Task {
+                await self.posNotificationScheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+            }
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }
             self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)

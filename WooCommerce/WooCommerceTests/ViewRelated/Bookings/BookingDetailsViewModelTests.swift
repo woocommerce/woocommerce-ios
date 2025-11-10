@@ -126,7 +126,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(hasCustomerSection)
     }
 
-    func test_header_content_uses_booking_summary_text() {
+    func test_header_content_uses_correct_contents() {
         // Given
         let billingAddress = Address.fake().copy(
             firstName: "Jane",
@@ -159,7 +159,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(headerContent.serviceAndCustomerLine, "Massage Therapy  •  Jane Smith")
+        XCTAssertEqual(headerContent.serviceLine, "Massage Therapy")
+        XCTAssertEqual(headerContent.customerLine, "Jane Smith")
     }
 
     func test_customer_content_populated_from_billing_address() {

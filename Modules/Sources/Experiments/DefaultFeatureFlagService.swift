@@ -99,7 +99,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ciabBookings:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleSurveys:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .pointOfSaleCatalogAPI:
             return false
         default:

@@ -11,7 +11,8 @@ extension BookingDetailsViewModel {
         @Published private(set) var bookingDate: String = ""
         @Published private(set) var attendanceStatus: BookingAttendanceStatus = .unknown
         @Published private(set) var bookingStatus: BookingStatus = .unknown
-        @Published private(set) var serviceAndCustomerLine: String = ""
+        @Published private(set) var serviceLine: String = ""
+        @Published private(set) var customerLine: String = ""
 
         func update(with booking: Booking) {
             bookingDate = booking.startDate.toString(
@@ -19,7 +20,8 @@ extension BookingDetailsViewModel {
                 timeStyle: .short,
                 timeZone: BookingListTab.utcTimeZone
             )
-            serviceAndCustomerLine = booking.summaryText
+            serviceLine = booking.productName ?? ""
+            customerLine = booking.customerName
             attendanceStatus = booking.attendanceStatus
             bookingStatus = booking.bookingStatus
         }

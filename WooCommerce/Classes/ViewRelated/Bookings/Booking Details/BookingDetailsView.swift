@@ -336,7 +336,6 @@ struct BookingDetailsView_Previews: PreviewProvider {
             currency: "USD",
             orderInfo: nil,
             note: ""
-//            note: "note note 123 note note note note note note note note note note note note note n312 ote note note note note note note note 123 note note note note note note note note note note note note note note note note note note note note note note note note note note "
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

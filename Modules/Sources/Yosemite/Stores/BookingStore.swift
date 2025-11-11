@@ -70,6 +70,12 @@ public class BookingStore: Store {
                 status: status,
                 onCompletion: onCompletion
             )
+        case .cancelBooking(let siteID, let bookingID, let onCompletion):
+            cancelBooking(
+                siteID: siteID,
+                bookingID: bookingID,
+                onCompletion: onCompletion
+            )
         }
     }
 }
@@ -294,7 +300,8 @@ private extension BookingStore {
                     if let remoteBooking = try await self.remote.updateBooking(
                         from: siteID,
                         bookingID: bookingID,
-                        attendanceStatus: status
+                        attendanceStatus: status,
+                        bookingStatus: nil,
                     ) {
                         await self.upsertStoredBookingsInBackground(
                             readOnlyBookings: [remoteBooking],
@@ -346,6 +353,36 @@ private extension BookingStore {
                 onCompletion(statusKey)
             }
         }, on: .main)
+    }
+
+    /// Cancels a booking by updating its status to cancelled.
+    func cancelBooking(
+        siteID: Int64,
+        bookingID: Int64,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        Task { @MainActor in
+            do {
+                if let remoteBooking = try await remote.updateBooking(
+                    from: siteID,
+                    bookingID: bookingID,
+                    attendanceStatus: nil,
+                    bookingStatus: .cancelled
+                ) {
+                    await upsertStoredBookingsInBackground(
+                        readOnlyBookings: [remoteBooking],
+                        readOnlyOrders: [],
+                        siteID: siteID
+                    )
+
+                    onCompletion(nil)
+                } else {
+                    return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                }
+            } catch {
+                onCompletion(error)
+            }
+        }
     }
 }
 

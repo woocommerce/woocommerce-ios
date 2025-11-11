@@ -19,6 +19,10 @@ extension Booking {
             .joined(separator: "  •  ")
     }
 
+    var hasAssociatedOrder: Bool {
+        return orderID > 0
+    }
+
     private enum Localization {
         static let guest = NSLocalizedString(
             "bookings.guest",

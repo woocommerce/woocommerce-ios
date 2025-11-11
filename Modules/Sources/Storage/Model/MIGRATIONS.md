@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 130 (Release 23.7)
+- @adborbas 2025-11-06
+  - Added `note` attribute to `Booking` entity.
+
 ## Model 129 (Release X.X.X.X)
 - @rafaelkayumov 2025-10-17
   - Added `attendanceStatusKey` attribute to `Booking` entity.

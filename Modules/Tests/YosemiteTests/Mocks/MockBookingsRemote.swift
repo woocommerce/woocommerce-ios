@@ -42,28 +42,31 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
         return try result.get()
     }
 
-    func loadBooking(bookingID: Int64, siteID: Int64) async throws -> Networking.Booking? {
+    func loadBooking(bookingID: Int64, siteID: Int64) async throws -> Booking? {
         guard let result = loadBookingResult else {
             throw NetworkError.timeout()
         }
         return try result.get()
     }
 
-    func fetchResource(resourceID: Int64, siteID: Int64) async throws -> Networking.BookingResource? {
+    func fetchResource(resourceID: Int64, siteID: Int64) async throws -> BookingResource? {
         guard let result = fetchResourceResult else {
             throw NetworkError.timeout()
         }
         return try result.get()
     }
 
-    func updateBooking(from siteID: Int64, bookingID: Int64, attendanceStatus: Networking.BookingAttendanceStatus) async throws -> Networking.Booking? {
+    func updateBooking(from siteID: Int64,
+                       bookingID: Int64,
+                       attendanceStatus: BookingAttendanceStatus?,
+                       bookingStatus: BookingStatus?) async throws -> Booking? {
         guard let result = updateBookingResult else {
             throw NetworkError.timeout()
         }
         return try result.get()
     }
 
-    func fetchResources(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Networking.BookingResource] {
+    func fetchResources(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [BookingResource] {
         guard let result = fetchResourcesResult else {
             throw NetworkError.timeout()
         }

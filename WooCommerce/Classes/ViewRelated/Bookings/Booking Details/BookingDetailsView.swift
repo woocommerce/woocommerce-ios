@@ -45,6 +45,7 @@ struct BookingDetailsView: View {
                 }
             }
         }
+        .verticalHairlineBorders()
         .frame(maxWidth: Layout.contentContainerMaxWidth)
         .refreshable {
             await viewModel.syncData()

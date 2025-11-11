@@ -27,10 +27,9 @@ extension BookingDetailsViewModel {
             ]
 
             actions = [
-                .markAsPaid,
-                .issueRefund,
+                booking.isEligibleForMarkAsPaid ? .markAsPaid : nil,
                 .viewOrder
-            ]
+            ].compactMap { $0 }
         }
     }
 }
@@ -84,7 +83,6 @@ extension BookingDetailsViewModel.PaymentContent.Amount.AmountType {
 extension BookingDetailsViewModel.PaymentContent {
     enum Action: String, Identifiable {
         case markAsPaid
-        case issueRefund
         case viewOrder
 
         var id: String {
@@ -98,19 +96,8 @@ extension BookingDetailsViewModel.PaymentContent.Action {
         switch self {
         case .markAsPaid:
             return Localization.paymentMarkAsPaidButtonTitle
-        case .issueRefund:
-            return Localization.paymentIssueRefundButtonTitle
         case .viewOrder:
             return Localization.paymentViewOrderButtonTitle
-        }
-    }
-
-    var isEmphasized: Bool {
-        switch self {
-        case .markAsPaid:
-            return true
-        case .issueRefund, .viewOrder:
-            return false
         }
     }
 }
@@ -144,12 +131,6 @@ private enum Localization {
         "BookingDetailsView.payment.markAsPaid.title",
         value: "Mark as paid",
         comment: "Title for 'Mark as paid' button in payment section in booking details view."
-    )
-
-    static let paymentIssueRefundButtonTitle = NSLocalizedString(
-        "BookingDetailsView.payment.issueRefund.title",
-        value: "Issue refund",
-        comment: "Title for 'Issue refund' button in payment section in booking details view."
     )
 
     static let paymentViewOrderButtonTitle = NSLocalizedString(

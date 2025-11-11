@@ -8,6 +8,7 @@ struct BookingDetailsView: View {
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
     @State private var cancellingBooking = false
+    @State private var markingAsPaid = false
     @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
@@ -62,8 +63,9 @@ struct BookingDetailsView: View {
                 }
                 .confirmationDialog("", isPresented: $showingOptions, titleVisibility: .hidden) {
                     Button(Localization.markAsPaid) {
-                        print("On mark as paid tap")
+                        markBookingAsPaid()
                     }
+                    .renderedIf(viewModel.shouldShowMarkAsPaid)
                     Button(Localization.viewOrder) {
                         viewModel.navigateToOrderDetails()
                     }
@@ -219,20 +221,15 @@ private extension BookingDetailsView {
 
             VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
                 ForEach(content.actions) { action in
-                    Button {
-                        if action == .viewOrder {
+                    switch action {
+                    case .viewOrder:
+                        Button(action.buttonTitle) {
                             viewModel.navigateToOrderDetails()
-                        } else {
-                            /// On action tap
                         }
-                    } label: {
-                        Text(action.buttonTitle)
-                    }
-                    .if(action.isEmphasized) {
-                        $0.buttonStyle(PrimaryButtonStyle())
-                    }
-                    .if(!action.isEmphasized) {
-                        $0.buttonStyle(SecondaryButtonStyle())
+                        .buttonStyle(SecondaryButtonStyle())
+                    case .markAsPaid:
+                        Button(action.buttonTitle, action: markBookingAsPaid)
+                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: markingAsPaid))
                     }
                 }
             }
@@ -267,6 +264,18 @@ extension BookingDetailsView {
                 viewModel.displayBookingCancellationErrorNotice(onRetry: cancelBooking)
             }
             cancellingBooking = false
+        }
+    }
+
+    func markBookingAsPaid() {
+        Task { @MainActor in
+            markingAsPaid = true
+            do {
+                try await viewModel.markBookingAsPaid()
+            } catch {
+                viewModel.displayMarkingAsPaidErrorNotice(onRetry: markBookingAsPaid)
+            }
+            markingAsPaid = false
         }
     }
 }

@@ -19,6 +19,10 @@ extension Booking {
             .joined(separator: "  •  ")
     }
 
+    var isEligibleForMarkAsPaid: Bool {
+        bookingStatus == .unpaid
+    }
+
     private enum Localization {
         static let guest = NSLocalizedString(
             "bookings.guest",

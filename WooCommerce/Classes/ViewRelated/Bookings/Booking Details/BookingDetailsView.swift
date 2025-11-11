@@ -19,6 +19,7 @@ struct BookingDetailsView: View {
         static let headerBadgesAdditionalTopPadding: CGFloat = 6
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let rowTextVerticalPadding: CGFloat = 11
+        static let contentContainerMaxWidth: CGFloat = 525
     }
 
     enum TextFont {
@@ -44,6 +45,7 @@ struct BookingDetailsView: View {
                 }
             }
         }
+        .frame(maxWidth: Layout.contentContainerMaxWidth)
         .refreshable {
             await viewModel.syncData()
         }

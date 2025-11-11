@@ -90,6 +90,7 @@ private extension BookingListView {
 
     var loadingView: some View {
         VStack {
+            header
             Spacer()
             ProgressView().progressViewStyle(.circular)
             Spacer()
@@ -158,7 +159,8 @@ private extension BookingListView {
                 LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
                     Section {
                         emptyStateContent(isSearching: isSearching)
-                            .frame(minWidth: proxy.size.width, minHeight: proxy.size.height)
+                            .frame(minWidth: proxy.size.width,
+                                   minHeight: proxy.size.height - BookingListViewLayout.defaultHeaderHeight * scale)
                     } header: {
                         header
                     }
@@ -233,6 +235,7 @@ fileprivate enum BookingListViewLayout {
     static let emptyStatePadding: CGFloat = 24
     static let emptyStateImageWidth: CGFloat = 67
     static let cornerRadius: CGFloat = 8
+    static let defaultHeaderHeight: CGFloat = 98
 }
 
 fileprivate enum BookingListViewLocalization {

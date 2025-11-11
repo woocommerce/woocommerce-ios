@@ -19,6 +19,7 @@
             "parent_id": 0,
             "person_counts": [],
             "local_timezone": "",
+            "note": "",
         },
         {
             "id": 77,
@@ -39,6 +40,7 @@
             "parent_id": 0,
             "person_counts": [],
             "local_timezone": "",
+            "note": "",
         }
     ]
 }

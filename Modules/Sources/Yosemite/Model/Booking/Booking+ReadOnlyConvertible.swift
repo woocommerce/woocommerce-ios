@@ -32,6 +32,7 @@ extension Storage.Booking: ReadOnlyConvertible {
         attendanceStatusKey = booking.attendanceStatusKey
         localTimezone = booking.localTimezone
         currency = booking.currency
+        note = booking.note
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -56,7 +57,8 @@ extension Storage.Booking: ReadOnlyConvertible {
                 attendanceStatusKey: attendanceStatusKey ?? "",
                 localTimezone: localTimezone ?? "",
                 currency: currency ?? "USD",
-                orderInfo: orderInfo?.toReadOnly())
+                orderInfo: orderInfo?.toReadOnly(),
+                note: note ?? "")
     }
 }
 

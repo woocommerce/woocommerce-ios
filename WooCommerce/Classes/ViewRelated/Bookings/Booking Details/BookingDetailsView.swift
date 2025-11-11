@@ -7,6 +7,7 @@ struct BookingDetailsView: View {
     @State private var showingOptions = false
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
+    @State private var cancellingBooking = false
     @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
@@ -63,12 +64,15 @@ struct BookingDetailsView: View {
                     Button(Localization.markAsPaid) {
                         print("On mark as paid tap")
                     }
-                    Button(Localization.viewOrder) {
-                        viewModel.navigateToOrderDetails()
+                    if viewModel.isViewOrderAvailable {
+                        Button(Localization.viewOrder) {
+                            viewModel.navigateToOrderDetails()
+                        }
                     }
                     Button(Localization.cancelBookingAction, role: .destructive) {
-                        print("On cancel booking tap")
+                        showingCancelAlert = true
                     }
+                    .renderedIf(viewModel.isBookingCancellable)
                 }
             }
         }
@@ -91,7 +95,7 @@ struct BookingDetailsView: View {
         ) {
             Button(Localization.cancelBookingAlertCancelAction, role: .cancel) {}
             Button(Localization.cancelBookingAlertConfirmAction, role: .destructive) {
-                print("On cancel booking confirmation tap")
+                cancelBooking()
             }
         } message: {
             Text(viewModel.cancellationAlertMessage)
@@ -187,8 +191,9 @@ private extension BookingDetailsView {
             } label: {
                 Text(Localization.cancelBooking)
             }
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: cancellingBooking))
             .padding(.vertical, Layout.contentVerticalPadding)
+            .renderedIf(viewModel.isBookingCancellable)
         }
     }
 
@@ -239,17 +244,22 @@ private extension BookingDetailsView {
     }
 
     func bookingNotesView() -> some View {
-        HStack(spacing: Layout.contentSidePadding) {
-            Image(systemName: "plus")
-                .font(.title3.weight(.medium))
-            Text(Localization.bookingNotesRowText)
-                .rowTextStyle()
-            Spacer()
-        }
-        .foregroundStyle(Color.accentColor)
-        .padding(.vertical, Layout.rowTextVerticalPadding)
-        .tappable {
-            print("On Add a note tap")
+        MultilineEditableTextRow(value: viewModel.note,
+                                 placeholder: Localization.bookingNotesRowText,
+                                 detailTitle: Localization.bookingNoteNavbarText)
+    }
+}
+
+extension BookingDetailsView {
+    func cancelBooking() {
+        Task { @MainActor in
+            cancellingBooking = true
+            do {
+                try await viewModel.cancelBooking()
+            } catch {
+                viewModel.displayBookingCancellationErrorNotice(onRetry: cancelBooking)
+            }
+            cancellingBooking = false
         }
     }
 }
@@ -305,9 +315,15 @@ extension BookingDetailsView {
 
         /// Booking notes
         static let bookingNotesRowText = NSLocalizedString(
-            "BookingDetailsView.bookingNotes.addANoteRow.title",
-            value: "Add a note",
-            comment: "Add a note row title in booking notes section in booking details view."
+            "BookingDetailsView.bookingNote.addNoteRow.title",
+            value: "Add note",
+            comment: "Add a booking note section in booking details view."
+        )
+
+        static let bookingNoteNavbarText = NSLocalizedString(
+            "BookingDetailsView.bookingNote.navbar.title",
+            value: "Booking note",
+            comment: "Title of navigation bar when editing a booking note."
         )
     }
 }
@@ -337,7 +353,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             attendanceStatusKey: "booked",
             localTimezone: "America/New_York",
             currency: "USD",
-            orderInfo: nil
+            orderInfo: nil,
+            note: ""
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

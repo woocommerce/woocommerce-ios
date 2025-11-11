@@ -71,4 +71,14 @@ public enum BookingAction: Action {
                                        bookingID: Int64,
                                        status: BookingAttendanceStatus,
                                        onCompletion: (Error?) -> Void)
+
+    /// Cancels a booking by updating its status to cancelled.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to be cancelled.
+    /// - Parameter onCompletion: called when cancellation completes, returns an error in case of a failure.
+    ///
+    case cancelBooking(siteID: Int64,
+                       bookingID: Int64,
+                       onCompletion: (Error?) -> Void)
 }

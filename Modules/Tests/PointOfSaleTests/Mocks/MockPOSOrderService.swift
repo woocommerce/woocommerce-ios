@@ -14,12 +14,33 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var spySyncOrderCurrency: CurrencyCode?
     var spyCashPaymentChangeDueAmount: String?
 
+    // For controlling sync timing in tests
+    private var syncContinuation: CheckedContinuation<Void, Never>?
+    private var shouldBlockSync = false
+
+    /// Blocks the next sync operation until `resumeBlockedSync()` is called
+    func blockNextSync() {
+        shouldBlockSync = true
+    }
+
+    /// Resumes a blocked sync operation
+    func resumeBlockedSync() {
+        syncContinuation?.resume()
+        syncContinuation = nil
+        shouldBlockSync = false
+    }
+
     func syncOrder(cart: Yosemite.POSCart,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
         spySyncOrderCurrency = currency
 
-        if simulateSyncing {
+        if shouldBlockSync {
+            shouldBlockSync = false // Only block the first call
+            await withCheckedContinuation { continuation in
+                syncContinuation = continuation
+            }
+        } else if simulateSyncing {
             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
         }
 

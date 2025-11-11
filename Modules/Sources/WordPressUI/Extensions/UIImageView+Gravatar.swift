@@ -23,16 +23,11 @@ private class GravatarNotificationWrapper {
 extension UIImageView {
 
     /// Downloads and sets the User's Gravatar, given his email.
-    /// TODO: This is a convenience method. Please, remove once all of the code has been migrated over to Swift.
     ///
     /// - Parameters:
     ///     - email: the user's email
     ///     - rating: expected image rating
-    ///
-    ///   This method uses deprecated types. Please check the deprecation warning in `GravatarRatings`. Also check out the UIImageView extension from the Gravatar iOS SDK as an alternative to download images. See: https://github.com/Automattic/Gravatar-SDK-iOS.
-    @available(*, deprecated, message: "Usage of the deprecated type: GravatarRatings.")
-    @objc
-    public func downloadGravatarWithEmail(_ email: String, rating: GravatarRatings) {
+    public func downloadGravatarWithEmail(_ email: String, rating: Rating) {
         downloadGravatarWithEmail(email, rating: rating, placeholderImage: .gravatarPlaceholderImage)
     }
 
@@ -42,10 +37,7 @@ extension UIImageView {
     ///     - email: the user's email
     ///     - rating: expected image rating
     ///     - placeholderImage: Image to be used as Placeholder
-    ///   This method uses deprecated types. Please check the deprecation warning in `GravatarRatings`. Also check out the UIImageView extension from the Gravatar iOS SDK as an alternative to download images. See: https://github.com/Automattic/Gravatar-SDK-iOS.
-    @available(*, deprecated, message: "Usage of the deprecated type: GravatarRatings.")
-    @objc
-    public func downloadGravatarWithEmail(_ email: String, rating: GravatarRatings = .default, placeholderImage: UIImage = .gravatarPlaceholderImage) {
+    public func downloadGravatarWithEmail(_ email: String, rating: Rating = .general, placeholderImage: UIImage = .gravatarPlaceholderImage) {
         let gravatarURL = Gravatar.gravatarUrl(for: email, size: gravatarDefaultSize(), rating: rating)
 
         listenForGravatarChanges(forEmail: email)
@@ -144,7 +136,7 @@ extension UIImageView {
     /// Hope buddah, and the code reviewer, can forgive me for this hack.
     ///
     @available(*, deprecated, message: "Usage of the deprecated type: GravatarRatings.")
-    @objc public func overrideGravatarImageCache(_ image: UIImage, rating: GravatarRatings, email: String) {
+    public func overrideGravatarImageCache(_ image: UIImage, rating: Rating, email: String) {
         guard let gravatarURL = Gravatar.gravatarUrl(for: email, size: gravatarDefaultSize(), rating: rating) else {
             return
         }

@@ -37,6 +37,9 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
+        Task {
+            _ = await isRemoteCatalogFeatureFlagEnabled()
+        }
     }
 
     /// Get catalog eligibility for a specific site

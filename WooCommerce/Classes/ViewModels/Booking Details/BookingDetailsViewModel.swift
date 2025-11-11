@@ -457,8 +457,8 @@ private extension BookingDetailsViewModel {
         )
 
         static let bookingAttendanceStatusUpdateFailedMessage = NSLocalizedString(
-            "BookingDetailsView.attendanceStatus.updateFailed.message",
-            value: "Unable to change attendance status of Booking #%1$d",
+            "BookingDetailsView.attendanceStatus.failureMessage.",
+            value: "Unable to change attendance status of Booking #%1$d.",
             comment: "Content of error presented when updating the attendance status of a Booking fails. "
             + "It reads: Unable to change status of Booking #{Booking number}. "
             + "Parameters: %1$d - Booking number"
@@ -466,7 +466,7 @@ private extension BookingDetailsViewModel {
 
         static let bookingCancellationFailedMessage = NSLocalizedString(
             "BookingDetailsView.cancellation.failureMessage",
-            value: "Unable to cancel Booking #%1$d",
+            value: "Unable to cancel Booking #%1$d.",
             comment: "Content of error presented when cancelling a Booking fails. "
             + "It reads: Unable to cancel Booking #{Booking number}. "
             + "Parameters: %1$d - Booking number"
@@ -474,7 +474,7 @@ private extension BookingDetailsViewModel {
 
         static let bookingMarkAsPaidFailedMessage = NSLocalizedString(
             "BookingDetailsView.markAsPaid.failureMessage",
-            value: "Unable to mark Booking #%1$d as paid",
+            value: "Unable to mark Booking #%1$d as paid.",
             comment: "Content of error presented when cancelling a Booking fails. "
             + "It reads: Unable to mark Booking #{Booking number} as paid. "
             + "Parameters: %1$d - Booking number"

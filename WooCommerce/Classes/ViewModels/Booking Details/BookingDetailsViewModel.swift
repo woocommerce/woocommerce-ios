@@ -84,7 +84,7 @@ private extension BookingDetailsViewModel {
 
     func updateDisplayProperties(from booking: Booking) {
         navigationTitle = Self.navigationTitle(for: booking)
-        isViewOrderAvailable = booking.isOrderValid
+        isViewOrderAvailable = booking.hasAssociatedOrder
 
         headerContent.update(with: booking)
 

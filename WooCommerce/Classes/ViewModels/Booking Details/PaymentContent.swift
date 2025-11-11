@@ -29,7 +29,7 @@ extension BookingDetailsViewModel {
             actions = [
                 .markAsPaid,
                 .issueRefund
-            ] + (booking.isOrderValid ? [.viewOrder] : [])
+            ] + (booking.hasAssociatedOrder ? [.viewOrder] : [])
         }
     }
 }

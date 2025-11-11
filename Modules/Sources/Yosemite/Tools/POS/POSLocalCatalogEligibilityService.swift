@@ -37,8 +37,9 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
+        // Eagerly start fetching the remote flag in the background
         Task {
-            _ = await isRemoteCatalogFeatureFlagEnabled()
+            await self.fetchRemoteFlag()
         }
     }
 
@@ -53,22 +54,15 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     }
 
     /// Fetch and cache the remote feature flag value
-    /// Returns cached value if available, otherwise returns true without waiting for network
+    /// Returns cached value if available, otherwise returns true (assumes eligible)
     private func isRemoteCatalogFeatureFlagEnabled() async -> Bool {
-        if let cached = cachedRemoteFeatureFlag {
-            return cached
-        }
-        // No cached value yet - assume eligible (true) without waiting for network
-        // Kick off the fetch in the background to cache for next time
-        Task { [weak self] in
-            let value = await self?.remoteFeatureFlagProvider() ?? true
-            await self?.cacheRemoteFeatureFlag(value)
-        }
-        return true
+        // Return cached value if we have one
+        return cachedRemoteFeatureFlag ?? true
     }
 
-    /// Cache the remote feature flag value (actor-isolated)
-    private func cacheRemoteFeatureFlag(_ value: Bool) {
+    /// Fetch the remote feature flag value and cache it (actor-isolated)
+    private func fetchRemoteFlag() async {
+        let value = await remoteFeatureFlagProvider()
         cachedRemoteFeatureFlag = value
     }
 

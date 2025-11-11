@@ -849,6 +849,112 @@ struct BookingStoreTests {
         #expect(error != nil)
     }
 
+    // MARK: - markBookingAsPaid
+
+    @Test func markBookingAsPaid_updates_local_booking_to_paid_status() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            statusKey: "unpaid"
+        )
+        storeBooking(booking)
+
+        let paidBooking = booking.copy(statusKey: "paid")
+        remote.whenUpdatingBooking(thenReturn: .success(paidBooking))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.markBookingAsPaid(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error == nil)
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
+        #expect(storedBooking.statusKey == "paid")
+    }
+
+    @Test func markBookingAsPaid_returns_error_on_remote_failure() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            statusKey: "unpaid"
+        )
+        storeBooking(booking)
+
+        remote.whenUpdatingBooking(thenReturn: .failure(NetworkError.timeout()))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.markBookingAsPaid(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error != nil)
+        let networkError = error as? NetworkError
+        #expect(networkError == .timeout())
+    }
+
+    @Test func markBookingAsPaid_returns_error_when_remote_booking_is_missing() async throws {
+        // Given
+        let booking = Booking.fake().copy(
+            siteID: sampleSiteID,
+            bookingID: 1,
+            statusKey: "unpaid"
+        )
+        storeBooking(booking)
+
+        remote.whenUpdatingBooking(thenReturn: .success(nil))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.markBookingAsPaid(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    onCompletion: { error in
+                        continuation.resume(returning: error)
+                    }
+                )
+            )
+        }
+
+        // Then
+        #expect(error != nil)
+    }
+
     // MARK: - synchronizeResources
 
     @Test func synchronizeResources_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() async throws {

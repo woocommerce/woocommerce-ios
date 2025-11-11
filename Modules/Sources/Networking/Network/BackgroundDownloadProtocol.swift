@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 
 /// Protocol for handling background downloads with app suspension support.

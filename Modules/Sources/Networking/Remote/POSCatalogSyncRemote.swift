@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 
 /// Protocol for POS Catalog Sync Remote operations.

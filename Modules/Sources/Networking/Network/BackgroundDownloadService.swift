@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import CocoaLumberjackSwift
 import Foundation
 

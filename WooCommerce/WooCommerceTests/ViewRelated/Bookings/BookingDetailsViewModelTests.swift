@@ -276,8 +276,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
 
         let messageFormat = NSLocalizedString(
-            "BookingDetailsView.attendanceStatus.updateFailed.message",
-            value: "Unable to change attendance status of Booking #%1$d",
+            "BookingDetailsView.attendanceStatus.failureMessage",
+            value: "Unable to change attendance status of Booking #%1$d.",
             comment: ""
         )
         let expectedMessage = String(format: messageFormat, booking.bookingID)

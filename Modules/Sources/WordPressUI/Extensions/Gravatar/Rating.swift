@@ -2,7 +2,6 @@ import Foundation
 
 /// Sources:
 /// - https://github.com/Automattic/Gravatar-SDK-iOS/blob/trunk/Sources/Gravatar/Options/Rating.swift
-/// - https://github.com/Automattic/Gravatar-SDK-iOS/blob/trunk/Sources/Gravatar/OpenApi/Generated/AvatarRating.swift
 /// Gravatar allows users to self-rate their images so that they can indicate if an image is appropriate for a certain audience. By default, only `general`
 /// rated
 /// images are displayed unless you indicate that you would like to see higher ratings.
@@ -17,28 +16,4 @@ public enum Rating: String, Sendable, CaseIterable {
     case restricted = "r"
     /// May contain sexual imagery or extremely disturbing violence.
     case x
-}
-
-extension Rating {
-    func toAvatarRating() -> AvatarRating {
-        switch self {
-        case .general:
-            .g
-        case .parentalGuidance:
-            .pg
-        case .restricted:
-            .r
-        case .x:
-            .x
-        }
-    }
-}
-
-/// Rating associated with the image.
-///
-enum AvatarRating: String, Codable, CaseIterable {
-    case g = "G"
-    case pg = "PG"
-    case r = "R"
-    case x = "X"
 }

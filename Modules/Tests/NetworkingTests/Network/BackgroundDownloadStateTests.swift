@@ -8,8 +8,7 @@ struct BackgroundDownloadStateTests {
         // Given
         let state = BackgroundDownloadState(
             sessionIdentifier: "test.session.123",
-            siteID: 456,
-            startedAt: Date()
+            siteID: 456
         )
 
         // When
@@ -19,7 +18,6 @@ struct BackgroundDownloadStateTests {
         let loaded = BackgroundDownloadState.load(for: "test.session.123")
         #expect(loaded?.sessionIdentifier == "test.session.123")
         #expect(loaded?.siteID == 456)
-        #expect(loaded?.startedAt != nil)
 
         // Cleanup
         BackgroundDownloadState.clear()
@@ -40,8 +38,7 @@ struct BackgroundDownloadStateTests {
         // Given
         let state = BackgroundDownloadState(
             sessionIdentifier: "session.A",
-            siteID: 123,
-            startedAt: Date()
+            siteID: 123
         )
         BackgroundDownloadState.save(state)
 
@@ -59,8 +56,7 @@ struct BackgroundDownloadStateTests {
         // Given
         let state = BackgroundDownloadState(
             sessionIdentifier: "test.session",
-            siteID: 789,
-            startedAt: Date()
+            siteID: 789
         )
         BackgroundDownloadState.save(state)
 
@@ -76,15 +72,13 @@ struct BackgroundDownloadStateTests {
         // Given
         let firstState = BackgroundDownloadState(
             sessionIdentifier: "session.1",
-            siteID: 100,
-            startedAt: Date()
+            siteID: 100
         )
         BackgroundDownloadState.save(firstState)
 
         let secondState = BackgroundDownloadState(
             sessionIdentifier: "session.2",
-            siteID: 200,
-            startedAt: Date()
+            siteID: 200
         )
 
         // When

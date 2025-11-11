@@ -10,8 +10,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let siteID: Int64 = 456
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: siteID,
-            startedAt: Date()
+            siteID: siteID
         )
         BackgroundDownloadState.save(state)
 
@@ -71,8 +70,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.789"
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: 111,
-            startedAt: Date()
+            siteID: 111
         )
         BackgroundDownloadState.save(state)
 
@@ -97,8 +95,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.reconnect"
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: 222,
-            startedAt: Date()
+            siteID: 222
         )
         BackgroundDownloadState.save(state)
 

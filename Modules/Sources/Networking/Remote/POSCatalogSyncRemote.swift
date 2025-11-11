@@ -215,8 +215,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         // Save download state so we can resume if app is terminated
         let downloadState = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: siteID,
-            startedAt: Date()
+            siteID: siteID
         )
         BackgroundDownloadState.save(downloadState)
 

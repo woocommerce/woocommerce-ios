@@ -3,7 +3,6 @@ import Combine
 import Storage
 import class Networking.UserAgent
 import class Networking.BackgroundCatalogDownloadCoordinator
-import Experiments
 import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site

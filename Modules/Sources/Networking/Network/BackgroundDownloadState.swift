@@ -5,7 +5,6 @@ import Foundation
 public struct BackgroundDownloadState: Codable {
     let sessionIdentifier: String
     let siteID: Int64
-    let startedAt: Date
 
     private static let userDefaultsKey = "com.woocommerce.pos.backgroundDownloadState"
 

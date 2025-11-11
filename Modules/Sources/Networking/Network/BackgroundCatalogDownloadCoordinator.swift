@@ -4,12 +4,9 @@ import CocoaLumberjackSwift
 /// Coordinates background catalog downloads, including handling app wake events.
 public class BackgroundCatalogDownloadCoordinator {
     private let backgroundDownloader: BackgroundDownloadProtocol
-    private let fileManager: FileManager
 
-    public init(backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService(),
-                fileManager: FileManager = .default) {
+    public init(backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService()) {
         self.backgroundDownloader = backgroundDownloader
-        self.fileManager = fileManager
     }
 
     /// Handles a background URLSession wake event.

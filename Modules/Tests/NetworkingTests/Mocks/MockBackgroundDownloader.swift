@@ -12,6 +12,9 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
     var backgroundCompletionHandler: (() -> Void)?
     var cancelCallCount = 0
     var lastCancelledSessionIdentifier: String?
+    var reconnectSessionCallCount = 0
+    var lastReconnectSessionIdentifier: String?
+    var mockFileURL: URL?
 
     private let fileManager: FileManager
 
@@ -40,6 +43,15 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
 
     func setBackgroundCompletionHandler(_ completionHandler: @escaping () -> Void) {
         backgroundCompletionHandler = completionHandler
+    }
+
+    func reconnectToSession(identifier sessionIdentifier: String,
+                           allowCellular: Bool,
+                           completionHandler: @escaping () -> Void) async -> URL? {
+        reconnectSessionCallCount += 1
+        lastReconnectSessionIdentifier = sessionIdentifier
+        setBackgroundCompletionHandler(completionHandler)
+        return mockFileURL
     }
 
     func cancelDownloads(for sessionIdentifier: String) async {
@@ -71,6 +83,9 @@ extension MockBackgroundDownloader {
         backgroundCompletionHandler = nil
         cancelCallCount = 0
         lastCancelledSessionIdentifier = nil
+        reconnectSessionCallCount = 0
+        lastReconnectSessionIdentifier = nil
+        mockFileURL = nil
     }
 
     /// Simulate calling the background completion handler

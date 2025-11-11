@@ -303,4 +303,8 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     }
 
     func stopOngoingSyncs(for siteID: Int64) async {}
+
+    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+        // Not used in these tests
+    }
 }

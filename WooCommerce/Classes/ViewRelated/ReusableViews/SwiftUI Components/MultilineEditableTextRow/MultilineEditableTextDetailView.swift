@@ -23,9 +23,7 @@ struct MultilineEditableTextDetailView: View {
                 .padding(.horizontal, Layout.horizontalPadding)
                 .padding(.vertical, Layout.verticalPadding)
         }
-        .if(title != nil) {
-            $0.navigationTitle(title ?? "")
-        }
+        .navigationTitle(title ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar { toolbar }

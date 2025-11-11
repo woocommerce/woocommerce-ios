@@ -33,6 +33,8 @@ final class BookingDetailsViewModel: ObservableObject {
         booking.attendanceStatus
     }
 
+    var note: String { booking.note }
+
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager) {
@@ -69,7 +71,8 @@ private extension BookingDetailsViewModel {
         )
 
         let bookingNotes = Section(
-            header: .title(Localization.bookingNotesSectionHeaderTitle.uppercased()),
+            header: .title(Localization.bookingNoteSectionHeaderTitle.uppercased()),
+            footerText: Localization.bookingNoteSectionFooterText,
             content: .bookingNotes
         )
 
@@ -406,10 +409,16 @@ private extension BookingDetailsViewModel {
             comment: "Header title for the 'Payment' section in the booking details screen."
         )
 
-        static let bookingNotesSectionHeaderTitle = NSLocalizedString(
-            "BookingDetailsView.bookingNotes.headerTitle",
-            value: "Booking notes",
-            comment: "Header title for the 'Booking notes' section in the booking details screen."
+        static let bookingNoteSectionHeaderTitle = NSLocalizedString(
+            "BookingDetailsView.bookingNote.headerTitle",
+            value: "Booking note",
+            comment: "Header title for the 'Booking note' section in the booking details screen."
+        )
+
+        static let bookingNoteSectionFooterText = NSLocalizedString(
+            "BookingDetailsView.bookingNote.footerText",
+            value: "This is a private note. It'll not be shared with the customer.",
+            comment: "Footer text for the `Booking note` section in the booking details screen."
         )
 
         static let cancelBookingAlertMessage = NSLocalizedString(

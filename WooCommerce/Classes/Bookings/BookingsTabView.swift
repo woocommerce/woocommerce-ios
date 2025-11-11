@@ -50,7 +50,9 @@ struct BookingsTabView: View {
         } detail: {
             if let selectedBooking {
                 let viewModel = BookingDetailsViewModel(booking: selectedBooking)
-                BookingDetailsView(viewModel)
+                NavigationStack {
+                    BookingDetailsView(viewModel)
+                }
             } else {
                 Text("Select a booking to see details.")
             }

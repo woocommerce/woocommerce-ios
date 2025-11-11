@@ -242,18 +242,9 @@ private extension BookingDetailsView {
     }
 
     func bookingNotesView() -> some View {
-        HStack(spacing: Layout.contentSidePadding) {
-            Image(systemName: "plus")
-                .font(.title3.weight(.medium))
-            Text(Localization.bookingNotesRowText)
-                .rowTextStyle()
-            Spacer()
-        }
-        .foregroundStyle(Color.accentColor)
-        .padding(.vertical, Layout.rowTextVerticalPadding)
-        .tappable {
-            print("On Add a note tap")
-        }
+        MultilineEditableTextRow(value: viewModel.note,
+                                 placeholder: Localization.bookingNotesRowText,
+                                 detailTitle: Localization.bookingNoteNavbarText)
     }
 }
 
@@ -322,9 +313,15 @@ extension BookingDetailsView {
 
         /// Booking notes
         static let bookingNotesRowText = NSLocalizedString(
-            "BookingDetailsView.bookingNotes.addANoteRow.title",
-            value: "Add a note",
-            comment: "Add a note row title in booking notes section in booking details view."
+            "BookingDetailsView.bookingNote.addNoteRow.title",
+            value: "Add note",
+            comment: "Add a booking note section in booking details view."
+        )
+
+        static let bookingNoteNavbarText = NSLocalizedString(
+            "BookingDetailsView.bookingNote.navbar.title",
+            value: "Booking note",
+            comment: "Title of navigation bar when editing a booking note."
         )
     }
 }
@@ -354,7 +351,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             attendanceStatusKey: "booked",
             localTimezone: "America/New_York",
             currency: "USD",
-            orderInfo: nil
+            orderInfo: nil,
+            note: ""
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

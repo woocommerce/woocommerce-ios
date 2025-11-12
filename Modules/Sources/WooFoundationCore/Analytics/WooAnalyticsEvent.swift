@@ -79,12 +79,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogDownloadingScreenExitPosTapped, properties: [:])
         }
 
-        // periphery:ignore - Will be used when error screen tracking is implemented
         public static func splashScreenErrorShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSplashScreenErrorShown, properties: [:])
         }
 
-        // periphery:ignore - Will be used when error screen tracking is implemented
         public static func splashScreenRetryTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSplashScreenRetryTapped, properties: [:])
         }

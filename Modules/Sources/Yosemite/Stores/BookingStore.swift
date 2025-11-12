@@ -76,6 +76,12 @@ public class BookingStore: Store {
                 bookingID: bookingID,
                 onCompletion: onCompletion
             )
+        case .markBookingAsPaid(let siteID, let bookingID, let onCompletion):
+            markBookingAsPaid(
+                siteID: siteID,
+                bookingID: bookingID,
+                onCompletion: onCompletion
+            )
         }
     }
 }
@@ -368,6 +374,36 @@ private extension BookingStore {
                     bookingID: bookingID,
                     attendanceStatus: nil,
                     bookingStatus: .cancelled
+                ) {
+                    await upsertStoredBookingsInBackground(
+                        readOnlyBookings: [remoteBooking],
+                        readOnlyOrders: [],
+                        siteID: siteID
+                    )
+
+                    onCompletion(nil)
+                } else {
+                    return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                }
+            } catch {
+                onCompletion(error)
+            }
+        }
+    }
+
+    /// Marks a booking as paid by updating its status to paid.
+    func markBookingAsPaid(
+        siteID: Int64,
+        bookingID: Int64,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        Task { @MainActor in
+            do {
+                if let remoteBooking = try await remote.updateBooking(
+                    from: siteID,
+                    bookingID: bookingID,
+                    attendanceStatus: nil,
+                    bookingStatus: .paid
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],

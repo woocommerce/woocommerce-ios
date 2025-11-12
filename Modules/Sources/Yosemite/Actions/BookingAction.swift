@@ -81,4 +81,14 @@ public enum BookingAction: Action {
     case cancelBooking(siteID: Int64,
                        bookingID: Int64,
                        onCompletion: (Error?) -> Void)
+
+    /// Marks a booking as paid by updating its status to paid.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to be marked as paid.
+    /// - Parameter onCompletion: called when the operation completes, returns an error in case of a failure.
+    ///
+    case markBookingAsPaid(siteID: Int64,
+                           bookingID: Int64,
+                           onCompletion: (Error?) -> Void)
 }

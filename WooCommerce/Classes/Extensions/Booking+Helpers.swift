@@ -19,6 +19,10 @@ extension Booking {
             .joined(separator: "  •  ")
     }
 
+    var isEligibleForMarkAsPaid: Bool {
+        bookingStatus == .unpaid
+    }
+
     var hasAssociatedOrder: Bool {
         return orderID > 0
     }

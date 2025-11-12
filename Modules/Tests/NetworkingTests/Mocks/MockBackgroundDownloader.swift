@@ -15,6 +15,7 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
     var reconnectSessionCallCount = 0
     var lastReconnectSessionIdentifier: String?
     var mockFileURL: URL?
+    var onDownloadStarted: (() -> Void)?
 
     private let fileManager: FileManager
 
@@ -30,8 +31,8 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
         lastSessionIdentifier = sessionIdentifier
         lastAllowCellular = allowCellular
 
-        // Simulates async behavior
-        try await Task.sleep(nanoseconds: 1_000_000) // 1ms
+        // Notify test that download has started
+        onDownloadStarted?()
 
         switch downloadResult {
         case .success(let fileURL):
@@ -86,6 +87,7 @@ extension MockBackgroundDownloader {
         reconnectSessionCallCount = 0
         lastReconnectSessionIdentifier = nil
         mockFileURL = nil
+        onDownloadStarted = nil
     }
 
     /// Simulate calling the background completion handler

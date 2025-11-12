@@ -23,6 +23,10 @@ extension Booking {
         bookingStatus == .unpaid
     }
 
+    var hasAssociatedOrder: Bool {
+        return orderID > 0
+    }
+
     private enum Localization {
         static let guest = NSLocalizedString(
             "bookings.guest",

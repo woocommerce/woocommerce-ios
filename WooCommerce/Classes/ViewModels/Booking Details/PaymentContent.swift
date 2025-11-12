@@ -28,7 +28,7 @@ extension BookingDetailsViewModel {
 
             actions = [
                 booking.isEligibleForMarkAsPaid ? .markAsPaid : nil,
-                .viewOrder
+                booking.hasAssociatedOrder ? .viewOrder : nil
             ].compactMap { $0 }
         }
     }

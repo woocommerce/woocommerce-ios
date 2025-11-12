@@ -357,4 +357,31 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
         XCTAssertFalse(containsAttendanceSection)
     }
+
+    func test_view_order_is_hidden_when_booking_order_id_is_invalid() {
+        // Given
+        let booking = Booking.fake().copy(
+            orderID: 0
+        )
+
+        // When
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+
+        // Then
+        let paymentSection = viewModel.sections.first { section in
+            if case .payment = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let paymentSection = paymentSection,
+              case let .payment(paymentContent) = paymentSection.content else {
+            XCTFail("Payment section not found")
+            return
+        }
+
+        XCTAssertFalse(viewModel.isViewOrderAvailable)
+        XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
+    }
 }

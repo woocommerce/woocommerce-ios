@@ -343,7 +343,8 @@ extension Networking.Booking {
             attendanceStatusKey: .fake(),
             localTimezone: .fake(),
             currency: .fake(),
-            orderInfo: .fake()
+            orderInfo: .fake(),
+            note: .fake()
         )
     }
 }

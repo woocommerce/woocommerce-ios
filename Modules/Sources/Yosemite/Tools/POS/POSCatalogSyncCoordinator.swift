@@ -190,7 +190,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: "full",
-                error: POSCatalogSyncError.requestCancelled
+                error: POSCatalogSyncError.requestCancelled,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -203,7 +204,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: "full",
-                error: error
+                error: error,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw error
         }
@@ -359,7 +361,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: "incremental",
-                error: POSCatalogSyncError.requestCancelled
+                error: POSCatalogSyncError.requestCancelled,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -367,7 +370,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: "incremental",
-                error: error
+                error: error,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw error
         }

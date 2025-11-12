@@ -129,58 +129,16 @@ extension WooAnalyticsEvent {
 
         public static func syncFailed(
             syncType: String,
-            error: Error
+            error: Error,
+            errorClassifier: (Error) -> String
         ) -> WooAnalyticsEvent {
-            let errorType = classifyErrorType(error)
+            let errorType = errorClassifier(error)
             return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
                                      properties: [
                                         Key.syncType: syncType,
                                         Key.errorType: errorType
                                      ],
                                      error: error)
-        }
-
-        // MARK: - Private Helpers
-
-        private static func classifyErrorType(_ error: Error) -> String {
-            let errorDomain = (error as NSError).domain
-            let errorCode = (error as NSError).code
-            let errorTypeName = String(describing: type(of: error))
-
-            // Check for authentication errors (401, 403)
-            if errorCode == 401 || errorCode == 403 {
-                return "authentication_error"
-            }
-
-            // Check for network errors
-            if errorDomain.contains("Network") || errorDomain.contains("URLError") {
-                return "network_error"
-            }
-
-            // Check for GRDB database errors
-            // GRDB errors have domain "GRDB.DatabaseError" or type name contains "DatabaseError"
-            if errorDomain.contains("GRDB") || errorTypeName.contains("DatabaseError") {
-                // Check for specific SQLite error codes related to disk space
-                // SQLITE_FULL = 13, SQLITE_IOERR = 10
-                if errorCode == 13 {
-                    return "insufficient_free_space"
-                }
-                return "database_error"
-            }
-
-            // Check for storage/space errors from filesystem operations
-            if errorDomain.contains("NSCocoaErrorDomain") && (errorCode == 640 || errorCode == 512) {
-                return "insufficient_free_space"
-            }
-
-            // Check for parsing/decoding errors (catalog integrity)
-            if errorDomain.contains("Decoding") || errorDomain.contains("Parsing") ||
-               error is DecodingError {
-                return "catalog_integrity"
-            }
-
-            // Default to unexpected error
-            return "unexpected_error"
         }
 
         public static func syncSkipped(reason: String) -> WooAnalyticsEvent {

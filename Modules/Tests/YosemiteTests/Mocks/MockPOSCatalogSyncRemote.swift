@@ -154,6 +154,24 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
+    var parseDownloadedCatalogResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
+    private(set) var parseDownloadedCatalogCallCount = 0
+    private(set) var lastParsedFileURL: URL?
+    private(set) var lastParsedSiteID: Int64?
+
+    func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
+        parseDownloadedCatalogCallCount += 1
+        lastParsedFileURL = fileURL
+        lastParsedSiteID = siteID
+
+        switch parseDownloadedCatalogResult {
+        case .success(let response):
+            return response
+        case .failure(let error):
+            throw error
+        }
+    }
+
     // MARK: - Protocol Methods - Catalog size
 
     // MARK: - getProductCount tracking

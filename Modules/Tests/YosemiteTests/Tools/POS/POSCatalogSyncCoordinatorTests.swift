@@ -618,6 +618,24 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         }
     }
 
+    var parseAndPersistBackgroundDownloadResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+    private(set) var parseAndPersistBackgroundDownloadCallCount = 0
+    private(set) var lastBackgroundDownloadFileURL: URL?
+    private(set) var lastBackgroundDownloadSiteID: Int64?
+
+    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+        parseAndPersistBackgroundDownloadCallCount += 1
+        lastBackgroundDownloadFileURL = fileURL
+        lastBackgroundDownloadSiteID = siteID
+
+        switch parseAndPersistBackgroundDownloadResult {
+        case .success(let catalog):
+            return catalog
+        case .failure(let error):
+            throw error
+        }
+    }
+
     func blockNextSync() {
         shouldBlockSync = true
     }

@@ -47,6 +47,14 @@ public protocol POSCatalogSyncRemoteProtocol {
                          downloadURL: String,
                          allowCellular: Bool) async throws -> POSCatalogResponse
 
+    /// Parses a downloaded catalog file.
+    /// Used for processing background downloads after app wake.
+    /// - Parameters:
+    ///   - fileURL: Local file URL of the downloaded catalog.
+    ///   - siteID: Site ID for proper mapping.
+    /// - Returns: Parsed POS catalog response.
+    func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse
+
     /// Loads POS products for full sync.
     ///
     /// - Parameters:
@@ -203,10 +211,25 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         let sessionIdentifier = "\(POSCatalogSyncConstants.backgroundDownloadSessionPrefix).\(siteID).\(UUID().uuidString)"
+
+        // Save download state so we can resume if app is terminated
+        let downloadState = BackgroundDownloadState(
+            sessionIdentifier: sessionIdentifier,
+            siteID: siteID
+        )
+        BackgroundDownloadState.save(downloadState)
+
         let fileURL = try await backgroundDownloader.downloadFile(from: url,
                                                                    sessionIdentifier: sessionIdentifier,
                                                                    allowCellular: allowCellular)
-        return try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+
+        // Download completed - parse the file
+        let catalogResponse = try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+
+        // Clear the saved state since we successfully completed
+        BackgroundDownloadState.clear()
+
+        return catalogResponse
     }
 
     /// Parses the downloaded catalog file.
@@ -214,7 +237,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - fileURL: Local file URL of the downloaded catalog.
     ///   - siteID: Site ID for proper mapping.
     /// - Returns: Parsed POS catalog.
-    func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
+    public func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
         let data = try Data(contentsOf: fileURL)
 
         // Clean up downloaded files, but only if they're in our Documents directory.

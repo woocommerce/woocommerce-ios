@@ -15,6 +15,17 @@ public protocol BackgroundDownloadProtocol {
     /// - Parameter completionHandler: Handler to call when background download completes.
     func setBackgroundCompletionHandler(_ completionHandler: @escaping () -> Void)
 
+    /// Reconnects to an existing background session after app wake.
+    /// Call this from AppDelegate when iOS wakes the app for background URLSession events.
+    /// - Parameters:
+    ///   - sessionIdentifier: The session identifier from the callback
+    ///   - allowCellular: Whether cellular data should be allowed
+    ///   - completionHandler: Completion handler to call when all events are processed
+    /// - Returns: Downloaded file URL if download completed, nil if still in progress
+    func reconnectToSession(identifier sessionIdentifier: String,
+                           allowCellular: Bool,
+                           completionHandler: @escaping () -> Void) async -> URL?
+
     /// Cancels all active downloads for the session.
     /// - Parameter sessionIdentifier: The session identifier to cancel.
     func cancelDownloads(for sessionIdentifier: String) async

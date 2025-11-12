@@ -82,4 +82,22 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     func stopOngoingSyncs(for siteID: Int64) async {}
+
+    var processBackgroundDownloadResult: Result<Void, Error> = .success(())
+    private(set) var processBackgroundDownloadCallCount = 0
+    private(set) var lastProcessedFileURL: URL?
+    private(set) var lastProcessedSiteID: Int64?
+
+    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+        processBackgroundDownloadCallCount += 1
+        lastProcessedFileURL = fileURL
+        lastProcessedSiteID = siteID
+
+        switch processBackgroundDownloadResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
 }

@@ -224,7 +224,19 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleSettingsStoreDetailsTapped,
             WooAnalyticsStat.pointOfSaleSettingsHardwareTapped,
             WooAnalyticsStat.pointOfSaleSettingsHelpTapped,
-            WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped
+            WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped,
+
+            // Catalog
+            WooAnalyticsStat.pointOfSaleLocalCatalogDownloadingScreenShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogDownloadingScreenExitPosTapped,
+            WooAnalyticsStat.pointOfSaleSplashScreenErrorShown,
+            WooAnalyticsStat.pointOfSaleSplashScreenRetryTapped,
+            WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningDismissed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncStarted,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

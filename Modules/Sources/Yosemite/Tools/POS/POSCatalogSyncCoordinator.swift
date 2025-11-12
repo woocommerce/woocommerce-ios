@@ -318,6 +318,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting incremental sync for site \(siteID)")
 
+        // Track sync started analytics
+        let connectionType = getConnectionType()
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: "incremental", connectionType: connectionType))
+
+        let syncStartTime = Date()
+
         // Create a task to perform the sync
         let syncTask = Task<Void, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
@@ -334,11 +340,37 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         do {
             try await syncTask.value
-        } catch AFError.explicitlyCancelled, is CancellationError {
-            throw POSCatalogSyncError.requestCancelled
-        }
+            DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
 
-        DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
+            // Track sync completed analytics
+            let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
+            // TODO: Capture actual metrics from incremental sync service (products/variations synced)
+            // For now, query totals from storage
+            let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
+                syncType: "incremental",
+                productsSynced: 0, // TODO: Get from incremental sync service
+                variationsSynced: 0, // TODO: Get from incremental sync service
+                totalProducts: totalProducts,
+                totalVariations: totalVariations,
+                syncDurationMs: syncDurationMs
+            ))
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            // Track sync failed analytics
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: "incremental",
+                error: POSCatalogSyncError.requestCancelled
+            ))
+            throw POSCatalogSyncError.requestCancelled
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete incremental sync for site \(siteID): \(error)")
+            // Track sync failed analytics
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: "incremental",
+                error: error
+            ))
+            throw error
+        }
 
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)

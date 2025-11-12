@@ -70,26 +70,37 @@ public extension WooAnalyticsEvent {
         static func waitingFinished(scenario: Scenario,
                                      elapsedTime: TimeInterval,
                                      additionalProperties: [String: String] = [:]) -> WooAnalyticsEvent {
+            // Convert additional properties to WooAnalyticsEventPropertyType
+            let typedAdditionalProperties: [String: WooAnalyticsEventPropertyType] =
+                additionalProperties.mapValues { $0 as WooAnalyticsEventPropertyType }
+
             switch scenario {
             case .orderDetails:
-                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded,
-                                         properties: [Keys.waitingTime: elapsedTime].merging(additionalProperties) { $1 })
+                return WooAnalyticsEvent(
+                    statName: .orderDetailWaitingTimeLoaded,
+                    properties: [Keys.waitingTime: elapsedTime].merging(typedAdditionalProperties) { $1 })
             case .dashboardTopPerformers:
-                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded,
-                                         properties: [Keys.waitingTime: elapsedTime].merging(additionalProperties) { $1 })
+                return WooAnalyticsEvent(
+                    statName: .dashboardTopPerformersWaitingTimeLoaded,
+                    properties: [Keys.waitingTime: elapsedTime].merging(typedAdditionalProperties) { $1 })
             case .dashboardMainStats:
-                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded,
-                                         properties: [Keys.waitingTime: elapsedTime].merging(additionalProperties) { $1 })
+                return WooAnalyticsEvent(
+                    statName: .dashboardMainStatsWaitingTimeLoaded,
+                    properties: [Keys.waitingTime: elapsedTime].merging(typedAdditionalProperties) { $1 })
             case .analyticsHub:
-                return WooAnalyticsEvent(statName: .analyticsHubWaitingTimeLoaded,
-                                         properties: [Keys.waitingTime: elapsedTime].merging(additionalProperties) { $1 })
+                return WooAnalyticsEvent(
+                    statName: .analyticsHubWaitingTimeLoaded,
+                    properties: [Keys.waitingTime: elapsedTime].merging(typedAdditionalProperties) { $1 })
             case .appStartup:
-                return WooAnalyticsEvent(statName: .applicationOpenedWaitingTimeLoaded,
-                                         properties: [Keys.waitingTime: elapsedTime].merging(additionalProperties) { $1 })
+                return WooAnalyticsEvent(
+                    statName: .applicationOpenedWaitingTimeLoaded,
+                    properties: [Keys.waitingTime: elapsedTime].merging(typedAdditionalProperties) { $1 })
             case .pointOfSaleLoaded:
-                let properties = [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime]
-                return WooAnalyticsEvent(statName: .pointOfSaleLoaded,
-                                         properties: properties.merging(additionalProperties) { $1 })
+                let properties: [String: WooAnalyticsEventPropertyType] =
+                    [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime]
+                return WooAnalyticsEvent(
+                    statName: .pointOfSaleLoaded,
+                    properties: properties.merging(typedAdditionalProperties) { $1 })
             }
         }
     }

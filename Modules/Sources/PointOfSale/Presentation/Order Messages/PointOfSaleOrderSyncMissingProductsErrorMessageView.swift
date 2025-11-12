@@ -65,8 +65,10 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     }
 
     private var subtitle: String {
-        if missingProducts.count == 1 {
-            return String(format: Localization.subtitleSingular, missingProducts.first?.name ?? "")
+        if missingProducts.count == 1,
+           let productName = missingProducts.first?.name,
+           productName != Localization.unknownProductName {
+            return String(format: Localization.subtitleSingular, productName)
         } else {
             return Localization.subtitlePlural
         }
@@ -82,6 +84,13 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
 
     private func removeMissingProductsFromCart() {
         let missingProductNames = Set(missingProducts.map { $0.name })
+
+        // If we have a generic error (unknown product), remove all purchasable items
+        // since we can't determine which specific product is problematic
+        if missingProductNames.contains(Localization.unknownProductName) {
+            posModel.removeAllItemsFromCart(types: [.purchasableItem])
+            return
+        }
 
         // Find and remove items from cart that match the missing product names
         let itemsToRemove = posModel.cart.purchasableItems.filter { item in
@@ -144,6 +153,12 @@ private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
             "pointOfSale.orderSync.missingProductsError.editOrder",
             value: "Edit order",
             comment: "Button to return to order editing when products are no longer available"
+        )
+
+        static let unknownProductName = NSLocalizedString(
+            "pointOfSale.orderSync.missingProductsError.unknownProductName",
+            value: "One or more products",
+            comment: "Generic product name used when we can't identify which specific product is unavailable"
         )
     }
 }

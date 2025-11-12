@@ -51,7 +51,7 @@ public enum NetworkError: Error, Equatable {
     }
 
     /// Content of the `code` field in the response if available
-    var errorCode: String? {
+    public var errorCode: String? {
         guard let response else { return nil }
         let decoder = JSONDecoder()
         guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {

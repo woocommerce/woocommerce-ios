@@ -22,6 +22,8 @@ import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
+import enum NetworkingCore.DotcomError
+import enum NetworkingCore.NetworkError
 import class Yosemite.OrderTotalsCalculator
 import struct WooFoundation.WooAnalyticsEvent
 import protocol WooFoundationCore.WooAnalyticsEventPropertyType
@@ -195,13 +197,79 @@ private extension PointOfSaleOrderController {
                 PointOfSaleOrderState.OrderStateError.MissingProductInfo(name: $0.name, quantity: $0.expectedQuantity)
             }
             return .missingProducts(missingProductInfo)
-        } else if let couponsError = CouponsError(underlyingError: error) {
+        }
+        // Check for server-side validation errors about invalid products/variations
+        else if let missingProductInfo = extractMissingProductsFromServerError(error) {
+            return .missingProducts(missingProductInfo)
+        }
+        else if let couponsError = CouponsError(underlyingError: error) {
             return .invalidCoupon(couponsError.message)
         } else if let afErrorDescription = (error as? AFError)?.underlyingError?.localizedDescription {
             return .other(afErrorDescription)
         } else {
             return .other(error.localizedDescription)
         }
+    }
+
+    /// Extracts missing product information from server validation errors
+    /// Handles cases where the server rejects order creation due to invalid product/variation IDs
+    func extractMissingProductsFromServerError(_ error: Error) -> [PointOfSaleOrderState.OrderStateError.MissingProductInfo]? {
+        // Check if this is an AFError wrapping a DotcomError or NetworkError
+        let underlyingError: Error? = {
+            if let afError = error as? AFError {
+                return afError.underlyingError
+            }
+            return error
+        }()
+
+        // Check for DotcomError with product/variation validation error codes
+        if case .unknown(let code, let message) = underlyingError as? DotcomError {
+            if isProductValidationError(code: code) {
+                // Try to extract product names from cart since server doesn't return which specific product failed
+                return extractMissingProductsFromCart()
+            }
+        }
+
+        // Check for NetworkError with product/variation validation error codes
+        if let networkError = underlyingError as? NetworkError,
+           let errorCode = networkError.errorCode,
+           isProductValidationError(code: errorCode) {
+            return extractMissingProductsFromCart()
+        }
+
+        return nil
+    }
+
+    /// Checks if an error code indicates a product validation error
+    /// Currently only handles the confirmed error code from WooCommerce server responses
+    private func isProductValidationError(code: String) -> Bool {
+        // Only check for the one confirmed error code we've observed
+        // Additional codes can be added as they are discovered through testing
+        return code == "order_item_product_invalid_variation_id"
+    }
+
+    /// Extracts missing products by trying to identify items in cart that might have caused the validation error
+    /// Since server doesn't tell us which specific products failed, we return generic error info
+    private func extractMissingProductsFromCart() -> [PointOfSaleOrderState.OrderStateError.MissingProductInfo]? {
+        // We can't determine which specific products are invalid from the server error
+        // So we return a generic missing product message
+        // The user will need to remove products and retry to identify the problematic ones
+        return [
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(
+                name: Localization.unknownProductName,
+                quantity: 1
+            )
+        ]
+    }
+}
+
+private extension PointOfSaleOrderController {
+    enum Localization {
+        static let unknownProductName = NSLocalizedString(
+            "pointOfSale.orderController.unknownProduct",
+            value: "One or more products",
+            comment: "Generic product name used when we can't identify which specific product is unavailable"
+        )
     }
 }
 
@@ -269,6 +337,8 @@ private extension PointOfSaleOrderController {
         if let _ = CouponsError(underlyingError: error) {
             errorType = .invalidCoupon
         } else if case .missingProductsInOrder = error as? POSOrderService.POSOrderServiceError {
+            errorType = .missingProducts
+        } else if extractMissingProductsFromServerError(error) != nil {
             errorType = .missingProducts
         }
 

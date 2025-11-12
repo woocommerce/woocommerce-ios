@@ -75,10 +75,6 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
             await viewModel.reloadAllData()
         }
     }
-
-    override var shouldShowOfflineBanner: Bool {
-        return true
-    }
 }
 
 // MARK: Private helpers

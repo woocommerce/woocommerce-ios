@@ -14,6 +14,7 @@ enum PointOfSaleOrderState: Equatable {
         case missingProducts([MissingProductInfo])
 
         struct MissingProductInfo: Equatable {
+            let id: UUID?
             let name: String
             let quantity: Decimal
         }

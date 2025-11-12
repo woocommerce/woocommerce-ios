@@ -194,7 +194,7 @@ private extension PointOfSaleOrderController {
         // Check for missing products error first
         if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
             let missingProductInfo = missingItems.map {
-                PointOfSaleOrderState.OrderStateError.MissingProductInfo(name: $0.name, quantity: $0.expectedQuantity)
+                PointOfSaleOrderState.OrderStateError.MissingProductInfo(id: $0.id, name: $0.name, quantity: $0.expectedQuantity)
             }
             return .missingProducts(missingProductInfo)
         }
@@ -252,10 +252,11 @@ private extension PointOfSaleOrderController {
     /// Since server doesn't tell us which specific products failed, we return generic error info
     private func extractMissingProductsFromCart() -> [PointOfSaleOrderState.OrderStateError.MissingProductInfo]? {
         // We can't determine which specific products are invalid from the server error
-        // So we return a generic missing product message
+        // So we return a generic missing product message with no ID
         // The user will need to remove products and retry to identify the problematic ones
         return [
             PointOfSaleOrderState.OrderStateError.MissingProductInfo(
+                id: nil,
                 name: Localization.unknownProductName,
                 quantity: 1
             )

@@ -50,6 +50,7 @@ public struct CartOrderComparison {
     }
 
     public struct MissingCartItem {
+        public let id: UUID
         public let name: String
         public let expectedQuantity: Decimal
     }
@@ -103,51 +104,40 @@ extension [POSCartItem] {
         guard let order else {
             // If there's no order but we have items, all items are missing
             let missingItems = self.map {
-                CartOrderComparison.MissingCartItem(name: $0.item.name, expectedQuantity: $0.quantity)
+                CartOrderComparison.MissingCartItem(id: $0.item.id, name: $0.item.name, expectedQuantity: $0.quantity)
             }
             return ItemsComparison(missingItems: missingItems, quantityMismatches: [])
         }
 
-        // Consolidate cart items
-        let consolidatedCartItems = self.reduce(into: [POSCartItem]()) { partialResult, nextItem in
-            if let matchingIndex = partialResult.firstIndex(where: { $0.item.isEqual(to: nextItem.item) }) {
-                let itemToUpdate = partialResult[matchingIndex]
-                partialResult[matchingIndex] = POSCartItem(item: itemToUpdate.item, quantity: itemToUpdate.quantity + nextItem.quantity)
-            } else {
-                partialResult.append(nextItem)
-            }
-        }
-
-        // Consolidate order items
-        let consolidatedOrderItems = order.items.reduce(into: [OrderItem]()) { partialResult, nextItem in
-            if let matchingIndex = partialResult.firstIndex(where: { $0.productID == nextItem.productID && $0.variationID == nextItem.variationID }) {
-                let itemToUpdate = partialResult[matchingIndex]
-                partialResult[matchingIndex] = itemToUpdate.copy(quantity: itemToUpdate.quantity + nextItem.quantity)
-            } else {
-                partialResult.append(nextItem)
-            }
-        }
-
+        // Don't consolidate - check each individual cart item against the order
+        // This preserves UUIDs and allows us to identify specific variations
         var missingItems: [CartOrderComparison.MissingCartItem] = []
         var quantityMismatches: [CartOrderComparison.QuantityMismatch] = []
 
-        // Check each cart item against order items
-        for cartItem in consolidatedCartItems {
-            if let matchingOrderItem = consolidatedOrderItems.first(where: { $0.productMatches(cartItem: cartItem.item) }) {
-                // Item exists in order, check quantity
-                if cartItem.quantity != matchingOrderItem.quantity {
-                    quantityMismatches.append(
-                        CartOrderComparison.QuantityMismatch(
-                            name: cartItem.item.name,
-                            expectedQuantity: cartItem.quantity,
-                            actualQuantity: matchingOrderItem.quantity
-                        )
-                    )
-                }
+        // Group cart items by product/variation for quantity comparison
+        let cartItemsByProduct = Dictionary(grouping: self, by: { $0.item.id })
+
+        // Group order items by product/variation ID
+        let orderQuantities = Dictionary(grouping: order.items, by: { (item: OrderItem) -> String in
+            if item.variationID != 0 {
+                return "variation_\(item.variationID)"
             } else {
+                return "product_\(item.productID)"
+            }
+        }).mapValues { items in
+            items.reduce(Decimal(0)) { $0 + $1.quantity }
+        }
+
+        // Check each cart item
+        for cartItem in self {
+            // Find matching order item
+            let hasMatchInOrder = order.items.contains(where: { $0.productMatches(cartItem: cartItem.item) })
+
+            if !hasMatchInOrder {
                 // Item is in cart but not in order
                 missingItems.append(
                     CartOrderComparison.MissingCartItem(
+                        id: cartItem.item.id,
                         name: cartItem.item.name,
                         expectedQuantity: cartItem.quantity
                     )

@@ -83,19 +83,20 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     }
 
     private func removeMissingProductsFromCart() {
-        let missingProductNames = Set(missingProducts.map { $0.name })
+        // Check if we have IDs available (client-side detection) or generic error (server-side)
+        let missingProductIDs = Set(missingProducts.compactMap { $0.id })
 
-        // If we have a generic error (unknown product), remove all purchasable items
+        // If we have no IDs (server-side error), remove all purchasable items
         // since we can't determine which specific product is problematic
-        if missingProductNames.contains(Localization.unknownProductName) {
+        if missingProductIDs.isEmpty {
             posModel.removeAllItemsFromCart(types: [.purchasableItem])
             return
         }
 
-        // Find and remove items from cart that match the missing product names
+        // Find and remove items from cart that match the missing product IDs
         let itemsToRemove = posModel.cart.purchasableItems.filter { item in
             guard case .loaded(let orderableItem) = item.state else { return false }
-            return missingProductNames.contains(orderableItem.name)
+            return missingProductIDs.contains(orderableItem.id)
         }
 
         for item in itemsToRemove {
@@ -167,7 +168,7 @@ private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
 #Preview("Single Missing Product") {
     PointOfSaleOrderSyncMissingProductsErrorMessageView(
         missingProducts: [
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(name: "Blue T-Shirt", quantity: 2)
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(id: UUID(), name: "Blue T-Shirt", quantity: 2)
         ],
         retryHandler: {}
     )
@@ -177,8 +178,8 @@ private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
 #Preview("Multiple Missing Products") {
     PointOfSaleOrderSyncMissingProductsErrorMessageView(
         missingProducts: [
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(name: "Blue T-Shirt", quantity: 2),
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(name: "Red Hat", quantity: 1)
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(id: UUID(), name: "Blue T-Shirt", quantity: 2),
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(id: UUID(), name: "Red Hat", quantity: 1)
         ],
         retryHandler: {}
     )

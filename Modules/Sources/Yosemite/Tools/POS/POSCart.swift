@@ -27,6 +27,38 @@ public extension POSCart {
     func matches(order: Order?) -> Bool {
         return items.matches(order: order) && coupons.matches(order: order)
     }
+
+    func compareWithOrder(_ order: Order?) -> CartOrderComparison {
+        let itemsComparison = items.compareWithOrder(order)
+        let couponsMatch = coupons.matches(order: order)
+
+        return CartOrderComparison(
+            missingItems: itemsComparison.missingItems,
+            quantityMismatches: itemsComparison.quantityMismatches,
+            couponsMatch: couponsMatch
+        )
+    }
+}
+
+public struct CartOrderComparison {
+    public let missingItems: [MissingCartItem]
+    public let quantityMismatches: [QuantityMismatch]
+    public let couponsMatch: Bool
+
+    public var hasDiscrepancies: Bool {
+        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch
+    }
+
+    public struct MissingCartItem {
+        public let name: String
+        public let expectedQuantity: Decimal
+    }
+
+    public struct QuantityMismatch {
+        public let name: String
+        public let expectedQuantity: Decimal
+        public let actualQuantity: Decimal
+    }
 }
 
 extension [POSCartItem] {
@@ -65,6 +97,70 @@ extension [POSCartItem] {
             }
         }
         return true
+    }
+
+    func compareWithOrder(_ order: Order?) -> ItemsComparison {
+        guard let order else {
+            // If there's no order but we have items, all items are missing
+            let missingItems = self.map {
+                CartOrderComparison.MissingCartItem(name: $0.item.name, expectedQuantity: $0.quantity)
+            }
+            return ItemsComparison(missingItems: missingItems, quantityMismatches: [])
+        }
+
+        // Consolidate cart items
+        let consolidatedCartItems = self.reduce(into: [POSCartItem]()) { partialResult, nextItem in
+            if let matchingIndex = partialResult.firstIndex(where: { $0.item.isEqual(to: nextItem.item) }) {
+                let itemToUpdate = partialResult[matchingIndex]
+                partialResult[matchingIndex] = POSCartItem(item: itemToUpdate.item, quantity: itemToUpdate.quantity + nextItem.quantity)
+            } else {
+                partialResult.append(nextItem)
+            }
+        }
+
+        // Consolidate order items
+        let consolidatedOrderItems = order.items.reduce(into: [OrderItem]()) { partialResult, nextItem in
+            if let matchingIndex = partialResult.firstIndex(where: { $0.productID == nextItem.productID && $0.variationID == nextItem.variationID }) {
+                let itemToUpdate = partialResult[matchingIndex]
+                partialResult[matchingIndex] = itemToUpdate.copy(quantity: itemToUpdate.quantity + nextItem.quantity)
+            } else {
+                partialResult.append(nextItem)
+            }
+        }
+
+        var missingItems: [CartOrderComparison.MissingCartItem] = []
+        var quantityMismatches: [CartOrderComparison.QuantityMismatch] = []
+
+        // Check each cart item against order items
+        for cartItem in consolidatedCartItems {
+            if let matchingOrderItem = consolidatedOrderItems.first(where: { $0.productMatches(cartItem: cartItem.item) }) {
+                // Item exists in order, check quantity
+                if cartItem.quantity != matchingOrderItem.quantity {
+                    quantityMismatches.append(
+                        CartOrderComparison.QuantityMismatch(
+                            name: cartItem.item.name,
+                            expectedQuantity: cartItem.quantity,
+                            actualQuantity: matchingOrderItem.quantity
+                        )
+                    )
+                }
+            } else {
+                // Item is in cart but not in order
+                missingItems.append(
+                    CartOrderComparison.MissingCartItem(
+                        name: cartItem.item.name,
+                        expectedQuantity: cartItem.quantity
+                    )
+                )
+            }
+        }
+
+        return ItemsComparison(missingItems: missingItems, quantityMismatches: quantityMismatches)
+    }
+
+    struct ItemsComparison {
+        let missingItems: [CartOrderComparison.MissingCartItem]
+        let quantityMismatches: [CartOrderComparison.QuantityMismatch]
     }
 
     func createGroupedOrderSyncProductInputs() -> [OrderSyncProductInput.ProductType: OrderSyncProductInput] {

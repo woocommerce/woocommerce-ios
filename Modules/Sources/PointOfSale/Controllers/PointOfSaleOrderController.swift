@@ -3,6 +3,7 @@ import Observation
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.VersionHelpers
 import protocol Yosemite.POSOrderServiceProtocol
+import class Yosemite.POSOrderService
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
@@ -188,7 +189,13 @@ private extension PointOfSaleOrderController {
 
 private extension PointOfSaleOrderController {
     func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
-        if let couponsError = CouponsError(underlyingError: error) {
+        // Check for missing products error first
+        if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+            let missingProductInfo = missingItems.map {
+                PointOfSaleOrderState.OrderStateError.MissingProductInfo(name: $0.name, quantity: $0.expectedQuantity)
+            }
+            return .missingProducts(missingProductInfo)
+        } else if let couponsError = CouponsError(underlyingError: error) {
             return .invalidCoupon(couponsError.message)
         } else if let afErrorDescription = (error as? AFError)?.underlyingError?.localizedDescription {
             return .other(afErrorDescription)
@@ -261,6 +268,8 @@ private extension PointOfSaleOrderController {
 
         if let _ = CouponsError(underlyingError: error) {
             errorType = .invalidCoupon
+        } else if case .missingProductsInOrder = error as? POSOrderService.POSOrderServiceError {
+            errorType = .missingProducts
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
@@ -290,9 +299,9 @@ private extension WooAnalyticsEvent {
         // MARK: - Order Creation Events
 
         /// Matches errors on Android for consistency
-        /// Only coupon tracking is relevant for now
         enum OrderCreationErrorType: String {
             case invalidCoupon = "INVALID_COUPON"
+            case missingProducts = "MISSING_PRODUCTS"
         }
 
         static func orderCreationFailed(

@@ -50,7 +50,19 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .addItems(cart.items)
             .addCoupons(cart.coupons)
 
-        return try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
+        let createdOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
+
+        // Validate that the created order contains all cart items
+        let comparison = cart.compareWithOrder(createdOrder)
+        if comparison.hasDiscrepancies {
+            DDLogWarn("⚠️ Order created but cart-order mismatch detected. Missing items: \(comparison.missingItems.count), Quantity mismatches: \(comparison.quantityMismatches.count)")
+
+            if !comparison.missingItems.isEmpty {
+                throw POSOrderServiceError.missingProductsInOrder(comparison.missingItems)
+            }
+        }
+
+        return createdOrder
     }
 
     public func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
@@ -99,9 +111,10 @@ private extension Order {
     }
 }
 
-private extension POSOrderService {
+public extension POSOrderService {
     enum POSOrderServiceError: Error {
         case updateOrderFailed
+        case missingProductsInOrder([CartOrderComparison.MissingCartItem])
     }
 }
 

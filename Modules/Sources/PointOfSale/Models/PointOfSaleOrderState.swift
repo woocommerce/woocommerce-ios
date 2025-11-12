@@ -11,6 +11,12 @@ enum PointOfSaleOrderState: Equatable {
     enum OrderStateError: Equatable {
         case other(String)
         case invalidCoupon(String)
+        case missingProducts([MissingProductInfo])
+
+        struct MissingProductInfo: Equatable {
+            let name: String
+            let quantity: Decimal
+        }
 
         static func == (lhs: OrderStateError, rhs: OrderStateError) -> Bool {
             switch (lhs, rhs) {
@@ -18,6 +24,8 @@ enum PointOfSaleOrderState: Equatable {
                 return lhsError == rhsError
             case (.invalidCoupon(let lhsCoupon), .invalidCoupon(let rhsCoupon)):
                 return lhsCoupon == rhsCoupon
+            case (.missingProducts(let lhsProducts), .missingProducts(let rhsProducts)):
+                return lhsProducts == rhsProducts
             default:
                 return false
             }

@@ -24,6 +24,7 @@ struct StoreInfoWidget: Widget {
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
+        .contentMarginsDisabled()
     }
 }
 

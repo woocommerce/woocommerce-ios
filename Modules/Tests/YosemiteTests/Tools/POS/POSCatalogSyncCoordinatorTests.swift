@@ -1116,6 +1116,77 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockSyncService.lastAllowCellular == true)
         // Setting should not be checked for first sync (it's overridden)
     }
+
+    // MARK: - Analytics Tests
+
+    @Test func performFullSyncIfApplicable_tracks_analytics_events() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+
+        // When
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then - Verify sync started event
+        let syncStarted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_started" }
+        #expect(syncStarted != nil)
+
+        // Then - Verify sync completed event
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted != nil)
+    }
+
+    @Test func performFullSyncIfApplicable_tracks_sync_failed_with_error_type() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "NetworkingCore.NetworkError", code: 500))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed != nil)
+        #expect(syncFailed?.properties?["error_type"] as? String == "network_error")
+    }
+
+    @Test func performIncrementalSyncIfApplicable_tracks_analytics_events() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-30 * 60))
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncStarted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_started" }
+        #expect(syncStarted != nil)
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted != nil)
+    }
 }
 
 extension POSCatalogSyncCoordinator {

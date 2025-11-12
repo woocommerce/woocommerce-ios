@@ -133,9 +133,44 @@ extension WooAnalyticsEvent {
             syncType: String,
             error: Error
         ) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
-                              properties: [Key.syncType: syncType],
-                              error: error)
+            let errorType = classifyErrorType(error)
+            return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
+                                     properties: [
+                                        Key.syncType: syncType,
+                                        Key.errorType: errorType
+                                     ],
+                                     error: error)
+        }
+
+        // MARK: - Private Helpers
+
+        private static func classifyErrorType(_ error: Error) -> String {
+            let errorDomain = (error as NSError).domain
+            let errorCode = (error as NSError).code
+
+            // Check for authentication errors (401, 403)
+            if errorCode == 401 || errorCode == 403 {
+                return "authentication_error"
+            }
+
+            // Check for network errors
+            if errorDomain.contains("Network") || errorDomain.contains("URLError") {
+                return "network_error"
+            }
+
+            // Check for storage/space errors
+            if errorDomain.contains("NSCocoaErrorDomain") && (errorCode == 640 || errorCode == 512) {
+                return "insufficient_free_space"
+            }
+
+            // Check for parsing/decoding errors (catalog integrity)
+            if errorDomain.contains("Decoding") || errorDomain.contains("Parsing") ||
+               error is DecodingError {
+                return "catalog_integrity"
+            }
+
+            // Default to unexpected error
+            return "unexpected_error"
         }
 
         public static func syncSkipped(reason: String) -> WooAnalyticsEvent {

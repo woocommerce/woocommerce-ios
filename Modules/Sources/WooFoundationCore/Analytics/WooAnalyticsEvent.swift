@@ -131,18 +131,10 @@ extension WooAnalyticsEvent {
 
         public static func syncFailed(
             syncType: String,
-            errorContext: String,
-            errorType: String,
-            errorDescription: String,
-            error: Error? = nil
+            error: Error
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
-                              properties: [
-                                Key.syncType: syncType,
-                                Key.errorContext: errorContext,
-                                Key.errorType: errorType,
-                                Key.errorDescription: errorDescription
-                              ],
+                              properties: [Key.syncType: syncType],
                               error: error)
         }
 

@@ -190,9 +190,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: "full",
-                errorContext: "sync_cancelled",
-                errorType: "request_cancelled",
-                errorDescription: "User cancelled the sync operation",
                 error: POSCatalogSyncError.requestCancelled
             ))
             throw POSCatalogSyncError.requestCancelled
@@ -204,12 +201,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 emitSyncState(.syncFailed(siteID: siteID, error: error))
             }
             // Track sync failed analytics
-            let errorType = categorizeError(error)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: "full",
-                errorContext: "sync_execution",
-                errorType: errorType,
-                errorDescription: error.localizedDescription,
                 error: error
             ))
             throw error
@@ -522,35 +515,24 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    private nonisolated func categorizeError(_ error: Error) -> String {
-        switch error {
-        case POSCatalogSyncError.syncAlreadyInProgress:
-            return "sync_already_in_progress"
-        case POSCatalogSyncError.negativeMaxAge:
-            return "negative_max_age"
-        case POSCatalogSyncError.invalidData:
-            return "invalid_data"
-        case POSCatalogSyncError.timeout:
-            return "timeout"
-        case POSCatalogSyncError.generationFailed:
-            return "generation_failed"
-        case POSCatalogSyncError.requestCancelled:
-            return "request_cancelled"
-        case POSCatalogSyncError.shouldNotSync:
-            return "should_not_sync"
-        case is AFError:
-            return "network_error"
-        default:
-            return "unexpected_error"
-        }
-    }
-
     private func getSyncSkipReason(for siteID: Int64, maxAge: TimeInterval) async -> String {
         // Check eligibility
         do {
             let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
-            if case .ineligible = eligibility {
-                return "pos_ineligible"
+            if case .ineligible(let reason) = eligibility {
+                // Map ineligibility reasons to skip reasons
+                switch reason {
+                case .posTabNotEligible:
+                    return "pos_inactive"
+                case .featureFlagDisabled:
+                    return "feature_flag_disabled"
+                case .unsupportedWooCommerceVersion:
+                    return "unsupported_woocommerce_version"
+                case .catalogSizeTooLarge:
+                    return "catalog_too_large"
+                case .catalogSizeCheckFailed:
+                    return "catalog_size_check_failed"
+                }
             }
         } catch {
             return "eligibility_check_failed"

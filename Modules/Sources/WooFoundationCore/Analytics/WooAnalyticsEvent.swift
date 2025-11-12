@@ -63,9 +63,7 @@ extension WooAnalyticsEvent {
             static let totalProducts = "total_products"
             static let totalVariations = "total_variations"
             static let syncDurationMs = "sync_duration_ms"
-            static let errorContext = "error_context"
             static let errorType = "error_type"
-            static let errorDescription = "error_description"
             static let reason = "reason"
         }
 

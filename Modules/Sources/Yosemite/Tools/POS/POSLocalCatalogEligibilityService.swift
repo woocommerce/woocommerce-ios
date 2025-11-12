@@ -151,8 +151,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
 private extension POSLocalCatalogEligibilityService {
     enum Constants {
-        static let defaultCatalogSizeLimit = 100000
-        
+        static let defaultCatalogSizeLimit = 1000
         static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
     }
 }

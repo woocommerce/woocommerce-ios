@@ -145,6 +145,7 @@ extension WooAnalyticsEvent {
         private static func classifyErrorType(_ error: Error) -> String {
             let errorDomain = (error as NSError).domain
             let errorCode = (error as NSError).code
+            let errorTypeName = String(describing: type(of: error))
 
             // Check for authentication errors (401, 403)
             if errorCode == 401 || errorCode == 403 {
@@ -156,7 +157,18 @@ extension WooAnalyticsEvent {
                 return "network_error"
             }
 
-            // Check for storage/space errors
+            // Check for GRDB database errors
+            // GRDB errors have domain "GRDB.DatabaseError" or type name contains "DatabaseError"
+            if errorDomain.contains("GRDB") || errorTypeName.contains("DatabaseError") {
+                // Check for specific SQLite error codes related to disk space
+                // SQLITE_FULL = 13, SQLITE_IOERR = 10
+                if errorCode == 13 {
+                    return "insufficient_free_space"
+                }
+                return "database_error"
+            }
+
+            // Check for storage/space errors from filesystem operations
             if errorDomain.contains("NSCocoaErrorDomain") && (errorCode == 640 || errorCode == 512) {
                 return "insufficient_free_space"
             }

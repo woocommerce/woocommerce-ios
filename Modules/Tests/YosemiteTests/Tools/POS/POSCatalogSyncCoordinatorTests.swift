@@ -1165,6 +1165,52 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(syncFailed?.properties?["error_type"] as? String == "network_error")
     }
 
+    @Test func performFullSyncIfApplicable_tracks_database_error_type() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        // Simulate a GRDB database error by using domain "GRDB.DatabaseError"
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "GRDB.DatabaseError", code: 1))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed != nil)
+        #expect(syncFailed?.properties?["error_type"] as? String == "database_error")
+    }
+
+    @Test func performFullSyncIfApplicable_tracks_insufficient_space_for_sqlite_full_error() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        // Simulate SQLITE_FULL error (code 13 = disk full)
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "GRDB.DatabaseError", code: 13))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed != nil)
+        #expect(syncFailed?.properties?["error_type"] as? String == "insufficient_free_space")
+    }
+
     @Test func performIncrementalSyncIfApplicable_tracks_analytics_events() async throws {
         // Given
         let mockAnalytics = MockAnalytics()

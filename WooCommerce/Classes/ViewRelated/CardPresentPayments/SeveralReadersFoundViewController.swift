@@ -36,21 +36,18 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
         configureTable()
         updateViewMargins()
         updateViewAppearances()
+        observeTraitChanges()
     }
 
-    /// Update constraints that vary by size class
-    ///
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        /// Handle size class and orientation
-        ///
-        updateViewMargins()
-
-        /// Handle changes to Light / Dark Appearance
-        ///
-        if let previousTraits = previousTraitCollection, previousTraits.hasDifferentColorAppearance(comparedTo: traitCollection) {
-            updateViewAppearances()
+    private func observeTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitVerticalSizeClass.self,
+            UITraitHorizontalSizeClass.self,
+            UITraitUserInterfaceStyle.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _) in
+            self.updateViewMargins()
+            self.updateViewAppearances()
         }
     }
 

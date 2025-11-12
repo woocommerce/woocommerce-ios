@@ -14,9 +14,9 @@ enum POSCatalogSyncErrorClassifier {
             return classifyDatabaseError(dbError)
         }
 
-        // Check for Alamofire cancellation
-        if let afError = error as? AFError, afError.isExplicitlyCancelledError {
-            return "request_cancelled"
+        // Check for Alamofire errors (may wrap other errors)
+        if let afError = error as? AFError {
+            return classifyAFError(afError)
         }
 
         // Check for cancellation errors
@@ -71,6 +71,40 @@ enum POSCatalogSyncErrorClassifier {
     }
 
     // MARK: - Private Helpers
+
+    private static func classifyAFError(_ error: AFError) -> String {
+        // Check for explicit cancellation
+        if error.isExplicitlyCancelledError {
+            return "request_cancelled"
+        }
+
+        // Check for session task errors (wraps URLError and other Foundation errors)
+        if case .sessionTaskFailed(let underlyingError) = error {
+            // Recursively classify the underlying error
+            return classify(underlyingError)
+        }
+
+        // Check for response validation errors (HTTP status codes)
+        if case .responseValidationFailed(let reason) = error {
+            switch reason {
+            case .unacceptableStatusCode(let statusCode):
+                if statusCode == 401 || statusCode == 403 {
+                    return "authentication_error"
+                }
+                return "network_error"
+            default:
+                return "network_error"
+            }
+        }
+
+        // Check for invalid URL
+        if case .invalidURL = error {
+            return "network_error"
+        }
+
+        // Other Alamofire errors are generally network-related
+        return "network_error"
+    }
 
     private static func classifyNetworkError(_ error: NetworkError) -> String {
         switch error {

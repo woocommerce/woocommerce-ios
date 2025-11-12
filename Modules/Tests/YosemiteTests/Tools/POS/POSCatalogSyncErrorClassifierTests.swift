@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 import GRDB
+import Alamofire
 @testable import Yosemite
 
 struct POSCatalogSyncErrorClassifierTests {
@@ -123,5 +124,28 @@ struct POSCatalogSyncErrorClassifierTests {
 
         // Then
         #expect(result == "unexpected_error")
+    }
+
+    @Test func classify_afError_wrapping_url_error_returns_network_error() {
+        // Given
+        let urlError = URLError(.notConnectedToInternet)
+        let afError = AFError.sessionTaskFailed(error: urlError)
+
+        // When
+        let result = POSCatalogSyncErrorClassifier.classify(afError)
+
+        // Then
+        #expect(result == "network_error")
+    }
+
+    @Test func classify_afError_with_401_status_returns_authentication_error() {
+        // Given
+        let afError = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+
+        // When
+        let result = POSCatalogSyncErrorClassifier.classify(afError)
+
+        // Then
+        #expect(result == "authentication_error")
     }
 }

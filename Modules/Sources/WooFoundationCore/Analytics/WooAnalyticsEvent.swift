@@ -48,3 +48,107 @@ public struct WooAnalyticsEvent {
         self.error = error
     }
 }
+
+// MARK: - Local Catalog Analytics Events
+extension WooAnalyticsEvent {
+    /// Analytics events for Local Catalog feature
+    public enum LocalCatalog {
+        /// Event property Key.
+        private enum Key {
+            static let hoursSinceLastSync = "hours_since_last_sync"
+            static let syncType = "sync_type"
+            static let connectionType = "connection_type"
+            static let productsSynced = "products_synced"
+            static let variationsSynced = "variations_synced"
+            static let totalProducts = "total_products"
+            static let totalVariations = "total_variations"
+            static let syncDurationMs = "sync_duration_ms"
+            static let errorContext = "error_context"
+            static let errorType = "error_type"
+            static let errorDescription = "error_description"
+            static let reason = "reason"
+        }
+
+        // MARK: - Initial Launch & Loading Screen Events
+
+        public static func downloadingScreenShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogDownloadingScreenShown, properties: [:])
+        }
+
+        public static func downloadingScreenExitPosTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogDownloadingScreenExitPosTapped, properties: [:])
+        }
+
+        // periphery:ignore - Will be used when error screen tracking is implemented
+        public static func splashScreenErrorShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSplashScreenErrorShown, properties: [:])
+        }
+
+        // periphery:ignore - Will be used when error screen tracking is implemented
+        public static func splashScreenRetryTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSplashScreenRetryTapped, properties: [:])
+        }
+
+        // MARK: - Stale Catalog Warning Events
+
+        public static func staleWarningShown(hoursSinceLastSync: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogStaleWarningShown,
+                              properties: [Key.hoursSinceLastSync: "\(hoursSinceLastSync)"])
+        }
+
+        public static func staleWarningDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogStaleWarningDismissed, properties: [:])
+        }
+
+        // MARK: - Core Sync Events
+
+        public static func syncStarted(syncType: String, connectionType: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncStarted,
+                              properties: [
+                                Key.syncType: syncType,
+                                Key.connectionType: connectionType
+                              ])
+        }
+
+        public static func syncCompleted(
+            syncType: String,
+            productsSynced: Int,
+            variationsSynced: Int,
+            totalProducts: Int,
+            totalVariations: Int,
+            syncDurationMs: Int
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncCompleted,
+                              properties: [
+                                Key.syncType: syncType,
+                                Key.productsSynced: "\(productsSynced)",
+                                Key.variationsSynced: "\(variationsSynced)",
+                                Key.totalProducts: "\(totalProducts)",
+                                Key.totalVariations: "\(totalVariations)",
+                                Key.syncDurationMs: "\(syncDurationMs)"
+                              ])
+        }
+
+        public static func syncFailed(
+            syncType: String,
+            errorContext: String,
+            errorType: String,
+            errorDescription: String,
+            error: Error? = nil
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
+                              properties: [
+                                Key.syncType: syncType,
+                                Key.errorContext: errorContext,
+                                Key.errorType: errorType,
+                                Key.errorDescription: errorDescription
+                              ],
+                              error: error)
+        }
+
+        public static func syncSkipped(reason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
+                              properties: [Key.reason: reason])
+        }
+    }
+}

@@ -75,5 +75,11 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         return isSyncStaleResult
     }
 
+    var hoursSinceLastSyncResult: Int? = nil
+
+    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
+        return hoursSinceLastSyncResult
+    }
+
     func stopOngoingSyncs(for siteID: Int64) async {}
 }

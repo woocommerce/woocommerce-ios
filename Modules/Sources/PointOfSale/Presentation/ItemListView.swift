@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
     @Environment(\.posAnalytics) private var analytics
@@ -195,6 +196,7 @@ struct ItemListView: View {
             title: Localization.staleSyncWarningTitle,
             icon: Image(systemName: "info.circle"),
             onDismiss: {
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningDismissed())
                 withAnimation {
                     posModel.dismissStaleSyncWarning()
                 }
@@ -202,6 +204,12 @@ struct ItemListView: View {
                 Text(Localization.staleSyncWarningDescription(days: posModel.staleSyncThresholdDays))
                     .font(POSFontStyle.posBodyMediumRegular())
             })
+            .task {
+                // Track stale warning shown with hours since last sync
+                if let hours = await posModel.hoursSinceLastSync() {
+                    analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
+                }
+            }
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {

@@ -69,7 +69,9 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cardReaderDisconnection: AnyCancellable?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
-    private let isLocalCatalogEligible: Bool
+
+    /// Indicates whether the local catalog feature is enabled for this store
+    let isLocalCatalogEligible: Bool
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -685,6 +687,13 @@ extension PointOfSaleAggregateModel {
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
         isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+    }
+
+    /// Calculates the number of hours since the last catalog sync
+    /// - Returns: Hours since last sync, or nil if no sync date is available
+    func hoursSinceLastSync() async -> Int? {
+        guard let catalogSyncCoordinator else { return nil }
+        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID)
     }
 }
 

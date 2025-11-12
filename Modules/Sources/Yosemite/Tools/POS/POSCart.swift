@@ -50,7 +50,8 @@ public struct CartOrderComparison {
     }
 
     public struct MissingCartItem {
-        public let id: UUID
+        public let productID: Int64
+        public let variationID: Int64
         public let name: String
         public let expectedQuantity: Decimal
     }
@@ -103,49 +104,88 @@ extension [POSCartItem] {
     func compareWithOrder(_ order: Order?) -> ItemsComparison {
         guard let order else {
             // If there's no order but we have items, all items are missing
-            let missingItems = self.map {
-                CartOrderComparison.MissingCartItem(id: $0.item.id, name: $0.item.name, expectedQuantity: $0.quantity)
+            let missingItems = self.compactMap { cartItem -> CartOrderComparison.MissingCartItem? in
+                guard let (productID, variationID) = extractProductIDs(from: cartItem.item) else {
+                    return nil
+                }
+                return CartOrderComparison.MissingCartItem(
+                    productID: productID,
+                    variationID: variationID,
+                    name: cartItem.item.name,
+                    expectedQuantity: cartItem.quantity
+                )
             }
             return ItemsComparison(missingItems: missingItems, quantityMismatches: [])
         }
 
-        // Don't consolidate - check each individual cart item against the order
-        // This preserves UUIDs and allows us to identify specific variations
-        var missingItems: [CartOrderComparison.MissingCartItem] = []
-        var quantityMismatches: [CartOrderComparison.QuantityMismatch] = []
+        // Group cart items by product/variation ID to consolidate duplicates
+        let cartItemsByProductKey = Dictionary(grouping: self, by: { item -> String in
+            guard let (productID, variationID) = extractProductIDs(from: item.item) else {
+                return "invalid_\(UUID())"
+            }
+            return variationID != 0 ? "variation_\(variationID)" : "product_\(productID)"
+        })
 
-        // Group cart items by product/variation for quantity comparison
-        let cartItemsByProduct = Dictionary(grouping: self, by: { $0.item.id })
+        // Calculate total quantity for each product/variation in cart
+        let cartQuantities = cartItemsByProductKey.mapValues { items in
+            items.reduce(Decimal(0)) { $0 + $1.quantity }
+        }
 
         // Group order items by product/variation ID
         let orderQuantities = Dictionary(grouping: order.items, by: { (item: OrderItem) -> String in
-            if item.variationID != 0 {
-                return "variation_\(item.variationID)"
-            } else {
-                return "product_\(item.productID)"
-            }
+            item.variationID != 0 ? "variation_\(item.variationID)" : "product_\(item.productID)"
         }).mapValues { items in
             items.reduce(Decimal(0)) { $0 + $1.quantity }
         }
 
-        // Check each cart item
-        for cartItem in self {
-            // Find matching order item
-            let hasMatchInOrder = order.items.contains(where: { $0.productMatches(cartItem: cartItem.item) })
+        var missingItems: [CartOrderComparison.MissingCartItem] = []
+        var quantityMismatches: [CartOrderComparison.QuantityMismatch] = []
 
-            if !hasMatchInOrder {
-                // Item is in cart but not in order
+        // Check each unique product/variation in cart
+        for (key, cartItems) in cartItemsByProductKey {
+            guard let firstItem = cartItems.first,
+                  let (productID, variationID) = extractProductIDs(from: firstItem.item) else {
+                continue
+            }
+
+            let expectedQuantity = cartQuantities[key] ?? 0
+            let actualQuantity = orderQuantities[key] ?? 0
+
+            if actualQuantity == 0 {
+                // Item is in cart but not in order at all
                 missingItems.append(
                     CartOrderComparison.MissingCartItem(
-                        id: cartItem.item.id,
-                        name: cartItem.item.name,
-                        expectedQuantity: cartItem.quantity
+                        productID: productID,
+                        variationID: variationID,
+                        name: firstItem.item.name,
+                        expectedQuantity: expectedQuantity
+                    )
+                )
+            } else if actualQuantity != expectedQuantity {
+                // Item is in both but quantities don't match
+                quantityMismatches.append(
+                    CartOrderComparison.QuantityMismatch(
+                        name: firstItem.item.name,
+                        expectedQuantity: expectedQuantity,
+                        actualQuantity: actualQuantity
                     )
                 )
             }
         }
 
         return ItemsComparison(missingItems: missingItems, quantityMismatches: quantityMismatches)
+    }
+
+    private func extractProductIDs(from item: POSOrderableItem) -> (productID: Int64, variationID: Int64)? {
+        // Check if it's a simple product
+        if let simpleProduct = item as? POSSimpleProduct {
+            return (simpleProduct.productID, 0)
+        }
+        // Check if it's a variation
+        else if let variation = item as? POSVariation {
+            return (variation.productID, variation.productVariationID)
+        }
+        return nil
     }
 
     struct ItemsComparison {

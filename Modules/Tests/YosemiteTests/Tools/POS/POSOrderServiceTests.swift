@@ -254,11 +254,10 @@ struct POSOrderServiceTests {
 
     @Test func syncOrder_throws_error_when_order_missing_variation() async throws {
         // Given
-        let variationUUID = UUID()
         let cart = POSCart(items: [
             POSCartItem(
                 item: POSVariation(
-                    id: variationUUID,
+                    id: UUID(),
                     name: "Large",
                     formattedPrice: "$20",
                     price: "20",
@@ -279,7 +278,8 @@ struct POSOrderServiceTests {
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
-                #expect(missingItems.first?.id == variationUUID)
+                #expect(missingItems.first?.variationID == 500)
+                #expect(missingItems.first?.productID == 100)
                 return true
             }
             return false
@@ -288,12 +288,10 @@ struct POSOrderServiceTests {
 
     @Test func syncOrder_distinguishes_between_variations_of_same_product() async throws {
         // Given
-        let variation1UUID = UUID()
-        let variation2UUID = UUID()
         let cart = POSCart(items: [
             POSCartItem(
                 item: POSVariation(
-                    id: variation1UUID,
+                    id: UUID(),
                     name: "Small",
                     formattedPrice: "$15",
                     price: "15",
@@ -305,7 +303,7 @@ struct POSOrderServiceTests {
             ),
             POSCartItem(
                 item: POSVariation(
-                    id: variation2UUID,
+                    id: UUID(),
                     name: "Large",
                     formattedPrice: "$20",
                     price: "20",
@@ -335,7 +333,8 @@ struct POSOrderServiceTests {
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 // Should only report the missing variation (variationID 501)
                 #expect(missingItems.count == 1)
-                #expect(missingItems.first?.id == variation2UUID)
+                #expect(missingItems.first?.variationID == 501)
+                #expect(missingItems.first?.productID == 100)
                 return true
             }
             return false

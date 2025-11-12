@@ -719,7 +719,7 @@ struct POSCatalogPersistenceServiceTests {
         // Then
         try await db.read { db in
             let products = try PersistedProduct
-                .filter(PersistedProduct.Columns.siteID == sampleSiteID)
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)")
                 .fetchAll(db)
             #expect(products.count == 1)
             #expect(products.first?.id == 200)
@@ -747,7 +747,7 @@ struct POSCatalogPersistenceServiceTests {
         // Then
         try await db.read { db in
             let variations = try PersistedProductVariation
-                .filter(PersistedProductVariation.Columns.siteID == sampleSiteID)
+                .filter(sql: "\(PersistedProductVariation.Columns.siteID.name) = \(sampleSiteID)")
                 .fetchAll(db)
             #expect(variations.count == 1)
             #expect(variations.first?.id == 501)
@@ -775,13 +775,13 @@ struct POSCatalogPersistenceServiceTests {
         // Then
         try await db.read { db in
             let products = try PersistedProduct
-                .filter(PersistedProduct.Columns.siteID == sampleSiteID)
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)")
                 .fetchAll(db)
             #expect(products.count == 1)
             #expect(products.first?.id == 200)
 
             let variations = try PersistedProductVariation
-                .filter(PersistedProductVariation.Columns.siteID == sampleSiteID)
+                .filter(sql: "\(PersistedProductVariation.Columns.siteID.name) = \(sampleSiteID)")
                 .fetchAll(db)
             #expect(variations.count == 1)
             #expect(variations.first?.id == 501)
@@ -809,12 +809,12 @@ struct POSCatalogPersistenceServiceTests {
         // Then - Site 100 should have no products, site 200 should still have its product
         try await db.read { db in
             let site1Products = try PersistedProduct
-                .filter(PersistedProduct.Columns.siteID == 100)
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = 100")
                 .fetchAll(db)
             #expect(site1Products.isEmpty)
 
             let site2Products = try PersistedProduct
-                .filter(PersistedProduct.Columns.siteID == 200)
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = 200")
                 .fetchAll(db)
             #expect(site2Products.count == 1)
         }
@@ -835,7 +835,7 @@ struct POSCatalogPersistenceServiceTests {
         // Then - Should not throw, existing product should remain
         try await db.read { db in
             let products = try PersistedProduct
-                .filter(PersistedProduct.Columns.siteID == sampleSiteID)
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)")
                 .fetchAll(db)
             #expect(products.count == 1)
             #expect(products.first?.id == 100)

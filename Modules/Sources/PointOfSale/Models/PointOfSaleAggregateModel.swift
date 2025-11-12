@@ -17,6 +17,8 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
+import struct Yosemite.POSSimpleProduct
+import struct Yosemite.POSVariation
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -192,6 +194,49 @@ extension PointOfSaleAggregateModel {
         orderStage = .building
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
+    }
+
+    /// Removes missing products from both the cart and the local catalog
+    /// - Parameter missingProductIDs: UUIDs of cart items to remove
+    func removeMissingProductsFromCatalog(missingProductIDs: Set<UUID>) async {
+        // Extract product and variation IDs from cart items before removing them
+        var productIDsToDelete: [Int64] = []
+        var variationIDsToDelete: [Int64] = []
+
+        for item in cart.purchasableItems {
+            guard case .loaded(let orderableItem) = item.state,
+                  missingProductIDs.contains(orderableItem.id) else {
+                continue
+            }
+
+            // Check if it's a simple product or variation by trying to cast
+            if let simpleProduct = orderableItem as? POSSimpleProduct {
+                productIDsToDelete.append(simpleProduct.productID)
+            } else if let variation = orderableItem as? POSVariation {
+                variationIDsToDelete.append(variation.productVariationID)
+            }
+        }
+
+        // Remove items from cart
+        cart.purchasableItems.removeAll { item in
+            guard case .loaded(let orderableItem) = item.state else { return false }
+            return missingProductIDs.contains(orderableItem.id)
+        }
+
+        // Remove from local catalog if we have the coordinator
+        if let catalogSyncCoordinator,
+           !productIDsToDelete.isEmpty || !variationIDsToDelete.isEmpty {
+            do {
+                try await catalogSyncCoordinator.deleteProductsFromCatalog(
+                    productIDsToDelete,
+                    variationIDs: variationIDsToDelete,
+                    siteID: siteID
+                )
+                DDLogInfo("🗑️ Removed \(productIDsToDelete.count) products and \(variationIDsToDelete.count) variations from local catalog")
+            } catch {
+                DDLogError("⚠️ Failed to remove products from local catalog: \(error)")
+            }
+        }
     }
 }
 

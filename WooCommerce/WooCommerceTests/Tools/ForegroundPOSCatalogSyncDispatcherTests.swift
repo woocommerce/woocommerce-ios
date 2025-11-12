@@ -311,4 +311,8 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
         // Not used in these tests
     }
+
+    func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
 }

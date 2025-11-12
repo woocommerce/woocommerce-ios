@@ -15,6 +15,13 @@ protocol POSCatalogPersistenceServiceProtocol {
     ///   - catalog: The catalog difference to persist
     ///   - siteID: The site ID to associate the catalog with
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
+
+    /// Deletes specific products and/or variations from the catalog
+    /// - Parameters:
+    ///   - productIDs: Product IDs to delete
+    ///   - variationIDs: Variation IDs to delete
+    ///   - siteID: The site ID
+    func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
 }
 
 final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
@@ -147,6 +154,36 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }
+    }
+
+    func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        DDLogInfo("🗑️ Deleting \(productIDs.count) products and \(variationIDs.count) variations from catalog")
+
+        try await grdbManager.databaseConnection.write { db in
+            // Delete products
+            for productID in productIDs {
+                if let product = try PersistedProduct
+                    .filter(PersistedProduct.Columns.siteID == siteID)
+                    .filter(PersistedProduct.Columns.id == productID)
+                    .fetchOne(db) {
+                    try product.delete(db)
+                    DDLogInfo("Deleted product \(productID) from catalog")
+                }
+            }
+
+            // Delete variations
+            for variationID in variationIDs {
+                if let variation = try PersistedProductVariation
+                    .filter(PersistedProductVariation.Columns.siteID == siteID)
+                    .filter(PersistedProductVariation.Columns.id == variationID)
+                    .fetchOne(db) {
+                    try variation.delete(db)
+                    DDLogInfo("Deleted variation \(variationID) from catalog")
+                }
+            }
+        }
+
+        DDLogInfo("✅ Catalog deletion complete")
     }
 }
 

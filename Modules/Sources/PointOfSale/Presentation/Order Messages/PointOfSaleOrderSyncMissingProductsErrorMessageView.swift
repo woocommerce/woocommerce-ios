@@ -39,8 +39,10 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                                     sourceView: .error,
                                     itemType: .product
                                 ))
-                            removeMissingProductsFromCart()
-                            retryHandler()
+                            Task {
+                                await removeMissingProductsFromCart()
+                                retryHandler()
+                            }
                         })
                         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     }
@@ -82,7 +84,7 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
         }
     }
 
-    private func removeMissingProductsFromCart() {
+    private func removeMissingProductsFromCart() async {
         // Check if we have IDs available (client-side detection) or generic error (server-side)
         let missingProductIDs = Set(missingProducts.compactMap { $0.id })
 
@@ -93,15 +95,8 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
             return
         }
 
-        // Find and remove items from cart that match the missing product IDs
-        let itemsToRemove = posModel.cart.purchasableItems.filter { item in
-            guard case .loaded(let orderableItem) = item.state else { return false }
-            return missingProductIDs.contains(orderableItem.id)
-        }
-
-        for item in itemsToRemove {
-            posModel.remove(cartItem: item)
-        }
+        // Remove items from cart and local catalog
+        await posModel.removeMissingProductsFromCatalog(missingProductIDs: missingProductIDs)
     }
 }
 

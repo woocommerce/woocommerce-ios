@@ -31,4 +31,8 @@ final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtoc
             throw error
         }
     }
+
+    func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
 }

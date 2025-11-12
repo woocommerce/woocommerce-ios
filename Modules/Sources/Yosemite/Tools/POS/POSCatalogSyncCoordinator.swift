@@ -63,6 +63,13 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
     func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws
+
+    /// Deletes specific products and/or variations from the local catalog
+    /// - Parameters:
+    ///   - productIDs: Product IDs to delete
+    ///   - variationIDs: Variation IDs to delete
+    ///   - siteID: The site ID
+    func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -761,5 +768,10 @@ private extension POSCatalogSyncCoordinator {
             siteSettings.setFirstPOSCatalogSyncDate(siteID: siteID, date: Date())
             DDLogInfo("📋 POSCatalogSyncCoordinator: Recorded first sync date for site \(siteID)")
         }
+    }
+
+    public func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
     }
 }

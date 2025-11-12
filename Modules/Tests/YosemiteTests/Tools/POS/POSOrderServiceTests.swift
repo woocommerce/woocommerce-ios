@@ -195,6 +195,152 @@ struct POSOrderServiceTests {
             return true
         })
     }
+
+    // MARK: - Missing Products Tests
+
+    @Test func syncOrder_throws_error_when_order_is_missing_cart_products() async throws {
+        // Given
+        let cart = POSCart(items: [
+            makePOSCartItem(productID: 100, quantity: 1),
+            makePOSCartItem(productID: 200, quantity: 2)
+        ])
+
+        // Mock returns an order with only one of the products
+        let orderWithMissingProduct = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, quantity: 1)
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithMissingProduct)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.expectedQuantity == 2)
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_succeeds_when_all_cart_items_in_order() async throws {
+        // Given
+        let cart = POSCart(items: [
+            makePOSCartItem(productID: 100, quantity: 1),
+            makePOSCartItem(productID: 200, quantity: 2)
+        ])
+
+        // Mock returns an order with all cart items
+        let completeOrder = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, quantity: 1),
+                    OrderItem.fake().copy(productID: 200, quantity: 2)
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(completeOrder)
+
+        // When/Then - Should not throw
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+    }
+
+    @Test func syncOrder_throws_error_when_order_missing_variation() async throws {
+        // Given
+        let variationUUID = UUID()
+        let cart = POSCart(items: [
+            POSCartItem(
+                item: POSVariation(
+                    id: variationUUID,
+                    name: "Large",
+                    formattedPrice: "$20",
+                    price: "20",
+                    productID: 100,
+                    variationID: 500,
+                    parentProductName: "T-Shirt"
+                ),
+                quantity: 1
+            )
+        ])
+
+        // Mock returns an empty order
+        mockOrdersRemote.createPOSOrderResult = .success(OrderFactory.newOrder(currency: .USD))
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.id == variationUUID)
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_distinguishes_between_variations_of_same_product() async throws {
+        // Given
+        let variation1UUID = UUID()
+        let variation2UUID = UUID()
+        let cart = POSCart(items: [
+            POSCartItem(
+                item: POSVariation(
+                    id: variation1UUID,
+                    name: "Small",
+                    formattedPrice: "$15",
+                    price: "15",
+                    productID: 100,
+                    variationID: 500,
+                    parentProductName: "T-Shirt"
+                ),
+                quantity: 1
+            ),
+            POSCartItem(
+                item: POSVariation(
+                    id: variation2UUID,
+                    name: "Large",
+                    formattedPrice: "$20",
+                    price: "20",
+                    productID: 100,
+                    variationID: 501,
+                    parentProductName: "T-Shirt"
+                ),
+                quantity: 1
+            )
+        ])
+
+        // Mock returns order with only one variation
+        let orderWithOneVariation = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, variationID: 500, quantity: 1)
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithOneVariation)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                // Should only report the missing variation (variationID 501)
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.id == variation2UUID)
+                return true
+            }
+            return false
+        })
+    }
 }
 
 private func makePOSCartItem(

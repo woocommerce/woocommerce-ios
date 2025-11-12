@@ -697,6 +697,150 @@ struct POSCatalogPersistenceServiceTests {
             #expect(variationImage?.imageID == 100)
         }
     }
+
+    // MARK: - Delete Products Tests
+
+    @Test func deleteProducts_removes_specified_products_from_catalog() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 100),
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 200),
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 300)
+            ],
+            variations: [],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When
+        try await sut.deleteProducts([100, 300], variationIDs: [], siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let products = try PersistedProduct
+                .filter(PersistedProduct.Columns.siteID == sampleSiteID)
+                .fetchAll(db)
+            #expect(products.count == 1)
+            #expect(products.first?.id == 200)
+        }
+    }
+
+    @Test func deleteProducts_removes_specified_variations_from_catalog() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 100, productTypeKey: "variable")
+            ],
+            variations: [
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 500),
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 501),
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 502)
+            ],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When
+        try await sut.deleteProducts([], variationIDs: [500, 502], siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let variations = try PersistedProductVariation
+                .filter(PersistedProductVariation.Columns.siteID == sampleSiteID)
+                .fetchAll(db)
+            #expect(variations.count == 1)
+            #expect(variations.first?.id == 501)
+        }
+    }
+
+    @Test func deleteProducts_removes_both_products_and_variations() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 100),
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 200, productTypeKey: "variable")
+            ],
+            variations: [
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 200, productVariationID: 500),
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 200, productVariationID: 501)
+            ],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When - Delete one product and one variation
+        try await sut.deleteProducts([100], variationIDs: [500], siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let products = try PersistedProduct
+                .filter(PersistedProduct.Columns.siteID == sampleSiteID)
+                .fetchAll(db)
+            #expect(products.count == 1)
+            #expect(products.first?.id == 200)
+
+            let variations = try PersistedProductVariation
+                .filter(PersistedProductVariation.Columns.siteID == sampleSiteID)
+                .fetchAll(db)
+            #expect(variations.count == 1)
+            #expect(variations.first?.id == 501)
+        }
+    }
+
+    @Test func deleteProducts_only_affects_specified_site() async throws {
+        // Given - Add products for two different sites
+        let site1Catalog = POSCatalog(
+            products: [POSProduct.fake().copy(siteID: 100, productID: 1)],
+            variations: [],
+            syncDate: .now
+        )
+        let site2Catalog = POSCatalog(
+            products: [POSProduct.fake().copy(siteID: 200, productID: 1)],
+            variations: [],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(site1Catalog, siteID: 100)
+        try await sut.replaceAllCatalogData(site2Catalog, siteID: 200)
+
+        // When - Delete from site 100 only
+        try await sut.deleteProducts([1], variationIDs: [], siteID: 100)
+
+        // Then - Site 100 should have no products, site 200 should still have its product
+        try await db.read { db in
+            let site1Products = try PersistedProduct
+                .filter(PersistedProduct.Columns.siteID == 100)
+                .fetchAll(db)
+            #expect(site1Products.isEmpty)
+
+            let site2Products = try PersistedProduct
+                .filter(PersistedProduct.Columns.siteID == 200)
+                .fetchAll(db)
+            #expect(site2Products.count == 1)
+        }
+    }
+
+    @Test func deleteProducts_succeeds_when_product_not_found() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 100)],
+            variations: [],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When - Try to delete a product that doesn't exist
+        try await sut.deleteProducts([999], variationIDs: [], siteID: sampleSiteID)
+
+        // Then - Should not throw, existing product should remain
+        try await db.read { db in
+            let products = try PersistedProduct
+                .filter(PersistedProduct.Columns.siteID == sampleSiteID)
+                .fetchAll(db)
+            #expect(products.count == 1)
+            #expect(products.first?.id == 100)
+        }
+    }
 }
 
 private extension POSCatalogPersistenceServiceTests {

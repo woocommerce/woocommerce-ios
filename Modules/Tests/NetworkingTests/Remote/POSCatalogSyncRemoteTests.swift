@@ -988,17 +988,34 @@ extension POSCatalogSyncRemoteTests {
         let downloadURL = "https://example.com/catalog.json"
         BackgroundDownloadState.clear() // Start clean
 
-        // When
-        mockBackgroundDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/catalog.json")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
         network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
-        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
-        // Then - state should be saved with session identifier
-        let savedState = BackgroundDownloadState.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
+        // When - use continuation to capture state when download starts
+        let savedState: BackgroundDownloadState? = await withCheckedContinuation { continuation in
+            mockBackgroundDownloader.onDownloadStarted = {
+                // Download has started, state should be saved now
+                if let sessionIdentifier = mockBackgroundDownloader.lastSessionIdentifier {
+                    let state = BackgroundDownloadState.load(for: sessionIdentifier)
+                    continuation.resume(returning: state)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+
+            Task {
+                _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            }
+        }
+
+        // Then - state should have been saved during download
+        #expect(savedState != nil)
         #expect(savedState?.siteID == sampleSiteID)
         #expect(savedState?.sessionIdentifier == mockBackgroundDownloader.lastSessionIdentifier)
 
         // Cleanup
+        try? FileManager.default.removeItem(at: mockFileURL)
         BackgroundDownloadState.clear()
     }
 
@@ -1006,15 +1023,20 @@ extension POSCatalogSyncRemoteTests {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
+        BackgroundDownloadState.clear() // Start clean
 
         // When
-        mockBackgroundDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/catalog.json")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
         network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
         _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then - state should be cleared after successful completion
         let savedState = BackgroundDownloadState.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
         #expect(savedState == nil)
+
+        // Cleanup
+        try? FileManager.default.removeItem(at: mockFileURL)
     }
 
     @Test func downloadCatalog_creates_unique_session_identifiers() async throws {

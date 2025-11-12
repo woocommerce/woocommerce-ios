@@ -303,6 +303,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         guard try await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
+            let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason))
             return
         }
 
@@ -605,6 +607,45 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let age = Date().timeIntervalSince(lastSyncDate)
         if age < maxAge {
             return "catalog_not_stale"
+        }
+
+        return "unknown_reason"
+    }
+
+    private func getIncrementalSyncSkipReason(for siteID: Int64, maxAge: TimeInterval) async -> String {
+        // Check eligibility first
+        do {
+            let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
+            if case .ineligible(let reason) = eligibility {
+                // Map ineligibility reasons to skip reasons
+                switch reason {
+                case .posTabNotEligible:
+                    return "pos_inactive"
+                case .featureFlagDisabled:
+                    return "feature_flag_disabled"
+                case .unsupportedWooCommerceVersion:
+                    return "unsupported_woocommerce_version"
+                case .catalogSizeTooLarge:
+                    return "catalog_too_large"
+                case .catalogSizeCheckFailed:
+                    return "catalog_size_check_failed"
+                }
+            }
+        } catch {
+            return "eligibility_check_failed"
+        }
+
+        // Check if full sync exists
+        guard await lastFullSyncDate(for: siteID) != nil else {
+            return "no_full_sync"
+        }
+
+        // Check if incremental sync is needed based on age
+        if maxAge > 0, let lastIncrementalSyncDate = await lastIncrementalSyncDate(for: siteID) {
+            let age = Date().timeIntervalSince(lastIncrementalSyncDate)
+            if age <= maxAge {
+                return "catalog_not_stale"
+            }
         }
 
         return "unknown_reason"

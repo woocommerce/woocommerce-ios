@@ -1251,6 +1251,51 @@ extension POSCatalogSyncCoordinatorTests {
         let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
         #expect(syncCompleted != nil)
     }
+
+    @Test func performIncrementalSyncIfApplicable_tracks_sync_skipped_when_no_full_sync() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        // No full sync exists for this site
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped != nil)
+        #expect(syncSkipped?.properties?["reason"] as? String == "no_full_sync")
+    }
+
+    @Test func performFullSyncIfApplicable_tracks_sync_skipped_when_not_stale() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        // Recent sync exists
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date())
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped != nil)
+        #expect(syncSkipped?.properties?["reason"] as? String == "catalog_not_stale")
+    }
 }
 
 extension POSCatalogSyncCoordinator {

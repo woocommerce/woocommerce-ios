@@ -160,26 +160,22 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("🗑️ Deleting \(productIDs.count) products and \(variationIDs.count) variations from catalog")
 
         try await grdbManager.databaseConnection.write { db in
-            // Delete products
-            for productID in productIDs {
-                if let product = try PersistedProduct
+            // Batch delete products using filter
+            if !productIDs.isEmpty {
+                let deletedProductsCount = try PersistedProduct
                     .filter(PersistedProduct.Columns.siteID == siteID)
-                    .filter(PersistedProduct.Columns.id == productID)
-                    .fetchOne(db) {
-                    try product.delete(db)
-                    DDLogInfo("Deleted product \(productID) from catalog")
-                }
+                    .filter(productIDs.contains(PersistedProduct.Columns.id))
+                    .deleteAll(db)
+                DDLogInfo("Deleted \(deletedProductsCount) products from catalog")
             }
 
-            // Delete variations
-            for variationID in variationIDs {
-                if let variation = try PersistedProductVariation
+            // Batch delete variations using filter
+            if !variationIDs.isEmpty {
+                let deletedVariationsCount = try PersistedProductVariation
                     .filter(PersistedProductVariation.Columns.siteID == siteID)
-                    .filter(PersistedProductVariation.Columns.id == variationID)
-                    .fetchOne(db) {
-                    try variation.delete(db)
-                    DDLogInfo("Deleted variation \(variationID) from catalog")
-                }
+                    .filter(variationIDs.contains(PersistedProductVariation.Columns.id))
+                    .deleteAll(db)
+                DDLogInfo("Deleted \(deletedVariationsCount) variations from catalog")
             }
         }
 

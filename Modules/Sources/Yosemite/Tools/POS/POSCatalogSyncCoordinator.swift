@@ -657,6 +657,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         return "unknown_reason"
     }
+
+    public func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
+    }
 }
 
 // MARK: - Syncing State
@@ -768,10 +773,5 @@ private extension POSCatalogSyncCoordinator {
             siteSettings.setFirstPOSCatalogSyncDate(siteID: siteID, date: Date())
             DDLogInfo("📋 POSCatalogSyncCoordinator: Recorded first sync date for site \(siteID)")
         }
-    }
-
-    public func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
-        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
-        try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
     }
 }

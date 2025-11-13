@@ -40,25 +40,39 @@ public extension POSCart {
     }
 }
 
+/// Represents the result of comparing a cart with an order to detect discrepancies
 public struct CartOrderComparison {
+    /// Items that were expected in the cart but are missing from the order
     public let missingItems: [MissingCartItem]
+    /// Items where the quantity in the order doesn't match the cart
     public let quantityMismatches: [QuantityMismatch]
+    /// Whether the coupons in the cart match the order
     public let couponsMatch: Bool
 
+    /// Returns true if there are any discrepancies between cart and order
     public var hasDiscrepancies: Bool {
         return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch
     }
 
+    /// Represents an item that was expected in the cart but is missing from the order
     public struct MissingCartItem {
+        /// The product ID (for simple products) or parent product ID (for variations)
         public let productID: Int64
+        /// The variation ID (0 for simple products)
         public let variationID: Int64
+        /// The product or variation name
         public let name: String
+        /// The quantity that was expected in the order
         public let expectedQuantity: Decimal
     }
 
+    /// Represents an item where the quantity doesn't match between cart and order
     public struct QuantityMismatch {
+        /// The product or variation name
         public let name: String
+        /// The quantity in the cart
         public let expectedQuantity: Decimal
+        /// The quantity in the order
         public let actualQuantity: Decimal
     }
 }

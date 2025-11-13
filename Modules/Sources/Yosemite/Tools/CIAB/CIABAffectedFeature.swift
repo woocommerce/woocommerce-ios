@@ -7,6 +7,9 @@ public enum CIABAffectedFeature: CaseIterable {
     case splitShipments
     case groupedProducts
     case variableProducts
+    case subscriptionProducts
+    case bundleProducts
+    case compositeProducts
     case productsStockDashboardCard
     case pointOfSale
     case cardReader

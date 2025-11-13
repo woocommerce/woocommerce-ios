@@ -426,7 +426,7 @@ struct POSCatalogSyncCoordinatorTests {
         }
 
         // Then - subsequent incremental sync should be allowed
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
@@ -757,7 +757,7 @@ extension POSCatalogSyncCoordinatorTests {
         )
         let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo)
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -804,7 +804,7 @@ extension POSCatalogSyncCoordinatorTests {
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -851,7 +851,7 @@ extension POSCatalogSyncCoordinatorTests {
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -875,7 +875,7 @@ extension POSCatalogSyncCoordinatorTests {
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -982,7 +982,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockIncrementalSyncService.resumeBlockedSync()
         _ = try? await syncTask.value
 
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
         try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
     }
@@ -1080,7 +1080,7 @@ extension POSCatalogSyncCoordinatorTests {
         _ = try? await syncTaskA.value
         _ = try? await syncTaskB.value
 
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
         try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
     }
 

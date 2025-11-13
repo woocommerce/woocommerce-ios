@@ -44,6 +44,7 @@ extension WooAnalyticsEvent {
             static let listPosition = "list_position"
             static let daysSinceCreated = "days_since_created"
             static let pageNumber = "page_number"
+            static let reason = "reason"
             static let syncStrategy = "sync_strategy"
         }
 

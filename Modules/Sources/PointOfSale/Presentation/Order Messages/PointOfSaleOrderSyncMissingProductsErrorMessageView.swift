@@ -34,17 +34,20 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                         })
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-                        Button(removeProductsActionTitle, action: {
-                            analytics.track(event: .PointOfSale.itemRemovedFromCart(
-                                    sourceView: .error,
-                                    itemType: .product
-                                ))
-                            Task {
-                                await removeMissingProductsFromCart()
-                                retryHandler()
-                            }
-                        })
-                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                        // Only show "Remove product" button if we can identify specific products
+                        if canIdentifySpecificProducts {
+                            Button(removeProductsActionTitle, action: {
+                                analytics.track(event: .PointOfSale.itemRemovedFromCart(
+                                        sourceView: .error,
+                                        itemType: .product
+                                    ))
+                                Task {
+                                    await removeMissingProductsFromCart()
+                                    retryHandler()
+                                }
+                            })
+                            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                        }
                     }
                     .frame(width: geometry.size.width / 2)
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
@@ -84,26 +87,28 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
         }
     }
 
+    /// Returns true if we can identify specific products to remove
+    /// Returns false for generic errors where productID=0 and variationID=0
+    private var canIdentifySpecificProducts: Bool {
+        // If all missing products have both IDs as 0, we can't identify them
+        return !missingProducts.allSatisfy { $0.productID == 0 && $0.variationID == 0 }
+    }
+
     private func removeMissingProductsFromCart() async {
         // Extract product and variation IDs from missing products
         var productIDs = Set<Int64>()
         var variationIDs = Set<Int64>()
 
         for missingProduct in missingProducts {
-            // If both IDs are 0, it's a server-side error and we can't identify specific products
-            if missingProduct.productID == 0 && missingProduct.variationID == 0 {
-                // Remove all purchasable items since we can't determine which specific product is problematic
-                posModel.removeAllItemsFromCart(types: [.purchasableItem])
-                return
-            }
-
             // If variationID is non-zero, it's a variation
             if missingProduct.variationID != 0 {
                 variationIDs.insert(missingProduct.variationID)
-            } else {
-                // Otherwise it's a simple product
+            }
+            // If productID is non-zero (and variationID is zero), it's a simple product
+            else if missingProduct.productID != 0 {
                 productIDs.insert(missingProduct.productID)
             }
+            // Skip items with both IDs as 0 (shouldn't happen since button is hidden for those)
         }
 
         // Remove items from cart and local catalog

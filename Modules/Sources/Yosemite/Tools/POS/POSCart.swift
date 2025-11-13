@@ -69,13 +69,13 @@ public struct CartOrderComparison {
     /// Represents an item where the quantity doesn't match between cart and order
     public struct QuantityMismatch {
         /// The product or variation name
-        // periphery:ignore
+        // periphery:ignore - part of public API
         public let name: String
         /// The quantity in the cart
-        // periphery:ignore
+        // periphery:ignore - part of public API
         public let expectedQuantity: Decimal
         /// The quantity in the order
-        // periphery:ignore
+        // periphery:ignore - part of public API
         public let actualQuantity: Decimal
     }
 }

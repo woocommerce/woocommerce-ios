@@ -88,12 +88,13 @@ final class FilterProductListViewModel: FilterListViewModel {
     init(filters: Filters,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
-        self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
+        self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters, storageManager: storageManager)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
         self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)

@@ -17,8 +17,6 @@ enum PointOfSaleOrderState: Equatable {
             let productID: Int64
             let variationID: Int64
             let name: String
-            // periphery:ignore - part of public API
-            let quantity: Decimal
         }
 
         static func == (lhs: OrderStateError, rhs: OrderStateError) -> Bool {

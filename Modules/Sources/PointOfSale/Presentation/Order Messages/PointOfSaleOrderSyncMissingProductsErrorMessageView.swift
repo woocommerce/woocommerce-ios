@@ -199,7 +199,7 @@ private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
 #Preview("Single Missing Product") {
     PointOfSaleOrderSyncMissingProductsErrorMessageView(
         missingProducts: [
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(productID: 100, variationID: 0, name: "Blue T-Shirt", quantity: 2)
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(productID: 100, variationID: 0, name: "Blue T-Shirt")
         ],
         retryHandler: {}
     )
@@ -209,8 +209,8 @@ private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
 #Preview("Multiple Missing Products") {
     PointOfSaleOrderSyncMissingProductsErrorMessageView(
         missingProducts: [
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(productID: 100, variationID: 0, name: "Blue T-Shirt", quantity: 2),
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(productID: 0, variationID: 500, name: "Red Hat", quantity: 1)
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(productID: 100, variationID: 0, name: "Blue T-Shirt"),
+            PointOfSaleOrderState.OrderStateError.MissingProductInfo(productID: 0, variationID: 500, name: "Red Hat")
         ],
         retryHandler: {}
     )

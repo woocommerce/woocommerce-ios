@@ -200,8 +200,7 @@ private extension PointOfSaleOrderController {
                 PointOfSaleOrderState.OrderStateError.MissingProductInfo(
                     productID: $0.productID,
                     variationID: $0.variationID,
-                    name: $0.name,
-                    quantity: $0.expectedQuantity
+                    name: $0.name
                 )
             }
             return .missingProducts(missingProductInfo)
@@ -298,8 +297,7 @@ private extension PointOfSaleOrderController {
             PointOfSaleOrderState.OrderStateError.MissingProductInfo(
                 productID: parentProductID,
                 variationID: variationID,
-                name: productName,
-                quantity: 1
+                name: productName
             )
         ]
     }
@@ -322,8 +320,7 @@ private extension PointOfSaleOrderController {
             PointOfSaleOrderState.OrderStateError.MissingProductInfo(
                 productID: 0,
                 variationID: 0,
-                name: Localization.unknownProductName,
-                quantity: 1
+                name: Localization.unknownProductName
             )
         ]
     }

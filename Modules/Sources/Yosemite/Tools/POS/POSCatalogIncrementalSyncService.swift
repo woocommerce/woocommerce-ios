@@ -13,7 +13,8 @@ public protocol POSCatalogIncrementalSyncServiceProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for.
     ///   - lastFullSyncDate: The date of the last full sync to use if no incremental sync date exists.
-    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws
+    /// - Returns: The synced catalog containing updated products and variations
+    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
@@ -53,7 +54,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 
     // MARK: - Protocol Conformance
 
-    public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws {
+    public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
         let modifiedAfter = latestSyncDate(fullSyncDate: lastFullSyncDate, incrementalSyncDate: lastIncrementalSyncDate)
 
         DDLogInfo("🔄 Starting incremental catalog sync for site ID: \(siteID), modifiedAfter: \(modifiedAfter)")
@@ -65,6 +66,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
             try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
             DDLogInfo("✅ Persisted \(catalog.products.count) updated products and \(catalog.variations.count) updated variations to database for siteID \(siteID)")
 
+            return catalog
         } catch {
             DDLogError("❌ Failed to sync and persist catalog incrementally: \(error)")
             throw error

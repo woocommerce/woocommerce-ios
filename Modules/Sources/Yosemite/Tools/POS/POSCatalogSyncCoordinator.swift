@@ -108,7 +108,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private var ongoingFullSyncTasks: [Int64: Task<Void, Error>] = [:]
 
     /// Tracks ongoing incremental sync tasks by site ID for cancellation
-    private var ongoingIncrementalSyncTasks: [Int64: Task<Void, Error>] = [:]
+    private var ongoingIncrementalSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
     /// Observable model for full sync state updates
     public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
@@ -337,7 +337,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncStartTime = Date()
 
         // Create a task to perform the sync
-        let syncTask = Task<Void, Error> {
+        let syncTask = Task<POSCatalog, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
                                                                   lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID))
@@ -351,18 +351,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         do {
-            try await syncTask.value
+            let syncedCatalog = try await syncTask.value
             DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
-            // TODO: Capture actual metrics from incremental sync service (products/variations synced)
-            // For now, query totals from storage
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
                 syncType: "incremental",
-                productsSynced: 0, // TODO: Get from incremental sync service
-                variationsSynced: 0, // TODO: Get from incremental sync service
+                productsSynced: syncedCatalog.products.count,
+                variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs

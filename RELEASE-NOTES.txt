@@ -9,6 +9,7 @@
 - [*] Fix order details presentation when opened from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16331]
 - [*] Show POS feedback surveys for eligible merchants [https://github.com/woocommerce/woocommerce-ios/pull/16325]
 - [*] Fix product variation selection for order creation [https://github.com/woocommerce/woocommerce-ios/pull/16317]
+- [internal] Hide non-CIAB product types from filters [https://github.com/woocommerce/woocommerce-ios/pull/16354] 
 
 23.6
 -----

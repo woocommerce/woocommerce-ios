@@ -55,7 +55,11 @@ public final class POSOrderService: POSOrderServiceProtocol {
         // Validate that the created order contains all cart items
         let comparison = cart.compareWithOrder(createdOrder)
         if comparison.hasDiscrepancies {
-            DDLogWarn("⚠️ Order created but cart-order mismatch detected. Missing items: \(comparison.missingItems.count), Quantity mismatches: \(comparison.quantityMismatches.count)")
+            DDLogWarn("""
+                ⚠️ Order created but cart-order mismatch detected. \
+                Missing items: \(comparison.missingItems.count), \
+                Quantity mismatches: \(comparison.quantityMismatches.count)
+                """)
 
             if !comparison.missingItems.isEmpty {
                 throw POSOrderServiceError.missingProductsInOrder(comparison.missingItems)

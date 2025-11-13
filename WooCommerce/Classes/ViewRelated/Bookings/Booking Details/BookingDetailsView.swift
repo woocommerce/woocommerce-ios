@@ -51,9 +51,6 @@ struct BookingDetailsView: View {
         .refreshable {
             await viewModel.syncData()
         }
-        .task {
-            await viewModel.syncData()
-        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.navigationTitle)
         .background(Color(uiColor: .systemGroupedBackground))

@@ -458,11 +458,9 @@ extension WooAnalyticsEvent {
         static func ordersListLoaded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .ordersListLoaded, properties: [:])
         }
-    }
 
-    // MARK: - Checkout Outdated Item Detection Events
+        // MARK: - Checkout Outdated Item Detection Events
 
-    public extension PointOfSale {
         static func checkoutOutdatedItemDetectedScreenShown(
             reason: String,
             syncStrategy: String

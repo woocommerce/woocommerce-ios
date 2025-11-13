@@ -167,6 +167,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         recordFirstSyncIfNeeded(for: siteID)
     }
 
+    // TODO: WOOMOB-1677 - Add logic to check for in-progress catalog generation before starting new sync.
+    // When Background App Refresh or foreground app open triggers this, first check if there's a
+    // pending catalog generation from a previous session (requires state persistence). If so,
+    // poll once for status and download/parse if ready instead of starting a new generation.
     public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)

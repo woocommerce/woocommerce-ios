@@ -164,6 +164,10 @@ private extension POSCatalogFullSyncService {
         return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL, allowCellular: allowCellular)
     }
 
+    // TODO: WOOMOB-1677 - This blocking polling approach is incompatible with background execution.
+    // Background App Refresh tasks have ~30 seconds of execution time, but catalog generation
+    // typically takes 5-10 minutes. This needs to be refactored to use stateful polling that
+    // resumes across multiple background refresh sessions and foreground app opens.
     func pollForCatalogCompletion(siteID: Int64,
                                   syncRemote: POSCatalogSyncRemoteProtocol,
                                   allowCellular: Bool) async throws -> String {

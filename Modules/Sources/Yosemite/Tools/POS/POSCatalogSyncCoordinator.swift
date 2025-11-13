@@ -105,7 +105,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private var ongoingIncrementalSyncs: Set<Int64> = []
 
     /// Tracks ongoing full sync tasks by site ID for cancellation
-    private var ongoingFullSyncTasks: [Int64: Task<Void, Error>] = [:]
+    private var ongoingFullSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
     /// Tracks ongoing incremental sync tasks by site ID for cancellation
     private var ongoingIncrementalSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
@@ -159,10 +159,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncStartTime = Date()
 
         // Create a task to perform the sync
-        let syncTask = Task<Void, Error> {
-            _ = try await fullSyncService.startFullSync(for: siteID,
-                                                        regenerateCatalog: regenerateCatalog,
-                                                        allowCellular: allowCellular)
+        let syncTask = Task<POSCatalog, Error> {
+            try await fullSyncService.startFullSync(for: siteID,
+                                                    regenerateCatalog: regenerateCatalog,
+                                                    allowCellular: allowCellular)
         }
 
         // Store the task for potential cancellation
@@ -173,18 +173,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         do {
-            try await syncTask.value
+            let syncedCatalog = try await syncTask.value
             emitSyncState(.syncCompleted(siteID: siteID))
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
-            // TODO: Capture actual metrics from sync service (products/variations synced and totals)
-            // For now, query totals from storage
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
                 syncType: "full",
-                productsSynced: totalProducts, // TODO: Get from sync service
-                variationsSynced: totalVariations, // TODO: Get from sync service
+                productsSynced: syncedCatalog.products.count,
+                variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs

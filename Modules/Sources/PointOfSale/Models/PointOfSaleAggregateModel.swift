@@ -675,13 +675,17 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
         trackOrderSyncState(syncOrderResult)
+        await handlePostSyncCleanup()
+        await startPaymentWhenCardReaderConnected()
+    }
 
+    /// Handles cleanup operations after order sync, such as removing unavailable products from the catalog
+    @MainActor
+    private func handlePostSyncCleanup() async {
         // If we identified specific missing products, remove them from the catalog immediately
         if case .error(.missingProducts(let missingProducts), _) = orderController.orderState.externalState {
             await removeIdentifiedMissingProductsFromCatalog(missingProducts)
         }
-
-        await startPaymentWhenCardReaderConnected()
     }
 }
 

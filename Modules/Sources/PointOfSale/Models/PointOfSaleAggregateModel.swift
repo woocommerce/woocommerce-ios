@@ -216,42 +216,6 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    /// Removes missing products from both the cart and the local catalog
-    /// - Parameters:
-    ///   - productIDs: Product IDs to remove (for simple products)
-    ///   - variationIDs: Variation IDs to remove (for variations)
-    func removeMissingProductsFromCatalog(productIDs: Set<Int64>, variationIDs: Set<Int64>) async {
-        // Remove items from cart matching these product/variation IDs
-        cart.purchasableItems.removeAll { item in
-            guard case .loaded(let orderableItem) = item.state else { return false }
-
-            // Check if it's a simple product matching the product IDs
-            if let simpleProduct = orderableItem as? POSSimpleProduct {
-                return productIDs.contains(simpleProduct.productID)
-            }
-            // Check if it's a variation matching the variation IDs
-            else if let variation = orderableItem as? POSVariation {
-                return variationIDs.contains(variation.productVariationID)
-            }
-            return false
-        }
-
-        // Remove from local catalog if we have the coordinator
-        if let catalogSyncCoordinator,
-           !productIDs.isEmpty || !variationIDs.isEmpty {
-            do {
-                try await catalogSyncCoordinator.deleteProductsFromCatalog(
-                    Array(productIDs),
-                    variationIDs: Array(variationIDs),
-                    siteID: siteID
-                )
-                DDLogInfo("🗑️ Removed \(productIDs.count) products and \(variationIDs.count) variations from local catalog")
-            } catch {
-                DDLogError("⚠️ Failed to remove products from local catalog: \(error)")
-            }
-        }
-    }
-
     /// Removes identified missing products from the catalog only (not from cart)
     /// - Parameter missingProducts: Array of missing product info
     private func removeIdentifiedMissingProductsFromCatalog(_ missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo]) async {

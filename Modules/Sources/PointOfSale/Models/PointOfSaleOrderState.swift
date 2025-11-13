@@ -73,3 +73,27 @@ enum PointOfSaleOrderState: Equatable {
         }
     }
 }
+
+// MARK: - Missing Product Helpers
+extension Array where Element == PointOfSaleOrderState.OrderStateError.MissingProductInfo {
+    /// Extracts product and variation IDs from missing product info
+    /// Returns a tuple of (productIDs, variationIDs) containing only non-zero IDs
+    func extractProductAndVariationIDs() -> (productIDs: Set<Int64>, variationIDs: Set<Int64>) {
+        var productIDs = Set<Int64>()
+        var variationIDs = Set<Int64>()
+
+        for missingProduct in self {
+            // If variationID is non-zero, it's a variation
+            if missingProduct.variationID != 0 {
+                variationIDs.insert(missingProduct.variationID)
+            }
+            // If productID is non-zero (and variationID is zero), it's a simple product
+            else if missingProduct.productID != 0 {
+                productIDs.insert(missingProduct.productID)
+            }
+            // Skip items with both IDs as 0 (generic errors where we can't identify the product)
+        }
+
+        return (productIDs, variationIDs)
+    }
+}

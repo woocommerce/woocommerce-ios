@@ -115,22 +115,7 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     }
 
     private func removeMissingProductsFromCart() {
-        // Extract product and variation IDs from missing products
-        var productIDs = Set<Int64>()
-        var variationIDs = Set<Int64>()
-
-        for missingProduct in missingProducts {
-            // If variationID is non-zero, it's a variation
-            if missingProduct.variationID != 0 {
-                variationIDs.insert(missingProduct.variationID)
-            }
-            // If productID is non-zero (and variationID is zero), it's a simple product
-            else if missingProduct.productID != 0 {
-                productIDs.insert(missingProduct.productID)
-            }
-            // Skip items with both IDs as 0 (shouldn't happen since button is hidden for those)
-        }
-
+        let (productIDs, variationIDs) = missingProducts.extractProductAndVariationIDs()
         // Remove items from cart only (catalog was already cleaned up when error was detected)
         posModel.removeMissingProductsFromCart(productIDs: productIDs, variationIDs: variationIDs)
     }

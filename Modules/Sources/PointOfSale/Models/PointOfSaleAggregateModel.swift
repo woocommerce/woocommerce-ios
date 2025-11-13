@@ -219,19 +219,7 @@ extension PointOfSaleAggregateModel {
     /// Removes identified missing products from the catalog only (not from cart)
     /// - Parameter missingProducts: Array of missing product info
     private func removeIdentifiedMissingProductsFromCatalog(_ missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo]) async {
-        // Extract product and variation IDs from missing products
-        var productIDs = Set<Int64>()
-        var variationIDs = Set<Int64>()
-
-        for missingProduct in missingProducts {
-            // Only process items where we can identify specific products (not 0,0)
-            if missingProduct.variationID != 0 {
-                variationIDs.insert(missingProduct.variationID)
-            } else if missingProduct.productID != 0 {
-                productIDs.insert(missingProduct.productID)
-            }
-            // Skip items with both IDs as 0 (generic errors where we can't identify the product)
-        }
+        let (productIDs, variationIDs) = missingProducts.extractProductAndVariationIDs()
 
         // Remove from local catalog only if we have identifiable products
         guard !productIDs.isEmpty || !variationIDs.isEmpty else { return }
@@ -675,13 +663,13 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
         trackOrderSyncState(syncOrderResult)
-        await handlePostSyncCleanup()
+        await removeMissingProductsFromCatalogAfterSync()
         await startPaymentWhenCardReaderConnected()
     }
 
-    /// Handles cleanup operations after order sync, such as removing unavailable products from the catalog
+    /// Removes unavailable products from the local catalog after detecting them during order sync
     @MainActor
-    private func handlePostSyncCleanup() async {
+    private func removeMissingProductsFromCatalogAfterSync() async {
         // If we identified specific missing products, remove them from the catalog immediately
         if case .error(.missingProducts(let missingProducts), _) = orderController.orderState.externalState {
             await removeIdentifiedMissingProductsFromCatalog(missingProducts)

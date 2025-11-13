@@ -196,6 +196,26 @@ extension PointOfSaleAggregateModel {
         cardPresentPaymentInlineMessage = nil
     }
 
+    /// Removes missing products from the cart only (catalog is auto-cleaned when errors are detected)
+    /// - Parameters:
+    ///   - productIDs: Product IDs to remove (for simple products)
+    ///   - variationIDs: Variation IDs to remove (for variations)
+    func removeMissingProductsFromCart(productIDs: Set<Int64>, variationIDs: Set<Int64>) {
+        cart.purchasableItems.removeAll { item in
+            guard case .loaded(let orderableItem) = item.state else { return false }
+
+            // Check if it's a simple product matching the product IDs
+            if let simpleProduct = orderableItem as? POSSimpleProduct {
+                return productIDs.contains(simpleProduct.productID)
+            }
+            // Check if it's a variation matching the variation IDs
+            else if let variation = orderableItem as? POSVariation {
+                return variationIDs.contains(variation.productVariationID)
+            }
+            return false
+        }
+    }
+
     /// Removes missing products from both the cart and the local catalog
     /// - Parameters:
     ///   - productIDs: Product IDs to remove (for simple products)
@@ -228,6 +248,40 @@ extension PointOfSaleAggregateModel {
                 DDLogInfo("🗑️ Removed \(productIDs.count) products and \(variationIDs.count) variations from local catalog")
             } catch {
                 DDLogError("⚠️ Failed to remove products from local catalog: \(error)")
+            }
+        }
+    }
+
+    /// Removes identified missing products from the catalog only (not from cart)
+    /// - Parameter missingProducts: Array of missing product info
+    private func removeIdentifiedMissingProductsFromCatalog(_ missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo]) async {
+        // Extract product and variation IDs from missing products
+        var productIDs = Set<Int64>()
+        var variationIDs = Set<Int64>()
+
+        for missingProduct in missingProducts {
+            // Only process items where we can identify specific products (not 0,0)
+            if missingProduct.variationID != 0 {
+                variationIDs.insert(missingProduct.variationID)
+            } else if missingProduct.productID != 0 {
+                productIDs.insert(missingProduct.productID)
+            }
+            // Skip items with both IDs as 0 (generic errors where we can't identify the product)
+        }
+
+        // Remove from local catalog only if we have identifiable products
+        guard !productIDs.isEmpty || !variationIDs.isEmpty else { return }
+
+        if let catalogSyncCoordinator {
+            do {
+                try await catalogSyncCoordinator.deleteProductsFromCatalog(
+                    Array(productIDs),
+                    variationIDs: Array(variationIDs),
+                    siteID: siteID
+                )
+                DDLogInfo("🗑️ Auto-removed \(productIDs.count) products and \(variationIDs.count) variations from local catalog (unavailable items)")
+            } catch {
+                DDLogError("⚠️ Failed to auto-remove unavailable products from local catalog: \(error)")
             }
         }
     }
@@ -657,6 +711,12 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
         trackOrderSyncState(syncOrderResult)
+
+        // If we identified specific missing products, remove them from the catalog immediately
+        if case .error(.missingProducts(let missingProducts), _) = orderController.orderState.externalState {
+            await removeIdentifiedMissingProductsFromCatalog(missingProducts)
+        }
+
         await startPaymentWhenCardReaderConnected()
     }
 }

@@ -41,10 +41,8 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                                         sourceView: .error,
                                         itemType: .product
                                     ))
-                                Task {
-                                    await removeMissingProductsFromCart()
-                                    retryHandler()
-                                }
+                                removeMissingProductsFromCart()
+                                retryHandler()
                             })
                             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                         }
@@ -94,7 +92,7 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
         return !missingProducts.allSatisfy { $0.productID == 0 && $0.variationID == 0 }
     }
 
-    private func removeMissingProductsFromCart() async {
+    private func removeMissingProductsFromCart() {
         // Extract product and variation IDs from missing products
         var productIDs = Set<Int64>()
         var variationIDs = Set<Int64>()
@@ -111,8 +109,8 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
             // Skip items with both IDs as 0 (shouldn't happen since button is hidden for those)
         }
 
-        // Remove items from cart and local catalog
-        await posModel.removeMissingProductsFromCatalog(productIDs: productIDs, variationIDs: variationIDs)
+        // Remove items from cart only (catalog was already cleaned up when error was detected)
+        posModel.removeMissingProductsFromCart(productIDs: productIDs, variationIDs: variationIDs)
     }
 }
 

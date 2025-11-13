@@ -1,19 +1,14 @@
 import SwiftUI
 
-public struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
+struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     let missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo]
     let retryHandler: () -> Void
-
-    public init(missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo], retryHandler: @escaping () -> Void) {
-        self.missingProducts = missingProducts
-        self.retryHandler = retryHandler
-    }
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
 
-    public var body: some View {
+    var body: some View {
         GeometryReader { geometry in
             HStack(alignment: .center) {
                 Spacer()

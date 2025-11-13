@@ -30,6 +30,11 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
 
                     VStack(spacing: PointOfSaleEmptyErrorStateViewLayout.buttonSpacing) {
                         Button(Localization.editOrderTitle, action: {
+                            let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
+                            analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedEditOrderTapped(
+                                reason: "deleted",
+                                syncStrategy: syncStrategy
+                            ))
                             posModel.addMoreToCart()
                         })
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -37,10 +42,20 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                         // Only show "Remove product" button if we can identify specific products
                         if canIdentifySpecificProducts {
                             Button(removeProductsActionTitle, action: {
+                                let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
+
+                                // Track the new specific event
+                                analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedRemoveTapped(
+                                    reason: "deleted",
+                                    syncStrategy: syncStrategy
+                                ))
+
+                                // Keep existing generic event for backwards compatibility
                                 analytics.track(event: .PointOfSale.itemRemovedFromCart(
-                                        sourceView: .error,
-                                        itemType: .product
-                                    ))
+                                    sourceView: .error,
+                                    itemType: .product
+                                ))
+
                                 removeMissingProductsFromCart()
                                 retryHandler()
                             })
@@ -56,6 +71,13 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                 .multilineTextAlignment(.center)
                 Spacer()
             }
+        }
+        .onAppear {
+            let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
+            analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedScreenShown(
+                reason: "deleted",
+                syncStrategy: syncStrategy
+            ))
         }
     }
 

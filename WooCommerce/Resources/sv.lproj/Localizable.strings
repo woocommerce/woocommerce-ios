@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-04 14:39:42+0000 */
+/* Translation-Revision-Date: 2025-11-06 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -833,7 +833,7 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.attendance.headerTitle" = "Deltagande";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
-"BookingDetailsView.attendanceStatus.updateFailed.message" = "Kan inte ändra närvarostatus för bokning #%1$d";
+"BookingDetailsView.attendanceStatus.updateFailed.message" = "Kan inte ändra närvarostatus för bokning %1$d";
 
 /* Add a note row title in booking notes section in booking details view. */
 "BookingDetailsView.bookingNotes.addANoteRow.title" = "Lägg till en anteckning";
@@ -8309,7 +8309,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingCustomerSelectorView.searchPrompt" = "Sök kund";
 
 /* Error message when selecting guest customer in booking filtering */
-"bookingCustomerSelectorView.selectionDisabledMessage" = "Det här är en gästanvändare, och gäster kan inte användas för att filtrera beställningar.";
+"bookingCustomerSelectorView.selectionDisabledMessage" = "Detta är en gästanvändare och gäster kan inte användas för att filtrera bokningar.";
 
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Kund";
@@ -8345,10 +8345,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFilters.rowTitlePaymentStatus" = "Betalningsstatus";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "Tjänst\/evenemang";
+"bookingFilters.rowTitleProduct" = "Tjänst\/händelse";
 
 /* Row title for filtering bookings by team member. */
-"bookingFilters.rowTitleTeamMember" = "Lägg till en teammedlem";
+"bookingFilters.rowTitleTeamMember" = "Teammedlem";
 
 /* Description for booking date range filter with no dates selected */
 "bookingFiltersViewModel.dateRangeFilter.any" = "Alla";
@@ -8396,7 +8396,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingListView.filter" = "Filtrera";
 
 /* Button to filter the booking list with number of active filters */
-"bookingListView.filter.withCount" = "Filter för %1$d";
+"bookingListView.filter.withCount" = "Filtrera %1$d";
 
 /* Prompt in the search bar on top of the booking list */
 "bookingListView.search.prompt" = "Sök bokningar";
@@ -8417,7 +8417,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingServiceEventSelectorView.noMembersFound" = "Ingen tjänst eller händelse hittades";
 
 /* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "Tjänst\/evenemang";
+"bookingServiceEventSelectorView.title" = "Tjänst\/händelse";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "Avslutat";
@@ -8444,7 +8444,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingTeamMemberSelectorView.noMembersFound" = "Inga teammedlemmar hittades";
 
 /* Title of the booking team member selector view */
-"bookingTeamMemberSelectorView.title" = "Lägg till en teammedlem";
+"bookingTeamMemberSelectorView.title" = "Teammedlem";
 
 /* Displayed name on the booking list when no customer is associated with a booking. */
 "bookings.guest" = "Gäst";

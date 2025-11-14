@@ -46,6 +46,12 @@ class WooCommerceScreenshots: XCTestCase {
         // The interruption monitor above only activates when the app receives user interaction.
         app.tap()
 
+        // POS
+        try TabNavComponent()
+            .goToPOSScreen()
+
+        throw NSError(domain: "Testing", code: -1)
+
         // My Store
         try TabNavComponent()
             .goToMyStoreScreen()

@@ -14,6 +14,10 @@ public final class TabNavComponent: ScreenObject {
     private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
     }
+    
+    private let posTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-pos-item"]
+    }
 
     private let menuTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
@@ -23,6 +27,7 @@ public final class TabNavComponent: ScreenObject {
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
     private var menuTabButton: XCUIElement { menuTabButtonGetter(app) }
     private var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
+    private var posTabButton: XCUIElement { posTabButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -51,6 +56,11 @@ public final class TabNavComponent: ScreenObject {
     public func goToProductsScreen() throws -> ProductsScreen {
         productsTabButton.tap()
         return try ProductsScreen()
+    }
+
+    public func goToPOSScreen() throws -> POSScreen {
+        posTabButton.tap()
+        return try POSScreen()
     }
 
     @discardableResult

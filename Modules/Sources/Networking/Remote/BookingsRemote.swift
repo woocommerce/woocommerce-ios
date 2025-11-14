@@ -38,8 +38,8 @@ public struct BookingFilters {
     public let resourceIDs: [Int64]
     public let startDateBefore: String?
     public let startDateAfter: String?
-    public let bookingStatuses: [String]
     public let attendanceStatuses: [String]
+    public let paymentStatuses: [String]
 
     public init(
         productIDs: [Int64] = [],
@@ -47,16 +47,16 @@ public struct BookingFilters {
         resourceIDs: [Int64] = [],
         startDateBefore: String? = nil,
         startDateAfter: String? = nil,
-        bookingStatuses: [String] = [],
-        attendanceStatuses: [String] = []
+        attendanceStatuses: [String] = [],
+        paymentStatuses: [String] = []
     ) {
         self.productIDs = productIDs
         self.customerIDs = customerIDs
         self.resourceIDs = resourceIDs
         self.startDateBefore = startDateBefore
         self.startDateAfter = startDateAfter
-        self.bookingStatuses = bookingStatuses
         self.attendanceStatuses = attendanceStatuses
+        self.paymentStatuses = paymentStatuses
     }
 }
 
@@ -110,12 +110,12 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                 parameters[ParameterKey.startDateAfter] = startDateAfter
             }
 
-            if filters.bookingStatuses.isNotEmpty {
-                parameters[ParameterKey.bookingStatus] = filters.bookingStatuses
-            }
-
             if filters.attendanceStatuses.isNotEmpty {
                 parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses
+            }
+
+            if filters.paymentStatuses.isNotEmpty {
+                parameters[ParameterKey.paymentStatus] = filters.paymentStatuses
             }
         }
 
@@ -256,8 +256,8 @@ public extension BookingsRemote {
         static let product: String         = "product"
         static let customer: String        = "customer"
         static let resource: String        = "resource"
-        static let bookingStatus: String   = "booking_status"
         static let attendanceStatus        = "attendance_status"
+        static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
         static let status: String          = "status"
     }
 }

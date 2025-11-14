@@ -128,29 +128,31 @@ private extension BookingListView {
     }
 
     func bookingItem(_ booking: Booking) -> some View {
-        VStack(spacing: 0) {
-            VStack(alignment: .leading) {
-                Text(booking.startDate.toString(dateStyle: .short,
-                                                timeStyle: .short,
-                                                timeZone: BookingListTab.utcTimeZone))
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundStyle(Color.primary)
+        VStack(alignment: .leading) {
+            Text(booking.startDate.toString(dateStyle: .short,
+                                            timeStyle: .short,
+                                            timeZone: BookingListTab.utcTimeZone))
+                .font(.body)
+                .fontWeight(.medium)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(Color.primary)
 
-                Text(booking.summaryText)
-                    .font(.footnote)
-                    .fontWeight(.medium)
-                    .foregroundStyle(Color.secondary)
+            Text(booking.summaryText)
+                .font(.footnote)
+                .fontWeight(.medium)
+                .foregroundStyle(Color.secondary)
 
-                HStack {
-                    BookingBadgeView(booking.attendanceStatus)
-                    BookingBadgeView(booking.bookingStatus)
-                    Spacer()
-                }
+            HStack {
+                BookingBadgeView(booking.attendanceStatus)
+                BookingBadgeView(booking.bookingStatus)
+                Spacer()
             }
         }
-        .listRowBackground(booking == selectedBooking ? Color(.listSelectedBackground) : Color(.listForeground(modal: false)))
+        .padding()
+        .background(
+            (booking == selectedBooking ? Color(.listSelectedBackground) : Color(.listForeground(modal: false)))
+        )
+        .listRowInsets(.init())
     }
 
     func emptyStateView(isSearching: Bool, onRefresh: @escaping () async -> Void) -> some View {

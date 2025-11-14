@@ -10,6 +10,7 @@
 - [*] Show POS feedback surveys for eligible merchants [https://github.com/woocommerce/woocommerce-ios/pull/16325]
 - [*] Fix product variation selection for order creation [https://github.com/woocommerce/woocommerce-ios/pull/16317]
 - [Internal] Fix warning when displaying offline banner on My Store [https://github.com/woocommerce/woocommerce-ios/pull/16347]
+- [Internal] Notify listeners immediately after updating predicates or sort descriptors for results controllers. [https://github.com/woocommerce/woocommerce-ios/pull/16350]
 
 23.6
 -----

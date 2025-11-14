@@ -1,33 +1,5 @@
 import Foundation
 
-/// Helper Enum that specifies all of the available Gravatar Image Ratings
-/// TODO: Convert into a pure Swift String Enum. It's done this way to maintain ObjC Compatibility
-///
-@available(*, deprecated, message: "Use `Rating` from the Gravatar iOS SDK. See: https://github.com/Automattic/Gravatar-SDK-iOS.")
-@objc
-public enum GravatarRatings: Int {
-    case g
-    case pg
-    case r
-    case x
-    case `default`
-
-    func stringValue() -> String {
-        switch self {
-        case .default:
-            fallthrough
-        case .g:
-            return "g"
-        case .pg:
-            return "pg"
-        case .r:
-            return "r"
-        case .x:
-            return "x"
-        }
-    }
-}
-
 /// Helper Enum that specifies some of the options for default images
 /// To see all available options, visit : https://en.gravatar.com/site/implement/images/
 ///
@@ -84,14 +56,14 @@ public struct Gravatar {
     public static func gravatarUrl(for email: String,
                                    defaultImage: GravatarDefaultImage? = nil,
                                    size: Int? = nil,
-                                   rating: GravatarRatings = .default) -> URL? {
+                                   rating: Rating = .general) -> URL? {
         let hash = gravatarHash(of: email)
         let targetURL = String(format: "%@/%@?d=%@&s=%d&r=%@",
                                Defaults.baseURL,
                                hash,
                                defaultImage?.rawValue ?? GravatarDefaultImage.fileNotFound.rawValue,
                                size ?? Defaults.imageSize,
-                               rating.stringValue())
+                               rating.rawValue)
         return URL(string: targetURL)
     }
 

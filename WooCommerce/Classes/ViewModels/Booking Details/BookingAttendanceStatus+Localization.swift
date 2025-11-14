@@ -18,8 +18,8 @@ extension BookingAttendanceStatus {
             )
         case .cancelled:
             return NSLocalizedString(
-                "BookingAttendanceStatus.cancelled",
-                value: "Cancelled",
+                "BookingAttendanceStatus.canceled",
+                value: "Canceled",
                 comment: "Title for 'Cancelled' booking attendance status."
             )
         case .noShow:

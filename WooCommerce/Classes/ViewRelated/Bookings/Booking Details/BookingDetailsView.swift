@@ -20,6 +20,7 @@ struct BookingDetailsView: View {
         static let headerBadgesAdditionalTopPadding: CGFloat = 6
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let rowTextVerticalPadding: CGFloat = 11
+        static let contentContainerMaxWidth: CGFloat = 525
     }
 
     enum TextFont {
@@ -45,10 +46,9 @@ struct BookingDetailsView: View {
                 }
             }
         }
+        .verticalHairlineBorders()
+        .frame(maxWidth: Layout.contentContainerMaxWidth)
         .refreshable {
-            await viewModel.syncData()
-        }
-        .task {
             await viewModel.syncData()
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -131,7 +131,7 @@ private extension BookingDetailsView {
 
             sectionContentView(section.content)
                 .padding(.horizontal, Layout.contentSidePadding)
-                .background(Color(.systemBackground))
+                .background(Color(.listForeground(modal: false)))
                 .addingTopAndBottomDividers()
 
             if let footerText = section.footerText {

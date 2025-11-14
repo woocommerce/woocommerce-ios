@@ -26,4 +26,9 @@ struct ProcessConfiguration {
     static var shouldBypassPOSEligibilityChecks: Bool {
         ProcessInfo.processInfo.arguments.contains("bypass-pos-eligibility-checks")
     }
+
+    /// Returns `true` when POS product loading should be bypassed for screenshot tests.
+    static var shouldBypassPOSProductLoading: Bool {
+        ProcessInfo.processInfo.arguments.contains("bypass-pos-product-loading")
+    }
 }

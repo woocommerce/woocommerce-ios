@@ -28,6 +28,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")
         app.launchArguments.append("bypass-pos-eligibility-checks")
+        app.launchArguments.append("bypass-pos-product-loading")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()

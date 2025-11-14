@@ -222,7 +222,8 @@ struct POSOrderServiceTests {
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
-                #expect(missingItems.first?.expectedQuantity == 2)
+                #expect(missingItems.first?.productID == 200)
+                #expect(missingItems.first?.name == "")
                 return true
             }
             return false

@@ -919,6 +919,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "Audio, %@";
 
+/* Button to dismiss a web view */
+"authenticatableWebView.done" = "Done";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Authenticating";
 
@@ -1837,7 +1840,7 @@ which should be translated separately and considered part of this sentence. */
 "BookingAttendanceStatus.booked" = "Booked";
 
 /* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.cancelled" = "Cancelled";
+"BookingAttendanceStatus.canceled" = "Canceled";
 
 /* Title for 'Checked In' booking attendance status. */
 "BookingAttendanceStatus.checkedIn" = "Checked-in";
@@ -1909,13 +1912,19 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.attendance.headerTitle" = "Attendance";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
-"BookingDetailsView.attendanceStatus.updateFailed.message" = "Unable to change attendance status of Booking #%1$d";
+"BookingDetailsView.attendanceStatus.failureMessage." = "Unable to change attendance status of Booking #%1$d.";
 
-/* Add a note row title in booking notes section in booking details view. */
-"BookingDetailsView.bookingNotes.addANoteRow.title" = "Add a note";
+/* Add a booking note section in booking details view. */
+"BookingDetailsView.bookingNote.addNoteRow.title" = "Add note";
 
-/* Header title for the 'Booking notes' section in the booking details screen. */
-"BookingDetailsView.bookingNotes.headerTitle" = "Booking notes";
+/* Footer text for the `Booking note` section in the booking details screen. */
+"BookingDetailsView.bookingNote.footerText" = "This is a private note. It'll not be shared with the customer.";
+
+/* Header title for the 'Booking note' section in the booking details screen. */
+"BookingDetailsView.bookingNote.headerTitle" = "Booking note";
+
+/* Title of navigation bar when editing a booking note. */
+"BookingDetailsView.bookingNote.navbar.title" = "Booking note";
 
 /* Cancel button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.cancelAction" = "No, keep it";
@@ -1923,11 +1932,17 @@ which should be translated separately and considered part of this sentence. */
 /* Confirm button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.confirmAction" = "Yes, cancel it";
 
+/* Generic message for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.genericMessage" = "Are you sure you want to cancel this booking?";
+
 /* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
 "BookingDetailsView.cancelation.alert.message" = "%1$@ will no longer be able to attend “%2$@” on %3$@.";
 
 /* Title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.title" = "Cancel booking";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to cancel Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.cancellation.failureMessage" = "Unable to cancel Booking #%1$d.";
 
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Billing address";
@@ -1943,6 +1958,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "Status";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
+"BookingDetailsView.markAsPaid.failureMessage" = "Unable to mark Booking #%1$d as paid.";
 
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "Booking #%1$d";
@@ -1961,9 +1979,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Payment";
-
-/* Title for 'Issue refund' button in payment section in booking details view. */
-"BookingDetailsView.payment.issueRefund.title" = "Issue refund";
 
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "Mark as paid";
@@ -2026,7 +2041,7 @@ which should be translated separately and considered part of this sentence. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "Until %1$@";
 
 /* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "We couldn’t find any bookings with that name — try adjusting your search term to see more results.";
+"bookingList.emptySearchText" = "We couldn't find any bookings with that name — try adjusting your search term to see more results.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "Error fetching bookings";
@@ -2079,11 +2094,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the booking list view */
 "bookingListView.view.title" = "Bookings";
 
+/* Status of a paid booking */
+"bookingPaymentStatus.title.paid" = "Paid";
+
+/* Status of a refunded booking */
+"bookingPaymentStatus.title.refunded" = "Refunded";
+
+/* Status of a booking with unexpected payment status */
+"bookingPaymentStatus.title.unknown" = "Unknown";
+
+/* Status of an unpaid booking */
+"bookingPaymentStatus.title.unpaid" = "Unpaid";
+
 /* Displayed name on the booking list when no customer is associated with a booking. */
 "bookings.guest" = "Guest";
 
+/* Message on the empty search result view of the booking service/event selector view */
+"bookingServiceEventSelectorView.emptySearchDescription" = "Try adjusting your search term to see more results";
+
 /* Text on the empty view of the booking service/event selector view */
 "bookingServiceEventSelectorView.noMembersFound" = "No service or event found";
+
+/* Prompt in the search bar of the booking service/event selector view */
+"bookingServiceEventSelectorView.searchPrompt" = "Search service / event";
 
 /* Title of the booking service/event selector view */
 "bookingServiceEventSelectorView.title" = "Service / Event";
@@ -5910,6 +5943,18 @@ which should be translated separately and considered part of this sentence. */
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Moves the comment to Trash";
 
+/* Cancel button title for the discard changes confirmation dialog in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.cancelAction" = "Cancel";
+
+/* Destructive action button title to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.discardAction" = "Discard changes";
+
+/* Title for the confirmation dialog when the user attempts to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.title" = "Are you sure you want to discard these changes?";
+
+/* Navigation bar button title used to save changes and close the multiline text editor. */
+"MultilineEditableTextDetailView.doneButton.title" = "Done";
+
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Multiple Stores";
 
@@ -7790,6 +7835,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a stock type displayed on the Stock section on My Store screen */
 "productStockDashboardCardViewModel.stockType.outOfStock" = "Out of stock";
+
+/* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
+"ProductType.service" = "Service";
 
 /* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "Promote products with Blaze";

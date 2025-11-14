@@ -11,6 +11,7 @@ public struct BackgroundDownloadState: Codable {
 
     /// Configure UserDefaults instance for testing.
     /// - Parameter userDefaults: The UserDefaults instance to use for persistence.
+    // periphery:ignore - required by tests
     public static func configure(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
     }

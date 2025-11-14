@@ -3,6 +3,13 @@ import Testing
 @testable import Networking
 
 struct BackgroundCatalogDownloadCoordinatorTests {
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "BackgroundCatalogDownloadCoordinatorTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func handleBackgroundSessionEvent_loads_saved_state() async {
         // Given

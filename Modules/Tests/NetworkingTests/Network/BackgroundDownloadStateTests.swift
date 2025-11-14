@@ -3,6 +3,13 @@ import Testing
 @testable import Networking
 
 struct BackgroundDownloadStateTests {
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "BackgroundDownloadStateTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func save_persists_state_to_userdefaults() {
         // Given

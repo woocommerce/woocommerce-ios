@@ -8,6 +8,13 @@ struct POSCatalogSyncRemoteTests {
     private let mockBackgroundDownloader = MockBackgroundDownloader()
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func loadProducts_sets_correct_parameters() async throws {
         // Given

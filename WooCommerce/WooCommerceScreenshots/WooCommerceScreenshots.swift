@@ -52,6 +52,7 @@ class WooCommerceScreenshots: XCTestCase {
         try TabNavComponent()
             .goToPOSScreen()
             .thenTakeScreenshot(named: "test-pos-screenshot")
+            .thenTakeScreenshot(named: "test-pos-screenshot", orientation: .landscapeLeft)
 
         // My Store
         try TabNavComponent()
@@ -157,7 +158,8 @@ fileprivate var screenshotCount = 0
 extension BaseScreen {
 
     @MainActor @discardableResult
-    func thenTakeScreenshot(named title: String) -> Self {
+    func thenTakeScreenshot(named title: String, orientation: UIDeviceOrientation = .portrait) -> Self {
+        XCUIDevice.shared.orientation = orientation
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
@@ -192,7 +194,8 @@ extension ScreenObject {
     }
 
     @MainActor @discardableResult
-    func thenTakeScreenshot(named title: String) -> Self {
+    func thenTakeScreenshot(named title: String, orientation: UIDeviceOrientation = .portrait) -> Self {
+        XCUIDevice.shared.orientation = orientation
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"

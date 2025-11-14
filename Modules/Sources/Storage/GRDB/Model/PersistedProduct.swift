@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import Networking
 
 // periphery:ignore - TODO: remove ignore when populating database
 public struct PersistedProduct: Codable {
@@ -103,11 +104,20 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
 // MARK: - Point of Sale Requests
 public extension PersistedProduct {
     /// Returns a request for POS-supported products (simple and variable, non-downloadable) for a given site, ordered by name
+    /// Filters out products with trash, draft, pending, or private status to ensure only published and 3rd party custom status products are shown
     static func posProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        let excludedStatuses = [
+            ProductStatus.trash.rawValue,
+            ProductStatus.draft.rawValue,
+            ProductStatus.pending.rawValue,
+            ProductStatus.privateStatus.rawValue
+        ]
+
         return PersistedProduct
             .filter(Columns.siteID == siteID)
             .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
             .filter(Columns.downloadable == false)
+            .filter(!excludedStatuses.contains(Columns.statusKey))
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }
 

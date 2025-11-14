@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.7
+This update brings Tap to Pay on iPhone to UK stores using Stripe, and automatic SSO sign-ins for web admin tasks. We made card payment onboarding error tips clearer, and fixed an intermittent bug with adding variations to an order. Lastly, iPad users can share quick feedback about Point of Sale.
+
 ## 23.6
 This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.
 

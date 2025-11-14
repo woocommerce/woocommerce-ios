@@ -340,11 +340,14 @@ private extension PointOfSaleItemsController {
     /// Creates mock POSItems for screenshot tests
     /// TODO: Move to ScreenshotsObjectGraph? Or similar.
     static func makeScreenshotMockItems() -> [POSItem] {
+        let port = UserDefaults.standard.integer(forKey: "mocks-port")
+        let mockResourceUrlHost = "http://localhost:\(port)/"
+
         let product1 = POSSimpleProduct(
             id: UUID(),
             name: "Rose Gold Shades",
             formattedPrice: "$35.00",
-            productImageSource: nil,
+            productImageSource: mockResourceUrlHost + "rose-gold-shades",
             productID: 1,
             price: "35.00",
             manageStock: false,
@@ -356,7 +359,7 @@ private extension PointOfSaleItemsController {
             id: UUID(),
             name: "Black Coral Shades",
             formattedPrice: "$45.00",
-            productImageSource: nil,
+            productImageSource: mockResourceUrlHost + "black-coral-shades",
             productID: 2,
             price: "45.00",
             manageStock: false,
@@ -368,7 +371,7 @@ private extension PointOfSaleItemsController {
             id: UUID(),
             name: "Akoya Pearl Shades",
             formattedPrice: "$50.00",
-            productImageSource: nil,
+            productImageSource: mockResourceUrlHost + "akoya-pearl-shades",
             productID: 3,
             price: "50.00",
             manageStock: true,
@@ -380,7 +383,7 @@ private extension PointOfSaleItemsController {
             id: UUID(),
             name: "Malaya Shades",
             formattedPrice: "$40.00",
-            productImageSource: nil,
+            productImageSource: mockResourceUrlHost + "malaya-shades",
             productID: 4,
             price: "40.00",
             manageStock: false,

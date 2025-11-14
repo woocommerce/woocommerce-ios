@@ -1,6 +1,5 @@
 import Foundation
 import GRDB
-import Networking
 
 // periphery:ignore - TODO: remove ignore when populating database
 public struct PersistedProduct: Codable {
@@ -107,10 +106,10 @@ public extension PersistedProduct {
     /// Filters out products with trash, draft, pending, or private status to ensure only published and 3rd party custom status products are shown
     static func posProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
         let excludedStatuses = [
-            ProductStatus.trash.rawValue,
-            ProductStatus.draft.rawValue,
-            ProductStatus.pending.rawValue,
-            ProductStatus.privateStatus.rawValue
+            "trash",
+            "draft",
+            "pending",
+            "private"
         ]
 
         return PersistedProduct

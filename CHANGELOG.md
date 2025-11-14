@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.7
+This update brings smooth UK Tap to Pay via Stripe, clearer card onboarding error tips, and automatic SSO sign-ins for key admin tasks. Order creation now picks the right variations, and eligible merchants can share quick POS feedback.
+
 ## 23.6
 This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.
 

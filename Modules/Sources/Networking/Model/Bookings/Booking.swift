@@ -239,3 +239,12 @@ public enum BookingAttendanceStatus: String, CaseIterable, Codable {
     case noShow = "no-show"
     case unknown
 }
+
+/// Represents the payment status for a booking.
+/// To be decoded from booking response once available.
+public enum BookingPaymentStatus: String, CaseIterable, Codable {
+    case paid
+    case unpaid
+    case refunded
+    case unknown
+}

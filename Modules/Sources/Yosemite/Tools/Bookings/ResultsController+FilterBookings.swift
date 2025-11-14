@@ -20,7 +20,8 @@ extension NSPredicate {
             return NSPredicate(format: "startDate > %@", date as NSDate)
         }
 
-        let bookingStatusesPredicate = filters.bookingStatuses.isNotEmpty ? NSPredicate(format: "statusKey IN %@", filters.bookingStatuses) : nil
+        // TODO: update `statusKey` to paymentStatusKey once available
+        let paymentStatusesPredicate = filters.paymentStatuses.isNotEmpty ? NSPredicate(format: "statusKey IN %@", filters.paymentStatuses) : nil
 
         let attendanceStatusesPredicate = filters.attendanceStatuses.isNotEmpty ?
         NSPredicate(format: "attendanceStatusKey IN %@", filters.attendanceStatuses) : nil
@@ -32,7 +33,7 @@ extension NSPredicate {
             resourceIDsPredicate,
             startDateBeforePredicate,
             startDateAfterPredicate,
-            bookingStatusesPredicate,
+            paymentStatusesPredicate,
             attendanceStatusesPredicate
         ].compactMap({ $0 })
 

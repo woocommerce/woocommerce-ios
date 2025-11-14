@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-04 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-11-06 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -830,7 +830,7 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.attendance.headerTitle" = "Partecipazione";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
-"BookingDetailsView.attendanceStatus.updateFailed.message" = "Impossibile modificare lo stato della partecipazione alla Prenotazione n.%1$d";
+"BookingDetailsView.attendanceStatus.updateFailed.message" = "Impossibile modificare lo stato della partecipazione alla Prenotazione n. %1$d";
 
 /* Add a note row title in booking notes section in booking details view. */
 "BookingDetailsView.bookingNotes.addANoteRow.title" = "Aggiungi una nota";
@@ -8306,7 +8306,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingCustomerSelectorView.searchPrompt" = "Cerca cliente";
 
 /* Error message when selecting guest customer in booking filtering */
-"bookingCustomerSelectorView.selectionDisabledMessage" = "Questo utente è un ospite e non è possibile filtrare gli ordini per gli ospiti.";
+"bookingCustomerSelectorView.selectionDisabledMessage" = "Questo utente è un ospite e non è possibile filtrare le prenotazioni per gli ospiti.";
 
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Cliente";
@@ -8354,7 +8354,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFiltersViewModel.dateRangeFilter.from" = "Da %1$@";
 
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
-"bookingFiltersViewModel.dateRangeFilter.until" = "Fino al giorno %1$@";
+"bookingFiltersViewModel.dateRangeFilter.until" = "Fino a %1$@";
 
 /* Message displayed when searching bookings by keyword yields no results. */
 "bookingList.emptySearchText" = "Non abbiamo trovato nessuna prenotazione con questo nome. Prova a modificare il termine di ricerca per visualizzare qualche risultato.";

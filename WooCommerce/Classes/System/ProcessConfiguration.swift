@@ -21,4 +21,9 @@ struct ProcessConfiguration {
     static var shouldSimulatePushNotification: Bool {
         ProcessInfo.processInfo.arguments.contains("-mocks-push-notification")
     }
+
+    /// Returns `true` when POS eligibility checks should be bypassed for screenshot tests.
+    static var shouldBypassPOSEligibilityChecks: Bool {
+        ProcessInfo.processInfo.arguments.contains("bypass-pos-eligibility-checks")
+    }
 }

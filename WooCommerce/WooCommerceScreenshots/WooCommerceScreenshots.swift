@@ -27,6 +27,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")
+        app.launchArguments.append("bypass-pos-eligibility-checks")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()

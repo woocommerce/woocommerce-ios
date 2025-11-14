@@ -17,6 +17,7 @@ public struct PersistedProduct: Codable {
     public let manageStock: Bool
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
+    public let statusKey: String
 
     public init(id: Int64,
                 siteID: Int64,
@@ -31,7 +32,8 @@ public struct PersistedProduct: Codable {
                 parentID: Int64,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
-                stockStatusKey: String) {
+                stockStatusKey: String,
+                statusKey: String) {
         self.id = id
         self.siteID = siteID
         self.name = name
@@ -46,6 +48,7 @@ public struct PersistedProduct: Codable {
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+        self.statusKey = statusKey
     }
 }
 
@@ -70,6 +73,7 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
         public static let manageStock = Column(CodingKeys.manageStock)
         public static let stockQuantity = Column(CodingKeys.stockQuantity)
         public static let stockStatusKey = Column(CodingKeys.stockStatusKey)
+        public static let statusKey = Column(CodingKeys.statusKey)
     }
 
     // Join table association (internal - used by 'images' through association)
@@ -136,6 +140,7 @@ private extension PersistedProduct {
         case manageStock
         case stockQuantity
         case stockStatusKey
+        case statusKey
     }
 
     enum ProductType: String {

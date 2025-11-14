@@ -45,7 +45,6 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
     @Test func handleBackgroundSessionEvent_calls_completion_handler_when_no_state() async {
         // Given
-        BackgroundDownloadState.clear() // Ensure no saved state
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.999"
         let mockDownloader = MockBackgroundDownloader()
         let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)

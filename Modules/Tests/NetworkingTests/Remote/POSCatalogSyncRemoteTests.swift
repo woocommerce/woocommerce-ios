@@ -993,7 +993,6 @@ extension POSCatalogSyncRemoteTests {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-        BackgroundDownloadState.clear() // Start clean
 
         let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
@@ -1023,14 +1022,12 @@ extension POSCatalogSyncRemoteTests {
 
         // Cleanup
         try? FileManager.default.removeItem(at: mockFileURL)
-        BackgroundDownloadState.clear()
     }
 
     @Test func downloadCatalog_clears_state_on_success() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-        BackgroundDownloadState.clear() // Start clean
 
         // When
         let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")

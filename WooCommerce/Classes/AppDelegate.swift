@@ -2,7 +2,7 @@ import UIKit
 import Combine
 import Storage
 import class Networking.UserAgent
-import Experiments
+import class Networking.BackgroundCatalogDownloadCoordinator
 import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
@@ -149,16 +149,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      completionHandler: @escaping () -> Void) {
         DDLogInfo("🟣 Handling background URLSession events for identifier: \(identifier)")
 
-        // Store the completion handler for the background session
-        // The BackgroundDownloadService will invoke this when all events are processed
         if identifier.hasPrefix("com.woocommerce.pos.catalog.download") {
-            // In a production implementation, this would be passed to the BackgroundDownloadService
-            // For now, we store it and the service will need to retrieve it
-            // TODO: WOOMOB-1173 - Wire this to BackgroundDownloadService.setBackgroundCompletionHandler
-            // TODO: WOOMOB-1677 - Catalog parsing happens in the ~30s window after download completes.
-            // For very large catalogs, consider hybrid approach: try immediate parse, defer if timeout.
-            DDLogInfo("🟣 Background catalog download session completion handler stored")
-            completionHandler()
+            // Handle POS catalog download completion in background
+            Task {
+                let downloadCoordinator = BackgroundCatalogDownloadCoordinator()
+                await downloadCoordinator.handleBackgroundSessionEvent(
+                    sessionIdentifier: identifier,
+                    completionHandler: completionHandler,
+                    parseHandler: { fileURL, siteID in
+                        // Use the POS catalog sync coordinator to parse and persist
+                        guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
+                            throw NSError(domain: "com.woocommerce.pos", code: -1,
+                                         userInfo: [NSLocalizedDescriptionKey: "POS catalog coordinator not available"])
+                        }
+                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID)
+                    }
+                )
+            }
         } else {
             // Unknown session identifier - call completion handler immediately
             DDLogWarn("🟣 Unknown background URLSession identifier: \(identifier)")

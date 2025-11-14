@@ -8,6 +8,13 @@ struct POSCatalogSyncRemoteTests {
     private let mockBackgroundDownloader = MockBackgroundDownloader()
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func loadProducts_sets_correct_parameters() async throws {
         // Given
@@ -976,5 +983,86 @@ private class MockFileManager: FileManager {
     override func removeItem(at URL: URL) throws {
         removeItemCallCount += 1
         lastRemovedURL = URL
+    }
+}
+
+// MARK: - Background Download State Tests
+
+extension POSCatalogSyncRemoteTests {
+    @Test func downloadCatalog_saves_background_state() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
+
+        // When - use continuation to capture state when download starts
+        let savedState: BackgroundDownloadState? = await withCheckedContinuation { continuation in
+            mockBackgroundDownloader.onDownloadStarted = {
+                // Download has started, state should be saved now
+                if let sessionIdentifier = mockBackgroundDownloader.lastSessionIdentifier {
+                    let state = BackgroundDownloadState.load(for: sessionIdentifier)
+                    continuation.resume(returning: state)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+
+            Task {
+                _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            }
+        }
+
+        // Then - state should have been saved during download
+        #expect(savedState != nil)
+        #expect(savedState?.siteID == sampleSiteID)
+        #expect(savedState?.sessionIdentifier == mockBackgroundDownloader.lastSessionIdentifier)
+
+        // Cleanup
+        try? FileManager.default.removeItem(at: mockFileURL)
+    }
+
+    @Test func downloadCatalog_clears_state_on_success() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        // When
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
+        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+
+        // Then - state should be cleared after successful completion
+        let savedState = BackgroundDownloadState.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
+        #expect(savedState == nil)
+
+        // Cleanup
+        try? FileManager.default.removeItem(at: mockFileURL)
+    }
+
+    @Test func downloadCatalog_creates_unique_session_identifiers() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+        mockBackgroundDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/catalog.json")
+        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
+
+        // When - download twice
+        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let firstSessionID = mockBackgroundDownloader.lastSessionIdentifier
+
+        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let secondSessionID = mockBackgroundDownloader.lastSessionIdentifier
+
+        // Then - session IDs should be different
+        #expect(firstSessionID != secondSessionID)
+        #expect(firstSessionID?.hasPrefix("com.woocommerce.pos.catalog.download") == true)
+        #expect(secondSessionID?.hasPrefix("com.woocommerce.pos.catalog.download") == true)
+
+        // Cleanup
+        BackgroundDownloadState.clear()
     }
 }

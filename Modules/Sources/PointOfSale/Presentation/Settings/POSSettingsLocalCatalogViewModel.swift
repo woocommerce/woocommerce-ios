@@ -16,12 +16,19 @@ final class POSSettingsLocalCatalogViewModel {
     private let catalogSettingsService: POSCatalogSettingsServiceProtocol
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
+    private let syncStateModel: POSCatalogSyncStateModel
     private let dateFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.dateTimeStyle = .named
         formatter.unitsStyle = .full
         return formatter
     }()
+
+    private var syncStateObservationTask: Task<Void, Never>?
+
+    private var currentSyncState: POSCatalogSyncState {
+        syncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
+    }
 
     var allowFullSyncOnCellular: Bool {
         get {
@@ -39,7 +46,15 @@ final class POSSettingsLocalCatalogViewModel {
         self.siteID = siteID
         self.catalogSettingsService = catalogSettingsService
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.syncStateModel = catalogSyncCoordinator.fullSyncStateModel
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
+
+        // Observe sync state changes to update UI when sync completes in background
+        startObservingSyncState()
+    }
+
+    deinit {
+        syncStateObservationTask?.cancel()
     }
 
     @MainActor
@@ -63,13 +78,63 @@ final class POSSettingsLocalCatalogViewModel {
     @MainActor
     func refreshCatalog() async {
         isRefreshingCatalog = true
-        defer { isRefreshingCatalog = false }
 
         do {
             try await catalogSyncCoordinator.performFullSync(for: siteID, regenerateCatalog: true)
+            // Sync completed synchronously - update UI
+            isRefreshingCatalog = false
             await loadCatalogData()
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
+            isRefreshingCatalog = false
+        }
+    }
+
+    /// Starts observing sync state changes to update UI when sync completes in background
+    private func startObservingSyncState() {
+        syncStateObservationTask = Task { @MainActor in
+            var previousState = currentSyncState
+
+            while !Task.isCancelled {
+                // Wait for the next state change
+                await observeNextStateChange()
+
+                // Read the new state after change is detected
+                let newState = currentSyncState
+                guard newState != previousState else { continue }
+
+                // Handle terminal states when user initiated refresh
+                switch newState {
+                case .syncCompleted, .syncFailed, .initialSyncFailed:
+                    // Sync finished - clear the refreshing state if it was set
+                    if isRefreshingCatalog {
+                        isRefreshingCatalog = false
+                        // Reload catalog data to show updated info
+                        await loadCatalogData()
+                    }
+                case .syncStarted, .initialSyncStarted:
+                    // Sync is running - keep spinner active
+                    break
+                case .syncNeverDone:
+                    // No sync has been done
+                    break
+                }
+                previousState = newState
+            }
+        }
+    }
+
+    /// Waits for the next change to the observed sync state.
+    /// Re-registers observation each time it's called.
+    private func observeNextStateChange() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            withObservationTracking {
+                // Access the observed property to register observation
+                _ = currentSyncState
+            } onChange: {
+                // When state changes, resume the continuation
+                continuation.resume()
+            }
         }
     }
 }

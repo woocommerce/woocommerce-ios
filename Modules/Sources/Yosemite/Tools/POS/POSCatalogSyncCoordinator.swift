@@ -46,6 +46,14 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// Stops all ongoing sync tasks for the specified site
     /// - Parameter siteID: The site ID to stop syncs for
     func stopOngoingSyncs(for siteID: Int64) async
+
+    /// Processes a completed background catalog download.
+    /// Called when the app is woken by iOS for a background URLSession completion.
+    /// Parses and persists the catalog, then updates sync state.
+    /// - Parameters:
+    ///   - fileURL: Local file URL of the downloaded catalog
+    ///   - siteID: Site ID for this catalog
+    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -422,6 +430,21 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 break
             }
         }
+    }
+
+    public func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+        DDLogInfo("🟣 POSCatalogSyncCoordinator: Processing background download for site \(siteID)")
+
+        // Parse and persist using the full sync service
+        let catalog = try await fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: siteID)
+
+        DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
+
+        // Update sync state to completed
+        emitSyncState(.syncCompleted(siteID: siteID))
+
+        // Record first sync date if needed
+        recordFirstSyncIfNeeded(for: siteID)
     }
 }
 

@@ -645,6 +645,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func stopOngoingSyncs(for siteID: Int64) async {
         // Preview implementation - no-op
     }
+
+    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+        // no-op
+    }
 }
 
 #endif

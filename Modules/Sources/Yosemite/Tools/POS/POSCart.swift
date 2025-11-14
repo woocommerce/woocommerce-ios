@@ -62,8 +62,6 @@ public struct CartOrderComparison {
         public let variationID: Int64
         /// The product or variation name
         public let name: String
-        /// The quantity that was expected in the order
-        public let expectedQuantity: Decimal
     }
 
     /// Represents an item where the quantity doesn't match between cart and order
@@ -128,8 +126,7 @@ extension [POSCartItem] {
                 return CartOrderComparison.MissingCartItem(
                     productID: productID,
                     variationID: variationID,
-                    name: cartItem.item.name,
-                    expectedQuantity: cartItem.quantity
+                    name: cartItem.item.name
                 )
             }
             return ItemsComparison(missingItems: missingItems, quantityMismatches: [])
@@ -174,8 +171,7 @@ extension [POSCartItem] {
                     CartOrderComparison.MissingCartItem(
                         productID: productID,
                         variationID: variationID,
-                        name: firstItem.item.name,
-                        expectedQuantity: expectedQuantity
+                        name: firstItem.item.name
                     )
                 )
             } else if actualQuantity != expectedQuantity {

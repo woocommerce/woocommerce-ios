@@ -49,8 +49,7 @@ class WooCommerceScreenshots: XCTestCase {
         // POS
         try TabNavComponent()
             .goToPOSScreen()
-
-        throw NSError(domain: "Testing", code: -1)
+            .thenTakeScreenshot(named: "test-pos-screenshot")
 
         // My Store
         try TabNavComponent()

@@ -3,7 +3,14 @@ import XCTest
 
 public final class POSScreen: ScreenObject {
 
-    public init() throws {
-        try super.init(expectedElementGetters: [])
+    private let cartViewGetter: (XCUIApplication) -> XCUIElement = {
+        $0.otherElements["pos-cart-view"]
+    }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [cartViewGetter],
+            app: app
+        )
     }
 }

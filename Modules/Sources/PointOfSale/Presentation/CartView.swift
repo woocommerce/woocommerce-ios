@@ -80,6 +80,7 @@ struct CartView: View {
             })
             .background(backgroundColor.ignoresSafeArea(.all))
             .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("pos-cart-view")
         }
     }
 }

@@ -34,9 +34,6 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Then
         #expect(parsedSiteID == siteID)
         #expect(parsedFileURL?.path == "/tmp/test.json")
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 
     @Test func handleBackgroundSessionEvent_calls_completion_handler_when_no_state() async {
@@ -113,8 +110,5 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Then
         #expect(mockDownloader.reconnectSessionCallCount == 1)
         #expect(mockDownloader.lastReconnectSessionIdentifier == sessionIdentifier)
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 }

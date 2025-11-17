@@ -121,13 +121,9 @@ enum POSCatalogSyncErrorClassifier {
     }
 
     private static func classifyDatabaseError(_ error: DatabaseError) -> String {
-        // Check for disk space errors
         switch error.resultCode {
         case .SQLITE_FULL:
             return "insufficient_free_space"
-        case .SQLITE_IOERR:
-            // I/O error - could be disk issues
-            return "database_error"
         case .SQLITE_CORRUPT, .SQLITE_NOTADB:
             return "database_corruption"
         case .SQLITE_CONSTRAINT:
@@ -139,12 +135,8 @@ enum POSCatalogSyncErrorClassifier {
 
     private static func classifyURLError(_ error: URLError) -> String {
         switch error.code {
-        case .notConnectedToInternet, .networkConnectionLost:
-            return "network_error"
         case .timedOut:
             return "network_timeout"
-        case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
-            return "network_error"
         default:
             return "network_error"
         }

@@ -137,7 +137,8 @@ struct BookingsRemoteTests {
             from: sampleSiteID,
             bookingID: bookingID,
             attendanceStatus: .noShow,
-            bookingStatus: nil
+            bookingStatus: nil,
+            note: nil
         )
 
         // Then
@@ -157,7 +158,8 @@ struct BookingsRemoteTests {
             from: sampleSiteID,
             bookingID: bookingID,
             attendanceStatus: .noShow,
-            bookingStatus: nil
+            bookingStatus: nil,
+            note: nil
         )
 
         // Then
@@ -179,7 +181,8 @@ struct BookingsRemoteTests {
             from: sampleSiteID,
             bookingID: bookingID,
             attendanceStatus: nil,
-            bookingStatus: .confirmed
+            bookingStatus: .confirmed,
+            note: nil
         )
 
         // Then
@@ -201,7 +204,8 @@ struct BookingsRemoteTests {
             from: sampleSiteID,
             bookingID: bookingID,
             attendanceStatus: .booked,
-            bookingStatus: .paid
+            bookingStatus: .paid,
+            note: nil
         )
 
         // Then
@@ -253,5 +257,29 @@ struct BookingsRemoteTests {
 
         #expect((parameters["page"] as? String) == "3")
         #expect((parameters["per_page"] as? String) == "100")
+    }
+
+    @Test func test_updateBookingNote_sends_correct_parameters_for_booking_note() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.updateBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            attendanceStatus: nil,
+            bookingStatus: nil,
+            note: "hello"
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect(parameters["attendance_status"] == nil)
+        #expect(parameters["status"] == nil)
+        #expect((parameters["note"] as? String) == "hello")
     }
 }

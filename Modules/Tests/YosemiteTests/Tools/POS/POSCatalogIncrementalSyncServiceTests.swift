@@ -306,4 +306,3 @@ struct POSCatalogIncrementalSyncServiceTests {
         #expect(persistedCatalog.products.count == 1)
     }
 }
-

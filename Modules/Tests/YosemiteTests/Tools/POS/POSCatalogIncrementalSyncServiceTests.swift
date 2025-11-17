@@ -229,7 +229,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then - Verify both nil (regular) and "trash" statuses were requested
-        let includeStatuses = mockSyncRemote.lastIncrementalProductsIncludeStatus
+        let includeStatuses = await mockSyncRemote.includeStatusTracker.values
         #expect(includeStatuses.contains(nil))
         #expect(includeStatuses.contains("trash"))
     }

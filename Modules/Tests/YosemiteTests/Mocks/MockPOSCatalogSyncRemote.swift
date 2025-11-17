@@ -21,7 +21,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var lastIncrementalProductsModifiedAfter: Date?
     private(set) var lastIncrementalVariationsModifiedAfter: Date?
     private(set) var lastTrashedProductsModifiedAfter: Date?
-    private(set) var lastIncrementalProductsIncludeStatus: [String?] = []
+    let includeStatusTracker = IncludeStatusTracker()
     private(set) var lastCatalogRequestForceGeneration: Bool?
     private(set) var lastCatalogDownloadAllowCellular: Bool?
 
@@ -89,7 +89,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                       siteID: Int64,
                       pageNumber: Int,
                       includeStatus: String?) async throws -> PagedItems<POSProduct> {
-        lastIncrementalProductsIncludeStatus.append(includeStatus)
+        await includeStatusTracker.append(includeStatus)
 
         // Route to appropriate results based on includeStatus
         if includeStatus == "trash" {
@@ -250,5 +250,14 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         case .failure(let error):
             throw error
         }
+    }
+}
+
+/// Thread-safe tracker for includeStatus values
+actor IncludeStatusTracker {
+    private(set) var values: [String?] = []
+
+    func append(_ value: String?) {
+        values.append(value)
     }
 }

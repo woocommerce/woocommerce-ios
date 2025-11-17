@@ -174,4 +174,136 @@ struct POSCatalogIncrementalSyncServiceTests {
         #expect(site1ModifiedAfter == lastFullSyncDate)
         #expect(site2ModifiedAfter == lastFullSyncDate)
     }
+
+    // MARK: - Two-Request Pattern Tests (Regular + Trashed Products)
+
+    @Test func startIncrementalSync_fetches_both_regular_and_trashed_products() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+        let regularProducts = [POSProduct.fake().copy(statusKey: "publish")]
+        let trashedProducts = [POSProduct.fake().copy(statusKey: "trash")]
+
+        mockSyncRemote.setIncrementalProductResult(pageNumber: 1, result: .success(PagedItems(items: regularProducts, hasMorePages: false, totalItems: 1)))
+        mockSyncRemote.setTrashedProductResult(pageNumber: 1, result: .success(PagedItems(items: trashedProducts, hasMorePages: false, totalItems: 1)))
+        mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
+
+        // Then - Both regular and trashed products requests were made
+        #expect(await mockSyncRemote.loadIncrementalProductsCallCount.value >= 1)
+        #expect(await mockSyncRemote.loadTrashedProductsCallCount.value >= 1)
+
+        // Verify persisted catalog contains both regular and trashed products
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.products.count == 2)
+    }
+
+    @Test func startIncrementalSync_uses_same_modifiedAfter_for_regular_and_trashed_requests() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+
+        mockSyncRemote.setIncrementalProductResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+        mockSyncRemote.setTrashedProductResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+        mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
+
+        // Then - Both requests use the same modifiedAfter date
+        let regularModifiedAfter = try #require(mockSyncRemote.lastIncrementalProductsModifiedAfter)
+        let trashedModifiedAfter = try #require(mockSyncRemote.lastTrashedProductsModifiedAfter)
+        #expect(regularModifiedAfter == trashedModifiedAfter)
+        #expect(regularModifiedAfter == lastFullSyncDate)
+    }
+
+    @Test func startIncrementalSync_includes_correct_includeStatus_values_in_requests() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+
+        mockSyncRemote.setIncrementalProductResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+        mockSyncRemote.setTrashedProductResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+        mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
+
+        // Then - Verify both nil (regular) and "trash" statuses were requested
+        let includeStatuses = mockSyncRemote.lastIncrementalProductsIncludeStatus
+        #expect(includeStatuses.contains(nil))
+        #expect(includeStatuses.contains("trash"))
+    }
+
+    @Test func startIncrementalSync_combines_products_from_both_requests_into_single_persistence() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+        let regularProduct1 = POSProduct.fake().copy(statusKey: "publish")
+        let regularProduct2 = POSProduct.fake().copy(statusKey: "publish")
+        let trashedProduct = POSProduct.fake().copy(statusKey: "trash")
+
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [regularProduct1, regularProduct2], hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setTrashedProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [trashedProduct], hasMorePages: false, totalItems: 1))
+        )
+        mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
+
+        // Then - All products are combined in a single persistence call
+        #expect(mockPersistenceService.persistIncrementalCatalogDataCallCount == 1)
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.products.count == 3)
+    }
+
+    @Test func startIncrementalSync_handles_empty_trashed_products_response() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+        let regularProducts = [POSProduct.fake(), POSProduct.fake()]
+
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: regularProducts, hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setTrashedProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+        mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
+
+        // Then - Only regular products are persisted
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.products.count == 2)
+    }
+
+    @Test func startIncrementalSync_handles_only_trashed_products_updated() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+        let trashedProducts = [POSProduct.fake().copy(statusKey: "trash")]
+
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+        mockSyncRemote.setTrashedProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: trashedProducts, hasMorePages: false, totalItems: 1))
+        )
+        mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
+
+        // Then - Only trashed products are persisted
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.products.count == 1)
+    }
 }
+

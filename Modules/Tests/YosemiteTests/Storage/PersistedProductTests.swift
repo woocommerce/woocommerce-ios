@@ -549,4 +549,230 @@ struct PersistedProductTests {
         #expect(colorAttr?.options == ["Red", "Blue"])
         #expect(colorAttr?.variation == true)
     }
+
+    @Test("posProductsRequest filters out trashed products")
+    func posProductsRequest_filters_out_trashed_products() throws {
+        // Given
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        try db.write { db in
+            let site = PersistedSite(id: 1)
+            try site.insert(db)
+
+            // Insert a published product (should be included)
+            let publishedProduct = PersistedProduct(
+                id: 1,
+                siteID: 1,
+                name: "Published Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "10.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "publish"
+            )
+            try publishedProduct.insert(db)
+
+            // Insert a trashed product (should be filtered out)
+            let trashedProduct = PersistedProduct(
+                id: 2,
+                siteID: 1,
+                name: "Trashed Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "20.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "trash"
+            )
+            try trashedProduct.insert(db)
+        }
+
+        // When
+        let products = try db.read { db in
+            try PersistedProduct.posProductsRequest(siteID: 1).fetchAll(db)
+        }
+
+        // Then
+        #expect(products.count == 1)
+        #expect(products.first?.name == "Published Product")
+        #expect(products.first?.statusKey == "publish")
+    }
+
+    @Test("posProductsRequest filters out draft, pending, and private products")
+    func posProductsRequest_filters_out_draft_pending_private_products() throws {
+        // Given
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        try db.write { db in
+            let site = PersistedSite(id: 1)
+            try site.insert(db)
+
+            // Insert a published product (should be included)
+            let publishedProduct = PersistedProduct(
+                id: 1,
+                siteID: 1,
+                name: "Published Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "10.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "publish"
+            )
+            try publishedProduct.insert(db)
+
+            // Insert draft product (should be filtered out)
+            let draftProduct = PersistedProduct(
+                id: 2,
+                siteID: 1,
+                name: "Draft Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "20.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "draft"
+            )
+            try draftProduct.insert(db)
+
+            // Insert pending product (should be filtered out)
+            let pendingProduct = PersistedProduct(
+                id: 3,
+                siteID: 1,
+                name: "Pending Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "30.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "pending"
+            )
+            try pendingProduct.insert(db)
+
+            // Insert private product (should be filtered out)
+            let privateProduct = PersistedProduct(
+                id: 4,
+                siteID: 1,
+                name: "Private Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "40.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "private"
+            )
+            try privateProduct.insert(db)
+        }
+
+        // When
+        let products = try db.read { db in
+            try PersistedProduct.posProductsRequest(siteID: 1).fetchAll(db)
+        }
+
+        // Then
+        #expect(products.count == 1)
+        #expect(products.first?.name == "Published Product")
+    }
+
+    @Test("posProductsRequest includes custom status products")
+    func posProductsRequest_includes_custom_status_products() throws {
+        // Given
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        try db.write { db in
+            let site = PersistedSite(id: 1)
+            try site.insert(db)
+
+            // Insert a published product
+            let publishedProduct = PersistedProduct(
+                id: 1,
+                siteID: 1,
+                name: "Published Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "10.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "publish"
+            )
+            try publishedProduct.insert(db)
+
+            // Insert a product with custom status (should be included - 3rd party plugin)
+            let customStatusProduct = PersistedProduct(
+                id: 2,
+                siteID: 1,
+                name: "Custom Status Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "25.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "custom-status"
+            )
+            try customStatusProduct.insert(db)
+        }
+
+        // When
+        let products = try db.read { db in
+            try PersistedProduct.posProductsRequest(siteID: 1).fetchAll(db)
+        }
+
+        // Then both products should be included (custom status is not explicitly excluded)
+        #expect(products.count == 2)
+        let productNames = Set(products.map { $0.name })
+        #expect(productNames.contains("Published Product"))
+        #expect(productNames.contains("Custom Status Product"))
+    }
 }

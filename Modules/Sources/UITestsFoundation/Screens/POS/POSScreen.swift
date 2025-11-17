@@ -25,4 +25,16 @@ public final class POSScreen: ScreenObject {
 
         return self
     }
+
+    @discardableResult
+    public func tapCheckout() -> Self {
+        let checkoutButton = app.buttons["pos-checkout-button"]
+
+        guard checkoutButton.waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        checkoutButton.tap()
+        return self
+    }
 }

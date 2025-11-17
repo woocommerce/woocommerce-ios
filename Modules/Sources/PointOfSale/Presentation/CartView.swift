@@ -176,6 +176,7 @@ private extension CartView {
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
+        .accessibilityIdentifier("pos-checkout-button")
     }
 
     var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {

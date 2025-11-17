@@ -309,14 +309,14 @@ enum BookingListTab: Int, CaseIterable {
                 comment: "Description for the empty state when there's no bookings at all so far"
             )
             static let filterTitle = NSLocalizedString(
-                "bookingListView.emptyState.fo;ter.title",
+                "bookingListView.emptyState.filter.title",
                 value: "No bookings found",
-                comment: "Title for the empty state when there's no bookings given the filters"
+                comment: "Title for the empty state when there's no bookings for the given filters"
             )
             static let filterDescription = NSLocalizedString(
                 "bookingListView.emptyState.filter.description.i3",
                 value: "Try adjusting or clearing your filters to see more results.",
-                comment: "Description for the empty state when there's no bookings given the filters"
+                comment: "Description for the empty state when there's no bookings for the given filters"
             )
         }
     }

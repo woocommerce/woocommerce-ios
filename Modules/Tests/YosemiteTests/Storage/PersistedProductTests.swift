@@ -28,6 +28,7 @@ struct PersistedProductTests {
             manageStock: true,
             stockQuantity: 5,
             stockStatusKey: "instock",
+            statusKey: "publish",
             variationIDs: []
         )
 
@@ -49,6 +50,7 @@ struct PersistedProductTests {
         #expect(persisted.manageStock == posProduct.manageStock)
         #expect(persisted.stockQuantity == posProduct.stockQuantity)
         #expect(persisted.stockStatusKey == posProduct.stockStatusKey)
+        #expect(persisted.statusKey == posProduct.statusKey)
     }
 
     @Test("PersistedProduct toPOSProduct maps back with images and attributes")
@@ -70,7 +72,8 @@ struct PersistedProductTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "outofstock"
+            stockStatusKey: "outofstock",
+            statusKey: "publish"
         )
 
         let productImages = [
@@ -130,6 +133,7 @@ struct PersistedProductTests {
         #expect(posProduct.manageStock == persisted.manageStock)
         #expect(posProduct.stockQuantity == persisted.stockQuantity)
         #expect(posProduct.stockStatusKey == persisted.stockStatusKey)
+        #expect(posProduct.statusKey == persisted.statusKey)
         #expect(posProduct.images.count == 2)
         #expect(posProduct.attributes.count == 2)
         #expect(posProduct.attributesForVariations.count == 1)
@@ -161,7 +165,8 @@ struct PersistedProductTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try product.insert(db)
 
@@ -279,7 +284,8 @@ struct PersistedProductTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try product.insert(db)
         }
@@ -386,7 +392,8 @@ struct PersistedProductTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try product.insert(db)
 
@@ -510,6 +517,7 @@ struct PersistedProductTests {
             manageStock: true,
             stockQuantity: 50,
             stockStatusKey: "instock",
+            statusKey: "publish",
             variationIDs: []
         )
 

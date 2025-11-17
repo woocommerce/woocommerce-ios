@@ -685,10 +685,11 @@ struct TestProduct: Codable {
     let manageStock: Bool
     let stockQuantity: Double?
     let stockStatusKey: String
+    let statusKey: String
 
     init(siteID: Int64, id: Int64, name: String, productTypeKey: String,
          price: String, downloadable: Bool, parentID: Int64,
-         manageStock: Bool, stockStatusKey: String,
+         manageStock: Bool, stockStatusKey: String, statusKey: String = "publish",
          fullDescription: String? = nil, shortDescription: String? = nil,
          sku: String? = nil, globalUniqueID: String? = nil, stockQuantity: Double? = nil) {
         self.siteID = siteID
@@ -700,6 +701,7 @@ struct TestProduct: Codable {
         self.parentID = parentID
         self.manageStock = manageStock
         self.stockStatusKey = stockStatusKey
+        self.statusKey = statusKey
         self.fullDescription = fullDescription
         self.shortDescription = shortDescription
         self.sku = sku

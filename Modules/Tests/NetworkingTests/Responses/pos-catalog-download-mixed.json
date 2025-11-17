@@ -145,7 +145,8 @@
         "option": "19"
       }
     ],
-    "downloadable": false
+    "downloadable": false,
+    "status": "publish"
   },
   {
     "id": 33,
@@ -192,6 +193,7 @@
         "option": "8"
       }
     ],
-    "downloadable": false
+    "downloadable": false,
+    "status": "publish"
   },
 ]

@@ -92,7 +92,7 @@ public enum BookingAction: Action {
                            bookingID: Int64,
                            onCompletion: (Error?) -> Void)
 
-    /// Updates a booking attendance status.
+    /// Updates a booking note.
     ///
     /// - Parameter siteID: The site ID of the booking.
     /// - Parameter bookingID: The ID of the booking to be updated.

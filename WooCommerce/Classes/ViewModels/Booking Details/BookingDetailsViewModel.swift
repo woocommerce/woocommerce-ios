@@ -242,7 +242,11 @@ extension BookingDetailsViewModel {
         ) { [weak self] error in
             if let error, let self {
                 DDLogError("⛔️ Error updating booking attendance status: \(error)")
-                displayAttendanceStatusUpdatedErrorNotice(status: newStatus)
+                displayErrorNotice(
+                    messageFormat: Localization.bookingAttendanceStatusUpdateFailedMessage
+                ) { [weak self] in
+                    self?.updateAttendanceStatus(to: newStatus)
+                }
             }
         }
         stores.dispatch(action)
@@ -256,27 +260,32 @@ extension BookingDetailsViewModel {
         ) { [weak self] error in
             if let error, let self {
                 DDLogError("⛔️ Error updating booking note: \(error)")
-//                displayAttendanceStatusUpdatedErrorNotice(status: newStatus)
+                displayErrorNotice(
+                    messageFormat: Localization.bookingNoteUpdateFailedMessage
+                ) { [weak self] in
+                    self?.updateNote(to: newNote)
+                }
             }
         }
         stores.dispatch(action)
     }
 
-    private func displayAttendanceStatusUpdatedErrorNotice(status: BookingAttendanceStatus) {
+    private func displayErrorNotice(
+        messageFormat: String,
+        retry: @escaping () -> Void
+    ) {
         let text = String.localizedStringWithFormat(
-            Localization.bookingAttendanceStatusUpdateFailedMessage,
+            messageFormat,
             booking.bookingID
         )
-        self.notice = Notice(
+
+        notice = Notice(
             message: text,
             feedbackType: .error,
             actionTitle: Localization.retryActionTitle
         ) { [weak self] in
-            guard let self else {
-                return
-            }
-
-            updateAttendanceStatus(to: status)
+            guard let self else { return }
+            retry()
         }
     }
 }
@@ -486,6 +495,14 @@ private extension BookingDetailsViewModel {
             value: "Unable to change attendance status of Booking #%1$d.",
             comment: "Content of error presented when updating the attendance status of a Booking fails. "
             + "It reads: Unable to change status of Booking #{Booking number}. "
+            + "Parameters: %1$d - Booking number"
+        )
+
+        static let bookingNoteUpdateFailedMessage = NSLocalizedString(
+            "BookingDetailsView.bookingNote.failureMessage.",
+            value: "Unable to update note of Booking #%1$d.",
+            comment: "Content of error presented when updating the not of a Booking fails. "
+            + "It reads: Unable to update note of Booking #{Booking number}. "
             + "Parameters: %1$d - Booking number"
         )
 

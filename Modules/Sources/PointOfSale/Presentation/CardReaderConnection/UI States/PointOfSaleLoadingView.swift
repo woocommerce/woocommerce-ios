@@ -48,7 +48,7 @@ struct PointOfSaleLoadingView: View {
             Spacer()
         }
         .background(Color.posSurface)
-        .onAppear {
+        .task {
             if isCatalogSyncing {
                 analytics.track(event: WooAnalyticsEvent.LocalCatalog.downloadingScreenShown())
             }

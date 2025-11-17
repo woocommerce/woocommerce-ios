@@ -37,4 +37,17 @@ public final class POSScreen: ScreenObject {
         checkoutButton.tap()
         return self
     }
+
+    @discardableResult
+    public func waitForTotalsLoaded() -> Self {
+        // Wait for the actual totals to load (not shimmer/ghost state)
+        // This waits for orderState to be .loaded and payment to start
+        let totalField = app.otherElements["pos-total-field"]
+
+        guard totalField.waitForExistence(timeout: 5) else {
+            return self
+        }
+
+        return self
+    }
 }

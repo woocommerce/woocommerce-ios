@@ -29,6 +29,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("-mocks-push-notification")
         app.launchArguments.append("bypass-pos-eligibility-checks")
         app.launchArguments.append("bypass-pos-product-loading")
+        app.launchArguments.append("bypass-pos-order-syncing")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()
@@ -55,6 +56,7 @@ class WooCommerceScreenshots: XCTestCase {
             .tapAddProduct(productID: 2)
             .thenTakeScreenshot(named: "test-pos-screenshot", orientation: .landscapeLeft)
             .tapCheckout()
+            .waitForTotalsLoaded()
             .thenTakeScreenshot(named: "test-pos-screenshot-2", orientation: .landscapeLeft)
 
         // My Store

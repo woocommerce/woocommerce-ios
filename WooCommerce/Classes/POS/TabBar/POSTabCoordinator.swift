@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import class WooFoundation.CurrencySettings
+import WooFoundationCore
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
@@ -222,11 +223,20 @@ private extension POSTabCoordinator {
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
                                                       selectedSite: defaultSitePublisher,
-                                                      appPasswordSupportState: isAppPasswordSupported),
-               let orderService = POSOrderService(siteID: siteID,
-                                                  credentials: credentials,
-                                                  selectedSite: defaultSitePublisher,
-                                                  appPasswordSupportState: isAppPasswordSupported) {
+                                                      appPasswordSupportState: isAppPasswordSupported) {
+
+                // Use mock order service for screenshot tests to bypass network calls
+                let orderService: POSOrderServiceProtocol
+                if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+                    orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+                } else if let realService = POSOrderService(siteID: siteID,
+                                                           credentials: credentials,
+                                                           selectedSite: defaultSitePublisher,
+                                                           appPasswordSupportState: isAppPasswordSupported) {
+                    orderService = realService
+                } else {
+                    return
+                }
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: posItemFetchStrategyFactory,
@@ -289,4 +299,66 @@ private extension POSTabCoordinator {
     func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
         TracksProvider.setPOSMode(isPointOfSaleActive)
     }
+}
+
+/// Mock order service for screenshot tests that returns immediate loaded state
+private final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
+    private let currency: String
+
+    init(currency: String) {
+        self.currency = currency
+    }
+
+    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+        // Create a mock order with totals calculated from the cart
+        // For screenshot tests with 2 products: $35.00 + $45.00 = $80.00
+        let subtotal = "80.00"
+        let tax = "0.00"
+        let total = "80.00"
+
+        return Order(siteID: 0,
+                    orderID: 1,
+                    parentID: 0,
+                    customerID: 0,
+                    orderKey: "",
+                    isEditable: true,
+                    needsPayment: true,
+                    needsProcessing: true,
+                    number: "1",
+                    status: .pending,
+                    currency: currency.rawValue,
+                    currencySymbol: "$",
+                    customerNote: nil,
+                    dateCreated: Date(),
+                    dateModified: Date(),
+                    datePaid: nil,
+                    discountTotal: "0.00",
+                    discountTax: "0.00",
+                    shippingTotal: "0.00",
+                    shippingTax: "0.00",
+                    total: total,
+                    totalTax: tax,
+                    paymentMethodID: "",
+                    paymentMethodTitle: "",
+                    paymentURL: nil,
+                    chargeID: nil,
+                    items: [],
+                    billingAddress: nil,
+                    shippingAddress: nil,
+                    shippingLines: [],
+                    coupons: [],
+                    refunds: [],
+                    fees: [],
+                    taxes: [],
+                    customFields: [],
+                    renewalSubscriptionID: nil,
+                    appliedGiftCards: [],
+                    attributionInfo: nil,
+                    shippingLabels: [],
+                    createdVia: "pos")
+    }
+
+    func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
+
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {}
 }

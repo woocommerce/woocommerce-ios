@@ -57,8 +57,18 @@ struct TotalsView: View {
 
                     CashPaymentButton(
                         orderState: posModel.orderState,
-                        paymentState: posModel.paymentState,
+                        paymentState: posModel.paymentState, //idle
                         cardReaderConnectionStatus: posModel.cardReaderConnectionStatus,
+                        /*
+                         (lldb) po posModel.cardReaderConnectionStatus
+                         ▿ CardPresentPaymentReaderConnectionStatus
+                           ▿ connected : CardPresentPaymentCardReader
+                             - name : "Simulated POS E"
+                             ▿ batteryLevel : Optional<Float>
+                               - some : 0.5
+                             ▿ softwareVersion : Optional<String>
+                               - some : "1.00.03.34-SZZZ_Generic_v45-300001"
+                         */
                         startCashPaymentAction: { await posModel.startCashPayment() }
                     )
                 }
@@ -67,6 +77,7 @@ struct TotalsView: View {
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
+
             case .error(.invalidCoupon(let message), let handler):
                 PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -408,6 +419,7 @@ private struct TotalFieldView: View {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier("pos-total-field")
             .foregroundColor(Color.posOnSurface)
         }
     }

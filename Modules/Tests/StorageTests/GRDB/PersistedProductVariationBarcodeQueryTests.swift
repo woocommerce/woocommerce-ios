@@ -38,7 +38,8 @@ struct PersistedProductVariationBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(parentProduct)
 
@@ -108,7 +109,8 @@ struct PersistedProductVariationBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         let otherParentProduct = PersistedProduct(
             id: 20,
@@ -124,7 +126,8 @@ struct PersistedProductVariationBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(ourParentProduct)
         try await insertProduct(otherParentProduct)
@@ -191,7 +194,8 @@ struct PersistedProductVariationBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(parentProduct)
 

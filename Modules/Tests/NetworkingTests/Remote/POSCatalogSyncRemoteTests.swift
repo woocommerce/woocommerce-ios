@@ -133,6 +133,48 @@ struct POSCatalogSyncRemoteTests {
         #expect(pagedProducts.totalItems == nil)
     }
 
+    @Test func loadProducts_with_includeStatus_adds_parameter() async throws {
+        // Given
+        let remote = createRemote()
+        let modifiedAfter = Date(timeIntervalSince1970: 1692968400)
+        let pageNumber = 1
+
+        // When
+        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: pageNumber, includeStatus: "trash")
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["include_status"] as? String == "trash")
+    }
+
+    @Test func loadProducts_without_includeStatus_omits_parameter() async throws {
+        // Given
+        let remote = createRemote()
+        let modifiedAfter = Date(timeIntervalSince1970: 1692968400)
+        let pageNumber = 1
+
+        // When
+        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: pageNumber, includeStatus: nil)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["include_status"] == nil)
+    }
+
+    @Test func loadProducts_includes_status_in_request_fields() async throws {
+        // Given
+        let remote = createRemote()
+        let modifiedAfter = Date()
+
+        // When
+        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let fieldsString = try #require(queryParametersDictionary["_fields"] as? String)
+        #expect(fieldsString.contains("status"))
+    }
+
     // MARK: - Product Variations Tests
 
     @Test func loadProductVariations_sets_correct_parameters() async throws {

@@ -71,7 +71,10 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     // MARK: - Protocol Methods - Incremental Sync
 
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
+    func loadProducts(modifiedAfter: Date,
+                      siteID: Int64,
+                      pageNumber: Int,
+                      includeStatus: String?) async throws -> PagedItems<POSProduct> {
         await loadIncrementalProductsCallCount.increment()
         lastIncrementalProductsModifiedAfter = modifiedAfter
 

@@ -51,6 +51,7 @@ class WooCommerceScreenshots: XCTestCase {
         // POS
         try TabNavComponent()
             .goToPOSScreen()
+            .tapAddProduct()
             .thenTakeScreenshot(named: "test-pos-screenshot", orientation: .landscapeLeft)
 
         // My Store

@@ -248,6 +248,20 @@ extension BookingDetailsViewModel {
         stores.dispatch(action)
     }
 
+    func updateNote(to newNote: String) {
+        let action = BookingAction.updateBookingNote(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID,
+            note: newNote
+        ) { [weak self] error in
+            if let error, let self {
+                DDLogError("⛔️ Error updating booking note: \(error)")
+//                displayAttendanceStatusUpdatedErrorNotice(status: newStatus)
+            }
+        }
+        stores.dispatch(action)
+    }
+
     private func displayAttendanceStatusUpdatedErrorNotice(status: BookingAttendanceStatus) {
         let text = String.localizedStringWithFormat(
             Localization.bookingAttendanceStatusUpdateFailedMessage,

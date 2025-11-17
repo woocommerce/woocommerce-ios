@@ -9,11 +9,13 @@ struct MultilineEditableTextDetailView: View {
     @FocusState private var isFocused: Bool
 
     let title: String?
+    let onCommit: ((String) -> Void)?
 
-    init(text: Binding<String>, title: String? = nil) {
+    init(text: Binding<String>, title: String? = nil, onCommit: ((String) -> Void)? = nil) {
         self._text = text
         self._editedText = State(initialValue: text.wrappedValue)
         self.title = title
+        self.onCommit = onCommit
     }
 
     var body: some View {
@@ -54,6 +56,7 @@ struct MultilineEditableTextDetailView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button(Localization.doneButtonTitle) {
                         text = editedText
+                        onCommit?(editedText)
                         dismiss()
                     }
                     .fontWeight(.medium)

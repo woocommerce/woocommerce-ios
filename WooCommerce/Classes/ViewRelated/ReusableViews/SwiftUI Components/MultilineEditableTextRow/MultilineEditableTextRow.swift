@@ -4,16 +4,22 @@ struct MultilineEditableTextRow: View {
     @State var value: String
     let placeholder: String
     let detailTitle: String?
+    let onCommit: ((String) -> Void)?
 
-    init(value: String, placeholder: String, detailTitle: String? = nil) {
-        self.value = value
+    init(value: String,
+         placeholder: String,
+         detailTitle: String? = nil,
+         onCommit: ((String) -> Void)? = nil
+    ) {
+        self._value = State(initialValue: value)
         self.placeholder = placeholder
         self.detailTitle = detailTitle
+        self.onCommit = onCommit
     }
 
     var body: some View {
         NavigationLink {
-            MultilineEditableTextDetailView(text: $value, title: detailTitle)
+            MultilineEditableTextDetailView(text: $value, title: detailTitle, onCommit: onCommit)
         } label: {
             content
         }

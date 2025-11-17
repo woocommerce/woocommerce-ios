@@ -20,7 +20,8 @@ public protocol BookingsRemoteProtocol {
         from siteID: Int64,
         bookingID: Int64,
         attendanceStatus: BookingAttendanceStatus?,
-        bookingStatus: BookingStatus?
+        bookingStatus: BookingStatus?,
+        note: String?
     ) async throws -> Booking?
 
     func fetchResource(resourceID: Int64,
@@ -152,7 +153,8 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         from siteID: Int64,
         bookingID: Int64,
         attendanceStatus: BookingAttendanceStatus?,
-        bookingStatus: BookingStatus?
+        bookingStatus: BookingStatus?,
+        note: String?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
         var parameters: [String: String] = [:]
@@ -163,6 +165,10 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         if let bookingStatus {
             parameters[ParameterKey.status] = bookingStatus.rawValue
+        }
+
+        if let note {
+            parameters[ParameterKey.note] = note
         }
 
         let request = JetpackRequest(
@@ -259,5 +265,6 @@ public extension BookingsRemote {
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
         static let status: String          = "status"
+        static let note: String          = "note"
     }
 }

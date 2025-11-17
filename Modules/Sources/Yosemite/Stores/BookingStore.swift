@@ -82,6 +82,13 @@ public class BookingStore: Store {
                 bookingID: bookingID,
                 onCompletion: onCompletion
             )
+        case .updateBookingNote(let siteID, let bookingID, let note, let onCompletion):
+            updateBookingNote(
+                siteID: siteID,
+                bookingID: bookingID,
+                note: note,
+                onCompletion: onCompletion
+            )
         }
     }
 }
@@ -308,6 +315,7 @@ private extension BookingStore {
                         bookingID: bookingID,
                         attendanceStatus: status,
                         bookingStatus: nil,
+                        note: nil,
                     ) {
                         await self.upsertStoredBookingsInBackground(
                             readOnlyBookings: [remoteBooking],
@@ -325,6 +333,54 @@ private extension BookingStore {
                         siteID: siteID,
                         bookingID: bookingID,
                         statusKey: previousStatusKey
+                    ) { _ in
+                        onCompletion(error)
+                    }
+                }
+            }
+        }
+    }
+
+    func updateBookingNote(
+        siteID: Int64,
+        bookingID: Int64,
+        note: String,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        updateBookingNoteLocally(
+            siteID: siteID,
+            bookingID: bookingID,
+            note: note
+        ) { [weak self] previousNote in
+            guard let self else {
+                return onCompletion(UpdateBookingStatusError.undefinedState)
+            }
+
+            Task { @MainActor in
+                do {
+                    if let remoteBooking = try await self.remote.updateBooking(
+                        from: siteID,
+                        bookingID: bookingID,
+                        attendanceStatus: nil,
+                        bookingStatus: nil,
+                        note: note,
+                    ) {
+                        await self.upsertStoredBookingsInBackground(
+                            readOnlyBookings: [remoteBooking],
+                            readOnlyOrders: [],
+                            siteID: siteID
+                        )
+
+                        onCompletion(nil)
+                    } else {
+                        return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                    }
+                } catch {
+                    /// Revert Optimistic Update
+                    self.updateBookingNoteLocally(
+                        siteID: siteID,
+                        bookingID: bookingID,
+                        note: note
                     ) { _ in
                         onCompletion(error)
                     }
@@ -361,6 +417,33 @@ private extension BookingStore {
         }, on: .main)
     }
 
+    func updateBookingNoteLocally(
+        siteID: Int64,
+        bookingID: Int64,
+        note: String?,
+        onCompletion: @escaping (String?) -> Void
+    ) {
+        storageManager.performAndSave({ storage -> String? in
+            guard let booking = storage.loadBooking(
+                siteID: siteID,
+                bookingID: bookingID
+            ) else {
+                return note
+            }
+
+            let oldNote = booking.note
+            booking.note = note
+            return oldNote
+        }, completion: { result in
+            switch result {
+            case .success(let status):
+                onCompletion(status)
+            case .failure:
+                onCompletion(note)
+            }
+        }, on: .main)
+    }
+
     /// Cancels a booking by updating its status to cancelled.
     func cancelBooking(
         siteID: Int64,
@@ -373,7 +456,8 @@ private extension BookingStore {
                     from: siteID,
                     bookingID: bookingID,
                     attendanceStatus: nil,
-                    bookingStatus: .cancelled
+                    bookingStatus: .cancelled,
+                    note: nil,
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],
@@ -403,7 +487,8 @@ private extension BookingStore {
                     from: siteID,
                     bookingID: bookingID,
                     attendanceStatus: nil,
-                    bookingStatus: .paid
+                    bookingStatus: .paid,
+                    note: nil,
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],

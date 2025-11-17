@@ -11,15 +11,18 @@ struct BookingListView<Header: View>: View {
     @Binding var selectedBooking: Booking?
 
     private let header: Header
+    private let onClearingFilters: (() -> Void)?
 
     init(viewModel: BookingListViewModel,
          searchViewModel: BookingSearchViewModel,
          selectedBooking: Binding<Booking?>,
-         @ViewBuilder header: () -> Header) {
+         @ViewBuilder header: () -> Header,
+         onClearingFilters: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.searchViewModel = searchViewModel
         self._selectedBooking = selectedBooking
         self.header = header()
+        self.onClearingFilters = onClearingFilters
     }
 
     var body: some View {
@@ -199,13 +202,10 @@ private extension BookingListView {
                 }
                 if viewModel.hasFilters {
                     VStack(spacing: BookingListViewLayout.textVerticalPadding) {
-                        Button("Change filters") {
-                            // TODO
+                        Button(BookingListViewLocalization.clearFilters) {
+                            onClearingFilters?()
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        Button("Clear filters") {
-                            // TODO
-                        }
                     }
                 }
             }
@@ -250,5 +250,10 @@ fileprivate enum BookingListViewLocalization {
         "bookingList.emptySearchText",
         value: "We couldn't find any bookings with that name — try adjusting your search term to see more results.",
         comment: "Message displayed when searching bookings by keyword yields no results."
+    )
+    static let clearFilters = NSLocalizedString(
+        "bookingList.clearFilters",
+        value: "Clear filters",
+        comment: "Button to clear the filters on booking list"
     )
 }

@@ -112,6 +112,7 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func updateFilters(_ filters: BookingFiltersViewModel.Filters, shouldPersist: Bool = true) {
+        guard selectedTab == .all else { return }
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
         allListViewModel.updateFilters(filters)
@@ -119,6 +120,12 @@ final class BookingListContainerViewModel: ObservableObject {
         if shouldPersist {
             saveFilters(filters)
         }
+    }
+
+    func clearFilters() {
+        guard selectedTab == .all else { return }
+        let filters = BookingFiltersViewModel.Filters()
+        updateFilters(filters)
     }
 }
 
@@ -236,7 +243,7 @@ enum BookingListTab: Int, CaseIterable {
         case .upcoming:
             return Localization.EmptyState.upcomingTitle
         case .all:
-            return Localization.EmptyState.filterTitle
+            return Localization.EmptyState.allTitle
         }
     }
 
@@ -250,7 +257,7 @@ enum BookingListTab: Int, CaseIterable {
         case .upcoming:
             return Localization.EmptyState.upcomingDescription
         case .all:
-            return ""
+            return Localization.EmptyState.allDescription
         }
     }
 
@@ -277,8 +284,8 @@ enum BookingListTab: Int, CaseIterable {
                 comment: "Title for the empty state when no bookings for today is found"
             )
             static let todayDescription = NSLocalizedString(
-                "bookingListView.emptyState.today.description",
-                value: "You don't have any appointments or events scheduled for today.",
+                "bookingListView.emptyState.today.description.i3",
+                value: "Any bookings scheduled for today will appear here.",
                 comment: "Description for the empty state when no bookings for today is found"
             )
             static let upcomingTitle = NSLocalizedString(
@@ -287,19 +294,29 @@ enum BookingListTab: Int, CaseIterable {
                 comment: "Title for the empty state when there's no bookings for today"
             )
             static let upcomingDescription = NSLocalizedString(
-                "bookingListView.emptyState.upcoming.description",
-                value: "You don't have any future appointments or events scheduled yet.",
+                "bookingListView.emptyState.upcoming.description.i3",
+                value: "New bookings will appear here as customers schedule your services or register for events.",
                 comment: "Description for the empty state when there's no upcoming bookings"
             )
+            static let allTitle = NSLocalizedString(
+                "bookingListView.emptyState.all.title",
+                value: "No bookings yet",
+                comment: "Title for the empty state when there's no bookings at all so far"
+            )
+            static let allDescription = NSLocalizedString(
+                "bookingListView.emptyState.all.description",
+                value: "Bookings will appear here once customers start scheduling your services or registering for events.",
+                comment: "Description for the empty state when there's no bookings at all so far"
+            )
             static let filterTitle = NSLocalizedString(
-                "bookingListView.emptyState.filter.title",
+                "bookingListView.emptyState.fo;ter.title",
                 value: "No bookings found",
-                comment: "Title for the empty state when there's no bookings for the given filter"
+                comment: "Title for the empty state when there's no bookings given the filters"
             )
             static let filterDescription = NSLocalizedString(
-                "bookingListView.emptyState.filter.description",
-                value: "No bookings match your filters. Try adjusting them to see more results.",
-                comment: "Description for the empty state when there's no bookings for the given filter"
+                "bookingListView.emptyState.filter.description.i3",
+                value: "Try adjusting or clearing your filters to see more results.",
+                comment: "Description for the empty state when there's no bookings given the filters"
             )
         }
     }

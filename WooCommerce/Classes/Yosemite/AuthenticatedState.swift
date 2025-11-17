@@ -205,7 +205,6 @@ class AuthenticatedState: StoresManagerState {
                 incrementalSyncService: incrementalSyncService,
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
-                siteSettings: nil,
                 analytics: ServiceLocator.analytics,
                 connectivityObserver: ServiceLocator.connectivityObserver
             )

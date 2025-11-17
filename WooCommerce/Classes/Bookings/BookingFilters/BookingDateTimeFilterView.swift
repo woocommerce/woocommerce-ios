@@ -56,6 +56,7 @@ struct BookingDateTimeFilterView: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.listBackground))
+        .environment(\.timeZone, TimeZone(identifier: "UTC")!) // API treats dates as no timezone so use UTC to display and select dates
         .onChange(of: fromDate) { _, newValue in
             selectedFromDate = newValue
         }
@@ -63,22 +64,10 @@ struct BookingDateTimeFilterView: View {
             selectedToDate = newValue
         }
         .onChange(of: selectedFromDate) { _, newValue in
-            guard let newValue else {
-                return onSelection(nil, selectedToDate)
-            }
-            /// Bookings backend treats dates as local time with no time zone.
-            /// Convert the date to keep the selected components but with UTC as time zone.
-            let convertedDate = convertToUTCDate(newValue)
-            onSelection(convertedDate, selectedToDate)
+            onSelection(newValue, selectedToDate)
         }
         .onChange(of: selectedToDate) { _, newValue in
-            guard let newValue else {
-                return onSelection(selectedFromDate, nil)
-            }
-            /// Bookings backend treats dates as local time with no time zone.
-            /// Convert the date to keep the selected components but with UTC as time zone.
-            let convertedDate = convertToUTCDate(newValue)
-            onSelection(selectedFromDate, convertedDate)
+            onSelection(selectedFromDate, newValue)
         }
     }
 }

@@ -265,6 +265,6 @@ public extension BookingsRemote {
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
         static let status: String          = "status"
-        static let note: String          = "note"
+        static let note: String            = "note"
     }
 }

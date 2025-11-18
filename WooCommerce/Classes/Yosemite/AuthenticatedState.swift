@@ -195,7 +195,8 @@ class AuthenticatedState: StoresManagerState {
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                     storageManager: ServiceLocator.storageManager
                 ),
-                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled
+                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher)
             )
             posCatalogEligibilityChecker = eligibilityService
 
@@ -205,7 +206,6 @@ class AuthenticatedState: StoresManagerState {
                 incrementalSyncService: incrementalSyncService,
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
-                siteSettings: nil,
                 analytics: ServiceLocator.analytics,
                 connectivityObserver: ServiceLocator.connectivityObserver
             )

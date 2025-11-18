@@ -4,6 +4,7 @@ import class WooFoundation.CurrencyFormatter
 import enum WooFoundation.CurrencyCode
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
+import enum Alamofire.AFError
 
 public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
@@ -50,7 +51,20 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .addItems(cart.items)
             .addCoupons(cart.coupons)
 
-        let createdOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
+        let createdOrder: Order
+        do {
+            createdOrder = try await ordersRemote.createPOSOrder(
+                siteID: siteID,
+                order: order,
+                fields: [.items, .status, .currency, .couponLines]
+            )
+        } catch {
+            // Check if this is a server validation error about missing products
+            if let missingItems = extractMissingProductsFromServerError(error, cart: cart) {
+                throw POSOrderServiceError.missingProductsInOrder(missingItems)
+            }
+            throw error
+        }
 
         // Validate that the created order contains all cart items
         let comparison = cart.compareWithOrder(createdOrder)
@@ -123,11 +137,129 @@ public extension POSOrderService {
 }
 
 private extension POSOrderService {
+    /// Extracts missing product information from server validation errors
+    /// Handles cases where the server rejects order creation due to invalid product/variation IDs
+    func extractMissingProductsFromServerError(
+        _ error: Error,
+        cart: POSCart
+    ) -> [CartOrderComparison.MissingCartItem]? {
+        // Check if this is an AFError wrapping a DotcomError or NetworkError
+        let underlyingError: Error? = {
+            if let afError = error as? AFError {
+                return afError.underlyingError
+            }
+            return error
+        }()
+
+        // Check for DotcomError with product/variation validation error codes
+        if case .unknown(let code, _) = underlyingError as? DotcomError {
+            if isProductValidationError(code: code) {
+                // DotcomError doesn't include data field, fall back to generic error
+                return extractMissingProductsFromCart()
+            }
+        }
+
+        // Check for NetworkError with product/variation validation error codes
+        if let networkError = underlyingError as? NetworkError,
+           let errorCode = networkError.errorCode,
+           isProductValidationError(code: errorCode) {
+            // Try to extract variation_id from NetworkError data if available
+            if let variationID = extractVariationID(from: networkError.errorData) {
+                return createMissingProductInfo(forVariationID: variationID, cart: cart)
+            }
+            // Fall back to generic error if no variation_id in data
+            return extractMissingProductsFromCart()
+        }
+
+        return nil
+    }
+
+    /// Extracts variation_id from error data dictionary
+    func extractVariationID(from data: [String: AnyDecodable]?) -> Int64? {
+        guard let data = data,
+              let variationIDValue = data["variation_id"]?.value else {
+            return nil
+        }
+
+        // Handle different number types
+        if let intValue = variationIDValue as? Int {
+            return Int64(intValue)
+        } else if let int64Value = variationIDValue as? Int64 {
+            return int64Value
+        }
+        return nil
+    }
+
+    /// Creates MissingCartItem for a specific variation ID
+    /// Searches the cart to find the variation's name and parent product ID
+    func createMissingProductInfo(
+        forVariationID variationID: Int64,
+        cart: POSCart
+    ) -> [CartOrderComparison.MissingCartItem] {
+        // Search the cart for the variation to get its name
+        let cartItem = cart.items.first { item in
+            if let variation = item.item as? POSVariation {
+                return variation.productVariationID == variationID
+            }
+            return false
+        }
+
+        let productName: String
+        let parentProductID: Int64
+
+        if let cartItem = cartItem,
+           let variation = cartItem.item as? POSVariation {
+            // Found the variation in the cart - use its parent product name and variation name
+            productName = "\(variation.parentProductName) - \(variation.name)"
+            parentProductID = variation.productID
+        } else {
+            // Couldn't find it in cart, use generic name
+            productName = Localization.unknownProductName
+            parentProductID = 0
+        }
+
+        return [
+            CartOrderComparison.MissingCartItem(
+                productID: parentProductID,
+                variationID: variationID,
+                name: productName
+            )
+        ]
+    }
+
+    /// Checks if an error code indicates a product validation error
+    /// Currently only handles the confirmed error code from WooCommerce server responses
+    func isProductValidationError(code: String) -> Bool {
+        // Only check for the one confirmed error code we've observed
+        // Additional codes can be added as they are discovered through testing
+        return code == "order_item_product_invalid_variation_id"
+    }
+
+    /// Extracts missing products by trying to identify items in cart that might have caused the validation error
+    /// Since server doesn't tell us which specific products failed, we return generic error info
+    func extractMissingProductsFromCart() -> [CartOrderComparison.MissingCartItem]? {
+        // We can't determine which specific products are invalid from the server error
+        // So we return a generic missing product message with 0 for both IDs (meaning unknown)
+        // The user will need to remove all products and retry
+        return [
+            CartOrderComparison.MissingCartItem(
+                productID: 0,
+                variationID: 0,
+                name: Localization.unknownProductName
+            )
+        ]
+    }
+
     enum Localization {
         static let cashPaymentMethodTitle = NSLocalizedString(
             "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
             value: "Pay in Person",
             comment: "Title for the payment method used when collecting cash payment in Point of Sale."
+        )
+        static let unknownProductName = NSLocalizedString(
+            "pointOfSale.orderController.unknownProduct",
+            value: "One or more products",
+            comment: "Fallback name for a product that couldn't be identified in error handling."
         )
     }
 }

@@ -99,6 +99,12 @@ public enum POSCatalogSyncError: Error, Equatable {
     case shouldNotSync
 }
 
+/// Type of catalog sync operation for analytics tracking
+public enum POSCatalogSyncType: String {
+    case full
+    case incremental
+}
+
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
@@ -112,10 +118,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private var ongoingIncrementalSyncs: Set<Int64> = []
 
     /// Tracks ongoing full sync tasks by site ID for cancellation
-    private var ongoingFullSyncTasks: [Int64: Task<Void, Error>] = [:]
+    private var ongoingFullSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
     /// Tracks ongoing incremental sync tasks by site ID for cancellation
-    private var ongoingIncrementalSyncTasks: [Int64: Task<Void, Error>] = [:]
+    private var ongoingIncrementalSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
     /// Observable model for full sync state updates
     public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
@@ -158,7 +164,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Track sync started analytics
         let connectionType = getConnectionType()
-        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: "full", connectionType: connectionType))
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue, connectionType: connectionType))
 
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
@@ -166,10 +172,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncStartTime = Date()
 
         // Create a task to perform the sync
-        let syncTask = Task<Void, Error> {
-            _ = try await fullSyncService.startFullSync(for: siteID,
-                                                        regenerateCatalog: regenerateCatalog,
-                                                        allowCellular: allowCellular)
+        let syncTask = Task<POSCatalog, Error> {
+            try await fullSyncService.startFullSync(for: siteID,
+                                                    regenerateCatalog: regenerateCatalog,
+                                                    allowCellular: allowCellular)
         }
 
         // Store the task for potential cancellation
@@ -180,18 +186,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         do {
-            try await syncTask.value
+            let syncedCatalog = try await syncTask.value
             emitSyncState(.syncCompleted(siteID: siteID))
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
-            // TODO: Capture actual metrics from sync service (products/variations synced and totals)
-            // For now, query totals from storage
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
-                syncType: "full",
-                productsSynced: totalProducts, // TODO: Get from sync service
-                variationsSynced: totalVariations, // TODO: Get from sync service
+                syncType: POSCatalogSyncType.full.rawValue,
+                productsSynced: syncedCatalog.products.count,
+                variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs
@@ -204,7 +208,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
-                syncType: "full",
+                syncType: POSCatalogSyncType.full.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -218,7 +222,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
-                syncType: "full",
+                syncType: POSCatalogSyncType.full.rawValue,
                 error: error,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -339,12 +343,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Track sync started analytics
         let connectionType = getConnectionType()
-        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: "incremental", connectionType: connectionType))
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue, connectionType: connectionType))
 
         let syncStartTime = Date()
 
         // Create a task to perform the sync
-        let syncTask = Task<Void, Error> {
+        let syncTask = Task<POSCatalog, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
                                                                   lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID))
@@ -358,18 +362,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         do {
-            try await syncTask.value
+            let syncedCatalog = try await syncTask.value
             DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
-            // TODO: Capture actual metrics from incremental sync service (products/variations synced)
-            // For now, query totals from storage
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
-                syncType: "incremental",
-                productsSynced: 0, // TODO: Get from incremental sync service
-                variationsSynced: 0, // TODO: Get from incremental sync service
+                syncType: POSCatalogSyncType.incremental.rawValue,
+                productsSynced: syncedCatalog.products.count,
+                variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs
@@ -377,7 +379,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         } catch AFError.explicitlyCancelled, is CancellationError {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
-                syncType: "incremental",
+                syncType: POSCatalogSyncType.incremental.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -386,7 +388,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete incremental sync for site \(siteID): \(error)")
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
-                syncType: "incremental",
+                syncType: POSCatalogSyncType.incremental.rawValue,
                 error: error,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -579,7 +581,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator: Failed to get storage counts: \(error)")
-            return (0, 0)
+            return (products: 0, variations: 0)
         }
     }
 
@@ -588,19 +590,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         do {
             let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
             if case .ineligible(let reason) = eligibility {
-                // Map ineligibility reasons to skip reasons
-                switch reason {
-                case .posTabNotEligible:
-                    return "pos_inactive"
-                case .featureFlagDisabled:
-                    return "feature_flag_disabled"
-                case .unsupportedWooCommerceVersion:
-                    return "unsupported_woocommerce_version"
-                case .catalogSizeTooLarge:
-                    return "catalog_too_large"
-                case .catalogSizeCheckFailed:
-                    return "catalog_size_check_failed"
-                }
+                return reason.skipReason
             }
         } catch {
             return "eligibility_check_failed"
@@ -624,19 +614,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         do {
             let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
             if case .ineligible(let reason) = eligibility {
-                // Map ineligibility reasons to skip reasons
-                switch reason {
-                case .posTabNotEligible:
-                    return "pos_inactive"
-                case .featureFlagDisabled:
-                    return "feature_flag_disabled"
-                case .unsupportedWooCommerceVersion:
-                    return "unsupported_woocommerce_version"
-                case .catalogSizeTooLarge:
-                    return "catalog_too_large"
-                case .catalogSizeCheckFailed:
-                    return "catalog_size_check_failed"
-                }
+                return reason.skipReason
             }
         } catch {
             return "eligibility_check_failed"

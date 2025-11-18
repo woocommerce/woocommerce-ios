@@ -57,8 +57,11 @@ struct MockAppSettingsActionHandler: MockActionHandler {
         case .upsertProductsSettings(_, _, _, _, _, _, _, let onCompletion):
             onCompletion(nil)
         case .resetEligibilityErrorInfo,
-                .setTelemetryAvailability
-            :
+                .setTelemetryAvailability,
+                .getAppPasswordsExperimentSettingState,
+                .getPOSSurveyCurrentMerchantNotificationScheduled,
+                .getPOSSurveyPotentialMerchantNotificationScheduled,
+                .getHasPOSBeenOpenedAtLeastOnce:
             break
         default: unimplementedAction(action: action)
         }

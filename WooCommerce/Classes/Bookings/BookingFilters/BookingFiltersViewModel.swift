@@ -39,7 +39,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let products = (productFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingProductFilter] ?? []
         let customers = (customerFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingCustomerFilter] ?? []
         let attendanceStatuses = (attendanceStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingAttendanceStatus] ?? []
-        let paymentStatuses = (paymentStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingStatus] ?? []
+        let paymentStatuses = (paymentStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingPaymentStatus] ?? []
         let dateRange = dateTimeFilterViewModel.selectedValue as? BookingDateRangeFilter
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
@@ -78,7 +78,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         productFilterViewModel.selectedValue = BookingProductFilter?.none
         customerFilterViewModel.selectedValue = CustomerFilter?.none
         attendanceStatusFilterViewModel.selectedValue = BookingAttendanceStatus?.none
-        paymentStatusFilterViewModel.selectedValue = BookingStatus?.none
+        paymentStatusFilterViewModel.selectedValue = BookingPaymentStatus?.none
         dateTimeFilterViewModel.selectedValue = BookingDateRangeFilter?.none
     }
 
@@ -89,7 +89,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let teamMembers: [BookingTeamMemberFilter]
         let products: [BookingProductFilter]
         let attendanceStatuses: [BookingAttendanceStatus]
-        let paymentStatuses: [BookingStatus]
+        let paymentStatuses: [BookingPaymentStatus]
         let customers: [BookingCustomerFilter]
         let dateRange: BookingDateRangeFilter?
 
@@ -108,7 +108,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         init(teamMembers: [BookingTeamMemberFilter],
              products: [BookingProductFilter],
              attendanceStatuses: [BookingAttendanceStatus],
-             paymentStatuses: [BookingStatus],
+             paymentStatuses: [BookingPaymentStatus],
              customers: [BookingCustomerFilter],
              dateRange: BookingDateRangeFilter?,
              numberOfActiveFilters: Int) {
@@ -143,8 +143,8 @@ final class BookingFiltersViewModel: FilterListViewModel {
                 resourceIDs: teamMembers.map { $0.resourceID },
                 startDateBefore: dateRange?.endDate?.ISO8601Format(),
                 startDateAfter: dateRange?.startDate?.ISO8601Format(),
-                bookingStatuses: paymentStatuses.map { $0.rawValue },
-                attendanceStatuses: attendanceStatuses.map { $0.rawValue }
+                attendanceStatuses: attendanceStatuses.map { $0.rawValue },
+                paymentStatuses: paymentStatuses.map { $0.rawValue }
             )
         }
     }
@@ -198,12 +198,12 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .bookingCustomers(siteID: siteID),
                                        selectedValue: MultipleFilterSelection(items: filters.customers))
         case .attendanceStatus:
-            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .cancelled, .noShow]
+            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .noShow, .cancelled]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: MultipleFilterSelection(items: filters.attendanceStatuses))
         case .paymentStatus:
-            let options: [BookingStatus?] = [.complete, .paid, .unpaid, .cancelled, .pendingConfirmation, .confirmed]
+            let options: [BookingPaymentStatus?] = [.paid, .unpaid, .refunded]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: MultipleFilterSelection(items: filters.paymentStatuses))
@@ -234,12 +234,12 @@ extension BookingAttendanceStatus: FilterType {
     }
 }
 
-extension BookingStatus: FilterType {
+extension BookingPaymentStatus: FilterType {
     var description: String { localizedTitle }
 
     var isActive: Bool {
         switch self {
-        case .complete, .paid, .unpaid, .cancelled, .pendingConfirmation, .confirmed:
+        case .paid, .unpaid, .refunded:
             return true
         case .unknown:
             return false

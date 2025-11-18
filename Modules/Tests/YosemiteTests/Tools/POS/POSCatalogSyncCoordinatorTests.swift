@@ -426,7 +426,7 @@ struct POSCatalogSyncCoordinatorTests {
         }
 
         // Then - subsequent incremental sync should be allowed
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
@@ -757,7 +757,7 @@ extension POSCatalogSyncCoordinatorTests {
         )
         let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo)
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -804,7 +804,7 @@ extension POSCatalogSyncCoordinatorTests {
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -851,7 +851,7 @@ extension POSCatalogSyncCoordinatorTests {
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -875,7 +875,7 @@ extension POSCatalogSyncCoordinatorTests {
             siteSettings: mockSiteSettings
         )
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-2 * 60 * 60))
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
         // When
         try await coordinator.performSmartSync(for: sampleSiteID)
@@ -982,7 +982,7 @@ extension POSCatalogSyncCoordinatorTests {
         mockIncrementalSyncService.resumeBlockedSync()
         _ = try? await syncTask.value
 
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
         try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
     }
@@ -1080,7 +1080,7 @@ extension POSCatalogSyncCoordinatorTests {
         _ = try? await syncTaskA.value
         _ = try? await syncTaskB.value
 
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
         try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
     }
 
@@ -1159,6 +1159,35 @@ extension POSCatalogSyncCoordinatorTests {
         // Then - Verify sync completed event
         let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
         #expect(syncCompleted != nil)
+    }
+
+    @Test func performFullSyncIfApplicable_tracks_synced_product_and_variation_counts() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+
+        // Set up mock to return a catalog with specific counts
+        let syncedProducts = [POSProduct.fake(), POSProduct.fake(), POSProduct.fake()]
+        let syncedVariations = [POSProductVariation.fake()]
+        mockSyncService.startFullSyncResult = .success(
+            POSCatalog(products: syncedProducts, variations: syncedVariations, syncDate: .now)
+        )
+
+        // When
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted != nil)
+        #expect(syncCompleted?.properties?["products_synced"] as? String == "3")
+        #expect(syncCompleted?.properties?["variations_synced"] as? String == "1")
     }
 
     @Test func performFullSyncIfApplicable_tracks_sync_failed_with_error_type() async throws {
@@ -1250,6 +1279,36 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(syncStarted != nil)
         let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
         #expect(syncCompleted != nil)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_tracks_synced_product_and_variation_counts() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-30 * 60))
+
+        // Set up mock to return a catalog with specific counts
+        let syncedProducts = [POSProduct.fake(), POSProduct.fake()]
+        let syncedVariations = [POSProductVariation.fake(), POSProductVariation.fake(), POSProductVariation.fake()]
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(
+            POSCatalog(products: syncedProducts, variations: syncedVariations, syncDate: .now)
+        )
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted != nil)
+        #expect(syncCompleted?.properties?["products_synced"] as? String == "2")
+        #expect(syncCompleted?.properties?["variations_synced"] as? String == "3")
     }
 
     @Test func performIncrementalSyncIfApplicable_tracks_sync_skipped_when_no_full_sync() async throws {

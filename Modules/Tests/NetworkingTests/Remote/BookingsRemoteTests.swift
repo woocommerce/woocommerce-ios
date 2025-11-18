@@ -41,8 +41,8 @@ struct BookingsRemoteTests {
     @Test func test_loadAllBookings_sends_correct_parameters() async throws {
         // Given
         let remote = BookingsRemote(network: network)
-        let startDateBefore = "2024-12-31T23:59:59"
-        let startDateAfter = "2024-01-01T00:00:00"
+        let startDateBefore = "2024-12-31T23:59:59Z"
+        let startDateAfter = "2024-01-01T00:00:00Z"
         let searchQuery = "test search"
         let filters = BookingFilters(
             startDateBefore: startDateBefore,
@@ -64,8 +64,11 @@ struct BookingsRemoteTests {
 
         #expect((parameters["page"] as? String) == "2")
         #expect((parameters["per_page"] as? String) == "50")
-        #expect((parameters["start_date_before"] as? String) == startDateBefore)
-        #expect((parameters["start_date_after"] as? String) == startDateAfter)
+        // Date filters are adjusted to be inclusive:
+        // startDateBefore is adjusted +1 second: 2024-12-31T23:59:59 -> 2025-01-01T00:00:00
+        #expect((parameters["start_date_before"] as? String) == "2025-01-01T00:00:00Z")
+        // startDateAfter is adjusted -1 second: 2024-01-01T00:00:00 -> 2023-12-31T23:59:59
+        #expect((parameters["start_date_after"] as? String) == "2023-12-31T23:59:59Z")
         #expect((parameters["search"] as? String) == searchQuery)
         #expect((parameters["order"] as? String) == "asc")
     }

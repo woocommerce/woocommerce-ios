@@ -1,6 +1,10 @@
 import Foundation
 import Testing
 @testable import Yosemite
+import enum Networking.DotcomError
+import enum Networking.NetworkError
+import enum Alamofire.AFError
+import struct Networking.AnyDecodable
 
 struct POSOrderServiceTests {
     let sut: POSOrderService
@@ -336,6 +340,169 @@ struct POSOrderServiceTests {
                 #expect(missingItems.count == 1)
                 #expect(missingItems.first?.variationID == 501)
                 #expect(missingItems.first?.productID == 100)
+                return true
+            }
+            return false
+        })
+    }
+
+    // MARK: - Server-side Validation Error Tests
+
+    @Test func syncOrder_throws_missingProducts_error_for_DotcomError_with_invalid_variation_code() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let dotcomError = DotcomError.unknown(code: "order_item_product_invalid_variation_id", message: "Invalid variation")
+        mockOrdersRemote.createPOSOrderResult = .failure(dotcomError)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.productID == 0) // Generic error
+                #expect(missingItems.first?.variationID == 0)
+                #expect(missingItems.first?.name == "One or more products")
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_throws_missingProducts_error_for_NetworkError_with_invalid_variation_code_and_variation_id() async throws {
+        // Given
+        let cart = POSCart(items: [
+            POSCartItem(
+                item: POSVariation(
+                    id: UUID(),
+                    name: "Large",
+                    formattedPrice: "$20",
+                    price: "20",
+                    productID: 100,
+                    variationID: 500,
+                    parentProductName: "T-Shirt"
+                ),
+                quantity: 1
+            )
+        ])
+
+        let errorJSON = """
+        {
+            "code": "order_item_product_invalid_variation_id",
+            "message": "Invalid variation",
+            "data": {
+                "variation_id": 500
+            }
+        }
+        """
+        let errorData = errorJSON.data(using: .utf8)!
+        let networkError = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
+        mockOrdersRemote.createPOSOrderResult = .failure(networkError)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.productID == 100)
+                #expect(missingItems.first?.variationID == 500)
+                #expect(missingItems.first?.name == "T-Shirt - Large")
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_throws_missingProducts_error_for_NetworkError_without_variation_id() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let errorJSON = """
+        {
+            "code": "order_item_product_invalid_variation_id",
+            "message": "Invalid variation"
+        }
+        """
+        let errorData = errorJSON.data(using: .utf8)!
+        let networkError = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
+        mockOrdersRemote.createPOSOrderResult = .failure(networkError)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.productID == 0) // Generic error
+                #expect(missingItems.first?.variationID == 0)
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_throws_missingProducts_error_for_AFError_wrapping_DotcomError() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let dotcomError = DotcomError.unknown(code: "order_item_product_invalid_variation_id", message: "Invalid")
+        let afError = AFError.sessionTaskFailed(error: dotcomError)
+        mockOrdersRemote.createPOSOrderResult = .failure(afError)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_throws_original_error_for_unrecognized_DotcomError_code() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let dotcomError = DotcomError.unknown(code: "some_other_error_code", message: "Different error")
+        mockOrdersRemote.createPOSOrderResult = .failure(dotcomError)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            // Should throw the original DotcomError, not missingProductsInOrder
+            if case .unknown = error as? DotcomError {
+                return true
+            }
+            return false
+        })
+    }
+
+    @Test func syncOrder_throws_missingProducts_with_generic_name_when_variation_not_in_cart() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let errorJSON = """
+        {
+            "code": "order_item_product_invalid_variation_id",
+            "message": "Invalid variation",
+            "data": {
+                "variation_id": 999
+            }
+        }
+        """
+        let errorData = errorJSON.data(using: .utf8)!
+        let networkError = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
+        mockOrdersRemote.createPOSOrderResult = .failure(networkError)
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { error in
+            if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+                #expect(missingItems.count == 1)
+                #expect(missingItems.first?.productID == 0)
+                #expect(missingItems.first?.variationID == 999)
+                #expect(missingItems.first?.name == "One or more products")
                 return true
             }
             return false

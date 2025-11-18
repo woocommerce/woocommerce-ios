@@ -12,15 +12,16 @@ extension NSPredicate {
 
         let startDateBeforePredicate = filters.startDateBefore.flatMap { dateString -> NSPredicate? in
             guard let date = ISO8601DateFormatter().date(from: dateString) else { return nil }
-            return NSPredicate(format: "startDate < %@", date as NSDate)
+            return NSPredicate(format: "startDate <= %@", date as NSDate)
         }
 
         let startDateAfterPredicate = filters.startDateAfter.flatMap { dateString -> NSPredicate? in
             guard let date = ISO8601DateFormatter().date(from: dateString) else { return nil }
-            return NSPredicate(format: "startDate > %@", date as NSDate)
+            return NSPredicate(format: "startDate >= %@", date as NSDate)
         }
 
-        let bookingStatusesPredicate = filters.bookingStatuses.isNotEmpty ? NSPredicate(format: "statusKey IN %@", filters.bookingStatuses) : nil
+        // TODO: update `statusKey` to paymentStatusKey once available
+        let paymentStatusesPredicate = filters.paymentStatuses.isNotEmpty ? NSPredicate(format: "statusKey IN %@", filters.paymentStatuses) : nil
 
         let attendanceStatusesPredicate = filters.attendanceStatuses.isNotEmpty ?
         NSPredicate(format: "attendanceStatusKey IN %@", filters.attendanceStatuses) : nil
@@ -32,7 +33,7 @@ extension NSPredicate {
             resourceIDsPredicate,
             startDateBeforePredicate,
             startDateAfterPredicate,
-            bookingStatusesPredicate,
+            paymentStatusesPredicate,
             attendanceStatusesPredicate
         ].compactMap({ $0 })
 

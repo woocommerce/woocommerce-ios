@@ -3,6 +3,13 @@ import Testing
 @testable import Networking
 
 struct BackgroundCatalogDownloadCoordinatorTests {
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "BackgroundCatalogDownloadCoordinatorTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func handleBackgroundSessionEvent_loads_saved_state() async {
         // Given
@@ -34,14 +41,10 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Then
         #expect(parsedSiteID == siteID)
         #expect(parsedFileURL?.path == "/tmp/test.json")
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 
     @Test func handleBackgroundSessionEvent_calls_completion_handler_when_no_state() async {
         // Given
-        BackgroundDownloadState.clear() // Ensure no saved state
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.999"
         let mockDownloader = MockBackgroundDownloader()
         let coordinator = BackgroundCatalogDownloadCoordinator(backgroundDownloader: mockDownloader)
@@ -113,8 +116,5 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Then
         #expect(mockDownloader.reconnectSessionCallCount == 1)
         #expect(mockDownloader.lastReconnectSessionIdentifier == sessionIdentifier)
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 }

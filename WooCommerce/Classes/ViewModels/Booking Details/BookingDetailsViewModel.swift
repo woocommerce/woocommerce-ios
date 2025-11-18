@@ -300,6 +300,38 @@ extension BookingDetailsViewModel {
     }
 }
 
+/// Mark booking as paid
+extension BookingDetailsViewModel {
+    var shouldShowMarkAsPaid: Bool {
+        booking.isEligibleForMarkAsPaid
+    }
+
+    @MainActor
+    func markBookingAsPaid() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            })
+        }
+    }
+
+    func displayMarkingAsPaidErrorNotice(onRetry: @escaping () -> Void) {
+        let text = String.localizedStringWithFormat(
+            Localization.bookingMarkAsPaidFailedMessage,
+            booking.bookingID
+        )
+        self.notice = Notice(
+            message: text,
+            feedbackType: .error,
+            actionTitle: Localization.retryActionTitle
+        ) { onRetry() }
+    }
+}
+
 private extension BookingDetailsViewModel {
     @MainActor
     func fetchResource() async -> BookingResource? {
@@ -436,8 +468,8 @@ private extension BookingDetailsViewModel {
         )
 
         static let bookingAttendanceStatusUpdateFailedMessage = NSLocalizedString(
-            "BookingDetailsView.attendanceStatus.updateFailed.message",
-            value: "Unable to change attendance status of Booking #%1$d",
+            "BookingDetailsView.attendanceStatus.failureMessage.",
+            value: "Unable to change attendance status of Booking #%1$d.",
             comment: "Content of error presented when updating the attendance status of a Booking fails. "
             + "It reads: Unable to change status of Booking #{Booking number}. "
             + "Parameters: %1$d - Booking number"
@@ -445,9 +477,17 @@ private extension BookingDetailsViewModel {
 
         static let bookingCancellationFailedMessage = NSLocalizedString(
             "BookingDetailsView.cancellation.failureMessage",
-            value: "Unable to cancel Booking #%1$d",
+            value: "Unable to cancel Booking #%1$d.",
             comment: "Content of error presented when cancelling a Booking fails. "
-            + "It reads: Unable cancel Booking #{Booking number}. "
+            + "It reads: Unable to cancel Booking #{Booking number}. "
+            + "Parameters: %1$d - Booking number"
+        )
+
+        static let bookingMarkAsPaidFailedMessage = NSLocalizedString(
+            "BookingDetailsView.markAsPaid.failureMessage",
+            value: "Unable to mark Booking #%1$d as paid.",
+            comment: "Content of error presented when cancelling a Booking fails. "
+            + "It reads: Unable to mark Booking #{Booking number} as paid. "
             + "Parameters: %1$d - Booking number"
         )
 

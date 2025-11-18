@@ -8,6 +8,13 @@ struct POSCatalogSyncRemoteTests {
     private let mockBackgroundDownloader = MockBackgroundDownloader()
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func loadProducts_sets_correct_parameters() async throws {
         // Given
@@ -1028,7 +1035,6 @@ extension POSCatalogSyncRemoteTests {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-        BackgroundDownloadState.clear() // Start clean
 
         let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
@@ -1058,14 +1064,12 @@ extension POSCatalogSyncRemoteTests {
 
         // Cleanup
         try? FileManager.default.removeItem(at: mockFileURL)
-        BackgroundDownloadState.clear()
     }
 
     @Test func downloadCatalog_clears_state_on_success() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-        BackgroundDownloadState.clear() // Start clean
 
         // When
         let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")

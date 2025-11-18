@@ -2,7 +2,7 @@ import Foundation
 @testable import Yosemite
 
 final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServiceProtocol {
-    var startIncrementalSyncResult: Result<Void, Error> = .success(())
+    var startIncrementalSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
 
     private(set) var startIncrementalSyncCallCount = 0
     private(set) var lastSyncSiteID: Int64?
@@ -13,7 +13,7 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
     private var shouldBlockSync = false
     private var syncBlockedContinuations: [CheckedContinuation<Void, Never>] = []
 
-    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws {
+    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
         startIncrementalSyncCallCount += 1
         lastSyncSiteID = siteID
         self.lastFullSyncDate = lastFullSyncDate
@@ -30,8 +30,8 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
         }
 
         switch startIncrementalSyncResult {
-        case .success:
-            return
+        case .success(let catalog):
+            return catalog
         case .failure(let error):
             throw error
         }

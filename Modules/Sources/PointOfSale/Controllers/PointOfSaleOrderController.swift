@@ -22,10 +22,6 @@ import class WooFoundation.CurrencySettings
 import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
-import enum Alamofire.AFError
-import enum Networking.DotcomError
-import enum Networking.NetworkError
-import struct Networking.AnyDecodable
 import class Yosemite.OrderTotalsCalculator
 import struct WooFoundation.WooAnalyticsEvent
 import protocol WooFoundationCore.WooAnalyticsEventPropertyType
@@ -99,16 +95,15 @@ protocol PointOfSaleOrderControllerProtocol {
             return .success(.newOrder)
         } catch {
             self.order = nil
-            trackOrderCreationFailed(error: error, cart: posCart)
-            setOrderStateToError(error, cart: posCart, retryHandler: retryHandler)
+            trackOrderCreationFailed(error: error)
+            setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
         }
     }
 
     private func setOrderStateToError(_ error: Error,
-                                      cart: POSCart,
                                       retryHandler: @escaping () async -> Void) {
-        orderState = .error(orderStateError(from: error, cart: cart), {
+        orderState = .error(orderStateError(from: error), {
             Task {
                 await retryHandler()
             }
@@ -193,7 +188,7 @@ private extension PointOfSaleOrderController {
 // MARK: - Error Handling
 
 private extension PointOfSaleOrderController {
-    func orderStateError(from error: Error, cart: POSCart) -> PointOfSaleOrderState.OrderStateError {
+    func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
         // Check for missing products error first
         if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
             let missingProductInfo = missingItems.map {
@@ -205,137 +200,13 @@ private extension PointOfSaleOrderController {
             }
             return .missingProducts(missingProductInfo)
         }
-        // Check for server-side validation errors about invalid products/variations
-        else if let missingProductInfo = extractMissingProductsFromServerError(error, cart: cart) {
-            return .missingProducts(missingProductInfo)
-        }
         else if let couponsError = CouponsError(underlyingError: error) {
             return .invalidCoupon(couponsError.message)
-        } else if let afErrorDescription = (error as? AFError)?.underlyingError?.localizedDescription {
-            return .other(afErrorDescription)
         } else {
             return .other(error.localizedDescription)
         }
     }
-
-    /// Extracts missing product information from server validation errors
-    /// Handles cases where the server rejects order creation due to invalid product/variation IDs
-    func extractMissingProductsFromServerError(_ error: Error, cart: POSCart) -> [PointOfSaleOrderState.OrderStateError.MissingProductInfo]? {
-        // Check if this is an AFError wrapping a DotcomError or NetworkError
-        let underlyingError: Error? = {
-            if let afError = error as? AFError {
-                return afError.underlyingError
-            }
-            return error
-        }()
-
-        // Check for DotcomError with product/variation validation error codes
-        if case .unknown(let code, _) = underlyingError as? DotcomError {
-            if isProductValidationError(code: code) {
-                // DotcomError doesn't include data field, fall back to generic error
-                return extractMissingProductsFromCart()
-            }
-        }
-
-        // Check for NetworkError with product/variation validation error codes
-        if let networkError = underlyingError as? NetworkError,
-           let errorCode = networkError.errorCode,
-           isProductValidationError(code: errorCode) {
-            // Try to extract variation_id from NetworkError data if available
-            if let variationID = extractVariationID(from: networkError.errorData) {
-                return createMissingProductInfo(forVariationID: variationID, cart: cart)
-            }
-            // Fall back to generic error if no variation_id in data
-            return extractMissingProductsFromCart()
-        }
-
-        return nil
-    }
-
-    /// Extracts variation_id from error data dictionary
-    private func extractVariationID(from data: [String: AnyDecodable]?) -> Int64? {
-        guard let data = data,
-              let variationIDValue = data["variation_id"]?.value else {
-            return nil
-        }
-
-        // Handle different number types
-        if let intValue = variationIDValue as? Int {
-            return Int64(intValue)
-        } else if let int64Value = variationIDValue as? Int64 {
-            return int64Value
-        }
-        return nil
-    }
-
-    /// Creates MissingProductInfo for a specific variation ID
-    /// Searches the cart to find the variation's name and parent product ID
-    private func createMissingProductInfo(forVariationID variationID: Int64, cart: POSCart) -> [PointOfSaleOrderState.OrderStateError.MissingProductInfo] {
-        // Search the cart for the variation to get its name
-        let cartItem = cart.items.first { item in
-            if let variation = item.item as? POSVariation {
-                return variation.productVariationID == variationID
-            }
-            return false
-        }
-
-        let productName: String
-        let parentProductID: Int64
-
-        if let cartItem = cartItem,
-           let variation = cartItem.item as? POSVariation {
-            // Found the variation in the cart - use its parent product name and variation name
-            productName = "\(variation.parentProductName) - \(variation.name)"
-            parentProductID = variation.productID
-        } else {
-            // Couldn't find it in cart, use generic name
-            productName = Localization.unknownProductName
-            parentProductID = 0
-        }
-
-        return [
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(
-                productID: parentProductID,
-                variationID: variationID,
-                name: productName
-            )
-        ]
-    }
-
-    /// Checks if an error code indicates a product validation error
-    /// Currently only handles the confirmed error code from WooCommerce server responses
-    private func isProductValidationError(code: String) -> Bool {
-        // Only check for the one confirmed error code we've observed
-        // Additional codes can be added as they are discovered through testing
-        return code == "order_item_product_invalid_variation_id"
-    }
-
-    /// Extracts missing products by trying to identify items in cart that might have caused the validation error
-    /// Since server doesn't tell us which specific products failed, we return generic error info
-    private func extractMissingProductsFromCart() -> [PointOfSaleOrderState.OrderStateError.MissingProductInfo]? {
-        // We can't determine which specific products are invalid from the server error
-        // So we return a generic missing product message with 0 for both IDs (meaning unknown)
-        // The user will need to remove all products and retry
-        return [
-            PointOfSaleOrderState.OrderStateError.MissingProductInfo(
-                productID: 0,
-                variationID: 0,
-                name: Localization.unknownProductName
-            )
-        ]
-    }
 }
-
-private extension PointOfSaleOrderController {
-    enum Localization {
-        static let unknownProductName = NSLocalizedString(
-            "pointOfSale.orderController.unknownProduct",
-            value: "One or more products",
-            comment: "Generic product name used when we can't identify which specific product is unavailable"
-        )
-    }
-}
-
 
 // This is named to note that it is for use within the AggregateModel and OrderController.
 // Conversely, PointOfSaleOrderState is available to the Views, as it doesn't include the Order.
@@ -394,14 +265,12 @@ extension PointOfSaleOrderController {
 
 
 private extension PointOfSaleOrderController {
-    func trackOrderCreationFailed(error: Error, cart: POSCart) {
+    func trackOrderCreationFailed(error: Error) {
         var errorType: WooAnalyticsEvent.Orders.OrderCreationErrorType?
 
         if let _ = CouponsError(underlyingError: error) {
             errorType = .invalidCoupon
         } else if case .missingProductsInOrder = error as? POSOrderService.POSOrderServiceError {
-            errorType = .missingProducts
-        } else if extractMissingProductsFromServerError(error, cart: cart) != nil {
             errorType = .missingProducts
         }
 

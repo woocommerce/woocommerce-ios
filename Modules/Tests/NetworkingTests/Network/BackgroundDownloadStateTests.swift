@@ -3,6 +3,13 @@ import Testing
 @testable import Networking
 
 struct BackgroundDownloadStateTests {
+    private let testDefaults: UserDefaults
+
+    init() {
+        // Create isolated UserDefaults suite for this test
+        testDefaults = UserDefaults(suiteName: "BackgroundDownloadStateTests.\(UUID().uuidString)")!
+        BackgroundDownloadState.configure(userDefaults: testDefaults)
+    }
 
     @Test func save_persists_state_to_userdefaults() {
         // Given
@@ -18,15 +25,9 @@ struct BackgroundDownloadStateTests {
         let loaded = BackgroundDownloadState.load(for: "test.session.123")
         #expect(loaded?.sessionIdentifier == "test.session.123")
         #expect(loaded?.siteID == 456)
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 
     @Test func load_returns_nil_for_nonexistent_session() {
-        // Given
-        BackgroundDownloadState.clear()
-
         // When
         let loaded = BackgroundDownloadState.load(for: "nonexistent.session")
 
@@ -47,9 +48,6 @@ struct BackgroundDownloadStateTests {
 
         // Then
         #expect(loaded == nil)
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 
     @Test func clear_removes_saved_state() {
@@ -91,8 +89,5 @@ struct BackgroundDownloadStateTests {
         #expect(loadedFirst == nil) // First session is overwritten
         #expect(loadedSecond?.sessionIdentifier == "session.2")
         #expect(loadedSecond?.siteID == 200)
-
-        // Cleanup
-        BackgroundDownloadState.clear()
     }
 }

@@ -96,37 +96,44 @@ final class POSSettingsLocalCatalogViewModel {
             var previousState = currentSyncState
 
             while !Task.isCancelled {
-                // Use withObservationTracking to detect changes
-                await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-                    withObservationTracking {
-                        // Access the observed property to register observation
-                        _ = currentSyncState
-                    } onChange: {
-                        // When state changes, resume the continuation
-                        continuation.resume()
-                    }
-                }
+                // Wait for the next state change
+                await observeNextStateChange()
 
-                // Check if state actually changed
+                // Read the new state after change is detected
                 let newState = currentSyncState
-                if newState != previousState {
-                    switch newState {
-                    case .syncCompleted, .syncFailed, .initialSyncFailed:
-                        // Sync finished - clear the refreshing state if it was set
-                        if isRefreshingCatalog {
-                            isRefreshingCatalog = false
-                            // Reload catalog data to show updated info
-                            await loadCatalogData()
-                        }
-                    case .syncStarted, .initialSyncStarted:
-                        // Sync is running - keep spinner active
-                        break
-                    case .syncNeverDone:
-                        // No sync has been done
-                        break
+                guard newState != previousState else { continue }
+
+                // Handle terminal states when user initiated refresh
+                switch newState {
+                case .syncCompleted, .syncFailed, .initialSyncFailed:
+                    // Sync finished - clear the refreshing state if it was set
+                    if isRefreshingCatalog {
+                        isRefreshingCatalog = false
+                        // Reload catalog data to show updated info
+                        await loadCatalogData()
                     }
-                    previousState = newState
+                case .syncStarted, .initialSyncStarted:
+                    // Sync is running - keep spinner active
+                    break
+                case .syncNeverDone:
+                    // No sync has been done
+                    break
                 }
+                previousState = newState
+            }
+        }
+    }
+
+    /// Waits for the next change to the observed sync state.
+    /// Re-registers observation each time it's called.
+    private func observeNextStateChange() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            withObservationTracking {
+                // Access the observed property to register observation
+                _ = currentSyncState
+            } onChange: {
+                // When state changes, resume the continuation
+                continuation.resume()
             }
         }
     }

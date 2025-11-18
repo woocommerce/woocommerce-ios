@@ -135,6 +135,9 @@ extension [POSCartItem] {
         // Group cart items by product/variation ID to consolidate duplicates
         let cartItemsByProductKey = Dictionary(grouping: self, by: { item -> String in
             guard let (productID, variationID) = extractProductIDs(from: item.item) else {
+                // Use a unique UUID for each invalid item to prevent grouping them together.
+                // This ensures each invalid item is reported separately in error handling
+                // rather than being masked as a single consolidated entry.
                 return "invalid_\(UUID())"
             }
             return variationID != 0 ? "variation_\(variationID)" : "product_\(productID)"

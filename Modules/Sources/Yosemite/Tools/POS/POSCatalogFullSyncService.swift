@@ -105,6 +105,27 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             throw error
         }
     }
+
+    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+        DDLogInfo("🟣 Parsing background catalog download for site \(siteID)")
+
+        let syncStartDate = Date.now
+        let catalogResponse = try await syncRemote.parseDownloadedCatalog(from: fileURL, siteID: siteID)
+
+        let catalog = POSCatalog(
+            products: catalogResponse.products,
+            variations: catalogResponse.variations,
+            syncDate: syncStartDate
+        )
+
+        DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+
+        // Persist to database
+        try await persistenceService.replaceAllCatalogData(catalog, siteID: siteID)
+        DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+
+        return catalog
+    }
 }
 
 // MARK: - Remote Loading
@@ -206,26 +227,5 @@ private extension POSCatalogFullSyncService {
         }
 
         throw POSCatalogSyncError.timeout
-    }
-
-    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
-        DDLogInfo("🟣 Parsing background catalog download for site \(siteID)")
-
-        let syncStartDate = Date.now
-        let catalogResponse = try await syncRemote.parseDownloadedCatalog(from: fileURL, siteID: siteID)
-
-        let catalog = POSCatalog(
-            products: catalogResponse.products,
-            variations: catalogResponse.variations,
-            syncDate: syncStartDate
-        )
-
-        DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
-
-        // Persist to database
-        try await persistenceService.replaceAllCatalogData(catalog, siteID: siteID)
-        DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
-
-        return catalog
     }
 }

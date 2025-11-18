@@ -41,8 +41,8 @@ struct BookingsRemoteTests {
     @Test func test_loadAllBookings_sends_correct_parameters() async throws {
         // Given
         let remote = BookingsRemote(network: network)
-        let startDateBefore = "2024-12-31T23:59:59"
-        let startDateAfter = "2024-01-01T00:00:00"
+        let startDateBefore = "2024-12-31T23:59:59Z"
+        let startDateAfter = "2024-01-01T00:00:00Z"
         let searchQuery = "test search"
         let filters = BookingFilters(
             startDateBefore: startDateBefore,

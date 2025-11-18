@@ -174,6 +174,9 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleOrdersListSearchResultsFetched,
             WooAnalyticsStat.pointOfSaleOrderDetailsLoaded,
             WooAnalyticsStat.pointOfSaleOrderDetailsEmailReceiptTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
+            WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
 
             // Order
             WooAnalyticsStat.ordersListLoaded,

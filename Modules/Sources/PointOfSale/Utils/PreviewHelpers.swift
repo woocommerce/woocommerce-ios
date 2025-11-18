@@ -654,6 +654,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
         // no-op
     }
+
+    func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
 }
 
 #endif

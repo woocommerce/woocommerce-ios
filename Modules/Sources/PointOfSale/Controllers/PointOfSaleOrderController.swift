@@ -3,6 +3,7 @@ import Observation
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.VersionHelpers
 import protocol Yosemite.POSOrderServiceProtocol
+import class Yosemite.POSOrderService
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
@@ -11,6 +12,7 @@ import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSVariation
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
@@ -20,7 +22,6 @@ import class WooFoundation.CurrencySettings
 import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
-import enum Alamofire.AFError
 import class Yosemite.OrderTotalsCalculator
 import struct WooFoundation.WooAnalyticsEvent
 import protocol WooFoundationCore.WooAnalyticsEventPropertyType
@@ -188,16 +189,24 @@ private extension PointOfSaleOrderController {
 
 private extension PointOfSaleOrderController {
     func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
-        if let couponsError = CouponsError(underlyingError: error) {
+        // Check for missing products error first
+        if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
+            let missingProductInfo = missingItems.map {
+                PointOfSaleOrderState.OrderStateError.MissingProductInfo(
+                    productID: $0.productID,
+                    variationID: $0.variationID,
+                    name: $0.name
+                )
+            }
+            return .missingProducts(missingProductInfo)
+        }
+        else if let couponsError = CouponsError(underlyingError: error) {
             return .invalidCoupon(couponsError.message)
-        } else if let afErrorDescription = (error as? AFError)?.underlyingError?.localizedDescription {
-            return .other(afErrorDescription)
         } else {
             return .other(error.localizedDescription)
         }
     }
 }
-
 
 // This is named to note that it is for use within the AggregateModel and OrderController.
 // Conversely, PointOfSaleOrderState is available to the Views, as it doesn't include the Order.
@@ -261,6 +270,8 @@ private extension PointOfSaleOrderController {
 
         if let _ = CouponsError(underlyingError: error) {
             errorType = .invalidCoupon
+        } else if case .missingProductsInOrder = error as? POSOrderService.POSOrderServiceError {
+            errorType = .missingProducts
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
@@ -290,9 +301,9 @@ private extension WooAnalyticsEvent {
         // MARK: - Order Creation Events
 
         /// Matches errors on Android for consistency
-        /// Only coupon tracking is relevant for now
         enum OrderCreationErrorType: String {
             case invalidCoupon = "INVALID_COUPON"
+            case missingProducts = "MISSING_PRODUCTS"
         }
 
         static func orderCreationFailed(

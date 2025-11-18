@@ -445,6 +445,65 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertTrue(mockRequestAuthenticator.deleteApplicationPasswordCalled)
         XCTAssertFalse(shouldRetry.retryRequired)
     }
+
+    func test_concurrentAuthenticatorUpdatesWhileAdaptingDoesNotCrash() throws {
+        // Given
+        let concurrencyIterations = 2_000
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let urlRequest = URLRequest(url: url)
+        let notificationCenter = MockNotificationCenter()
+
+        let initialCredentials = Networking.Credentials.wpcom(
+            username: "initial-user",
+            authToken: UUID().uuidString,
+            siteAddress: "https://example.com"
+        )
+        let sut = RequestProcessor(
+            requestAuthenticator: DefaultRequestAuthenticator(credentials: initialCredentials),
+            notificationCenter: notificationCenter
+        )
+
+        let adaptExpectation = expectation(description: "adapt completions")
+        adaptExpectation.expectedFulfillmentCount = concurrencyIterations / 2
+
+        let queue = DispatchQueue(
+            label: "com.woocommerce.tests.requestProcessor.concurrent",
+            attributes: .concurrent
+        )
+
+        // When
+        for index in 0..<concurrencyIterations {
+            queue.async {
+                if index.isMultiple(of: 2) {
+                    let credentials = Networking.Credentials.wpcom(
+                        username: "user-\(index)",
+                        authToken: UUID().uuidString,
+                        siteAddress: "https://example.com"
+                    )
+                    let authenticator = DefaultRequestAuthenticator(credentials: credentials)
+                    sut.updateAuthenticator(authenticator)
+                } else {
+                    sut.adapt(urlRequest, for: session) { result in
+                        switch result {
+                        case .success(let request):
+                            let header = request.value(forHTTPHeaderField: "Authorization")
+                            XCTAssertNotNil(header)
+                            if let header {
+                                XCTAssertTrue(header.hasPrefix("Bearer "))
+                            }
+                        case .failure(let error):
+                            XCTFail("Unexpected error while adapting request: \(error)")
+                        }
+                        adaptExpectation.fulfill()
+                    }
+                }
+            }
+        }
+
+        // Then
+        wait(for: [adaptExpectation], timeout: 15)
+        queue.sync(flags: .barrier) { }
+    }
 }
 
 // MARK: Helpers

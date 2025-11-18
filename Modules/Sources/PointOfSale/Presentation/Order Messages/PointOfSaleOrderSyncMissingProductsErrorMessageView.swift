@@ -91,9 +91,12 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
 
     private var subtitle: String {
         if missingProducts.count == 1,
-           let productName = missingProducts.first?.name,
-           productName != Localization.unknownProductName {
-            return String(format: Localization.subtitleSingular, productName)
+           let productName = missingProducts.first?.name {
+            if productName == Localization.unknownProductName {
+                return Localization.subtitleGenericProduct
+            } else {
+                return String(format: Localization.subtitleSingular, productName)
+            }
         } else {
             return Localization.subtitlePlural
         }
@@ -144,13 +147,19 @@ private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
 
         static let subtitleSingular = NSLocalizedString(
             "pointOfSale.orderSync.missingProductsError.subtitleSingular",
-            value: "%@ is no longer available and couldn't be added to the order.",
+            value: "%@ is no longer available.",
             comment: "Subtitle of the error when a single product is no longer available. Placeholder is the product name."
+        )
+
+        static let subtitleGenericProduct = NSLocalizedString(
+            "pointOfSale.orderSync.missingProductsError.subtitleGenericProduct",
+            value: "A product in the cart is no longer available.",
+            comment: "Subtitle of the error when we can't identify which specific product is no longer available."
         )
 
         static let subtitlePlural = NSLocalizedString(
             "pointOfSale.orderSync.missingProductsError.subtitlePlural",
-            value: "Some products in your cart are no longer available and couldn't be added to the order.",
+            value: "Some products in your cart are no longer available.",
             comment: "Subtitle of the error when multiple products are no longer available"
         )
 

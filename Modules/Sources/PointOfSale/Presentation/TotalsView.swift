@@ -57,18 +57,8 @@ struct TotalsView: View {
 
                     CashPaymentButton(
                         orderState: posModel.orderState,
-                        paymentState: posModel.paymentState, //idle
+                        paymentState: posModel.paymentState,
                         cardReaderConnectionStatus: posModel.cardReaderConnectionStatus,
-                        /*
-                         (lldb) po posModel.cardReaderConnectionStatus
-                         ▿ CardPresentPaymentReaderConnectionStatus
-                           ▿ connected : CardPresentPaymentCardReader
-                             - name : "Simulated POS E"
-                             ▿ batteryLevel : Optional<Float>
-                               - some : 0.5
-                             ▿ softwareVersion : Optional<String>
-                               - some : "1.00.03.34-SZZZ_Generic_v45-300001"
-                         */
                         startCashPaymentAction: { await posModel.startCashPayment() }
                     )
                 }
@@ -517,7 +507,7 @@ private struct CardPaymentView: View {
 
     var body: some View {
         if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
-                                                   paymentState: paymentState) {
+                                                    paymentState: paymentState) {
             PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                 connectCardReaderAction()
             }

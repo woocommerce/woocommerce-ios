@@ -102,12 +102,18 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                 parameters[ParameterKey.resource] = filters.resourceIDs.map(String.init)
             }
 
-            if let startDateBefore = filters.startDateBefore {
-                parameters[ParameterKey.startDateBefore] = startDateBefore
+            /// `start_date_before` filter doesn't include the date in the result,
+            /// so move the time forward one second as a workaround.
+            if let startDateBefore = filters.startDateBefore,
+                let adjustedDate = Date.dateWithISO8601String(startDateBefore)?.addingTimeInterval(1) {
+                parameters[ParameterKey.startDateBefore] = adjustedDate.ISO8601Format()
             }
 
-            if let startDateAfter = filters.startDateAfter {
-                parameters[ParameterKey.startDateAfter] = startDateAfter
+            /// `start_date_after` filter doesn't include the date in the result,
+            /// so move the time backward one second as a workaround.
+            if let startDateAfter = filters.startDateAfter,
+               let adjustedDate = Date.dateWithISO8601String(startDateAfter)?.addingTimeInterval(-1) {
+                parameters[ParameterKey.startDateAfter] = adjustedDate.ISO8601Format()
             }
 
             if filters.attendanceStatuses.isNotEmpty {

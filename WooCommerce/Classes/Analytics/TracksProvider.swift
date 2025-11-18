@@ -224,10 +224,38 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleSettingsStoreDetailsTapped,
             WooAnalyticsStat.pointOfSaleSettingsHardwareTapped,
             WooAnalyticsStat.pointOfSaleSettingsHelpTapped,
-            WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped
+            WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped,
+
+            // Catalog
+            WooAnalyticsStat.pointOfSaleLocalCatalogDownloadingScreenShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogDownloadingScreenExitPosTapped,
+            WooAnalyticsStat.pointOfSaleSplashScreenErrorShown,
+            WooAnalyticsStat.pointOfSaleSplashScreenRetryTapped,
+            WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningDismissed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncStarted,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped
         ]
 
-        guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {
+        // Local catalog events always get pos_ prefix since they're POS-specific features
+        // that can run in background regardless of whether POS tab is active
+        let localCatalogEventList: Set<WooAnalyticsStat> = [
+            WooAnalyticsStat.pointOfSaleLocalCatalogDownloadingScreenShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogDownloadingScreenExitPosTapped,
+            WooAnalyticsStat.pointOfSaleSplashScreenErrorShown,
+            WooAnalyticsStat.pointOfSaleSplashScreenRetryTapped,
+            WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningDismissed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncStarted,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped
+        ]
+
+        // Apply prefix if: (POS mode is active AND event is in the list) OR event is a local catalog event
+        guard (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event) else {
             return eventName
         }
         let prefix = "pos_"

@@ -1,6 +1,9 @@
 import SwiftUI
+import struct WooFoundationCore.WooAnalyticsEvent
 
 struct PointOfSaleLoadingView: View {
+    @Environment(\.posAnalytics) private var analytics
+
     private let isCatalogSyncing: Bool
     private let onExit: (() -> Void)?
 
@@ -24,6 +27,7 @@ struct PointOfSaleLoadingView: View {
                     Spacer()
                     VStack(spacing: POSSpacing.medium) {
                         Button {
+                            analytics.track(event: WooAnalyticsEvent.LocalCatalog.downloadingScreenExitPosTapped())
                             onExit?()
                         } label: {
                             Text(Localization.exitButtonTitle)
@@ -44,6 +48,11 @@ struct PointOfSaleLoadingView: View {
             Spacer()
         }
         .background(Color.posSurface)
+        .task {
+            if isCatalogSyncing {
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.downloadingScreenShown())
+            }
+        }
     }
 }
 

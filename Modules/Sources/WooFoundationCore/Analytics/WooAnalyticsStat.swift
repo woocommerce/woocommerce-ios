@@ -1305,6 +1305,16 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleOrdersListSearchResultsFetched = "orders_list_search_results_fetched"
     case pointOfSaleOrderDetailsLoaded = "order_details_loaded"
     case pointOfSaleOrderDetailsEmailReceiptTapped = "order_details_email_receipt_tapped"
+    case pointOfSaleLocalCatalogDownloadingScreenShown = "local_catalog_downloading_screen_shown"
+    case pointOfSaleLocalCatalogDownloadingScreenExitPosTapped = "local_catalog_downloading_screen_exit_pos_tapped"
+    case pointOfSaleSplashScreenErrorShown = "splash_screen_error_shown"
+    case pointOfSaleSplashScreenRetryTapped = "splash_screen_retry_tapped"
+    case pointOfSaleLocalCatalogStaleWarningShown = "local_catalog_stale_warning_shown"
+    case pointOfSaleLocalCatalogStaleWarningDismissed = "local_catalog_stale_warning_dismissed"
+    case pointOfSaleLocalCatalogSyncStarted = "local_catalog_sync_started"
+    case pointOfSaleLocalCatalogSyncCompleted = "local_catalog_sync_completed"
+    case pointOfSaleLocalCatalogSyncFailed = "local_catalog_sync_failed"
+    case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

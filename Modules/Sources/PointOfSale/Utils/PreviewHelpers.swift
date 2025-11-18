@@ -642,6 +642,11 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         return false
     }
 
+    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
+        // Preview implementation - return 48 hours for testing stale warning
+        return 48
+    }
+
     func stopOngoingSyncs(for siteID: Int64) async {
         // Preview implementation - no-op
     }

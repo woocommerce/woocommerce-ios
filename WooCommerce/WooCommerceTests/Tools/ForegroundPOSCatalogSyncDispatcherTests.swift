@@ -302,6 +302,10 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         return false
     }
 
+    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
+        return nil
+    }
+
     func stopOngoingSyncs(for siteID: Int64) async {}
 
     func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {

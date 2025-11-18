@@ -177,7 +177,6 @@ final class OrderListViewModel {
                                                           pageSize: 1,
                                                           stockStatus: nil,
                                                           productStatus: .published,
-                                                          productType: nil,
                                                           productCategory: nil,
                                                           sortOrder: .dateDescending,
                                                           shouldDeleteStoredProductsOnFirstPage: false,

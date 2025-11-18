@@ -1431,7 +1431,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                  pageSize: pageSize,
                                  stockStatus: filters.stockStatus,
                                  productStatus: filters.productStatus,
-                                 productType: filters.promotableProductType?.productType,
+                                 productTypes: [filters.promotableProductType?.productType].compactMap { $0 },
                                  productCategory: filters.productCategory,
                                  sortOrder: sortOrder,
                                  productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in

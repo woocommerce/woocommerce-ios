@@ -285,7 +285,6 @@ private extension BlazeCampaignDashboardViewModel {
                                                               pageNumber: Store.Default.firstPageNumber,
                                                               stockStatus: nil,
                                                               productStatus: .published,
-                                                              productType: nil,
                                                               productCategory: nil,
                                                               sortOrder: .dateDescending,
                                                               shouldDeleteStoredProductsOnFirstPage: false,

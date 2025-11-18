@@ -65,6 +65,6 @@ final class ProductDetailNavigator {
     }
 
     private func shouldOpenInWeb(product: Product) -> Bool {
-        return ciabChecker.isCurrentSiteCIAB && product.productType == .booking
+        return ciabChecker.isCurrentSiteCIAB && product.productType.isBooking
     }
 }

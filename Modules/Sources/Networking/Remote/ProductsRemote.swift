@@ -15,7 +15,7 @@ public protocol ProductsRemoteProtocol {
                          pageSize: Int,
                          stockStatus: ProductStockStatus?,
                          productStatus: ProductStatus?,
-                         productType: ProductType?,
+                         productTypes: [ProductType],
                          productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
@@ -28,7 +28,7 @@ public protocol ProductsRemoteProtocol {
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
                         productStatus: ProductStatus?,
-                        productType: ProductType?,
+                        productTypes: [ProductType],
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64]) async throws -> [Product]
     func searchProductsBySKU(for siteID: Int64,
@@ -49,7 +49,7 @@ public protocol ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         productStatus: ProductStatus?,
-                        productType: ProductType?,
+                        productTypes: [ProductType],
                         completion: @escaping (Result<[Int64], Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
@@ -171,7 +171,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                 pageSize: Int = Default.pageSize,
                                 stockStatus: ProductStockStatus? = nil,
                                 productStatus: ProductStatus? = nil,
-                                productType: ProductType? = nil,
+                                productTypes: [ProductType] = [],
                                 productCategory: ProductCategory? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
@@ -191,7 +191,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
-            ParameterKey.productType: productType?.rawValue ?? "",
+            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
             ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
             ParameterKey.include: stringOfProductIDs,
             ParameterKey.exclude: stringOfExcludedProductIDs
@@ -439,7 +439,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                pageSize: Int,
                                stockStatus: ProductStockStatus? = nil,
                                productStatus: ProductStatus? = nil,
-                               productType: ProductType? = nil,
+                               productTypes: [ProductType] = [],
                                productCategory: ProductCategory? = nil,
                                excludedProductIDs: [Int64] = []) async throws -> [Product] {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
@@ -448,7 +448,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
-            ParameterKey.productType: productType?.rawValue ?? "",
+            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
             ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
             ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
@@ -601,14 +601,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
                                productStatus: ProductStatus? = nil,
-                               productType: ProductType? = nil,
+                               productTypes: [ProductType] = [],
                                completion: @escaping (Result<[Int64], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.fields: ParameterKey.id,
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
-            ParameterKey.productType: productType?.rawValue ?? ""
+            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ",")
         ].filter({ $0.value.isEmpty == false })
 
         let path = Path.products

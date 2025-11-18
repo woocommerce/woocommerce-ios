@@ -95,16 +95,15 @@ protocol PointOfSaleOrderControllerProtocol {
             return .success(.newOrder)
         } catch {
             self.order = nil
-            trackOrderCreationFailed(error: error, cart: posCart)
-            setOrderStateToError(error, cart: posCart, retryHandler: retryHandler)
+            trackOrderCreationFailed(error: error)
+            setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
         }
     }
 
     private func setOrderStateToError(_ error: Error,
-                                      cart: POSCart,
                                       retryHandler: @escaping () async -> Void) {
-        orderState = .error(orderStateError(from: error, cart: cart), {
+        orderState = .error(orderStateError(from: error), {
             Task {
                 await retryHandler()
             }
@@ -189,7 +188,7 @@ private extension PointOfSaleOrderController {
 // MARK: - Error Handling
 
 private extension PointOfSaleOrderController {
-    func orderStateError(from error: Error, cart: POSCart) -> PointOfSaleOrderState.OrderStateError {
+    func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
         // Check for missing products error first
         if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
             let missingProductInfo = missingItems.map {
@@ -266,7 +265,7 @@ extension PointOfSaleOrderController {
 
 
 private extension PointOfSaleOrderController {
-    func trackOrderCreationFailed(error: Error, cart: POSCart) {
+    func trackOrderCreationFailed(error: Error) {
         var errorType: WooAnalyticsEvent.Orders.OrderCreationErrorType?
 
         if let _ = CouponsError(underlyingError: error) {

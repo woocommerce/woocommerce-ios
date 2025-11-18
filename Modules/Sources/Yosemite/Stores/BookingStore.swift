@@ -347,44 +347,27 @@ private extension BookingStore {
         note: String,
         onCompletion: @escaping (Error?) -> Void
     ) {
-        updateBookingNoteLocally(
-            siteID: siteID,
-            bookingID: bookingID,
-            note: note
-        ) { [weak self] previousNote in
-            guard let self else {
-                return onCompletion(UpdateBookingStatusError.undefinedState)
-            }
+        Task { @MainActor in
+            do {
+                if let remoteBooking = try await self.remote.updateBooking(
+                    from: siteID,
+                    bookingID: bookingID,
+                    attendanceStatus: nil,
+                    bookingStatus: nil,
+                    note: note,
+                ) {
+                    await self.upsertStoredBookingsInBackground(
+                        readOnlyBookings: [remoteBooking],
+                        readOnlyOrders: [],
+                        siteID: siteID
+                    )
 
-            Task { @MainActor in
-                do {
-                    if let remoteBooking = try await self.remote.updateBooking(
-                        from: siteID,
-                        bookingID: bookingID,
-                        attendanceStatus: nil,
-                        bookingStatus: nil,
-                        note: note,
-                    ) {
-                        await self.upsertStoredBookingsInBackground(
-                            readOnlyBookings: [remoteBooking],
-                            readOnlyOrders: [],
-                            siteID: siteID
-                        )
-
-                        onCompletion(nil)
-                    } else {
-                        return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
-                    }
-                } catch {
-                    /// Revert Optimistic Update
-                    self.updateBookingNoteLocally(
-                        siteID: siteID,
-                        bookingID: bookingID,
-                        note: note
-                    ) { _ in
-                        onCompletion(error)
-                    }
+                    onCompletion(nil)
+                } else {
+                    return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
                 }
+            } catch {
+                return onCompletion(error)
             }
         }
     }
@@ -413,33 +396,6 @@ private extension BookingStore {
                 onCompletion(status)
             case .failure:
                 onCompletion(statusKey)
-            }
-        }, on: .main)
-    }
-
-    func updateBookingNoteLocally(
-        siteID: Int64,
-        bookingID: Int64,
-        note: String?,
-        onCompletion: @escaping (String?) -> Void
-    ) {
-        storageManager.performAndSave({ storage -> String? in
-            guard let booking = storage.loadBooking(
-                siteID: siteID,
-                bookingID: bookingID
-            ) else {
-                return note
-            }
-
-            let oldNote = booking.note
-            booking.note = note
-            return oldNote
-        }, completion: { result in
-            switch result {
-            case .success(let status):
-                onCompletion(status)
-            case .failure:
-                onCompletion(note)
             }
         }, on: .main)
     }

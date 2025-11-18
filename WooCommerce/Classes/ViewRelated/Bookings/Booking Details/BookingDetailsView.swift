@@ -245,7 +245,7 @@ private extension BookingDetailsView {
         MultilineEditableTextRow(value: viewModel.note,
                                  placeholder: Localization.bookingNotesRowText,
                                  detailTitle: Localization.bookingNoteNavbarText) { newNote in
-            viewModel.updateNote(to: newNote)
+            return await viewModel.updateNote(to: newNote)
         }
     }
 }

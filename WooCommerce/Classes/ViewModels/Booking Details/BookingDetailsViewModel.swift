@@ -252,22 +252,30 @@ extension BookingDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func updateNote(to newNote: String) {
-        let action = BookingAction.updateBookingNote(
-            siteID: booking.siteID,
-            bookingID: booking.bookingID,
-            note: newNote
-        ) { [weak self] error in
-            if let error, let self {
-                DDLogError("⛔️ Error updating booking note: \(error)")
-                displayErrorNotice(
-                    messageFormat: Localization.bookingNoteUpdateFailedMessage
-                ) { [weak self] in
-                    self?.updateNote(to: newNote)
+    @MainActor
+    func updateNote(to newNote: String) async -> MultilineCommitResult {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.updateBookingNote(
+                siteID: booking.siteID,
+                bookingID: booking.bookingID,
+                note: newNote
+            ) { [booking] error in
+                if let error {
+                    DDLogError("⛔️ Error updating booking note: \(error)")
+                    let message = String.localizedStringWithFormat(
+                        Localization.bookingNoteUpdateFailedMessage,
+                        booking.bookingID
+                    )
+
+                    continuation.resume(returning: .failure(message: message))
+                    return
                 }
+
+                continuation.resume(returning: .success)
             }
+
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
     }
 
     private func displayErrorNotice(
@@ -283,8 +291,7 @@ extension BookingDetailsViewModel {
             message: text,
             feedbackType: .error,
             actionTitle: Localization.retryActionTitle
-        ) { [weak self] in
-            guard let self else { return }
+        ) {
             retry()
         }
     }

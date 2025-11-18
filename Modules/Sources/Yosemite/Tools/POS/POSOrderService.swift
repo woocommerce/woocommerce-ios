@@ -258,7 +258,7 @@ private extension POSOrderService {
         )
         static let unknownProductName = NSLocalizedString(
             "pointOfSale.orderController.unknownProduct",
-            value: "Unknown Product",
+            value: "One or more products",
             comment: "Fallback name for a product that couldn't be identified in error handling."
         )
     }

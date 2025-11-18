@@ -362,7 +362,7 @@ struct POSOrderServiceTests {
                 #expect(missingItems.count == 1)
                 #expect(missingItems.first?.productID == 0) // Generic error
                 #expect(missingItems.first?.variationID == 0)
-                #expect(missingItems.first?.name == "Unknown Product")
+                #expect(missingItems.first?.name == "One or more products")
                 return true
             }
             return false
@@ -502,7 +502,7 @@ struct POSOrderServiceTests {
                 #expect(missingItems.count == 1)
                 #expect(missingItems.first?.productID == 0)
                 #expect(missingItems.first?.variationID == 999)
-                #expect(missingItems.first?.name == "Unknown Product")
+                #expect(missingItems.first?.name == "One or more products")
                 return true
             }
             return false

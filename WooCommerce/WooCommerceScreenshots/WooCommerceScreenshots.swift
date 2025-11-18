@@ -62,6 +62,10 @@ class WooCommerceScreenshots: XCTestCase {
             .waitForTotalsLoaded()
             .waitForCardPaymentReady()
             .thenTakeScreenshot(named: "test-pos-screenshot-2", orientation: .landscapeLeft)
+            .tapCashPayment()
+            .tapMarkPaymentComplete()
+            .waitForPaymentSuccess()
+            .thenTakeScreenshot(named: "test-pos-screenshot-3", orientation: .landscapeLeft)
 
         // My Store
         try TabNavComponent()

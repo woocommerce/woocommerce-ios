@@ -87,4 +87,39 @@ public final class POSScreen: ScreenObject {
 
         return self
     }
+
+    @discardableResult
+    public func tapCashPayment() -> Self {
+        let cashButton = app.buttons["pos-cash-payment-button"]
+
+        guard cashButton.waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        cashButton.tap()
+        return self
+    }
+
+    @discardableResult
+    public func tapMarkPaymentComplete() -> Self {
+        let completeButton = app.buttons["pos-mark-payment-complete-button"]
+
+        guard completeButton.waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        completeButton.tap()
+        return self
+    }
+
+    @discardableResult
+    public func waitForPaymentSuccess() -> Self {
+        let successView = app.otherElements["pos-payment-success-view"]
+
+        guard successView.waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        return self
+    }
 }

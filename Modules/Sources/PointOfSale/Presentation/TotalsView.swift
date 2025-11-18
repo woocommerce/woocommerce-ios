@@ -546,6 +546,7 @@ private struct CashPaymentButton: View {
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .accessibilityIdentifier("pos-cash-payment-button")
         .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
         .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
         .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(

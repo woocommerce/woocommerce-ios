@@ -40,7 +40,7 @@ public enum ProductAction: Action {
                         pageSize: Int,
                         stockStatus: ProductStockStatus? = nil,
                         productStatus: ProductStatus? = nil,
-                        productTypes: [ProductType] = [],
+                        productType: ProductType? = nil,
                         productCategory: ProductCategory? = nil,
                         excludedProductIDs: [Int64] = [],
                         onCompletion: (Result<Bool, Error>) -> Void)
@@ -54,7 +54,7 @@ public enum ProductAction: Action {
                              pageSize: Int = ProductsRemote.Default.pageSize,
                              stockStatus: ProductStockStatus?,
                              productStatus: ProductStatus?,
-                             productTypes: [ProductType] = [],
+                             productType: ProductType?,
                              productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
                              productIDs: [Int64] = [],
@@ -124,7 +124,7 @@ public enum ProductAction: Action {
     ///
     case checkIfStoreHasProducts(siteID: Int64,
                                  status: ProductStatus? = nil,
-                                 types: [ProductType] = [],
+                                 type: ProductType? = nil,
                                  onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Identifies the language from the given string

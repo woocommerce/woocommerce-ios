@@ -25,8 +25,7 @@ struct BookableProductListSyncable: ListSyncable {
     // MARK: - ResultsController Configuration
 
     func createPredicate() -> NSPredicate {
-        let supportedTypes: [ProductType] = [.booking, .bookableService]
-        return NSPredicate(format: "siteID == %lld AND productTypeKey in %@", siteID, supportedTypes.map { $0.rawValue })
+        NSPredicate(format: "siteID == %lld AND productTypeKey == %@", siteID, ProductType.booking.rawValue)
     }
 
     func createSortDescriptors() -> [NSSortDescriptor] {
@@ -46,7 +45,7 @@ struct BookableProductListSyncable: ListSyncable {
             pageSize: pageSize,
             stockStatus: nil,
             productStatus: nil,
-            productTypes: [.booking, .bookableService],
+            productType: .booking,
             productCategory: nil,
             sortOrder: .dateDescending,
             productIDs: [],
@@ -64,7 +63,7 @@ struct BookableProductListSyncable: ListSyncable {
             filter: .name,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            productTypes: [.booking, .bookableService],
+            productType: .booking,
             onCompletion: completion
         )
     }

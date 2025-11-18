@@ -78,7 +78,7 @@ private extension BookingsTabEligibilityChecker {
     @MainActor
     func checkIfStoreHasBookableProducts() async -> Bool {
         await withCheckedContinuation { continuation in
-            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: site.siteID, types: [.booking, .bookableService]) { result in
+            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: site.siteID, type: .booking) { result in
                 let hasBookableProducts = (try? result.get()) ?? false
                 continuation.resume(returning: hasBookableProducts)
             })

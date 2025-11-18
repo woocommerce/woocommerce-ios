@@ -13,7 +13,6 @@ public enum ProductType: Codable, Hashable, GeneratedFakeable {
     case bundle
     case composite
     case booking
-    case bookableService
     case custom(String) // in case there are extensions modifying product types
 }
 
@@ -44,8 +43,6 @@ extension ProductType: RawRepresentable {
             self = .composite
         case Keys.booking:
             self = .booking
-        case Keys.bookableService:
-            self = .bookableService
         default:
             self = .custom(rawValue)
         }
@@ -64,7 +61,6 @@ extension ProductType: RawRepresentable {
         case .bundle:               return Keys.bundle
         case .composite:            return Keys.composite
         case .booking:              return Keys.booking
-        case .bookableService:      return Keys.bookableService
         case .custom(let payload):  return payload
         }
     }
@@ -89,16 +85,11 @@ extension ProductType: RawRepresentable {
             return NSLocalizedString("Bundle", comment: "Display label for bundle product type.")
         case .composite:
             return NSLocalizedString("Composite", comment: "Display label for composite product type.")
-        case .booking, .bookableService:
+        case .booking:
             return NSLocalizedString("Bookable", comment: "Display label for bookable product type.")
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
-    }
-
-    /// Backward compatible helper to check if a product is bookable
-    public var isBooking: Bool {
-        self == .booking || self == .bookableService
     }
 }
 
@@ -115,5 +106,4 @@ private enum Keys {
     static let bundle               = "bundle"
     static let composite            = "composite"
     static let booking              = "booking"
-    static let bookableService      = "bookable-service"
 }

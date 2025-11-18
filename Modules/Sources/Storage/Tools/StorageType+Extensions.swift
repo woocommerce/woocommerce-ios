@@ -273,17 +273,13 @@ public extension StorageType {
 
     /// Has stored Products for the provided siteID and optional requirements.
     ///
-    func hasProducts(siteID: Int64, status: String?, types: [String]) -> Bool {
+    func hasProducts(siteID: Int64, status: String?, type: String?) -> Bool {
         var predicates: [NSPredicate] = [\Product.siteID == siteID]
         if let status {
             predicates.append(\Product.statusKey == status)
         }
-        if types.isNotEmpty {
-            var typePredicates: [NSPredicate] = []
-            for type in types {
-                typePredicates.append(\Product.productTypeKey == type)
-            }
-            predicates.append(NSCompoundPredicate(type: .or, subpredicates: typePredicates))
+        if let type {
+            predicates.append(\Product.productTypeKey == type)
         }
         let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
         return firstObject(ofType: Product.self, matching: combinedPredicate) != nil

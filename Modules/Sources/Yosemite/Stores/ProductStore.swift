@@ -62,7 +62,7 @@ public class ProductStore: Store {
                                  pageSize,
                                  stockStatus,
                                  productStatus,
-                                 productTypes,
+                                 productType,
                                  productCategory,
                                  excludedProductIDs,
                                  onCompletion):
@@ -74,7 +74,7 @@ public class ProductStore: Store {
                            pageSize: pageSize,
                            stockStatus: stockStatus,
                            productStatus: productStatus,
-                           productTypes: productTypes,
+                           productType: productType,
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
@@ -83,7 +83,7 @@ public class ProductStore: Store {
                                   let pageSize,
                                   let stockStatus,
                                   let productStatus,
-                                  let productTypes,
+                                  let productType,
                                   let productCategory,
                                   let sortOrder,
                                   let productIDs,
@@ -97,7 +97,7 @@ public class ProductStore: Store {
                                                                     pageSize: pageSize,
                                                                     stockStatus: stockStatus,
                                                                     productStatus: productStatus,
-                                                                    productTypes: productTypes,
+                                                                    productType: productType,
                                                                     productCategory: productCategory,
                                                                     sortOrder: sortOrder,
                                                                     productIDs: productIDs,
@@ -120,8 +120,8 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
-        case let .checkIfStoreHasProducts(siteID, status, productTypes, onCompletion):
-            checkIfStoreHasProducts(siteID: siteID, status: status, productTypes: productTypes, onCompletion: onCompletion)
+        case let .checkIfStoreHasProducts(siteID, status, productType, onCompletion):
+            checkIfStoreHasProducts(siteID: siteID, status: status, productType: productType, onCompletion: onCompletion)
         case let .identifyLanguage(siteID, string, feature, completion):
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
@@ -227,7 +227,7 @@ private extension ProductStore {
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
                         productStatus: ProductStatus?,
-                        productTypes: [ProductType],
+                        productType: ProductType?,
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Bool, Error>) -> Void) {
@@ -240,7 +240,7 @@ private extension ProductStore {
                                             pageSize: pageSize,
                                             stockStatus: stockStatus,
                                             productStatus: productStatus,
-                                            productTypes: productTypes,
+                                            productType: productType,
                                             productCategory: productCategory,
                                             excludedProductIDs: excludedProductIDs)
         }
@@ -291,7 +291,7 @@ private extension ProductStore {
                              pageSize: Int = ProductsRemote.Default.pageSize,
                              stockStatus: ProductStockStatus?,
                              productStatus: ProductStatus?,
-                             productTypes: [ProductType],
+                             productType: ProductType?,
                              productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
                              productIDs: [Int64],
@@ -304,7 +304,7 @@ private extension ProductStore {
                                                             pageSize: pageSize,
                                                             stockStatus: stockStatus,
                                                             productStatus: productStatus,
-                                                            productTypes: productTypes,
+                                                            productType: productType,
                                                             productCategory: productCategory,
                                                             orderBy: sortOrder.remoteOrderKey,
                                                             order: sortOrder.remoteOrder,
@@ -318,7 +318,8 @@ private extension ProductStore {
             let hasNextPage = products.count == pageSize
             return hasNextPage
         } catch let error as DotcomError where error == .unknown(code: "rest_invalid_param", message: "Invalid parameter(s): type") {
-            if productTypes.allSatisfy({ ProductType.coreTypes.contains($0) }) == false {
+            if let productType,
+               ProductType.coreTypes.contains(productType) == false {
                 return false
             }
             throw error
@@ -570,16 +571,16 @@ private extension ProductStore {
     ///
     func checkIfStoreHasProducts(siteID: Int64,
                                  status: ProductStatus?,
-                                 productTypes: [ProductType],
+                                 productType: ProductType?,
                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
-        if storage.hasProducts(siteID: siteID, status: status?.rawValue, types: productTypes.map { $0.rawValue }) {
+        if storage.hasProducts(siteID: siteID, status: status?.rawValue, type: productType?.rawValue) {
             return onCompletion(.success(true))
         }
 
         // If there are no locally stored products, then check remote.
-        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1, productStatus: status, productTypes: productTypes) { result in
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1, productStatus: status, productType: productType) { result in
             switch result {
             case .success(let ids):
                 onCompletion(.success(ids.isEmpty == false))

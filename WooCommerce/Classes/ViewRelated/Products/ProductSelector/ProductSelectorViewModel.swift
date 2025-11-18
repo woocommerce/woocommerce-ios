@@ -525,7 +525,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                        pageSize: pageSize,
                                                        stockStatus: filtersSubject.value.stockStatus,
                                                        productStatus: filtersSubject.value.productStatus,
-                                                       productTypes: [filtersSubject.value.promotableProductType?.productType].compactMap { $0 },
+                                                       productType: filtersSubject.value.promotableProductType?.productType,
                                                        productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
                                                        productIDs: (filtersSubject.value.favoriteProduct != nil) ? favoriteProductIDs : [],
@@ -560,7 +560,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                   pageSize: pageSize,
                                                   stockStatus: filtersSubject.value.stockStatus,
                                                   productStatus: filtersSubject.value.productStatus,
-                                                  productTypes: [filtersSubject.value.promotableProductType?.productType].compactMap { $0 },
+                                                  productType: filtersSubject.value.promotableProductType?.productType,
                                                   productCategory: filtersSubject.value.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {

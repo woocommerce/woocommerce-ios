@@ -26,8 +26,6 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        let startTime = Date()
-
         // Get total count and persisted products in one transaction
         let (persistedProducts, totalCount) = try await grdbManager.databaseConnection.read { db in
             let totalCount = try PersistedProduct
@@ -49,13 +47,6 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
             try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
         }
 
-        // Track analytics for first page
-        if pageNumber == 1 {
-            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
-            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
-                                                           totalItems: totalCount)
-        }
-
         let hasMorePages = (pageNumber * pageSize) < totalCount
 
         return PagedItems(items: products,
@@ -64,11 +55,30 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        // Reuse existing remote variations fetching logic
-        // Variations will be handled in future FTS implementation
-        try await variationsRemote
-            .loadVariationsForPointOfSale(for: siteID,
-                                          parentProductID: parentProductID,
-                                          pageNumber: pageNumber)
+        // Get total count and persisted variations in one transaction
+        let (persistedVariations, totalCount) = try await grdbManager.databaseConnection.read { db in
+            let totalCount = try PersistedProductVariation
+                .posVariationsRequest(siteID: siteID, parentProductID: parentProductID)
+                .fetchCount(db)
+
+            let offset = (pageNumber - 1) * pageSize
+            let persistedVariations = try PersistedProductVariation
+                .posVariationsRequest(siteID: siteID, parentProductID: parentProductID)
+                .limit(pageSize, offset: offset)
+                .fetchAll(db)
+
+            return (persistedVariations, totalCount)
+        }
+
+        // Convert to POSProductVariation outside the read transaction
+        let variations = try persistedVariations.map { persistedVariation in
+            try persistedVariation.toPOSProductVariation(db: grdbManager.databaseConnection)
+        }
+
+        let hasMorePages = (pageNumber * pageSize) < totalCount
+
+        return PagedItems(items: variations,
+                         hasMorePages: hasMorePages,
+                         totalItems: totalCount)
     }
 }

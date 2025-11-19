@@ -90,7 +90,7 @@ private extension POSCatalogIncrementalSyncService {
         // Fetch trashed products separately to detect products moved to trash
         async let trashedProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber, includeStatus: "trash")
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber, includeStatus: ProductStatus.trash.rawValue)
             }
         )
 

@@ -57,14 +57,15 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
+        @Bindable var viewModel = viewModel
         VStack(spacing: POSSpacing.none) {
             POSInformationCard {
-                POSInformationCardFieldRow(label: Localization.managingDataUsage,
-                                           value: Localization.allowSyncOnCellular,
-                                           showSeparator: false,
-                                           buttonAction: {
-                    viewModel.allowFullSyncOnCellular.toggle()
-                })
+                POSInformationCardFieldRowWithToggle(
+                    label: Localization.managingDataUsage,
+                    value: Localization.allowSyncOnCellular,
+                    showSeparator: false,
+                    isOn: $viewModel.allowFullSyncOnCellular
+                )
             }
         }
     }

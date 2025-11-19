@@ -3,7 +3,7 @@
 
 23.8
 -----
-
+- [Internal] Fix broken navigation to a variable product selector [https://github.com/woocommerce/woocommerce-ios/pull/16363]
 
 23.7
 -----

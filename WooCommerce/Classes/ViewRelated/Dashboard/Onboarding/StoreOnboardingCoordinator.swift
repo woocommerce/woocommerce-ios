@@ -5,7 +5,7 @@ import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 
 /// Coordinates navigation for store onboarding.
-final class StoreOnboardingCoordinator: Coordinator {
+final class StoreOnboardingCoordinator {
     typealias TaskType = StoreOnboardingTask.TaskType
 
     let navigationController: UINavigationController
@@ -31,11 +31,15 @@ final class StoreOnboardingCoordinator: Coordinator {
     }
 
     /// Navigates to the fullscreen store onboarding view.
-    func start() {
+    func start(tasks: [StoreOnboardingTaskViewModel]) {
         Task { @MainActor in
+            let viewModel = StoreOnboardingViewModel(
+                siteID: site.siteID,
+                isExpanded: true,
+                taskViewModels: tasks
+            )
             let onboardingNavigationController = UINavigationController()
-            let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
-                                                                                                 isExpanded: true),
+            let onboardingViewController = StoreOnboardingViewHostingController(viewModel: viewModel,
                                                                                 navigationController: onboardingNavigationController,
                                                                                 site: site)
             onboardingNavigationController.pushViewController(onboardingViewController, animated: false)

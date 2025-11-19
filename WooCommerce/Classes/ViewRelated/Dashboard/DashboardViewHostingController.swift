@@ -175,11 +175,11 @@ private extension DashboardViewHostingController {
             storeOnboardingCoordinator?.start(task: task)
         }
 
-        rootView.viewAllOnboardingTasksTapped = { [weak self] site in
+        rootView.viewAllOnboardingTasksTapped = { [weak self] site, tasks in
             guard let self else { return }
             ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             updateStoreOnboardingCoordinatorIfNeeded(with: site)
-            storeOnboardingCoordinator?.start()
+            storeOnboardingCoordinator?.start(tasks: tasks)
         }
     }
 

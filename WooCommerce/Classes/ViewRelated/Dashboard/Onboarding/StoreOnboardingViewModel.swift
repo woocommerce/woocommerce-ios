@@ -83,6 +83,7 @@ class StoreOnboardingViewModel: ObservableObject {
     ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
     init(siteID: Int64,
          isExpanded: Bool,
+         taskViewModels: [StoreOnboardingTaskViewModel] = [],
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
@@ -94,6 +95,7 @@ class StoreOnboardingViewModel: ObservableObject {
         self.defaults = defaults
         self.analytics = analytics
         self.waitingTimeTracker = waitingTimeTracker
+        self.taskViewModels = taskViewModels
 
         $noTasksAvailableForDisplay
             .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))

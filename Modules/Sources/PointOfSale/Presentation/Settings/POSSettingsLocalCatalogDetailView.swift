@@ -78,6 +78,7 @@ private extension POSSettingsLocalCatalogDetailView {
                     label: Localization.manualCatalogUpdate,
                     value: Localization.manualUpdateInfo,
                     showSeparator: false,
+                    labelStyle: .bold,
                     buttonTitle: Localization.updateCatalog,
                     buttonAction: {
                         Task {

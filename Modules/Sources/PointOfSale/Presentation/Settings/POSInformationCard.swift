@@ -22,9 +22,15 @@ struct POSInformationCardFieldRow: View {
         case primary
     }
 
+    enum LabelStyle {
+        case regular
+        case bold
+    }
+
     let label: String
     let value: String
     let showSeparator: Bool
+    let labelStyle: LabelStyle
     let buttonTitle: String?
     let buttonAction: (() -> Void)?
     let buttonStyle: ButtonStyle
@@ -32,12 +38,14 @@ struct POSInformationCardFieldRow: View {
     init(label: String,
          value: String,
          showSeparator: Bool = true,
+         labelStyle: LabelStyle = .regular,
          buttonTitle: String? = nil,
          buttonAction: (() -> Void)? = nil,
          buttonStyle: ButtonStyle = .default) {
         self.label = label
         self.value = value
         self.showSeparator = showSeparator
+        self.labelStyle = labelStyle
         self.buttonTitle = buttonTitle
         self.buttonAction = buttonAction
         self.buttonStyle = buttonStyle
@@ -48,7 +56,7 @@ struct POSInformationCardFieldRow: View {
             HStack(alignment: .center, spacing: POSSpacing.medium) {
                 VStack(alignment: .leading, spacing: POSPadding.small) {
                     Text(label)
-                        .font(.posBodyMediumRegular())
+                        .font(labelStyle == .bold ? .posBodyMediumBold : .posBodyMediumRegular())
                     Text(value)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(.secondary)

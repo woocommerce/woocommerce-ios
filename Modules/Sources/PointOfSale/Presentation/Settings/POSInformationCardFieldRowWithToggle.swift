@@ -21,7 +21,7 @@ struct POSInformationCardFieldRowWithToggle: View {
             HStack(alignment: .center, spacing: POSSpacing.medium) {
                 VStack(alignment: .leading, spacing: POSPadding.small) {
                     Text(label)
-                        .font(.posBodyMediumRegular())
+                        .font(.posBodyMediumBold)
                     Text(value)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(.secondary)

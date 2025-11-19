@@ -34,51 +34,58 @@ struct POSSettingsLocalCatalogDetailView: View {
 private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     var catalogStatus: some View {
-            VStack(spacing: POSSpacing.medium) {
-                fieldRowView(label: Localization.catalogSize, value: viewModel.catalogSize)
-                fieldRowView(label: Localization.lastIncrementalSync, value: viewModel.lastIncrementalSyncDate)
-                fieldRowView(label: Localization.lastFullSync, value: viewModel.lastFullSyncDate)
+        POSInformationCard {
+            VStack(spacing: POSSpacing.small) {
+                POSInformationCardFieldRow(
+                    label: Localization.catalogSize,
+                    value: viewModel.catalogSize
+                )
+                POSInformationCardFieldRow(
+                    label: Localization.lastIncrementalSync,
+                    value: viewModel.lastIncrementalSyncDate
+                )
+                POSInformationCardFieldRow(
+                    label: Localization.lastFullSync,
+                    value: viewModel.lastFullSyncDate,
+                    showSeparator: false
+                )
             }
-            .padding(.bottom, POSPadding.medium)
-            .redacted(reason: viewModel.isLoading ? .placeholder : [])
-            .shimmering(active: viewModel.isLoading)
+        }
+        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+        .shimmering(active: viewModel.isLoading)
     }
 
     @ViewBuilder
     var managingDataUsage: some View {
-        @Bindable var viewModel = viewModel
         VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.managingDataUsage)
-
-            VStack(spacing: POSSpacing.medium) {
-                toggleRowView(label: Localization.allowSyncOnCellular, isOn: $viewModel.allowFullSyncOnCellular)
+            POSInformationCard {
+                POSInformationCardFieldRow(label: Localization.managingDataUsage,
+                                           value: Localization.allowSyncOnCellular,
+                                           showSeparator: false,
+                                           buttonAction: {
+                    viewModel.allowFullSyncOnCellular.toggle()
+                })
             }
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
     var manualCatalogUpdate: some View {
         VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.manualCatalogUpdate)
-
-            VStack(spacing: POSSpacing.medium) {
-                Text(Localization.manualUpdateInfo)
-                    .font(.posCaptionRegular)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Button(action: {
-                    Task {
-                        await viewModel.refreshCatalog()
-                    }
-                }) {
-                    Text(Localization.updateCatalog)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: viewModel.isRefreshingCatalog))
+            POSInformationCard {
+                POSInformationCardFieldRow(
+                    label: Localization.manualCatalogUpdate,
+                    value: Localization.manualUpdateInfo,
+                    showSeparator: false,
+                    buttonTitle: Localization.updateCatalog,
+                    buttonAction: {
+                        Task {
+                            await viewModel.refreshCatalog()
+                        }
+                    },
+                    buttonStyle: .primary
+                )
             }
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
@@ -93,32 +100,6 @@ private extension POSSettingsLocalCatalogDetailView {
                 .padding(.horizontal, POSPadding.medium)
                 .padding(.vertical, POSPadding.small)
         }
-    }
-
-    @ViewBuilder
-    func fieldRowView(label: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            Text(label)
-                .font(.posBodyMediumRegular())
-            Text(value)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
-    }
-
-    @ViewBuilder
-    func toggleRowView(label: String, isOn: Binding<Bool>) -> some View {
-        HStack {
-            Text(label)
-                .font(.posBodyMediumRegular())
-            Spacer()
-            Toggle("", isOn: isOn)
-                .toggleStyle(SwitchToggleStyle())
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
     }
 }
 

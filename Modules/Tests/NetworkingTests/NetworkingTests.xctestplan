@@ -14,7 +14,7 @@
   "testTargets" : [
     {
       "skippedTests" : [
-        "RequestProcessorTests\/test_threadSanitizerFlagsRaceInUnsynchronizedImplementation()"
+        "RequestProcessorTests\/test_concurrentAuthenticatorUpdatesTriggersRaceWhenUnsynchronized()"
       ],
       "target" : {
         "containerPath" : "container:",

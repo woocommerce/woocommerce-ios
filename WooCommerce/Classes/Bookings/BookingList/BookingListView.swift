@@ -120,9 +120,11 @@ private extension BookingListView {
             } header: {
                 header
                     .listRowInsets(EdgeInsets())
+                    .textCase(nil)
             }
         }
-        .listStyle(.plain)
+        .listStyle(.grouped)
+        .scrollContentBackground(.hidden)
         .listSectionSeparator(.hidden, edges: .top)
         .background(Color(.listBackground))
         .refreshable {

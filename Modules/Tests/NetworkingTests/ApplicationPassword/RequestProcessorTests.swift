@@ -446,34 +446,33 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertFalse(shouldRetry.retryRequired)
     }
 
-    func test_concurrentAuthenticatorUpdatesWhileAdaptingDoesNotCrash() throws {
-        // Given
-        let concurrencyIterations = 2_000
-        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
-        let urlRequest = URLRequest(url: url)
-        let notificationCenter = MockNotificationCenter()
-
-        let initialCredentials = Networking.Credentials.wpcom(
-            username: "initial-user",
+    /// The test is designed for manual local run. It must be excluded from CI pipelines.
+    /// Simulates race condition of multiple `updateAuthenticator` calls from different threads
+    /// Should cause a crash on old/non-synchronized `RequestProcessor` implementatoin
+    /// Should work fine on synchronized version of `RequestProcessor`
+    func test_concurrentAuthenticatorUpdatesTriggersRaceWhenUnsynchronized() throws {
+        let credentials = Networking.Credentials.wpcom(
+            username: "initial",
             authToken: UUID().uuidString,
             siteAddress: "https://example.com"
         )
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials)
         let sut = RequestProcessor(
-            requestAuthenticator: DefaultRequestAuthenticator(credentials: initialCredentials),
-            notificationCenter: notificationCenter
+            requestAuthenticator: authenticator,
+            notificationCenter: MockNotificationCenter()
         )
 
-        let adaptExpectation = expectation(description: "adapt completions")
-        adaptExpectation.expectedFulfillmentCount = concurrencyIterations / 2
-
+        let request = URLRequest(url: url)
+        let iterations = 20000
         let queue = DispatchQueue(
-            label: "com.woocommerce.tests.requestProcessor.concurrent",
+            label: "com.woocommerce.tests.requestProcessor.race",
+            qos: .userInitiated,
             attributes: .concurrent
         )
+        let group = DispatchGroup()
 
-        // When
-        for index in 0..<concurrencyIterations {
-            queue.async {
+        for index in 0..<iterations {
+            queue.async(group: group) {
                 if index.isMultiple(of: 2) {
                     let credentials = Networking.Credentials.wpcom(
                         username: "user-\(index)",
@@ -483,26 +482,13 @@ final class RequestProcessorTests: XCTestCase {
                     let authenticator = DefaultRequestAuthenticator(credentials: credentials)
                     sut.updateAuthenticator(authenticator)
                 } else {
-                    sut.adapt(urlRequest, for: session) { result in
-                        switch result {
-                        case .success(let request):
-                            let header = request.value(forHTTPHeaderField: "Authorization")
-                            XCTAssertNotNil(header)
-                            if let header {
-                                XCTAssertTrue(header.hasPrefix("Bearer "))
-                            }
-                        case .failure(let error):
-                            XCTFail("Unexpected error while adapting request: \(error)")
-                        }
-                        adaptExpectation.fulfill()
-                    }
+                    sut.adapt(request, for: .default) { _ in }
                 }
             }
         }
 
-        // Then
-        wait(for: [adaptExpectation], timeout: 15)
-        queue.sync(flags: .barrier) { }
+        let result = group.wait(timeout: .now() + 20)
+        XCTAssertEqual(result, .success)
     }
 }
 

@@ -6,6 +6,16 @@ import protocol Storage.StorageManagerType
 public protocol PointOfSaleCouponFetchStrategy {
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
     func fetchLocalCoupons() async throws -> [POSItem]
+    /// The debouncing strategy to use for search input.
+    /// Default is `.immediate` (no debouncing) for non-search strategies.
+    var debounceStrategy: SearchDebounceStrategy { get }
+}
+
+public extension PointOfSaleCouponFetchStrategy {
+    /// Default implementation returns `.immediate` for strategies that don't need debouncing
+    var debounceStrategy: SearchDebounceStrategy {
+        .immediate
+    }
 }
 
 struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
@@ -87,6 +97,11 @@ struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
         self.currencySettings = currencySettings
         self.searchTerm = searchTerm
         self.analytics = analytics
+    }
+
+    var debounceStrategy: SearchDebounceStrategy {
+        // Use smart debouncing for remote coupon search
+        .smart(duration: 500 * NSEC_PER_MSEC)
     }
 
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {

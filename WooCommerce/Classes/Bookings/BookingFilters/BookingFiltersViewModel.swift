@@ -11,7 +11,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
     private let productFilterViewModel: FilterTypeViewModel
     private let customerFilterViewModel: FilterTypeViewModel
     private let attendanceStatusFilterViewModel: FilterTypeViewModel
-    private let paymentStatusFilterViewModel: FilterTypeViewModel
+//    private let paymentStatusFilterViewModel: FilterTypeViewModel
     private let dateTimeFilterViewModel: FilterTypeViewModel
 
 
@@ -21,14 +21,14 @@ final class BookingFiltersViewModel: FilterListViewModel {
         productFilterViewModel = BookingListFilter.product(siteID: siteID).createViewModel(filters: filter)
         customerFilterViewModel = BookingListFilter.customer(siteID: siteID).createViewModel(filters: filter)
         attendanceStatusFilterViewModel = BookingListFilter.attendanceStatus.createViewModel(filters: filter)
-        paymentStatusFilterViewModel = BookingListFilter.paymentStatus.createViewModel(filters: filter)
+//        paymentStatusFilterViewModel = BookingListFilter.paymentStatus.createViewModel(filters: filter)
         dateTimeFilterViewModel = BookingListFilter.dateTime.createViewModel(filters: filter)
 
         filterTypeViewModels = [
             teamMemberFilterViewModel,
             productFilterViewModel,
             attendanceStatusFilterViewModel,
-            paymentStatusFilterViewModel,
+//            paymentStatusFilterViewModel,
             customerFilterViewModel,
             dateTimeFilterViewModel
         ]
@@ -39,14 +39,14 @@ final class BookingFiltersViewModel: FilterListViewModel {
         let products = (productFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingProductFilter] ?? []
         let customers = (customerFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingCustomerFilter] ?? []
         let attendanceStatuses = (attendanceStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingAttendanceStatus] ?? []
-        let paymentStatuses = (paymentStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingPaymentStatus] ?? []
+//        let paymentStatuses = (paymentStatusFilterViewModel.selectedValue as? MultipleFilterSelection)?.items as? [BookingPaymentStatus] ?? []
         let dateRange = dateTimeFilterViewModel.selectedValue as? BookingDateRangeFilter
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
         return Filters(teamMembers: teamMembers,
                        products: products,
                        attendanceStatuses: attendanceStatuses,
-                       paymentStatuses: paymentStatuses,
+                       paymentStatuses: /*paymentStatuses*/ [],
                        customers: customers,
                        dateRange: dateRange,
                        numberOfActiveFilters: numberOfActiveFilters)
@@ -78,7 +78,7 @@ final class BookingFiltersViewModel: FilterListViewModel {
         productFilterViewModel.selectedValue = BookingProductFilter?.none
         customerFilterViewModel.selectedValue = CustomerFilter?.none
         attendanceStatusFilterViewModel.selectedValue = BookingAttendanceStatus?.none
-        paymentStatusFilterViewModel.selectedValue = BookingPaymentStatus?.none
+//        paymentStatusFilterViewModel.selectedValue = BookingPaymentStatus?.none
         dateTimeFilterViewModel.selectedValue = BookingDateRangeFilter?.none
     }
 
@@ -157,7 +157,7 @@ extension BookingFiltersViewModel {
         case teamMember(siteID: Int64)
         case product(siteID: Int64)
         case attendanceStatus
-        case paymentStatus
+//        case paymentStatus
         case customer(siteID: Int64)
         case dateTime
     }
@@ -174,8 +174,8 @@ private extension BookingFiltersViewModel.BookingListFilter {
             return Localization.rowTitleCustomer
         case .attendanceStatus:
             return Localization.rowTitleAttendanceStatus
-        case .paymentStatus:
-            return Localization.rowTitlePaymentStatus
+//        case .paymentStatus:
+//            return Localization.rowTitlePaymentStatus
         case .dateTime:
             return Localization.rowTitleDateTime
         }
@@ -198,15 +198,15 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .bookingCustomers(siteID: siteID),
                                        selectedValue: MultipleFilterSelection(items: filters.customers))
         case .attendanceStatus:
-            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .noShow, .cancelled]
+            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .noShow/*, .cancelled*/]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: MultipleFilterSelection(items: filters.attendanceStatuses))
-        case .paymentStatus:
-            let options: [BookingPaymentStatus?] = [.paid, .unpaid, .refunded]
-            return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .multiSelectStaticOptions(options: options),
-                                       selectedValue: MultipleFilterSelection(items: filters.paymentStatuses))
+//        case .paymentStatus:
+//            let options: [BookingPaymentStatus?] = [.paid, .unpaid, .refunded]
+//            return FilterTypeViewModel(title: title,
+//                                       listSelectorConfig: .multiSelectStaticOptions(options: options),
+//                                       selectedValue: MultipleFilterSelection(items: filters.paymentStatuses))
         case .dateTime:
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .bookingDateTime,

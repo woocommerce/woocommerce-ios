@@ -342,6 +342,7 @@ private extension BookingFiltersViewModel.BookingListFilter {
             value: "Attendance Status",
             comment: "Row title for filtering bookings by attendance status.")
 
+        // periphery: ignore - to be used again later when payment status filter is restored.
         static let rowTitlePaymentStatus = NSLocalizedString(
             "bookingFilters.rowTitlePaymentStatus",
             value: "Payment Status",

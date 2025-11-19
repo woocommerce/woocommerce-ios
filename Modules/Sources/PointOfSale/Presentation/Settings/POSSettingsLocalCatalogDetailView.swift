@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct POSSettingsLocalCatalogDetailView: View {
-    // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
     private let viewModel: POSSettingsLocalCatalogViewModel
 
     init(viewModel: POSSettingsLocalCatalogViewModel) {
@@ -35,18 +34,14 @@ struct POSSettingsLocalCatalogDetailView: View {
 private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     var catalogStatus: some View {
-        VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.catalogStatus)
-
             VStack(spacing: POSSpacing.medium) {
                 fieldRowView(label: Localization.catalogSize, value: viewModel.catalogSize)
-                fieldRowView(label: Localization.lastIncrementalUpdate, value: viewModel.lastIncrementalSyncDate)
+                fieldRowView(label: Localization.lastIncrementalSync, value: viewModel.lastIncrementalSyncDate)
                 fieldRowView(label: Localization.lastFullSync, value: viewModel.lastFullSyncDate)
             }
             .padding(.bottom, POSPadding.medium)
             .redacted(reason: viewModel.isLoading ? .placeholder : [])
             .shimmering(active: viewModel.isLoading)
-        }
     }
 
     @ViewBuilder
@@ -56,7 +51,7 @@ private extension POSSettingsLocalCatalogDetailView {
             sectionHeaderView(title: Localization.managingDataUsage)
 
             VStack(spacing: POSSpacing.medium) {
-                toggleRowView(label: Localization.allowFullSyncOnCellular, isOn: $viewModel.allowFullSyncOnCellular)
+                toggleRowView(label: Localization.allowSyncOnCellular, isOn: $viewModel.allowFullSyncOnCellular)
             }
             .padding(.bottom, POSPadding.medium)
         }
@@ -78,7 +73,7 @@ private extension POSSettingsLocalCatalogDetailView {
                         await viewModel.refreshCatalog()
                     }
                 }) {
-                    Text(Localization.refreshCatalog)
+                    Text(Localization.updateCatalog)
                 }
                 .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: viewModel.isRefreshingCatalog))
             }
@@ -134,8 +129,8 @@ private extension POSSettingsLocalCatalogDetailView {
 
     enum Localization {
         static let localCatalogTitle = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.title",
-            value: "Catalog Settings",
+            "posSettingsLocalCatalogDetailView.title.1",
+            value: "Product catalog",
             comment: "Navigation title for the local catalog details in POS settings."
         )
 
@@ -146,53 +141,51 @@ private extension POSSettingsLocalCatalogDetailView {
         )
 
         static let managingDataUsage = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.managingDataUsage.1",
-            value: "Managing Data Usage",
+            "posSettingsLocalCatalogDetailView.managingDataUsage.2",
+            value: "Cellular data",
             comment: "Section title for managing data usage in Point of Sale settings."
         )
 
-        static let lastIncrementalUpdate = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.lastIncrementalSync",
-            value: "Last update",
-            comment: "Label for last incremental update field in Point of Sale settings."
+        static let lastIncrementalSync = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.lastIncrementalSync.1",
+            value: "Last incremental sync",
+            comment: "Label for last incremental sync field in Point of Sale settings."
         )
 
         static let lastFullSync = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.lastFullSync.1",
-            value: "Last full update",
+            "posSettingsLocalCatalogDetailView.lastFullSync.2",
+            value: "Last full sync",
             comment: "Label for last full sync field in Point of Sale settings."
         )
 
         static let catalogSize = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.catalogSize",
-            value: "Catalog size",
+            "posSettingsLocalCatalogDetailView.catalogSize.1",
+            value: "Size",
             comment: "Label for catalog size field in Point of Sale settings."
         )
 
-
-        static let allowFullSyncOnCellular = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1",
-            value: "Allow full update on cellular data",
-            comment: "Label for allow full sync on cellular data toggle in Point of Sale settings."
+        static let allowSyncOnCellular = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.allowSyncOnCellular.2",
+            value: "Allow sync using cellular data",
+            comment: "Label for allow sync on cellular data toggle in Point of Sale settings."
         )
 
-
         static let manualCatalogUpdate = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.manualCatalogUpdate",
-            value: "Manual Catalog Update",
+            "posSettingsLocalCatalogDetailView.manualCatalogUpdate.1",
+            value: "Catalog update",
             comment: "Section title for manual catalog update in Point of Sale settings."
         )
 
         static let manualUpdateInfo = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.manualUpdateInfo",
-            value: "Use this refresh only when something seems off - POS keeps data current automatically.",
-            comment: "Info text explaining when to use manual catalog update."
+            "posSettingsLocalCatalogDetailView.manualUpdateInfo.1",
+            value: "Update the catalog manually",
+            comment: "Info text explaining the usage of the manual catalog update button."
         )
 
-        static let refreshCatalog = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.refreshCatalog",
-            value: "Refresh catalog",
-            comment: "Button text for refreshing the catalog manually."
+        static let updateCatalog = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalog",
+            value: "Update catalog",
+            comment: "Button text for updating the catalog manually."
         )
     }
 }

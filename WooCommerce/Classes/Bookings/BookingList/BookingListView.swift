@@ -123,6 +123,16 @@ private extension BookingListView {
                     .textCase(nil)
             }
         }
+        .apply {
+            /// Plain list style in iOS prior to 26.0 comes with extra spacing at the top of header.
+            /// Use grouped style for these versions instead.
+            /// Grouped list style doesn't pin header at the top, we have to accept this.
+            if #available(iOS 26.0, *) {
+                $0.listStyle(.plain)
+            } else {
+                $0.listStyle(.grouped)
+            }
+        }
         .listStyle(.grouped)
         .scrollContentBackground(.hidden)
         .listSectionSeparator(.hidden, edges: .top)

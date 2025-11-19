@@ -30,10 +30,10 @@ FIREBASE_APP_ID = '1:124902176124:ios:02259de1e7c42b291620f9'
 FIREBASE_TESTERS_GROUP = 'woocommerce-ios---prototype-builds'
 
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
-IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '18.5' # For screenshots
+SCREENSHOTS_LOCALES = %w[ar-SA de-DE en-US en-GB es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
-SCREENSHOT_DEVICES = [
+SCREENSHOTS_DEVICES = [
   'iPhone 16 Plus',
   'iPad Pro 13-inch (M4)'
 ].freeze
@@ -882,15 +882,17 @@ platform :ios do
     xcversion
 
     # By default, clear previous screenshots
-    languages = IOS_LOCALES
+    languages = SCREENSHOTS_LOCALES
+    languages &= options[:languages].split(',')
+    if languages.empty?
+      UI.user_error!("List of languages provided (`#{options[:languages]}`) don't intersect with the known list of locales (`#{SCREENSHOTS_LOCALES}`).")
+    end
 
-    languages &= options[:languages].split(',') unless options[:languages].nil?
-
-    devices = SCREENSHOT_DEVICES
-
+    devices = SCREENSHOTS_DEVICES
     devices &= options[:devices].split(',') unless options[:devices].nil?
-
-    UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
+    if devices.empty?
+      UI.user_error!("List of devices provided (`#{devices}`) don't intersect with the known list of devices (`#{SCREENSHOTS_DEVICES}`).")
+    end
 
     puts "Creating screenshots for #{languages} on #{devices}"
 
@@ -954,13 +956,13 @@ platform :ios do
     require 'simctl'
 
     SimCtl.list_devices.each do |device|
-      next unless SCREENSHOT_DEVICES.include? device.name
+      next unless SCREENSHOTS_DEVICES.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    SCREENSHOT_DEVICES.each do |device|
+    SCREENSHOTS_DEVICES.each do |device|
       runtime = SimCtl.runtime(name: "iOS #{SIMULATOR_VERSION}")
       devicetype = SimCtl.devicetype(name: device)
 

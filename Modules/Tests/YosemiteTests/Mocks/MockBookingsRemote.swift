@@ -9,6 +9,7 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
     private var fetchResourceResult: Result<BookingResource?, Error>?
     private var updateBookingResult: Result<Booking?, Error>?
     private var fetchResourcesResult: Result<[BookingResource], Error>?
+    private var updateBookingNote: Result<Booking?, Error>?
 
     func whenLoadingAllBookings(thenReturn result: Result<[Booking], Error>) {
         loadAllBookingsResult = result
@@ -59,7 +60,8 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
     func updateBooking(from siteID: Int64,
                        bookingID: Int64,
                        attendanceStatus: BookingAttendanceStatus?,
-                       bookingStatus: BookingStatus?) async throws -> Booking? {
+                       bookingStatus: BookingStatus?,
+                       note: String?) async throws -> Booking? {
         guard let result = updateBookingResult else {
             throw NetworkError.timeout()
         }

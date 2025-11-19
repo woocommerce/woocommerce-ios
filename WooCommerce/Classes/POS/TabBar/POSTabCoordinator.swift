@@ -47,17 +47,21 @@ final class POSTabCoordinator {
     /// Local catalog eligibility service - created asynchronously during init
     private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
-    private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
+    /// Creates item fetch strategy factory with current local catalog eligibility
+    private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                             credentials: credentials,
                                             selectedSite: defaultSitePublisher,
                                             appPasswordSupportState: isAppPasswordSupported,
-                                            grdbManager: ServiceLocator.grdbManager)
-    }()
+                                            grdbManager: ServiceLocator.grdbManager,
+                                            isLocalCatalogEnabled: isLocalCatalogEnabled)
+    }
 
-    private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
-        PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
-    }()
+    /// Creates popular item fetch strategy factory with current local catalog eligibility
+    private func createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleFixedItemFetchStrategyFactory {
+        let itemFactory = createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEnabled)
+        return PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: itemFactory.popularStrategy())
+    }
 
     private lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
         PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
@@ -230,8 +234,8 @@ private extension POSTabCoordinator {
                                                   appPasswordSupportState: isAppPasswordSupported) {
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
-                    itemFetchStrategyFactory: posItemFetchStrategyFactory,
-                    popularItemFetchStrategyFactory: posPopularItemFetchStrategyFactory,
+                    itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                    popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
                     couponProvider: posCouponProvider,
                     couponFetchStrategyFactory: posCouponFetchStrategyFactory,
                     orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(

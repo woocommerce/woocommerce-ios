@@ -51,7 +51,8 @@ final class POSTabCoordinator {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                             credentials: credentials,
                                             selectedSite: defaultSitePublisher,
-                                            appPasswordSupportState: isAppPasswordSupported)
+                                            appPasswordSupportState: isAppPasswordSupported,
+                                            grdbManager: ServiceLocator.grdbManager)
     }()
 
     private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {

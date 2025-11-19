@@ -26,6 +26,8 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        let startTime = Date()
+
         // Get total count and persisted products in one transaction
         let (persistedProducts, totalCount) = try await grdbManager.databaseConnection.read { db in
             let totalCount = try PersistedProduct
@@ -48,6 +50,12 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
         }
 
         let hasMorePages = (pageNumber * pageSize) < totalCount
+
+        if pageNumber == 1 {
+            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
+            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
+                                                           totalItems: totalCount)
+        }
 
         return PagedItems(items: products,
                          hasMorePages: hasMorePages,

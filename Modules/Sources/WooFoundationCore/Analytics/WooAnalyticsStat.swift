@@ -1275,6 +1275,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleKeyboardDismissedInSearch = "keyboard_dismissed_in_search"
     case pointOfSaleItemsNextPageLoaded = "items_next_page_loaded"
     case pointOfSaleSearchRemoteResultsFetched = "search_remote_results_fetched"
+    case pointOfSaleSearchResultsFetched = "search_results_fetched"
     case pointOfSaleBarcodeScanningMenuItemTapped = "barcode_scanning_menu_item_tapped"
     case pointOfSaleBarcodeScanningExplanationDialogShown = "barcode_scanning_explanation_dialog_shown"
     case pointOfSaleBarcodeScannerSetupFlowShown = "barcode_scanner_setup_flow_shown"

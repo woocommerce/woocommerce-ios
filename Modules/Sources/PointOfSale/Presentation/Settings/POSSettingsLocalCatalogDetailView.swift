@@ -90,19 +90,6 @@ private extension POSSettingsLocalCatalogDetailView {
             }
         }
     }
-
-    @ViewBuilder
-    func sectionHeaderView(title: String) -> some View {
-        ZStack {
-            Style.backgroundColor
-            Text(title)
-                .font(.posBodyLargeBold)
-                .foregroundColor(.posOnSurface)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.vertical, POSPadding.small)
-        }
-    }
 }
 
 private extension POSSettingsLocalCatalogDetailView {
@@ -115,12 +102,6 @@ private extension POSSettingsLocalCatalogDetailView {
             "posSettingsLocalCatalogDetailView.title.1",
             value: "Product catalog",
             comment: "Navigation title for the local catalog details in POS settings."
-        )
-
-        static let catalogStatus = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.catalogStatus",
-            value: "Catalog Status",
-            comment: "Section title for catalog status in Point of Sale settings."
         )
 
         static let managingDataUsage = NSLocalizedString(

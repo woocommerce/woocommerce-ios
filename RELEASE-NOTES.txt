@@ -3,7 +3,7 @@
 
 23.8
 -----
-
+- [*] Crash fix attempt to resolve the race condition in request authenticator swapping [https://github.com/woocommerce/woocommerce-ios/pull/16370]
 
 23.7
 -----

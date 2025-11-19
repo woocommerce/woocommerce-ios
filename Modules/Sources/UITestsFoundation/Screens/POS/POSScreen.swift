@@ -122,4 +122,40 @@ public final class POSScreen: ScreenObject {
 
         return self
     }
+
+    @discardableResult
+    public func tapMenuButton() -> Self {
+        let menuButton = app.buttons["pos-menu-button"]
+
+        guard menuButton.waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        menuButton.tap()
+        return self
+    }
+
+    @discardableResult
+    public func tapExitMenuItem() -> Self {
+        let exitMenuItem = app.buttons["pos-exit-menu-item"]
+
+        guard exitMenuItem.waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        exitMenuItem.tap()
+        return self
+    }
+
+    @discardableResult
+    public func confirmExitPOS() throws -> TabNavComponent {
+        let exitButton = app.buttons["pos-exit-confirm-button"]
+
+        guard exitButton.waitForExistence(timeout: 3) else {
+            return try TabNavComponent()
+        }
+
+        exitButton.tap()
+        return try TabNavComponent()
+    }
 }

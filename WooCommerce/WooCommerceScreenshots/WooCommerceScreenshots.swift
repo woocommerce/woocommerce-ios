@@ -50,23 +50,6 @@ class WooCommerceScreenshots: XCTestCase {
         // The interruption monitor above only activates when the app receives user interaction.
         app.tap()
 
-        // POS
-        try TabNavComponent()
-            .goToPOSScreen()
-            .tapAddProduct(productID: 1)
-            .tapAddProduct(productID: 2)
-            .thenTakeScreenshot(named: "test-pos-screenshot", orientation: .landscapeLeft)
-            .tapConnectReader()
-            .waitForReaderConnected()
-            .tapCheckout()
-            .waitForTotalsLoaded()
-            .waitForCardPaymentReady()
-            .thenTakeScreenshot(named: "test-pos-screenshot-2", orientation: .landscapeLeft)
-            .tapCashPayment()
-            .tapMarkPaymentComplete()
-            .waitForPaymentSuccess()
-            .thenTakeScreenshot(named: "test-pos-screenshot-3", orientation: .landscapeLeft)
-
         // My Store
         try TabNavComponent()
             .goToMyStoreScreen()
@@ -90,6 +73,26 @@ class WooCommerceScreenshots: XCTestCase {
         .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
         .goBackToOrdersScreen()
+
+        // POS
+        try TabNavComponent()
+            .goToPOSScreen()
+            .tapAddProduct(productID: 1)
+            .tapAddProduct(productID: 2)
+            .thenTakeScreenshot(named: "pos-dashboard", orientation: .landscapeLeft)
+            .tapConnectReader()
+            .waitForReaderConnected()
+            .tapCheckout()
+            .waitForTotalsLoaded()
+            .waitForCardPaymentReady()
+            .thenTakeScreenshot(named: "pos-payment", orientation: .landscapeLeft)
+            .tapCashPayment()
+            .tapMarkPaymentComplete()
+            .waitForPaymentSuccess()
+            .thenTakeScreenshot(named: "pos-success", orientation: .landscapeLeft)
+            .tapMenuButton()
+            .tapExitMenuItem()
+            .confirmExitPOS()
 
         // Products
         try TabNavComponent()

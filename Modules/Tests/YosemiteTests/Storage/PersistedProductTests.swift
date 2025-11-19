@@ -612,8 +612,8 @@ struct PersistedProductTests {
         #expect(products.first?.statusKey == "publish")
     }
 
-    @Test("posProductsRequest filters out draft, pending, and private products")
-    func posProductsRequest_filters_out_draft_pending_private_products() throws {
+    @Test("posProductsRequest filters out draft, and pending products")
+    func posProductsRequest_filters_out_draft_pending_products() throws {
         // Given
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
@@ -681,26 +681,6 @@ struct PersistedProductTests {
                 statusKey: "pending"
             )
             try pendingProduct.insert(db)
-
-            // Insert private product (should be filtered out)
-            let privateProduct = PersistedProduct(
-                id: 4,
-                siteID: 1,
-                name: "Private Product",
-                productTypeKey: "simple",
-                fullDescription: nil,
-                shortDescription: nil,
-                sku: nil,
-                globalUniqueID: nil,
-                price: "40.00",
-                downloadable: false,
-                parentID: 0,
-                manageStock: false,
-                stockQuantity: nil,
-                stockStatusKey: "instock",
-                statusKey: "private"
-            )
-            try privateProduct.insert(db)
         }
 
         // When

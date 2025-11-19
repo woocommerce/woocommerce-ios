@@ -108,8 +108,7 @@ public extension PersistedProduct {
         let excludedStatuses = [
             "trash",
             "draft",
-            "pending",
-            "private"
+            "pending"
         ]
 
         return PersistedProduct

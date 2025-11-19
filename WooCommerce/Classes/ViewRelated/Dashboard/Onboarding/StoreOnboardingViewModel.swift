@@ -119,7 +119,11 @@ class StoreOnboardingViewModel: ObservableObject {
         }
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .onboarding))
-        update(state: .loading)
+        if taskViewModels.isEmpty {
+            update(state: .loading)
+        } else {
+            update(state: .loaded(rows: taskViewModels))
+        }
 
         let tasks: [StoreOnboardingTaskViewModel]
         var syncingError: Error?

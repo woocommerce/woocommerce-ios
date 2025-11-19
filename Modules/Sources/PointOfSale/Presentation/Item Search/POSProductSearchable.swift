@@ -2,6 +2,7 @@ import Foundation
 import enum Yosemite.POSItemType
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItem
+import enum Yosemite.SearchDebounceStrategy
 
 final class POSProductSearchable: POSSearchable {
     private let itemListType: ItemListType
@@ -22,6 +23,10 @@ final class POSProductSearchable: POSSearchable {
 
     var searchFieldPlaceholder: String {
         itemListType.itemType.searchFieldLabel
+    }
+
+    var debounceStrategy: SearchDebounceStrategy {
+        itemsController.currentDebounceStrategy
     }
 
     func performSearch(term: String) async {

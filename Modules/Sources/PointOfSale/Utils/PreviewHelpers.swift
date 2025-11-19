@@ -18,6 +18,7 @@ import struct Yosemite.POSProduct
 import struct Yosemite.POSProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
+import enum Yosemite.SearchDebounceStrategy
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
@@ -105,6 +106,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
+    var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
     func enableCoupons() async { }
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
@@ -117,6 +119,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
+
+    var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {

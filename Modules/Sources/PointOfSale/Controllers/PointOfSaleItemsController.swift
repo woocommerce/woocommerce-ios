@@ -10,6 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 import class Yosemite.AsyncPaginationTracker
+import enum Yosemite.SearchDebounceStrategy
 
 protocol PointOfSaleItemsControllerProtocol {
     ///
@@ -26,6 +27,8 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
     func clearSearchItems(baseItem: ItemListBaseItem)
+    /// The debouncing strategy from the current fetch strategy
+    var currentDebounceStrategy: SearchDebounceStrategy { get }
 }
 
 
@@ -69,12 +72,17 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
                                                                 analytics: POSItemFetchAnalytics(itemType: .product,
                                                                                                  analytics: analyticsProvider))
-        setSearchingState(base: baseItem)
+        // Don't set searching state here - let the caller control when to show loading indicators
+        // via clearSearchResults(). This allows for delayed loading indicators for fast queries.
         await loadFirstPage(base: baseItem)
     }
 
     func clearSearchItems(baseItem: ItemListBaseItem) {
         setSearchingState(base: baseItem)
+    }
+
+    var currentDebounceStrategy: SearchDebounceStrategy {
+        fetchStrategy.debounceStrategy
     }
 
     @MainActor

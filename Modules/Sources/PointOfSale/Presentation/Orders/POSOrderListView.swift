@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
+import enum Yosemite.SearchDebounceStrategy
 
 struct POSOrderListView: View {
     @Binding var isSearching: Bool
@@ -362,6 +363,13 @@ final class POSOrderSearchable: POSSearchable {
 
     var searchHistory: [String] {
         []
+    }
+
+    var debounceStrategy: SearchDebounceStrategy {
+        // Use smart debouncing for order search to match original behavior:
+        // don't debounce first keystroke to show loading immediately,
+        // then debounce subsequent keystrokes while search is ongoing
+        .smart(duration: 500 * NSEC_PER_MSEC)
     }
 
     func performSearch(term: String) async {

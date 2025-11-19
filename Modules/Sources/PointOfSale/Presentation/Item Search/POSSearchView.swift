@@ -1,12 +1,15 @@
 import SwiftUI
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
+import enum Yosemite.SearchDebounceStrategy
 
 /// Protocol defining search capabilities for POS items
 protocol POSSearchable {
     var searchFieldPlaceholder: String { get }
     /// Recent search history for the current item type
     var searchHistory: [String] { get }
+    /// The debouncing strategy to use for search input
+    var debounceStrategy: SearchDebounceStrategy { get }
 
     /// Called when a search should be performed
     /// - Parameter term: The search term to use
@@ -54,24 +57,64 @@ struct POSSearchField: View {
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
             .onChange(of: searchTerm) { oldValue, newValue in
-                // The debouncing logic is a little tricky, because the loading state is held in the controller.
-                // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
-
-                // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
-                // However, we don't want to debounce the first keystroke of a new search, so that the loading
-                // state shows immediately and the UI feels responsive.
-
-                // So, if the last search was finished, we don't debounce the first character. If it didn't
-                // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
-                // the ongoing search is redundant now there's a new search term, so we cancel it.
-                let shouldDebounceNextSearchRequest = !didFinishSearch
+                // Cancel any ongoing search
                 searchTask?.cancel()
 
                 searchTask = Task {
-                    if shouldDebounceNextSearchRequest {
-                        try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
-                    } else {
-                        searchable.clearSearchResults()
+                    // Apply debouncing based on the strategy from the fetch strategy
+                    switch searchable.debounceStrategy {
+                    case .smart(let duration):
+                        // Smart debouncing: Skip debounce on first keystroke after search completes,
+                        // then debounce subsequent keystrokes
+                        let shouldDebounce = !didFinishSearch
+                        if shouldDebounce {
+                            try? await Task.sleep(nanoseconds: duration)
+                        } else {
+                            searchable.clearSearchResults()
+                        }
+
+                    case .simple(let duration, let loadingDelayThreshold):
+                        // Simple debouncing: Always debounce
+                        try? await Task.sleep(nanoseconds: duration)
+
+                        guard !Task.isCancelled else { return }
+                        guard newValue.isNotEmpty else {
+                            didFinishSearch = true
+                            return
+                        }
+
+                        didFinishSearch = false
+
+                        if let threshold = loadingDelayThreshold {
+                            // Delay showing loading indicators to avoid flicker for fast queries
+                            // Create a loading task that shows indicators after threshold
+                            let loadingTask = Task { @MainActor in
+                                try? await Task.sleep(nanoseconds: threshold)
+                                // Only show loading if not cancelled
+                                if !Task.isCancelled {
+                                    searchable.clearSearchResults()
+                                }
+                            }
+
+                            // Perform the search
+                            await searchable.performSearch(term: newValue)
+
+                            // Cancel loading task if search completed before threshold
+                            loadingTask.cancel()
+                        } else {
+                            // No loading delay threshold - show loading immediately
+                            searchable.clearSearchResults()
+                            await searchable.performSearch(term: newValue)
+                        }
+
+                        if !Task.isCancelled {
+                            didFinishSearch = true
+                        }
+                        return
+
+                    case .immediate:
+                        // No debouncing
+                        break
                     }
 
                     guard !Task.isCancelled else { return }

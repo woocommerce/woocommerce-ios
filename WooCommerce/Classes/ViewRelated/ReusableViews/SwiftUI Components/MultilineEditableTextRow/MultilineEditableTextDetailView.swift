@@ -14,7 +14,6 @@ struct MultilineEditableTextDetailView: View {
     @FocusState private var isFocused: Bool
     @State private var notice: Notice?
     @State private var isSaving = false
-    @State private var errorMessage: String?
 
     let title: String?
     let onCommit: (String) async -> MultilineCommitResult

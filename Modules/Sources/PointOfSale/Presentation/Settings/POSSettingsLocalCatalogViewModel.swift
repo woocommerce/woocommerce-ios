@@ -150,7 +150,7 @@ private extension POSSettingsLocalCatalogViewModel {
     enum Localization {
         static let catalogSizeFormat = NSLocalizedString(
             "posSettingsLocalCatalogViewModel.catalogSizeFormat",
-            value: "%1$d products, %2$ld variations",
+            value: "%1$d products and %2$ld variations",
             comment: "Format string for catalog size showing product count and variation count. " +
             "%1$d will be replaced by the product count, and %2$ld will be replaced by the variation count."
         )

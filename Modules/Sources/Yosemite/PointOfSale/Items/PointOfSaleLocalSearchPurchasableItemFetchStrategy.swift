@@ -25,6 +25,13 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
         self.pageSize = pageSize
     }
 
+    public var debounceStrategy: SearchDebounceStrategy {
+        // Use simple debouncing for local search: always debounce to prevent excessive queries
+        // even though local searches are fast. 100ms provides responsive feel while preventing
+        // queries on every keystroke. Delay loading indicators by 150ms to avoid flicker for fast queries.
+        .simple(duration: 150 * NSEC_PER_MSEC, loadingDelayThreshold: 300 * NSEC_PER_MSEC)
+    }
+
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         let startTime = Date()
 

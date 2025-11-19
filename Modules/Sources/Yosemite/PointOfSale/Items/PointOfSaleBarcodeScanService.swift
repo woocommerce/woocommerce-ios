@@ -1,6 +1,7 @@
 import Foundation
 import protocol Networking.ProductsRemoteProtocol
 import class Networking.ProductsRemote
+import enum Networking.ProductStatus
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
 import enum Networking.NetworkError
@@ -58,6 +59,10 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     /// - Returns: A POSItem if found, or throws an error
     public func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         let productOrVariation = try await loadPOSProduct(barcode: barcode)
+
+        // Validate that the product status is allowed for POS
+        try validateProductStatus(productOrVariation, scannedCode: barcode)
+
         return try await itemResolver.itemForProductOrVariation(productOrVariation, scannedCode: barcode)
     }
 
@@ -69,6 +74,15 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
             throw .notFound(scannedCode: barcode)
         } catch {
             throw .loadingError(scannedCode: barcode, underlyingError: error)
+        }
+    }
+
+    /// Validates that the product status is allowed for POS
+    /// Throws notFound error if product has a status that should be excluded from POS
+    private func validateProductStatus(_ product: POSProduct, scannedCode: String) throws(PointOfSaleBarcodeScanError) {
+        let excludedStatuses: [ProductStatus] = [.trash, .draft, .pending, .privateStatus]
+        if excludedStatuses.contains(product.productStatus) {
+            throw .notFound(scannedCode: scannedCode)
         }
     }
 }

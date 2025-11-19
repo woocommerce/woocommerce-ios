@@ -9,10 +9,11 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - modifiedAfter: Only products modified after this date will be returned.
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
+    ///   - includeStatus: Optional status to include (e.g., "trash" to fetch trashed products).
     /// - Returns: Paginated list of POS products.
     // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
     // periphery:ignore
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct>
+    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String?) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations modified after the specified date for incremental sync.
     ///
@@ -109,17 +110,22 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - modifiedAfter: Only products modified after this date will be returned.
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
+    ///   - includeStatus: Optional status to include (e.g., "trash" to fetch trashed products).
     /// - Returns: Paginated list of POS products.
     ///
-    public func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int)
+    public func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String? = nil)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
-        let parameters = [
+        var parameters: [String: String] = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+
+        if let includeStatus = includeStatus {
+            parameters[ParameterKey.includeStatus] = includeStatus
+        }
 
         let request = JetpackRequest(
             wooApiVersion: .mark3,
@@ -399,6 +405,7 @@ private extension POSCatalogSyncRemote {
         static let fields = "_fields"
         static let fullSyncFields = "fields"
         static let forceGenerate = "force_generate"
+        static let includeStatus = "include_status"
     }
 
     enum Path {

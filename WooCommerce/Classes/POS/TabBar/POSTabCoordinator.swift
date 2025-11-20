@@ -200,7 +200,6 @@ private extension POSTabCoordinator {
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
-            // Use mock card payment service for screenshot tests
             let cardPresentPaymentService: CardPresentPaymentFacade
             if ProcessConfiguration.shouldBypassCardPresentPayment {
                 cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
@@ -232,16 +231,16 @@ private extension POSTabCoordinator {
                                                       selectedSite: defaultSitePublisher,
                                                       appPasswordSupportState: isAppPasswordSupported) {
 
-                // Use mock order service for screenshot tests to bypass network calls
                 let orderService: POSOrderServiceProtocol
                 if ProcessConfiguration.shouldBypassPOSOrderSyncing {
                     orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
-                } else if let realService = POSOrderService(siteID: siteID,
+                } else if let posOrderService = POSOrderService(siteID: siteID,
                                                            credentials: credentials,
                                                            selectedSite: defaultSitePublisher,
                                                            appPasswordSupportState: isAppPasswordSupported) {
-                    orderService = realService
+                    orderService = posOrderService
                 } else {
+                    DDLogError("POSOrderService not provided")
                     return
                 }
 

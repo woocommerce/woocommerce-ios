@@ -62,6 +62,14 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
         fetchStrategy.debounceStrategy
     }
 
+    var searchDebounceStrategy: SearchDebounceStrategy {
+        // Return the debounce strategy that would be used for a search
+        let searchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: "",
+                                                                 analytics: POSItemFetchAnalytics(itemType: .coupon,
+                                                                                                  analytics: analyticsProvider))
+        return searchStrategy.debounceStrategy
+    }
+
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
         guard paginationTracker.hasNextPage else {

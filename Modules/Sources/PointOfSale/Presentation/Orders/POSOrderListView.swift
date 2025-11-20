@@ -372,6 +372,11 @@ final class POSOrderSearchable: POSSearchable {
         .smart(duration: 500 * NSEC_PER_MSEC)
     }
 
+    var searchDebounceStrategy: SearchDebounceStrategy {
+        // Orders use the same strategy for both modes
+        debounceStrategy
+    }
+
     func performSearch(term: String) async {
         await ordersController.searchOrders(searchTerm: term)
     }

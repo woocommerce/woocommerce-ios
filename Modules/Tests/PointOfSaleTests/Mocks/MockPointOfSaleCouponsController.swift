@@ -9,6 +9,7 @@ final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtoc
                                                itemsStack: .init(root: .empty, itemStates: [:]))
 
     var currentDebounceStrategy: SearchDebounceStrategy = .immediate
+    var searchDebounceStrategy: SearchDebounceStrategy = .smart(duration: 500 * NSEC_PER_MSEC)
 
     func loadItems(base: ItemListBaseItem) async {
         loadItemsCalled = true

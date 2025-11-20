@@ -9,6 +9,7 @@ final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchin
                                                itemsStack: .init(root: .empty, itemStates: [:]))
 
     var currentDebounceStrategy: SearchDebounceStrategy = .immediate
+    var searchDebounceStrategy: SearchDebounceStrategy = .smart(duration: 500 * NSEC_PER_MSEC)
 
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {}
 

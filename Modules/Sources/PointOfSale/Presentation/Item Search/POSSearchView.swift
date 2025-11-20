@@ -10,6 +10,8 @@ protocol POSSearchable {
     var searchHistory: [String] { get }
     /// The debouncing strategy to use for search input
     var debounceStrategy: SearchDebounceStrategy { get }
+    /// The debouncing strategy that will be used when performing a search (may differ from current strategy)
+    var searchDebounceStrategy: SearchDebounceStrategy { get }
 
     /// Called when a search should be performed
     /// - Parameter term: The search term to use
@@ -60,9 +62,14 @@ struct POSSearchField: View {
                 // Cancel any ongoing search
                 searchTask?.cancel()
 
+                // Capture the debounce strategy synchronously BEFORE creating the task.
+                // Use searchDebounceStrategy for non-empty search terms (actual searches),
+                // and debounceStrategy for empty terms (returning to popular products).
+                let debounceStrategy = newValue.isNotEmpty ? searchable.searchDebounceStrategy : searchable.debounceStrategy
+
                 searchTask = Task {
-                    // Apply debouncing based on the strategy from the fetch strategy
-                    switch searchable.debounceStrategy {
+                    // Apply debouncing based on the strategy captured at the start
+                    switch debounceStrategy {
                     case .smart(let duration, let loadingDelayThreshold):
                         // Smart debouncing: Don't debounce first keystroke, but debounce subsequent keystrokes
                         // The loading indicator behavior depends on whether there's a threshold:
@@ -186,7 +193,6 @@ struct POSSearchField: View {
         }
         .onAppear {
             isSearchFieldFocused = true
-            didFinishSearch = true  // Reset state when search view appears
         }
     }
 }

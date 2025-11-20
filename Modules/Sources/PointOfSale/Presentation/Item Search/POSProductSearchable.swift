@@ -29,6 +29,10 @@ final class POSProductSearchable: POSSearchable {
         itemsController.currentDebounceStrategy
     }
 
+    var searchDebounceStrategy: SearchDebounceStrategy {
+        itemsController.searchDebounceStrategy
+    }
+
     func performSearch(term: String) async {
         await itemsController.searchItems(searchTerm: term, baseItem: .root)
     }

@@ -74,8 +74,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
                                                                 analytics: POSItemFetchAnalytics(itemType: .product,
                                                                                                  analytics: analyticsProvider))
-        // Don't set searching state here - let the caller control when to show loading indicators
-        // via clearSearchResults(). This allows for delayed loading indicators for fast queries.
         await loadFirstPage(base: baseItem)
     }
 

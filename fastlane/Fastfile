@@ -94,7 +94,7 @@ GLOTPRESS_APP_STORE_METADATA_PROJECT_URL = 'https://translate.wordpress.com/proj
 # (i.e. you want the `en-US` metadata copies to be _different_ from the metadata copies used as base and fallback for the translation in other locales)
 # Set this to `false` otherwise, so that we prevent the accidental case of forgetting to update the `en-US` metadata copies when updating the `default`
 # copies during an ASO update, if it was not the intention for those to differ.
-ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE = true
+ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE = false
 # List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
 #
 # TODO: Replace with `LocaleHelper` once provided by release toolkit (https://github.com/wordpress-mobile/release-toolkit/pull/296)

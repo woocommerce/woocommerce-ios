@@ -81,12 +81,15 @@ struct SearchDebounceStrategyTests {
 struct FetchStrategyDebouncingTests {
     private let siteID: Int64 = 123
     private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()
+    private let mockProductsRemote = MockProductsRemote()
+    private let mockVariationsRemote = MockProductVariationsRemote()
+    private let mockCouponStoreMethods = MockCouponStoreMethods()
 
     // MARK: - Local Search Strategy Tests
 
     @Test("Local search strategy returns simple debouncing with loading delay threshold")
     func test_local_search_strategy_returns_simple_debouncing_with_threshold() async throws {
-        let grdbManager = try GRDBManager()
+        let grdbManager = try await GRDBManager()
 
         // Initialize site
         try await grdbManager.databaseConnection.write { db in
@@ -97,7 +100,7 @@ struct FetchStrategyDebouncingTests {
             siteID: siteID,
             searchTerm: "test",
             grdbManager: grdbManager,
-            variationsRemote: MockProductVariationsRemote(),
+            variationsRemote: mockVariationsRemote,
             analytics: mockAnalytics
         )
 
@@ -112,8 +115,8 @@ struct FetchStrategyDebouncingTests {
         let strategy = PointOfSaleSearchPurchasableItemFetchStrategy(
             siteID: siteID,
             searchTerm: "test",
-            productsRemote: MockProductsRemote(),
-            variationsRemote: MockProductVariationsRemote(),
+            productsRemote: mockProductsRemote,
+            variationsRemote: mockVariationsRemote,
             analytics: mockAnalytics
         )
 
@@ -127,8 +130,8 @@ struct FetchStrategyDebouncingTests {
     func test_default_purchasable_item_strategy_returns_immediate_debouncing() {
         let strategy = PointOfSaleDefaultPurchasableItemFetchStrategy(
             siteID: siteID,
-            productsRemote: MockProductsRemote(),
-            variationsRemote: MockProductVariationsRemote(),
+            productsRemote: mockProductsRemote,
+            variationsRemote: mockVariationsRemote,
             analytics: mockAnalytics
         )
 
@@ -162,164 +165,5 @@ struct FetchStrategyDebouncingTests {
         )
 
         #expect(strategy.debounceStrategy == .immediate)
-    }
-}
-
-// MARK: - Mock Types
-
-private final class MockProductsRemote: ProductsRemoteProtocol {
-    func loadSimpleProducts(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
-        ([], false)
-    }
-
-    func loadAllProducts(for siteID: Int64,
-                         context: String?,
-                         pageNumber: Int,
-                         pageSize: Int,
-                         stockStatus: Networking.ProductStockStatus?,
-                         productStatus: Networking.ProductStatus?,
-                         productType: Networking.ProductType?,
-                         productCategory: Networking.ProductCategoryID?,
-                         orderBy: Networking.ProductsRemote.OrderKey,
-                         order: Networking.ProductsRemote.Order,
-                         excludedProductIDs: [Int64],
-                         includedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
-        ([], false)
-    }
-
-    func loadAllProducts(for siteID: Int64,
-                         context: String?,
-                         pageNumber: Int,
-                         pageSize: Int,
-                         stockStatus: Networking.ProductStockStatus?,
-                         productStatus: Networking.ProductStatus?,
-                         productType: Networking.ProductType?,
-                         productCategory: Networking.ProductCategoryID?,
-                         orderBy: Networking.ProductsRemote.OrderKey,
-                         order: Networking.ProductsRemote.Order,
-                         excludedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
-        ([], false)
-    }
-
-    func searchProducts(for siteID: Int64,
-                        keyword: String,
-                        pageNumber: Int,
-                        pageSize: Int,
-                        stockStatus: Networking.ProductStockStatus?,
-                        productStatus: Networking.ProductStatus?,
-                        productType: Networking.ProductType?,
-                        excludedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
-        ([], false)
-    }
-
-    func searchProducts(for siteID: Int64,
-                        keyword: String,
-                        pageNumber: Int,
-                        pageSize: Int,
-                        excludeTypes: [String]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
-        ([], false)
-    }
-
-    func searchSku(for siteID: Int64, sku: String, pageNumber: Int, pageSize: Int) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
-        ([], false)
-    }
-
-    func loadProduct(for siteID: Int64, productID: Int64) async throws -> Networking.Product {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func updateProducts(_ products: [Networking.Product]) async throws -> [Networking.Product] {
-        []
-    }
-
-    func deleteProduct(for siteID: Int64, productID: Int64, forceDelete: Bool) async throws -> Networking.Product {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func retrieveProductShippingClass(for siteID: Int64, remoteID: Int64) async throws -> Networking.ProductShippingClass {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func addProduct(product: Networking.Product) async throws -> Networking.Product {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func searchProductsForPointOfSale(for siteID: Int64,
-                                      keyword: String,
-                                      pageNumber: Int,
-                                      pageSize: Int,
-                                      stockStatus: Networking.ProductStockStatus?) async throws
-    -> Networking.PagedItems<Networking.POSProduct> {
-        .init(items: [], hasMorePages: false, totalItems: nil)
-    }
-
-    func loadProductsForPointOfSale(for siteID: Int64,
-                                    pageNumber: Int,
-                                    pageSize: Int,
-                                    stockStatus: Networking.ProductStockStatus?) async throws
-    -> Networking.PagedItems<Networking.POSProduct> {
-        .init(items: [], hasMorePages: false, totalItems: nil)
-    }
-
-    func loadPopularProductsForPointOfSale(for siteID: Int64) async throws -> [Networking.POSProduct] {
-        []
-    }
-}
-
-private final class MockProductVariationsRemote: ProductVariationsRemoteProtocol {
-    func loadVariationsForPointOfSale(for siteID: Int64,
-                                      parentProductID: Int64,
-                                      pageNumber: Int) async throws
-    -> Networking.PagedItems<Networking.POSProductVariation> {
-        .init(items: [], hasMorePages: false, totalItems: nil)
-    }
-
-    func loadAllVariations(for siteID: Int64, productID: Int64, context: String?) async throws -> [Networking.ProductVariation] {
-        []
-    }
-
-    func loadVariation(for siteID: Int64, productID: Int64, variationID: Int64) async throws -> Networking.ProductVariation {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func updateVariation(_ variation: Networking.ProductVariation) async throws -> Networking.ProductVariation {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func createVariation(_ variation: Networking.ProductVariation) async throws -> Networking.ProductVariation {
-        throw NSError(domain: "test", code: 0)
-    }
-
-    func deleteVariation(siteID: Int64, productID: Int64, variationID: Int64) async throws -> Networking.ProductVariation {
-        throw NSError(domain: "test", code: 0)
-    }
-}
-
-private final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
-    func synchronizeCoupons(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> Bool {
-        false
-    }
-
-    func searchCoupons(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) async throws {
-    }
-}
-
-private final class MockPOSItemFetchAnalyticsTracking: POSItemFetchAnalyticsTracking {
-    var spyLocalSearchMilliseconds: Int?
-    var spyLocalSearchTotalItems: Int?
-    var spyRemoteSearchMilliseconds: Int?
-    var spyRemoteSearchTotalItems: Int?
-
-    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
-        spyLocalSearchMilliseconds = millisecondsSinceRequestSent
-        spyLocalSearchTotalItems = totalItems
-    }
-
-    func trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
-        spyRemoteSearchMilliseconds = millisecondsSinceRequestSent
-        spyRemoteSearchTotalItems = totalItems
-    }
-
-    func trackFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
     }
 }

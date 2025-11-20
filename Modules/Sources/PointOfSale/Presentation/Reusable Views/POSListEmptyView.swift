@@ -197,7 +197,7 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
             comment: "Text appearing on screen when a POS product search returns no results."
         )
         static let emptyProductsSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3",
             value: "We couldn't find any matching products. Try adjusting your search term.",
             comment: "Subtitle text suggesting to modify search terms when no products are found in the POS product search."
         )

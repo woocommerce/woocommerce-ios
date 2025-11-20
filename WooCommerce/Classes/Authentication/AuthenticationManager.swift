@@ -372,7 +372,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }()
 
-        // Only show the tutorial if the error can be solved by the app password flow.
+        // Show the tutorial immediately if it's obvious that the error can be solved by the app password flow.
         if isAppPasswordAuthError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
@@ -798,10 +798,20 @@ private extension AuthenticationManager {
     /// Presents login error alert before redirecting user to the site login using a web view.
     ///
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
-
+        let shouldEnableWebFlow: Bool = {
+            if let siteCredentialError = error as? SiteCredentialLoginError,
+               case .invalidCredentials = siteCredentialError {
+                return true
+            }
+            return false
+        }()
+        let defaultAction = shouldEnableWebFlow ? { [weak self] in
+            guard let self else { return }
+            presentApplicationPasswordWebView(for: siteURL, in: viewController)
+        } : nil
         let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
-            defaultAction: nil
+            defaultAction: defaultAction
         )
 
         viewController.present(alertController, animated: true)

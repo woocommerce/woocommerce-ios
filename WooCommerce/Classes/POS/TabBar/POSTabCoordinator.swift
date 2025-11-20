@@ -53,7 +53,7 @@ final class POSTabCoordinator {
                                             credentials: credentials,
                                             selectedSite: defaultSitePublisher,
                                             appPasswordSupportState: isAppPasswordSupported,
-                                            grdbManager: ServiceLocator.grdbManager,
+                                            grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
                                             isLocalCatalogEnabled: isLocalCatalogEnabled)
     }
 

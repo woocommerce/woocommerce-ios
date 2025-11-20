@@ -49,7 +49,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         await sut.loadCatalogData()
 
         // Then
-        #expect(sut.catalogSize == "150 products, 75 variations")
+        #expect(sut.catalogSize == "150 products and 75 variations")
         #expect(sut.lastFullSyncDate.contains("ago"))
         #expect(sut.lastIncrementalSyncDate.contains("ago"))
         #expect(sut.isLoading == false)
@@ -81,7 +81,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         await sut.loadCatalogData()
 
         // Then
-        #expect(sut.catalogSize == "100 products, 50 variations")
+        #expect(sut.catalogSize == "100 products and 50 variations")
         #expect(sut.lastFullSyncDate == "Not updated")
         #expect(sut.lastIncrementalSyncDate == "Not updated")
     }
@@ -128,7 +128,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         // Then
         #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
         #expect(catalogSyncCoordinator.performFullSyncSiteID == sampleSiteID)
-        #expect(sut.catalogSize == "200 products, 100 variations")
+        #expect(sut.catalogSize == "200 products and 100 variations")
         #expect(sut.isRefreshingCatalog == false)
     }
 
@@ -198,7 +198,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         await refreshTask.value
 
         // Then
-        #expect(sut.catalogSize == "100 products, 50 variations")
+        #expect(sut.catalogSize == "100 products and 50 variations")
         #expect(sut.isLoading == false)
         #expect(sut.isRefreshingCatalog == false)
         #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)

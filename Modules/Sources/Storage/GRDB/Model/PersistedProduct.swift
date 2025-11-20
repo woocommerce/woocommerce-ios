@@ -132,9 +132,9 @@ public extension PersistedProduct {
             .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
             .filter(Columns.downloadable == false)
             .filter(
-                Columns.name.like(likePattern) ||
-                Columns.sku.like(likePattern) ||
-                Columns.globalUniqueID.like(likePattern)
+                Columns.name.like(likePattern, escape: "\\") ||
+                Columns.sku.like(likePattern, escape: "\\") ||
+                Columns.globalUniqueID.like(likePattern, escape: "\\")
             )
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }

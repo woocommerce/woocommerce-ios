@@ -1,5 +1,10 @@
 import SwiftUI
 
+enum MultilineCommitResult {
+    case success
+    case failure(message: String)
+}
+
 struct MultilineEditableTextDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -7,13 +12,17 @@ struct MultilineEditableTextDetailView: View {
     @State private var editedText: String
     @State private var showDiscardChangesDialog = false
     @FocusState private var isFocused: Bool
+    @State private var notice: Notice?
+    @State private var isSaving = false
 
     let title: String?
+    let onCommit: (String) async -> MultilineCommitResult
 
-    init(text: Binding<String>, title: String? = nil) {
+    init(text: Binding<String>, title: String? = nil, onCommit: @escaping (String) async -> MultilineCommitResult) {
         self._text = text
         self._editedText = State(initialValue: text.wrappedValue)
         self.title = title
+        self.onCommit = onCommit
     }
 
     var body: some View {
@@ -29,6 +38,7 @@ struct MultilineEditableTextDetailView: View {
         .toolbar { toolbar }
         .wooNavigationBarStyle()
         .onAppear { isFocused = true }
+        .notice($notice)
     }
 
     private var toolbar: some ToolbarContent {
@@ -52,13 +62,39 @@ struct MultilineEditableTextDetailView: View {
 
             if editedText != text {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(Localization.doneButtonTitle) {
-                        text = editedText
-                        dismiss()
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button(Localization.doneButtonTitle) {
+                            Task {
+                                await handleDoneTapped()
+                            }
+                        }
+                        .fontWeight(.medium)
+                        .disabled(isSaving)
                     }
-                    .fontWeight(.medium)
                 }
             }
+        }
+    }
+
+    private func handleDoneTapped() async {
+        guard !isSaving else { return }
+
+        isSaving = true
+        let newText = editedText
+        switch await onCommit(newText) {
+        case .success:
+            text = newText
+            isSaving = false
+            dismiss()
+        case .failure(let message):
+            isSaving = false
+
+            notice = Notice(
+                message: message,
+                feedbackType: .error,
+            )
         }
     }
 

@@ -20,7 +20,8 @@ public protocol BookingsRemoteProtocol {
         from siteID: Int64,
         bookingID: Int64,
         attendanceStatus: BookingAttendanceStatus?,
-        bookingStatus: BookingStatus?
+        bookingStatus: BookingStatus?,
+        note: String?
     ) async throws -> Booking?
 
     func fetchResource(resourceID: Int64,
@@ -102,12 +103,18 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                 parameters[ParameterKey.resource] = filters.resourceIDs.map(String.init)
             }
 
-            if let startDateBefore = filters.startDateBefore {
-                parameters[ParameterKey.startDateBefore] = startDateBefore
+            /// `start_date_before` filter doesn't include the date in the result,
+            /// so move the time forward one second as a workaround.
+            if let startDateBefore = filters.startDateBefore,
+                let adjustedDate = Date.dateWithISO8601String(startDateBefore)?.addingTimeInterval(1) {
+                parameters[ParameterKey.startDateBefore] = adjustedDate.ISO8601Format()
             }
 
-            if let startDateAfter = filters.startDateAfter {
-                parameters[ParameterKey.startDateAfter] = startDateAfter
+            /// `start_date_after` filter doesn't include the date in the result,
+            /// so move the time backward one second as a workaround.
+            if let startDateAfter = filters.startDateAfter,
+               let adjustedDate = Date.dateWithISO8601String(startDateAfter)?.addingTimeInterval(-1) {
+                parameters[ParameterKey.startDateAfter] = adjustedDate.ISO8601Format()
             }
 
             if filters.attendanceStatuses.isNotEmpty {
@@ -152,7 +159,8 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         from siteID: Int64,
         bookingID: Int64,
         attendanceStatus: BookingAttendanceStatus?,
-        bookingStatus: BookingStatus?
+        bookingStatus: BookingStatus?,
+        note: String?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
         var parameters: [String: String] = [:]
@@ -163,6 +171,10 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         if let bookingStatus {
             parameters[ParameterKey.status] = bookingStatus.rawValue
+        }
+
+        if let note {
+            parameters[ParameterKey.note] = note
         }
 
         let request = JetpackRequest(
@@ -259,5 +271,6 @@ public extension BookingsRemote {
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
         static let status: String          = "status"
+        static let note: String            = "note"
     }
 }

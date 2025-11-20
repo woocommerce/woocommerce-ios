@@ -51,13 +51,23 @@ public enum NetworkError: Error, Equatable {
     }
 
     /// Content of the `code` field in the response if available
-    var errorCode: String? {
+    public var errorCode: String? {
         guard let response else { return nil }
         let decoder = JSONDecoder()
         guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
             return nil
         }
         return decodedResponse.code
+    }
+
+    /// Content of the `data` field in the response if available
+    public var errorData: [String: AnyDecodable]? {
+        guard let response else { return nil }
+        let decoder = JSONDecoder()
+        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
+            return nil
+        }
+        return decodedResponse.data
     }
 }
 
@@ -134,6 +144,7 @@ extension NetworkError: CustomStringConvertible {
 
 struct NetworkErrorResponse: Decodable {
     let code: String?
+    let data: [String: AnyDecodable]?
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -144,6 +155,7 @@ struct NetworkErrorResponse: Decodable {
             }
             return try container.decodeIfPresent(String.self, forKey: .code)
         }()
+        self.data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
     }
 
     /// Coding Keys
@@ -151,5 +163,6 @@ struct NetworkErrorResponse: Decodable {
     private enum CodingKeys: String, CodingKey {
         case error
         case code
+        case data
     }
 }

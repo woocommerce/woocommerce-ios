@@ -12,12 +12,12 @@ extension NSPredicate {
 
         let startDateBeforePredicate = filters.startDateBefore.flatMap { dateString -> NSPredicate? in
             guard let date = ISO8601DateFormatter().date(from: dateString) else { return nil }
-            return NSPredicate(format: "startDate < %@", date as NSDate)
+            return NSPredicate(format: "startDate <= %@", date as NSDate)
         }
 
         let startDateAfterPredicate = filters.startDateAfter.flatMap { dateString -> NSPredicate? in
             guard let date = ISO8601DateFormatter().date(from: dateString) else { return nil }
-            return NSPredicate(format: "startDate > %@", date as NSDate)
+            return NSPredicate(format: "startDate >= %@", date as NSDate)
         }
 
         // TODO: update `statusKey` to paymentStatusKey once available

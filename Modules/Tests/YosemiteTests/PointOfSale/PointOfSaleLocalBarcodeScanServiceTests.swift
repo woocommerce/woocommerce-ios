@@ -45,7 +45,8 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
             parentID: 0,
             manageStock: true,
             stockQuantity: 10,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -84,7 +85,8 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(parentProduct)
 
@@ -149,7 +151,8 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(downloadableProduct)
 
@@ -177,7 +180,8 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(groupedProduct)
 
@@ -207,7 +211,8 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(variableParentProduct)
 
@@ -215,6 +220,169 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: barcode,
                                                                                  productName: "Variable Parent Product",
                                                                                  productType: .variable)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
+
+    @Test("Throws notFound when product has trash status")
+    func test_throws_not_found_for_trashed_product() async throws {
+        // Given
+        let barcode = "TRASHED-123"
+        let trashedProduct = PersistedProduct(
+            id: 30,
+            siteID: siteID,
+            name: "Trashed Product",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "10.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "trash"  // Trashed product
+        )
+        try await insertProduct(trashedProduct)
+
+        // When/Then - Should throw notFound error for trashed product
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
+
+    @Test("Throws notFound when product has draft status")
+    func test_throws_not_found_for_draft_product() async throws {
+        // Given
+        let barcode = "DRAFT-123"
+        let draftProduct = PersistedProduct(
+            id: 31,
+            siteID: siteID,
+            name: "Draft Product",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "10.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "draft"  // Draft product
+        )
+        try await insertProduct(draftProduct)
+
+        // When/Then - Should throw notFound error for draft product
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
+
+    @Test("Throws notFound when product has pending status")
+    func test_throws_not_found_for_pending_product() async throws {
+        // Given
+        let barcode = "PENDING-123"
+        let pendingProduct = PersistedProduct(
+            id: 32,
+            siteID: siteID,
+            name: "Pending Product",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "10.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "pending"  // Pending product
+        )
+        try await insertProduct(pendingProduct)
+
+        // When/Then - Should throw notFound error for pending product
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
+
+    @Test("Throws notFound when product has private status")
+    func test_throws_not_found_for_private_product() async throws {
+        // Given
+        let barcode = "PRIVATE-123"
+        let privateProduct = PersistedProduct(
+            id: 33,
+            siteID: siteID,
+            name: "Private Product",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "10.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "private"  // Private product
+        )
+        try await insertProduct(privateProduct)
+
+        // When/Then - Should throw notFound error for private product
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
+
+    @Test("Throws notFound when variation's parent product has trash status")
+    func test_throws_not_found_for_variation_with_trashed_parent() async throws {
+        // Given
+        let barcode = "VAR-TRASHED-PARENT"
+
+        // Insert parent product with trash status
+        let parentProduct = PersistedProduct(
+            id: 40,
+            siteID: siteID,
+            name: "Trashed Parent",
+            productTypeKey: "variable",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "0.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "trash"  // Parent is trashed
+        )
+        try await insertProduct(parentProduct)
+
+        // Insert variation
+        let variation = PersistedProductVariation(
+            id: 401,
+            siteID: siteID,
+            productID: 40,
+            sku: nil,
+            globalUniqueID: barcode,
+            price: "15.00",
+            downloadable: false,
+            fullDescription: nil,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock"
+        )
+        try await insertVariation(variation)
+
+        // When/Then - Should throw notFound error because parent is trashed
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
             _ = try await sut.getItem(barcode: barcode)
         }
     }
@@ -239,7 +407,8 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(parentProduct)
 

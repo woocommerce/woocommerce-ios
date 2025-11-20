@@ -5,12 +5,27 @@ import XCTest
 final class FilterProductListViewModelTests: XCTestCase {
     let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "category")
 
+    let sampleSiteID: Int64 = 0
+    var storageManager: MockStorageManager!
+
+    override func setUp() {
+        super.setUp()
+
+        storageManager = MockStorageManager()
+        storageManager.insertSampleSite(
+            readOnlySite: Site.fake().copy(
+                siteID: sampleSiteID,
+                isGarden: false,
+            )
+        )
+    }
+
     func testCriteriaWithDefaultFilters() {
         // Given
         let filters = FilterProductListViewModel.Filters()
 
         // When
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, storageManager: storageManager)
 
         // Then
         let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
@@ -35,7 +50,8 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // When
         let viewModel = FilterProductListViewModel(filters: filters,
-                                                   siteID: 0)
+                                                   siteID: 0,
+                                                   storageManager: storageManager)
 
         // Then
         let expectedCriteria = filters
@@ -54,7 +70,7 @@ final class FilterProductListViewModelTests: XCTestCase {
                                                          numberOfActiveFilters: 5)
 
         // When
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, storageManager: storageManager)
         viewModel.clearAll()
 
         // Then
@@ -85,7 +101,7 @@ final class FilterProductListViewModelTests: XCTestCase {
     func test_applyPastFilter_updates_the_filters_correctly() {
         // Given
         let filters = createMockFilters(stockStatus: .inStock)
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, storageManager: storageManager)
 
         // When
         let newFilter = createMockFilters(stockStatus: .onBackOrder)
@@ -98,13 +114,12 @@ final class FilterProductListViewModelTests: XCTestCase {
     @MainActor
     func test_retrieveFilterHistory_returns_correct_results() async throws {
         // Given
-        let siteID: Int64 = 123
         let expectedFilters = createMockFilters(stockStatus: .outOfStock)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadProductFilterHistory(_, onCompletion):
-                onCompletion(.success([StoredProductSettings.Setting(siteID: siteID,
+                onCompletion(.success([StoredProductSettings.Setting(siteID: self.sampleSiteID,
                                                                      sort: nil,
                                                                      stockStatusFilter: expectedFilters.stockStatus,
                                                                      productStatusFilter: expectedFilters.productStatus,
@@ -116,7 +131,7 @@ final class FilterProductListViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = FilterProductListViewModel(filters: createMockFilters(), siteID: siteID, stores: stores)
+        let viewModel = FilterProductListViewModel(filters: createMockFilters(), siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         let retrievedFilters = try await viewModel.retrieveFilterHistory()
@@ -127,7 +142,6 @@ final class FilterProductListViewModelTests: XCTestCase {
 
     func test_saveSelectedFilterToHistory_sends_correct_settings_to_storage() {
         // Given
-        let siteID: Int64 = 123
         let filters = createMockFilters()
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         var savedSettings: StoredProductSettings.Setting?
@@ -140,7 +154,7 @@ final class FilterProductListViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID, stores: stores)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.saveSelectedFilterToHistory(filters)
@@ -155,7 +169,6 @@ final class FilterProductListViewModelTests: XCTestCase {
 
     func test_removeFilterFromHistory_removes_the_correct_settings_in_storage() {
         // Given
-        let siteID: Int64 = 123
         let filters = createMockFilters()
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         var removedSettings: StoredProductSettings.Setting?
@@ -168,7 +181,7 @@ final class FilterProductListViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID, stores: stores)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.removeFilterFromHistory(filters)

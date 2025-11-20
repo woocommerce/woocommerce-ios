@@ -7,7 +7,7 @@ import Yosemite
 final class ProductSelectorViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
     private var storage: StorageType {
         storageManager.viewStorage
     }
@@ -19,6 +19,12 @@ final class ProductSelectorViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        storageManager.insertSampleSite(
+            readOnlySite: Site.fake().copy(
+                siteID: sampleSiteID,
+                isGarden: false,
+            )
+        )
         stores.reset()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -411,7 +417,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_clearSearchAndFilters_resets_searchTerm_and_filters() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 source: .orderForm(flow: .creation))
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
 
         // When
         let filters = FilterProductListViewModel.Filters(
@@ -466,7 +473,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_searchTerm_and_filters_are_clear_on_init() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 source: .orderForm(flow: .creation))
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
 
         // Then
         let currentFilters = viewModel.filterListViewModel.criteria

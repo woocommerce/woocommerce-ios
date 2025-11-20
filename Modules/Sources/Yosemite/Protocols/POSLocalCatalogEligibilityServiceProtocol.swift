@@ -17,6 +17,22 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
     case unsupportedWooCommerceVersion(minimumVersion: String)
     case catalogSizeTooLarge(totalCount: Int, limit: Int)
     case catalogSizeCheckFailed(underlyingError: String)
+
+    /// Analytics skip reason string representation
+    public var skipReason: String {
+        switch self {
+        case .posTabNotEligible:
+            return "pos_inactive"
+        case .featureFlagDisabled:
+            return "feature_flag_disabled"
+        case .unsupportedWooCommerceVersion:
+            return "unsupported_woocommerce_version"
+        case .catalogSizeTooLarge:
+            return "catalog_too_large"
+        case .catalogSizeCheckFailed:
+            return "catalog_size_check_failed"
+        }
+    }
 }
 
 /// Service that provides eligibility information for local catalog feature

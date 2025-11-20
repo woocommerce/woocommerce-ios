@@ -51,9 +51,6 @@ struct BookingDetailsView: View {
         .refreshable {
             await viewModel.syncData()
         }
-        .task {
-            await viewModel.syncData()
-        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(viewModel.navigationTitle)
         .background(Color(uiColor: .systemGroupedBackground))
@@ -247,7 +244,9 @@ private extension BookingDetailsView {
     func bookingNotesView() -> some View {
         MultilineEditableTextRow(value: viewModel.note,
                                  placeholder: Localization.bookingNotesRowText,
-                                 detailTitle: Localization.bookingNoteNavbarText)
+                                 detailTitle: Localization.bookingNoteNavbarText) { newNote in
+            return await viewModel.updateNote(to: newNote)
+        }
     }
 }
 

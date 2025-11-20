@@ -420,7 +420,6 @@ extension PointOfSaleAggregateModel {
         else {
             return
             // Should this throw?
-            // Card payment check might be skipped silently here if we happen to not have the right OrderItem
         }
         do {
             try await collectPayment(for: order)

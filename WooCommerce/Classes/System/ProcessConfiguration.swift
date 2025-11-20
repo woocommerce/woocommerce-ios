@@ -27,9 +27,9 @@ struct ProcessConfiguration {
         ProcessInfo.processInfo.arguments.contains("bypass-pos-eligibility-checks")
     }
 
-    /// Returns `true` when POS product loading should be bypassed for screenshot tests.
-    static var shouldBypassPOSProductLoading: Bool {
-        ProcessInfo.processInfo.arguments.contains("bypass-pos-product-loading")
+    /// Returns `true` when we load mocked POS products for screenshot tests.
+    static var shouldLoadMockedPOSProducts: Bool {
+        ProcessInfo.processInfo.arguments.contains("load-mocked-pos-products")
     }
 
     /// Returns `true` when POS order syncing should be bypassed for screenshot tests.

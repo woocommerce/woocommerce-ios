@@ -90,15 +90,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 
     @MainActor
     private func loadRootItems() async {
-        // Temporay: Bypass product loading for screenshot tests
-        if ProcessInfo.processInfo.arguments.contains("bypass-pos-product-loading") {
-            let mockItems = Self.makeScreenshotMockItems()
-            itemsViewState.containerState = .content
-            itemsViewState.itemsStack = ItemsStackState(root: .loaded(mockItems, hasMoreItems: false),
-                                                        itemStates: [:])
-            return
-        }
-
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
@@ -332,70 +323,5 @@ private extension PointOfSaleItemsController {
             return states
         }()
         itemsViewState.itemsStack.itemStates = itemStates
-    }
-}
-
-// MARK: - Screenshot Mock Data
-private extension PointOfSaleItemsController {
-    /// Creates mock POSItems for screenshot tests
-    /// TODO: Move to ScreenshotsObjectGraph? Or similar.
-    static func makeScreenshotMockItems() -> [POSItem] {
-        let port = UserDefaults.standard.integer(forKey: "mocks-port")
-        let mockResourceUrlHost = "http://localhost:\(port)/"
-
-        let product1 = POSSimpleProduct(
-            id: UUID(),
-            name: "Rose Gold Shades",
-            formattedPrice: "$35.00",
-            productImageSource: mockResourceUrlHost + "rose-gold-shades",
-            productID: 1,
-            price: "35.00",
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-
-        let product2 = POSSimpleProduct(
-            id: UUID(),
-            name: "Black Coral Shades",
-            formattedPrice: "$45.00",
-            productImageSource: mockResourceUrlHost + "black-coral-shades",
-            productID: 2,
-            price: "45.00",
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-
-        let product3 = POSSimpleProduct(
-            id: UUID(),
-            name: "Akoya Pearl Shades",
-            formattedPrice: "$50.00",
-            productImageSource: mockResourceUrlHost + "akoya-pearl-shades",
-            productID: 3,
-            price: "50.00",
-            manageStock: true,
-            stockQuantity: 10,
-            stockStatusKey: "instock"
-        )
-
-        let product4 = POSSimpleProduct(
-            id: UUID(),
-            name: "Malaya Shades",
-            formattedPrice: "$40.00",
-            productImageSource: mockResourceUrlHost + "malaya-shades",
-            productID: 4,
-            price: "40.00",
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock"
-        )
-
-        return [
-            .simpleProduct(product1),
-            .simpleProduct(product2),
-            .simpleProduct(product3),
-            .simpleProduct(product4)
-        ]
     }
 }

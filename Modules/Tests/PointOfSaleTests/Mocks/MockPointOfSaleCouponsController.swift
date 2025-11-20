@@ -1,5 +1,6 @@
 @testable import PointOfSale
 import Yosemite
+import Foundation
 
 final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var loadItemsCalled = false

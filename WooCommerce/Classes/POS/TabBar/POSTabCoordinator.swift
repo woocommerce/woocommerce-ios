@@ -201,7 +201,7 @@ private extension POSTabCoordinator {
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
             let cardPresentPaymentService: CardPresentPaymentFacade
-            if ProcessConfiguration.shouldBypassCardPresentPayment {
+            if ProcessConfiguration.shouldUseMockCardPresentPayment {
                 cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
             } else {
                 cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,

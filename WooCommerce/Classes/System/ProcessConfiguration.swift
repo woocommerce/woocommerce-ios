@@ -37,8 +37,8 @@ struct ProcessConfiguration {
         ProcessInfo.processInfo.arguments.contains("bypass-pos-order-syncing")
     }
 
-    /// Returns `true` when card present payment should be bypassed for screenshot tests.
-    static var shouldBypassCardPresentPayment: Bool {
-        ProcessInfo.processInfo.arguments.contains("bypass-card-present-payment")
+    /// Returns `true` when card present payment service should be mocked for screenshot tests.
+    static var shouldUseMockCardPresentPayment: Bool {
+        ProcessInfo.processInfo.arguments.contains("use-mocked-card-present-payment")
     }
 }

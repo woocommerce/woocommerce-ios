@@ -1,0 +1,706 @@
+{
+  "configurations" : [
+    {
+      "id" : "C0023889-182C-4E33-9833-9098BE536CB5",
+      "name" : "Test scheme Action",
+      "options" : {
+        "threadSanitizerEnabled" : true
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "BackgroundCatalogDownloadCoordinatorTests"
+          },
+          {
+            "name" : "BackgroundDownloadStateTests"
+          },
+          {
+            "name" : "BookingsRemoteTests"
+          },
+          {
+            "name" : "ListMapperTests"
+          },
+          {
+            "name" : "POSCatalogSyncRemoteTests"
+          },
+          {
+            "name" : "POSProductsNetworkingTests"
+          }
+        ],
+        "xctestClasses" : [
+          {
+            "name" : "AccountMapperTests"
+          },
+          {
+            "name" : "AccountRemoteTests"
+          },
+          {
+            "name" : "AccountSettingsMapperTests"
+          },
+          {
+            "name" : "AccountSettingsRemoteTests"
+          },
+          {
+            "name" : "AddOnGroupMapperTests"
+          },
+          {
+            "name" : "AddOnGroupRemoteTests"
+          },
+          {
+            "name" : "AIProductMapperTests"
+          },
+          {
+            "name" : "AlamofireNetworkErrorHandlerTests"
+          },
+          {
+            "name" : "AlamofireNetworkTests"
+          },
+          {
+            "name" : "AnnouncementListMapperTests"
+          },
+          {
+            "name" : "AnnouncementsRemoteTests"
+          },
+          {
+            "name" : "ApplicationPasswordEncoderTests"
+          },
+          {
+            "name" : "ApplicationPasswordMapperTests"
+          },
+          {
+            "name" : "ApplicationPasswordNameAndUUIDMapperTests"
+          },
+          {
+            "name" : "ArrayWooTests"
+          },
+          {
+            "name" : "AuthenticatedDotcomRequestTests"
+          },
+          {
+            "name" : "AuthenticatedRESTRequestTests"
+          },
+          {
+            "name" : "BlazeAISuggestionListMapperTests"
+          },
+          {
+            "name" : "BlazeCampaignListItemsMapperTests"
+          },
+          {
+            "name" : "BlazeCampaignObjectiveListMapperTests"
+          },
+          {
+            "name" : "BlazeForecastedImpressionsInputEncoderTests"
+          },
+          {
+            "name" : "BlazeImpressionsMapperTests"
+          },
+          {
+            "name" : "BlazePaymentInfoMapperTests"
+          },
+          {
+            "name" : "BlazeRemoteTests"
+          },
+          {
+            "name" : "BlazeTargetOptionMapperTests"
+          },
+          {
+            "name" : "BundleWooTests"
+          },
+          {
+            "name" : "CommentRemoteTests"
+          },
+          {
+            "name" : "CommentResultMapperTests"
+          },
+          {
+            "name" : "CookieNonceAuthenticatorTests"
+          },
+          {
+            "name" : "CopiableTests"
+          },
+          {
+            "name" : "CountryListMapperTests"
+          },
+          {
+            "name" : "CouponEncoderTests"
+          },
+          {
+            "name" : "CouponListMapperTests"
+          },
+          {
+            "name" : "CouponMapperTests"
+          },
+          {
+            "name" : "CouponReportListMapperTests"
+          },
+          {
+            "name" : "CouponsRemoteTests"
+          },
+          {
+            "name" : "CreateBlazeCampaignMapperTests"
+          },
+          {
+            "name" : "CreateProductVariationTests"
+          },
+          {
+            "name" : "CustomerMapperTests"
+          },
+          {
+            "name" : "CustomerRemoteTests"
+          },
+          {
+            "name" : "DataRemoteTests"
+          },
+          {
+            "name" : "DateFormatterWooTests"
+          },
+          {
+            "name" : "Decimal_ExtensionsTests"
+          },
+          {
+            "name" : "DecodingError_CodingPathTests"
+          },
+          {
+            "name" : "DefaultApplicationPasswordUseCaseTests"
+          },
+          {
+            "name" : "DefaultRequestAuthenticatorTests"
+          },
+          {
+            "name" : "DevicesRemoteTests"
+          },
+          {
+            "name" : "DotcomDeviceMapperTests"
+          },
+          {
+            "name" : "DotcomRequestTests"
+          },
+          {
+            "name" : "DotcomValidatorTests"
+          },
+          {
+            "name" : "EntityDateModifiedMapperTests"
+          },
+          {
+            "name" : "EntityIDMapperTests"
+          },
+          {
+            "name" : "FeatureFlagRemoteTests"
+          },
+          {
+            "name" : "GenerativeContentRemoteTests"
+          },
+          {
+            "name" : "GiftCardStatsMapperTests"
+          },
+          {
+            "name" : "GiftCardStatsRemoteTests"
+          },
+          {
+            "name" : "GoogleAdsCampaignListMapperTests"
+          },
+          {
+            "name" : "GoogleAdsCampaignStatsMapperTests"
+          },
+          {
+            "name" : "GoogleAdsConnectionMapperTests"
+          },
+          {
+            "name" : "GoogleListingsAndAdsRemoteTests"
+          },
+          {
+            "name" : "IgnoringResponseMapperTests"
+          },
+          {
+            "name" : "InboxNoteListMapperTests"
+          },
+          {
+            "name" : "InboxNoteMapperTests"
+          },
+          {
+            "name" : "InboxNotesRemoteTests"
+          },
+          {
+            "name" : "IPLocationRemoteTests"
+          },
+          {
+            "name" : "JetpackAIQueryResponseMapperTests"
+          },
+          {
+            "name" : "JetpackConnectionDataMapperTests"
+          },
+          {
+            "name" : "JetpackConnectionRemoteTests"
+          },
+          {
+            "name" : "JetpackConnectionURLMapperTests"
+          },
+          {
+            "name" : "JetpackRequestTests"
+          },
+          {
+            "name" : "JetpackSettingsRemoteTests"
+          },
+          {
+            "name" : "JustInTimeMessageListMapperTests"
+          },
+          {
+            "name" : "JustInTimeMessagesRemoteTests"
+          },
+          {
+            "name" : "JWTokenMapperTests"
+          },
+          {
+            "name" : "KeyedDecodingContainer_WooTests"
+          },
+          {
+            "name" : "MediaRemoteTests"
+          },
+          {
+            "name" : "MetaDataEncoderTests"
+          },
+          {
+            "name" : "MetaDataMapperTests"
+          },
+          {
+            "name" : "MetaDataRemoteTests"
+          },
+          {
+            "name" : "NetworkErrorTests"
+          },
+          {
+            "name" : "NewShipmentTrackingMapperTests"
+          },
+          {
+            "name" : "NoteHashListMapperTests"
+          },
+          {
+            "name" : "NoteListMapperTests"
+          },
+          {
+            "name" : "NotificationsRemoteTests"
+          },
+          {
+            "name" : "OneTimeApplicationPasswordUseCaseTests"
+          },
+          {
+            "name" : "OrderEncoderTests"
+          },
+          {
+            "name" : "OrderListMapperTests"
+          },
+          {
+            "name" : "OrderMapperTests"
+          },
+          {
+            "name" : "OrderNotesMapperTests"
+          },
+          {
+            "name" : "OrderShippingLabelListMapperTests"
+          },
+          {
+            "name" : "OrdersRemoteTests"
+          },
+          {
+            "name" : "OrderStatsRemoteV4Tests"
+          },
+          {
+            "name" : "OrderStatsV4MapperTests"
+          },
+          {
+            "name" : "PaymentGatewayListMapperTests"
+          },
+          {
+            "name" : "PaymentGatewayMapperTests"
+          },
+          {
+            "name" : "PaymentRemoteTests"
+          },
+          {
+            "name" : "PaymentsGatewayRemoteTests"
+          },
+          {
+            "name" : "PostMapperTests"
+          },
+          {
+            "name" : "ProductAttributeListMapperTests"
+          },
+          {
+            "name" : "ProductAttributeMapperTests"
+          },
+          {
+            "name" : "ProductAttributesRemoteTests"
+          },
+          {
+            "name" : "ProductAttributeTermListMapperTests"
+          },
+          {
+            "name" : "ProductAttributeTermMapperTests"
+          },
+          {
+            "name" : "ProductAttributeTermRemoteTests"
+          },
+          {
+            "name" : "ProductBundleStatsMapperTests"
+          },
+          {
+            "name" : "ProductBundleStatsRemoteTests"
+          },
+          {
+            "name" : "ProductCategoriesRemoteTests"
+          },
+          {
+            "name" : "ProductCategoryListMapperTests"
+          },
+          {
+            "name" : "ProductCategoryMapperTests"
+          },
+          {
+            "name" : "ProductEncoderTests"
+          },
+          {
+            "name" : "ProductIDMapperTests"
+          },
+          {
+            "name" : "ProductImageAssetTypeCodableTests"
+          },
+          {
+            "name" : "ProductImageStatusCodableTests"
+          },
+          {
+            "name" : "ProductImageStatusStorageTests"
+          },
+          {
+            "name" : "ProductListMapperTests"
+          },
+          {
+            "name" : "ProductMapperTests"
+          },
+          {
+            "name" : "ProductOrVariationIDCodableTests"
+          },
+          {
+            "name" : "ProductReportListMapperTests"
+          },
+          {
+            "name" : "ProductReviewListMapperTests"
+          },
+          {
+            "name" : "ProductReviewsRemoteTests"
+          },
+          {
+            "name" : "ProductShippingClassListMapperTests"
+          },
+          {
+            "name" : "ProductShippingClassMapperTests"
+          },
+          {
+            "name" : "ProductShippingClassRemoteTests"
+          },
+          {
+            "name" : "ProductSkuMapperTests"
+          },
+          {
+            "name" : "ProductsRemoteTests"
+          },
+          {
+            "name" : "ProductsReportMapperTests"
+          },
+          {
+            "name" : "ProductsReportsRemoteTests"
+          },
+          {
+            "name" : "ProductStockListMapperTests"
+          },
+          {
+            "name" : "ProductSubscriptionTests"
+          },
+          {
+            "name" : "ProductTagListMapperTests"
+          },
+          {
+            "name" : "ProductTagsRemoteTests"
+          },
+          {
+            "name" : "ProductVariationEncoderTests"
+          },
+          {
+            "name" : "ProductVariationListMapperTests"
+          },
+          {
+            "name" : "ProductVariationMapperTests"
+          },
+          {
+            "name" : "ProductVariationsBulkCreateMapperTests"
+          },
+          {
+            "name" : "ProductVariationsBulkUpdateMapperTests"
+          },
+          {
+            "name" : "ProductVariationsRemoteTests"
+          },
+          {
+            "name" : "ReceiptRemoteTests"
+          },
+          {
+            "name" : "RefundListMapperTests"
+          },
+          {
+            "name" : "RefundMapperTests"
+          },
+          {
+            "name" : "RemoteTests"
+          },
+          {
+            "name" : "ReportOrderMapperTests"
+          },
+          {
+            "name" : "ReportOrderTotalsMapperTests"
+          },
+          {
+            "name" : "ReportRemoteTests"
+          },
+          {
+            "name" : "RequestConvertorTests"
+          },
+          {
+            "name" : "RequestProcessorTests",
+            "xctestMethods" : [
+              "test_adapt_authenticates_the_urlrequest()",
+              "test_application_password_is_generated_upon_retrying_a_request()",
+              "test_application_password_is_not_generated_when_a_request_is_not_eligible_for_retry()",
+              "test_concurrentAuthenticatorUpdatesWhileAdaptingDoesNotCrash()",
+              "test_delegate_called_when_404_error_occurs_with_wpcom_authentication()",
+              "test_delegate_called_when_application_password_disabled()",
+              "test_delegate_called_when_application_password_disabled_for_user()",
+              "test_notification_is_posted_when_application_password_generation_fails()",
+              "test_notification_is_posted_when_application_password_generation_is_successful()",
+              "test_posted_notification_holds_expected_error_when_application_password_generation_fails()",
+              "test_request_is_not_scheduled_for_retry_when_irrelavant_error_occurs()",
+              "test_request_is_not_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_false()",
+              "test_request_is_scheduled_for_retry_when_401_error_occurs()",
+              "test_request_is_scheduled_for_retry_when_applicationPasswordNotAvailable_error_occurs()",
+              "test_request_is_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_true()",
+              "test_request_is_scheduled_for_retry_when_requestAdaptationFailed_error_occurs()",
+              "test_request_not_retried_when_other_error_occurs_with_wpcom_authentication()",
+              "test_request_not_retried_when_password_deletion_fails_after_409_error_with_wpcom_authentication()",
+              "test_request_with_non_zero_retryCount_is_not_scheduled_for_retry()",
+              "test_request_with_zero_retryCount_is_scheduled_for_retry()"
+            ]
+          },
+          {
+            "name" : "RESTRequestTests"
+          },
+          {
+            "name" : "ShipmentsRemoteTests"
+          },
+          {
+            "name" : "ShipmentTrackingListMapperTests"
+          },
+          {
+            "name" : "ShipmentTrackingProviderListMapperTests"
+          },
+          {
+            "name" : "ShippingLabelAccountSettingsMapperTests"
+          },
+          {
+            "name" : "ShippingLabelCreationEligibilityMapperTests"
+          },
+          {
+            "name" : "ShippingLabelPackagesMapperTests"
+          },
+          {
+            "name" : "ShippingLabelPurchaseMapperTests"
+          },
+          {
+            "name" : "ShippingLabelRemoteTests"
+          },
+          {
+            "name" : "ShippingLabelStatusMapperTests"
+          },
+          {
+            "name" : "ShippingMethodListMapperTests"
+          },
+          {
+            "name" : "ShippingMethodsRemoteTests"
+          },
+          {
+            "name" : "SiteAPIMapperTests"
+          },
+          {
+            "name" : "SiteAPIRemoteTests"
+          },
+          {
+            "name" : "SiteListMapperTests"
+          },
+          {
+            "name" : "SitePluginMapperTests"
+          },
+          {
+            "name" : "SitePluginsMapperTests"
+          },
+          {
+            "name" : "SitePluginsRemoteTests"
+          },
+          {
+            "name" : "SitePostsRemoteTests"
+          },
+          {
+            "name" : "SiteRemoteTests"
+          },
+          {
+            "name" : "SiteSettingMapperTests"
+          },
+          {
+            "name" : "SiteSettingsMapperTests"
+          },
+          {
+            "name" : "SiteSettingsRemoteTests"
+          },
+          {
+            "name" : "SiteStatsRemoteTests"
+          },
+          {
+            "name" : "SiteSummaryStatsMapperTests"
+          },
+          {
+            "name" : "SiteVisitStatsMapperTests"
+          },
+          {
+            "name" : "StoreOnboardingTaskListMapperTests"
+          },
+          {
+            "name" : "StoreOnboardingTasksRemoteTests"
+          },
+          {
+            "name" : "String_HTMLTests"
+          },
+          {
+            "name" : "String_URLTests"
+          },
+          {
+            "name" : "StripeRemoteTests"
+          },
+          {
+            "name" : "SubscriptionListMapperTests"
+          },
+          {
+            "name" : "SubscriptionMapperTests"
+          },
+          {
+            "name" : "SubscriptionsRemoteTests"
+          },
+          {
+            "name" : "SystemPluginMapperTests"
+          },
+          {
+            "name" : "SystemStatusMapperTests"
+          },
+          {
+            "name" : "SystemStatusRemoteTests"
+          },
+          {
+            "name" : "SystemStatusReportMapperTests"
+          },
+          {
+            "name" : "TaxClassListMapperTest"
+          },
+          {
+            "name" : "TaxRemoteTests"
+          },
+          {
+            "name" : "TelemetryRemoteTests"
+          },
+          {
+            "name" : "TopEarnerStatsMapperTests"
+          },
+          {
+            "name" : "TopEarnerStatsRemoteTests"
+          },
+          {
+            "name" : "UnauthenticatedRequestTests"
+          },
+          {
+            "name" : "URLRequestConvertible_PathTests"
+          },
+          {
+            "name" : "UserAgentTests"
+          },
+          {
+            "name" : "UserMapperTests"
+          },
+          {
+            "name" : "UserRemoteTests"
+          },
+          {
+            "name" : "WCAnalyticsCustomerMapperTests"
+          },
+          {
+            "name" : "WCAnalyticsCustomerRemoteTests"
+          },
+          {
+            "name" : "WCPayChargeMapperTests"
+          },
+          {
+            "name" : "WCPayRemoteTests"
+          },
+          {
+            "name" : "WooAPIVersionTests"
+          },
+          {
+            "name" : "WooShippingConfigMapperTests"
+          },
+          {
+            "name" : "WooShippingRemoteTests"
+          },
+          {
+            "name" : "WooShippingShipmentIDFormatterTests"
+          },
+          {
+            "name" : "WooShippingUpdateShipmentMapperTests"
+          },
+          {
+            "name" : "WordPressApiValidatorTests"
+          },
+          {
+            "name" : "WordPressAPIVersionTests"
+          },
+          {
+            "name" : "WordPressMediaMapperTests"
+          },
+          {
+            "name" : "WordPressPageMapperTests"
+          },
+          {
+            "name" : "WordPressSiteMapperTests"
+          },
+          {
+            "name" : "WordPressSiteRemoteTests"
+          },
+          {
+            "name" : "WordPressThemeListMapperTests"
+          },
+          {
+            "name" : "WordPressThemeMapperTests"
+          },
+          {
+            "name" : "WordPressThemeRemoteTests"
+          }
+        ]
+      },
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "NetworkingTests",
+        "name" : "NetworkingTests"
+      }
+    }
+  ],
+  "version" : 2
+}

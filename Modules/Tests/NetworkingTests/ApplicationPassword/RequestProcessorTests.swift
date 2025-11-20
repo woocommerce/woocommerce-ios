@@ -445,6 +445,51 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertTrue(mockRequestAuthenticator.deleteApplicationPasswordCalled)
         XCTAssertFalse(shouldRetry.retryRequired)
     }
+
+    /// The test is designed for manual local run. It must be excluded from CI pipelines.
+    /// Simulates race condition of multiple `updateAuthenticator` calls from different threads
+    /// Should cause a crash on old/non-synchronized `RequestProcessor` implementatoin
+    /// Should work fine on synchronized version of `RequestProcessor`
+    func test_concurrent_authenticator_updates_does_not_trigger_race_condition() throws {
+        let credentials = Networking.Credentials.wpcom(
+            username: "initial",
+            authToken: UUID().uuidString,
+            siteAddress: "https://example.com"
+        )
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials)
+        let sut = RequestProcessor(
+            requestAuthenticator: authenticator,
+            notificationCenter: MockNotificationCenter()
+        )
+
+        let request = URLRequest(url: url)
+        let iterations = 20000
+        let queue = DispatchQueue(
+            label: "com.woocommerce.tests.requestProcessor.race",
+            qos: .userInitiated,
+            attributes: .concurrent
+        )
+        let group = DispatchGroup()
+
+        for index in 0..<iterations {
+            queue.async(group: group) {
+                if index.isMultiple(of: 2) {
+                    let credentials = Networking.Credentials.wpcom(
+                        username: "user-\(index)",
+                        authToken: UUID().uuidString,
+                        siteAddress: "https://example.com"
+                    )
+                    let authenticator = DefaultRequestAuthenticator(credentials: credentials)
+                    sut.updateAuthenticator(authenticator)
+                } else {
+                    sut.adapt(request, for: .default) { _ in }
+                }
+            }
+        }
+
+        let result = group.wait(timeout: .now() + 20)
+        XCTAssertEqual(result, .success)
+    }
 }
 
 // MARK: Helpers

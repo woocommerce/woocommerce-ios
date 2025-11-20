@@ -80,6 +80,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
         self.analytics = analytics
     }
 
+    // periphery:ignore - Protocol requirement, used via protocol
     public var debounceStrategy: SearchDebounceStrategy {
         // Use smart debouncing for remote search: don't debounce first keystroke to show loading immediately,
         // then debounce subsequent keystrokes while search is ongoing.

@@ -82,6 +82,13 @@ public class BookingStore: Store {
                 bookingID: bookingID,
                 onCompletion: onCompletion
             )
+        case .updateBookingNote(let siteID, let bookingID, let note, let onCompletion):
+            updateBookingNote(
+                siteID: siteID,
+                bookingID: bookingID,
+                note: note,
+                onCompletion: onCompletion
+            )
         }
     }
 }
@@ -308,6 +315,7 @@ private extension BookingStore {
                         bookingID: bookingID,
                         attendanceStatus: status,
                         bookingStatus: nil,
+                        note: nil,
                     ) {
                         await self.upsertStoredBookingsInBackground(
                             readOnlyBookings: [remoteBooking],
@@ -329,6 +337,37 @@ private extension BookingStore {
                         onCompletion(error)
                     }
                 }
+            }
+        }
+    }
+
+    func updateBookingNote(
+        siteID: Int64,
+        bookingID: Int64,
+        note: String,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        Task { @MainActor in
+            do {
+                if let remoteBooking = try await self.remote.updateBooking(
+                    from: siteID,
+                    bookingID: bookingID,
+                    attendanceStatus: nil,
+                    bookingStatus: nil,
+                    note: note,
+                ) {
+                    await self.upsertStoredBookingsInBackground(
+                        readOnlyBookings: [remoteBooking],
+                        readOnlyOrders: [],
+                        siteID: siteID
+                    )
+
+                    onCompletion(nil)
+                } else {
+                    return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                }
+            } catch {
+                return onCompletion(error)
             }
         }
     }
@@ -373,7 +412,8 @@ private extension BookingStore {
                     from: siteID,
                     bookingID: bookingID,
                     attendanceStatus: nil,
-                    bookingStatus: .cancelled
+                    bookingStatus: .cancelled,
+                    note: nil,
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],
@@ -403,7 +443,8 @@ private extension BookingStore {
                     from: siteID,
                     bookingID: bookingID,
                     attendanceStatus: nil,
-                    bookingStatus: .paid
+                    bookingStatus: .paid,
+                    note: nil,
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],

@@ -1,9 +1,13 @@
 import SwiftUI
 import WooFoundation
+import struct WooFoundationCore.WooAnalyticsEvent
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct POSListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @Environment(\.posAnalytics) private var analytics
+
+    private let error: PointOfSaleErrorState
     private let viewModel: POSListErrorViewModel
     private let onAction: (() -> Void)?
     private let onExit: (() -> Void)?
@@ -13,6 +17,7 @@ struct POSListErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil, onExit: (() -> Void)? = nil) {
+        self.error = error
         self.viewModel = POSListErrorViewModel(error: error)
         self.onAction = onAction
         self.onExit = onExit
@@ -52,6 +57,10 @@ struct POSListErrorView: View {
                 if let onAction {
                     Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
                     Button(action: {
+                        // Track retry tapped for splash screen errors (initial catalog sync)
+                        if error.errorType == .initialCatalogSyncError {
+                            analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
+                        }
                         onAction()
                     }, label: {
                         Text(viewModel.buttonText)
@@ -78,6 +87,12 @@ struct POSListErrorView: View {
         .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .measureWidth { width in
             viewWidth = width
+        }
+        .onAppear {
+            // Track error shown for splash screen errors (initial catalog sync)
+            if error.errorType == .initialCatalogSyncError {
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenErrorShown())
+            }
         }
     }
 }

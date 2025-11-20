@@ -143,7 +143,8 @@ struct PersistedProductVariationTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try parentProduct.insert(db)
 
@@ -271,7 +272,8 @@ struct PersistedProductVariationTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try parentProduct.insert(db)
 
@@ -386,7 +388,8 @@ struct PersistedProductVariationTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try parentProduct.insert(db)
 
@@ -506,7 +509,8 @@ struct PersistedProductVariationTests {
                 parentID: 0,
                 manageStock: false,
                 stockQuantity: nil,
-                stockStatusKey: "instock"
+                stockStatusKey: "instock",
+                statusKey: "publish"
             )
             try parentProduct.insert(db)
         }

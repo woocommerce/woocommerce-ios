@@ -3,6 +3,10 @@ import Foundation
 import Storage
 import GRDB
 import Alamofire
+import protocol WooFoundation.Analytics
+import protocol WooFoundation.ConnectivityObserver
+import enum WooFoundation.ConnectionType
+import struct WooFoundationCore.WooAnalyticsEvent
 
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync if applicable for the specified site
@@ -43,6 +47,11 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Returns: True if the last sync is older than the specified days or if there has been no sync
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool
 
+    /// Returns the number of hours since the last catalog sync
+    /// - Parameter siteID: The site ID to check
+    /// - Returns: Hours since last sync, or nil if no sync date is available
+    func hoursSinceLastSync(for siteID: Int64) async -> Int?
+
     /// Stops all ongoing sync tasks for the specified site
     /// - Parameter siteID: The site ID to stop syncs for
     func stopOngoingSyncs(for siteID: Int64) async
@@ -54,6 +63,13 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
     func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws
+
+    /// Deletes specific products and/or variations from the local catalog
+    /// - Parameters:
+    ///   - productIDs: Product IDs to delete
+    ///   - variationIDs: Variation IDs to delete
+    ///   - siteID: The site ID
+    func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -83,21 +99,29 @@ public enum POSCatalogSyncError: Error, Equatable {
     case shouldNotSync
 }
 
+/// Type of catalog sync operation for analytics tracking
+public enum POSCatalogSyncType: String {
+    case full
+    case incremental
+}
+
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
     private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
+    private let analytics: Analytics?
+    private let connectivityObserver: ConnectivityObserver?
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
 
     /// Tracks ongoing full sync tasks by site ID for cancellation
-    private var ongoingFullSyncTasks: [Int64: Task<Void, Error>] = [:]
+    private var ongoingFullSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
     /// Tracks ongoing incremental sync tasks by site ID for cancellation
-    private var ongoingIncrementalSyncTasks: [Int64: Task<Void, Error>] = [:]
+    private var ongoingIncrementalSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
     /// Observable model for full sync state updates
     public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
@@ -106,12 +130,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
                 catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol,
-                siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
+                siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
+                analytics: Analytics? = nil,
+                connectivityObserver: ConnectivityObserver? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
         self.catalogEligibilityChecker = catalogEligibilityChecker
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
+        self.analytics = analytics
+        self.connectivityObserver = connectivityObserver
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
@@ -120,6 +148,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+            let reason = await getSyncSkipReason(for: siteID, maxAge: maxAge)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason))
             throw POSCatalogSyncError.shouldNotSync
         }
 
@@ -132,14 +162,20 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
 
+        // Track sync started analytics
+        let connectionType = getConnectionType()
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue, connectionType: connectionType))
+
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
+        let syncStartTime = Date()
+
         // Create a task to perform the sync
-        let syncTask = Task<Void, Error> {
-            _ = try await fullSyncService.startFullSync(for: siteID,
-                                                        regenerateCatalog: regenerateCatalog,
-                                                        allowCellular: allowCellular)
+        let syncTask = Task<POSCatalog, Error> {
+            try await fullSyncService.startFullSync(for: siteID,
+                                                    regenerateCatalog: regenerateCatalog,
+                                                    allowCellular: allowCellular)
         }
 
         // Store the task for potential cancellation
@@ -150,14 +186,32 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         do {
-            try await syncTask.value
+            let syncedCatalog = try await syncTask.value
             emitSyncState(.syncCompleted(siteID: siteID))
+
+            // Track sync completed analytics
+            let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
+            let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
+                syncType: POSCatalogSyncType.full.rawValue,
+                productsSynced: syncedCatalog.products.count,
+                variationsSynced: syncedCatalog.variations.count,
+                totalProducts: totalProducts,
+                totalVariations: totalVariations,
+                syncDurationMs: syncDurationMs
+            ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
                 emitSyncState(.initialSyncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             } else {
                 emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             }
+            // Track sync failed analytics
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: POSCatalogSyncType.full.rawValue,
+                error: POSCatalogSyncError.requestCancelled,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
+            ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete sync for site \(siteID): \(error)")
@@ -166,6 +220,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             } else {
                 emitSyncState(.syncFailed(siteID: siteID, error: error))
             }
+            // Track sync failed analytics
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: POSCatalogSyncType.full.rawValue,
+                error: error,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
+            ))
             throw error
         }
 
@@ -254,6 +314,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         guard try await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
+            let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason))
             return
         }
 
@@ -279,8 +341,14 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting incremental sync for site \(siteID)")
 
+        // Track sync started analytics
+        let connectionType = getConnectionType()
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue, connectionType: connectionType))
+
+        let syncStartTime = Date()
+
         // Create a task to perform the sync
-        let syncTask = Task<Void, Error> {
+        let syncTask = Task<POSCatalog, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
                                                                   lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID))
@@ -294,12 +362,38 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
 
         do {
-            try await syncTask.value
-        } catch AFError.explicitlyCancelled, is CancellationError {
-            throw POSCatalogSyncError.requestCancelled
-        }
+            let syncedCatalog = try await syncTask.value
+            DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
 
-        DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
+            // Track sync completed analytics
+            let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
+            let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
+                syncType: POSCatalogSyncType.incremental.rawValue,
+                productsSynced: syncedCatalog.products.count,
+                variationsSynced: syncedCatalog.variations.count,
+                totalProducts: totalProducts,
+                totalVariations: totalVariations,
+                syncDurationMs: syncDurationMs
+            ))
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            // Track sync failed analytics
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: POSCatalogSyncType.incremental.rawValue,
+                error: POSCatalogSyncError.requestCancelled,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
+            ))
+            throw POSCatalogSyncError.requestCancelled
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete incremental sync for site \(siteID): \(error)")
+            // Track sync failed analytics
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: POSCatalogSyncType.incremental.rawValue,
+                error: error,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
+            ))
+            throw error
+        }
 
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)
@@ -396,6 +490,14 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         return lastFullSync < thresholdDate
     }
 
+    public func hoursSinceLastSync(for siteID: Int64) async -> Int? {
+        guard let lastSyncDate = await lastFullSyncDate(for: siteID) else {
+            return nil
+        }
+        let timeInterval = Date().timeIntervalSince(lastSyncDate)
+        return Int(timeInterval / 3600) // Convert seconds to hours
+    }
+
     public func stopOngoingSyncs(for siteID: Int64) async {
         DDLogInfo("🛑 POSCatalogSyncCoordinator: Stopping ongoing syncs for site \(siteID)")
 
@@ -445,6 +547,98 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Record first sync date if needed
         recordFirstSyncIfNeeded(for: siteID)
+    }
+
+    // MARK: - Analytics Helpers
+
+    private nonisolated func trackAnalytics(_ event: WooAnalyticsEvent) {
+        analytics?.track(event.statName.rawValue, properties: event.properties, error: event.error)
+    }
+
+    private nonisolated func getConnectionType() -> String {
+        guard let observer = connectivityObserver else { return "unknown" }
+        switch observer.currentStatus {
+        case .reachable(let connectionType):
+            switch connectionType {
+            case .ethernetOrWiFi:
+                return "wifi"
+            case .cellular:
+                return "cellular"
+            case .other:
+                return "unknown"
+            }
+        case .notReachable, .unknown:
+            return "unknown"
+        }
+    }
+
+    private func getStorageCounts(for siteID: Int64) async -> (products: Int, variations: Int) {
+        do {
+            return try await grdbManager.databaseConnection.read { db in
+                let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+                let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+                return (productCount, variationCount)
+            }
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Failed to get storage counts: \(error)")
+            return (products: 0, variations: 0)
+        }
+    }
+
+    private func getSyncSkipReason(for siteID: Int64, maxAge: TimeInterval) async -> String {
+        // Check eligibility
+        do {
+            let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
+            if case .ineligible(let reason) = eligibility {
+                return reason.skipReason
+            }
+        } catch {
+            return "eligibility_check_failed"
+        }
+
+        // Check if sync is needed based on age
+        guard let lastSyncDate = await lastFullSyncDate(for: siteID) else {
+            return "no_previous_sync" // This shouldn't happen if shouldPerformFullSync returned false
+        }
+
+        let age = Date().timeIntervalSince(lastSyncDate)
+        if age < maxAge {
+            return "catalog_not_stale"
+        }
+
+        return "unknown_reason"
+    }
+
+    private func getIncrementalSyncSkipReason(for siteID: Int64, maxAge: TimeInterval) async -> String {
+        // Check eligibility first
+        do {
+            let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
+            if case .ineligible(let reason) = eligibility {
+                return reason.skipReason
+            }
+        } catch {
+            return "eligibility_check_failed"
+        }
+
+        // Check if full sync exists
+        guard await lastFullSyncDate(for: siteID) != nil else {
+            return "no_full_sync"
+        }
+
+        // Check if incremental sync is needed based on age
+        if maxAge > 0, let lastIncrementalSyncDate = await lastIncrementalSyncDate(for: siteID) {
+            let age = Date().timeIntervalSince(lastIncrementalSyncDate)
+            if age <= maxAge {
+                return "catalog_not_stale"
+            }
+        }
+
+        return "unknown_reason"
+    }
+
+    public func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
     }
 }
 

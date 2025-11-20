@@ -36,7 +36,8 @@ struct PersistedProductBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -91,7 +92,8 @@ struct PersistedProductBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
 
         // Insert product for other site
@@ -109,7 +111,8 @@ struct PersistedProductBarcodeQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
 
         try await insertProduct(ourProduct)

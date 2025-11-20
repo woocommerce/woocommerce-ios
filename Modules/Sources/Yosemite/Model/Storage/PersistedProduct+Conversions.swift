@@ -19,7 +19,8 @@ extension PersistedProduct {
             parentID: posProduct.parentID,
             manageStock: posProduct.manageStock,
             stockQuantity: posProduct.stockQuantity,
-            stockStatusKey: posProduct.stockStatusKey
+            stockStatusKey: posProduct.stockStatusKey,
+            statusKey: posProduct.statusKey
         )
     }
 
@@ -41,6 +42,7 @@ extension PersistedProduct {
             manageStock: manageStock,
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,
+            statusKey: statusKey,
             variationIDs: variationIDs
         )
     }

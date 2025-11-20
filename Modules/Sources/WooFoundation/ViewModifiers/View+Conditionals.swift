@@ -11,6 +11,13 @@ public extension View {
         return self
     }
 
+    /// Applies modifiers within a closure.
+    /// Helpful for setting different modifiers conditionally (e.g. OS versions).
+    ///
+    func apply<V: View>(@ViewBuilder _ block: (Self) -> V) -> V {
+        block(self)
+    }
+
     /// Applies the given transform if the given condition evaluates to `true`.
     /// - Parameters:
     ///   - condition: The condition to evaluate.

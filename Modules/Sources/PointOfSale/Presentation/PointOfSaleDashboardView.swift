@@ -150,13 +150,13 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
-            guard newValue == .eligible else { return }
-            loadItemsIfEligible()
+            guard case .eligible = newValue, oldValue != newValue else { return }
+            loadItemsWhenEligible()
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {
             trackTimeForInitialLoadingState()
-            loadItemsIfEligible()
+            loadItemsWhenEligible()
         }
         .onChange(of: viewState) { oldValue, newValue in
             if newValue == .content && oldValue != newValue {
@@ -247,8 +247,7 @@ private extension PointOfSaleDashboardView {
         }
     }
 
-    func loadItemsIfEligible() {
-        guard posModel.entryPointController.eligibilityState == .eligible else { return }
+    func loadItemsWhenEligible() {
         Task { @MainActor in
             await posModel.purchasableItemsController.loadItems(base: .root)
             await posModel.couponsController.loadItems(base: .root)

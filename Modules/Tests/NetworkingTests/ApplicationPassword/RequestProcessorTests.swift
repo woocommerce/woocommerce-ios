@@ -450,7 +450,7 @@ final class RequestProcessorTests: XCTestCase {
     /// Simulates race condition of multiple `updateAuthenticator` calls from different threads
     /// Should cause a crash on old/non-synchronized `RequestProcessor` implementatoin
     /// Should work fine on synchronized version of `RequestProcessor`
-    func test_concurrentAuthenticatorUpdatesTriggersRaceWhenUnsynchronized() throws {
+    func test_concurrent_authenticator_updates_does_not_trigger_race_condition() throws {
         let credentials = Networking.Credentials.wpcom(
             username: "initial",
             authToken: UUID().uuidString,

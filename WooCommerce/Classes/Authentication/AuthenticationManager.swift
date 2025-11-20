@@ -799,6 +799,8 @@ private extension AuthenticationManager {
     ///
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
         let shouldEnableWebFlow: Bool = {
+            /// Since our detection of invalid credentials error might be inaccurate,
+            /// adding the fallback to web flow would unblock users from login.
             if let siteCredentialError = error as? SiteCredentialLoginError,
                case .invalidCredentials = siteCredentialError {
                 return true

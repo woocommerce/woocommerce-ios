@@ -83,7 +83,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         }()
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
@@ -107,7 +107,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
@@ -141,7 +141,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
         let path = Constants.ordersPath
         let request = JetpackRequest(
-            wooApiVersion: .mark3,
+            wooApiVersion: .mark4,
             method: .get,
             siteID: siteID,
             path: path,
@@ -162,7 +162,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     ///
     public func loadOrderNotes(for siteID: Int64, orderID: Int64, completion: @escaping ([OrderNote]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
@@ -196,7 +196,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         ]
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
@@ -275,7 +275,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 return params
             }()
 
-            let request = JetpackRequest(wooApiVersion: .mark3,
+            let request = JetpackRequest(wooApiVersion: .mark4,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
@@ -303,7 +303,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         ]
         let mapper = OrderMapper(siteID: siteID)
 
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .post,
                                      siteID: siteID,
                                      path: path,
@@ -381,7 +381,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 return params
             }()
 
-            let request = JetpackRequest(wooApiVersion: .mark3,
+            let request = JetpackRequest(wooApiVersion: .mark4,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
@@ -410,7 +410,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                           ParameterKeys.addedByUser: String(true)] // This will always be true when creating notes in-app
         let mapper = OrderNoteMapper()
 
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .post,
                                      siteID: siteID,
                                      path: path,
@@ -430,7 +430,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     public func deleteOrder(for siteID: Int64, orderID: Int64, force: Bool, completion: @escaping (Result<Order, Error>) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)"
         let parameters = [ParameterKeys.force: String(force)]
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .delete,
                                      siteID: siteID,
                                      path: path,
@@ -454,7 +454,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
@@ -501,7 +501,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .post,
                                      siteID: siteID,
                                      path: path,
@@ -522,7 +522,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         ]
 
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                    method: .get,
                                    siteID: siteID,
                                    path: path,
@@ -544,7 +544,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
         let path = Constants.ordersPath
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                    method: .get,
                                    siteID: siteID,
                                    path: path,
@@ -600,7 +600,7 @@ public extension OrdersRemote {
             "id", "parent_id", "number", "status", "currency", "currency_symbol", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt",
             "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
-            "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
+            "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via", "payment_status"
         ]
         static let dateModifiedField = "date_modified_gmt"
         static let posFilter = "pos-rest-api"
@@ -650,7 +650,7 @@ public extension OrdersRemote {
     /// - Throws: Network or parsing errors.
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
         let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3,
+        let request = JetpackRequest(wooApiVersion: .mark4,
                                    method: .get,
                                    siteID: siteID,
                                    path: path,

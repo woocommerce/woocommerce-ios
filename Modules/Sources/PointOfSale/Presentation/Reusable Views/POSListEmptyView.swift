@@ -237,7 +237,7 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
             comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
         )
         static let emptyCouponSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2",
+            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3",
             value: "We couldn’t find any coupons with that name. Try adjusting your search term.",
             comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
         )

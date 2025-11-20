@@ -19,6 +19,7 @@ struct PointOfSaleExitPosAlertView: View {
                     Text(Image(systemName: "xmark"))
                         .font(.posButtonSymbolLarge)
                 }
+                .accessibilityIdentifier("pos-exit-modal-close-button")
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
             Text(Localization.exitTitle)
@@ -33,6 +34,7 @@ struct PointOfSaleExitPosAlertView: View {
             } label: {
                 Text(Localization.exitButton)
             }
+            .accessibilityIdentifier("pos-exit-confirm-button")
             .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .padding(Constants.padding)

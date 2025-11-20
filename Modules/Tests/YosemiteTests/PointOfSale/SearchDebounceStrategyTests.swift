@@ -172,19 +172,51 @@ private final class MockProductsRemote: ProductsRemoteProtocol {
         ([], false)
     }
 
-    func loadAllProducts(for siteID: Int64, context: String?, pageNumber: Int, pageSize: Int, stockStatus: Networking.ProductStockStatus?, productStatus: Networking.ProductStatus?, productType: Networking.ProductType?, productCategory: Networking.ProductCategoryID?, orderBy: Networking.ProductsRemote.OrderKey, order: Networking.ProductsRemote.Order, excludedProductIDs: [Int64], includedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
+    func loadAllProducts(for siteID: Int64,
+                         context: String?,
+                         pageNumber: Int,
+                         pageSize: Int,
+                         stockStatus: Networking.ProductStockStatus?,
+                         productStatus: Networking.ProductStatus?,
+                         productType: Networking.ProductType?,
+                         productCategory: Networking.ProductCategoryID?,
+                         orderBy: Networking.ProductsRemote.OrderKey,
+                         order: Networking.ProductsRemote.Order,
+                         excludedProductIDs: [Int64],
+                         includedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
         ([], false)
     }
 
-    func loadAllProducts(for siteID: Int64, context: String?, pageNumber: Int, pageSize: Int, stockStatus: Networking.ProductStockStatus?, productStatus: Networking.ProductStatus?, productType: Networking.ProductType?, productCategory: Networking.ProductCategoryID?, orderBy: Networking.ProductsRemote.OrderKey, order: Networking.ProductsRemote.Order, excludedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
+    func loadAllProducts(for siteID: Int64,
+                         context: String?,
+                         pageNumber: Int,
+                         pageSize: Int,
+                         stockStatus: Networking.ProductStockStatus?,
+                         productStatus: Networking.ProductStatus?,
+                         productType: Networking.ProductType?,
+                         productCategory: Networking.ProductCategoryID?,
+                         orderBy: Networking.ProductsRemote.OrderKey,
+                         order: Networking.ProductsRemote.Order,
+                         excludedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
         ([], false)
     }
 
-    func searchProducts(for siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, stockStatus: Networking.ProductStockStatus?, productStatus: Networking.ProductStatus?, productType: Networking.ProductType?, excludedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
+    func searchProducts(for siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        stockStatus: Networking.ProductStockStatus?,
+                        productStatus: Networking.ProductStatus?,
+                        productType: Networking.ProductType?,
+                        excludedProductIDs: [Int64]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
         ([], false)
     }
 
-    func searchProducts(for siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludeTypes: [String]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
+    func searchProducts(for siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludeTypes: [String]) async throws -> (products: [Networking.Product], hasNextPage: Bool) {
         ([], false)
     }
 
@@ -212,11 +244,20 @@ private final class MockProductsRemote: ProductsRemoteProtocol {
         throw NSError(domain: "test", code: 0)
     }
 
-    func searchProductsForPointOfSale(for siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, stockStatus: Networking.ProductStockStatus?) async throws -> Networking.PagedItems<Networking.POSProduct> {
+    func searchProductsForPointOfSale(for siteID: Int64,
+                                      keyword: String,
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      stockStatus: Networking.ProductStockStatus?) async throws
+    -> Networking.PagedItems<Networking.POSProduct> {
         .init(items: [], hasMorePages: false, totalItems: nil)
     }
 
-    func loadProductsForPointOfSale(for siteID: Int64, pageNumber: Int, pageSize: Int, stockStatus: Networking.ProductStockStatus?) async throws -> Networking.PagedItems<Networking.POSProduct> {
+    func loadProductsForPointOfSale(for siteID: Int64,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    stockStatus: Networking.ProductStockStatus?) async throws
+    -> Networking.PagedItems<Networking.POSProduct> {
         .init(items: [], hasMorePages: false, totalItems: nil)
     }
 
@@ -226,7 +267,10 @@ private final class MockProductsRemote: ProductsRemoteProtocol {
 }
 
 private final class MockProductVariationsRemote: ProductVariationsRemoteProtocol {
-    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> Networking.PagedItems<Networking.POSProductVariation> {
+    func loadVariationsForPointOfSale(for siteID: Int64,
+                                      parentProductID: Int64,
+                                      pageNumber: Int) async throws
+    -> Networking.PagedItems<Networking.POSProductVariation> {
         .init(items: [], hasMorePages: false, totalItems: nil)
     }
 

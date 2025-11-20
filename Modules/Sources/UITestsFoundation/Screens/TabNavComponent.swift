@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+// periphery:ignore:all
 public final class TabNavComponent: ScreenObject {
 
     private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -14,7 +15,7 @@ public final class TabNavComponent: ScreenObject {
     private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
     }
-    
+
     private let posTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-pos-item"]
     }

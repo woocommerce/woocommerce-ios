@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import Combine
-import WooFoundationCore
 import PointOfSale
 
 final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {

@@ -2,12 +2,12 @@ import Foundation
 import Yosemite
 import WooFoundationCore
 import class WooFoundation.CurrencySettings
-import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.OrderItem
 import PointOfSale
 
 /// Mock order service for screenshot tests that returns immediate loaded state
 final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
+    // periphery: ignore - needed for conformance, not explicitely for the mock
     private let currency: String
 
     init(currency: String) {
@@ -109,5 +109,3 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
 
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {}
 }
-
-

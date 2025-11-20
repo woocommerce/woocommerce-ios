@@ -1,8 +1,7 @@
 import ScreenObject
 import XCTest
-
+// periphery: ignore - used for UI testing
 public final class POSScreen: ScreenObject {
-
     private let cartViewGetter: (XCUIApplication) -> XCUIElement = {
         $0.otherElements["pos-cart-view"]
     }
@@ -122,7 +121,7 @@ public final class POSScreen: ScreenObject {
 
         return self
     }
-    
+
     @discardableResult
     public func tapMenuButton() -> Self {
         let menuButton = app.buttons["pos-menu-button"]

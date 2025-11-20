@@ -25,7 +25,7 @@ final class POSProductSearchable: POSSearchable {
         itemListType.itemType.searchFieldLabel
     }
 
-    var debounceStrategy: SearchDebounceStrategy {
+    var currentDebounceStrategy: SearchDebounceStrategy {
         itemsController.currentDebounceStrategy
     }
 

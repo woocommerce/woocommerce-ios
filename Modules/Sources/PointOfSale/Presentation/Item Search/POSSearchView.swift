@@ -8,8 +8,8 @@ protocol POSSearchable {
     var searchFieldPlaceholder: String { get }
     /// Recent search history for the current item type
     var searchHistory: [String] { get }
-    /// The debouncing strategy to use for search input
-    var debounceStrategy: SearchDebounceStrategy { get }
+    /// The debouncing strategy currently active based on the controller's current state
+    var currentDebounceStrategy: SearchDebounceStrategy { get }
     /// The debouncing strategy that will be used when performing a search (may differ from current strategy)
     var searchDebounceStrategy: SearchDebounceStrategy { get }
 
@@ -64,8 +64,8 @@ struct POSSearchField: View {
 
                 // Capture the debounce strategy synchronously BEFORE creating the task.
                 // Use searchDebounceStrategy for non-empty search terms (actual searches),
-                // and debounceStrategy for empty terms (returning to popular products).
-                let debounceStrategy = newValue.isNotEmpty ? searchable.searchDebounceStrategy : searchable.debounceStrategy
+                // and currentDebounceStrategy for empty terms (returning to popular products).
+                let debounceStrategy = newValue.isNotEmpty ? searchable.searchDebounceStrategy : searchable.currentDebounceStrategy
 
                 searchTask = Task {
                     // Apply debouncing based on the strategy captured at the start

@@ -365,7 +365,7 @@ final class POSOrderSearchable: POSSearchable {
         []
     }
 
-    var debounceStrategy: SearchDebounceStrategy {
+    var currentDebounceStrategy: SearchDebounceStrategy {
         // Use smart debouncing for order search to match original behavior:
         // don't debounce first keystroke to show loading immediately,
         // then debounce subsequent keystrokes while search is ongoing
@@ -374,7 +374,7 @@ final class POSOrderSearchable: POSSearchable {
 
     var searchDebounceStrategy: SearchDebounceStrategy {
         // Orders use the same strategy for both modes
-        debounceStrategy
+        currentDebounceStrategy
     }
 
     func performSearch(term: String) async {

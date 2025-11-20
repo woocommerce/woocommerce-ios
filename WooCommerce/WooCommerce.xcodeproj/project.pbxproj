@@ -5788,6 +5788,7 @@
 		646A2C682E9FCD7E003A32A1 /* Routing */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Routing; sourceTree = "<group>"; };
 		6489D8522EA667AC00D96802 /* Routing */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Routing; sourceTree = "<group>"; };
 		64EA08E42EC214FA00050202 /* MultilineEditableTextRow */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = MultilineEditableTextRow; sourceTree = "<group>"; };
+		684A7F442ECEFDC8003E2A1C /* Mocks */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Mocks; sourceTree = "<group>"; };
 		DEDB5D342E7A68950022E5A1 /* Bookings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Bookings; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -6769,6 +6770,7 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
+				684A7F442ECEFDC8003E2A1C /* Mocks */,
 				683F18652E9CC838007BC608 /* POSNotificationScheduler.swift */,
 				01654EB02E786223001DBB6F /* Adaptors */,
 				02ABF9B92DF7F8E200348186 /* TabBar */,
@@ -13268,6 +13270,7 @@
 				2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */,
 				646A2C682E9FCD7E003A32A1 /* Routing */,
 				64EA08E42EC214FA00050202 /* MultilineEditableTextRow */,
+				684A7F442ECEFDC8003E2A1C /* Mocks */,
 				DEDB5D342E7A68950022E5A1 /* Bookings */,
 			);
 			name = WooCommerce;

@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "id": 123,
+            "name": "Trashed Product",
+            "type": "simple",
+            "sku": "TRASHED-SKU",
+            "global_unique_id": "123456789",
+            "price": "10.00",
+            "regular_price": "10.00",
+            "sale_price": null,
+            "on_sale": false,
+            "images": [],
+            "attributes": [],
+            "manage_stock": true,
+            "stock_quantity": 10,
+            "stock_status": "instock",
+            "status": "trash",
+            "downloadable": false,
+            "parent_id": 0,
+            "variations": []
+        }
+    ]
+}

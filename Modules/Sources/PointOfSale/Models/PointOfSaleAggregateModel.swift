@@ -17,6 +17,8 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
+import struct Yosemite.POSSimpleProduct
+import struct Yosemite.POSVariation
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -69,7 +71,9 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cardReaderDisconnection: AnyCancellable?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
-    private let isLocalCatalogEligible: Bool
+
+    /// Indicates whether the local catalog feature is enabled for this store
+    let isLocalCatalogEligible: Bool
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -190,6 +194,48 @@ extension PointOfSaleAggregateModel {
         orderStage = .building
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
+    }
+
+    /// Removes missing products from the cart only (catalog is auto-cleaned when errors are detected)
+    /// - Parameters:
+    ///   - productIDs: Product IDs to remove (for simple products)
+    ///   - variationIDs: Variation IDs to remove (for variations)
+    func removeMissingProductsFromCart(productIDs: Set<Int64>, variationIDs: Set<Int64>) {
+        cart.purchasableItems.removeAll { item in
+            guard case .loaded(let orderableItem) = item.state else { return false }
+
+            // Check if it's a simple product matching the product IDs
+            if let simpleProduct = orderableItem as? POSSimpleProduct {
+                return productIDs.contains(simpleProduct.productID)
+            }
+            // Check if it's a variation matching the variation IDs
+            else if let variation = orderableItem as? POSVariation {
+                return variationIDs.contains(variation.productVariationID)
+            }
+            return false
+        }
+    }
+
+    /// Removes identified missing products from the catalog only (not from cart)
+    /// - Parameter missingProducts: Array of missing product info
+    private func removeIdentifiedMissingProductsFromCatalog(_ missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo]) async {
+        let (productIDs, variationIDs) = missingProducts.extractProductAndVariationIDs()
+
+        // Remove from local catalog only if we have identifiable products
+        guard !productIDs.isEmpty || !variationIDs.isEmpty else { return }
+
+        if let catalogSyncCoordinator {
+            do {
+                try await catalogSyncCoordinator.deleteProductsFromCatalog(
+                    Array(productIDs),
+                    variationIDs: Array(variationIDs),
+                    siteID: siteID
+                )
+                DDLogInfo("🗑️ Auto-removed \(productIDs.count) products and \(variationIDs.count) variations from local catalog (unavailable items)")
+            } catch {
+                DDLogError("⚠️ Failed to auto-remove unavailable products from local catalog: \(error)")
+            }
+        }
     }
 }
 
@@ -618,7 +664,17 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
         trackOrderSyncState(syncOrderResult)
+        await removeMissingProductsFromCatalogAfterSync()
         await startPaymentWhenCardReaderConnected()
+    }
+
+    /// Removes unavailable products from the local catalog after detecting them during order sync
+    @MainActor
+    private func removeMissingProductsFromCatalogAfterSync() async {
+        // If we identified specific missing products, remove them from the catalog immediately
+        if case .error(.missingProducts(let missingProducts), _) = orderController.orderState.externalState {
+            await removeIdentifiedMissingProductsFromCatalog(missingProducts)
+        }
     }
 }
 
@@ -686,6 +742,13 @@ extension PointOfSaleAggregateModel {
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
         isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+    }
+
+    /// Calculates the number of hours since the last catalog sync
+    /// - Returns: Hours since last sync, or nil if no sync date is available
+    func hoursSinceLastSync() async -> Int? {
+        guard let catalogSyncCoordinator else { return nil }
+        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID)
     }
 }
 

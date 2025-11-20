@@ -165,6 +165,13 @@ final class BackgroundTaskRefreshDispatcher {
 
     /// Handles POS catalog sync refresh task.
     ///
+    // TODO: WOOMOB-1677 - This background refresh needs to handle in-progress catalog generation.
+    // Currently, if generation was started in a previous session, this will just start a full sync
+    // again. Instead, we should:
+    // 1. Check if there's an in-progress generation (requires state persistence)
+    // 2. Poll once for the generation status within the ~30s background window
+    // 3. Download and parse if ready, or save state and wait for next refresh
+    // This should also check on foreground app opens, not just background refresh.
     private func handlePOSCatalogSync(backgroundTask: BGAppRefreshTask, siteID: Int64) {
         guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
             DDLogInfo("POS catalog sync background refresh skipped: Feature flag disabled or logged out")

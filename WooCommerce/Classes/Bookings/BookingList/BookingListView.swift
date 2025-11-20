@@ -11,15 +11,18 @@ struct BookingListView<Header: View>: View {
     @Binding var selectedBooking: Booking?
 
     private let header: Header
+    private let onClearingFilters: (() -> Void)?
 
     init(viewModel: BookingListViewModel,
          searchViewModel: BookingSearchViewModel,
          selectedBooking: Binding<Booking?>,
-         @ViewBuilder header: () -> Header) {
+         @ViewBuilder header: () -> Header,
+         onClearingFilters: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.searchViewModel = searchViewModel
         self._selectedBooking = selectedBooking
         self.header = header()
+        self.onClearingFilters = onClearingFilters
     }
 
     var body: some View {
@@ -117,9 +120,21 @@ private extension BookingListView {
             } header: {
                 header
                     .listRowInsets(EdgeInsets())
+                    .textCase(nil)
             }
         }
-        .listStyle(.plain)
+        .apply {
+            /// Plain list style in iOS prior to 26.0 comes with extra spacing at the top of header.
+            /// Use grouped style for these versions instead.
+            /// Grouped list style doesn't pin header at the top, we have to accept this.
+            if #available(iOS 26.0, *) {
+                $0.listStyle(.plain)
+            } else {
+                $0.listStyle(.grouped)
+            }
+        }
+        .listStyle(.grouped)
+        .scrollContentBackground(.hidden)
         .listSectionSeparator(.hidden, edges: .top)
         .background(Color(.listBackground))
         .refreshable {
@@ -199,13 +214,10 @@ private extension BookingListView {
                 }
                 if viewModel.hasFilters {
                     VStack(spacing: BookingListViewLayout.textVerticalPadding) {
-                        Button("Change filters") {
-                            // TODO
+                        Button(BookingListViewLocalization.clearFilters) {
+                            onClearingFilters?()
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        Button("Clear filters") {
-                            // TODO
-                        }
                     }
                 }
             }
@@ -250,5 +262,10 @@ fileprivate enum BookingListViewLocalization {
         "bookingList.emptySearchText",
         value: "We couldn't find any bookings with that name — try adjusting your search term to see more results.",
         comment: "Message displayed when searching bookings by keyword yields no results."
+    )
+    static let clearFilters = NSLocalizedString(
+        "bookingList.clearFilters",
+        value: "Clear filters",
+        comment: "Button to clear the filters on booking list"
     )
 }

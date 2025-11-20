@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+23.8
+-----
+- [Internal] Fix broken navigation to a variable product selector [https://github.com/woocommerce/woocommerce-ios/pull/16363]
+
 23.7
 -----
 - [**] We added support for collecting in-person payments (including Tap To Pay) using Stripe Payment Gateway extension in the UK. [https://github.com/woocommerce/woocommerce-ios/pull/16287]
@@ -9,6 +13,9 @@
 - [*] Fix order details presentation when opened from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16331]
 - [*] Show POS feedback surveys for eligible merchants [https://github.com/woocommerce/woocommerce-ios/pull/16325]
 - [*] Fix product variation selection for order creation [https://github.com/woocommerce/woocommerce-ios/pull/16317]
+- [internal] Hide non-CIAB product types from filters [https://github.com/woocommerce/woocommerce-ios/pull/16354] 
+- [Internal] Fix warning when displaying offline banner on My Store [https://github.com/woocommerce/woocommerce-ios/pull/16347]
+- [Internal] Notify listeners immediately after updating predicates or sort descriptors for results controllers. [https://github.com/woocommerce/woocommerce-ios/pull/16350]
 
 23.6
 -----

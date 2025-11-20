@@ -17,6 +17,13 @@ public protocol POSCatalogFullSyncServiceProtocol {
     ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: The synced catalog containing products and variations
     func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool) async throws -> POSCatalog
+
+    /// Parses and persists a downloaded catalog file from a background download.
+    /// - Parameters:
+    ///   - fileURL: Local file URL of the downloaded catalog
+    ///   - siteID: Site ID for this catalog
+    /// - Returns: The parsed catalog
+    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog
 }
 
 /// POS catalog from full sync.
@@ -98,6 +105,27 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             throw error
         }
     }
+
+    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+        DDLogInfo("🟣 Parsing background catalog download for site \(siteID)")
+
+        let syncStartDate = Date.now
+        let catalogResponse = try await syncRemote.parseDownloadedCatalog(from: fileURL, siteID: siteID)
+
+        let catalog = POSCatalog(
+            products: catalogResponse.products,
+            variations: catalogResponse.variations,
+            syncDate: syncStartDate
+        )
+
+        DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+
+        // Persist to database
+        try await persistenceService.replaceAllCatalogData(catalog, siteID: siteID)
+        DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+
+        return catalog
+    }
 }
 
 // MARK: - Remote Loading
@@ -164,6 +192,10 @@ private extension POSCatalogFullSyncService {
         return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL, allowCellular: allowCellular)
     }
 
+    // TODO: WOOMOB-1677 - This blocking polling approach is incompatible with background execution.
+    // Background App Refresh tasks have ~30 seconds of execution time, but catalog generation
+    // typically takes 5-10 minutes. This needs to be refactored to use stateful polling that
+    // resumes across multiple background refresh sessions and foreground app opens.
     func pollForCatalogCompletion(siteID: Int64,
                                   syncRemote: POSCatalogSyncRemoteProtocol,
                                   allowCellular: Bool) async throws -> String {

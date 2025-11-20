@@ -71,6 +71,9 @@ struct TotalsView: View {
             case .error(.invalidCoupon(let message), let handler):
                 PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
+            case .error(.missingProducts(let missingProducts), let handler):
+                PointOfSaleOrderSyncMissingProductsErrorMessageView(missingProducts: missingProducts, retryHandler: handler)
+                    .transition(.opacity)
             }
         }
         .background(backgroundColor)

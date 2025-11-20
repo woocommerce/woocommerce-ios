@@ -43,6 +43,7 @@
       "manage_stock": false,
       "stock_quantity": null,
       "stock_status": "instock",
+      "status": "publish",
       "global_unique_id": ""
     },
     {
@@ -102,6 +103,7 @@
       "manage_stock": true,
       "stock_quantity": 10,
       "stock_status": "instock",
+      "status": "publish",
       "global_unique_id": ""
     }
   ]

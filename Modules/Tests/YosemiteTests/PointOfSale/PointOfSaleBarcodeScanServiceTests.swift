@@ -51,4 +51,26 @@ struct PointOfSaleBarcodeScanServiceTests {
             _ = try await sut.getItem(barcode: barcode)
         }
     }
+
+    @Test func getItem_throws_notFound_when_product_has_trash_status() async throws {
+        // Given
+        let barcode = "123456789"
+        network.simulateResponse(requestUrlSuffix: "products", filename: "pos-product-trashed")
+
+        // When/Then
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
+
+    @Test func getItem_throws_notFound_when_product_has_draft_status() async throws {
+        // Given
+        let barcode = "123456789"
+        network.simulateResponse(requestUrlSuffix: "products", filename: "pos-product-draft")
+
+        // When/Then
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: barcode)) {
+            _ = try await sut.getItem(barcode: barcode)
+        }
+    }
 }

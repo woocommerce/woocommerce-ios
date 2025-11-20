@@ -205,7 +205,9 @@ class AuthenticatedState: StoresManagerState {
                 fullSyncService: fullSyncService,
                 incrementalSyncService: incrementalSyncService,
                 grdbManager: ServiceLocator.grdbManager,
-                catalogEligibilityChecker: eligibilityService
+                catalogEligibilityChecker: eligibilityService,
+                analytics: ServiceLocator.analytics,
+                connectivityObserver: ServiceLocator.connectivityObserver
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility

@@ -162,6 +162,10 @@ struct DashboardView: View {
 
             storePlanBanner
                 .renderedIf(connectivityStatus != .notReachable)
+
+            OfflineBannerViewRepresentable()
+                .frame(height: OfflineBannerView.height)
+                .renderedIf(connectivityStatus == .notReachable)
         }
         .sheet(isPresented: $showingSupportForm) {
             supportForm

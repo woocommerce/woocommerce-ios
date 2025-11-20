@@ -3,9 +3,12 @@ import Foundation
 /// Defines the debouncing behavior for search input
 public enum SearchDebounceStrategy: Equatable {
     /// Smart debouncing: Skip debounce on first keystroke after a search completes, then debounce subsequent keystrokes.
+    /// Optionally delays showing loading indicators until a threshold is exceeded.
     /// Optimized for slow network searches where the first keystroke should show loading immediately.
-    /// - Parameter duration: The debounce duration in nanoseconds for subsequent keystrokes
-    case smart(duration: UInt64)
+    /// - Parameters:
+    ///   - duration: The debounce duration in nanoseconds for subsequent keystrokes
+    ///   - loadingDelayThreshold: Optional threshold in nanoseconds before showing loading indicators. If nil, shows loading immediately.
+    case smart(duration: UInt64, loadingDelayThreshold: UInt64? = nil)
 
     /// Simple debouncing: Always debounce every keystroke by the specified duration.
     /// Optionally delays showing loading indicators until a threshold is exceeded.

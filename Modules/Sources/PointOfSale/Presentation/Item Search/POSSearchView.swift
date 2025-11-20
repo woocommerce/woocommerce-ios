@@ -63,15 +63,62 @@ struct POSSearchField: View {
                 searchTask = Task {
                     // Apply debouncing based on the strategy from the fetch strategy
                     switch searchable.debounceStrategy {
-                    case .smart(let duration):
-                        // Smart debouncing: Skip debounce on first keystroke after search completes,
-                        // then debounce subsequent keystrokes
-                        let shouldDebounce = !didFinishSearch
-                        if shouldDebounce {
-                            try? await Task.sleep(nanoseconds: duration)
-                        } else {
-                            searchable.clearSearchResults()
+                    case .smart(let duration, let loadingDelayThreshold):
+                        // Smart debouncing: Don't debounce first keystroke, but debounce subsequent keystrokes
+                        // The loading indicator behavior depends on whether there's a threshold:
+                        // - With threshold: Show loading after threshold if search hasn't completed (prevents flicker)
+                        // - Without threshold: Show loading immediately (responsive feel)
+
+                        let shouldDebounceNextSearchRequest = !didFinishSearch
+
+                        // Early exit if search term is empty
+                        guard newValue.isNotEmpty else {
+                            didFinishSearch = true
+                            return
                         }
+
+                        // Start loading indicator task if we have a threshold and this is first keystroke
+                        let loadingTask: Task<Void, Never>?
+                        if !shouldDebounceNextSearchRequest {
+                            // First keystroke - handle loading indicators
+                            if let threshold = loadingDelayThreshold {
+                                // With threshold: delay showing loading to prevent flicker for fast searches
+                                loadingTask = Task { @MainActor in
+                                    try? await Task.sleep(nanoseconds: threshold)
+                                    if !Task.isCancelled {
+                                        searchable.clearSearchResults()
+                                    }
+                                }
+                            } else {
+                                // No threshold - show loading immediately for responsive feel
+                                searchable.clearSearchResults()
+                                loadingTask = nil
+                            }
+                        } else {
+                            // Subsequent keystrokes - loading already showing from previous search
+                            loadingTask = nil
+                        }
+
+                        if shouldDebounceNextSearchRequest {
+                            try? await Task.sleep(nanoseconds: duration)
+                        }
+
+                        // Now perform the search (common code for both and subsequent keystrokes)
+                        guard !Task.isCancelled else {
+                            loadingTask?.cancel()
+                            return
+                        }
+
+                        didFinishSearch = false
+                        await searchable.performSearch(term: newValue)
+
+                        // Cancel loading task if search completed (only relevant for first keystroke with threshold)
+                        loadingTask?.cancel()
+
+                        if !Task.isCancelled {
+                            didFinishSearch = true
+                        }
+                        return
 
                     case .simple(let duration, let loadingDelayThreshold):
                         // Simple debouncing: Always debounce
@@ -139,6 +186,7 @@ struct POSSearchField: View {
         }
         .onAppear {
             isSearchFieldFocused = true
+            didFinishSearch = true  // Reset state when search view appears
         }
     }
 }

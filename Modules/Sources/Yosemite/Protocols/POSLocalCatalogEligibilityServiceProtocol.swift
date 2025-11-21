@@ -22,7 +22,7 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
     public var skipReason: String {
         switch self {
         case .posTabNotEligible:
-            return "pos_inactive"
+            return "pos_not_eligible"
         case .featureFlagDisabled:
             return "feature_flag_disabled"
         case .unsupportedWooCommerceVersion:

@@ -23,6 +23,8 @@ struct ApplicationPasswordTutorialViewModel {
                                      comment: "Reason for why the user could not login tin the application password tutorial screen")
         case .invalidCredentials:
             return error.localizedDescription
+        case .failedAuthenticationChallenge:
+            fatalError("Failure to handle authentication challenge is not eligible for application password flow.")
         }
     }
 }

@@ -1,3 +1,4 @@
+//periphery:ignore:all
 import ScreenObject
 import XCTest
 
@@ -82,6 +83,7 @@ public final class SingleOrderScreen: ScreenObject {
         return try PaymentMethodsScreen()
     }
 
+    @discardableResult
     public func goBackToOrdersScreen() throws -> OrdersScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
 

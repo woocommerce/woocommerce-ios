@@ -40,6 +40,7 @@ struct POSFloatingControlView: View {
                 }
                 .frame(width: Constants.size)
             }
+            .accessibilityIdentifier("pos-menu-button")
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
             .disabled(posModel.paymentState.card == .processingPayment)
@@ -78,6 +79,7 @@ private extension POSFloatingControlView {
                 icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
             )
         }
+        .accessibilityIdentifier("pos-exit-menu-item")
         Button {
             analytics.track(.pointOfSaleSettingsMenuItemTapped)
             showSettings = true

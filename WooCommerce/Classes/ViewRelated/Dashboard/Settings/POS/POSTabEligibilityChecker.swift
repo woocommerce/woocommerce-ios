@@ -58,6 +58,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
+        // Bypass eligibility checks for screenshot tests
+        if ProcessConfiguration.shouldBypassPOSEligibilityChecks {
+            return .eligible
+        }
+
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let pluginEligibility = checkPluginEligibility()
 

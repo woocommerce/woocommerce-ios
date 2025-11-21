@@ -61,7 +61,9 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 .getAppPasswordsExperimentSettingState,
                 .getPOSSurveyCurrentMerchantNotificationScheduled,
                 .getPOSSurveyPotentialMerchantNotificationScheduled,
-                .getHasPOSBeenOpenedAtLeastOnce:
+                .getHasPOSBeenOpenedAtLeastOnce,
+                .setHasPOSBeenOpenedAtLeastOnce,
+                .setPOSLastOpenedDate:
             break
         default: unimplementedAction(action: action)
         }

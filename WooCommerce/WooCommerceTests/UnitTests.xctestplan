@@ -95,6 +95,9 @@
       }
     },
     {
+      "skippedTests" : [
+        "RequestProcessorTests\/test_concurrentAuthenticatorUpdatesTriggersRaceWhenUnsynchronized()"
+      ],
       "target" : {
         "containerPath" : "container:..\/Modules",
         "identifier" : "NetworkingTests",

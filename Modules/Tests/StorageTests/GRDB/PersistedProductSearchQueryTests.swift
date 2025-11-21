@@ -36,7 +36,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -68,7 +69,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -99,7 +101,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -132,7 +135,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -172,7 +176,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -195,19 +200,19 @@ struct PersistedProductSearchQueryTests {
             PersistedProduct(id: 6, siteID: siteID, name: "Coffee Beans", productTypeKey: "simple",
                            fullDescription: nil, shortDescription: nil, sku: nil, globalUniqueID: nil,
                            price: "15.00", downloadable: false, parentID: 0, manageStock: false,
-                           stockQuantity: nil, stockStatusKey: "instock"),
+                           stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish"),
             PersistedProduct(id: 7, siteID: siteID, name: "Coffee Grinder", productTypeKey: "simple",
                            fullDescription: nil, shortDescription: nil, sku: nil, globalUniqueID: nil,
                            price: "45.00", downloadable: false, parentID: 0, manageStock: false,
-                           stockQuantity: nil, stockStatusKey: "instock"),
+                           stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish"),
             PersistedProduct(id: 8, siteID: siteID, name: "Coffee Maker", productTypeKey: "variable",
                            fullDescription: nil, shortDescription: nil, sku: nil, globalUniqueID: nil,
                            price: "100.00", downloadable: false, parentID: 0, manageStock: false,
-                             stockQuantity: nil, stockStatusKey: "instock"),
+                             stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish"),
             PersistedProduct(id: 9, siteID: siteID, name: "Tea Strainer", productTypeKey: "variable",
                            fullDescription: nil, shortDescription: nil, sku: nil, globalUniqueID: nil,
                            price: "5.00", downloadable: false, parentID: 0, manageStock: false,
-                           stockQuantity: nil, stockStatusKey: "instock")
+                           stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish")
         ]
         for product in products {
             try await insertProduct(product)
@@ -241,7 +246,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(downloadableProduct)
 
@@ -271,7 +277,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         let variableProduct = PersistedProduct(
             id: 11,
@@ -287,7 +294,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         let groupedProduct = PersistedProduct(
             id: 12,
@@ -303,7 +311,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(simpleProduct)
         try await insertProduct(variableProduct)
@@ -347,7 +356,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         let otherProduct = PersistedProduct(
             id: 14,
@@ -363,7 +373,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(ourProduct)
         try await insertProduct(otherProduct)
@@ -398,7 +409,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -430,7 +442,8 @@ struct PersistedProductSearchQueryTests {
             parentID: 0,
             manageStock: false,
             stockQuantity: nil,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            statusKey: "publish"
         )
         try await insertProduct(product)
 
@@ -458,15 +471,15 @@ struct PersistedProductSearchQueryTests {
             PersistedProduct(id: 17, siteID: siteID, name: "Zebra Product", productTypeKey: "simple",
                            fullDescription: nil, shortDescription: nil, sku: "ITEM-Z", globalUniqueID: nil,
                            price: "10.00", downloadable: false, parentID: 0, manageStock: false,
-                           stockQuantity: nil, stockStatusKey: "instock"),
+                           stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish"),
             PersistedProduct(id: 18, siteID: siteID, name: "Alpha Product", productTypeKey: "simple",
                            fullDescription: nil, shortDescription: nil, sku: "ITEM-A", globalUniqueID: nil,
                            price: "10.00", downloadable: false, parentID: 0, manageStock: false,
-                           stockQuantity: nil, stockStatusKey: "instock"),
+                           stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish"),
             PersistedProduct(id: 19, siteID: siteID, name: "Beta Product", productTypeKey: "simple",
                            fullDescription: nil, shortDescription: nil, sku: "ITEM-B", globalUniqueID: nil,
                            price: "10.00", downloadable: false, parentID: 0, manageStock: false,
-                           stockQuantity: nil, stockStatusKey: "instock")
+                           stockQuantity: nil, stockStatusKey: "instock", statusKey: "publish")
         ]
         for product in products {
             try await insertProduct(product)

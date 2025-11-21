@@ -333,6 +333,7 @@ extension SiteCredentialLoginUseCase {
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         let authMethod = challenge.protectionSpace.authenticationMethod
         receivedAuthChallengeMethod = authMethod
+        DDLogWarn("⚠️ An authentication challenge is required for login: \(authMethod)")
         completionHandler(.performDefaultHandling, nil)
     }
 }

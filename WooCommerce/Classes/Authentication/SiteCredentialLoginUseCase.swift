@@ -329,6 +329,6 @@ extension SiteCredentialLoginUseCase {
         let authMethod = challenge.protectionSpace.authenticationMethod
         receivedAuthChallengeMethod = authMethod
         DDLogWarn("⚠️ An authentication challenge is required for login: \(authMethod)")
-        completionHandler(.performDefaultHandling, nil)
+        completionHandler(.cancelAuthenticationChallenge, nil)
     }
 }

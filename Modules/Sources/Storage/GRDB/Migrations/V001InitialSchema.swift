@@ -51,6 +51,8 @@ struct V001InitialSchema {
             productTable.column("manageStock", .boolean).notNull()
             productTable.column("stockQuantity", .double)
             productTable.column("stockStatusKey", .text).notNull()
+
+            productTable.column("statusKey", .text).notNull()
         }
     }
 

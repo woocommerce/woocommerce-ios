@@ -16,8 +16,9 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         grdbManager = try GRDBManager()
 
         // Initialize site
+        let siteIDLocalCopy = self.siteID
         try await grdbManager.databaseConnection.write { db in
-            try PersistedSite(id: siteID).insert(db)
+            try PersistedSite(id: siteIDLocalCopy).insert(db)
         }
     }
 

@@ -43,6 +43,12 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
 
+    public let statusKey: String
+
+    public var productStatus: ProductStatus {
+        return ProductStatus(rawValue: statusKey)
+    }
+
     public let variationIDs: [Int64]
 
     public init(siteID: Int64,
@@ -61,6 +67,7 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 manageStock: Bool,
                 stockQuantity: Decimal?,
                 stockStatusKey: String,
+                statusKey: String,
                 variationIDs: [Int64]) {
         self.siteID = siteID
         self.productID = productID
@@ -84,6 +91,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+
+        self.statusKey = statusKey
 
         self.variationIDs = variationIDs
     }
@@ -129,6 +138,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
+        let statusKey = try container.decode(String.self, forKey: .statusKey)
+
         let variationIDs = try container.decodeIfPresent([Int64].self, forKey: .variationIDs) ?? []
 
         self.init(siteID: siteID,
@@ -147,6 +158,7 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
                   stockStatusKey: stockStatusKey,
+                  statusKey: statusKey,
                   variationIDs: variationIDs)
     }
 
@@ -180,6 +192,7 @@ private extension POSProduct {
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"
         case stockStatusKey = "stock_status"
+        case statusKey = "status"
         case variationIDs = "variations"
     }
 }

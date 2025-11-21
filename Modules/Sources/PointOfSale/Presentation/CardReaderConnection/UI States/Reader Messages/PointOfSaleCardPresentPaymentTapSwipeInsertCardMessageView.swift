@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityIdentifier("pos-card-payment-message")
     }
 }
 

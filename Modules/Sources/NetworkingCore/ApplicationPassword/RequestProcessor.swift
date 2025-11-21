@@ -8,27 +8,20 @@ protocol RequestProcessorDelegate: AnyObject {
 /// Authenticates and retries requests
 ///
 final class RequestProcessor: RequestInterceptor {
-    private var requestsToRetry = [(RetryResult) -> Void]()
-
-    private var isAuthenticating = false
-
-    private var requestAuthenticator: RequestAuthenticator
-
     private let notificationCenter: NotificationCenter
 
-    private var currentSiteID: Int64?
+    private let state: RequestProcessorState
 
     weak var delegate: RequestProcessorDelegate?
 
     init(requestAuthenticator: RequestAuthenticator,
          notificationCenter: NotificationCenter = .default) {
-        self.requestAuthenticator = requestAuthenticator
         self.notificationCenter = notificationCenter
+        self.state = RequestProcessorState(requestAuthenticator: requestAuthenticator)
     }
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
-        requestAuthenticator = authenticator
-        currentSiteID = authenticator.jetpackSiteID
+        state.updateAuthenticator(authenticator)
     }
 }
 
@@ -36,7 +29,8 @@ final class RequestProcessor: RequestInterceptor {
 //
 extension RequestProcessor: RequestAdapter {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-        let result = Result { try requestAuthenticator.authenticate(urlRequest) }
+        let authenticator = state.authenticator
+        let result = Result { try authenticator.authenticate(urlRequest) }
         completion(result)
     }
 }
@@ -45,18 +39,27 @@ extension RequestProcessor: RequestAdapter {
 //
 extension RequestProcessor: RequestRetrier {
     func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-        guard
-            request.retryCount == 0, // Only retry once
-            let urlRequest = request.request,
-            requestAuthenticator.shouldRetry(urlRequest), // Retry only REST API requests that use application password
-            shouldRetry(error) // Retry only specific errors
-        else {
-            return completion(.doNotRetry)
+        guard request.retryCount == 0, // Only retry once
+              let urlRequest = request.request else {
+            completion(.doNotRetry)
+            return
         }
 
-        requestsToRetry.append(completion)
-        if !isAuthenticating {
-            isAuthenticating = true
+        guard shouldRetry(error) else {
+            completion(.doNotRetry)
+            return
+        }
+
+        let shouldRetryRequest = state.shouldRetry(urlRequest)
+
+        guard shouldRetryRequest else {
+            completion(.doNotRetry)
+            return
+        }
+
+        let shouldStartAuthentication = state.enqueueRetry(completion)
+
+        if shouldStartAuthentication {
             generateApplicationPassword()
         }
     }
@@ -66,28 +69,30 @@ extension RequestProcessor: RequestRetrier {
 //
 private extension RequestProcessor {
     func generateApplicationPassword() {
-        Task(priority: .medium) { @MainActor in
+        Task(priority: .medium) { @MainActor [weak self] in
+            guard let self else { return }
+            let authenticator = self.state.authenticator
             do {
-                let _ = try await requestAuthenticator.generateApplicationPassword()
-                isAuthenticating = false
+                let _ = try await authenticator.generateApplicationPassword()
+                self.state.setAuthenticating(false)
 
                 // Post a notification for tracking
-                notificationCenter.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: nil)
+                self.notificationCenter.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: nil)
 
-                completeRequests(true)
+                self.completeRequests(true)
             } catch {
 
                 // Post a notification for tracking
-                notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
+                self.notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                let shouldRetry = await checkIfRetryingGenerationIsNeeded(for: error)
+                let shouldRetry = await self.checkIfRetryingGenerationIsNeeded(for: error)
                 if shouldRetry {
-                    generateApplicationPassword()
+                    self.generateApplicationPassword()
                 } else {
-                    isAuthenticating = false
-                    completeRequests(false, error: error)
-                    if let currentSiteID {
-                        notifyFailureIfNeeded(error, for: currentSiteID)
+                    self.state.setAuthenticating(false)
+                    self.completeRequests(false, error: error)
+                    if let siteID = self.state.currentSiteID {
+                        self.notifyFailureIfNeeded(error, for: siteID)
                     }
                 }
             }
@@ -98,14 +103,15 @@ private extension RequestProcessor {
     /// Returns whether retry is needed.
     @MainActor
     func checkIfRetryingGenerationIsNeeded(for error: Error) async -> Bool {
-        guard currentSiteID != nil else {
+        guard state.currentSiteID != nil else {
             return false
         }
         switch error {
         case NetworkError.unacceptableStatusCode(let statusCode, _) where statusCode == 409:
             /// Password with the same name already exists. Request deletion remotely and retry.
             do {
-                try await requestAuthenticator.deleteApplicationPassword()
+                let authenticator = state.authenticator
+                try await authenticator.deleteApplicationPassword()
                 return true
             } catch {
                 return false
@@ -156,10 +162,10 @@ private extension RequestProcessor {
                 .doNotRetry
             }
         }()
-        requestsToRetry.forEach { (completion) in
+        let pendingCompletions = state.drainPendingRetries()
+        pendingCompletions.forEach { completion in
             completion(result)
         }
-        requestsToRetry.removeAll()
     }
 }
 
@@ -181,4 +187,69 @@ public extension NSNotification.Name {
     /// Posted when site is detected as eligible for app password authentication
     ///
     static let JetpackSiteEligibleForAppPasswordSupport = NSNotification.Name(rawValue: "JetpackSiteEligibleForAppPasswordSupport")
+}
+
+private extension RequestProcessor {
+    final class RequestProcessorState {
+        private var requestsToRetry: [(RetryResult) -> Void]
+        private var isAuthenticating: Bool
+        private var requestAuthenticator: RequestAuthenticator
+        private var siteID: Int64?
+
+        private let queue = DispatchQueue(
+            label: "com.woocommerce.networking.request-processor.state-queue",
+            qos: .userInitiated
+        )
+
+        init(requestAuthenticator: RequestAuthenticator) {
+            self.requestsToRetry = []
+            self.isAuthenticating = false
+            self.requestAuthenticator = requestAuthenticator
+            self.siteID = requestAuthenticator.jetpackSiteID
+        }
+
+        var authenticator: RequestAuthenticator {
+            queue.sync { requestAuthenticator }
+        }
+
+        var currentSiteID: Int64? {
+            queue.sync { siteID }
+        }
+
+        func shouldRetry(_ request: URLRequest) -> Bool {
+            queue.sync { requestAuthenticator.shouldRetry(request) }
+        }
+
+        func enqueueRetry(_ completion: @escaping (RetryResult) -> Void) -> Bool {
+            queue.sync {
+                requestsToRetry.append(completion)
+                if isAuthenticating {
+                    return false
+                }
+                isAuthenticating = true
+                return true
+            }
+        }
+
+        func setAuthenticating(_ value: Bool) {
+            queue.sync {
+                isAuthenticating = value
+            }
+        }
+
+        func drainPendingRetries() -> [(RetryResult) -> Void] {
+            queue.sync {
+                let completions = requestsToRetry
+                requestsToRetry.removeAll()
+                return completions
+            }
+        }
+
+        func updateAuthenticator(_ authenticator: RequestAuthenticator) {
+            queue.sync {
+                requestAuthenticator = authenticator
+                siteID = authenticator.jetpackSiteID
+            }
+        }
+    }
 }

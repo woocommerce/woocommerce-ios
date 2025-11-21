@@ -1,4 +1,3 @@
-//periphery:ignore:all
 import ScreenObject
 import XCTest
 

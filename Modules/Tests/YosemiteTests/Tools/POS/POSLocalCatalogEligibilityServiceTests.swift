@@ -536,4 +536,31 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(reason == expectedReason)
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
+
+    // MARK: - Skip Reason Analytics
+
+    @Test("POSLocalCatalogIneligibleReason skipReason returns correct analytics string")
+    func testSkipReasonReturnsCorrectAnalyticsString() {
+        #expect(POSLocalCatalogIneligibleReason.posTabNotEligible.skipReason == "pos_not_eligible")
+        #expect(POSLocalCatalogIneligibleReason.featureFlagDisabled.skipReason == "feature_flag_disabled")
+        #expect(POSLocalCatalogIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "10.3.0").skipReason == "unsupported_woocommerce_version")
+        #expect(POSLocalCatalogIneligibleReason.catalogSizeTooLarge(totalCount: 1500, limit: 1000).skipReason == "catalog_too_large")
+        #expect(POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error").skipReason == "catalog_size_check_failed")
+    }
+
+    @Test("Skip reason strings are consistent regardless of associated values")
+    func testSkipReasonConsistentRegardlessOfAssociatedValues() {
+        // Test that associated values don't affect the skip reason string
+        let version1 = POSLocalCatalogIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "10.3.0")
+        let version2 = POSLocalCatalogIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "11.0.0")
+        #expect(version1.skipReason == version2.skipReason)
+
+        let sizeTooLarge1 = POSLocalCatalogIneligibleReason.catalogSizeTooLarge(totalCount: 1500, limit: 1000)
+        let sizeTooLarge2 = POSLocalCatalogIneligibleReason.catalogSizeTooLarge(totalCount: 2000, limit: 1000)
+        #expect(sizeTooLarge1.skipReason == sizeTooLarge2.skipReason)
+
+        let checkFailed1 = POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error1")
+        let checkFailed2 = POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error2")
+        #expect(checkFailed1.skipReason == checkFailed2.skipReason)
+    }
 }

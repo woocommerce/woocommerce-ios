@@ -112,6 +112,7 @@ extension Order {
                                    appliedGiftCards: [],
                                    attributionInfo: nil,
                                    shippingLabels: [],
-                                   createdVia: "rest-api")
+                                   createdVia: "rest-api",
+                                   paymentStatus: nil)
 }
 #endif

@@ -241,7 +241,8 @@ extension NetworkingCore.Order {
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
         attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy,
         shippingLabels: CopiableProp<[ShippingLabel]> = .copy,
-        createdVia: NullableCopiableProp<String> = .copy
+        createdVia: NullableCopiableProp<String> = .copy,
+        paymentStatus: NullableCopiableProp<OrderPaymentStatusEnum> = .copy
     ) -> NetworkingCore.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -283,6 +284,7 @@ extension NetworkingCore.Order {
         let attributionInfo = attributionInfo ?? self.attributionInfo
         let shippingLabels = shippingLabels ?? self.shippingLabels
         let createdVia = createdVia ?? self.createdVia
+        let paymentStatus = paymentStatus ?? self.paymentStatus
 
         return NetworkingCore.Order(
             siteID: siteID,
@@ -324,7 +326,8 @@ extension NetworkingCore.Order {
             appliedGiftCards: appliedGiftCards,
             attributionInfo: attributionInfo,
             shippingLabels: shippingLabels,
-            createdVia: createdVia
+            createdVia: createdVia,
+            paymentStatus: paymentStatus
         )
     }
 }

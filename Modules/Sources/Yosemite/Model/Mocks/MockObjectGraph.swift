@@ -388,7 +388,8 @@ extension MockObjectGraph {
             appliedGiftCards: [],
             attributionInfo: nil,
             shippingLabels: [],
-            createdVia: "rest-api"
+            createdVia: "rest-api",
+            paymentStatus: nil
         )
     }
 }

@@ -564,7 +564,8 @@ private let sampleOrder = Order(siteID: 123,
                                 appliedGiftCards: [],
                                 attributionInfo: nil,
                                 shippingLabels: [],
-                                createdVia: "rest-api")
+                                createdVia: "rest-api",
+                                paymentStatus: nil)
 
 struct EditAddressForm_Previews: PreviewProvider {
     static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)

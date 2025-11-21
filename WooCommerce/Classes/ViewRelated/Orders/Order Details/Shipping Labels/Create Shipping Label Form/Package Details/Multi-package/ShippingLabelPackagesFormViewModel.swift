@@ -490,7 +490,8 @@ extension ShippingLabelPackagesFormViewModel {
                      appliedGiftCards: [],
                      attributionInfo: nil,
                      shippingLabels: [],
-                     createdVia: "rest-api")
+                     createdVia: "rest-api",
+                     paymentStatus: nil)
     }
 
     static func sampleAddress() -> Address {

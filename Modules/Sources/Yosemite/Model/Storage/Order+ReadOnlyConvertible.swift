@@ -122,8 +122,9 @@ extension Storage.Order: ReadOnlyConvertible {
                      appliedGiftCards: orderGiftCards,
                      attributionInfo: attributionInfo?.toReadOnly(),
                      shippingLabels: orderShippingLabels,
-                     createdVia: createdVia)
-
+                     createdVia: createdVia,
+                     paymentStatus: OrderPaymentStatusEnum(rawValue: paymentStatus ?? "")
+        )
     }
 
 

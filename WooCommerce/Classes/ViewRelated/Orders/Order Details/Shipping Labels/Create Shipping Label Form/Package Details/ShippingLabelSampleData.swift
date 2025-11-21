@@ -45,7 +45,8 @@ enum ShippingLabelSampleData {
                      appliedGiftCards: [],
                      attributionInfo: nil,
                      shippingLabels: [],
-                     createdVia: nil)
+                     createdVia: nil,
+                     paymentStatus: nil)
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {

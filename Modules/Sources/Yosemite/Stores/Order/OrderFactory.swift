@@ -48,7 +48,8 @@ public enum OrderFactory {
               appliedGiftCards: [],
               attributionInfo: nil,
               shippingLabels: [],
-              createdVia: nil)
+              createdVia: nil,
+              paymentStatus: nil)
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

@@ -74,6 +74,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         return SalesChannel(rawValue: createdVia)
     }
 
+    public let paymentStatus: OrderPaymentStatusEnum?
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -115,7 +117,9 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 appliedGiftCards: [OrderGiftCard],
                 attributionInfo: OrderAttributionInfo?,
                 shippingLabels: [ShippingLabel],
-                createdVia: String?) {
+                createdVia: String?,
+                paymentStatus: OrderPaymentStatusEnum?
+    ) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -162,6 +166,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.attributionInfo = attributionInfo
         self.shippingLabels = shippingLabels
         self.createdVia = createdVia
+        self.paymentStatus = paymentStatus
     }
 
 
@@ -267,6 +272,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         // "created_via" is only available on stores with version >= 9.9
         let createdVia = try container.decodeIfPresent(String.self, forKey: .createdVia)
 
+        let paymentStatus = try container.decodeIfPresent(OrderPaymentStatusEnum.self, forKey: .paymentStatus)
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -306,7 +313,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   appliedGiftCards: appliedGiftCards,
                   attributionInfo: attributionInfo,
                   shippingLabels: shippingLabels,
-                  createdVia: createdVia)
+                  createdVia: createdVia,
+                  paymentStatus: paymentStatus)
     }
 
     public static var empty: Order {
@@ -349,7 +357,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   appliedGiftCards: [],
                   attributionInfo: nil,
                   shippingLabels: [],
-                  createdVia: nil)
+                  createdVia: nil,
+                  paymentStatus: nil)
     }
 }
 
@@ -399,6 +408,7 @@ internal extension Order {
         case giftCards          = "gift_cards"
         case shippingLabels     = "shipping_labels"
         case createdVia         = "created_via"
+        case paymentStatus      = "payment_status"
     }
 }
 

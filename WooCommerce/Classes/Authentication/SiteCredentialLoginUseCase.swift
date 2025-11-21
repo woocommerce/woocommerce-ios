@@ -183,11 +183,14 @@ private extension SiteCredentialLoginUseCase {
             guard let html = String(data: data, encoding: .utf8) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
-            if html.hasInvalidCredentialsPattern() {
+
+            // Extracts error message from the HTML to determine whether there's an authentication issue
+            // otherwise we'll assume it's an invalid response
+            let errorMessage = html.findLoginErrorMessage() ?? ""
+
+            if html.hasInvalidCredentialsPattern(),
+               !errorMessage.lowercased().contains(Constants.captchaText) {
                 throw SiteCredentialLoginError.invalidCredentials
-            }
-            if let errorMessage = html.findLoginErrorMessage() {
-                throw SiteCredentialLoginError.loginFailed(message: errorMessage)
             } else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
@@ -227,6 +230,7 @@ extension SiteCredentialLoginUseCase {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin"
         static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
+        static let captchaText = "captcha"
     }
 }
 

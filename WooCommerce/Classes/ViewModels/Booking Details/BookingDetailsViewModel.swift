@@ -92,8 +92,10 @@ private extension BookingDetailsViewModel {
         headerContent.update(with: booking)
 
         setupCustomerSectionVisibility()
-        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
-            customerContent.update(with: billingAddress)
+        if let orderInfo = booking.orderInfo,
+           let customerInfo = orderInfo.customerInfo,
+           customerInfo.billingAddress.isEmpty == false {
+            customerContent.update(with: customerInfo)
         }
 
         appointmentDetailsContent.update(with: booking, resource: bookingResource)

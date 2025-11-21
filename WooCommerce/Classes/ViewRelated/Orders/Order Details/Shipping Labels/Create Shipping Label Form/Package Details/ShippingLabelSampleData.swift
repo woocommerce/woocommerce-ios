@@ -46,7 +46,7 @@ enum ShippingLabelSampleData {
                      attributionInfo: nil,
                      shippingLabels: [],
                      createdVia: nil,
-                     paymentStatus: nil)
+                     paymentStatusKey: nil)
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {

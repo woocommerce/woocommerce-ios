@@ -239,7 +239,7 @@ extension BookingPaymentStatus: FilterType {
 
     var isActive: Bool {
         switch self {
-        case .paid, .unpaid, .refunded:
+        case .paid, .unpaid, .refunded, .failed, .partiallyRefunded:
             return true
         case .unknown:
             return false

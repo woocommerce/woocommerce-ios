@@ -7,18 +7,21 @@ public struct BookingPaymentInfo: Hashable {
     public let subtotalTax: String
     public let total: String
     public let totalTax: String
+    public let statusKey: String
 
     public init(paymentMethodID: String,
                 paymentMethodTitle: String,
                 subtotal: String,
                 subtotalTax: String,
                 total: String,
-                totalTax: String) {
+                totalTax: String,
+                statusKey: String) {
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
         self.subtotal = subtotal
         self.subtotalTax = subtotalTax
         self.total = total
         self.totalTax = totalTax
+        self.statusKey = statusKey
     }
 }

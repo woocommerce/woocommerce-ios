@@ -34,6 +34,11 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         return BookingAttendanceStatus(rawValue: attendanceStatusKey) ?? .unknown
     }
 
+    public var paymentStatus: BookingPaymentStatus {
+        guard let orderInfo else { return .unknown }
+        return BookingPaymentStatus(rawValue: orderInfo.paymentStatusKey) ?? .unknown
+    }
+
     /// Booking struct initializer.
     ///
     public init(siteID: Int64,
@@ -241,10 +246,11 @@ public enum BookingAttendanceStatus: String, CaseIterable, Codable {
 }
 
 /// Represents the payment status for a booking.
-/// To be decoded from booking response once available.
 public enum BookingPaymentStatus: String, CaseIterable, Codable {
-    case paid
     case unpaid
+    case paid
+    case partiallyRefunded = "partially_refunded"
     case refunded
+    case failed
     case unknown
 }

@@ -72,7 +72,7 @@ extension Order {
     @NSManaged public var taxes: Set<OrderTaxLine>?
     @NSManaged public var attributionInfo: OrderAttributionInfo?
     @NSManaged public var shipments: Set<WooShippingShipment>?
-    @NSManaged public var paymentStatus: String?
+    @NSManaged public var paymentStatusKey: String?
 }
 
 // MARK: Generated accessors for shippingLines

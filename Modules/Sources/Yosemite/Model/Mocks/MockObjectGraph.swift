@@ -389,7 +389,7 @@ extension MockObjectGraph {
             attributionInfo: nil,
             shippingLabels: [],
             createdVia: "rest-api",
-            paymentStatus: nil
+            paymentStatusKey: nil
         )
     }
 }

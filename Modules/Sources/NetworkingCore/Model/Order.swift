@@ -74,7 +74,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         return SalesChannel(rawValue: createdVia)
     }
 
-    public let paymentStatus: OrderPaymentStatusEnum?
+    public let paymentStatusKey: String?
 
     /// Order struct initializer.
     ///
@@ -118,7 +118,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 attributionInfo: OrderAttributionInfo?,
                 shippingLabels: [ShippingLabel],
                 createdVia: String?,
-                paymentStatus: OrderPaymentStatusEnum?
+                paymentStatusKey: String?
     ) {
 
         self.siteID = siteID
@@ -166,7 +166,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.attributionInfo = attributionInfo
         self.shippingLabels = shippingLabels
         self.createdVia = createdVia
-        self.paymentStatus = paymentStatus
+        self.paymentStatusKey = paymentStatusKey
     }
 
 
@@ -272,7 +272,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         // "created_via" is only available on stores with version >= 9.9
         let createdVia = try container.decodeIfPresent(String.self, forKey: .createdVia)
 
-        let paymentStatus = try container.decodeIfPresent(OrderPaymentStatusEnum.self, forKey: .paymentStatus)
+        let paymentStatusKey = try container.decodeIfPresent(String.self, forKey: .paymentStatus)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -314,7 +314,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   attributionInfo: attributionInfo,
                   shippingLabels: shippingLabels,
                   createdVia: createdVia,
-                  paymentStatus: paymentStatus)
+                  paymentStatusKey: paymentStatusKey)
     }
 
     public static var empty: Order {
@@ -358,7 +358,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   attributionInfo: nil,
                   shippingLabels: [],
                   createdVia: nil,
-                  paymentStatus: nil)
+                  paymentStatusKey: nil)
     }
 }
 

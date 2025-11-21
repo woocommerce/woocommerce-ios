@@ -123,7 +123,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      attributionInfo: attributionInfo?.toReadOnly(),
                      shippingLabels: orderShippingLabels,
                      createdVia: createdVia,
-                     paymentStatus: OrderPaymentStatusEnum(rawValue: paymentStatus ?? "")
+                     paymentStatusKey: paymentStatusKey
         )
     }
 

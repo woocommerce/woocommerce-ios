@@ -49,7 +49,7 @@ public enum OrderFactory {
               attributionInfo: nil,
               shippingLabels: [],
               createdVia: nil,
-              paymentStatus: nil)
+              paymentStatusKey: nil)
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

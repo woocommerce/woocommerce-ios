@@ -19,6 +19,7 @@ extension Storage.BookingPaymentInfo: ReadOnlyConvertible {
                      subtotal: subtotal ?? "",
                      subtotalTax: subtotalTax ?? "",
                      total: total ?? "",
-                     totalTax: totalTax ?? "")
+                     totalTax: totalTax ?? "",
+                     statusKey: statusKey ?? "")
     }
 }

@@ -102,7 +102,8 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
                     appliedGiftCards: [],
                     attributionInfo: nil,
                     shippingLabels: [],
-                    createdVia: "pos")
+                    createdVia: "pos",
+                    paymentStatusKey: nil)
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}

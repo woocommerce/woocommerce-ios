@@ -284,7 +284,7 @@ extension NetworkingCore.Order {
         let attributionInfo = attributionInfo ?? self.attributionInfo
         let shippingLabels = shippingLabels ?? self.shippingLabels
         let createdVia = createdVia ?? self.createdVia
-        let paymentStatus = paymentStatus ?? self.paymentStatus
+        let paymentStatusKey = paymentStatusKey ?? self.paymentStatusKey
 
         return NetworkingCore.Order(
             siteID: siteID,
@@ -327,7 +327,7 @@ extension NetworkingCore.Order {
             attributionInfo: attributionInfo,
             shippingLabels: shippingLabels,
             createdVia: createdVia,
-            paymentStatus: paymentStatus
+            paymentStatusKey: paymentStatusKey
         )
     }
 }

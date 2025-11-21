@@ -113,6 +113,6 @@ extension Order {
                                    attributionInfo: nil,
                                    shippingLabels: [],
                                    createdVia: "rest-api",
-                                   paymentStatus: nil)
+                                   paymentStatusKey: nil)
 }
 #endif

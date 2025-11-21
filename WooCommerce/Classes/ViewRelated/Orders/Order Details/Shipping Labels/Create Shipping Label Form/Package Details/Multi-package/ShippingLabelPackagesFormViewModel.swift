@@ -491,7 +491,7 @@ extension ShippingLabelPackagesFormViewModel {
                      attributionInfo: nil,
                      shippingLabels: [],
                      createdVia: "rest-api",
-                     paymentStatus: nil)
+                     paymentStatusKey: nil)
     }
 
     static func sampleAddress() -> Address {

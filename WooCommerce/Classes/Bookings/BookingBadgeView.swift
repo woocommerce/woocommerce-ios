@@ -1,6 +1,6 @@
 import SwiftUI
 import enum Yosemite.BookingAttendanceStatus
-import enum Yosemite.BookingStatus
+import enum Yosemite.BookingPaymentStatus
 
 struct BookingBadgeView: View {
     let text: String
@@ -48,7 +48,7 @@ extension BookingAttendanceStatus: BookingBadgeable {
     }
 }
 
-extension BookingStatus: BookingBadgeable {
+extension BookingPaymentStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
         case .unpaid:

@@ -23,7 +23,7 @@ extension BookingDetailsView {
                 }
                 HStack {
                     BookingBadgeView(content.attendanceStatus)
-                    BookingBadgeView(content.bookingStatus)
+                    BookingBadgeView(content.paymentStatus)
                 }
                 .padding(.top, Layout.headerBadgesAdditionalTopPadding)
             }

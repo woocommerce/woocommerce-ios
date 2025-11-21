@@ -9,4 +9,5 @@ extension BookingPaymentInfo {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var orderInfo: BookingOrderInfo?
+    @NSManaged public var statusKey: String?
 }

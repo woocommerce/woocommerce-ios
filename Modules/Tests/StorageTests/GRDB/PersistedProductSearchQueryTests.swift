@@ -11,6 +11,7 @@ struct PersistedProductSearchQueryTests {
         grdbManager = try GRDBManager()
 
         // Initialize site
+        let siteID = siteID
         try await grdbManager.databaseConnection.write { db in
             try PersistedSite(id: siteID).insert(db)
         }
@@ -202,6 +203,10 @@ struct PersistedProductSearchQueryTests {
             PersistedProduct(id: 8, siteID: siteID, name: "Coffee Maker", productTypeKey: "variable",
                            fullDescription: nil, shortDescription: nil, sku: nil, globalUniqueID: nil,
                            price: "100.00", downloadable: false, parentID: 0, manageStock: false,
+                             stockQuantity: nil, stockStatusKey: "instock"),
+            PersistedProduct(id: 9, siteID: siteID, name: "Tea Strainer", productTypeKey: "variable",
+                           fullDescription: nil, shortDescription: nil, sku: nil, globalUniqueID: nil,
+                           price: "5.00", downloadable: false, parentID: 0, manageStock: false,
                            stockQuantity: nil, stockStatusKey: "instock")
         ]
         for product in products {

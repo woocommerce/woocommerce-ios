@@ -30,6 +30,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     private let analytics: Analytics
 
     private var resultsController: ResultsController<StorageTopEarnerStats>?
+    private var entityListener: EntityListener<Product>?
 
     private var currentDate: Date {
         Date()
@@ -83,6 +84,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         observeSyncingCompletion()
+        observeSelectedItem()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
@@ -213,6 +215,42 @@ private extension TopPerformersDashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func observeSelectedItem() {
+        $selectedItem
+            .scan((nil, nil)) { (previous: (current: TopEarnerStatsItem?,
+                                            previous: TopEarnerStatsItem?),
+                                 newValue: TopEarnerStatsItem?) in
+                return (current: newValue, previous: previous.current)
+            }
+            .sink { [weak self] (newItem, oldItem) in
+                guard let newItem, oldItem == nil else {
+                    self?.entityListener = nil
+                    return
+                }
+                self?.observeOpenedProductIfPossible(id: newItem.productID)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func observeOpenedProductIfPossible(id: Int64) {
+        guard var product = storageManager.viewStorage.loadProduct(siteID: siteID, productID: id)?.toReadOnly() else {
+            return
+        }
+        let entityListener = EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
+        entityListener.onUpsert = { [weak self] updatedProduct in
+            // reload stats if there are changes to product
+            guard updatedProduct.name != product.name ||
+                updatedProduct.imageURL != product.imageURL else {
+                return
+            }
+            product = updatedProduct
+            Task {
+                await self?.reloadDataIfNeeded(forceRefresh: true)
+            }
+        }
+        self.entityListener = entityListener
     }
 
     @MainActor

@@ -130,11 +130,6 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, U
         return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }()
 
-    static let supportedAuthChallengeMethods = [
-        NSURLAuthenticationMethodServerTrust,
-        NSURLAuthenticationMethodHTTPBasic
-    ]
-
     init(siteURL: String,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
         self.siteURL = siteURL

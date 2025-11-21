@@ -156,6 +156,7 @@ struct ItemListRow: View {
             }, label: {
                 SimpleProductCardView(product: product)
             })
+            .accessibilityIdentifier("pos-product-card-\(product.productID)")
         case let .variableParentProduct(parentProduct):
             if #available(iOS 18.0, *) {
                 NavigationLink(value: item) {

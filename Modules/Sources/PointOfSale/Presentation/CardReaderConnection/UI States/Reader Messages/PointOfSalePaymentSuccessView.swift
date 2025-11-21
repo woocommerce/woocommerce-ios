@@ -31,6 +31,7 @@ struct PointOfSalePaymentSuccessView: View {
                 }
             }
         }
+        .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 isViewLoaded = true

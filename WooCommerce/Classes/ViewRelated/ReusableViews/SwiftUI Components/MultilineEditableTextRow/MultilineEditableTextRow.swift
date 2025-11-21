@@ -4,16 +4,22 @@ struct MultilineEditableTextRow: View {
     @State var value: String
     let placeholder: String
     let detailTitle: String?
+    let onCommit: (String) async -> MultilineCommitResult
 
-    init(value: String, placeholder: String, detailTitle: String? = nil) {
-        self.value = value
+    init(value: String,
+         placeholder: String,
+         detailTitle: String? = nil,
+         onCommit: @escaping (String) async -> MultilineCommitResult
+    ) {
+        self._value = State(initialValue: value)
         self.placeholder = placeholder
         self.detailTitle = detailTitle
+        self.onCommit = onCommit
     }
 
     var body: some View {
         NavigationLink {
-            MultilineEditableTextDetailView(text: $value, title: detailTitle)
+            MultilineEditableTextDetailView(text: $value, title: detailTitle, onCommit: onCommit)
         } label: {
             content
         }
@@ -58,7 +64,9 @@ fileprivate extension MultilineEditableTextRow {
     @Previewable @State var text: String = ""
 
     NavigationStack {
-        MultilineEditableTextRow(value: text, placeholder: "Add note")
+        MultilineEditableTextRow(value: text, placeholder: "Add note") { _ in
+            return .success
+        }
             .padding(.horizontal, 16)
     }
     .preferredColorScheme(.dark)

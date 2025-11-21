@@ -105,5 +105,5 @@ private enum Keys {
     static let variableSubscription = "variable-subscription"
     static let bundle               = "bundle"
     static let composite            = "composite"
-    static let booking              = "booking"
+    static let booking              = "bookable-service"
 }

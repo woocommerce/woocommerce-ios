@@ -116,17 +116,23 @@ struct ProductSelectorView: View {
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                     .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
-
-                    if let variationListViewModel = viewModel.productVariationListViewModel {
-                        LazyNavigationLink(destination: ProductVariationSelectorView(
-                            isPresented: $isPresented,
-                            viewModel: variationListViewModel,
-                            onMultipleSelections: { selectedIDs in
-                                viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
-                            }), isActive: $viewModel.isShowingProductVariationList) {
-                                EmptyView()
-                            }
-                            .renderedIf(configuration.treatsAllProductsAsSimple == false)
+                }
+                .if(configuration.treatsAllProductsAsSimple == false) { view in
+                    view.navigationDestination(isPresented: $viewModel.isShowingProductVariationList) {
+                        if let variationListViewModel = viewModel.productVariationListViewModel {
+                            ProductVariationSelectorView(
+                                isPresented: $isPresented,
+                                viewModel: variationListViewModel,
+                                onMultipleSelections: { selectedIDs in
+                                    viewModel.updateSelectedVariations(
+                                        productID: variationListViewModel.productID,
+                                        selectedVariationIDs: selectedIDs
+                                    )
+                                }
+                            )
+                        } else {
+                            EmptyView()
+                        }
                     }
                 }
                 .padding(.horizontal, insets: safeAreaInsets)

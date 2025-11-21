@@ -7,6 +7,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var variationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
     private(set) var incrementalProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
+    private(set) var trashedProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
@@ -15,9 +16,12 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     let loadProductVariationsCallCount = Counter()
     let loadIncrementalProductsCallCount = Counter()
     let loadIncrementalProductVariationsCallCount = Counter()
+    let loadTrashedProductsCallCount = Counter()
 
     private(set) var lastIncrementalProductsModifiedAfter: Date?
     private(set) var lastIncrementalVariationsModifiedAfter: Date?
+    private(set) var lastTrashedProductsModifiedAfter: Date?
+    let includeStatusTracker = IncludeStatusTracker()
     private(set) var lastCatalogRequestForceGeneration: Bool?
     private(set) var lastCatalogDownloadAllowCellular: Bool?
 
@@ -69,18 +73,48 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
+    func setTrashedProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
+        trashedProductResults[pageNumber] = result
+    }
+
+    func setTrashedProductResults(_ results: [PagedItems<POSProduct>]) {
+        for (index, pagedItems) in results.enumerated() {
+            trashedProductResults[index + 1] = .success(pagedItems)
+        }
+    }
+
     // MARK: - Protocol Methods - Incremental Sync
 
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        await loadIncrementalProductsCallCount.increment()
-        lastIncrementalProductsModifiedAfter = modifiedAfter
+    func loadProducts(modifiedAfter: Date,
+                      siteID: Int64,
+                      pageNumber: Int,
+                      includeStatus: String?) async throws -> PagedItems<POSProduct> {
+        await includeStatusTracker.append(includeStatus)
 
-        if let result = incrementalProductResults[pageNumber] {
-            switch result {
-            case .success(let pagedItems):
-                return pagedItems
-            case .failure(let error):
-                throw error
+        // Route to appropriate results based on includeStatus
+        if includeStatus == "trash" {
+            await loadTrashedProductsCallCount.increment()
+            lastTrashedProductsModifiedAfter = modifiedAfter
+
+            if let result = trashedProductResults[pageNumber] {
+                switch result {
+                case .success(let pagedItems):
+                    return pagedItems
+                case .failure(let error):
+                    throw error
+                }
+            }
+        } else {
+            await loadIncrementalProductsCallCount.increment()
+            lastIncrementalProductsModifiedAfter = modifiedAfter
+
+            if let result = incrementalProductResults[pageNumber] {
+                switch result {
+                case .success(let pagedItems):
+                    return pagedItems
+                case .failure(let error):
+                    throw error
+                }
             }
         }
         return fallbackResult
@@ -216,5 +250,14 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         case .failure(let error):
             throw error
         }
+    }
+}
+
+/// Thread-safe tracker for includeStatus values
+actor IncludeStatusTracker {
+    private(set) var values: [String?] = []
+
+    func append(_ value: String?) {
+        values.append(value)
     }
 }

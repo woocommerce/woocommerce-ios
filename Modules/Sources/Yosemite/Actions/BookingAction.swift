@@ -91,4 +91,16 @@ public enum BookingAction: Action {
     case markBookingAsPaid(siteID: Int64,
                            bookingID: Int64,
                            onCompletion: (Error?) -> Void)
+
+    /// Updates a booking note.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to be updated.
+    /// - Parameter note: The new note.
+    /// - Parameter onCompletion: called when update completes, returns an error in case of a failure.
+    ///
+    case updateBookingNote(siteID: Int64,
+                           bookingID: Int64,
+                           note: String,
+                           onCompletion: (Error?) -> Void)
 }

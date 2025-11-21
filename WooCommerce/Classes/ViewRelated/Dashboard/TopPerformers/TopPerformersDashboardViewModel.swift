@@ -30,6 +30,8 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     private let analytics: Analytics
 
     private var resultsController: ResultsController<StorageTopEarnerStats>?
+
+    // periphery:ignore - keep a strong reference to listen to changes of a product
     private var entityListener: EntityListener<Product>?
 
     private var currentDate: Date {

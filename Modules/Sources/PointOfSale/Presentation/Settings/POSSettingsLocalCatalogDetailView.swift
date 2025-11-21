@@ -85,7 +85,8 @@ private extension POSSettingsLocalCatalogDetailView {
                             await viewModel.refreshCatalog()
                         }
                     },
-                    buttonStyle: .primary
+                    buttonStyle: .primary,
+                    isLoading: viewModel.isRefreshingCatalog
                 )
             }
         }

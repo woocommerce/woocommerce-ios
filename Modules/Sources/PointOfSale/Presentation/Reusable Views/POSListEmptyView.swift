@@ -197,8 +197,8 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
             comment: "Text appearing on screen when a POS product search returns no results."
         )
         static let emptyProductsSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2",
-            value: "We couldn't find any matching products — try adjusting your search term.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3",
+            value: "We couldn't find any matching products. Try adjusting your search term.",
             comment: "Subtitle text suggesting to modify search terms when no products are found in the POS product search."
         )
         static let emptyProductsSearchHint = NSLocalizedString(
@@ -237,8 +237,8 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
             comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
         )
         static let emptyCouponSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2",
-            value: "We couldn’t find any coupons with that name — try adjusting your search term.",
+            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3",
+            value: "We couldn’t find any coupons with that name. Try adjusting your search term.",
             comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
         )
         static let emptyProductsButtonTitle = NSLocalizedString(

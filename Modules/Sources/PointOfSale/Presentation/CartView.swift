@@ -80,6 +80,7 @@ struct CartView: View {
             })
             .background(backgroundColor.ignoresSafeArea(.all))
             .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("pos-cart-view")
         }
     }
 }
@@ -175,6 +176,7 @@ private extension CartView {
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
+        .accessibilityIdentifier("pos-checkout-button")
     }
 
     var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {

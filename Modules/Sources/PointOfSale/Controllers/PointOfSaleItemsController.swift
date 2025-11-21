@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
 import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol

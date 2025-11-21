@@ -617,7 +617,6 @@ public enum WooAnalyticsStat: String {
     case interacRefundCanceled = "interac_refund_cancelled"
 
     // MARK: Push Notifications Events
-    //
     case pushNotificationReceived = "push_notification_received"
     case pushNotificationAlertPressed = "push_notification_alert_pressed"
     case pushNotificationOSAlertAllowed = "push_notification_os_alert_allowed"

@@ -28,7 +28,8 @@
     ],
     "parent_id": 0,
     "attributes": [],
-    "downloadable": false
+    "downloadable": false,
+    "status": "publish"
   },
   {
     "id": 31,
@@ -96,7 +97,8 @@
         ]
       }
     ],
-    "downloadable": false
+    "downloadable": false,
+    "status": "publish"
   },
   {
     "id": 32,
@@ -143,7 +145,8 @@
         "option": "19"
       }
     ],
-    "downloadable": false
+    "downloadable": false,
+    "status": "publish"
   },
   {
     "id": 33,
@@ -190,6 +193,7 @@
         "option": "8"
       }
     ],
-    "downloadable": false
+    "downloadable": false,
+    "status": "publish"
   },
 ]

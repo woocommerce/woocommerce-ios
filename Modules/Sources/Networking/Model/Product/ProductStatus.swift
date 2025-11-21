@@ -10,6 +10,7 @@ public enum ProductStatus: Codable, Hashable, GeneratedFakeable {
     case privateStatus  // `private` is a reserved keyword
     case autoDraft
     case importing      // used for placeholder products from a product import or template
+    case trash
     case custom(String) // in case there are extensions modifying product statuses
 }
 
@@ -34,6 +35,8 @@ extension ProductStatus: RawRepresentable {
             self = .autoDraft
         case Keys.importing:
             self = .importing
+        case Keys.trash:
+            self = .trash
         default:
             self = .custom(rawValue)
         }
@@ -49,6 +52,7 @@ extension ProductStatus: RawRepresentable {
         case .privateStatus:        return Keys.privateStatus
         case .autoDraft:            return Keys.autoDraft
         case .importing:            return Keys.importing
+        case .trash:                return Keys.trash
         case .custom(let payload):  return payload
         }
     }
@@ -69,6 +73,8 @@ extension ProductStatus: RawRepresentable {
             return "Auto Draft" // We don't need to localize this now.
         case .importing:
             return "Importing" // We don't need to localize this now.
+        case .trash:
+            return "Trash" // We don't need to localize this now.
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
@@ -85,4 +91,5 @@ private enum Keys {
     static let privateStatus = "private"
     static let autoDraft     = "auto-draft"
     static let importing     = "importing"
+    static let trash         = "trash"
 }

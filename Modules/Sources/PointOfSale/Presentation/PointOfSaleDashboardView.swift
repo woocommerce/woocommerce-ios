@@ -150,16 +150,13 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
-            guard newValue == .eligible else { return }
-            Task { @MainActor in
-                await posModel.purchasableItemsController.loadItems(base: .root)
-                await posModel.couponsController.loadItems(base: .root)
-                await posModel.popularPurchasableItemsController.loadItems(base: .root)
-            }
+            guard case .eligible = newValue, oldValue != newValue else { return }
+            loadItemsWhenEligible()
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {
             trackTimeForInitialLoadingState()
+            loadItemsWhenEligible()
         }
         .onChange(of: viewState) { oldValue, newValue in
             if newValue == .content && oldValue != newValue {
@@ -247,6 +244,14 @@ private extension PointOfSaleDashboardView {
             let event = waitingTimeTracker.end(using: .milliseconds, additionalProperties: ["sync_strategy": syncStrategy])
             analytics.track(event: event)
             self.waitingTimeTracker = nil
+        }
+    }
+
+    func loadItemsWhenEligible() {
+        Task { @MainActor in
+            await posModel.purchasableItemsController.loadItems(base: .root)
+            await posModel.couponsController.loadItems(base: .root)
+            await posModel.popularPurchasableItemsController.loadItems(base: .root)
         }
     }
 }

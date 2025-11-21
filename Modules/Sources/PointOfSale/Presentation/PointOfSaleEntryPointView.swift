@@ -15,6 +15,7 @@ import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
+import protocol Yosemite.PointOfSaleItemServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -67,8 +68,11 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
-         services: POSDependencyProviding) {
+         services: POSDependencyProviding,
+         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
+
+        let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
@@ -81,13 +85,13 @@ public struct PointOfSaleEntryPointView: View {
             )
         } else {
             self.itemsController = PointOfSaleItemsController(
-                itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+                itemProvider: selectedItemProvider,
                 itemFetchStrategyFactory: itemFetchStrategyFactory,
                 analyticsProvider: services.analytics
             )
         }
         self.purchasableItemsSearchController = PointOfSaleItemsController(
-            itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+            itemProvider: selectedItemProvider,
             itemFetchStrategyFactory: itemFetchStrategyFactory,
             initialState: .init(containerState: .content,
                                 itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:])),
@@ -121,7 +125,7 @@ public struct PointOfSaleEntryPointView: View {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
-            itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+            itemProvider: selectedItemProvider,
             itemFetchStrategyFactory: popularItemFetchStrategyFactory,
             analyticsProvider: services.analytics
         )

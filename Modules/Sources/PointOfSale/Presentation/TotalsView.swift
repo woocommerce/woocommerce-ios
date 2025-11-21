@@ -67,6 +67,7 @@ struct TotalsView: View {
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
+
             case .error(.invalidCoupon(let message), let handler):
                 PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -411,6 +412,7 @@ private struct TotalFieldView: View {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier("pos-total-field")
             .foregroundColor(Color.posOnSurface)
         }
     }
@@ -508,7 +510,7 @@ private struct CardPaymentView: View {
 
     var body: some View {
         if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
-                                                   paymentState: paymentState) {
+                                                    paymentState: paymentState) {
             PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                 connectCardReaderAction()
             }
@@ -547,6 +549,7 @@ private struct CashPaymentButton: View {
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .accessibilityIdentifier("pos-cash-payment-button")
         .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
         .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
         .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(

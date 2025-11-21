@@ -17,6 +17,7 @@ public struct PersistedProduct: Codable {
     public let manageStock: Bool
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
+    public let statusKey: String
 
     public init(id: Int64,
                 siteID: Int64,
@@ -31,7 +32,8 @@ public struct PersistedProduct: Codable {
                 parentID: Int64,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
-                stockStatusKey: String) {
+                stockStatusKey: String,
+                statusKey: String) {
         self.id = id
         self.siteID = siteID
         self.name = name
@@ -46,6 +48,7 @@ public struct PersistedProduct: Codable {
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+        self.statusKey = statusKey
     }
 }
 
@@ -70,6 +73,7 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
         public static let manageStock = Column(CodingKeys.manageStock)
         public static let stockQuantity = Column(CodingKeys.stockQuantity)
         public static let stockStatusKey = Column(CodingKeys.stockStatusKey)
+        public static let statusKey = Column(CodingKeys.statusKey)
     }
 
     // Join table association (internal - used by 'images' through association)
@@ -99,11 +103,19 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
 // MARK: - Point of Sale Requests
 public extension PersistedProduct {
     /// Returns a request for POS-supported products (simple and variable, non-downloadable) for a given site, ordered by name
+    /// Filters out products with trash, draft, pending, or private status to ensure only published and 3rd party custom status products are shown
     static func posProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        let excludedStatuses = [
+            "trash",
+            "draft",
+            "pending"
+        ]
+
         return PersistedProduct
             .filter(Columns.siteID == siteID)
             .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
             .filter(Columns.downloadable == false)
+            .filter(!excludedStatuses.contains(Columns.statusKey))
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }
 
@@ -166,6 +178,7 @@ private extension PersistedProduct {
         case manageStock
         case stockQuantity
         case stockStatusKey
+        case statusKey
     }
 
     enum ProductType: String {

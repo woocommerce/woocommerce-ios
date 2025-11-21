@@ -1,5 +1,6 @@
 import Foundation
 import protocol Storage.GRDBManagerProtocol
+import enum Networking.ProductStatus
 import class WooFoundation.CurrencySettings
 
 /// Service for handling barcode scanning using local GRDB catalog
@@ -67,6 +68,9 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         do {
             let posProduct = try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
 
+            // Validate that the product status is allowed for POS
+            try validateProductStatus(posProduct, scannedCode: scannedCode)
+
             guard !posProduct.downloadable else {
                 throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: posProduct.name)
             }
@@ -103,6 +107,9 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
             let posVariation = try persistedVariation.toPOSProductVariation(db: grdbManager.databaseConnection)
             let parentPOSProduct = try parentProduct.toPOSProduct(db: grdbManager.databaseConnection)
 
+            // Validate that the parent product status is allowed for POS
+            try validateProductStatus(parentPOSProduct, scannedCode: scannedCode)
+
             // Map to POSItem
             guard let mappedParent = itemMapper.mapProductsToPOSItems(products: [parentPOSProduct]).first,
                   case .variableParentProduct(let variableParentProduct) = mappedParent,
@@ -128,6 +135,15 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
             return Localization.unknownVariationName
         }
         return posVariation.name
+    }
+
+    /// Validates that the product status is allowed for POS
+    /// Throws notFound error if product has a status that should be excluded from POS
+    private func validateProductStatus(_ product: POSProduct, scannedCode: String) throws(PointOfSaleBarcodeScanError) {
+        let excludedStatuses: [ProductStatus] = [.trash, .draft, .pending, .privateStatus]
+        if excludedStatuses.contains(product.productStatus) {
+            throw .notFound(scannedCode: scannedCode)
+        }
     }
 }
 

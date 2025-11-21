@@ -97,6 +97,7 @@ struct PointOfSaleCollectCashView: View {
                             buttonFrame = $0
                         }
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                        .accessibilityIdentifier("pos-mark-payment-complete-button")
                         .frame(maxWidth: .infinity)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         .disabled(!isButtonEnabled)

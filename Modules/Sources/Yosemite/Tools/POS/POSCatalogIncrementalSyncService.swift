@@ -14,7 +14,10 @@ public protocol POSCatalogIncrementalSyncServiceProtocol {
     ///   - siteID: The site ID to sync catalog for.
     ///   - lastFullSyncDate: The date of the last full sync to use if no incremental sync date exists.
     /// - Returns: The synced catalog containing updated products and variations
-    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog
+    @discardableResult
+    func startIncrementalSync(for siteID: Int64,
+                              lastFullSyncDate: Date,
+                              lastIncrementalSyncDate: Date?) async throws -> POSCatalog
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
@@ -53,7 +56,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
     }
 
     // MARK: - Protocol Conformance
-
+    @discardableResult
     public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
         let modifiedAfter = latestSyncDate(fullSyncDate: lastFullSyncDate, incrementalSyncDate: lastIncrementalSyncDate)
 
@@ -79,19 +82,36 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 private extension POSCatalogIncrementalSyncService {
     func loadCatalog(for siteID: Int64, modifiedAfter: Date, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
         let syncStartDate = Date.now
-        async let productsTask = batchedLoader.loadAll(
+
+        // Fetch regular products (excluding trash)
+        async let regularProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber)
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber, includeStatus: nil)
             }
         )
+
+        // Fetch trashed products separately to detect products moved to trash
+        async let trashedProductsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: ProductStatus.trash.rawValue)
+            }
+        )
+
         async let variationsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
                 try await syncRemote.loadProductVariations(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber)
             }
         )
 
-        let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
+        let (regularProducts, trashedProducts, variations) = try await (regularProductsTask, trashedProductsTask, variationsTask)
+
+        // Union regular and trashed products before persistence
+        let allProducts = regularProducts + trashedProducts
+
+        return POSCatalog(products: allProducts, variations: variations, syncDate: syncStartDate)
     }
 }
 

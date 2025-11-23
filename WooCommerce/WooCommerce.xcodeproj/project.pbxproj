@@ -5782,6 +5782,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		0F6EAB792ED2DFE000089A40 /* Profiling */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Profiling; sourceTree = "<group>"; };
+		0F6EAB802ED2E0AE00089A40 /* performance */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = performance; sourceTree = "<group>"; };
 		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
 		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
 		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
@@ -9747,6 +9749,7 @@
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				0F6EAB792ED2DFE000089A40 /* Profiling */,
 				646A2C682E9FCD7E003A32A1 /* Routing */,
 				640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */,
 				DEDB5D342E7A68950022E5A1 /* Bookings */,
@@ -10622,6 +10625,7 @@
 		CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */ = {
 			isa = PBXGroup;
 			children = (
+				0F6EAB802ED2E0AE00089A40 /* performance */,
 				3F271A9728A2684400E656AE /* UITests.xctestplan */,
 				800A5B9C275623E9009DE2CD /* Flows */,
 				CCDC49D9240000B7003166BA /* Tests */,
@@ -13269,6 +13273,7 @@
 				3F0904132D26A40800D8ACCE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				0F6EAB792ED2DFE000089A40 /* Profiling */,
 				2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */,
 				646A2C682E9FCD7E003A32A1 /* Routing */,
 				64EA08E42EC214FA00050202 /* MultilineEditableTextRow */,

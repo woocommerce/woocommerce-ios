@@ -110,7 +110,6 @@
     <entity name="BookingPaymentInfo" representedClassName="BookingPaymentInfo" syncable="YES">
         <attribute name="paymentMethodID" optional="YES" attributeType="String"/>
         <attribute name="paymentMethodTitle" optional="YES" attributeType="String"/>
-        <attribute name="statusKey" optional="YES" attributeType="String"/>
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="subtotalTax" optional="YES" attributeType="String"/>
         <attribute name="total" optional="YES" attributeType="String"/>

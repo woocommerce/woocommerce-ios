@@ -85,7 +85,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
         // Use smart debouncing for remote search: don't debounce first keystroke to show loading immediately,
         // then debounce subsequent keystrokes while search is ongoing.
         // No loading delay threshold - show loading immediately for responsive feel.
-        .smart(duration: 500 * NSEC_PER_MSEC)
+        .smart()
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {

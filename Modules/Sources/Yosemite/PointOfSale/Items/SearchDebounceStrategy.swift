@@ -8,7 +8,7 @@ public enum SearchDebounceStrategy: Equatable {
     /// - Parameters:
     ///   - duration: The debounce duration in nanoseconds for subsequent keystrokes
     ///   - loadingDelayThreshold: Optional threshold in nanoseconds before showing loading indicators. If nil, shows loading immediately.
-    case smart(duration: UInt64, loadingDelayThreshold: UInt64? = nil)
+    case smart(duration: UInt64 = 500 * NSEC_PER_MSEC, loadingDelayThreshold: UInt64? = nil)
 
     /// Simple debouncing: Always debounce every keystroke by the specified duration.
     /// Optionally delays showing loading indicators until a threshold is exceeded.

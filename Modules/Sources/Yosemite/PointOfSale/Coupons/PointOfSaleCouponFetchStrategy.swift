@@ -102,7 +102,7 @@ struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     var debounceStrategy: SearchDebounceStrategy {
         // Use smart debouncing for remote coupon search
         // No loading delay threshold - show loading immediately for responsive feel
-        .smart(duration: 500 * NSEC_PER_MSEC)
+        .smart()
     }
 
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {

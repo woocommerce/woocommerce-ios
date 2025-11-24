@@ -369,7 +369,7 @@ final class POSOrderSearchable: POSSearchable {
         // Use smart debouncing for order search to match original behavior:
         // don't debounce first keystroke to show loading immediately,
         // then debounce subsequent keystrokes while search is ongoing
-        .smart(duration: 500 * NSEC_PER_MSEC)
+        .smart()
     }
 
     var searchDebounceStrategy: SearchDebounceStrategy {

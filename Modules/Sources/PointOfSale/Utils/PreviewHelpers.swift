@@ -107,7 +107,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
     var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
-    var searchDebounceStrategy: SearchDebounceStrategy { .smart(duration: 500 * NSEC_PER_MSEC) }
+    var searchDebounceStrategy: SearchDebounceStrategy { .smart() }
     func enableCoupons() async { }
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
@@ -122,7 +122,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
                                                                                                itemStates: [:]))
 
     var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
-    var searchDebounceStrategy: SearchDebounceStrategy { .smart(duration: 500 * NSEC_PER_MSEC) }
+    var searchDebounceStrategy: SearchDebounceStrategy { .smart() }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {

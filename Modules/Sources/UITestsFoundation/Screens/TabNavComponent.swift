@@ -2,35 +2,25 @@ import ScreenObject
 import XCTest
 
 public final class TabNavComponent: ScreenObject {
-    // periphery:ignore
     private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
     }
-    // periphery:ignore
     private let ordersTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-orders-item"]
     }
-    // periphery:ignore
     private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
     }
-    // periphery:ignore
     private let posTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-pos-item"]
     }
-    // periphery:ignore
     private let menuTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
     }
-    // periphery:ignore
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
-    // periphery:ignore
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
-    // periphery:ignore
     private var menuTabButton: XCUIElement { menuTabButtonGetter(app) }
-    // periphery:ignore
     private var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
-    // periphery:ignore
     private var posTabButton: XCUIElement { posTabButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
@@ -43,47 +33,33 @@ public final class TabNavComponent: ScreenObject {
             app: app
         )
     }
-
-    // periphery:ignore
     @discardableResult
     public func goToMyStoreScreen() throws -> MyStoreScreen {
         myStoreTabButton.tap()
         return try MyStoreScreen()
     }
-
-    // periphery:ignore
     @discardableResult
     public func goToOrdersScreen() throws -> OrdersScreen {
         ordersTabButton.tap()
         return try OrdersScreen()
     }
-
-    // periphery:ignore
     @discardableResult
     public func goToProductsScreen() throws -> ProductsScreen {
         productsTabButton.tap()
         return try ProductsScreen()
     }
-
-    // periphery:ignore
     public func goToPOSScreen() throws -> POSScreen {
         posTabButton.tap()
         return try POSScreen()
     }
-
-    // periphery:ignore
     @discardableResult
     public func goToMenuScreen() throws -> MenuScreen {
         menuTabButton.tap()
         return try MenuScreen()
     }
-
-    // periphery:ignore
     static func isLoaded() -> Bool {
         (try? TabNavComponent().isLoaded) ?? false
     }
-
-    // periphery:ignore
     // TODO: This paradigm is used enough around the test suits that it would be worth extracting to `ScreenObject`.
    static func isVisible() -> Bool {
         guard let tabNavComponent = try? TabNavComponent() else { return false }

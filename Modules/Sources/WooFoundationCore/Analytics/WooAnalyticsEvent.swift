@@ -139,9 +139,10 @@ extension WooAnalyticsEvent {
                                      error: error)
         }
 
-        public static func syncSkipped(reason: String) -> WooAnalyticsEvent {
+        public static func syncSkipped(reason: String, syncType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
-                              properties: [Key.reason: reason])
+                              properties: [Key.reason: reason,
+                                           Key.syncType: syncType])
         }
     }
 }

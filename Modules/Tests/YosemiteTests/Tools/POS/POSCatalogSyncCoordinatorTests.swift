@@ -1331,6 +1331,7 @@ extension POSCatalogSyncCoordinatorTests {
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
         #expect(syncSkipped != nil)
         #expect(syncSkipped?.properties?["reason"] as? String == "no_full_sync")
+        #expect(syncSkipped?.properties?["sync_type"] as? String == "incremental")
     }
 
     @Test func performFullSyncIfApplicable_tracks_sync_skipped_when_not_stale() async throws {
@@ -1354,6 +1355,87 @@ extension POSCatalogSyncCoordinatorTests {
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
         #expect(syncSkipped != nil)
         #expect(syncSkipped?.properties?["reason"] as? String == "catalog_not_stale")
+        #expect(syncSkipped?.properties?["sync_type"] as? String == "full")
+    }
+
+    // MARK: - Sync Type Analytics
+
+    @Test("POSCatalogSyncType enum has correct raw values")
+    func testPOSCatalogSyncTypeRawValues() {
+        #expect(POSCatalogSyncType.full.rawValue == "full")
+        #expect(POSCatalogSyncType.incremental.rawValue == "incremental")
+    }
+
+    // MARK: - POS Not Opened 30 Days Skip Reason Tests
+
+    @Test func performFullSyncIfApplicable_tracks_pos_not_opened_30_days_when_not_opened_recently() async throws {
+        // Given - Store with first sync > 30 days ago and last opened > 30 days ago
+        let mockAnalytics = MockAnalytics()
+        let mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
+
+        // Set first sync date to 40 days ago
+        let firstSyncDate = Calendar.current.date(byAdding: .day, value: -40, to: Date())!
+        mockSiteSettings.setFirstPOSCatalogSyncDate(siteID: sampleSiteID, date: firstSyncDate)
+
+        // Set last opened date to 35 days ago (more than 30 days)
+        let lastOpenedDate = Calendar.current.date(byAdding: .day, value: -35, to: Date())!
+        mockSiteSettings.setPOSLastOpenedDate(siteID: sampleSiteID, date: lastOpenedDate)
+
+        // Create site in database with full sync date
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: firstSyncDate)
+
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            connectivityObserver: nil
+        )
+
+        // When - Try to perform sync
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
+
+        // Then - Should track pos_not_opened_30_days
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped != nil)
+        #expect(syncSkipped?.properties?["reason"] as? String == "pos_not_opened_30_days")
+        #expect(syncSkipped?.properties?["sync_type"] as? String == "full")
+    }
+
+    @Test func performIncrementalSyncIfApplicable_tracks_pos_not_opened_30_days_when_never_opened_and_past_grace_period() async throws {
+        // Given - Store with first sync > 30 days ago and never opened POS
+        let mockAnalytics = MockAnalytics()
+        let mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
+
+        // Set first sync date to 40 days ago
+        let firstSyncDate = Calendar.current.date(byAdding: .day, value: -40, to: Date())!
+        mockSiteSettings.setFirstPOSCatalogSyncDate(siteID: sampleSiteID, date: firstSyncDate)
+
+        // Don't set last opened date (nil = never opened)
+
+        // Create site in database with full sync date
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: firstSyncDate)
+
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            connectivityObserver: nil
+        )
+
+        // When - Try to perform incremental sync
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
+
+        // Then - Should track pos_not_opened_30_days
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped != nil)
+        #expect(syncSkipped?.properties?["reason"] as? String == "pos_not_opened_30_days")
+        #expect(syncSkipped?.properties?["sync_type"] as? String == "incremental")
     }
 }
 

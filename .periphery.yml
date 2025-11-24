@@ -58,8 +58,7 @@ index_exclude:
 - Pods/*
 - vendor/**
 - BuildTools/.build/**
-- "**/Tests/*"
-- "**/Test*/*"
+- "**/*Test*/*"
 - "docs/*"
 - "fastlane/*"
 - "config/*"

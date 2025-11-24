@@ -22,7 +22,10 @@ public struct BookingOrderInfo: Hashable {
             guard let billingAddress = order.billingAddress else {
                 return nil
             }
-            return BookingCustomerInfo(billingAddress: billingAddress)
+            return BookingCustomerInfo(
+                billingAddress: billingAddress,
+                note: order.customerNote
+            )
         }()
         self.productInfo = BookingProductInfo(name: order.items.first(where: { $0.productID == booking.productID })?.name ?? "")
         self.paymentInfo = BookingPaymentInfo(

@@ -2333,6 +2333,36 @@ final class MigrationTests: XCTestCase {
         // `note` should be present in `migratedBooking`
         XCTAssertNotNil(migratedBooking.entity.attributesByName["note"])
     }
+
+    func test_migrating_from_130_to_131_adds_note_attribute_to_bookingCustomerInfo() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 130")
+        let sourceContext = sourceContainer.viewContext
+
+        let customerInfo = insertBookingCustomerInfo(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(customerInfo.entity.attributesByName["note"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 131")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCustomerInfo = try XCTUnwrap(targetContext.first(entityName: "BookingCustomerInfo"))
+
+        // `note` should be present in `migratedCustomerInfo`
+        XCTAssertNotNil(migratedCustomerInfo.entity.attributesByName["note"])
+
+        let noteValue = migratedCustomerInfo.value(forKey: "note") as? String
+        XCTAssertNil(noteValue)
+
+        let updatedNote = "Customer note"
+        migratedCustomerInfo.setValue(updatedNote, forKey: "note")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedCustomerInfo.value(forKey: "note") as? String, updatedNote)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3275,7 +3305,7 @@ private extension MigrationTests {
 
     @discardableResult
     func insertBookingCustomerInfo(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "BookingCustomerInfo", properties: [
+        var properties: [String: Any] = [
             "billingFirstName": "John",
             "billingLastName": "Doe",
             "billingEmail": "john.doe@example.com",
@@ -3284,7 +3314,12 @@ private extension MigrationTests {
             "billingState": "CA",
             "billingPostcode": "94102",
             "billingCountry": "US"
-        ])
+        ]
+        if let entity = NSEntityDescription.entity(forEntityName: "BookingCustomerInfo", in: context),
+           entity.attributesByName.keys.contains("note") {
+            properties["note"] = "Sample note"
+        }
+        return context.insert(entityName: "BookingCustomerInfo", properties: properties)
     }
 
     @discardableResult

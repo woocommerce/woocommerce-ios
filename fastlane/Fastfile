@@ -1230,6 +1230,7 @@ platform :ios do
       paths: [
         'WooCommerce/',
         'Modules/Sources/WordPress*/',
+        'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',
         'Storage/Storage/',
         'Networking/Networking/',

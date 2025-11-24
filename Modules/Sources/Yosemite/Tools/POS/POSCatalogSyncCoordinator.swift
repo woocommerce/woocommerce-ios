@@ -149,7 +149,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
             let reason = await getSyncSkipReason(for: siteID, maxAge: maxAge)
-            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason))
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
+                                                                      syncType: POSCatalogSyncType.full.rawValue))
             throw POSCatalogSyncError.shouldNotSync
         }
 
@@ -315,7 +316,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         guard try await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
             let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
-            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason))
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
+                                                                      syncType: POSCatalogSyncType.incremental.rawValue))
             return
         }
 
@@ -596,6 +598,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             return "eligibility_check_failed"
         }
 
+        // Check sync eligibility
+        do {
+            let eligibility = try await syncEligibility(for: siteID)
+            if case .ineligible(let reason) = eligibility {
+                return reason.skipReason
+            }
+        } catch {
+            return "sync_eligibility_check_failed"
+        }
+
         // Check if sync is needed based on age
         guard let lastSyncDate = await lastFullSyncDate(for: siteID) else {
             return "no_previous_sync" // This shouldn't happen if shouldPerformFullSync returned false
@@ -610,7 +622,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     private func getIncrementalSyncSkipReason(for siteID: Int64, maxAge: TimeInterval) async -> String {
-        // Check eligibility first
+        // Check overall local catalog eligibility first
         do {
             let eligibility = try await catalogEligibilityChecker.catalogEligibility(for: siteID)
             if case .ineligible(let reason) = eligibility {
@@ -618,6 +630,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
         } catch {
             return "eligibility_check_failed"
+        }
+
+        // Check sync eligibility
+        do {
+            let eligibility = try await syncEligibility(for: siteID)
+            if case .ineligible(let reason) = eligibility {
+                return reason.skipReason
+            }
+        } catch {
+            return "sync_eligibility_check_failed"
         }
 
         // Check if full sync exists
@@ -703,9 +725,34 @@ private extension POSCatalogSyncCoordinator {
 
     /// Checks if sync is eligible for the given site based on catalog eligibility and temporal criteria
     func checkSyncEligibility(for siteID: Int64) async throws -> Bool {
-        guard try await catalogEligibilityChecker.catalogEligibility(for: siteID) == .eligible else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
+        switch try await syncEligibility(for: siteID) {
+        case .eligible(reason: let reason):
+            switch reason {
+            case .neverSynced:
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (no first sync date recorded)")
+            case .openedRecently(daysSinceOpened: let daysSinceOpened):
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (last opened \(daysSinceOpened) days ago)")
+            case .recentFirstSync(daysSinceFirstSync: let daysSinceFirstSync):
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (within grace period: \(daysSinceFirstSync) days since first sync)")
+            }
+            return true
+        case .ineligible(reason: let reason):
+            switch reason {
+            case .notEligibleForLocalCatalog:
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) - Catalog ineligible")
+            case .notOpenedRecently(daysSinceOpened: let daysSinceOpened):
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) ineligible (POS last opened \(daysSinceOpened) days ago)")
+            case .neverOpenedAndPastFirstSyncGracePeriod(daysSinceFirstSync: let daysSinceFirstSync):
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) ineligible (past 30-day grace period, " +
+                          "no recent POS open, \(daysSinceFirstSync) days since first sync)")
+            }
             return false
+        }
+    }
+
+    func syncEligibility(for siteID: Int64) async throws -> SyncEligibility {
+        guard try await catalogEligibilityChecker.catalogEligibility(for: siteID) == .eligible else {
+            return .ineligible(reason: .notEligibleForLocalCatalog)
         }
 
         // Then check temporal eligibility (30-day criteria)
@@ -714,8 +761,7 @@ private extension POSCatalogSyncCoordinator {
 
         // Case 1: No first sync date yet - eligible (will be set on first sync)
         guard let firstSync = firstSyncDate else {
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (no first sync date recorded)")
-            return true
+            return .eligible(reason: .neverSynced)
         }
 
         // Case 2: Has synced before. Check if within 30-day window from first sync
@@ -724,23 +770,44 @@ private extension POSCatalogSyncCoordinator {
         if daysSinceFirstSync > Constants.maxDaysSinceLastOpened {
             // More than 30 days since first sync - must have opened POS recently to remain eligible
             guard let lastOpened = lastOpenedDate else {
-                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) ineligible (past 30-day grace period, no recent POS open)")
-                return false
+                return .ineligible(reason: .neverOpenedAndPastFirstSyncGracePeriod(daysSinceFirstSync: daysSinceFirstSync))
             }
 
             let daysSinceLastOpened = Calendar.current.dateComponents([.day], from: lastOpened, to: Date()).day ?? 0
 
             if daysSinceLastOpened <= Constants.maxDaysSinceLastOpened {
-                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (last opened \(daysSinceLastOpened) days ago)")
-                return true
+                return .eligible(reason: .openedRecently(daysSinceOpened: daysSinceLastOpened))
             } else {
-                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) ineligible (POS last opened \(daysSinceLastOpened) days ago)")
-                return false
+                return .ineligible(reason: .notOpenedRecently(daysSinceOpened: daysSinceLastOpened))
             }
         } else {
             // Within 30 days of first sync - always eligible (new user grace period)
-            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (within grace period: \(daysSinceFirstSync) days since first sync)")
-            return true
+            return .eligible(reason: .recentFirstSync(daysSinceFirstSync: daysSinceFirstSync))
+        }
+    }
+
+    enum SyncEligibility {
+        case eligible(reason: EligibleReason)
+        case ineligible(reason: IneligibleReason)
+
+        enum EligibleReason {
+            case neverSynced
+            case openedRecently(daysSinceOpened: Int)
+            case recentFirstSync(daysSinceFirstSync: Int)
+        }
+
+        enum IneligibleReason {
+            case notEligibleForLocalCatalog
+            case notOpenedRecently(daysSinceOpened: Int)
+            case neverOpenedAndPastFirstSyncGracePeriod(daysSinceFirstSync: Int)
+
+            var skipReason: String {
+                switch self {
+                    case .notEligibleForLocalCatalog: "not_eligible"
+                    case .notOpenedRecently: "pos_not_opened_30_days"
+                    case .neverOpenedAndPastFirstSyncGracePeriod: "pos_not_opened_30_days"
+                }
+            }
         }
     }
 

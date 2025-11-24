@@ -3,10 +3,11 @@ import protocol Storage.GRDBManagerProtocol
 import protocol Networking.ProductVariationsRemoteProtocol
 
 /// Fetch strategy for searching products in the local GRDB catalog using SQL LIKE queries
-public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
+struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let searchTerm: String
     private let grdbManager: GRDBManagerProtocol
+    // periphery:ignore - Reserved for future variation fetching from remote when not in local catalog
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
@@ -25,7 +26,16 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
         self.pageSize = pageSize
     }
 
-    public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+    var debounceStrategy: SearchDebounceStrategy {
+        // Use simple debouncing for local search: always debounce to prevent excessive queries
+        // even though local searches are fast. 100ms provides responsive feel while preventing
+        // queries on every keystroke. Delay loading indicators by 150ms to avoid flicker for fast queries.
+        .simple(duration: 150 * NSEC_PER_MSEC, loadingDelayThreshold: 300 * NSEC_PER_MSEC)
+    }
+
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        let startTime = Date()
+
         // Get total count and persisted products in one transaction
         let (persistedProducts, totalCount) = try await grdbManager.databaseConnection.read { db in
             let totalCount = try PersistedProduct
@@ -49,12 +59,18 @@ public struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePur
 
         let hasMorePages = (pageNumber * pageSize) < totalCount
 
+        if pageNumber == 1 {
+            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
+            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
+                                                           totalItems: totalCount)
+        }
+
         return PagedItems(items: products,
                          hasMorePages: hasMorePages,
                          totalItems: totalCount)
     }
 
-    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         // Get total count and persisted variations in one transaction
         let (persistedVariations, totalCount) = try await grdbManager.databaseConnection.read { db in
             let totalCount = try PersistedProductVariation

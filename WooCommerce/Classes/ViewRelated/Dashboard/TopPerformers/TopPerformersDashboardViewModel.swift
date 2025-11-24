@@ -88,6 +88,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         observeSyncingCompletion()
+        observeProductChanges()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
@@ -220,14 +221,7 @@ private extension TopPerformersDashboardViewModel {
             .store(in: &subscriptions)
     }
 
-    func observeProducts(ids: [Int64]) {
-        entityListeners = [:]
-        for id in ids {
-            if let listener = createProductEntityListener(id: id) {
-                entityListeners[id] = listener
-            }
-        }
-
+    func observeProductChanges() {
         hasProductChanges
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] in
@@ -236,6 +230,15 @@ private extension TopPerformersDashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func observeProducts(ids: [Int64]) {
+        entityListeners = entityListeners.filter { ids.contains($0.key) }
+        for id in ids {
+            if entityListeners[id] == nil, let listener = createProductEntityListener(id: id) {
+                entityListeners[id] = listener
+            }
+        }
     }
 
     func createProductEntityListener(id: Int64) -> EntityListener<Product>? {

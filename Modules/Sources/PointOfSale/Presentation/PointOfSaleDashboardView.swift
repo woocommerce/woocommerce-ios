@@ -73,6 +73,10 @@ struct PointOfSaleDashboardView: View {
                 .frame(maxWidth: .infinity)
             case .error(let error):
                 PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
+                    if error.errorType == .initialCatalogSyncError {
+                        analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
+                    }
+
                     Task {
                         switch viewStateCoordinator.selectedItemListType {
                         case .products(search: false):

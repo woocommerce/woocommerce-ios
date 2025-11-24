@@ -5,6 +5,17 @@ import protocol Networking.ProductVariationsRemoteProtocol
 public protocol PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+
+    /// The debouncing strategy to use for search input.
+    /// Default is `.immediate` (no debouncing) for non-search strategies.
+    var debounceStrategy: SearchDebounceStrategy { get }
+}
+
+public extension PointOfSalePurchasableItemFetchStrategy {
+    /// Default implementation returns `.immediate` for strategies that don't need debouncing
+    var debounceStrategy: SearchDebounceStrategy {
+        .immediate
+    }
 }
 
 public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
@@ -67,6 +78,14 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
         self.analytics = analytics
+    }
+
+    // periphery:ignore - Protocol requirement, used via protocol
+    public var debounceStrategy: SearchDebounceStrategy {
+        // Use smart debouncing for remote search: don't debounce first keystroke to show loading immediately,
+        // then debounce subsequent keystrokes while search is ongoing.
+        // No loading delay threshold - show loading immediately for responsive feel.
+        .smart()
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {

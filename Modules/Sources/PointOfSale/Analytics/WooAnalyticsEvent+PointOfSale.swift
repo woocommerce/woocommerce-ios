@@ -305,6 +305,17 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        static func pointOfSaleSearchResultsFetched(itemType: POSItemType,
+                                                    resultsCount: Int,
+                                                    millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSearchResultsFetched,
+                              properties: [
+                                Key.sourceView: SourceView(itemType: itemType).rawValue,
+                                Key.resultsCount: "\(resultsCount)",
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                              ])
+        }
+
         static func pointOfSaleItemsFetched(itemType: POSItemType,
                                             totalItems: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleItemsFetched,

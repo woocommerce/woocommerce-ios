@@ -129,6 +129,37 @@ public extension PersistedProduct {
             .filter(Columns.siteID == siteID)
             .filter(Columns.globalUniqueID == globalUniqueID)
     }
+
+    /// Searches for POS-supported products by search term using LIKE query
+    /// - Parameters:
+    ///   - siteID: The site ID
+    ///   - searchTerm: The search term to match against product name, SKU, and global unique ID
+    /// - Returns: A query request that matches products containing the search term, ordered by name
+    static func posProductSearch(siteID: Int64, searchTerm: String) -> QueryInterfaceRequest<PersistedProduct> {
+        let escapedTerm = escapeSQLLikePattern(searchTerm)
+        let likePattern = "%\(escapedTerm)%"
+
+        return PersistedProduct
+            .filter(Columns.siteID == siteID)
+            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
+            .filter(Columns.downloadable == false)
+            .filter(
+                Columns.name.like(likePattern, escape: "\\") ||
+                Columns.sku.like(likePattern, escape: "\\") ||
+                Columns.globalUniqueID.like(likePattern, escape: "\\")
+            )
+            .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
+    }
+
+    /// Escapes special SQL LIKE pattern characters (% and _) in a search term
+    /// - Parameter pattern: The user-provided search term
+    /// - Returns: An escaped pattern safe for use in LIKE queries
+    private static func escapeSQLLikePattern(_ pattern: String) -> String {
+        pattern
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "%", with: "\\%")
+            .replacingOccurrences(of: "_", with: "\\_")
+    }
 }
 
 // periphery:ignore - TODO: remove ignore when populating database

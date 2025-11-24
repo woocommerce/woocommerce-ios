@@ -191,7 +191,7 @@ struct POSSettingsLocalCatalogViewModelTests {
 
         // Then
         let catalogRefreshError = try #require(sut.catalogRefreshError)
-        #expect(catalogRefreshError.errorType == .refreshCatalogSyncError)
+        #expect(catalogRefreshError.errorState.errorType == .refreshCatalogSyncError)
     }
 
     // MARK: - Test Concurrent Operations

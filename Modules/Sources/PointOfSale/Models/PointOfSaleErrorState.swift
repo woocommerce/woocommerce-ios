@@ -1,7 +1,7 @@
 import Foundation
 import enum Alamofire.AFError
 
-struct PointOfSaleErrorState: Equatable, Identifiable {
+struct PointOfSaleErrorState: Equatable {
     enum ErrorType: Equatable {
         case initialCatalogSyncError
         case refreshCatalogSyncError
@@ -17,7 +17,6 @@ struct PointOfSaleErrorState: Equatable, Identifiable {
         case ordersNextPageError
     }
 
-    let id = UUID()
     let errorType: ErrorType
     let title: String
     let subtitle: String

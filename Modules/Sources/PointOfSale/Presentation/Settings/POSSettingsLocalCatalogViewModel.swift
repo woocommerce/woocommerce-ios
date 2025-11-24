@@ -12,7 +12,7 @@ final class POSSettingsLocalCatalogViewModel {
     private(set) var isLoading: Bool = false
     private(set) var isRefreshingCatalog: Bool = false
 
-    var catalogRefreshError: PointOfSaleErrorState? = nil
+    var catalogRefreshError: POSIdentifiableErrorState? = nil
 
     private let siteID: Int64
     private let catalogSettingsService: POSCatalogSettingsServiceProtocol
@@ -89,7 +89,7 @@ final class POSSettingsLocalCatalogViewModel {
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
             isRefreshingCatalog = false
-            catalogRefreshError = PointOfSaleErrorState.errorOnRefreshingCatalog(error: error)
+            catalogRefreshError = POSIdentifiableErrorState(errorState: .errorOnRefreshingCatalog(error: error))
         }
     }
 
@@ -176,4 +176,9 @@ private extension POSSettingsLocalCatalogViewModel {
             comment: "Text shown when update date cannot be determined."
         )
     }
+}
+
+struct POSIdentifiableErrorState: Identifiable, Equatable {
+    let errorState: PointOfSaleErrorState
+    let id = UUID()
 }

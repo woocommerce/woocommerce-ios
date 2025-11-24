@@ -4,7 +4,7 @@
 23.8
 -----
 - [*] Crash fix attempt to resolve the race condition in request authenticator swapping [https://github.com/woocommerce/woocommerce-ios/pull/16370]
-- [*] Update products on the Top Performers card when there are changes made to opened products [https://github.com/woocommerce/woocommerce-ios/pull/16380]
+- [*] Update products on the Top Performers card when there are changes made to displayed products [https://github.com/woocommerce/woocommerce-ios/pull/16380]
 - [Internal] Fix broken navigation to a variable product selector [https://github.com/woocommerce/woocommerce-ios/pull/16363]
 
 23.7

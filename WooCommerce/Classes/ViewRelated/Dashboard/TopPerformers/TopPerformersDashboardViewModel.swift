@@ -232,19 +232,32 @@ private extension TopPerformersDashboardViewModel {
             .store(in: &subscriptions)
     }
 
-    func observeProducts(ids: [Int64]) {
+    func observeProducts(for items: [TopEarnerStatsItem]) {
+        let ids = items.map { $0.productID }
         entityListeners = entityListeners.filter { ids.contains($0.key) }
-        for id in ids {
-            if entityListeners[id] == nil, let listener = createProductEntityListener(id: id) {
-                entityListeners[id] = listener
+        for item in items {
+            if entityListeners[item.productID] == nil {
+                let listener = createProductEntityListener(for: item)
+                entityListeners[item.productID] = listener
             }
         }
     }
 
-    func createProductEntityListener(id: Int64) -> EntityListener<Product>? {
-        guard var product = storageManager.viewStorage.loadProduct(siteID: siteID, productID: id)?.toReadOnly() else {
-            return nil
-        }
+    func createProductEntityListener(for item: TopEarnerStatsItem) -> EntityListener<Product> {
+        /// Mock product item out of info from top start item
+        var product = Product(
+            siteID: siteID,
+            productID: item.productID,
+            name: item.productName ?? "",
+            images: [ProductImage(
+                imageID: -1,
+                dateCreated: Date(),
+                dateModified: nil,
+                src: item.imageUrl ?? "",
+                name: nil,
+                alt: nil)
+            ]
+        )
         let entityListener = EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
         entityListener.onUpsert = { [weak self] updatedProduct in
             // reload stats if there are changes to product
@@ -306,10 +319,11 @@ private extension TopPerformersDashboardViewModel {
             return
         }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
+            entityListeners = [:]
             return periodViewModel.update(state: .loaded(rows: []))
         }
         periodViewModel.update(state: .loaded(rows: items))
-        observeProducts(ids: items.map { $0.productID })
+        observeProducts(for: items)
     }
 
     func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {

@@ -59,132 +59,7 @@ struct POSSearchField: View {
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
             .onChange(of: searchTerm) { oldValue, newValue in
-                // Cancel any ongoing search
-                searchTask?.cancel()
-
-                // Capture the debounce strategy synchronously BEFORE creating the task.
-                // Use searchDebounceStrategy for non-empty search terms (actual searches),
-                // and currentDebounceStrategy for empty terms (returning to popular products).
-                let debounceStrategy = newValue.isNotEmpty ? searchable.searchDebounceStrategy : searchable.currentDebounceStrategy
-
-                searchTask = Task {
-                    // Apply debouncing based on the strategy captured at the start
-                    switch debounceStrategy {
-                    case .smart(let duration, let loadingDelayThreshold):
-                        // Smart debouncing: Don't debounce first keystroke, but debounce subsequent keystrokes
-                        // The loading indicator behavior depends on whether there's a threshold:
-                        // - With threshold: Show loading after threshold if search hasn't completed (prevents flicker)
-                        // - Without threshold: Show loading immediately (responsive feel)
-
-                        let shouldDebounceNextSearchRequest = !didFinishSearch
-
-                        // Early exit if search term is empty
-                        guard newValue.isNotEmpty else {
-                            didFinishSearch = true
-                            return
-                        }
-
-                        // Start loading indicator task if we have a threshold and this is first keystroke
-                        let loadingTask: Task<Void, Never>?
-                        if !shouldDebounceNextSearchRequest {
-                            // First keystroke - handle loading indicators
-                            if let threshold = loadingDelayThreshold {
-                                // With threshold: delay showing loading to prevent flicker for fast searches
-                                loadingTask = Task { @MainActor in
-                                    try? await Task.sleep(nanoseconds: threshold)
-                                    if !Task.isCancelled {
-                                        searchable.clearSearchResults()
-                                    }
-                                }
-                            } else {
-                                // No threshold - show loading immediately for responsive feel
-                                searchable.clearSearchResults()
-                                loadingTask = nil
-                            }
-                        } else {
-                            // Subsequent keystrokes - loading already showing from previous search
-                            loadingTask = nil
-                        }
-
-                        if shouldDebounceNextSearchRequest {
-                            try? await Task.sleep(nanoseconds: duration)
-                        }
-
-                        // Now perform the search (common code for both and subsequent keystrokes)
-                        guard !Task.isCancelled else {
-                            loadingTask?.cancel()
-                            return
-                        }
-
-                        didFinishSearch = false
-                        await searchable.performSearch(term: newValue)
-
-                        // Cancel loading task if search completed (only relevant for first keystroke with threshold)
-                        loadingTask?.cancel()
-
-                        if !Task.isCancelled {
-                            didFinishSearch = true
-                        }
-                        return
-
-                    case .simple(let duration, let loadingDelayThreshold):
-                        // Simple debouncing: Always debounce
-                        try? await Task.sleep(nanoseconds: duration)
-
-                        guard !Task.isCancelled else { return }
-                        guard newValue.isNotEmpty else {
-                            didFinishSearch = true
-                            return
-                        }
-
-                        didFinishSearch = false
-
-                        if let threshold = loadingDelayThreshold {
-                            // Delay showing loading indicators to avoid flicker for fast queries
-                            // Create a loading task that shows indicators after threshold
-                            let loadingTask = Task { @MainActor in
-                                try? await Task.sleep(nanoseconds: threshold)
-                                // Only show loading if not cancelled
-                                if !Task.isCancelled {
-                                    searchable.clearSearchResults()
-                                }
-                            }
-
-                            // Perform the search
-                            await searchable.performSearch(term: newValue)
-
-                            // Cancel loading task if search completed before threshold
-                            loadingTask.cancel()
-                        } else {
-                            // No loading delay threshold - show loading immediately
-                            searchable.clearSearchResults()
-                            await searchable.performSearch(term: newValue)
-                        }
-
-                        if !Task.isCancelled {
-                            didFinishSearch = true
-                        }
-                        return
-
-                    case .immediate:
-                        // No debouncing
-                        break
-                    }
-
-                    guard !Task.isCancelled else { return }
-
-                    guard newValue.isNotEmpty else {
-                        didFinishSearch = true
-                        return
-                    }
-
-                    didFinishSearch = false
-                    await searchable.performSearch(term: newValue)
-
-                    if !Task.isCancelled {
-                        didFinishSearch = true
-                    }
-                }
+                handleSearchTermChange(newValue)
             }
         }
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
@@ -193,6 +68,142 @@ struct POSSearchField: View {
         }
         .onAppear {
             isSearchFieldFocused = true
+        }
+    }
+}
+
+// MARK: - Search Handling
+private extension POSSearchField {
+    func handleSearchTermChange(_ newValue: String) {
+        searchTask?.cancel()
+
+        let debounceStrategy = selectDebounceStrategy(for: newValue)
+
+        searchTask = Task {
+            await executeSearchWithStrategy(debounceStrategy, searchTerm: newValue)
+        }
+    }
+
+    func selectDebounceStrategy(for searchTerm: String) -> SearchDebounceStrategy {
+        // Use searchDebounceStrategy for non-empty search terms (actual searches),
+        // and currentDebounceStrategy for empty terms (returning to popular products).
+        searchTerm.isNotEmpty ? searchable.searchDebounceStrategy : searchable.currentDebounceStrategy
+    }
+
+    func executeSearchWithStrategy(_ strategy: SearchDebounceStrategy, searchTerm: String) async {
+        switch strategy {
+        case .smart(let duration, let loadingDelayThreshold):
+            await executeSmartDebouncedSearch(duration: duration, loadingDelayThreshold: loadingDelayThreshold, searchTerm: searchTerm)
+        case .simple(let duration, let loadingDelayThreshold):
+            await executeSimpleDebouncedSearch(duration: duration, loadingDelayThreshold: loadingDelayThreshold, searchTerm: searchTerm)
+        case .immediate:
+            await executeImmediateSearch(searchTerm: searchTerm)
+        }
+    }
+
+    func executeSmartDebouncedSearch(duration: UInt64, loadingDelayThreshold: UInt64?, searchTerm: String) async {
+        // Smart debouncing: Don't debounce first keystroke, but debounce subsequent keystrokes
+        // The loading indicator behavior depends on whether there's a threshold:
+        // - With threshold: Show loading after threshold if search hasn't completed (prevents flicker)
+        // - Without threshold: Show loading immediately (responsive feel)
+
+        let isFirstKeystroke = didFinishSearch
+
+        guard searchTerm.isNotEmpty else {
+            didFinishSearch = true
+            return
+        }
+
+        // Handle loading indicators for first keystroke
+        let loadingTask = isFirstKeystroke ? startLoadingIndicatorTask(threshold: loadingDelayThreshold) : nil
+
+        // Debounce subsequent keystrokes
+        if !isFirstKeystroke {
+            try? await Task.sleep(nanoseconds: duration)
+        }
+
+        guard !Task.isCancelled else {
+            loadingTask?.cancel()
+            return
+        }
+
+        await performSearchAndTrackCompletion(searchTerm: searchTerm)
+        loadingTask?.cancel()
+    }
+
+    func executeSimpleDebouncedSearch(duration: UInt64,
+                                      loadingDelayThreshold: UInt64?,
+                                      searchTerm: String) async {
+        // Simple debouncing: Always debounce every keystroke
+        try? await Task.sleep(nanoseconds: duration)
+
+        guard !Task.isCancelled else { return }
+        guard searchTerm.isNotEmpty else {
+            didFinishSearch = true
+            return
+        }
+
+        didFinishSearch = false
+
+        if let threshold = loadingDelayThreshold {
+            await performSearchWithDelayedLoading(searchTerm: searchTerm, threshold: threshold)
+        } else {
+            searchable.clearSearchResults()
+            await searchable.performSearch(term: searchTerm)
+        }
+
+        if !Task.isCancelled {
+            didFinishSearch = true
+        }
+    }
+
+    func executeImmediateSearch(searchTerm: String) async {
+        guard !Task.isCancelled else { return }
+        guard searchTerm.isNotEmpty else {
+            didFinishSearch = true
+            return
+        }
+
+        await performSearchAndTrackCompletion(searchTerm: searchTerm)
+    }
+
+    func startLoadingIndicatorTask(threshold: UInt64?) -> Task<Void, Never>? {
+        if let threshold {
+            // With threshold: delay showing loading to prevent flicker for fast searches
+            return Task { @MainActor in
+                try? await Task.sleep(nanoseconds: threshold)
+                if !Task.isCancelled {
+                    searchable.clearSearchResults()
+                }
+            }
+        } else {
+            // No threshold - show loading immediately for responsive feel
+            searchable.clearSearchResults()
+            return nil
+        }
+    }
+
+    func performSearchWithDelayedLoading(searchTerm: String, threshold: UInt64) async {
+        // Create a loading task that shows indicators after threshold
+        let loadingTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: threshold)
+            if !Task.isCancelled {
+                searchable.clearSearchResults()
+            }
+        }
+
+        await searchable.performSearch(term: searchTerm)
+
+        // Cancel loading task if search completed before threshold
+        loadingTask.cancel()
+    }
+
+    private func performSearchAndTrackCompletion(searchTerm: String) async {
+        didFinishSearch = false
+        await searchable.performSearch(term: searchTerm)
+
+        if !Task.isCancelled {
+            didFinishSearch = true
         }
     }
 }

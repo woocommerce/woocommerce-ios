@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-03 19:54:06+0000 */
+/* Translation-Revision-Date: 2025-11-17 16:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -797,7 +797,13 @@ which should be translated separately and considered part of this sentence. */
 "BookingAttendanceStatus.booked" = "اكتمل الحجز";
 
 /* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.cancelled" = "اكتمل الإلغاء";
+"BookingAttendanceStatus.canceled" = "مُلغى";
+
+/* Title for 'Checked In' booking attendance status. */
+"BookingAttendanceStatus.checkedIn" = "نجح تسجيل الحضور";
+
+/* Title for 'No Show' booking attendance status. */
+"BookingAttendanceStatus.noShow" = "عدم الحضور";
 
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "غير معروف";
@@ -830,13 +836,19 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.attendance.headerTitle" = "الحضور";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
-"BookingDetailsView.attendanceStatus.updateFailed.message" = "يتعذر تغيير حالة حضور الحجز رقم ⁦%1$d⁩";
+"BookingDetailsView.attendanceStatus.failureMessage." = "يتعذر تغيير حالة حضور الحجز رقم⁦%1$d⁩.";
 
-/* Add a note row title in booking notes section in booking details view. */
-"BookingDetailsView.bookingNotes.addANoteRow.title" = "إضافة ملاحظة";
+/* Add a booking note section in booking details view. */
+"BookingDetailsView.bookingNote.addNoteRow.title" = "إضافة ملحوظة";
 
-/* Header title for the 'Booking notes' section in the booking details screen. */
-"BookingDetailsView.bookingNotes.headerTitle" = "ملاحظات الحجز";
+/* Footer text for the `Booking note` section in the booking details screen. */
+"BookingDetailsView.bookingNote.footerText" = "هذه ملحوظة خاصة. لن نشاركها مع العميل.";
+
+/* Header title for the 'Booking note' section in the booking details screen. */
+"BookingDetailsView.bookingNote.headerTitle" = "ملحوظة الحجز";
+
+/* Title of navigation bar when editing a booking note. */
+"BookingDetailsView.bookingNote.navbar.title" = "ملحوظة الحجز";
 
 /* Cancel button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.cancelAction" = "لا، الاحتفاظ بالحجز";
@@ -844,11 +856,17 @@ which should be translated separately and considered part of this sentence. */
 /* Confirm button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.confirmAction" = "نعم، إلغاء الحجز";
 
+/* Generic message for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.genericMessage" = "هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟";
+
 /* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
 "BookingDetailsView.cancelation.alert.message" = "لن يتمكن %1$@ من حضور \"%2$@\" في %3$@ بعد الآن.";
 
 /* Title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.title" = "إلغاء الحجز";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to cancel Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.cancellation.failureMessage" = "يتعذر إلغاء الحجز رقم⁦%1$d⁩.";
 
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "عنوان الفوترة";
@@ -864,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "الحالة";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
+"BookingDetailsView.markAsPaid.failureMessage" = "يتعذر وضع علامة على الحجز رقم⁦%1$d⁩ على أنه مدفوع.";
 
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "الحجز رقم ⁦%1$d⁩";
@@ -882,9 +903,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "الدفع";
-
-/* Title for 'Issue refund' button in payment section in booking details view. */
-"BookingDetailsView.payment.issueRefund.title" = "نشر مبلغ الاسترداد";
 
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "وضع علامة كـ \"مدفوع\"";
@@ -3555,6 +3573,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "ينقل التعليق إلى سلة المهملات";
 
+/* Cancel button title for the discard changes confirmation dialog in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.cancelAction" = "إلغاء";
+
+/* Destructive action button title to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.discardAction" = "تجاهل التغييرات";
+
+/* Title for the confirmation dialog when the user attempts to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.title" = "هل أنت متأكد من رغبتك في تجاهل هذه التغييرات؟";
+
+/* Navigation bar button title used to save changes and close the multiline text editor. */
+"MultilineEditableTextDetailView.doneButton.title" = "تم";
+
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "متاجر متعددة";
 
@@ -4568,6 +4598,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "التسجيل في %1$@";
+
+/* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
+"ProductType.service" = "الخدمة";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -7470,6 +7503,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label displayed on audio media items. */
 "audio" = "صوت";
 
+/* Button to dismiss a web view */
+"authenticatableWebView.done" = "تم";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "هل تريد بدء متجر جديد؟";
 
@@ -8410,8 +8446,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "الحجوزات";
 
+/* Status of a paid booking */
+"bookingPaymentStatus.title.paid" = "مدفوع";
+
+/* Status of a refunded booking */
+"bookingPaymentStatus.title.refunded" = "نجح استرداد المبلغ";
+
+/* Status of a booking with unexpected payment status */
+"bookingPaymentStatus.title.unknown" = "غير معروف";
+
+/* Status of an unpaid booking */
+"bookingPaymentStatus.title.unpaid" = "غير مدفوعة";
+
+/* Message on the empty search result view of the booking service/event selector view */
+"bookingServiceEventSelectorView.emptySearchDescription" = "حاول ضبط مصطلح البحث الخاص بك لرؤية مزيد من النتائج";
+
 /* Text on the empty view of the booking service/event selector view */
 "bookingServiceEventSelectorView.noMembersFound" = "تعذر العثور على خدمة أو حدث";
+
+/* Prompt in the search bar of the booking service/event selector view */
+"bookingServiceEventSelectorView.searchPrompt" = "البحث عن الخدمة \/ الحدث";
 
 /* Title of the booking service/event selector view */
 "bookingServiceEventSelectorView.title" = "الخدمة \/ الحدث";

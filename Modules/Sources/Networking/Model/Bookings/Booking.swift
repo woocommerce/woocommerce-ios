@@ -35,8 +35,11 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     }
 
     public var paymentStatus: BookingPaymentStatus {
-        guard let orderInfo else { return .unknown }
-        return BookingPaymentStatus(rawValue: orderInfo.paymentStatusKey) ?? .unknown
+        guard let paymentInfo = orderInfo?.paymentInfo else {
+            return .unknown
+        }
+        let result = BookingPaymentStatus(rawValue: paymentInfo.statusKey)
+        return result ?? .unknown
     }
 
     /// Booking struct initializer.

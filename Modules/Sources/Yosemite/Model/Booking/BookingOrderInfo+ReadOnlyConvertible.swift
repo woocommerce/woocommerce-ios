@@ -13,7 +13,6 @@ extension Storage.BookingOrderInfo: ReadOnlyConvertible {
         return .init(statusKey: statusKey ?? "",
                      paymentInfo: paymentInfo?.toReadOnly(),
                      customerInfo: customerInfo?.toReadOnly(),
-                     productInfo: productInfo?.toReadOnly(),
-                     paymentStatusKey: paymentStatusKey ?? "")
+                     productInfo: productInfo?.toReadOnly())
     }
 }

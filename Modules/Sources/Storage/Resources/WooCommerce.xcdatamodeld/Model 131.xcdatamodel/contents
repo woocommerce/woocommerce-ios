@@ -101,7 +101,6 @@
         <relationship name="orderInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookingOrderInfo" inverseName="customerInfo" inverseEntity="BookingOrderInfo"/>
     </entity>
     <entity name="BookingOrderInfo" representedClassName="BookingOrderInfo" syncable="YES">
-        <attribute name="paymentStatusKey" optional="YES" attributeType="String"/>
         <attribute name="statusKey" attributeType="String"/>
         <relationship name="booking" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Booking" inverseName="orderInfo" inverseEntity="Booking"/>
         <relationship name="customerInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingCustomerInfo" inverseName="orderInfo" inverseEntity="BookingCustomerInfo"/>

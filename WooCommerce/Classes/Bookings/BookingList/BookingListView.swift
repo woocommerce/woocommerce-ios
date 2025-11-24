@@ -159,7 +159,9 @@ private extension BookingListView {
 
             HStack {
                 BookingBadgeView(booking.attendanceStatus)
-                BookingBadgeView(booking.paymentStatus)
+                if booking.paymentStatus != .unknown {
+                    BookingBadgeView(booking.paymentStatus)
+                }
                 Spacer()
             }
         }

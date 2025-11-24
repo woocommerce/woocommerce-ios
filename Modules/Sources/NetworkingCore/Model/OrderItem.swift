@@ -89,7 +89,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let itemID = try container.decode(Int64.self, forKey: .itemID)
         let productID = try container.decode(Int64.self, forKey: .productID)
-        let variationID = try container.decode(Int64.self, forKey: .variationID)
+        let variationID = (try? container.decodeIfPresent(Int64.self, forKey: .variationID)) ?? -1
 
         let isVariation = variationID > 0
         let name: String

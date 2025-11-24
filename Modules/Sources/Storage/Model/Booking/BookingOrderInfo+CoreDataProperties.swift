@@ -7,5 +7,4 @@ extension BookingOrderInfo {
     @NSManaged public var customerInfo: BookingCustomerInfo?
     @NSManaged public var productInfo: BookingProductInfo?
     @NSManaged public var booking: Booking?
-    @NSManaged public var paymentStatusKey: String?
 }

@@ -6,18 +6,15 @@ public struct BookingOrderInfo: Hashable {
     public let paymentInfo: BookingPaymentInfo?
     public let customerInfo: BookingCustomerInfo?
     public let productInfo: BookingProductInfo?
-    public let paymentStatusKey: String
 
     public init(statusKey: String,
                 paymentInfo: BookingPaymentInfo?,
                 customerInfo: BookingCustomerInfo?,
-                productInfo: BookingProductInfo?,
-                paymentStatusKey: String) {
+                productInfo: BookingProductInfo?) {
         self.statusKey = statusKey
         self.paymentInfo = paymentInfo
         self.customerInfo = customerInfo
         self.productInfo = productInfo
-        self.paymentStatusKey = paymentStatusKey
     }
 
     public init(booking: Booking, order: Order) {
@@ -41,6 +38,5 @@ public struct BookingOrderInfo: Hashable {
             statusKey: order.paymentStatusKey ?? ""
         )
         self.statusKey = order.status.rawValue
-        self.paymentStatusKey = order.paymentStatusKey ?? ""
     }
 }

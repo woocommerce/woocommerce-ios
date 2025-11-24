@@ -11,6 +11,7 @@ extension Storage.BookingPaymentInfo: ReadOnlyConvertible {
         subtotalTax = paymentInfo.subtotalTax
         total = paymentInfo.total
         totalTax = paymentInfo.totalTax
+        statusKey = paymentInfo.statusKey
     }
 
     public func toReadOnly() -> Yosemite.BookingPaymentInfo {

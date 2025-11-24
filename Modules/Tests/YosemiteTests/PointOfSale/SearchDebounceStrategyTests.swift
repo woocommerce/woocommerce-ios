@@ -89,7 +89,7 @@ struct FetchStrategyDebouncingTests {
 
     @Test("Local search strategy returns simple debouncing with loading delay threshold")
     func test_local_search_strategy_returns_simple_debouncing_with_threshold() async throws {
-        let grdbManager = try await GRDBManager()
+        let grdbManager = try GRDBManager()
 
         // Initialize site
         try await grdbManager.databaseConnection.write { db in

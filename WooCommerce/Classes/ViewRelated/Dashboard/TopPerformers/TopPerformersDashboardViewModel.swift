@@ -244,7 +244,7 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func createProductEntityListener(for item: TopEarnerStatsItem) -> EntityListener<Product> {
-        /// Mock product item out of info from top start item
+        /// Mock product item out of details from top stat item
         var product = Product(
             siteID: siteID,
             productID: item.productID,

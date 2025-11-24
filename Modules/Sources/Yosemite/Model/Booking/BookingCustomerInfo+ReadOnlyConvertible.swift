@@ -16,6 +16,7 @@ extension Storage.BookingCustomerInfo: ReadOnlyConvertible {
         billingPhone = customerInfo.billingAddress.phone
         billingPostcode = customerInfo.billingAddress.postcode
         billingState = customerInfo.billingAddress.state
+        note = customerInfo.note
     }
 
     public func toReadOnly() -> Yosemite.BookingCustomerInfo {
@@ -30,6 +31,6 @@ extension Storage.BookingCustomerInfo: ReadOnlyConvertible {
                                        country: billingCountry ?? "",
                                        phone: billingPhone,
                                        email: billingEmail)
-        return .init(billingAddress: address)
+        return .init(billingAddress: address, note: note)
     }
 }

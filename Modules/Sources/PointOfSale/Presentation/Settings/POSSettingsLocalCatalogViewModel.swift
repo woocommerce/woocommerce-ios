@@ -12,6 +12,8 @@ final class POSSettingsLocalCatalogViewModel {
     private(set) var isLoading: Bool = false
     private(set) var isRefreshingCatalog: Bool = false
 
+    var catalogRefreshError: PointOfSaleErrorState? = nil
+
     private let siteID: Int64
     private let catalogSettingsService: POSCatalogSettingsServiceProtocol
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol
@@ -78,15 +80,16 @@ final class POSSettingsLocalCatalogViewModel {
     @MainActor
     func refreshCatalog() async {
         isRefreshingCatalog = true
+        catalogRefreshError = nil
 
         do {
             try await catalogSyncCoordinator.performFullSync(for: siteID, regenerateCatalog: true)
-            // Sync completed synchronously - update UI
             isRefreshingCatalog = false
             await loadCatalogData()
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
             isRefreshingCatalog = false
+            catalogRefreshError = PointOfSaleErrorState.errorOnRefreshingCatalog(error: error)
         }
     }
 

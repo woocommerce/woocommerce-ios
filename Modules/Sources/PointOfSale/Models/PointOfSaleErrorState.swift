@@ -1,9 +1,10 @@
 import Foundation
 import enum Alamofire.AFError
 
-struct PointOfSaleErrorState: Equatable {
+struct PointOfSaleErrorState: Equatable, Identifiable {
     enum ErrorType: Equatable {
         case initialCatalogSyncError
+        case refreshCatalogSyncError
         case productsLoadError
         case variationsLoadError
         case productsNextPageError
@@ -16,6 +17,7 @@ struct PointOfSaleErrorState: Equatable {
         case ordersNextPageError
     }
 
+    let id = UUID()
     let errorType: ErrorType
     let title: String
     let subtitle: String
@@ -117,6 +119,14 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.retryButtonTitle)
     }
 
+    static func errorOnRefreshingCatalog(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .refreshCatalogSyncError,
+            title: Constants.failedToRefreshCatalogTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
     private static func subtitle(for error: Error?) -> String {
         if let error, error.isConnectivityError {
             return Constants.connectivityErrorSubtitle
@@ -140,6 +150,11 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.syncCatalogErrorTitle",
             value: "Unable to sync catalog",
             comment: "Title appearing on the item list screen when there's an error syncing the catalog for the first time."
+        )
+        static let failedToRefreshCatalogTitle = NSLocalizedString(
+            "pos.catalog.refreshFailedTitle",
+            value: "Unable to refresh catalog",
+            comment: "Title appearing in a modal when there's an error refreshing the catalog."
         )
         static let loadingCouponsErrorTitle = NSLocalizedString(
             "pos.itemList.loadingCouponsErrorTitle.2",

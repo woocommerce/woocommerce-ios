@@ -8,6 +8,7 @@ struct POSSettingsLocalCatalogDetailView: View {
     }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(title: Localization.localCatalogTitle)
@@ -27,6 +28,13 @@ struct POSSettingsLocalCatalogDetailView: View {
         }
         .task {
             await viewModel.loadCatalogData()
+        }
+        .posModal(item: $viewModel.catalogRefreshError) { errorState in
+            POSListErrorView(error: errorState, onAction: {
+                Task {
+                    await viewModel.refreshCatalog()
+                }
+            })
         }
     }
 }

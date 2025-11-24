@@ -32,6 +32,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(sut.lastIncrementalSyncDate == "")
         #expect(sut.isLoading == false)
         #expect(sut.isRefreshingCatalog == false)
+        #expect(sut.catalogRefreshError == nil)
     }
 
     // MARK: - `loadCatalogData` Tests
@@ -173,6 +174,24 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
         #expect(sut.catalogSize != "50 products, 25 variations") // `loadCatalogInfo` should not be invoked
         #expect(sut.isRefreshingCatalog == false)
+    }
+
+    @Test func refreshCatalog_sets_refresh_error_state_when_sync_fails() async throws {
+        // Given
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 50,
+            variationCount: 25,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
+        catalogSyncCoordinator.performFullSyncResult = .failure(MockError.syncError)
+
+        // When
+        await sut.refreshCatalog()
+
+        // Then
+        let catalogRefreshError = try #require(sut.catalogRefreshError)
+        #expect(catalogRefreshError.errorType == .refreshCatalogSyncError)
     }
 
     // MARK: - Test Concurrent Operations

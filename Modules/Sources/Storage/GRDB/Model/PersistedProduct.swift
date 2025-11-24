@@ -156,6 +156,7 @@ public extension PersistedProduct {
     /// - Returns: An escaped pattern safe for use in LIKE queries
     private static func escapeSQLLikePattern(_ pattern: String) -> String {
         pattern
+            .replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: "%", with: "\\%")
             .replacingOccurrences(of: "_", with: "\\_")
     }

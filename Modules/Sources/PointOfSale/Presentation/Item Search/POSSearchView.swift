@@ -1,12 +1,17 @@
 import SwiftUI
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
+import enum Yosemite.SearchDebounceStrategy
 
 /// Protocol defining search capabilities for POS items
 protocol POSSearchable {
     var searchFieldPlaceholder: String { get }
     /// Recent search history for the current item type
     var searchHistory: [String] { get }
+    /// The debouncing strategy currently active based on the controller's current state
+    var currentDebounceStrategy: SearchDebounceStrategy { get }
+    /// The debouncing strategy that will be used when performing a search (may differ from current strategy)
+    var searchDebounceStrategy: SearchDebounceStrategy { get }
 
     /// Called when a search should be performed
     /// - Parameter term: The search term to use
@@ -54,40 +59,7 @@ struct POSSearchField: View {
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
             .onChange(of: searchTerm) { oldValue, newValue in
-                // The debouncing logic is a little tricky, because the loading state is held in the controller.
-                // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
-
-                // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
-                // However, we don't want to debounce the first keystroke of a new search, so that the loading
-                // state shows immediately and the UI feels responsive.
-
-                // So, if the last search was finished, we don't debounce the first character. If it didn't
-                // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
-                // the ongoing search is redundant now there's a new search term, so we cancel it.
-                let shouldDebounceNextSearchRequest = !didFinishSearch
-                searchTask?.cancel()
-
-                searchTask = Task {
-                    if shouldDebounceNextSearchRequest {
-                        try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
-                    } else {
-                        searchable.clearSearchResults()
-                    }
-
-                    guard !Task.isCancelled else { return }
-
-                    guard newValue.isNotEmpty else {
-                        didFinishSearch = true
-                        return
-                    }
-
-                    didFinishSearch = false
-                    await searchable.performSearch(term: newValue)
-
-                    if !Task.isCancelled {
-                        didFinishSearch = true
-                    }
-                }
+                handleSearchTermChange(newValue)
             }
         }
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
@@ -96,6 +68,142 @@ struct POSSearchField: View {
         }
         .onAppear {
             isSearchFieldFocused = true
+        }
+    }
+}
+
+// MARK: - Search Handling
+private extension POSSearchField {
+    func handleSearchTermChange(_ newValue: String) {
+        searchTask?.cancel()
+
+        let debounceStrategy = selectDebounceStrategy(for: newValue)
+
+        searchTask = Task {
+            await executeSearchWithStrategy(debounceStrategy, searchTerm: newValue)
+        }
+    }
+
+    func selectDebounceStrategy(for searchTerm: String) -> SearchDebounceStrategy {
+        // Use searchDebounceStrategy for non-empty search terms (actual searches),
+        // and currentDebounceStrategy for empty terms (returning to popular products).
+        searchTerm.isNotEmpty ? searchable.searchDebounceStrategy : searchable.currentDebounceStrategy
+    }
+
+    func executeSearchWithStrategy(_ strategy: SearchDebounceStrategy, searchTerm: String) async {
+        switch strategy {
+        case .smart(let duration, let loadingDelayThreshold):
+            await executeSmartDebouncedSearch(duration: duration, loadingDelayThreshold: loadingDelayThreshold, searchTerm: searchTerm)
+        case .simple(let duration, let loadingDelayThreshold):
+            await executeSimpleDebouncedSearch(duration: duration, loadingDelayThreshold: loadingDelayThreshold, searchTerm: searchTerm)
+        case .immediate:
+            await executeImmediateSearch(searchTerm: searchTerm)
+        }
+    }
+
+    func executeSmartDebouncedSearch(duration: UInt64, loadingDelayThreshold: UInt64?, searchTerm: String) async {
+        // Smart debouncing: Don't debounce first keystroke, but debounce subsequent keystrokes
+        // The loading indicator behavior depends on whether there's a threshold:
+        // - With threshold: Show loading after threshold if search hasn't completed (prevents flicker)
+        // - Without threshold: Show loading immediately (responsive feel)
+
+        let isFirstKeystroke = didFinishSearch
+
+        guard searchTerm.isNotEmpty else {
+            didFinishSearch = true
+            return
+        }
+
+        // Handle loading indicators for first keystroke
+        let loadingTask = isFirstKeystroke ? startLoadingIndicatorTask(threshold: loadingDelayThreshold) : nil
+
+        // Debounce subsequent keystrokes
+        if !isFirstKeystroke {
+            try? await Task.sleep(nanoseconds: duration)
+        }
+
+        guard !Task.isCancelled else {
+            loadingTask?.cancel()
+            return
+        }
+
+        await performSearchAndTrackCompletion(searchTerm: searchTerm)
+        loadingTask?.cancel()
+    }
+
+    func executeSimpleDebouncedSearch(duration: UInt64,
+                                      loadingDelayThreshold: UInt64?,
+                                      searchTerm: String) async {
+        // Simple debouncing: Always debounce every keystroke
+        try? await Task.sleep(nanoseconds: duration)
+
+        guard !Task.isCancelled else { return }
+        guard searchTerm.isNotEmpty else {
+            didFinishSearch = true
+            return
+        }
+
+        didFinishSearch = false
+
+        if let threshold = loadingDelayThreshold {
+            await performSearchWithDelayedLoading(searchTerm: searchTerm, threshold: threshold)
+        } else {
+            searchable.clearSearchResults()
+            await searchable.performSearch(term: searchTerm)
+        }
+
+        if !Task.isCancelled {
+            didFinishSearch = true
+        }
+    }
+
+    func executeImmediateSearch(searchTerm: String) async {
+        guard !Task.isCancelled else { return }
+        guard searchTerm.isNotEmpty else {
+            didFinishSearch = true
+            return
+        }
+
+        await performSearchAndTrackCompletion(searchTerm: searchTerm)
+    }
+
+    func startLoadingIndicatorTask(threshold: UInt64?) -> Task<Void, Never>? {
+        if let threshold {
+            // With threshold: delay showing loading to prevent flicker for fast searches
+            return Task { @MainActor in
+                try? await Task.sleep(nanoseconds: threshold)
+                if !Task.isCancelled {
+                    searchable.clearSearchResults()
+                }
+            }
+        } else {
+            // No threshold - show loading immediately for responsive feel
+            searchable.clearSearchResults()
+            return nil
+        }
+    }
+
+    func performSearchWithDelayedLoading(searchTerm: String, threshold: UInt64) async {
+        // Create a loading task that shows indicators after threshold
+        let loadingTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: threshold)
+            if !Task.isCancelled {
+                searchable.clearSearchResults()
+            }
+        }
+
+        await searchable.performSearch(term: searchTerm)
+
+        // Cancel loading task if search completed before threshold
+        loadingTask.cancel()
+    }
+
+    private func performSearchAndTrackCompletion(searchTerm: String) async {
+        didFinishSearch = false
+        await searchable.performSearch(term: searchTerm)
+
+        if !Task.isCancelled {
+            didFinishSearch = true
         }
     }
 }

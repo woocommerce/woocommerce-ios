@@ -36,7 +36,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             return .init(items: itemMapper.mapProductsToPOSItems(products: products),
                          hasMorePages: pagedProducts.hasMorePages,
                          totalItems: pagedProducts.totalItems)
-        } catch AFError.explicitlyCancelled {
+        } catch AFError.explicitlyCancelled, is CancellationError {
             throw PointOfSaleItemServiceError.requestCancelled
         }
     }
@@ -55,7 +55,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                 hasMorePages: pagedVariations.hasMorePages,
                 totalItems: pagedVariations.totalItems
             )
-        } catch AFError.explicitlyCancelled {
+        } catch AFError.explicitlyCancelled, is CancellationError {
             throw PointOfSaleItemServiceError.requestCancelled
         }
     }

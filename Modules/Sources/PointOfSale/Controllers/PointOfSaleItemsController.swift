@@ -11,6 +11,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 import class Yosemite.AsyncPaginationTracker
+import enum Yosemite.SearchDebounceStrategy
 
 protocol PointOfSaleItemsControllerProtocol {
     ///
@@ -27,6 +28,10 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
     func clearSearchItems(baseItem: ItemListBaseItem)
+    /// The debouncing strategy from the current fetch strategy
+    var currentDebounceStrategy: SearchDebounceStrategy { get }
+    /// The debouncing strategy that will be used when performing a search
+    var searchDebounceStrategy: SearchDebounceStrategy { get }
 }
 
 
@@ -70,12 +75,24 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
                                                                 analytics: POSItemFetchAnalytics(itemType: .product,
                                                                                                  analytics: analyticsProvider))
-        setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }
 
     func clearSearchItems(baseItem: ItemListBaseItem) {
         setSearchingState(base: baseItem)
+    }
+
+    var currentDebounceStrategy: SearchDebounceStrategy {
+        fetchStrategy.debounceStrategy
+    }
+
+    var searchDebounceStrategy: SearchDebounceStrategy {
+        // Return the debounce strategy that would be used for a search
+        // We create a temporary search strategy to get its debounce settings
+        let searchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: "",
+                                                                     analytics: POSItemFetchAnalytics(itemType: .product,
+                                                                                                      analytics: analyticsProvider))
+        return searchStrategy.debounceStrategy
     }
 
     @MainActor

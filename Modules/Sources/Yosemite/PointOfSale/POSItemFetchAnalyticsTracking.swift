@@ -12,4 +12,10 @@ public protocol POSItemFetchAnalyticsTracking {
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
     func trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int)
+
+    /// Tracks when a local search results fetch completes
+    /// - Parameters:
+    ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
+    ///   - totalItems: The total number of items found in the search
+    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int)
 }

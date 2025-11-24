@@ -299,7 +299,8 @@ class DefaultStoresManager: StoresManager {
 
         // Unregister from remote notifications asynchronously
         pushNotesManager.unregisterForRemoteNotifications {
-            // Release the strong reference to allow state cleanup
+            DDLogInfo("📱 Push notification unregistration completed after logout")
+            // Keep `currentState` until the end of the closure
             _ = currentState
         }
 

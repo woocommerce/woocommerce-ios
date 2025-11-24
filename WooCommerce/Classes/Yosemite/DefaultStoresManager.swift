@@ -270,7 +270,7 @@ class DefaultStoresManager: StoresManager {
         sessionManager.deleteApplicationPassword(locally: true)
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
-        ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
+        ServiceLocator.pushNotesManager.unregisterForRemoteNotifications {}
     }
 
     /// Fully deauthenticates the user, if needed.
@@ -290,6 +290,19 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
+        let pushNotesManager = ServiceLocator.pushNotesManager
+        pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
+
+        // Keep a strong reference to the current state to prevent it from being deallocated
+        // until the unregister completes
+        let currentState = state
+
+        // Unregister from remote notifications asynchronously
+        pushNotesManager.unregisterForRemoteNotifications {
+            // Release the strong reference to allow state cleanup
+            _ = currentState
+        }
+
         applicationPasswordGenerationFailureObserver = nil
         invalidWPCOMTokenNotificationObserver = nil
         stopObservingNetworkNotifications()

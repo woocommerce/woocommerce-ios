@@ -51,7 +51,7 @@ protocol PushNotesManager {
 
     /// Unregisters the Application from WordPress.com Push Notifications Service.
     ///
-    func unregisterForRemoteNotifications()
+    func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void)
 
     /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
     ///

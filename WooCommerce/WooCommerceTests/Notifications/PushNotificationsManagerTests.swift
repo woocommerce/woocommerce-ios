@@ -134,7 +134,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testUnregisterForRemoteNotificationsDoesNothingWhenThereIsNoDeviceIdStored() {
         XCTAssert(storesManager.receivedActions.isEmpty)
-        manager.unregisterForRemoteNotifications()
+        manager.unregisterForRemoteNotifications {}
         XCTAssert(storesManager.receivedActions.isEmpty)
     }
 
@@ -143,7 +143,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testUnregisterForRemoteNotificationsEffectivelyDispatchesUnregisterDeviceAction() {
         defaults.set(Sample.deviceID, forKey: .deviceID)
-        manager.unregisterForRemoteNotifications()
+        manager.unregisterForRemoteNotifications {}
 
         guard case let .unregisterDevice(deviceID, _) = storesManager.receivedActions.first as! NotificationAction else {
             XCTFail()
@@ -161,7 +161,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         defaults.set(Sample.deviceID, forKey: .deviceID)
         defaults.set(Sample.deviceToken, forKey: .deviceToken)
 
-        manager.unregisterForRemoteNotifications()
+        manager.unregisterForRemoteNotifications {}
 
         guard case let .unregisterDevice(_, onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
             XCTFail()

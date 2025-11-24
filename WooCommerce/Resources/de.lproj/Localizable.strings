@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-04 13:54:05+0000 */
+/* Translation-Revision-Date: 2025-11-20 13:54:08+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -797,7 +797,13 @@ which should be translated separately and considered part of this sentence. */
 "BookingAttendanceStatus.booked" = "Gebucht";
 
 /* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.cancelled" = "Storniert";
+"BookingAttendanceStatus.canceled" = "Abgebrochen";
+
+/* Title for 'Checked In' booking attendance status. */
+"BookingAttendanceStatus.checkedIn" = "Eingecheckt";
+
+/* Title for 'No Show' booking attendance status. */
+"BookingAttendanceStatus.noShow" = "Nicht angezeigt";
 
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Unbekannt";
@@ -830,13 +836,19 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.attendance.headerTitle" = "Teilnahme";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
-"BookingDetailsView.attendanceStatus.updateFailed.message" = "Anwesenheitsstatus der Buchungsnummer %1$d kann nicht geändert werden";
+"BookingDetailsView.attendanceStatus.failureMessage." = "Anwesenheitsstatus von Buchung Nr. %1$d kann nicht geändert werden.";
 
-/* Add a note row title in booking notes section in booking details view. */
-"BookingDetailsView.bookingNotes.addANoteRow.title" = "Hinweis hinzufügen";
+/* Add a booking note section in booking details view. */
+"BookingDetailsView.bookingNote.addNoteRow.title" = "Anmerkung hinzufügen";
 
-/* Header title for the 'Booking notes' section in the booking details screen. */
-"BookingDetailsView.bookingNotes.headerTitle" = "Buchungsnotizen";
+/* Footer text for the `Booking note` section in the booking details screen. */
+"BookingDetailsView.bookingNote.footerText" = "Dies ist eine private Notiz. Sie wird nicht mit dem Kunden geteilt.";
+
+/* Header title for the 'Booking note' section in the booking details screen. */
+"BookingDetailsView.bookingNote.headerTitle" = "Buchungshinweis";
+
+/* Title of navigation bar when editing a booking note. */
+"BookingDetailsView.bookingNote.navbar.title" = "Buchungshinweis";
 
 /* Cancel button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.cancelAction" = "Nein, behalten";
@@ -844,11 +856,17 @@ which should be translated separately and considered part of this sentence. */
 /* Confirm button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.confirmAction" = "Ja, bitte stornieren";
 
+/* Generic message for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.genericMessage" = "Bist du sicher, dass du diese Buchung stornieren möchtest?";
+
 /* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
 "BookingDetailsView.cancelation.alert.message" = "%1$@ kann nicht mehr am %3$@ an „%2$@“ teilnehmen.";
 
 /* Title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.title" = "Buchung stornieren";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to cancel Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.cancellation.failureMessage" = "Buchung Nr. %1$d kann nicht storniert werden.";
 
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "Rechnungsadresse";
@@ -864,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "Status";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
+"BookingDetailsView.markAsPaid.failureMessage" = "Buchung Nr. %1$d kann nicht als bezahlt markiert werden.";
 
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "Buchungsnummer #%1$d";
@@ -882,9 +903,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Zahlung";
-
-/* Title for 'Issue refund' button in payment section in booking details view. */
-"BookingDetailsView.payment.issueRefund.title" = "Rückerstattung ausstellen";
 
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "Als bezahlt markieren";
@@ -3555,6 +3573,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Verschiebt den Kommentar in den Papierkorb";
 
+/* Cancel button title for the discard changes confirmation dialog in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.cancelAction" = "Abbrechen";
+
+/* Destructive action button title to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.discardAction" = "Änderungen verwerfen";
+
+/* Title for the confirmation dialog when the user attempts to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.title" = "Bist du sicher, dass diese Änderungen verworfen werden sollen?";
+
+/* Navigation bar button title used to save changes and close the multiline text editor. */
+"MultilineEditableTextDetailView.doneButton.title" = "Fertig";
+
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Mehrere Shops";
 
@@ -4568,6 +4598,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ für die Registrierung";
+
+/* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
+"ProductType.service" = "Dienst";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -7470,6 +7503,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label displayed on audio media items. */
 "audio" = "Audio";
 
+/* Button to dismiss a web view */
+"authenticatableWebView.done" = "Fertig";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Erstellst du einen neuen Shop?";
 
@@ -8410,8 +8446,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "Buchungen";
 
+/* Status of a paid booking */
+"bookingPaymentStatus.title.paid" = "Bezahlt";
+
+/* Status of a refunded booking */
+"bookingPaymentStatus.title.refunded" = "Rückerstattet";
+
+/* Status of a booking with unexpected payment status */
+"bookingPaymentStatus.title.unknown" = "Unbekannt";
+
+/* Status of an unpaid booking */
+"bookingPaymentStatus.title.unpaid" = "Unbezahlt";
+
+/* Message on the empty search result view of the booking service/event selector view */
+"bookingServiceEventSelectorView.emptySearchDescription" = "Anderen Suchbegriff probieren, um mehr Ergebnisse anzuzeigen";
+
 /* Text on the empty view of the booking service/event selector view */
 "bookingServiceEventSelectorView.noMembersFound" = "Kein Service\/keine Veranstaltung gefunden";
+
+/* Prompt in the search bar of the booking service/event selector view */
+"bookingServiceEventSelectorView.searchPrompt" = "Dienst\/Ereignis durchsuchen";
 
 /* Title of the booking service/event selector view */
 "bookingServiceEventSelectorView.title" = "Service\/Veranstaltung";

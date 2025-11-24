@@ -31,8 +31,10 @@ final class TopPerformersDashboardViewModel: ObservableObject {
 
     private var resultsController: ResultsController<StorageTopEarnerStats>?
 
-    // periphery:ignore - keep a strong reference to listen to changes of a product
-    private var entityListener: EntityListener<Product>?
+    // Map of product IDs and their listeners
+    private var entityListeners: [Int64: EntityListener<Product>] = [:]
+
+    private var hasProductChanges = PassthroughSubject<Void, Never>()
 
     private var currentDate: Date {
         Date()
@@ -86,7 +88,6 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         observeSyncingCompletion()
-        observeSelectedItem()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
@@ -219,40 +220,40 @@ private extension TopPerformersDashboardViewModel {
             .store(in: &subscriptions)
     }
 
-    func observeSelectedItem() {
-        $selectedItem
-            .scan((nil, nil)) { (previous: (current: TopEarnerStatsItem?,
-                                            previous: TopEarnerStatsItem?),
-                                 newValue: TopEarnerStatsItem?) in
-                return (current: newValue, previous: previous.current)
+    func observeProducts(ids: [Int64]) {
+        entityListeners = [:]
+        for id in ids {
+            if let listener = createProductEntityListener(id: id) {
+                entityListeners[id] = listener
             }
-            .sink { [weak self] (newItem, oldItem) in
-                guard let newItem, oldItem == nil else {
-                    self?.entityListener = nil
-                    return
+        }
+
+        hasProductChanges
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] in
+                Task {
+                    await self?.reloadDataIfNeeded(forceRefresh: true)
                 }
-                self?.observeOpenedProductIfPossible(id: newItem.productID)
             }
             .store(in: &subscriptions)
     }
 
-    func observeOpenedProductIfPossible(id: Int64) {
+    func createProductEntityListener(id: Int64) -> EntityListener<Product>? {
         guard var product = storageManager.viewStorage.loadProduct(siteID: siteID, productID: id)?.toReadOnly() else {
-            return
+            return nil
         }
         let entityListener = EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
         entityListener.onUpsert = { [weak self] updatedProduct in
             // reload stats if there are changes to product
-            guard updatedProduct.name != product.name ||
-                updatedProduct.imageURL != product.imageURL else {
+            guard let self,
+                  updatedProduct.name != product.name ||
+                    updatedProduct.imageURL != product.imageURL else {
                 return
             }
             product = updatedProduct
-            Task {
-                await self?.reloadDataIfNeeded(forceRefresh: true)
-            }
+            hasProductChanges.send(())
         }
-        self.entityListener = entityListener
+        return entityListener
     }
 
     @MainActor
@@ -305,6 +306,7 @@ private extension TopPerformersDashboardViewModel {
             return periodViewModel.update(state: .loaded(rows: []))
         }
         periodViewModel.update(state: .loaded(rows: items))
+        observeProducts(ids: items.map { $0.productID })
     }
 
     func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {

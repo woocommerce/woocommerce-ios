@@ -46,10 +46,15 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
 
     /// Tracks when a local search results fetch completes
     /// - Parameters:
-    ///   - milliseconds: The time taken to fetch results in milliseconds
+    ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
     func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
-        // TODO: Implement analytics event for local search results
-        // This will be implemented in the final PR
+        analytics.track(
+            event: .PointOfSale.pointOfSaleSearchResultsFetched(
+                itemType: itemType,
+                resultsCount: totalItems,
+                millisecondsSinceRequestSent: millisecondsSinceRequestSent
+            )
+        )
     }
 }

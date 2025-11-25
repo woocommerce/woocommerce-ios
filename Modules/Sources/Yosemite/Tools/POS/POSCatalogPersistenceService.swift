@@ -95,6 +95,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
 
         try await grdbManager.databaseConnection.write { db in
             for product in catalog.products {
+                // Delete attributes for updated products, the remaining set will be recreated later in the save
+                try PersistedProductAttribute
+                    .filter(PersistedProductAttribute.Columns.productID == product.productID)
+                    .deleteAll(db)
+
                 try PersistedProduct(from: product).save(db)
 
                 // Delete variations that are no longer associated with this product
@@ -129,7 +134,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             }
 
             for var attribute in catalog.productAttributesToPersist {
-                try attribute.save(db)
+                try attribute.insert(db)
             }
 
             for var attribute in catalog.variationAttributesToPersist {

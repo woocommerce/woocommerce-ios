@@ -8,6 +8,7 @@ struct POSSettingsLocalCatalogDetailView: View {
     }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(title: Localization.localCatalogTitle)
@@ -27,6 +28,9 @@ struct POSSettingsLocalCatalogDetailView: View {
         }
         .task {
             await viewModel.loadCatalogData()
+        }
+        .posModal(item: $viewModel.catalogRefreshError) { error in
+            errorView(errorState: error.errorState)
         }
     }
 }
@@ -91,6 +95,34 @@ private extension POSSettingsLocalCatalogDetailView {
             }
         }
     }
+
+    @ViewBuilder
+    func errorView(errorState: PointOfSaleErrorState) -> some View {
+        VStack(spacing: POSSpacing.xxLarge) {
+            POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
+                viewModel.catalogRefreshError = nil
+            }
+
+            POSErrorView(viewModel: errorViewModel(errorState: errorState))
+        }
+        .padding(POSPadding.xLarge)
+        .frame(maxWidth: Constants.errorModalMaxWidth)
+    }
+
+    func errorViewModel(errorState: PointOfSaleErrorState) -> POSErrorViewModel {
+        let retryButton = POSErrorButtonViewModel(title: Localization.errorRetryButtonTitle,
+                                                  buttonStyle: POSFilledButtonStyle(size: .normal)) {
+            Task {
+                await viewModel.refreshCatalog()
+            }
+        }
+        let cancelButton = POSErrorButtonViewModel(title: Localization.errorCancelButtonTitle,
+                                                   buttonStyle: POSOutlinedButtonStyle(size: .normal)) {
+            viewModel.catalogRefreshError = nil
+        }
+        return POSErrorViewModel(error: errorState, primaryButton: retryButton, secondaryButton: cancelButton)
+    }
+
 }
 
 private extension POSSettingsLocalCatalogDetailView {
@@ -152,6 +184,22 @@ private extension POSSettingsLocalCatalogDetailView {
             value: "Update catalog",
             comment: "Button text for updating the catalog manually."
         )
+
+        static let errorRetryButtonTitle = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title",
+            value: "Retry",
+            comment: "Button text for retrying a refresh after it fails"
+        )
+
+        static let errorCancelButtonTitle = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title",
+            value: "Cancel",
+            comment: "Button text for closing an error after a refresh fails"
+        )
+    }
+
+    enum Constants {
+        static let errorModalMaxWidth: CGFloat = 832
     }
 }
 

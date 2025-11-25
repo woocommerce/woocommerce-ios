@@ -65,12 +65,23 @@ final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswo
     private let userDefaults: UserDefaults
     private let stores: StoresManager
 
+    private static let isSupportSession: Bool = {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-support-session")
+        #else
+        return false
+        #endif
+    }()
+
     init(userDefaults: UserDefaults = .standard, stores: StoresManager = ServiceLocator.stores) {
         self.userDefaults = userDefaults
         self.stores = stores
     }
 
     var isAvailable: Bool {
+        guard !Self.isSupportSession else {
+            return false
+        }
         /// The feature is only available when the user is signed in using WordPress.com account
         let isUserAuthenticatedByWPCom = !stores.isAuthenticatedWithoutWPCom
         return isUserAuthenticatedByWPCom && cachedRemoteFFValue

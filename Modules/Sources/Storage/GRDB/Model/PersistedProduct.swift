@@ -105,17 +105,8 @@ public extension PersistedProduct {
     /// Returns a request for POS-supported products (simple and variable, non-downloadable) for a given site, ordered by name
     /// Filters out products with trash, draft, pending, or private status to ensure only published and 3rd party custom status products are shown
     static func posProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
-        let excludedStatuses = [
-            "trash",
-            "draft",
-            "pending"
-        ]
-
-        return PersistedProduct
-            .filter(Columns.siteID == siteID)
-            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
-            .filter(Columns.downloadable == false)
-            .filter(!excludedStatuses.contains(Columns.statusKey))
+        PersistedProduct
+            .baseQuery(siteID: siteID)
             .order(Columns.name.collating(.localizedCaseInsensitiveCompare))
     }
 
@@ -124,6 +115,7 @@ public extension PersistedProduct {
     ///   - siteID: The site ID
     ///   - globalUniqueID: The global unique ID (barcode) to search for
     /// - Returns: A query request that matches products with the given global unique ID
+    /// Note that this may return unsupported products, so they can be shown as errors in the UI
     static func posProductByGlobalUniqueID(siteID: Int64, globalUniqueID: String) -> QueryInterfaceRequest<PersistedProduct> {
         return PersistedProduct
             .filter(Columns.siteID == siteID)
@@ -140,9 +132,7 @@ public extension PersistedProduct {
         let likePattern = "%\(escapedTerm)%"
 
         return PersistedProduct
-            .filter(Columns.siteID == siteID)
-            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
-            .filter(Columns.downloadable == false)
+            .baseQuery(siteID: siteID)
             .filter(
                 Columns.name.like(likePattern, escape: "\\") ||
                 Columns.sku.like(likePattern, escape: "\\") ||
@@ -159,6 +149,20 @@ public extension PersistedProduct {
             .replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: "%", with: "\\%")
             .replacingOccurrences(of: "_", with: "\\_")
+    }
+
+    private static func baseQuery(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        let excludedStatuses = [
+            "trash",
+            "draft",
+            "pending"
+        ]
+
+        return PersistedProduct
+            .filter(Columns.siteID == siteID)
+            .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
+            .filter(Columns.downloadable == false)
+            .filter(!excludedStatuses.contains(Columns.statusKey))
     }
 }
 

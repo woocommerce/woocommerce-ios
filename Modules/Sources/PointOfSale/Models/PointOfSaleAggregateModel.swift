@@ -715,8 +715,17 @@ private extension PointOfSaleAggregateModel {
 
     private func performIncrementalSync() {
         guard let catalogSyncCoordinator else { return }
+        let popularPurchasableItemsController = popularPurchasableItemsController
+        let siteID = siteID
         Task {
-            try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+            await withTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+                }
+                group.addTask {
+                    await popularPurchasableItemsController.refreshItems(base: .root)
+                }
+            }
         }
     }
 

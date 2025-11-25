@@ -330,6 +330,114 @@ struct PersistedProductSearchQueryTests {
         #expect(!results.contains(where: { $0.productTypeKey == "grouped" }))
     }
 
+    @Test("posProductSearch filters out unsupported product statuses")
+    func test_search_only_returns_pos_supported_product_statuses() async throws {
+        // Given
+        let trashedProduct = PersistedProduct(
+            id: 10,
+            siteID: siteID,
+            name: "Search Test Trash",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "10.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "trash"
+        )
+        let draftProduct = PersistedProduct(
+            id: 11,
+            siteID: siteID,
+            name: "Search Test Draft",
+            productTypeKey: "variable",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "20.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "draft"
+        )
+        let pendingProduct = PersistedProduct(
+            id: 12,
+            siteID: siteID,
+            name: "Search Test Pending",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "0.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "pending"
+        )
+        let publishedProduct = PersistedProduct(
+            id: 13,
+            siteID: siteID,
+            name: "Search Test Published",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "0.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "publish"
+        )
+        let privateProduct = PersistedProduct(
+            id: 14,
+            siteID: siteID,
+            name: "Search Test Private",
+            productTypeKey: "simple",
+            fullDescription: nil,
+            shortDescription: nil,
+            sku: nil,
+            globalUniqueID: nil,
+            price: "0.00",
+            downloadable: false,
+            parentID: 0,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            statusKey: "private"
+        )
+        try await insertProduct(trashedProduct)
+        try await insertProduct(draftProduct)
+        try await insertProduct(pendingProduct)
+        try await insertProduct(publishedProduct)
+        try await insertProduct(privateProduct)
+
+        // When
+        let results = try await grdbManager.databaseConnection.read { db in
+            try PersistedProduct.posProductSearch(siteID: siteID, searchTerm: "Search Test").fetchAll(db)
+        }
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results.contains(where: { $0.statusKey == "publish" }))
+        #expect(results.contains(where: { $0.statusKey == "private" }))
+        #expect(!results.contains(where: { $0.statusKey == "trash" }))
+        #expect(!results.contains(where: { $0.statusKey == "draft" }))
+        #expect(!results.contains(where: { $0.statusKey == "pending" }))
+    }
+
     // MARK: - Site Isolation Tests
 
     @Test("posProductSearch only returns products from specified site")

@@ -1338,6 +1338,8 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */; };
+		647C05FB2ED5D9E800E5FF3F /* NotesContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */; };
+		647C05FD2ED5E1C000E5FF3F /* BookingNotesRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */; };
 		6489DFFF2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6489DFFE2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift */; };
 		6489E0012EA78E2D00D96802 /* MockProductDetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6489E0002EA78E2D00D96802 /* MockProductDetailCoordinator.swift */; };
 		64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */; };
@@ -4232,6 +4234,8 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesContent.swift; sourceTree = "<group>"; };
+		647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingNotesRowView.swift; sourceTree = "<group>"; };
 		6489DFFE2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductDetailCoordinatorFactory.swift; sourceTree = "<group>"; };
 		6489E0002EA78E2D00D96802 /* MockProductDetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductDetailCoordinator.swift; sourceTree = "<group>"; };
 		64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingSceneDelegate.swift; sourceTree = "<group>"; };
@@ -7916,6 +7920,7 @@
 		2DAC251E2E829FF9008521AF /* Booking Details */ = {
 			isa = PBXGroup;
 			children = (
+				647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */,
 				2D05E8122E8AADB2004111FD /* PaymentContent.swift */,
 				2D05E8102E8A98FE004111FD /* CustomerContent.swift */,
 				2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */,
@@ -7941,6 +7946,7 @@
 		2DAC2C962E82A169008521AF /* Booking Details */ = {
 			isa = PBXGroup;
 			children = (
+				647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */,
 				2D0555802E9693E1004111FD /* HeaderView.swift */,
 				2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */,
 				2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */,
@@ -14232,6 +14238,7 @@
 				EEBA02A52ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift in Sources */,
 				77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */,
 				26CE6F392B7E71AA008DB858 /* ConnectivityTool.swift in Sources */,
+				647C05FD2ED5E1C000E5FF3F /* BookingNotesRowView.swift in Sources */,
 				020EF5EB2A8C7105009D2169 /* SiteSnapshotTracker.swift in Sources */,
 				029106C02BE3349500C2248B /* OrderCustomerSectionViewModel.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
@@ -14664,6 +14671,7 @@
 				26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */,
 				02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */,
 				EE19058E2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift in Sources */,
+				647C05FB2ED5D9E800E5FF3F /* NotesContent.swift in Sources */,
 				20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */,
 				E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,

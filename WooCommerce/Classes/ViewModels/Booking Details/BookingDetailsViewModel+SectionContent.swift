@@ -7,7 +7,7 @@ extension BookingDetailsViewModel {
         case attendance(AttendanceContent)
         case payment(PaymentContent)
         case customer(CustomerContent)
-        case bookingNotes
+        case bookingNotes(NotesContent)
     }
 }
 

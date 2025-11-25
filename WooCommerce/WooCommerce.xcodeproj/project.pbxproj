@@ -5730,7 +5730,6 @@
 				"NSURL+IDN/NSURL+IDN.h",
 				NUX/WPNUXMainButton.h,
 				NUX/WPNUXSecondaryButton.h,
-				NUX/WPWalkthroughOverlayView.h,
 				NUX/WPWalkthroughTextField.h,
 				Services/LoginFacade.h,
 				Services/WordPressXMLRPCAPIFacade.h,

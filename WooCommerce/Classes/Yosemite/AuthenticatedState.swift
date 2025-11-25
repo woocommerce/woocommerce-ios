@@ -237,11 +237,6 @@ class AuthenticatedState: StoresManagerState {
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {
-        let pushNotesManager = ServiceLocator.pushNotesManager
-
-        pushNotesManager.unregisterForRemoteNotifications()
-        pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
-
         resetServices()
     }
 

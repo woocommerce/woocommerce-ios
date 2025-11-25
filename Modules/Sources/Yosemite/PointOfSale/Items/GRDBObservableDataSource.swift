@@ -160,9 +160,47 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
     private func setupVariationObservation(parentProduct: POSVariableParentProduct) {
         let currentPage = currentVariationPage
+        let parentProductID = parentProduct.productID
+
+        struct ObservationResult {
+            let variations: [POSProductVariation]
+            let parentProduct: POSVariableParentProduct
+        }
+
         let observation = ValueObservation
-            .tracking { [weak self] database -> [POSProductVariation] in
-                guard let self else { return [] }
+            .tracking { [weak self] database -> ObservationResult in
+                guard let self else { return ObservationResult(variations: [], parentProduct: parentProduct) }
+
+                // Fetch parent product with updated attributes
+                struct ParentProductWithAttributes: Decodable, FetchableRecord {
+                    let product: PersistedProduct
+                    let attributes: [PersistedProductAttribute]?
+                }
+
+                let parentWithAttributes = try PersistedProduct
+                    .filter(PersistedProduct.Columns.siteID == self.siteID)
+                    .filter(PersistedProduct.Columns.id == parentProductID)
+                    .including(all: PersistedProduct.attributes)
+                    .asRequest(of: ParentProductWithAttributes.self)
+                    .fetchOne(database)
+
+                // Create updated parent product with fresh attributes
+                let updatedParentProduct: POSVariableParentProduct
+                if let parentWithAttributes {
+                    let attributes = (parentWithAttributes.attributes ?? []).map {
+                        $0.toProductAttribute(siteID: parentWithAttributes.product.siteID)
+                    }
+                    let product = parentWithAttributes.product
+                    updatedParentProduct = POSVariableParentProduct(
+                        id: parentProduct.id,
+                        name: product.name,
+                        productImageSource: nil, // Image not needed for variation name generation
+                        productID: product.id,
+                        allAttributes: attributes
+                    )
+                } else {
+                    updatedParentProduct = parentProduct
+                }
 
                 struct VariationWithRelations: Decodable, FetchableRecord {
                     let persistedProductVariation: PersistedProductVariation
@@ -171,36 +209,42 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 }
 
                 let variationsWithRelations = try PersistedProductVariation
-                    .posVariationsRequest(siteID: self.siteID, parentProductID: parentProduct.productID)
+                    .posVariationsRequest(siteID: self.siteID, parentProductID: parentProductID)
                     .limit(self.pageSize * currentPage)
                     .including(all: PersistedProductVariation.attributes)
                     .including(optional: PersistedProductVariation.image)
                     .asRequest(of: VariationWithRelations.self)
                     .fetchAll(database)
 
-                return variationsWithRelations.map { record in
+                let variations = variationsWithRelations.map { record in
                     record.persistedProductVariation.toPOSProductVariation(
                         attributes: (record.attributes ?? []).map { $0.toProductVariationAttribute() },
                         image: record.image?.toProductImage()
                     )
                 }
+
+                return ObservationResult(variations: variations, parentProduct: updatedParentProduct)
             }
 
         variationObservationCancellable = observation
             .publisher(in: grdbManager.databaseConnection)
             .receive(on: DispatchQueue.main)
             .sink(
-                receiveCompletion: { [weak self] completion in
+                receiveCompletion: { [weak self] (completion: Subscribers.Completion<Error>) in
                     if case .failure(let error) = completion {
                         self?.variationError = error
                         self?.isLoadingVariations = false
                     }
                 },
-                receiveValue: { [weak self] observedVariations in
+                receiveValue: { [weak self] (result: ObservationResult) in
                     guard let self else { return }
+
+                    // Update current parent product with fresh attributes
+                    self.currentParentProduct = result.parentProduct
+
                     let posItems = itemMapper.mapVariationsToPOSItems(
-                        variations: observedVariations,
-                        parentProduct: parentProduct
+                        variations: result.variations,
+                        parentProduct: result.parentProduct
                     )
                     variationItems = posItems
                     variationError = nil

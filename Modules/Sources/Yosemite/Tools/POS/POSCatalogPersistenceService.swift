@@ -116,6 +116,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             }
 
             for variation in catalog.variationsToPersist {
+                // Delete attributes for updated variations, the remaining set will be recreated later in the save
+                try PersistedProductVariationAttribute
+                    .filter(PersistedProductVariationAttribute.Columns.productVariationID == variation.id)
+                    .deleteAll(db)
+
                 try variation.save(db)
             }
 

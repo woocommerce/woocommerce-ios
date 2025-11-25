@@ -10,6 +10,14 @@ final class ApplicationPasswordsExperimentState {
 
     private var experimentalFlagSubscription: AnyCancellable?
 
+    private static let isSupportSession: Bool = {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-support-session")
+        #else
+        return false
+        #endif
+    }()
+
     init(
         stores: StoresManager = ServiceLocator.stores,
         availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol = ApplicationPasswordsExperimentAvailabilityChecker(),
@@ -26,6 +34,9 @@ final class ApplicationPasswordsExperimentState {
     @MainActor
     private var isEnabled: Bool {
         get async {
+            guard !Self.isSupportSession else {
+                return false
+            }
             return await withCheckedContinuation { continuation in
                 stores.dispatch(
                     AppSettingsAction.getAppPasswordsExperimentSettingState { isOn in
@@ -65,23 +76,12 @@ final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswo
     private let userDefaults: UserDefaults
     private let stores: StoresManager
 
-    private static let isSupportSession: Bool = {
-        #if DEBUG
-        return ProcessInfo.processInfo.arguments.contains("-support-session")
-        #else
-        return false
-        #endif
-    }()
-
     init(userDefaults: UserDefaults = .standard, stores: StoresManager = ServiceLocator.stores) {
         self.userDefaults = userDefaults
         self.stores = stores
     }
 
     var isAvailable: Bool {
-        guard !Self.isSupportSession else {
-            return false
-        }
         /// The feature is only available when the user is signed in using WordPress.com account
         let isUserAuthenticatedByWPCom = !stores.isAuthenticatedWithoutWPCom
         return isUserAuthenticatedByWPCom && cachedRemoteFFValue

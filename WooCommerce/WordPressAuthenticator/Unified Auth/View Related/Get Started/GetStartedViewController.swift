@@ -545,7 +545,6 @@ private extension GetStartedViewController {
                     return
                 }
                 self.configureViewLoading(false)
-                
                 self.handleLoginError(error)
             }
         )

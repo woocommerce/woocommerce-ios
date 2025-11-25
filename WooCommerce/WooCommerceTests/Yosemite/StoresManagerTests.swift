@@ -246,6 +246,28 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(siteIDValues, [nil, siteID, nil])
     }
 
+    func test_updateDefaultStore_registersForRemoteNotifications() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        ServiceLocator.setPushNotesManager(pushNotificationsManager)
+        defer {
+            ServiceLocator.setPushNotesManager(PushNotificationsManager())
+        }
+        let manager = DefaultStoresManager.testingInstance
+        let expectation = expectation(description: "register called")
+        pushNotificationsManager.onRegisterForRemoteNotifications = {
+            expectation.fulfill()
+        }
+
+        // Action
+        manager.updateDefaultStore(storeID: 1_234)
+
+        // Assert
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(pushNotificationsManager.registerForRemoteNotificationsCallCount, 1)
+        XCTAssertEqual(pushNotificationsManager.ensureAuthorizationIsRequestedCallCount, 1)
+    }
+
     // MARK: `updateDefaultStore(_ site: Site)`
 
     func test_updateDefaultStore_with_the_same_siteID_updates_site_but_does_not_emit_siteID() {

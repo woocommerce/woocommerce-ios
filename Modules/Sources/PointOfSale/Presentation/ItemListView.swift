@@ -181,7 +181,14 @@ struct ItemListView: View {
             )
             .refreshable {
                 analyticsTracker.trackRefresh()
-                await itemsController(itemListType).refreshItems(base: .root)
+                await withTaskGroup(of: Void.self) { group in
+                    group.addTask {
+                        await itemsController(itemListType).refreshItems(base: .root)
+                    }
+                    group.addTask {
+                        await posModel.popularPurchasableItemsController.refreshItems(base: .root)
+                    }
+                }
             }
         }
         .task {

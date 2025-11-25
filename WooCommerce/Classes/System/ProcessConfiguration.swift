@@ -42,3 +42,10 @@ struct ProcessConfiguration {
         ProcessInfo.processInfo.arguments.contains("use-mocked-card-present-payment")
     }
 }
+
+extension ProcessInfo {
+    /// Indicates whether the current process is executing under XCTest.
+    static var isRunningUnitTests: Bool {
+        NSClassFromString("XCTestCase") != nil
+    }
+}

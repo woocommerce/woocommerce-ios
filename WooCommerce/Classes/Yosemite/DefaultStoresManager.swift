@@ -357,6 +357,8 @@ class DefaultStoresManager: StoresManager {
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
+        registerForPushNotificationsIfNeeded()
+
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 
@@ -401,6 +403,24 @@ class DefaultStoresManager: StoresManager {
 // MARK: - Private Methods
 //
 private extension DefaultStoresManager {
+
+    func registerForPushNotificationsIfNeeded() {
+        #if targetEnvironment(simulator)
+        let shouldRegisterForPushNotifications = ProcessInfo.isRunningUnitTests
+        #else
+        let shouldRegisterForPushNotifications = true
+        #endif
+
+        guard shouldRegisterForPushNotifications else {
+            return
+        }
+
+        DispatchQueue.main.async {
+            let pushNotesManager = ServiceLocator.pushNotesManager
+            pushNotesManager.registerForRemoteNotifications()
+            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
+        }
+    }
 
     /// Loads the Default Account into the current Session, if possible.
     ///

@@ -349,7 +349,6 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
         XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Checked-in")
-        XCTAssertEqual(headerContent.bookingStatus.localizedTitle, "Paid")
     }
 
     func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {

@@ -11,6 +11,7 @@
 
 @import MobileCoreServices;
 @import AVFoundation;
+@import UniformTypeIdentifiers;
 
 static CGFloat const IPhoneSELandscapeWidth = 568.0f;
 static CGFloat const IPhone7PortraitWidth = 375.0f;
@@ -999,7 +1000,8 @@ static CGFloat SelectAnimationTime = 0.2;
     NSString *uttype = [asset UTTypeIdentifier];
 
     if ([self.options.badgedUTTypes containsObject:uttype]) {
-        NSString *tagName = (__bridge_transfer NSString *)(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)uttype, kUTTagClassFilenameExtension));
+        UTType *type = [UTType typeWithIdentifier:uttype];
+        NSString *tagName = type.preferredFilenameExtension;
         cell.badgeView.label.text = [tagName uppercaseString];
         cell.badgeView.hidden = NO;
         return;

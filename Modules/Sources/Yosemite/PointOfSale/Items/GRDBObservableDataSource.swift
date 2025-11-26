@@ -174,7 +174,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 // Fetch parent product with updated attributes
                 struct ParentProductWithAttributes: Decodable, FetchableRecord {
                     let product: PersistedProduct
-                    let attributes: [PersistedProductAttribute]?
+                    let attributes: [PersistedProductAttribute]
                 }
 
                 let parentWithAttributes = try PersistedProduct
@@ -187,7 +187,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 // Create updated parent product with fresh attributes
                 let updatedParentProduct: POSVariableParentProduct
                 if let parentWithAttributes {
-                    let attributes = (parentWithAttributes.attributes ?? []).map {
+                    let attributes = (parentWithAttributes.attributes).map {
                         $0.toProductAttribute(siteID: parentWithAttributes.product.siteID)
                     }
                     let product = parentWithAttributes.product

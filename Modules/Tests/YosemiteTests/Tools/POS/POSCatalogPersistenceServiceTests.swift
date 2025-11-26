@@ -472,6 +472,36 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
+    @Test func persistIncrementalCatalogData_prevents_duplicate_variation_attributes_on_multiple_syncs() async throws {
+        // Given - variation with attributes
+        let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
+        let attribute1 = Yosemite.ProductVariationAttribute.fake().copy(name: "Color", option: "Red")
+        let attribute2 = Yosemite.ProductVariationAttribute.fake().copy(name: "Size", option: "L")
+        let variation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, attributes: [attribute1, attribute2])
+        try await insertProduct(parentProduct)
+        try await insertVariation(variation)
+
+        // When - perform multiple incremental syncs with the same variation/attributes
+        let catalog = POSCatalog(products: [parentProduct], variations: [variation], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - should have exactly 2 attributes, not duplicates
+        try await grdbManager.databaseConnection.read { db in
+            let attributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            #expect(attributeCount == 2)
+
+            let attributes = try PersistedProductVariationAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
+            #expect(attributes[0].name == "Color")
+            #expect(attributes[0].option == "Red")
+            #expect(attributes[0].productVariationID == 1)
+            #expect(attributes[1].name == "Size")
+            #expect(attributes[1].option == "L")
+            #expect(attributes[1].productVariationID == 1)
+        }
+    }
+
     @Test func persistIncrementalCatalogData_replaces_image_for_updated_variation() async throws {
         // Given
         let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)

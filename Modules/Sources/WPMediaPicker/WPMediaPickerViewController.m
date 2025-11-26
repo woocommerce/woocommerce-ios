@@ -1274,12 +1274,12 @@ referenceSizeForFooterInSection:(NSInteger)section
         }
         [self addMedia:media animated:YES];
     };
-    if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
+    if ([info[UIImagePickerControllerMediaType] isEqual:UTTypeImage.identifier]) {
         UIImage *image = (UIImage *)info[UIImagePickerControllerOriginalImage];
         [self.dataSource addImage:image
                          metadata:info[UIImagePickerControllerMediaMetadata]
                   completionBlock:completionBlock];
-    } else if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeMovie]) {
+    } else if ([info[UIImagePickerControllerMediaType] isEqual:UTTypeMovie.identifier]) {
         [self.dataSource addVideoFromURL:info[UIImagePickerControllerMediaURL] completionBlock:completionBlock];
     }
 }

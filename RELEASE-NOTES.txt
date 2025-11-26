@@ -8,6 +8,7 @@
 - [*] Update products on the Top Performers card when there are changes made to displayed products [https://github.com/woocommerce/woocommerce-ios/pull/16380]
 - [*] Fixed issue unregistering device from push notifications [https://github.com/woocommerce/woocommerce-ios/pull/16386]
 - [Internal] Fix broken navigation to a variable product selector [https://github.com/woocommerce/woocommerce-ios/pull/16363]
+-[***] POS uses a local on-device product catalog for fast barcode scanning, search, and product selection [https://github.com/woocommerce/woocommerce-ios/pull/16395]
 
 23.7
 -----

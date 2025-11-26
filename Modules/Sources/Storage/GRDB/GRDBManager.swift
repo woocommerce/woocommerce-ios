@@ -59,11 +59,6 @@ private extension GRDBManager {
     func migrateIfNeeded() throws {
         var migrator = DatabaseMigrator()
 
-        #if DEBUG
-        // Speed up development by dropping the database when migrations change
-        migrator.eraseDatabaseOnSchemaChange = true
-        #endif
-
         migrator.registerMigration("V001InitialSchema") { db in
             try V001InitialSchema.migrate(db)
         }

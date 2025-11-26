@@ -114,7 +114,8 @@ static CGFloat SelectAnimationTime = 0.2;
     [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 
     self.layout.sectionInsetReference = UICollectionViewFlowLayoutSectionInsetFromSafeArea;
-    
+    [self registerForTraitObservation];
+
     [self refreshDataAnimated:NO];
 }
 
@@ -315,18 +316,6 @@ static CGFloat SelectAnimationTime = 0.2;
 {
     [super viewDidDisappear:animated];
     [self unregisterForKeyboardNotifications];
-}
-
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
-    [super traitCollectionDidChange:previousTraitCollection];
-
-    if ([self shouldShowCustomHeaderView]) {
-        // If there's a custom header, we'll invalidate it so that it can adapt itself to dynamic type changes.
-        UICollectionViewFlowLayoutInvalidationContext *context  = [UICollectionViewFlowLayoutInvalidationContext new];
-        [context invalidateSupplementaryElementsOfKind:UICollectionElementKindSectionHeader atIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ]];
-        [self.collectionView.collectionViewLayout invalidateLayout];
-    }
 }
 
 - (UIViewController *)viewControllerToUseToPresent
@@ -1464,6 +1453,20 @@ referenceSizeForFooterInSection:(NSInteger)section
     }
 
     return NO;
+}
+
+- (void)registerForTraitObservation
+{
+    __weak typeof(self) weakSelf = self;
+    [self registerForTraitChanges:@[UITraitPreferredContentSizeCategory.class]
+                      withHandler:^(id<UITraitEnvironment> traitEnvironment, UITraitCollection *previousCollection) {
+        if ([weakSelf shouldShowCustomHeaderView]) {
+            // If there's a custom header, invalidate it so that it can adapt itself to dynamic type changes.
+            UICollectionViewFlowLayoutInvalidationContext *context = [UICollectionViewFlowLayoutInvalidationContext new];
+            [context invalidateSupplementaryElementsOfKind:UICollectionElementKindSectionHeader atIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ]];
+            [weakSelf.collectionView.collectionViewLayout invalidateLayout];
+        }
+    }];
 }
 
 - (void)registerForKeyboardNotifications

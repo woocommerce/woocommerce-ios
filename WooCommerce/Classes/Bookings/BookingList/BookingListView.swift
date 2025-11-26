@@ -259,9 +259,9 @@ fileprivate enum BookingListViewLocalization {
         comment: "Error message when fetching bookings fails"
     )
     static let emptySearchText = NSLocalizedString(
-        "bookingList.emptySearchText",
-        value: "We couldn't find any bookings with that name — try adjusting your search term to see more results.",
-        comment: "Message displayed when searching bookings by keyword yields no results."
+        "bookingList.emptySearchText.noDash",
+        value: "We couldn't find any bookings with that name. Try adjusting your search term to see more results.",
+        comment: "Message displayed when searching bookings by keyword yields no results. Version without a dash."
     )
     static let clearFilters = NSLocalizedString(
         "bookingList.clearFilters",

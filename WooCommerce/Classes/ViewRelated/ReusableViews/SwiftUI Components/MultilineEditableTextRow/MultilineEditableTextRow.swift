@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct MultilineEditableTextRow: View {
-    @State var value: String
+    @Binding var value: String
     let placeholder: String
     let detailTitle: String?
     let onCommit: (String) async -> MultilineCommitResult
 
-    init(value: String,
+    init(value: Binding<String>,
          placeholder: String,
          detailTitle: String? = nil,
          onCommit: @escaping (String) async -> MultilineCommitResult
     ) {
-        self._value = State(initialValue: value)
+        self._value = value
         self.placeholder = placeholder
         self.detailTitle = detailTitle
         self.onCommit = onCommit
@@ -64,7 +64,7 @@ fileprivate extension MultilineEditableTextRow {
     @Previewable @State var text: String = ""
 
     NavigationStack {
-        MultilineEditableTextRow(value: text, placeholder: "Add note") { _ in
+        MultilineEditableTextRow(value: $text, placeholder: "Add note") { _ in
             return .success
         }
             .padding(.horizontal, 16)

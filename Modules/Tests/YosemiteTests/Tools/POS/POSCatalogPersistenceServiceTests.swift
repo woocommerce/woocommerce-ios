@@ -275,7 +275,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_upserts_attributes_for_updated_product() async throws {
+    @Test func persistIncrementalCatalogData_replaces_attributes_for_updated_product() async throws {
         // Given
         let attribute1 = Yosemite.ProductAttribute.fake().copy(name: "Color", options: ["Indigo", "Blue"])
         let attribute2 = Yosemite.ProductAttribute.fake().copy(name: "Size")
@@ -291,17 +291,40 @@ struct POSCatalogPersistenceServiceTests {
 
         // Then
         try await grdbManager.databaseConnection.read { db in
-            // Should have 4 attributes: original 2 + updated 2 (upsert adds new ones, keeps old ones)
+            // Should have 2 attributes - old ones deleted, new ones added (no duplicates)
             let attributeCount = try PersistedProductAttribute.fetchCount(db)
-            #expect(attributeCount == 4)
+            #expect(attributeCount == 2)
 
             let attributes = try PersistedProductAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
             #expect(attributes[0].name == "Color")
-            #expect(attributes[0].options == ["Indigo", "Blue"]) // Original unchanged
-            #expect(attributes[1].name == "Color")
-            #expect(attributes[1].options == ["Cardinal", "Blue"]) // Updated version
-            #expect(attributes[2].name == "Material") // New attribute
-            #expect(attributes[3].name == "Size") // Original unchanged
+            #expect(attributes[0].options == ["Cardinal", "Blue"]) // Updated version
+            #expect(attributes[1].name == "Material") // New attribute
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_prevents_duplicate_attributes_on_multiple_syncs() async throws {
+        // Given - product with attributes
+        let attribute1 = Yosemite.ProductAttribute.fake().copy(name: "Color", options: ["Red", "Blue"])
+        let attribute2 = Yosemite.ProductAttribute.fake().copy(name: "Size", options: ["S", "M", "L"])
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, attributes: [attribute1, attribute2])
+        try await insertProduct(product)
+
+        // When - perform multiple incremental syncs with the same product/attributes
+        let catalog = POSCatalog(products: [product], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - should have exactly 2 attributes, not duplicates
+        try await grdbManager.databaseConnection.read { db in
+            let attributeCount = try PersistedProductAttribute.fetchCount(db)
+            #expect(attributeCount == 2)
+
+            let attributes = try PersistedProductAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
+            #expect(attributes[0].name == "Color")
+            #expect(attributes[0].options == ["Red", "Blue"])
+            #expect(attributes[1].name == "Size")
+            #expect(attributes[1].options == ["S", "M", "L"])
         }
     }
 
@@ -445,6 +468,36 @@ struct POSCatalogPersistenceServiceTests {
             #expect(attributes[0].productVariationID == 1)
             #expect(attributes[1].name == "Material")
             #expect(attributes[1].option == "Cotton")
+            #expect(attributes[1].productVariationID == 1)
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_prevents_duplicate_variation_attributes_on_multiple_syncs() async throws {
+        // Given - variation with attributes
+        let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
+        let attribute1 = Yosemite.ProductVariationAttribute.fake().copy(name: "Color", option: "Red")
+        let attribute2 = Yosemite.ProductVariationAttribute.fake().copy(name: "Size", option: "L")
+        let variation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, attributes: [attribute1, attribute2])
+        try await insertProduct(parentProduct)
+        try await insertVariation(variation)
+
+        // When - perform multiple incremental syncs with the same variation/attributes
+        let catalog = POSCatalog(products: [parentProduct], variations: [variation], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - should have exactly 2 attributes, not duplicates
+        try await grdbManager.databaseConnection.read { db in
+            let attributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            #expect(attributeCount == 2)
+
+            let attributes = try PersistedProductVariationAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
+            #expect(attributes[0].name == "Color")
+            #expect(attributes[0].option == "Red")
+            #expect(attributes[0].productVariationID == 1)
+            #expect(attributes[1].name == "Size")
+            #expect(attributes[1].option == "L")
             #expect(attributes[1].productVariationID == 1)
         }
     }

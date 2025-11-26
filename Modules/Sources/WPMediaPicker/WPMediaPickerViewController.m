@@ -5,7 +5,6 @@
 #import "WPMediaGroupPickerViewController.h"
 #import "WPPHAssetDataSource.h"
 #import "WPMediaCapturePresenter.h"
-#import "WPInputMediaPickerViewController.h"
 #import "WPCarouselAssetsViewController.h"
 #import "UIViewController+MediaAdditions.h"
 
@@ -382,7 +381,6 @@ static CGFloat SelectAnimationTime = 0.2;
 - (void)setupSearchBar
 {
     BOOL shouldShowSearchBar = self.options.showSearchBar &&
-        ![self.parentViewController isKindOfClass:[WPInputMediaPickerViewController class]] && //Disable search bar on WPInputMediaPicker
         [self.dataSource respondsToSelector:@selector(searchFor:)];
 
     if (shouldShowSearchBar && self.searchBar == nil) {
@@ -1470,18 +1468,14 @@ referenceSizeForFooterInSection:(NSInteger)section
 
 - (void)registerForKeyboardNotifications
 {
-    if (![self.parentViewController isKindOfClass:[WPInputMediaPickerViewController class]]) {
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
-    }
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)unregisterForKeyboardNotifications
 {
-    if (![self.parentViewController isKindOfClass:[WPInputMediaPickerViewController class]]) {
-        [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-        [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    }
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)keyboardWillShowNotification:(NSNotification *)notification

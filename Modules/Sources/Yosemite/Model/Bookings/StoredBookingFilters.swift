@@ -17,7 +17,6 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
         public let teamMembers: [BookingTeamMemberFilter]
         public let products: [BookingProductFilter]
         public let attendanceStatuses: [BookingAttendanceStatus]
-        public let paymentStatuses: [BookingPaymentStatus]
         public let customers: [BookingCustomerFilter]
         public let dateRange: BookingDateRangeFilter?
         public let numberOfActiveFilters: Int
@@ -25,13 +24,11 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
         public init(teamMembers: [BookingTeamMemberFilter],
                     products: [BookingProductFilter],
                     attendanceStatuses: [BookingAttendanceStatus],
-                    paymentStatuses: [BookingPaymentStatus],
                     customers: [BookingCustomerFilter],
                     dateRange: BookingDateRangeFilter?) {
             self.teamMembers = teamMembers
             self.products = products
             self.attendanceStatuses = attendanceStatuses
-            self.paymentStatuses = paymentStatuses
             self.customers = customers
             self.dateRange = dateRange
             self.numberOfActiveFilters = {
@@ -46,9 +43,6 @@ public struct StoredBookingFilters: Codable, Equatable, GeneratedFakeable {
                     total += 1
                 }
                 if customers.isNotEmpty {
-                    total += 1
-                }
-                if paymentStatuses.isNotEmpty {
                     total += 1
                 }
                 if dateRange != nil {

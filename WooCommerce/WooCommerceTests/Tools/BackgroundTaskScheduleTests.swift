@@ -8,8 +8,12 @@ struct BackgroundTaskScheduleTests {
     private let timeProvider: MockTimeProvider
 
     init() {
-        let userDefaults = UserDefaults(suiteName: #file)!
-        userDefaults.removePersistentDomain(forName: #file)
+        // Use a unique volatile domain for in-memory storage that doesn't persist to disk
+        let userDefaults = UserDefaults()
+        let volatileDomain = "test.BackgroundTaskSchedule.\(UUID().uuidString)"
+        userDefaults.setVolatileDomain([:], forName: volatileDomain)
+        userDefaults.addSuite(named: volatileDomain)
+
         timeProvider = MockTimeProvider()
         sut = BackgroundTaskSchedule(timeProvider: timeProvider, userDefaults: userDefaults)
     }

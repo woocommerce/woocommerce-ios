@@ -139,7 +139,6 @@ private extension BookingListContainerViewModel {
                 teamMembers: storedFilters.teamMembers,
                 products: storedFilters.products,
                 attendanceStatuses: storedFilters.attendanceStatuses,
-                paymentStatuses: storedFilters.paymentStatuses,
                 customers: storedFilters.customers,
                 dateRange: storedFilters.dateRange,
                 numberOfActiveFilters: storedFilters.numberOfActiveFilters
@@ -170,7 +169,6 @@ private extension BookingListContainerViewModel {
             teamMembers: filters.teamMembers,
             products: filters.products,
             attendanceStatuses: filters.attendanceStatuses,
-            paymentStatuses: filters.paymentStatuses,
             customers: filters.customers,
             dateRange: filters.dateRange
         )

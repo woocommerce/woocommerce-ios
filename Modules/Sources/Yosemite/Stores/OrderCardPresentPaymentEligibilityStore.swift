@@ -1,11 +1,14 @@
 import Foundation
 import protocol Storage.StorageManagerType
 import protocol NetworkingCore.Network
+import protocol WooFoundation.CrashLogger
+import enum WooFoundation.SeverityLevel
 
 /// Determines whether an order is eligible for card present payment or not
 ///
 public final class OrderCardPresentPaymentEligibilityStore: Store {
     private let currentSite: () -> Site?
+    private let crashLogger: CrashLogger
     private lazy var siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(
         currentSite: currentSite
     )
@@ -14,9 +17,11 @@ public final class OrderCardPresentPaymentEligibilityStore: Store {
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
         network: Network,
+        crashLogger: CrashLogger,
         currentSite: @escaping () -> Site?
     ) {
         self.currentSite = currentSite
+        self.crashLogger = crashLogger
         super.init(
             dispatcher: dispatcher,
             storageManager: storageManager,
@@ -55,11 +60,27 @@ private extension OrderCardPresentPaymentEligibilityStore {
                                               cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                               onCompletion: (Result<Bool, Error>) -> Void) {
         let storage = storageManager.viewStorage
+        let storageSite = storage.loadSite(siteID: siteID)?.toReadOnly()
 
-        guard let site = storage.loadSite(siteID: siteID)?.toReadOnly() else {
+        let site: Site?
+        if let storageSite {
+            site = storageSite
+        } else {
+            /// Non - fatal fallback to `currentSite` when a storage site is missing
+            site = currentSite()
+
+            logFailedStorageSiteRead(
+                siteID: siteID,
+                currentSiteFallbackValue: site
+            )
+        }
+
+        guard let site else {
+            logFailedDefaultSiteRead(siteID: siteID)
+
             return onCompletion(
                 .failure(
-                    OrderIsEligibleForCardPresentPaymentError.siteNotFoundInStorage
+                    OrderIsEligibleForCardPresentPaymentError.failedToObtainSite
                 )
             )
         }
@@ -83,10 +104,42 @@ private extension OrderCardPresentPaymentEligibilityStore {
     }
 }
 
+/// Error logging
+private extension OrderCardPresentPaymentEligibilityStore {
+    func logFailedStorageSiteRead(siteID: Int64, currentSiteFallbackValue: Site?) {
+        let message = "OrderCardPresentPaymentEligibilityStore: Storage site missing, falling back to currentSite."
+
+        DDLogError(message)
+
+        crashLogger.logMessage(
+            message,
+            properties: [
+                "siteID": siteID,
+                "currentSiteID": currentSiteFallbackValue?.siteID ?? "empty",
+            ],
+            level: .error
+        )
+    }
+
+    func logFailedDefaultSiteRead(siteID: Int64) {
+        let message = "OrderCardPresentPaymentEligibilityStore: Current default site missing."
+
+        DDLogError(message)
+
+        crashLogger.logMessage(
+            "OrderCardPresentPaymentEligibilityStore: Current default site missing.",
+            properties: [
+                "requestedSiteID": siteID
+            ],
+            level: .error
+        )
+    }
+}
+
 extension OrderCardPresentPaymentEligibilityStore {
     enum OrderIsEligibleForCardPresentPaymentError: Error {
         case orderNotFoundInStorage
-        case siteNotFoundInStorage
+        case failedToObtainSite
         case cardReaderPaymentOptionIsNotSupportedForCIABSites
     }
 }

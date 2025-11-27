@@ -86,6 +86,7 @@ class AuthenticatedState: StoresManagerState {
                 dispatcher: dispatcher,
                 storageManager: storageManager,
                 network: network,
+                crashLogger: ServiceLocator.crashLogging,
                 currentSite: {
                     ServiceLocator.stores.sessionManager.defaultSite
                 }

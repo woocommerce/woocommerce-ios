@@ -91,7 +91,7 @@ class AuthenticatedState: StoresManagerState {
                     ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciab)
                 },
                 currentSite: {
-                    ServiceLocator.stores.sessionManager.defaultSite
+                    sessionManager.defaultSite
                 }
             ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

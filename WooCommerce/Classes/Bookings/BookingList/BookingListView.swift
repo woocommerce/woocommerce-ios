@@ -152,10 +152,19 @@ private extension BookingListView {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(Color.primary)
 
-            Text(booking.summaryText)
-                .font(.footnote)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.secondary)
+            VStack(alignment: .leading) {
+                if let productName = booking.productName {
+                    Text(productName)
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.secondary)
+                }
+
+                Text(booking.customerName)
+                    .font(.footnote)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.secondary)
+            }
 
             HStack {
                 BookingBadgeView(booking.attendanceStatus)

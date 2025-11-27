@@ -10,6 +10,14 @@ final class ApplicationPasswordsExperimentState {
 
     private var experimentalFlagSubscription: AnyCancellable?
 
+    private static let isSupportSession: Bool = {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-support-session")
+        #else
+        return false
+        #endif
+    }()
+
     init(
         stores: StoresManager = ServiceLocator.stores,
         availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol = ApplicationPasswordsExperimentAvailabilityChecker(),
@@ -26,6 +34,9 @@ final class ApplicationPasswordsExperimentState {
     @MainActor
     private var isEnabled: Bool {
         get async {
+            guard !Self.isSupportSession else {
+                return false
+            }
             return await withCheckedContinuation { continuation in
                 stores.dispatch(
                     AppSettingsAction.getAppPasswordsExperimentSettingState { isOn in

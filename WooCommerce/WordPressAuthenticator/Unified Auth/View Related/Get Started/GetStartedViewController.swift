@@ -136,6 +136,14 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
+    private static let isSupportSession: Bool = {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-support-session")
+        #else
+        return false
+        #endif
+    }()
+
     // MARK: - View
 
     override func viewDidLoad() {
@@ -517,22 +525,29 @@ private extension GetStartedViewController {
 
         configureViewLoading(true)
         let service = WordPressComAccountService()
-        service.isPasswordlessAccount(username: loginFields.username,
-                                      success: { [weak self] passwordless in
-                                        self?.configureViewLoading(false)
-                                        self?.loginFields.meta.passwordless = passwordless
-                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordOrMagicLinkView()
+        service.isPasswordlessAccount(
+            username: loginFields.username,
+            success: { [weak self] passwordless in
+                guard let self else { return }
+                configureViewLoading(false)
+                loginFields.meta.passwordless = passwordless
+                if Self.isSupportSession {
+                    /// Always show password view when running in support session
+                    showPasswordView()
+                } else {
+                    passwordless ? requestAuthenticationLink() : showPasswordOrMagicLinkView()
+                }
             },
-                                      failure: { [weak self] error in
-                                        WordPressAuthenticator.track(.loginFailed, error: error)
-                                        WPAuthenticatorLogError(error.localizedDescription)
-                                        guard let self = self else {
-                                            return
-                                        }
-                                        self.configureViewLoading(false)
-
-                                        self.handleLoginError(error)
-        })
+            failure: { [weak self] error in
+                WordPressAuthenticator.track(.loginFailed, error: error)
+                WPAuthenticatorLogError(error.localizedDescription)
+                guard let self = self else {
+                    return
+                }
+                self.configureViewLoading(false)
+                self.handleLoginError(error)
+            }
+        )
     }
 
     /// Show the Password entry view.
@@ -583,7 +598,11 @@ private extension GetStartedViewController {
             // email address is flagged as suspicious.
             // Take the user to the magic link request screen to verify their email.
             self.tracker.track(failure: error.localizedDescription)
-            self.showMagicLinkRequestScreen()
+            if Self.isSupportSession {
+                showPasswordView()
+            } else {
+                showMagicLinkRequestScreen()
+            }
         } else {
             let signInError = SignInError(error: error, source: source) ?? error
             guard let authenticationDelegate = WordPressAuthenticator.shared.delegate,

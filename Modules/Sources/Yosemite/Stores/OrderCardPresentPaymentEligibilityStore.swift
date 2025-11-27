@@ -8,6 +8,7 @@ import enum WooFoundation.SeverityLevel
 ///
 public final class OrderCardPresentPaymentEligibilityStore: Store {
     private let currentSite: () -> Site?
+    private let isCIABEnvironmentSupported: () -> Bool
     private let crashLogger: CrashLogger
     private lazy var siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(
         currentSite: currentSite
@@ -18,9 +19,11 @@ public final class OrderCardPresentPaymentEligibilityStore: Store {
         storageManager: StorageManagerType,
         network: Network,
         crashLogger: CrashLogger,
+        isCIABEnvironmentSupported: @escaping () -> Bool,
         currentSite: @escaping () -> Site?
     ) {
         self.currentSite = currentSite
+        self.isCIABEnvironmentSupported = isCIABEnvironmentSupported
         self.crashLogger = crashLogger
         super.init(
             dispatcher: dispatcher,
@@ -60,37 +63,41 @@ private extension OrderCardPresentPaymentEligibilityStore {
                                               cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                               onCompletion: (Result<Bool, Error>) -> Void) {
         let storage = storageManager.viewStorage
-        let storageSite = storage.loadSite(siteID: siteID)?.toReadOnly()
 
-        let site: Site?
-        if let storageSite {
-            site = storageSite
-        } else {
-            /// Non - fatal fallback to `currentSite` when a storage site is missing
-            site = currentSite()
+        /// The following checks are only relevant if CIAB is rolled out.
+        if isCIABEnvironmentSupported() {
+            let storageSite = storage.loadSite(siteID: siteID)?.toReadOnly()
 
-            logFailedStorageSiteRead(
-                siteID: siteID,
-                currentSiteFallbackValue: site
-            )
-        }
+            let site: Site?
+            if let storageSite {
+                site = storageSite
+            } else {
+                /// Non - fatal fallback to `currentSite` when a storage site is missing
+                site = currentSite()
 
-        guard let site else {
-            logFailedDefaultSiteRead(siteID: siteID)
-
-            return onCompletion(
-                .failure(
-                    OrderIsEligibleForCardPresentPaymentError.failedToObtainSite
+                logFailedStorageSiteRead(
+                    siteID: siteID,
+                    currentSiteFallbackValue: site
                 )
-            )
-        }
+            }
 
-        guard siteCIABEligibilityChecker.isFeatureSupported(.cardReader, for: site) else {
-            return onCompletion(
-                .failure(
-                    OrderIsEligibleForCardPresentPaymentError.cardReaderPaymentOptionIsNotSupportedForCIABSites
+            guard let site else {
+                logFailedDefaultSiteRead(siteID: siteID)
+
+                return onCompletion(
+                    .failure(
+                        OrderIsEligibleForCardPresentPaymentError.failedToObtainSite
+                    )
                 )
-            )
+            }
+
+            guard siteCIABEligibilityChecker.isFeatureSupported(.cardReader, for: site) else {
+                return onCompletion(
+                    .failure(
+                        OrderIsEligibleForCardPresentPaymentError.cardReaderPaymentOptionIsNotSupportedForCIABSites
+                    )
+                )
+            }
         }
 
         guard let order = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {

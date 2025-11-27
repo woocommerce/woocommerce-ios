@@ -87,6 +87,9 @@ class AuthenticatedState: StoresManagerState {
                 storageManager: storageManager,
                 network: network,
                 crashLogger: ServiceLocator.crashLogging,
+                isCIABEnvironmentSupported: {
+                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciab)
+                },
                 currentSite: {
                     ServiceLocator.stores.sessionManager.defaultSite
                 }

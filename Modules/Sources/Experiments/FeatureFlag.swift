@@ -204,6 +204,11 @@ public enum FeatureFlag: Int {
     ///
     case ciabBookings
 
+    /// Represents CIAB environment availability overall
+    /// Has same underlying logic as `ciabBookings` flag.
+    ///
+    case ciab
+
     /// Enables surveys for potential and current POS merchants
     ///
     case pointOfSaleSurveys

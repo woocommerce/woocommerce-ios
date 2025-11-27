@@ -377,60 +377,60 @@ private extension POSOrderDetailsView {
 // MARK: - Actions
 private extension POSOrderDetailsView {
     enum POSAction: Identifiable, CaseIterable {
-            case issueRefund
-            case emailReceipt
+        case issueRefund
+        case emailReceipt
 
-            var id: String { title }
+        var id: String { title }
 
-            var title: String {
-                switch self {
-                case .issueRefund:  Localization.issueRefundActionTitle
-                case .emailReceipt: Localization.emailReceiptActionTitle
-                }
-            }
-
-            var accessibilityHint: String {
-                switch self {
-                case .issueRefund:  Localization.issueRefundAccessibilityHint
-                case .emailReceipt: Localization.emailReceiptAccessibilityHint
-                }
-            }
-
-            var priority: Int {
-                switch self {
-                case .issueRefund:  100
-                case .emailReceipt: 50
-                }
-            }
-
-            func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
-                guard order.status == .completed else { return false }
-                switch self {
-                case .issueRefund:
-                    return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
-                case .emailReceipt:
-                    return true
-                }
+        var title: String {
+            switch self {
+            case .issueRefund:  Localization.issueRefundActionTitle
+            case .emailReceipt: Localization.emailReceiptActionTitle
             }
         }
 
-        func handler(for action: POSAction) -> @MainActor () -> Void {
-            switch action {
-            case .emailReceipt:
-                return {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-                    isShowingEmailReceiptView = true
-                }
+        var accessibilityHint: String {
+            switch self {
+            case .issueRefund:  Localization.issueRefundAccessibilityHint
+            case .emailReceipt: Localization.emailReceiptAccessibilityHint
+            }
+        }
+
+        var priority: Int {
+            switch self {
+            case .issueRefund:  100
+            case .emailReceipt: 50
+            }
+        }
+
+        func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
+            guard order.status == .completed else { return false }
+            switch self {
             case .issueRefund:
-                return { }
+                return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
+            case .emailReceipt:
+                return true
             }
         }
+    }
 
-        var availableActions: [POSAction] {
-            POSAction.allCases
-                .filter { $0.isAvailable(for: order, flags: featureFlags) }
-                .sorted { $0.priority > $1.priority }
+    func handler(for action: POSAction) -> @MainActor () -> Void {
+        switch action {
+        case .emailReceipt:
+            return {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                isShowingEmailReceiptView = true
+            }
+        case .issueRefund:
+            return { }
         }
+    }
+
+    var availableActions: [POSAction] {
+        POSAction.allCases
+            .filter { $0.isAvailable(for: order, flags: featureFlags) }
+            .sorted { $0.priority > $1.priority }
+    }
 
     @ViewBuilder
     func actionsSection(actions: [POSAction]) -> some View {

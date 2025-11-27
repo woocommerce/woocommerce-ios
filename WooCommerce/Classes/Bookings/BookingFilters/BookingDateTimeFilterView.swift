@@ -60,7 +60,7 @@ struct BookingDateTimeFilterView: View {
                 Button(Localization.clear) {
                     clearDateRange()
                 }
-                .disabled(selectedFromDate == nil && selectedToDate == nil)
+                .renderedIf(selectedFromDate != nil || selectedToDate != nil)
             }
         }
         .background(Color(.listBackground))

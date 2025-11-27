@@ -808,6 +808,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             storageManager: storage,
             network: MockNetwork(),
             crashLogger: MockCrashLogger(),
+            isCIABEnvironmentSupported: { true },
             currentSite: { ciabSite }
         )
 

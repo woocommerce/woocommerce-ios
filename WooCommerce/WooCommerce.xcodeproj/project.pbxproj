@@ -3889,7 +3889,6 @@
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDateTimeFilterViewTests.swift; sourceTree = "<group>"; };
-		2D49A80B2ECDCD4500AF1749 /* RequestAuthenticatorPressureTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = RequestAuthenticatorPressureTests.xctestplan; path = ../Modules/Tests/NetworkingTests/RequestAuthenticatorPressureTests.xctestplan; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
@@ -9628,7 +9627,6 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
-				2D49A80B2ECDCD4500AF1749 /* RequestAuthenticatorPressureTests.xctestplan */,
 				3F3689E22DCB1B470065B48F /* Modules */,
 				D8FBFF1622D4CC2F006E3336 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,

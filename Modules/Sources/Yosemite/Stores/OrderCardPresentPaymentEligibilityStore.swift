@@ -81,22 +81,20 @@ private extension OrderCardPresentPaymentEligibilityStore {
                 )
             }
 
-            guard let site else {
+            if let site {
+                guard siteCIABEligibilityChecker.isFeatureSupported(.cardReader, for: site) else {
+                    return onCompletion(
+                        .failure(
+                            OrderIsEligibleForCardPresentPaymentError.cardReaderPaymentOptionIsNotSupportedForCIABSites
+                        )
+                    )
+                }
+            } else {
+                /// Don't interrupt the flow if the `site` is not found
+                /// Making the assumption that it's not a CIAB site and skipping those checks
+                ///
+                /// Log an error
                 logFailedDefaultSiteRead(siteID: siteID)
-
-                return onCompletion(
-                    .failure(
-                        OrderIsEligibleForCardPresentPaymentError.failedToObtainSite
-                    )
-                )
-            }
-
-            guard siteCIABEligibilityChecker.isFeatureSupported(.cardReader, for: site) else {
-                return onCompletion(
-                    .failure(
-                        OrderIsEligibleForCardPresentPaymentError.cardReaderPaymentOptionIsNotSupportedForCIABSites
-                    )
-                )
             }
         }
 
@@ -146,7 +144,6 @@ private extension OrderCardPresentPaymentEligibilityStore {
 extension OrderCardPresentPaymentEligibilityStore {
     enum OrderIsEligibleForCardPresentPaymentError: Error {
         case orderNotFoundInStorage
-        case failedToObtainSite
         case cardReaderPaymentOptionIsNotSupportedForCIABSites
     }
 }

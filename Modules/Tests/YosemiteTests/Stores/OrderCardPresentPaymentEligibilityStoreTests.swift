@@ -253,4 +253,44 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
         let eligibility = try XCTUnwrap(result.get())
         XCTAssertTrue(eligibility)
     }
+
+    func test_orderIsEligibleForCardPresentPayment_returns_success_when_site_is_not_obtained_and_CIAB_supported() throws {
+        // Given
+        let orderItem = OrderItem.fake().copy(itemID: 1234,
+                                              name: "Chocolate cake",
+                                              productID: 678,
+                                              quantity: 1.0)
+        let cppEligibleOrder = Order.fake().copy(siteID: sampleSiteID,
+                                                 orderID: 111,
+                                                 status: .pending,
+                                                 currency: "USD",
+                                                 datePaid: nil,
+                                                 total: "5.00",
+                                                 paymentMethodID: "woocommerce_payments",
+                                                 items: [orderItem])
+        let nonSubscriptionProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                         productID: 678,
+                                                         name: "Chocolate cake",
+                                                         productTypeKey: "simple")
+
+        storageManager.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
+        storageManager.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
+
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+
+        // When
+        let result = waitFor { promise in
+            let action = OrderCardPresentPaymentEligibilityAction
+                .orderIsEligibleForCardPresentPayment(orderID: 111,
+                                                      siteID: self.sampleSiteID,
+                                                      cardPresentPaymentsConfiguration: configuration) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        let eligibility = try XCTUnwrap(result.get())
+        XCTAssertTrue(eligibility)
+    }
 }

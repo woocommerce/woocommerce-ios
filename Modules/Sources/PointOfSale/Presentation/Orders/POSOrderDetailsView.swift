@@ -32,8 +32,8 @@ struct POSOrderDetailsView: View {
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    if actions.isNotEmpty {
-                        actionsSection(actions)
+                    if primaryAction != nil || overflowActions.isNotEmpty {
+                        actionsSection(overflowActions)
                     }
                 },
                 bottomContent: {
@@ -377,7 +377,24 @@ private extension POSOrderDetailsView {
 
 // MARK: - Actions
 private extension POSOrderDetailsView {
-    enum POSOrderDetailsAction: Identifiable, CaseIterable {
+    // Primary action for the header
+    enum POSPrimaryAction {
+        case issueRefund
+
+        var title: String {
+            switch self {
+            case .issueRefund:
+                Localization.issueRefundActionTitle
+            }
+        }
+
+        func available(for order: POSOrder) -> Bool {
+            // Adjust the condition as needed
+            return order.status == .completed
+        }
+    }
+
+    enum POSOverflowAction: Identifiable, CaseIterable {
         case emailReceipt
 
         var id: String { title }
@@ -392,43 +409,53 @@ private extension POSOrderDetailsView {
         func available(for order: POSOrder) -> Bool {
             switch self {
             case .emailReceipt:
-                order.status == .completed
+                return order.status == .completed
             }
         }
     }
 
-    var actions: [POSOrderDetailsAction] {
-        POSOrderDetailsAction.allCases.filter { $0.available(for: order) }
+    // Primary + overflow actions (formerly `actions`)
+    var primaryAction: POSPrimaryAction? {
+        let candidate: POSPrimaryAction = .issueRefund
+        return candidate.available(for: order) ? candidate : nil
+    }
+
+    var overflowActions: [POSOverflowAction] {
+        POSOverflowAction.allCases.filter { $0.available(for: order) }
     }
 
     @ViewBuilder
-    func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
-        VStack {
-            HStack {
-                ForEach(actions) { action in
-                    Button(action: {
+    func actionsSection(_ actions: [POSOverflowAction]) -> some View {
+        HStack(spacing: POSSpacing.large) {
+            if let primaryAction {
+                Button(primaryAction.title) {}
+                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                .accessibilityHint(Localization.issueRefundAccessibilityHint)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+            }
+
+            if overflowActions.isNotEmpty {
+                Menu {
+                    ForEach(overflowActions) { action in
                         switch action {
                         case .emailReceipt:
-                            analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-                            isShowingEmailReceiptView = true
+                            Button(action.title) {
+                                analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                                isShowingEmailReceiptView = true
+                            }
+                            .accessibilityHint(Localization.emailReceiptAccessibilityHint)
                         }
-                    }) {
-                        Text(Localization.emailReceiptActionTitle)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
                     }
-                    .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                    .accessibilityHint(accessibilityHint(for: action))
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.posBodyLargeBold)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        .foregroundColor(.posOnSurface)
+                        .padding(POSPadding.small)
                 }
+                .menuIndicator(.hidden)
             }
-            Spacer()
-        }
-    }
-
-    private func accessibilityHint(for action: POSOrderDetailsAction) -> String {
-        switch action {
-        case .emailReceipt:
-            return Localization.emailReceiptAccessibilityHint
         }
     }
 }
@@ -527,6 +554,24 @@ private enum Localization {
         "pos.orderDetailsView.emailReceiptAction.accessibilityHint",
         value: "Tap to send order receipt via email",
         comment: "Accessibility hint for email receipt button on order details view"
+    )
+
+    static let issueRefundActionTitle = NSLocalizedString(
+            "pos.orderDetailsView.issueRefundAction.title",
+            value: "Issue refund",
+            comment: "Primary action button to start issuing a refund on the order details view"
+        )
+
+    static let issueRefundAccessibilityHint = NSLocalizedString(
+        "pos.orderDetailsView.issueRefundAction.accessibilityHint",
+        value: "Start refund flow for this order",
+        comment: "Accessibility hint for issue refund button"
+    )
+
+    static let moreActionsA11yLabel = NSLocalizedString(
+        "pos.orderDetailsView.moreActions.label",
+        value: "More actions",
+        comment: "Accessibility label for the overflow actions menu button (three dots)"
     )
 
     static func headerBottomContentAccessibilityLabel(date: String, email: String?, status: String) -> String {

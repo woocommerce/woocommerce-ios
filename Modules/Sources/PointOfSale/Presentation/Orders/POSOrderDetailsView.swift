@@ -14,6 +14,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
@@ -32,9 +33,7 @@ struct POSOrderDetailsView: View {
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    if primaryAction != nil || overflowActions.isNotEmpty {
-                        actionsSection(overflowActions)
-                    }
+                    actionsSection(actions: availableActions)
                 },
                 bottomContent: {
                     headerBottomContent(for: order)
@@ -377,86 +376,98 @@ private extension POSOrderDetailsView {
 
 // MARK: - Actions
 private extension POSOrderDetailsView {
-    // Primary action for the header
-    enum POSPrimaryAction {
-        case issueRefund
+    enum POSAction: Identifiable, CaseIterable {
+            case issueRefund
+            case emailReceipt
 
-        var title: String {
-            switch self {
+            var id: String { title }
+
+            var title: String {
+                switch self {
+                case .issueRefund:  Localization.issueRefundActionTitle
+                case .emailReceipt: Localization.emailReceiptActionTitle
+                }
+            }
+
+            var accessibilityHint: String {
+                switch self {
+                case .issueRefund:  Localization.issueRefundAccessibilityHint
+                case .emailReceipt: Localization.emailReceiptAccessibilityHint
+                }
+            }
+
+            var priority: Int {
+                switch self {
+                case .issueRefund:  100
+                case .emailReceipt: 50
+                }
+            }
+
+            func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
+                guard order.status == .completed else { return false }
+                switch self {
+                case .issueRefund:
+                    return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
+                case .emailReceipt:
+                    return true
+                }
+            }
+        }
+
+        func handler(for action: POSAction) -> @MainActor () -> Void {
+            switch action {
+            case .emailReceipt:
+                return {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                    isShowingEmailReceiptView = true
+                }
             case .issueRefund:
-                Localization.issueRefundActionTitle
+                return { }
             }
         }
 
-        func available(for order: POSOrder) -> Bool {
-            // Adjust the condition as needed
-            return order.status == .completed
+        var availableActions: [POSAction] {
+            POSAction.allCases
+                .filter { $0.isAvailable(for: order, flags: featureFlags) }
+                .sorted { $0.priority > $1.priority }
         }
-    }
-
-    enum POSOverflowAction: Identifiable, CaseIterable {
-        case emailReceipt
-
-        var id: String { title }
-
-        var title: String {
-            switch self {
-            case .emailReceipt:
-                Localization.emailReceiptActionTitle
-            }
-        }
-
-        func available(for order: POSOrder) -> Bool {
-            switch self {
-            case .emailReceipt:
-                return order.status == .completed
-            }
-        }
-    }
-
-    // Primary + overflow actions (formerly `actions`)
-    var primaryAction: POSPrimaryAction? {
-        let candidate: POSPrimaryAction = .issueRefund
-        return candidate.available(for: order) ? candidate : nil
-    }
-
-    var overflowActions: [POSOverflowAction] {
-        POSOverflowAction.allCases.filter { $0.available(for: order) }
-    }
 
     @ViewBuilder
-    func actionsSection(_ actions: [POSOverflowAction]) -> some View {
-        HStack(spacing: POSSpacing.large) {
-            if let primaryAction {
-                Button(primaryAction.title) {}
-                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                .accessibilityHint(Localization.issueRefundAccessibilityHint)
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-            }
+    func actionsSection(actions: [POSAction]) -> some View {
+        if actions.isEmpty {
+            EmptyView()
+        } else {
+            HStack(spacing: POSSpacing.large) {
+                let primary = actions[0]
+                Button(primary.title, action: handler(for: primary))
+                    .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                    .accessibilityHint(primary.accessibilityHint)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
 
-            if overflowActions.isNotEmpty {
-                Menu {
-                    ForEach(overflowActions) { action in
-                        switch action {
-                        case .emailReceipt:
-                            Button(action.title) {
-                                analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-                                isShowingEmailReceiptView = true
-                            }
-                            .accessibilityHint(Localization.emailReceiptAccessibilityHint)
+                let overflow = actions.dropFirst()
+                if !overflow.isEmpty {
+                    Menu {
+                        ForEach(Array(overflow)) { action in
+                            Button(action.title, action: handler(for: action))
+                                .accessibilityHint(action.accessibilityHint)
                         }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.posBodyLargeBold)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            .foregroundColor(.posOnSurface)
+                            .padding(POSPadding.small)
                     }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.posBodyLargeBold)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        .foregroundColor(.posOnSurface)
-                        .padding(POSPadding.small)
+                    .menuIndicator(.hidden)
                 }
-                .menuIndicator(.hidden)
             }
         }
+    }
+
+    func emailReceiptAction() {
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+        isShowingEmailReceiptView = true
     }
 }
 

@@ -2,11 +2,11 @@ import Foundation
 import XCTest
 import Combine
 import Fakes
-import WooFoundation
 
 @testable import WooCommerce
 @testable import Yosemite
 @testable import Networking
+@testable import WooFoundation
 
 private typealias Dependencies = PaymentMethodsViewModel.Dependencies
 
@@ -807,6 +807,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             dispatcher: Dispatcher(),
             storageManager: storage,
             network: MockNetwork(),
+            crashLogger: MockCrashLogger(),
             currentSite: { ciabSite }
         )
 

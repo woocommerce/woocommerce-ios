@@ -4,6 +4,7 @@ import XCTest
 
 @testable import Yosemite
 @testable import Networking
+@testable import WooFoundation
 
 final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
 
@@ -38,6 +39,7 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
             dispatcher: dispatcher,
             storageManager: storageManager,
             network: network,
+            crashLogger: MockCrashLogger(),
             currentSite: { [weak self] in
                 return self?.currentSite
             }

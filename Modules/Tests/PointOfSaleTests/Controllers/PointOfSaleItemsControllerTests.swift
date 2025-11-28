@@ -3,6 +3,7 @@ import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSVariableParentProduct
 import enum Yosemite.POSItem
+import struct Yosemite.POSItemIdentifier
 import enum Yosemite.PointOfSaleItemServiceError
 import class Yosemite.PointOfSaleItemFetchStrategyFactory
 @testable import struct Yosemite.PointOfSaleSearchPurchasableItemFetchStrategy

@@ -6,14 +6,16 @@ struct POSListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewModel: POSListErrorViewModel
     private let onAction: (() -> Void)?
+    private let onExit: (() -> Void)?
 
     @State private var viewWidth: CGFloat = 0
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
+    init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil, onExit: (() -> Void)? = nil) {
         self.viewModel = POSListErrorViewModel(error: error)
         self.onAction = onAction
+        self.onExit = onExit
     }
 
     var body: some View {
@@ -58,6 +60,18 @@ struct POSListErrorView: View {
                     .frame(width: viewWidth / 2)
                     .padding([.leading, .trailing])
                 }
+
+                if let onExit {
+                    Spacer().frame(height: POSSpacing.medium)
+                    Button(action: {
+                        onExit()
+                    }, label: {
+                        Text(Localization.exitButtonText)
+                    })
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    .frame(width: viewWidth / 2)
+                    .padding([.leading, .trailing])
+                }
             }
             Spacer()
         }
@@ -85,6 +99,14 @@ struct POSListErrorViewModel {
             self.imageAsset = nil
         }
     }
+}
+
+private enum Localization {
+    static let exitButtonText = NSLocalizedString(
+        "pos.listError.exitButton",
+        value: "Exit POS",
+        comment: "Button text to exit Point of Sale when there's a critical error"
+    )
 }
 
 #Preview {

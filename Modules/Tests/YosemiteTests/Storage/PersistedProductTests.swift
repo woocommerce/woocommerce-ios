@@ -27,7 +27,8 @@ struct PersistedProductTests {
             attributes: [],
             manageStock: true,
             stockQuantity: 5,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            variationIDs: []
         )
 
         // When
@@ -508,7 +509,8 @@ struct PersistedProductTests {
             ],
             manageStock: true,
             stockQuantity: 50,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            variationIDs: []
         )
 
         // When saving and loading back

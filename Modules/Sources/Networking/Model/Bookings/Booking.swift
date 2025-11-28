@@ -24,6 +24,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let localTimezone: String
     public let currency: String
     public let orderInfo: BookingOrderInfo?
+    public let note: String
 
     public var bookingStatus: BookingStatus {
         return BookingStatus(rawValue: statusKey) ?? .unknown
@@ -54,7 +55,8 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                 attendanceStatusKey: String,
                 localTimezone: String,
                 currency: String,
-                orderInfo: BookingOrderInfo?) {
+                orderInfo: BookingOrderInfo?,
+                note: String) {
         self.siteID = siteID
         self.bookingID = bookingID
         self.allDay = allDay
@@ -75,6 +77,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         self.localTimezone = localTimezone
         self.currency = currency
         self.orderInfo = orderInfo
+        self.note = note
     }
 
     /// The public initializer for Booking.
@@ -129,6 +132,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         let localTimezone = try container.decode(String.self, forKey: .localTimezone)
         let currency = try container.decode(String.self, forKey: .currency)
         let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
+        let note = try container.decode(String.self, forKey: .note)
 
         self.init(siteID: siteID,
                   bookingID: bookingID,
@@ -149,7 +153,8 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                   attendanceStatusKey: attendanceStatusKey,
                   localTimezone: localTimezone,
                   currency: currency,
-                  orderInfo: orderInfo)
+                  orderInfo: orderInfo,
+                  note: note)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -203,6 +208,7 @@ private extension Booking {
         case attendanceStatusKey = "attendance_status"
         case localTimezone = "local_timezone"
         case currency
+        case note
     }
 }
 
@@ -216,7 +222,7 @@ enum BookingDecodingError: Error {
 //
 
 /// Represents a Booking Status.
-public enum BookingStatus: String, CaseIterable {
+public enum BookingStatus: String, CaseIterable, Codable {
     case complete
     case paid
     case unpaid
@@ -226,10 +232,19 @@ public enum BookingStatus: String, CaseIterable {
     case unknown
 }
 
-public enum BookingAttendanceStatus: String, CaseIterable {
+public enum BookingAttendanceStatus: String, CaseIterable, Codable {
     case booked
     case checkedIn = "checked-in"
     case cancelled
     case noShow = "no-show"
+    case unknown
+}
+
+/// Represents the payment status for a booking.
+/// To be decoded from booking response once available.
+public enum BookingPaymentStatus: String, CaseIterable, Codable {
+    case paid
+    case unpaid
+    case refunded
     case unknown
 }

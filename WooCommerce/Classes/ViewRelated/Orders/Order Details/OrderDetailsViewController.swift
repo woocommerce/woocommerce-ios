@@ -110,6 +110,14 @@ final class OrderDetailsViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         true
     }
+
+    func isPresentingViewModelOrder(_ viewModel: OrderDetailsViewModel) -> Bool {
+        return self.viewModel.order.orderID == viewModel.order.orderID
+    }
+
+    func isQuickOrderNavigationSupported() -> Bool {
+        viewModels.count > 1
+    }
 }
 
 // MARK: - TableView Configuration

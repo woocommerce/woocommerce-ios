@@ -11,22 +11,19 @@ extension BookingDetailsView {
                         .font(TextFont.bodyMedium)
                         .foregroundColor(.primary)
                 }
-                if !content.serviceAndCustomerLine.isEmpty {
-                    Text(content.serviceAndCustomerLine)
-                        .font(.footnote.weight(.medium))
+                if !content.serviceLine.isEmpty {
+                    Text(content.serviceLine)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                if !content.customerLine.isEmpty {
+                    Text(content.customerLine)
+                        .font(.body)
                         .foregroundColor(.secondary)
                 }
                 HStack {
-                    ForEach(content.status, id: \.self) { statusString in
-                        Text(statusString)
-                            .font(.caption2)
-                            .padding(.vertical, 4.5)
-                            .padding(.horizontal, 8)
-                            .background(
-                                BookingDetailsView.Layout.defaultBadgeColor
-                            )
-                            .cornerRadius(4)
-                    }
+                    BookingBadgeView(content.attendanceStatus)
+                    BookingBadgeView(content.bookingStatus)
                 }
                 .padding(.top, Layout.headerBadgesAdditionalTopPadding)
             }

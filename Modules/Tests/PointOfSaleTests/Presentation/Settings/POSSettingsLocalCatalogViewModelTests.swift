@@ -8,14 +8,18 @@ struct POSSettingsLocalCatalogViewModelTests {
     private let sut: POSSettingsLocalCatalogViewModel
     private let catalogSettingsService: MockPOSCatalogSettingsService
     private let catalogSyncCoordinator: MockPOSCatalogSyncCoordinator
+    private let siteSettings: MockSiteSpecificAppSettingsStoreMethods
 
     init() {
         self.catalogSettingsService = MockPOSCatalogSettingsService()
         self.catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
+        self.siteSettings = MockSiteSpecificAppSettingsStoreMethods()
+        self.siteSettings.currentSiteID = sampleSiteID
         self.sut = POSSettingsLocalCatalogViewModel(
             siteID: sampleSiteID,
             catalogSettingsService: catalogSettingsService,
-            catalogSyncCoordinator: catalogSyncCoordinator
+            catalogSyncCoordinator: catalogSyncCoordinator,
+            siteSettings: siteSettings
         )
     }
 
@@ -198,6 +202,49 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(sut.isLoading == false)
         #expect(sut.isRefreshingCatalog == false)
         #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
+    }
+
+    // MARK: - allowFullSyncOnCellular Tests
+
+    @Test func allowFullSyncOnCellular_returns_default_value_from_site_settings() async throws {
+        // Given
+        siteSettings.mockPOSLocalCatalogCellularDataAllowed = false
+
+        // When
+        let isAllowed = sut.allowFullSyncOnCellular
+
+        // Then
+        #expect(isAllowed == false)
+        #expect(siteSettings.getPOSLocalCatalogCellularDataAllowedCalled == true)
+    }
+
+    @Test func allowFullSyncOnCellular_setter_updates_site_settings() async throws {
+        // When
+        sut.allowFullSyncOnCellular = true
+
+        // Then
+        #expect(siteSettings.setPOSLocalCatalogCellularDataAllowedCalled == true)
+        #expect(siteSettings.mockPOSLocalCatalogCellularDataAllowed == true)
+    }
+
+    @Test func allowFullSyncOnCellular_getter_and_setter_work_as_two_way_binding() async throws {
+        // Given - Initially false
+        siteSettings.mockPOSLocalCatalogCellularDataAllowed = false
+        #expect(sut.allowFullSyncOnCellular == false)
+
+        // When - Set to true
+        sut.allowFullSyncOnCellular = true
+
+        // Then - Value is persisted and can be retrieved
+        #expect(siteSettings.mockPOSLocalCatalogCellularDataAllowed == true)
+        #expect(sut.allowFullSyncOnCellular == true)
+
+        // When - Set to false
+        sut.allowFullSyncOnCellular = false
+
+        // Then - Value is persisted and can be retrieved
+        #expect(siteSettings.mockPOSLocalCatalogCellularDataAllowed == false)
+        #expect(sut.allowFullSyncOnCellular == false)
     }
 }
 

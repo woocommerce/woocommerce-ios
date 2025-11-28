@@ -343,7 +343,8 @@ extension Networking.Booking {
             attendanceStatusKey: .fake(),
             localTimezone: .fake(),
             currency: .fake(),
-            orderInfo: .fake()
+            orderInfo: .fake(),
+            note: .fake()
         )
     }
 }
@@ -812,7 +813,8 @@ extension Networking.POSProduct {
             attributes: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),
-            stockStatusKey: .fake()
+            stockStatusKey: .fake(),
+            variationIDs: .fake()
         )
     }
 }

@@ -63,10 +63,22 @@ struct BookingDateTimeFilterView: View {
             selectedToDate = newValue
         }
         .onChange(of: selectedFromDate) { _, newValue in
-            onSelection(newValue, selectedToDate)
+            guard let newValue else {
+                return onSelection(nil, selectedToDate)
+            }
+            /// Bookings backend treats dates as local time with no time zone.
+            /// Convert the date to keep the selected components but with UTC as time zone.
+            let convertedDate = convertToUTCDate(newValue)
+            onSelection(convertedDate, selectedToDate)
         }
         .onChange(of: selectedToDate) { _, newValue in
-            onSelection(selectedFromDate, newValue)
+            guard let newValue else {
+                return onSelection(selectedFromDate, nil)
+            }
+            /// Bookings backend treats dates as local time with no time zone.
+            /// Convert the date to keep the selected components but with UTC as time zone.
+            let convertedDate = convertToUTCDate(newValue)
+            onSelection(selectedFromDate, convertedDate)
         }
     }
 }
@@ -155,6 +167,19 @@ private extension BookingDateTimeFilterView {
         case .toDate, .toTime:
             return fromDate...Date.distantFuture
         }
+    }
+
+    /// Converts a date by extracting its components in the local timezone
+    /// and reconstructing a new date with those same components in UTC.
+    /// This effectively treats the selected date/time as if it were in UTC.
+    func convertToUTCDate(_ date: Date) -> Date {
+        let localCalendar = Calendar.current
+        let components = localCalendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(identifier: "UTC")!
+
+        return utcCalendar.date(from: components) ?? date
     }
 }
 

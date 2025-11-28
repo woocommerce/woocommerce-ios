@@ -63,7 +63,9 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
-            if shouldRefresh(for: base) {
+            if await shouldReload(for: base) {
+                await reloadItems(base: base)
+            } else if shouldRefresh(for: base) {
                 await refreshItems(base: base)
             }
             dataSource.loadProducts()
@@ -86,6 +88,15 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
             dataSource.loadVariations(for: parentProduct)
             loadingState.variationsLoaded = true
         }
+    }
+
+    func reloadItems(base: ItemListBaseItem) async {
+        guard case .root = base else {
+            return
+        }
+        loadingState = .init()
+
+        try? await catalogSyncCoordinator.performSmartSync(for: siteID)
     }
 
     func refreshItems(base: ItemListBaseItem) async {
@@ -125,9 +136,14 @@ private extension PointOfSaleObservableItemsController {
             return .loading(isCatalogSyncing: true)
         }
 
+        if case .failure(let error) = initialSyncResult {
+            return .error(.errorOnInitalCatalogSync(error: error))
+        }
+
         if !loadingState.productsLoaded && dataSource.isLoadingProducts {
             return .loading()
         }
+
         return .content
     }
 
@@ -137,10 +153,24 @@ private extension PointOfSaleObservableItemsController {
         }
 
         switch syncState {
-        case .syncStarted(_, true), .syncNeverDone:
+        case .initialSyncStarted, .syncNeverDone:
             return true
         default:
             return false
+        }
+    }
+
+    var initialSyncResult: Result<Void, Error>? {
+        switch catalogSyncCoordinator.fullSyncStateModel.state[siteID] {
+        case .initialSyncFailed(_, let error):
+            return .failure(error)
+        case .syncFailed(_, let error):
+            // If there's no catalog data, treat subsequent sync failures as critical
+            return dataSource.productItems.isEmpty ? .failure(error) : .success(())
+        case .syncCompleted:
+            return .success(())
+        default:
+            return nil
         }
     }
 
@@ -173,6 +203,19 @@ private extension PointOfSaleObservableItemsController {
 }
 
 private extension PointOfSaleObservableItemsController {
+    func shouldReload(for type: ItemListBaseItem) async -> Bool {
+        guard case .root = type else {
+            return false
+        }
+
+        // Reload if there's a failure
+        if case .failure = initialSyncResult {
+            return true
+        }
+
+        return false
+    }
+
     /// Determines if a refresh should be triggered
     func shouldRefresh(for type: ItemListBaseItem) -> Bool {
         if case .error = refreshState {

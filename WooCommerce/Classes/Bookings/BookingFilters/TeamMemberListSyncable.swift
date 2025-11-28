@@ -5,7 +5,7 @@ import Yosemite
 struct TeamMemberListSyncable: ListSyncable {
     typealias StorageType = StorageBookingResource
     typealias ModelType = BookingResource
-    typealias ListFilterType = BookingResource
+    typealias ListFilterType = BookingTeamMemberFilter
 
     let siteID: Int64
 
@@ -48,6 +48,12 @@ struct TeamMemberListSyncable: ListSyncable {
         fatalError("Searching is not supported")
     }
 
+    /// Creates the predicate for filtering search results
+    /// - Returns: nil because searching is not supported for team members
+    func createSearchPredicate(keyword: String) -> NSPredicate? {
+        nil
+    }
+
     // MARK: - Display Configuration
 
     func displayName(for item: BookingResource) -> String {
@@ -59,8 +65,8 @@ struct TeamMemberListSyncable: ListSyncable {
 
     func selectionEnabled(for item: BookingResource) -> Bool { true }
 
-    func filterItem(for item: BookingResource) -> BookingResource {
-        item
+    func filterItem(for item: BookingResource) -> BookingTeamMemberFilter {
+        BookingTeamMemberFilter(resourceID: item.resourceID, name: item.name)
     }
 }
 

@@ -260,6 +260,46 @@ struct POSNotificationSchedulerTests {
         #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
     }
 
+    @Test func scheduleLocalNotificationIfEligible_when_currentMerchant_already_scheduled_then_potentialMerchant_cannot_be_scheduled() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores(isCurrentMerchantScheduled: true)
+
+        let scheduler = POSNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+
+        // Then - No notification should be scheduled. Prevents backwards conversion from 'current' to 'potential' merchant.
+        #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_potentialMerchant_already_scheduled_then_does_not_duplicate_notification() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleSurveys] = true
+        setupMockStores(isPotentialMerchantScheduled: true)
+
+        let scheduler = POSNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+
+        // Then - No duplicate notification should be scheduled
+        #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
+    }
+
     private func sampleSiteSettings(countryCode: String) -> [SiteSetting] {
         [
             SiteSetting.fake().copy(

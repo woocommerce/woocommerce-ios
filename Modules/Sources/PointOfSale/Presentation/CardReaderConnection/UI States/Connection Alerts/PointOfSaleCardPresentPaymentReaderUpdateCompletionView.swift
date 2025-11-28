@@ -34,6 +34,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)
     }
 }
 
@@ -51,7 +52,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionPreviewView: View {
         }
         .posSheet(isPresented: $showsSheet) {
             PointOfSaleCardPresentPaymentReaderUpdateCompletionView(
-                viewModel: .init(),
+                viewModel: .init(doneAction: { showsSheet = false }),
                 animation: .init(namespace: namespace)
             )
         }

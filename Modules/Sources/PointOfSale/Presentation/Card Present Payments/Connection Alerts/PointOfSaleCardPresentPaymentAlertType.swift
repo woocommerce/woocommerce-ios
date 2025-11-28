@@ -44,9 +44,8 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
             return viewModel.cancelReaderUpdate
         case .optionalReaderUpdateInProgress(let viewModel):
             return viewModel.cancelReaderUpdate
-        case .readerUpdateCompletion:
-            // We only support in-line updates at the moment, and they automatically move on to connecting the reader.
-            return nil
+        case .readerUpdateCompletion(let viewModel):
+            return viewModel.buttonViewModel.actionHandler
         case .updateFailed(let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .updateFailedNonRetryable(let viewModel):

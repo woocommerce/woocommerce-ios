@@ -11,10 +11,14 @@ struct BookableProductListSyncable: ListSyncable {
 
     let title = Localization.title
 
-    let emptyStateMessage = Localization.noMembersFound
+    let emptyStateMessage = Localization.noServiceFound
     let emptyItemTitlePlaceholder: String? = nil
 
-    let searchConfiguration: ListSearchConfiguration? = nil
+    let searchConfiguration: ListSearchConfiguration? = ListSearchConfiguration(
+        searchPrompt: Localization.searchPrompt,
+        emptySearchTitle: Localization.noServiceFound,
+        emptySearchDescription: Localization.emptySearchDescription
+    )
 
     let selectionDisabledMessage: String? = nil
 
@@ -53,7 +57,20 @@ struct BookableProductListSyncable: ListSyncable {
 
     /// Creates the action to search items with keyword
     func createSearchAction(keyword: String, pageNumber: Int, pageSize: Int, completion: @escaping (Result<Bool, Error>) -> Void) -> Action {
-        fatalError("Searching is not supported")
+        ProductAction.searchProducts(
+            siteID: siteID,
+            keyword: keyword,
+            filter: .name,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            productType: .booking,
+            onCompletion: completion
+        )
+    }
+
+    /// Creates the predicate for filtering search results
+    func createSearchPredicate(keyword: String) -> NSPredicate? {
+        NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@).@count > 0", keyword)
     }
 
     // MARK: - Display Configuration
@@ -79,10 +96,20 @@ private extension BookableProductListSyncable {
             value: "Service / Event",
             comment: "Title of the booking service/event selector view"
         )
-        static let noMembersFound = NSLocalizedString(
+        static let noServiceFound = NSLocalizedString(
             "bookingServiceEventSelectorView.noMembersFound",
             value: "No service or event found",
             comment: "Text on the empty view of the booking service/event selector view"
+        )
+        static let searchPrompt = NSLocalizedString(
+            "bookingServiceEventSelectorView.searchPrompt",
+            value: "Search service / event",
+            comment: "Prompt in the search bar of the booking service/event selector view"
+        )
+        static let emptySearchDescription = NSLocalizedString(
+            "bookingServiceEventSelectorView.emptySearchDescription",
+            value: "Try adjusting your search term to see more results",
+            comment: "Message on the empty search result view of the booking service/event selector view"
         )
     }
 }

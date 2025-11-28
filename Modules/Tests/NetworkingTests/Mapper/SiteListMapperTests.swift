@@ -37,6 +37,21 @@ final class SiteListMapperTests: XCTestCase {
         let second = try XCTUnwrap(sites[safe: 1])
         XCTAssertFalse(second.hasSSOEnabled)
     }
+
+    func test_http_urls_are_converted_to_https() throws {
+        // Given
+        let sites = mapLoadHTTPSiteListResponse()
+
+        // Then
+        let site = try XCTUnwrap(sites.first)
+        XCTAssertTrue(site.url.hasPrefix("https://"), "Site URL should be converted to HTTPS")
+        XCTAssertTrue(site.adminURL.hasPrefix("https://"), "Admin URL should be converted to HTTPS")
+        XCTAssertTrue(site.loginURL.hasPrefix("https://"), "Login URL should be converted to HTTPS")
+
+        XCTAssertEqual(site.url, "https://insecure-site.testing.blog")
+        XCTAssertEqual(site.adminURL, "https://insecure-site.testing.blog/wp-admin/")
+        XCTAssertEqual(site.loginURL, "https://insecure-site.testing.blog/wp-login.php")
+    }
 }
 
 private extension SiteListMapperTests {
@@ -54,5 +69,9 @@ private extension SiteListMapperTests {
 
     func mapLoadMalformedSiteListResponse() -> [Site] {
         return mapSiteListData(from: "sites-malformed")
+    }
+
+    func mapLoadHTTPSiteListResponse() -> [Site] {
+        return mapSiteListData(from: "sites-http")
     }
 }

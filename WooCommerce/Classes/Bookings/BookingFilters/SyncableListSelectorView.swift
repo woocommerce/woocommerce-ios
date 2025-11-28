@@ -77,12 +77,16 @@ private extension SyncableListSelectorView {
                 }
             )
             .renderedIf(viewModel.searchQuery.isEmpty)
+            .listRowSeparator(.hidden, edges: .top)
 
-            ForEach(items, id: \.self) { item in
+            ForEach(Array(items.enumerated()), id: \.element) { (index, item) in
                 optionRow(text: syncable.displayName(for: item),
                           description: syncable.description(for: item),
                           isSelected: selectedItems.contains(where: { $0 == syncable.filterItem(for: item) }),
                           onSelection: { toggleSelectionIfPossible(for: item) })
+                .if(index == 0 && viewModel.searchQuery.isNotEmpty) {
+                    $0.listRowSeparator(.hidden, edges: .top)
+                }
             }
 
             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)

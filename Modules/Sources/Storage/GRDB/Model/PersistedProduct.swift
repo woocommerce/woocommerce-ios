@@ -88,6 +88,12 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
                                            using: ForeignKey([PersistedProductAttribute.CodingKeys.siteID.stringValue,
                                                               PersistedProductAttribute.CodingKeys.productID.stringValue],
                                                              to: primaryKey))
+
+    public static let variations = hasMany(PersistedProductVariation.self,
+                                           key: "variations",
+                                           using: ForeignKey([PersistedProductVariation.CodingKeys.siteID.stringValue,
+                                                              PersistedProductVariation.CodingKeys.productID.stringValue],
+                                                             to: primaryKey))
 }
 
 // MARK: - Point of Sale Requests

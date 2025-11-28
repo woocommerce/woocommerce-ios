@@ -126,7 +126,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(hasCustomerSection)
     }
 
-    func test_header_content_uses_booking_summary_text() {
+    func test_header_content_uses_correct_contents() {
         // Given
         let billingAddress = Address.fake().copy(
             firstName: "Jane",
@@ -159,7 +159,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(headerContent.serviceAndCustomerLine, "Massage Therapy  •  Jane Smith")
+        XCTAssertEqual(headerContent.serviceLine, "Massage Therapy")
+        XCTAssertEqual(headerContent.customerLine, "Jane Smith")
     }
 
     func test_customer_content_populated_from_billing_address() {
@@ -275,8 +276,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
 
         let messageFormat = NSLocalizedString(
-            "BookingDetailsView.attendanceStatus.updateFailed.message",
-            value: "Unable to change attendance status of Booking #%1$d",
+            "BookingDetailsView.attendanceStatus.failureMessage",
+            value: "Unable to change attendance status of Booking #%1$d.",
             comment: ""
         )
         let expectedMessage = String(format: messageFormat, booking.bookingID)
@@ -306,7 +307,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Header section not found")
             return
         }
-        XCTAssertEqual(headerContent.status, ["Checked In", "Paid"])
+        XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Checked-in")
+        XCTAssertEqual(headerContent.bookingStatus.localizedTitle, "Paid")
     }
 
     func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {
@@ -332,7 +334,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(attendanceContent.value, "No Show")
+        XCTAssertEqual(attendanceContent.value, "No-show")
     }
 
     func test_attendance_section_is_hidden_when_booking_is_cancelled() {
@@ -354,5 +356,32 @@ final class BookingDetailsViewModelTests: XCTestCase {
         }
 
         XCTAssertFalse(containsAttendanceSection)
+    }
+
+    func test_view_order_is_hidden_when_booking_order_id_is_invalid() {
+        // Given
+        let booking = Booking.fake().copy(
+            orderID: 0
+        )
+
+        // When
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+
+        // Then
+        let paymentSection = viewModel.sections.first { section in
+            if case .payment = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let paymentSection = paymentSection,
+              case let .payment(paymentContent) = paymentSection.content else {
+            XCTFail("Payment section not found")
+            return
+        }
+
+        XCTAssertFalse(viewModel.isViewOrderAvailable)
+        XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
     }
 }

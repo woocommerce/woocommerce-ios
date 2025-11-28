@@ -13,19 +13,19 @@ extension BookingAttendanceStatus {
         case .checkedIn:
             return NSLocalizedString(
                 "BookingAttendanceStatus.checkedIn",
-                value: "Checked In",
+                value: "Checked-in",
                 comment: "Title for 'Checked In' booking attendance status."
             )
         case .cancelled:
             return NSLocalizedString(
-                "BookingAttendanceStatus.cancelled",
-                value: "Cancelled",
+                "BookingAttendanceStatus.canceled",
+                value: "Canceled",
                 comment: "Title for 'Cancelled' booking attendance status."
             )
         case .noShow:
             return NSLocalizedString(
                 "BookingAttendanceStatus.noShow",
-                value: "No Show",
+                value: "No-show",
                 comment: "Title for 'No Show' booking attendance status."
             )
         case .unknown:

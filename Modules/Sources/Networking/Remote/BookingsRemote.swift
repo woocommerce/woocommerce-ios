@@ -9,8 +9,7 @@ public protocol BookingsRemoteProtocol {
     func loadAllBookings(for siteID: Int64,
                          pageNumber: Int,
                          pageSize: Int,
-                         startDateBefore: String?,
-                         startDateAfter: String?,
+                         filters: BookingFilters?,
                          searchQuery: String?,
                          order: BookingsRemote.Order) async throws -> [Booking]
 
@@ -20,7 +19,8 @@ public protocol BookingsRemoteProtocol {
     func updateBooking(
         from siteID: Int64,
         bookingID: Int64,
-        attendanceStatus: BookingAttendanceStatus
+        attendanceStatus: BookingAttendanceStatus?,
+        bookingStatus: BookingStatus?
     ) async throws -> Booking?
 
     func fetchResource(resourceID: Int64,
@@ -29,6 +29,35 @@ public protocol BookingsRemoteProtocol {
     func fetchResources(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [BookingResource]
+}
+
+/// Filters for booking queries
+public struct BookingFilters {
+    public let productIDs: [Int64]
+    public let customerIDs: [Int64]
+    public let resourceIDs: [Int64]
+    public let startDateBefore: String?
+    public let startDateAfter: String?
+    public let attendanceStatuses: [String]
+    public let paymentStatuses: [String]
+
+    public init(
+        productIDs: [Int64] = [],
+        customerIDs: [Int64] = [],
+        resourceIDs: [Int64] = [],
+        startDateBefore: String? = nil,
+        startDateAfter: String? = nil,
+        attendanceStatuses: [String] = [],
+        paymentStatuses: [String] = []
+    ) {
+        self.productIDs = productIDs
+        self.customerIDs = customerIDs
+        self.resourceIDs = resourceIDs
+        self.startDateBefore = startDateBefore
+        self.startDateAfter = startDateAfter
+        self.attendanceStatuses = attendanceStatuses
+        self.paymentStatuses = paymentStatuses
+    }
 }
 
 /// Booking: Remote Endpoints
@@ -43,30 +72,51 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     ///     - siteID: Site for which we'll fetch remote bookings.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of bookings to be retrieved per page.
-    ///     - startDateBefore: Filter bookings with start date before this timestamp.
-    ///     - startDateAfter: Filter bookings with start date after this timestamp.
+    ///     - filters: Optional filters for bookings (products, customers, resources, dates, statuses).
     ///     - searchQuery: Search query to filter bookings.
     ///     - order: Sort order for bookings (ascending or descending).
     ///
     public func loadAllBookings(for siteID: Int64,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
-                                startDateBefore: String? = nil,
-                                startDateAfter: String? = nil,
+                                filters: BookingFilters? = nil,
                                 searchQuery: String? = nil,
                                 order: Order) async throws -> [Booking] {
-        var parameters = [
+        var parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.rawValue
         ]
 
-        if let startDateBefore = startDateBefore {
-            parameters[ParameterKey.startDateBefore] = startDateBefore
-        }
+        // Apply filters if provided
+        if let filters {
+            if filters.productIDs.isNotEmpty {
+                parameters[ParameterKey.product] = filters.productIDs.map(String.init)
+            }
 
-        if let startDateAfter = startDateAfter {
-            parameters[ParameterKey.startDateAfter] = startDateAfter
+            if filters.customerIDs.isNotEmpty {
+                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init)
+            }
+
+            if filters.resourceIDs.isNotEmpty {
+                parameters[ParameterKey.resource] = filters.resourceIDs.map(String.init)
+            }
+
+            if let startDateBefore = filters.startDateBefore {
+                parameters[ParameterKey.startDateBefore] = startDateBefore
+            }
+
+            if let startDateAfter = filters.startDateAfter {
+                parameters[ParameterKey.startDateAfter] = startDateAfter
+            }
+
+            if filters.attendanceStatuses.isNotEmpty {
+                parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses
+            }
+
+            if filters.paymentStatuses.isNotEmpty {
+                parameters[ParameterKey.paymentStatus] = filters.paymentStatuses
+            }
         }
 
         if let searchQuery = searchQuery, !searchQuery.isEmpty {
@@ -101,12 +151,20 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     public func updateBooking(
         from siteID: Int64,
         bookingID: Int64,
-        attendanceStatus: BookingAttendanceStatus
+        attendanceStatus: BookingAttendanceStatus?,
+        bookingStatus: BookingStatus?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
-        let parameters = [
-            ParameterKey.attendanceStatus: attendanceStatus.rawValue
-        ]
+        var parameters: [String: String] = [:]
+
+        if let attendanceStatus {
+            parameters[ParameterKey.attendanceStatus] = attendanceStatus.rawValue
+        }
+
+        if let bookingStatus {
+            parameters[ParameterKey.status] = bookingStatus.rawValue
+        }
+
         let request = JetpackRequest(
             wooApiVersion: .wcBookings,
             method: .put,
@@ -195,6 +253,11 @@ public extension BookingsRemote {
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
         static let order: String           = "order"
+        static let product: String         = "product"
+        static let customer: String        = "customer"
+        static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
+        static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
+        static let status: String          = "status"
     }
 }

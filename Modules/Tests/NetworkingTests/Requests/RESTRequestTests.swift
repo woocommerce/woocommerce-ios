@@ -146,4 +146,90 @@ final class RESTRequestTests: XCTestCase {
             XCTAssertNotNil(urlRequest.httpBody)
         }
     }
+
+    // MARK: - allowsCellularAccess Tests
+
+    func test_request_with_allowsCellularAccess_true_sets_URLRequest_property() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .get,
+                                  path: sampleRPC,
+                                  parameters: sampleParameters,
+                                  allowsCellularAccess: true)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertTrue(urlRequest.allowsCellularAccess)
+    }
+
+    func test_request_with_allowsCellularAccess_false_sets_URLRequest_property() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .get,
+                                  path: sampleRPC,
+                                  parameters: sampleParameters,
+                                  allowsCellularAccess: false)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertFalse(urlRequest.allowsCellularAccess)
+    }
+
+    func test_request_defaults_to_allowsCellularAccess_true() throws {
+        // Given - no explicit allowsCellularAccess parameter
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .get,
+                                  path: sampleRPC,
+                                  parameters: sampleParameters)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertTrue(urlRequest.allowsCellularAccess)
+    }
+
+    func test_request_with_allowsCellularAccess_works_for_all_initializers() throws {
+        // Given - Test all three initializers
+
+        // 1. Simple initializer
+        let simpleRequest = RESTRequest(siteURL: sampleSiteAddress,
+                                        method: .get,
+                                        path: sampleRPC,
+                                        parameters: sampleParameters,
+                                        allowsCellularAccess: false)
+
+        // 2. WooApiVersion initializer
+        let wooRequest = RESTRequest(siteURL: sampleSiteAddress,
+                                     wooApiVersion: sampleWooApiVersion,
+                                     method: .get,
+                                     path: sampleRPC,
+                                     parameters: sampleParameters,
+                                     allowsCellularAccess: false)
+
+        // 3. WordPressApiVersion initializer
+        let wpRequest = RESTRequest(siteURL: sampleSiteAddress,
+                                    wordpressApiVersion: .wpMark2,
+                                    method: .get,
+                                    path: sampleRPC,
+                                    parameters: sampleParameters,
+                                    allowsCellularAccess: false)
+
+        // When/Then
+        let simpleURLRequest = try simpleRequest.asURLRequest()
+        XCTAssertFalse(simpleURLRequest.allowsCellularAccess)
+
+        let wooURLRequest = try wooRequest.asURLRequest()
+        XCTAssertFalse(wooURLRequest.allowsCellularAccess)
+
+        let wpURLRequest = try wpRequest.asURLRequest()
+        XCTAssertFalse(wpURLRequest.allowsCellularAccess)
+    }
 }

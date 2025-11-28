@@ -213,7 +213,7 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleSurveys
 
-    /// Enables card reader connection flow within POS settings
+    /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
-    case pointOfSaleSettingsCardReaderFlow
+    case pointOfSaleCatalogAPI
 }

@@ -23,7 +23,7 @@ extension PersistedProduct {
         )
     }
 
-    func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = []) -> POSProduct {
+    func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = [], variationIDs: [Int64] = []) -> POSProduct {
         return POSProduct(
             siteID: siteID,
             productID: id,
@@ -40,20 +40,24 @@ extension PersistedProduct {
             attributes: attributes,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
+            stockStatusKey: stockStatusKey,
+            variationIDs: variationIDs
         )
     }
 
     func toPOSProduct(db: GRDBDatabaseConnection) throws -> POSProduct {
-        let (images, attributes) = try db.read { db in
+        let (images, attributes, variationIDs) = try db.read { db in
             let images = try request(for: PersistedProduct.images).fetchAll(db)
             let attributes = try request(for: PersistedProduct.attributes).fetchAll(db)
-            return (images, attributes)
+            let variations = try request(for: PersistedProduct.variations).fetchAll(db)
+            let variationIDs = variations.map(\.id)
+            return (images, attributes, variationIDs)
         }
 
         return toPOSProduct(
             images: images.map { $0.toProductImage() },
-            attributes: attributes.map { $0.toProductAttribute(siteID: siteID) }
+            attributes: attributes.map { $0.toProductAttribute(siteID: siteID) },
+            variationIDs: variationIDs
         )
     }
 

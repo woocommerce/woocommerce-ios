@@ -165,7 +165,10 @@ final class OrdersRootViewController: UIViewController {
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     @discardableResult
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
-        ordersViewController.selectOrderFromListIfPossible(for: orderID)
+        ordersViewController.selectOrderFromListIfPossible(
+            for: orderID,
+            isTriggeredByUserAction: true
+        )
     }
 
     /// Called when an order is shown externally (outside of `OrderListViewController`) and the order should be

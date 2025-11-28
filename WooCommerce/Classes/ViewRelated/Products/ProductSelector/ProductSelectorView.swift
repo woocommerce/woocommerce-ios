@@ -336,7 +336,7 @@ private extension ProductSelectorView {
                 .submitLabel(.done)
                 .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                    ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
                 }
                 .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
                 .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }

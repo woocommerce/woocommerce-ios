@@ -30,6 +30,7 @@ public enum RemoteFeatureFlag: Decodable {
     case storeCreationCompleteNotification
     case pointOfSale
     case appPasswordsForJetpackSites
+    case posLocalCatalogM1
 
     init?(rawValue: String) {
         switch rawValue {
@@ -39,6 +40,8 @@ public enum RemoteFeatureFlag: Decodable {
             self = .pointOfSale
         case "woo_app_passwords_for_jetpack_sites":
             self = .appPasswordsForJetpackSites
+        case "woo_pos_local_catalog_m1":
+            self = .posLocalCatalogM1
         default:
             return nil
         }

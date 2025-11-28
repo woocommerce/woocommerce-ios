@@ -13,8 +13,7 @@ public enum BookingAction: Action {
     case synchronizeBookings(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
-                             startDateBefore: String? = nil,
-                             startDateAfter: String? = nil,
+                             filters: BookingFilters? = nil,
                              order: BookingsRemote.Order = .descending,
                              shouldClearCache: Bool = false,
                              onCompletion: (Result<Bool, Error>) -> Void)
@@ -40,8 +39,7 @@ public enum BookingAction: Action {
                         searchQuery: String,
                         pageNumber: Int,
                         pageSize: Int = BookingsRemote.Default.pageSize,
-                        startDateBefore: String? = nil,
-                        startDateAfter: String? = nil,
+                        filters: BookingFilters? = nil,
                         order: BookingsRemote.Order = .descending,
                         onCompletion: (Result<[Booking], Error>) -> Void)
 
@@ -73,4 +71,24 @@ public enum BookingAction: Action {
                                        bookingID: Int64,
                                        status: BookingAttendanceStatus,
                                        onCompletion: (Error?) -> Void)
+
+    /// Cancels a booking by updating its status to cancelled.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to be cancelled.
+    /// - Parameter onCompletion: called when cancellation completes, returns an error in case of a failure.
+    ///
+    case cancelBooking(siteID: Int64,
+                       bookingID: Int64,
+                       onCompletion: (Error?) -> Void)
+
+    /// Marks a booking as paid by updating its status to paid.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to be marked as paid.
+    /// - Parameter onCompletion: called when the operation completes, returns an error in case of a failure.
+    ///
+    case markBookingAsPaid(siteID: Int64,
+                           bookingID: Int64,
+                           onCompletion: (Error?) -> Void)
 }

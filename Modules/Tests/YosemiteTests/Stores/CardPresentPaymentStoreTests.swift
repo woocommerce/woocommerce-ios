@@ -252,19 +252,20 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account and places nothing in storage in case of error.
     ///
     func test_loadAccounts_handles_failure() throws {
-        let expectation = self.expectation(description: "Load Account error response")
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
                                  filename: "generic_error")
         network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
                                  filename: "generic_error")
 
-        let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
-            XCTAssertTrue(result.isFailure)
-            expectation.fulfill()
-        })
+        // When
+        let result = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.loadAccounts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
 
-        cardPresentStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
 
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.PaymentGatewayAccount.self, matching: nil))
     }
@@ -272,18 +273,19 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account, propagates success and upserts the account into storage.
     ///
     func test_loadAccounts_returns_expected_data() throws {
-        let expectation = self.expectation(description: "Load Account fetch response")
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
                                  filename: "wcpay-account-complete")
         network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
                                  filename: "stripe-account-complete")
-        let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
-            XCTAssertTrue(result.isSuccess)
-            expectation.fulfill()
-        })
+        // When
+        let result = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.loadAccounts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
 
-        cardPresentStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
 
         XCTAssert(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil) == 2)
 
@@ -295,6 +297,89 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssert(storageAccount?.siteID == sampleSiteID)
         XCTAssert(storageAccount?.gatewayID == WCPayAccount.gatewayID)
         XCTAssert(storageAccount?.status == "complete")
+    }
+
+    /// Verifies that loadAccounts succeeds when only WCPay succeeds and Stripe fails.
+    ///
+    func test_loadAccounts_succeeds_when_only_wcpay_succeeds() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "generic_error")
+
+        // When
+        let result = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.loadAccounts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        XCTAssert(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil) == 1)
+
+        let storageAccount = viewStorage.loadPaymentGatewayAccount(
+            siteID: sampleSiteID,
+            gatewayID: WCPayAccount.gatewayID
+        )
+
+        XCTAssert(storageAccount?.siteID == sampleSiteID)
+        XCTAssert(storageAccount?.gatewayID == WCPayAccount.gatewayID)
+        XCTAssert(storageAccount?.status == "complete")
+    }
+
+    /// Verifies that loadAccounts succeeds when only Stripe succeeds and WCPay fails.
+    ///
+    func test_loadAccounts_succeeds_when_only_stripe_succeeds() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "stripe-account-complete")
+
+        // When
+        let result = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.loadAccounts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        XCTAssert(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil) == 1)
+
+        let storageAccount = viewStorage.loadPaymentGatewayAccount(
+            siteID: sampleSiteID,
+            gatewayID: StripeAccount.gatewayID
+        )
+
+        XCTAssert(storageAccount?.siteID == sampleSiteID)
+        XCTAssert(storageAccount?.gatewayID == StripeAccount.gatewayID)
+        XCTAssert(storageAccount?.status == "complete")
+    }
+
+    /// Verifies that loadAccounts returns an error when both WCPay and Stripe fail.
+    ///
+    func test_loadAccounts_fails_when_both_wcpay_and_stripe_fail() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "generic_error")
+        // When
+        let result = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.loadAccounts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+
+        XCTAssertNil(viewStorage.firstObject(ofType: Storage.PaymentGatewayAccount.self, matching: nil))
     }
 
     /// Verifies that the store hits the network when fetching a charge, and propagates success.

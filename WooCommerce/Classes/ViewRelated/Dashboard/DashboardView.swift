@@ -25,7 +25,7 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
-    var viewAllOnboardingTasksTapped: ((Site) -> Void)?
+    var viewAllOnboardingTasksTapped: ((Site, [StoreOnboardingTaskViewModel]) -> Void)?
 
     /// Set externally in the hosting controller.
     var showAllBlazeCampaignsTapped: (() -> Void)?
@@ -162,6 +162,10 @@ struct DashboardView: View {
 
             storePlanBanner
                 .renderedIf(connectivityStatus != .notReachable)
+
+            OfflineBannerViewRepresentable()
+                .frame(height: OfflineBannerView.height)
+                .renderedIf(connectivityStatus == .notReachable)
         }
         .sheet(isPresented: $showingSupportForm) {
             supportForm
@@ -211,9 +215,9 @@ private extension DashboardView {
                                             onTaskTapped: { task in
                             guard let currentSite else { return }
                             onboardingTaskTapped?(currentSite, task)
-                        }, onViewAllTapped: {
+                        }, onViewAllTapped: { tasks in
                             guard let currentSite else { return }
-                            viewAllOnboardingTasksTapped?(currentSite)
+                            viewAllOnboardingTasksTapped?(currentSite, tasks)
                         })
                     case .blaze:
                         BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,

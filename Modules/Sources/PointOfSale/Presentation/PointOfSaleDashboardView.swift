@@ -85,7 +85,9 @@ struct PointOfSaleDashboardView: View {
                             await posModel.couponsSearchController.loadItems(base: .root)
                         }
                     }
-                })
+                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
+                    dismiss()
+                } : nil)
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
@@ -139,7 +141,13 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            PointOfSaleSettingsView(settingsController: posModel.settingsController)
+            POSSettingsView(settingsController: posModel.settingsController)
+        }
+        .onChange(of: showSettings) { oldValue, newValue in
+            guard !newValue, oldValue else { return }
+            Task {
+                await posModel.checkStaleSyncStatus()
+            }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }

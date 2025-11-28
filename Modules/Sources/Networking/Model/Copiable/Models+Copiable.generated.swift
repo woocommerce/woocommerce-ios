@@ -436,8 +436,8 @@ extension Networking.Booking {
         allDay: CopiableProp<Bool> = .copy,
         cost: CopiableProp<String> = .copy,
         customerID: CopiableProp<Int64> = .copy,
-        dateCreated: CopiableProp<Date> = .copy,
-        dateModified: CopiableProp<Date> = .copy,
+        dateCreated: NullableCopiableProp<Date> = .copy,
+        dateModified: NullableCopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
         googleCalendarEventID: NullableCopiableProp<String> = .copy,
         orderID: CopiableProp<Int64> = .copy,
@@ -450,7 +450,8 @@ extension Networking.Booking {
         attendanceStatusKey: CopiableProp<String> = .copy,
         localTimezone: CopiableProp<String> = .copy,
         currency: CopiableProp<String> = .copy,
-        orderInfo: NullableCopiableProp<BookingOrderInfo> = .copy
+        orderInfo: NullableCopiableProp<BookingOrderInfo> = .copy,
+        note: CopiableProp<String> = .copy
     ) -> Networking.Booking {
         let siteID = siteID ?? self.siteID
         let bookingID = bookingID ?? self.bookingID
@@ -472,6 +473,7 @@ extension Networking.Booking {
         let localTimezone = localTimezone ?? self.localTimezone
         let currency = currency ?? self.currency
         let orderInfo = orderInfo ?? self.orderInfo
+        let note = note ?? self.note
 
         return Networking.Booking(
             siteID: siteID,
@@ -493,7 +495,8 @@ extension Networking.Booking {
             attendanceStatusKey: attendanceStatusKey,
             localTimezone: localTimezone,
             currency: currency,
-            orderInfo: orderInfo
+            orderInfo: orderInfo,
+            note: note
         )
     }
 }
@@ -1367,7 +1370,8 @@ extension Networking.POSProduct {
         attributes: CopiableProp<[ProductAttribute]> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
-        stockStatusKey: CopiableProp<String> = .copy
+        stockStatusKey: CopiableProp<String> = .copy,
+        variationIDs: CopiableProp<[Int64]> = .copy
     ) -> Networking.POSProduct {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1385,6 +1389,7 @@ extension Networking.POSProduct {
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+        let variationIDs = variationIDs ?? self.variationIDs
 
         return Networking.POSProduct(
             siteID: siteID,
@@ -1402,7 +1407,8 @@ extension Networking.POSProduct {
             attributes: attributes,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
+            stockStatusKey: stockStatusKey,
+            variationIDs: variationIDs
         )
     }
 }

@@ -7,6 +7,8 @@ struct BookingDetailsView: View {
     @State private var showingOptions = false
     @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
+    @State private var cancellingBooking = false
+    @State private var markingAsPaid = false
     @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
@@ -14,16 +16,11 @@ struct BookingDetailsView: View {
     enum Layout {
         static let contentSidePadding: CGFloat = 16
         static let contentVerticalPadding: CGFloat = 16
-        static let headerContentVerticalPadding: CGFloat = 6
-        static let headerBadgesAdditionalTopPadding: CGFloat = 4
+        static let headerContentVerticalPadding: CGFloat = 2
+        static let headerBadgesAdditionalTopPadding: CGFloat = 6
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let rowTextVerticalPadding: CGFloat = 11
-        static let defaultBadgeColor = Color(
-            uiColor: .init(
-                light: .systemGray6,
-                dark: .systemGray5
-            )
-        )
+        static let contentContainerMaxWidth: CGFloat = 525
     }
 
     enum TextFont {
@@ -49,10 +46,9 @@ struct BookingDetailsView: View {
                 }
             }
         }
+        .verticalHairlineBorders()
+        .frame(maxWidth: Layout.contentContainerMaxWidth)
         .refreshable {
-            await viewModel.syncData()
-        }
-        .task {
             await viewModel.syncData()
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -67,14 +63,19 @@ struct BookingDetailsView: View {
                 }
                 .confirmationDialog("", isPresented: $showingOptions, titleVisibility: .hidden) {
                     Button(Localization.markAsPaid) {
-                        print("On mark as paid tap")
+                        markBookingAsPaid()
                     }
+                    .renderedIf(viewModel.shouldShowMarkAsPaid)
+
                     Button(Localization.viewOrder) {
-                        print("On view order tap")
+                        viewModel.navigateToOrderDetails()
                     }
+                    .renderedIf(viewModel.isViewOrderAvailable)
+
                     Button(Localization.cancelBookingAction, role: .destructive) {
-                        print("On cancel booking tap")
+                        showingCancelAlert = true
                     }
+                    .renderedIf(viewModel.isBookingCancellable)
                 }
             }
         }
@@ -97,7 +98,7 @@ struct BookingDetailsView: View {
         ) {
             Button(Localization.cancelBookingAlertCancelAction, role: .cancel) {}
             Button(Localization.cancelBookingAlertConfirmAction, role: .destructive) {
-                print("On cancel booking confirmation tap")
+                cancelBooking()
             }
         } message: {
             Text(viewModel.cancellationAlertMessage)
@@ -130,7 +131,7 @@ private extension BookingDetailsView {
 
             sectionContentView(section.content)
                 .padding(.horizontal, Layout.contentSidePadding)
-                .background(Color(.systemBackground))
+                .background(Color(.listForeground(modal: false)))
                 .addingTopAndBottomDividers()
 
             if let footerText = section.footerText {
@@ -193,8 +194,9 @@ private extension BookingDetailsView {
             } label: {
                 Text(Localization.cancelBooking)
             }
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: cancellingBooking))
             .padding(.vertical, Layout.contentVerticalPadding)
+            .renderedIf(viewModel.isBookingCancellable)
         }
     }
 
@@ -222,16 +224,15 @@ private extension BookingDetailsView {
 
             VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
                 ForEach(content.actions) { action in
-                    Button {
-                        /// On action tap
-                    } label: {
-                        Text(action.buttonTitle)
-                    }
-                    .if(action.isEmphasized) {
-                        $0.buttonStyle(PrimaryButtonStyle())
-                    }
-                    .if(!action.isEmphasized) {
-                        $0.buttonStyle(SecondaryButtonStyle())
+                    switch action {
+                    case .viewOrder:
+                        Button(action.buttonTitle) {
+                            viewModel.navigateToOrderDetails()
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                    case .markAsPaid:
+                        Button(action.buttonTitle, action: markBookingAsPaid)
+                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: markingAsPaid))
                     }
                 }
             }
@@ -241,17 +242,34 @@ private extension BookingDetailsView {
     }
 
     func bookingNotesView() -> some View {
-        HStack(spacing: Layout.contentSidePadding) {
-            Image(systemName: "plus")
-                .font(.title3.weight(.medium))
-            Text(Localization.bookingNotesRowText)
-                .rowTextStyle()
-            Spacer()
+        MultilineEditableTextRow(value: viewModel.note,
+                                 placeholder: Localization.bookingNotesRowText,
+                                 detailTitle: Localization.bookingNoteNavbarText)
+    }
+}
+
+extension BookingDetailsView {
+    func cancelBooking() {
+        Task { @MainActor in
+            cancellingBooking = true
+            do {
+                try await viewModel.cancelBooking()
+            } catch {
+                viewModel.displayBookingCancellationErrorNotice(onRetry: cancelBooking)
+            }
+            cancellingBooking = false
         }
-        .foregroundStyle(Color.accentColor)
-        .padding(.vertical, Layout.rowTextVerticalPadding)
-        .tappable {
-            print("On Add a note tap")
+    }
+
+    func markBookingAsPaid() {
+        Task { @MainActor in
+            markingAsPaid = true
+            do {
+                try await viewModel.markBookingAsPaid()
+            } catch {
+                viewModel.displayMarkingAsPaidErrorNotice(onRetry: markBookingAsPaid)
+            }
+            markingAsPaid = false
         }
     }
 }
@@ -307,9 +325,15 @@ extension BookingDetailsView {
 
         /// Booking notes
         static let bookingNotesRowText = NSLocalizedString(
-            "BookingDetailsView.bookingNotes.addANoteRow.title",
-            value: "Add a note",
-            comment: "Add a note row title in booking notes section in booking details view."
+            "BookingDetailsView.bookingNote.addNoteRow.title",
+            value: "Add note",
+            comment: "Add a booking note section in booking details view."
+        )
+
+        static let bookingNoteNavbarText = NSLocalizedString(
+            "BookingDetailsView.bookingNote.navbar.title",
+            value: "Booking note",
+            comment: "Title of navigation bar when editing a booking note."
         )
     }
 }
@@ -339,7 +363,8 @@ struct BookingDetailsView_Previews: PreviewProvider {
             attendanceStatusKey: "booked",
             localTimezone: "America/New_York",
             currency: "USD",
-            orderInfo: nil
+            orderInfo: nil,
+            note: ""
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
         return BookingDetailsView(viewModel)

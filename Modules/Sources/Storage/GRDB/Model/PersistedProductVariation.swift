@@ -108,8 +108,7 @@ public extension PersistedProductVariation {
     }
 }
 
-// periphery:ignore - TODO: remove ignore when populating database
-private extension PersistedProductVariation {
+extension PersistedProductVariation {
     enum CodingKeys: String, CodingKey {
         case id
         case siteID

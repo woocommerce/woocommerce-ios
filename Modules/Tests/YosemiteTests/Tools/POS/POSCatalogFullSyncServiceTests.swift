@@ -28,7 +28,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: expectedVariations, hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.products.count == expectedProducts.count)
@@ -50,7 +50,7 @@ struct POSCatalogFullSyncServiceTests {
         ])
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.products.count == 3)
@@ -71,7 +71,7 @@ struct POSCatalogFullSyncServiceTests {
         ])
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.variations.count == 4)
@@ -91,7 +91,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then - Should stop after empty page
         #expect(result.products.count == 1)
@@ -112,7 +112,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.products.count == 5)
@@ -127,7 +127,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.startFullSync(for: sampleSiteID)
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
         }
     }
 
@@ -174,10 +174,135 @@ struct POSCatalogFullSyncServiceTests {
         let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
                                                 batchSize: customBatchSize,
                                                 persistenceService: mockPersistenceService)
-        _ = try await service.startFullSync(for: sampleSiteID)
+        _ = try await service.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(await mockSyncRemote.loadProductsCallCount.value == 5)
         #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 5)
+    }
+
+    // MARK: - Catalog API Tests
+
+    @Test func startFullSync_with_catalog_API_downloads_and_persists_catalog() async throws {
+        // Given
+        let expectedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1)
+        let expectedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 1)
+
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [expectedProduct], variations: [expectedVariation]))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+
+        // Then
+        #expect(result.products.count == 1)
+        #expect(result.variations.count == 1)
+        #expect(mockPersistenceService.replaceAllCatalogDataCallCount == 1)
+        #expect(mockPersistenceService.replaceAllCatalogDataLastPersistedCatalog?.products.count == 1)
+        #expect(mockPersistenceService.replaceAllCatalogDataLastPersistedCatalog?.variations.count == 1)
+    }
+
+    @Test func startFullSync_with_catalog_API_propagates_catalog_request_error() async throws {
+        // Given
+        let expectedError = NSError(domain: "catalog", code: 500, userInfo: [NSLocalizedDescriptionKey: "Catalog request failed"])
+        mockSyncRemote.catalogRequestResult = .failure(expectedError)
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        }
+    }
+
+    @Test func startFullSync_with_catalog_API_propagates_catalog_download_error() async throws {
+        // Given
+        let expectedError = NSError(domain: "catalog", code: 404, userInfo: [NSLocalizedDescriptionKey: "Catalog download failed"])
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .failure(expectedError)
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        }
+    }
+
+    @Test func startFullSync_with_catalog_API_propagates_persistence_error() async throws {
+        // Given
+        let expectedError = NSError(domain: "persistence", code: 1000, userInfo: [NSLocalizedDescriptionKey: "Persistence failed"])
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+        mockPersistenceService.replaceAllCatalogDataError = expectedError
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        }
+    }
+
+    @Test(arguments: [true, false])
+    func startFullSync_with_catalog_API_passes_regenerateCatalog_to_remote(regenerateCatalog: Bool) async throws {
+        // Given
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: regenerateCatalog, allowCellular: true)
+
+        // Then
+        #expect(mockSyncRemote.lastCatalogRequestForceGeneration == regenerateCatalog)
+    }
+
+    @Test(arguments: [true, false])
+    func startFullSync_with_catalog_API_passes_allowCellular_to_downloadCatalog(allowCellular: Bool) async throws {
+        // Given
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: false, allowCellular: allowCellular)
+
+        // Then
+        #expect(mockSyncRemote.lastCatalogDownloadAllowCellular == allowCellular)
     }
 }

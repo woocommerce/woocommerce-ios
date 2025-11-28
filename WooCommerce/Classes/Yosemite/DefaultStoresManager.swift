@@ -300,6 +300,13 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
+        // Stop any ongoing catalog sync tasks before resetting session
+        if let siteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+            }
+        }
+
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()
@@ -309,10 +316,14 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+            // Reset GRDB on a background thread to avoid blocking logout
+            // when there's a large catalog to delete
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try ServiceLocator.grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 
@@ -378,10 +389,8 @@ class DefaultStoresManager: StoresManager {
     }
 
     func shouldAuthenticateAdminPage(for site: Site) -> Bool {
-        /// If the site is self-hosted and user is authenticated with WPCom,
-        /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
-        /// This should be prevented 💀⛔️
-        guard site.isWordPressComStore || isAuthenticatedWithoutWPCom else {
+        /// Auto-authentication for web view works if the site has SSO or if user is authenticated with site credentials
+        guard site.hasSSOEnabled || isAuthenticatedWithoutWPCom else {
             return false
         }
         return true
@@ -786,6 +795,9 @@ private extension DefaultStoresManager {
             guard case .success(let site) = result else {
                 return
             }
+            sessionManager.defaultSite = site
+            updateAndReloadWidgetInformation(with: siteID)
+
             /// Triggers root endpoint to check if application password is available
             dispatch(SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
                 guard let self else { return }
@@ -794,9 +806,8 @@ private extension DefaultStoresManager {
                     let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                     sessionManager.defaultSite = updatedSite
                     updateAndReloadWidgetInformation(with: siteID)
-                case .failure:
-                    sessionManager.defaultSite = site
-                    updateAndReloadWidgetInformation(with: siteID)
+                case .failure(let error):
+                    DDLogError("⛔️ Cannot trigger root endpoint: \(error)")
                 }
             })
         }

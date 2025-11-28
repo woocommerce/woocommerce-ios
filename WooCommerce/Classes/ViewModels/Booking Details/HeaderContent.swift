@@ -3,12 +3,16 @@ import struct Yosemite.Booking
 import struct Yosemite.BookingProductInfo
 import struct Yosemite.Customer
 import struct Yosemite.Address
+import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.BookingStatus
 
 extension BookingDetailsViewModel {
     final class HeaderContent: ObservableObject {
         @Published private(set) var bookingDate: String = ""
-        @Published private(set) var status: [String] = []
-        @Published private(set) var serviceAndCustomerLine: String = ""
+        @Published private(set) var attendanceStatus: BookingAttendanceStatus = .unknown
+        @Published private(set) var bookingStatus: BookingStatus = .unknown
+        @Published private(set) var serviceLine: String = ""
+        @Published private(set) var customerLine: String = ""
 
         func update(with booking: Booking) {
             bookingDate = booking.startDate.toString(
@@ -16,12 +20,10 @@ extension BookingDetailsViewModel {
                 timeStyle: .short,
                 timeZone: BookingListTab.utcTimeZone
             )
-            serviceAndCustomerLine = booking.summaryText
-
-            status = [
-                booking.attendanceStatus.localizedTitle,
-                booking.bookingStatus.localizedTitle
-            ]
+            serviceLine = booking.productName ?? ""
+            customerLine = booking.customerName
+            attendanceStatus = booking.attendanceStatus
+            bookingStatus = booking.bookingStatus
         }
     }
 }

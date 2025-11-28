@@ -35,6 +35,9 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var setFirstPOSCatalogSyncDateCalled = false
     var mockPOSLastOpenedDate: Date?
     var mockFirstPOSCatalogSyncDate: Date?
+    var getPOSLocalCatalogCellularDataAllowedCalled = false
+    var setPOSLocalCatalogCellularDataAllowedCalled = false
+    var mockPOSLocalCatalogCellularDataAllowed: Bool?
 
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
@@ -113,5 +116,15 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date) {
         setFirstPOSCatalogSyncDateCalled = true
         mockFirstPOSCatalogSyncDate = date
+    }
+
+    func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool) {
+        setPOSLocalCatalogCellularDataAllowedCalled = true
+        mockPOSLocalCatalogCellularDataAllowed = allowed
+    }
+
+    func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool {
+        getPOSLocalCatalogCellularDataAllowedCalled = true
+        return mockPOSLocalCatalogCellularDataAllowed ?? false
     }
 }

@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
+import enum Yosemite.CardReaderSoftwareUpdateState
 @testable import PointOfSale
 
 final class MockCardPresentPaymentService: CardPresentPaymentFacade {
@@ -57,5 +58,11 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     func cancelPayment() async throws {
         cancelPaymentCalled = true
         try await onCancelPaymentCalled?()
+    }
+
+    var cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never> = Just(.none).eraseToAnyPublisher()
+
+    func updateCardReaderSoftware() async throws {
+        // no-op
     }
 }

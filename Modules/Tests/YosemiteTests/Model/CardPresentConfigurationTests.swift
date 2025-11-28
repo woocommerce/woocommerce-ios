@@ -44,7 +44,7 @@ class CardPresentConfigurationTests: XCTestCase {
         let configuration = CardPresentPaymentsConfiguration(country: .GB)
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.GBP])
-        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.gb)
         assertEqual([.wisepad3, .tapToPay], configuration.supportedReaders)

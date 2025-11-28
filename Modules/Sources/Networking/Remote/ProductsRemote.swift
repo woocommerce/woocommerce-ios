@@ -23,6 +23,7 @@ public protocol ProductsRemoteProtocol {
                          excludedProductIDs: [Int64]) async throws -> [Product]
     func searchProducts(for siteID: Int64,
                         keyword: String,
+                        searchFields: [ProductSearchField],
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
@@ -291,7 +292,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     /// Remote search of products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
-    /// `search` is used, which searches in `name`, `description`, `short_description` fields.
+    /// `search` is used, which searches in `name`, `sku`, `globalUniqueID` fields.
     /// We also send `search_name_or_sku`, which will be used in preference to `search` when implemented on a site (in future.)
     ///
     /// - Parameter siteID: Site for which we'll fetch remote products.
@@ -313,7 +314,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         parameters.updateValue(query, forKey: ParameterKey.searchNameOrSKU)
 
         // Takes precedence over `search_name_or_sku` from WC 10.1+ and is combined with `search` value
-        parameters.updateValue([SearchField.name, SearchField.sku, SearchField.globalUniqueID], forKey: ParameterKey.searchFields)
+        parameters.updateValue([
+            ProductSearchField.name.rawValue,
+            ProductSearchField.sku.rawValue,
+            ProductSearchField.globalUniqueID.rawValue
+        ], forKey: ParameterKey.searchFields)
 
         return try await makePagedPointOfSaleProductsRequest(
             for: siteID,
@@ -429,6 +434,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func searchProducts(for siteID: Int64,
                                keyword: String,
+                               searchFields: [ProductSearchField],
                                pageNumber: Int,
                                pageSize: Int,
                                stockStatus: ProductStockStatus? = nil,
@@ -447,10 +453,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
 
-        let parameters = [
+        let parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.search: keyword,
+            ParameterKey.searchFields: searchFields.map { $0.rawValue },
             ParameterKey.exclude: stringOfExcludedProductIDs,
             ParameterKey.contextKey: Default.context
         ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
@@ -774,12 +781,12 @@ public extension ProductsRemote {
         static let productSegment = "product"
         static let itemsSold = "items_sold"
     }
+}
 
-    private enum SearchField {
-        static let name = "name"
-        static let sku = "sku"
-        static let globalUniqueID = "global_unique_id"
-    }
+public enum ProductSearchField: String {
+    case name
+    case sku
+    case globalUniqueID = "global_unique_id"
 }
 
 private extension ProductsRemote {

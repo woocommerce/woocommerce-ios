@@ -27,6 +27,8 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
+        let catalog = filterOrphanedVariations(from: catalog)
+
         try await grdbManager.databaseConnection.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
             try PersistedSite.deleteOne(db, key: siteID)
@@ -85,52 +87,46 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) updated products and \(catalog.variations.count) updated variations")
 
         try await grdbManager.databaseConnection.write { db in
-            for product in catalog.productsToPersist {
-                try product.insert(db, onConflict: .replace)
+            for product in catalog.products {
+                try PersistedProduct(from: product).save(db)
 
-                // Delete old join table entries for this product
-                try PersistedProductImage
-                    .filter { $0.siteID == siteID && $0.productID == product.id }
-                    .deleteAll(db)
+                // Delete variations that are no longer associated with this product
+                let existingVariations = try PersistedProductVariation
+                    .filter(PersistedProductVariation.Columns.siteID == siteID)
+                    .filter(PersistedProductVariation.Columns.productID == product.productID)
+                    .fetchAll(db)
 
-                try PersistedProductAttribute
-                    .filter { $0.siteID == siteID && $0.productID == product.id }
-                    .deleteAll(db)
+                for variation in existingVariations {
+                    if !product.variationIDs.contains(variation.id) {
+                        try variation.delete(db)
+                    }
+                }
             }
 
             for variation in catalog.variationsToPersist {
-                try variation.insert(db, onConflict: .replace)
-
-                // Delete old join table entries for this variation
-                try PersistedProductVariationImage
-                    .filter { $0.siteID == siteID && $0.productVariationID == variation.id }
-                    .deleteAll(db)
-
-                try PersistedProductVariationAttribute
-                    .filter { $0.siteID == siteID && $0.productVariationID == variation.id }
-                    .deleteAll(db)
+                try variation.save(db)
             }
 
-            // Insert/update actual image data (shared by products and variations)
+            // Upsert actual image data (shared by products and variations)
             for image in catalog.imagesToPersist {
-                try image.insert(db, onConflict: .replace)
+                try image.save(db)
             }
 
-            // Insert new join table entries
+            // Upsert new join table entries
             for image in catalog.productImagesToPersist {
-                try image.insert(db, onConflict: .replace)
+                try image.save(db)
             }
 
             for image in catalog.variationImagesToPersist {
-                try image.insert(db, onConflict: .replace)
+                try image.save(db)
             }
 
             for var attribute in catalog.productAttributesToPersist {
-                try attribute.insert(db, onConflict: .replace)
+                try attribute.save(db)
             }
 
             for var attribute in catalog.variationAttributesToPersist {
-                try attribute.insert(db, onConflict: .replace)
+                try attribute.save(db)
             }
 
             var site = try PersistedSite.fetchOne(db, key: siteID)
@@ -151,6 +147,22 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }
+    }
+}
+
+private extension POSCatalogPersistenceService {
+    /// Filters out variations whose parent products are not in the catalog.
+    /// This can happen when the API returns public variations but their parent products are not public.
+    func filterOrphanedVariations(from catalog: POSCatalog) -> POSCatalog {
+        let productIDs = catalog.products.map { $0.productID }
+        let variations = catalog.variations.filter { variation in
+            let parentExists = productIDs.contains { $0 == variation.productID }
+            if !parentExists {
+                DDLogWarn("Variation \(variation.productVariationID) references missing product \(variation.productID) - it will not be available in POS.")
+            }
+            return parentExists
+        }
+        return POSCatalog(products: catalog.products, variations: variations, syncDate: catalog.syncDate)
     }
 }
 

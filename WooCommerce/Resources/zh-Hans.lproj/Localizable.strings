@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-04 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-11-19 09:54:13+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -797,7 +797,13 @@ which should be translated separately and considered part of this sentence. */
 "BookingAttendanceStatus.booked" = "已预订";
 
 /* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.cancelled" = "已取消";
+"BookingAttendanceStatus.canceled" = "已取消";
+
+/* Title for 'Checked In' booking attendance status. */
+"BookingAttendanceStatus.checkedIn" = "已签到";
+
+/* Title for 'No Show' booking attendance status. */
+"BookingAttendanceStatus.noShow" = "失约";
 
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "未知";
@@ -830,13 +836,19 @@ which should be translated separately and considered part of this sentence. */
 "BookingDetailsView.attendance.headerTitle" = "出席情况";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
-"BookingDetailsView.attendanceStatus.updateFailed.message" = "无法更改预订 #%1$d 的出勤状态";
+"BookingDetailsView.attendanceStatus.failureMessage." = "无法更改预订 #%1$d 的出勤状态。";
 
-/* Add a note row title in booking notes section in booking details view. */
-"BookingDetailsView.bookingNotes.addANoteRow.title" = "添加说明";
+/* Add a booking note section in booking details view. */
+"BookingDetailsView.bookingNote.addNoteRow.title" = "添加备注";
 
-/* Header title for the 'Booking notes' section in the booking details screen. */
-"BookingDetailsView.bookingNotes.headerTitle" = "预订说明";
+/* Footer text for the `Booking note` section in the booking details screen. */
+"BookingDetailsView.bookingNote.footerText" = "这是一条私人备注。 它将不会与客户共享。";
+
+/* Header title for the 'Booking note' section in the booking details screen. */
+"BookingDetailsView.bookingNote.headerTitle" = "预订备注";
+
+/* Title of navigation bar when editing a booking note. */
+"BookingDetailsView.bookingNote.navbar.title" = "预订备注";
 
 /* Cancel button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.cancelAction" = "否，保留";
@@ -844,11 +856,17 @@ which should be translated separately and considered part of this sentence. */
 /* Confirm button title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.confirmAction" = "是，取消";
 
+/* Generic message for the booking cancellation confirmation alert. */
+"BookingDetailsView.cancelation.alert.genericMessage" = "是否确定要取消此预订？";
+
 /* Message for the booking cancellation confirmation alert. %1$@ is customer name, %2$@ is product name, %3$@ is booking date. */
 "BookingDetailsView.cancelation.alert.message" = "%1$@ 将无法再参加 %3$@ 的“%2$@”。";
 
 /* Title for the booking cancellation confirmation alert. */
 "BookingDetailsView.cancelation.alert.title" = "取消预订";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to cancel Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.cancellation.failureMessage" = "无法取消预订 #%1$d。";
 
 /* Billing address row title in customer section in booking details view. */
 "BookingDetailsView.customer.billingAddress.title" = "账单地址";
@@ -864,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "状态";
+
+/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
+"BookingDetailsView.markAsPaid.failureMessage" = "无法将预订 #%1$d 标记为已支付。";
 
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "预订编号：%1$d";
@@ -882,9 +903,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "付款";
-
-/* Title for 'Issue refund' button in payment section in booking details view. */
-"BookingDetailsView.payment.issueRefund.title" = "发放退款";
 
 /* Title for 'Mark as paid' button in payment section in booking details view. */
 "BookingDetailsView.payment.markAsPaid.title" = "标记为已付款";
@@ -3555,6 +3573,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "将评论移动至回收站";
 
+/* Cancel button title for the discard changes confirmation dialog in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.cancelAction" = "取消";
+
+/* Destructive action button title to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.discardAction" = "放弃更改";
+
+/* Title for the confirmation dialog when the user attempts to discard changes in the multiline text editor. */
+"MultilineEditableTextDetailView.discardChanges.alert.title" = "是否确定要放弃这些更改？";
+
+/* Navigation bar button title used to save changes and close the multiline text editor. */
+"MultilineEditableTextDetailView.doneButton.title" = "完成";
+
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "多个商店";
 
@@ -4568,6 +4598,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ 注册费";
+
+/* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
+"ProductType.service" = "服务";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -7470,6 +7503,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label displayed on audio media items. */
 "audio" = "音频";
 
+/* Button to dismiss a web view */
+"authenticatableWebView.done" = "完成";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "开设新商店？";
 
@@ -8410,8 +8446,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "预订";
 
+/* Status of a paid booking */
+"bookingPaymentStatus.title.paid" = "已支付";
+
+/* Status of a refunded booking */
+"bookingPaymentStatus.title.refunded" = "已退款";
+
+/* Status of a booking with unexpected payment status */
+"bookingPaymentStatus.title.unknown" = "未知";
+
+/* Status of an unpaid booking */
+"bookingPaymentStatus.title.unpaid" = "未支付";
+
+/* Message on the empty search result view of the booking service/event selector view */
+"bookingServiceEventSelectorView.emptySearchDescription" = "尝试调整您的搜索字词，以查看更多结果";
+
 /* Text on the empty view of the booking service/event selector view */
 "bookingServiceEventSelectorView.noMembersFound" = "未找到服务或事件";
+
+/* Prompt in the search bar of the booking service/event selector view */
+"bookingServiceEventSelectorView.searchPrompt" = "搜索服务\/事件";
 
 /* Title of the booking service/event selector view */
 "bookingServiceEventSelectorView.title" = "服务\/事件";

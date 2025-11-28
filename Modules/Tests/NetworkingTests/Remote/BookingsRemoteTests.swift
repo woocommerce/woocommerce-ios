@@ -44,14 +44,17 @@ struct BookingsRemoteTests {
         let startDateBefore = "2024-12-31T23:59:59"
         let startDateAfter = "2024-01-01T00:00:00"
         let searchQuery = "test search"
+        let filters = BookingFilters(
+            startDateBefore: startDateBefore,
+            startDateAfter: startDateAfter
+        )
         network.simulateResponse(requestUrlSuffix: "bookings", filename: "booking-list")
 
         // When
         _ = try await remote.loadAllBookings(for: sampleSiteID,
                                              pageNumber: 2,
                                              pageSize: 50,
-                                             startDateBefore: startDateBefore,
-                                             startDateAfter: startDateAfter,
+                                             filters: filters,
                                              searchQuery: searchQuery,
                                              order: .ascending)
 
@@ -74,8 +77,7 @@ struct BookingsRemoteTests {
 
         // When
         _ = try await remote.loadAllBookings(for: sampleSiteID,
-                                             startDateBefore: nil,
-                                             startDateAfter: nil,
+                                             filters: nil,
                                              searchQuery: nil,
                                              order: .descending)
 
@@ -135,12 +137,79 @@ struct BookingsRemoteTests {
             from: sampleSiteID,
             bookingID: bookingID,
             attendanceStatus: .noShow,
+            bookingStatus: nil
         )
 
         // Then
         #expect(booking?.dateCreated == nil)
         #expect(booking?.dateModified == nil)
         #expect(booking?.id == bookingID)
+    }
+
+    @Test func test_updateBooking_sends_correct_parameters_for_attendance_status() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.updateBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            attendanceStatus: .noShow,
+            bookingStatus: nil
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["attendance_status"] as? String) == "no-show")
+        #expect(parameters["status"] == nil)
+    }
+
+    @Test func test_updateBooking_sends_correct_parameters_for_booking_status() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.updateBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            attendanceStatus: nil,
+            bookingStatus: .confirmed
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect(parameters["attendance_status"] == nil)
+        #expect((parameters["status"] as? String) == "confirmed")
+    }
+
+    @Test func test_updateBooking_sends_correct_parameters_for_both_statuses() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.updateBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            attendanceStatus: .booked,
+            bookingStatus: .paid
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["attendance_status"] as? String) == "booked")
+        #expect((parameters["status"] as? String) == "paid")
     }
 
     @Test func test_fetchResources_properly_returns_parsed_resources() async throws {

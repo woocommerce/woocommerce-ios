@@ -129,10 +129,12 @@ private extension OrdersSplitViewWrapperController {
         // shown should replace the topViewController, to avoid having to tap back through several Order Details
         // screens in the navigation stack. The back button should always go to the Order List.
         // The up and down arrows are enabled when there is more than one item in `viewModels`.
-        guard isQuickOrderNavigationSupported(viewModels: viewModels),
-              let viewModel = viewModels[safe: currentIndex],
-              let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
-              secondaryNavigationController.topViewController is OrderDetailsViewController else {
+        guard
+            let viewModel = viewModels[safe: currentIndex],
+            let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
+            let existingOrderDetailsViewController = secondaryNavigationController.topViewController as? OrderDetailsViewController,
+            existingOrderDetailsViewController.isQuickOrderNavigationSupported() == orderDetailsViewController.isQuickOrderNavigationSupported()
+        else {
             // When showing an order without quick navigation, it simply sets the order details to the secondary view.
             let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
             showSecondaryView(orderDetailsNavigationController)
@@ -140,14 +142,16 @@ private extension OrdersSplitViewWrapperController {
             return
         }
 
-        secondaryNavigationController.replaceTopViewController(with: orderDetailsViewController, animated: false)
-        ordersViewController.onOrderSelected(id: viewModel.order.orderID)
+        if !existingOrderDetailsViewController.isPresentingViewModelOrder(viewModel) {
+            secondaryNavigationController.replaceTopViewController(
+                with: orderDetailsViewController,
+                animated: false
+            )
+            ordersViewController.onOrderSelected(id: viewModel.order.orderID)
+        }
+
         ordersSplitViewController.show(.secondary)
         onCompletion?(true)
-    }
-
-    func isQuickOrderNavigationSupported(viewModels: [OrderDetailsViewModel]) -> Bool {
-        viewModels.count > 1
     }
 }
 

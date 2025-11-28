@@ -16,6 +16,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSyncCoordinator
+import enum Yosemite.CardReaderSoftwareUpdateState
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -28,11 +29,19 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+    private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     private var onOnboardingCancellation: (() -> Void)?
+
+    var isCardReaderUpdateAvailable: Bool {
+        if case .available = cardReaderUpdateState {
+            return true
+        }
+        return false
+    }
 
     private(set) var cart: Cart = .init()
 
@@ -60,6 +69,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cardReaderDisconnection: AnyCancellable?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
+    private let isLocalCatalogEligible: Bool
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -74,6 +84,18 @@ protocol PointOfSaleAggregateModelProtocol {
     // Type-safe accessor specifically for the view
     var viewStateCoordinatorForView: PointOfSaleViewStateCoordinator {
         _viewStateCoordinator
+    }
+
+    // Track stale sync warning (only relevant when using local catalog)
+    var isSyncStale: Bool = false
+    var isStaleSyncWarningDismissed: Bool = false
+
+    var showStaleSyncWarning: Bool {
+        // Only show warning if using local catalog
+        guard isLocalCatalogEligible else {
+            return false
+        }
+        return isSyncStale && !isStaleSyncWarningDismissed
     }
 
     init(entryPointController: POSEntryPointController,
@@ -92,7 +114,8 @@ protocol PointOfSaleAggregateModelProtocol {
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil) {
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+         isLocalCatalogEligible: Bool = false) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -110,12 +133,14 @@ protocol PointOfSaleAggregateModelProtocol {
         self.soundPlayer = soundPlayer
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.isLocalCatalogEligible = isLocalCatalogEligible
 
         publishCardReaderConnectionStatus()
+        publishCardReaderUpdateState()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
-        performIncrementalSync()
+        performInitialSyncIfNeeded()
     }
 }
 
@@ -288,6 +313,14 @@ extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
     }
 
+    private func publishCardReaderUpdateState() {
+        cardPresentPaymentService.cardReaderUpdateStatePublisher
+            .sink(receiveValue: { [weak self] updateState in
+                self?.cardReaderUpdateState = updateState
+            })
+            .store(in: &cancellables)
+    }
+
     func connectCardReader() {
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor [weak self] in
@@ -299,6 +332,13 @@ extension PointOfSaleAggregateModel {
         analytics.track(.cardReaderDisconnectTapped)
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.disconnectReader()
+        }
+    }
+
+    func updateCardReaderSoftware() {
+        //TODO: analytics.track(.cardReaderUpdateTapped)
+        Task { @MainActor [weak self] in
+            try? await self?.cardPresentPaymentService.updateCardReaderSoftware()
         }
     }
 
@@ -623,6 +663,35 @@ private extension PointOfSaleAggregateModel {
             try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
         }
     }
+
+    private func performInitialSyncIfNeeded() {
+        guard let catalogSyncCoordinator else { return }
+        Task {
+            try? await catalogSyncCoordinator.performSmartSync(for: siteID)
+        }
+    }
+}
+
+// MARK: - Stale Sync Warning
+extension PointOfSaleAggregateModel {
+    var staleSyncThresholdDays: Int {
+        Constants.staleSyncThresholdDays
+    }
+
+    func dismissStaleSyncWarning() {
+        isStaleSyncWarningDismissed = true
+    }
+
+    func checkStaleSyncStatus() async {
+        guard let catalogSyncCoordinator else { return }
+        isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+    }
+}
+
+// MARK: - Constants
+private enum Constants {
+    /// Number of days before showing a stale catalog sync warning
+    static let staleSyncThresholdDays: Int = 7
 }
 
 #if DEBUG

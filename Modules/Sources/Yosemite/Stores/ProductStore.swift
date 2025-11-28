@@ -231,20 +231,27 @@ private extension ProductStore {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        /// internal helper search method
+        func searchProductsByKeyword(searchFields: [ProductSearchField]) async throws -> [Product] {
+            try await remote.searchProducts(for: siteID,
+                                            keyword: keyword,
+                                            searchFields: searchFields,
+                                            pageNumber: pageNumber,
+                                            pageSize: pageSize,
+                                            stockStatus: stockStatus,
+                                            productStatus: productStatus,
+                                            productType: productType,
+                                            productCategory: productCategory,
+                                            excludedProductIDs: excludedProductIDs)
+        }
         Task { @MainActor in
             do {
                 let products: [Product]
                 switch filter {
                 case .all:
-                    products = try await remote.searchProducts(for: siteID,
-                                                               keyword: keyword,
-                                                               pageNumber: pageNumber,
-                                                               pageSize: pageSize,
-                                                               stockStatus: stockStatus,
-                                                               productStatus: productStatus,
-                                                               productType: productType,
-                                                               productCategory: productCategory,
-                                                               excludedProductIDs: excludedProductIDs)
+                    products = try await searchProductsByKeyword(searchFields: [])
+                case .name:
+                    products = try await searchProductsByKeyword(searchFields: [.name])
                 case .sku:
                     products = try await remote.searchProductsBySKU(for: siteID,
                                                                     keyword: keyword,

@@ -275,7 +275,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_replaces_attributes_for_updated_product() async throws {
+    @Test func persistIncrementalCatalogData_upserts_attributes_for_updated_product() async throws {
         // Given
         let attribute1 = Yosemite.ProductAttribute.fake().copy(name: "Color", options: ["Indigo", "Blue"])
         let attribute2 = Yosemite.ProductAttribute.fake().copy(name: "Size")
@@ -291,16 +291,17 @@ struct POSCatalogPersistenceServiceTests {
 
         // Then
         try await grdbManager.databaseConnection.read { db in
+            // Should have 4 attributes: original 2 + updated 2 (upsert adds new ones, keeps old ones)
             let attributeCount = try PersistedProductAttribute.fetchCount(db)
-            #expect(attributeCount == 2)
+            #expect(attributeCount == 4)
 
             let attributes = try PersistedProductAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
             #expect(attributes[0].name == "Color")
-            #expect(attributes[0].options == ["Cardinal", "Blue"])
-            #expect(attributes[0].productID == 1)
-            #expect(attributes[1].name == "Material")
-            #expect(attributes[1].options == [])
-            #expect(attributes[1].productID == 1)
+            #expect(attributes[0].options == ["Indigo", "Blue"]) // Original unchanged
+            #expect(attributes[1].name == "Color")
+            #expect(attributes[1].options == ["Cardinal", "Blue"]) // Updated version
+            #expect(attributes[2].name == "Material") // New attribute
+            #expect(attributes[3].name == "Size") // Original unchanged
         }
     }
 
@@ -320,24 +321,26 @@ struct POSCatalogPersistenceServiceTests {
 
         // Then
         try await grdbManager.databaseConnection.read { db in
-            // Check join table has correct count
+            // Check join table has correct count - should have 3 (original 2 + new 1, upsert keeps all)
             let joinCount = try PersistedProductImage.fetchCount(db)
-            #expect(joinCount == 2)
+            #expect(joinCount == 3)
 
             // Check join table entries
             let joins = try PersistedProductImage.fetchAll(db).sorted(by: { $0.imageID < $1.imageID })
-            #expect(joins.count == 2)
+            #expect(joins.count == 3)
             #expect(joins[0].productID == 1)
             #expect(joins[0].imageID == 1)
             #expect(joins[1].productID == 1)
-            #expect(joins[1].imageID == 3)
+            #expect(joins[1].imageID == 2) // Original image 2 join remains
+            #expect(joins[2].productID == 1)
+            #expect(joins[2].imageID == 3)
 
-            // Check actual images
+            // Check actual images - image 1 updated, image 2 unchanged, image 3 added
             let images = try PersistedImage.fetchAll(db).sorted(by: { $0.id < $1.id })
-            #expect(images.count == 3) // `image2` remains, but is unlinked.
-            #expect(images[0].src == "https://example.com/image1-1.jpg")
-            #expect(images[1].src == "https://example.com/image2.jpg")
-            #expect(images[2].src == "https://example.com/image3.jpg")
+            #expect(images.count == 3)
+            #expect(images[0].src == "https://example.com/image1-1.jpg") // Updated
+            #expect(images[1].src == "https://example.com/image2.jpg") // Unchanged
+            #expect(images[2].src == "https://example.com/image3.jpg") // New
         }
     }
 
@@ -522,6 +525,100 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
+    @Test func persistIncrementalCatalogData_deletes_variations_not_in_updated_product_variationIDs() async throws {
+        // Given - a variable product with 3 variations
+        let product = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 1,
+            productTypeKey: "variable",
+            variationIDs: [10, 20, 30]
+        )
+        let variation1 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 10)
+        let variation2 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 20)
+        let variation3 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 30)
+
+        let catalog = POSCatalog(products: [product], variations: [variation1, variation2, variation3], syncDate: .now)
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Verify initial state
+        try await db.read { db in
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            #expect(variationCount == 3)
+        }
+
+        // When - incremental sync with updated product that only has 2 variations (removed variation 20)
+        let updatedProduct = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 1,
+            productTypeKey: "variable",
+            variationIDs: [10, 30] // variation 20 removed
+        )
+        let incrementalCatalog = POSCatalog(products: [updatedProduct], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(incrementalCatalog, siteID: sampleSiteID)
+
+        // Then - variation 20 should be deleted, variations 10 and 30 should remain
+        try await db.read { db in
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            #expect(variationCount == 2)
+
+            let remainingVariations = try PersistedProductVariation.fetchAll(db).sorted(by: { $0.id < $1.id })
+            #expect(remainingVariations.count == 2)
+            #expect(remainingVariations[0].id == 10)
+            #expect(remainingVariations[1].id == 30)
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_preserves_variations_not_mentioned_in_incremental_sync() async throws {
+        // Given - two variable products with variations
+        let product1 = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 1,
+            productTypeKey: "variable",
+            variationIDs: [10, 20]
+        )
+        let product2 = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 2,
+            productTypeKey: "variable",
+            variationIDs: [30, 40]
+        )
+        let variation10 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 10)
+        let variation20 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 20)
+        let variation30 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 2, productVariationID: 30)
+        let variation40 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 2, productVariationID: 40)
+
+        let catalog = POSCatalog(
+            products: [product1, product2],
+            variations: [variation10, variation20, variation30, variation40],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When - incremental sync only updates product 1, product 2 not mentioned
+        let updatedProduct1 = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 1,
+            productTypeKey: "variable",
+            variationIDs: [10] // removed variation 20
+        )
+        let incrementalCatalog = POSCatalog(products: [updatedProduct1], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(incrementalCatalog, siteID: sampleSiteID)
+
+        // Then - variation 20 deleted, but product 2's variations (30, 40) remain untouched
+        try await db.read { db in
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            #expect(variationCount == 3)
+
+            let remainingVariations = try PersistedProductVariation.fetchAll(db).sorted(by: { $0.id < $1.id })
+            #expect(remainingVariations[0].id == 10)
+            #expect(remainingVariations[0].productID == 1)
+            #expect(remainingVariations[1].id == 30)
+            #expect(remainingVariations[1].productID == 2)
+            #expect(remainingVariations[2].id == 40)
+            #expect(remainingVariations[2].productID == 2)
+        }
+    }
+
     @Test func persistIncrementalCatalogData_stores_incremental_sync_date() async throws {
         // Given - site with existing full sync date
         let fullSyncDate = Date().addingTimeInterval(-3600) // 1 hour ago
@@ -562,6 +659,42 @@ struct POSCatalogPersistenceServiceTests {
             #expect(storedDate != nil)
             #expect(abs(storedDate!.timeIntervalSince(newSyncDate)) < 1.0) // Within 1 second tolerance
             #expect(site?.id == sampleSiteID)
+        }
+    }
+
+    // MARK: - Orphaned Variation Filtering Tests
+
+    @Test func replaceAllCatalogData_filters_out_variations_without_parent_products() async throws {
+        // Given
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
+        let validVariation = POSProductVariation.fake()
+            .copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, image: ProductImage.fake().copy(imageID: 100))
+        let orphanedVariation1 = POSProductVariation.fake()
+            .copy(siteID: sampleSiteID, productID: 20, productVariationID: 2, image: ProductImage.fake().copy(imageID: 200))
+        let orphanedVariation2 = POSProductVariation.fake()
+            .copy(siteID: sampleSiteID, productID: 30, productVariationID: 3, image: ProductImage.fake().copy(imageID: 300))
+
+        let catalog = POSCatalog(
+            products: [product],
+            variations: [validVariation, orphanedVariation1, orphanedVariation2],
+            syncDate: .now
+        )
+
+        // When
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            #expect(variationCount == 1)
+            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
+            #expect(variationImageCount == 1)
+
+            let variation = try PersistedProductVariation.fetchOne(db)
+            #expect(variation?.id == 1)
+            #expect(variation?.productID == 10)
+            let variationImage = try PersistedProductVariationImage.fetchOne(db)
+            #expect(variationImage?.imageID == 100)
         }
     }
 }

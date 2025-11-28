@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import Alamofire
 @testable import Networking
 @testable import Yosemite
 
@@ -120,6 +121,68 @@ struct BatchedRequestLoaderTests {
             try await sut.loadAll(makeRequest: makeRequest)
         }
         #expect(await attemptCount.value == 3) // maxRetries = 3
+    }
+
+    // MARK: - DefaultRetryErrorEvaluator Tests
+
+    @Test func defaultRetryErrorEvaluator_does_not_retry_cancellation_error() {
+        // Given
+        let sut = DefaultRetryErrorEvaluator()
+        let error = CancellationError()
+
+        // When
+        let shouldRetry = sut.shouldRetry(error)
+
+        // Then
+        #expect(!shouldRetry)
+    }
+
+    @Test func defaultRetryErrorEvaluator_does_not_retry_alamofire_explicitly_cancelled() {
+        // Given
+        let sut = DefaultRetryErrorEvaluator()
+        let error = AFError.explicitlyCancelled
+
+        // When
+        let shouldRetry = sut.shouldRetry(error)
+
+        // Then
+        #expect(!shouldRetry)
+    }
+
+    @Test func defaultRetryErrorEvaluator_does_not_retry_invalid_cookie_nonce() {
+        // Given
+        let sut = DefaultRetryErrorEvaluator()
+        let error = NetworkError.invalidCookieNonce
+
+        // When
+        let shouldRetry = sut.shouldRetry(error)
+
+        // Then
+        #expect(!shouldRetry)
+    }
+
+    @Test func defaultRetryErrorEvaluator_retries_network_errors() {
+        // Given
+        let sut = DefaultRetryErrorEvaluator()
+        let error = NetworkError.timeout()
+
+        // When
+        let shouldRetry = sut.shouldRetry(error)
+
+        // Then
+        #expect(shouldRetry)
+    }
+
+    @Test func defaultRetryErrorEvaluator_retries_url_errors() {
+        // Given
+        let sut = DefaultRetryErrorEvaluator()
+        let error = URLError(.networkConnectionLost)
+
+        // When
+        let shouldRetry = sut.shouldRetry(error)
+
+        // Then
+        #expect(shouldRetry)
     }
 }
 

@@ -177,7 +177,8 @@ class AuthenticatedState: StoresManagerState {
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
                                                            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                                                           grdbManager: ServiceLocator.grdbManager),
+                                                           grdbManager: ServiceLocator.grdbManager,
+                                                           usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)),
            let incrementalSyncService = POSCatalogIncrementalSyncService(
             credentials: credentials,
             selectedSite: site,
@@ -192,7 +193,14 @@ class AuthenticatedState: StoresManagerState {
                     selectedSite: site,
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
                 ),
-                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled
+                systemStatusService: POSSystemStatusService(
+                    credentials: credentials,
+                    selectedSite: site,
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                    storageManager: ServiceLocator.storageManager
+                ),
+                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher)
             )
             posCatalogEligibilityChecker = eligibilityService
 
@@ -279,10 +287,12 @@ private extension AuthenticatedState {
         let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
         let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
+        let resetBookingFilters = AppSettingsAction.resetBookingFilters
         ServiceLocator.stores.dispatch([resetStoredProviders,
                                         resetOrdersSettings,
                                         resetProductsSettings,
-                                        resetGeneralStoreSettings])
+                                        resetGeneralStoreSettings,
+                                        resetBookingFilters])
     }
 }
 

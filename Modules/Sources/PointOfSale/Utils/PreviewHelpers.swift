@@ -217,7 +217,8 @@ struct POSPreviewHelpers {
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
         siteID: Int64 = 1,
-        catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil
+        catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+        isLocalCatalogEligible: Bool = false
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -234,7 +235,8 @@ struct POSPreviewHelpers {
             popularPurchasableItemsController: popularItemsController,
             barcodeScanService: barcodeScanService,
             siteID: siteID,
-            catalogSyncCoordinator: catalogSyncCoordinator
+            catalogSyncCoordinator: catalogSyncCoordinator,
+            isLocalCatalogEligible: isLocalCatalogEligible
         )
     }
 
@@ -615,7 +617,7 @@ final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol 
 }
 
 final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
         // Simulates a full sync operation with a 1 second delay.
         try await Task.sleep(nanoseconds: 1_000_000_000)
     }
@@ -634,6 +636,14 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
         return fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
+    }
+
+    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
+        return false
+    }
+
+    func stopOngoingSyncs(for siteID: Int64) async {
+        // Preview implementation - no-op
     }
 }
 

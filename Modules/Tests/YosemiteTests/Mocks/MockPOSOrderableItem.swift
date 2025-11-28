@@ -3,12 +3,12 @@ import Foundation
 
 final class MockPOSOrderableItem: POSOrderableItem, Equatable {
     var name: String
-    var id: UUID
+    var id: POSItemIdentifier
     var formattedPrice: String
     var productImageSource: String?
 
     init(name: String,
-         id: UUID = UUID(),
+         id: POSItemIdentifier = POSItemIdentifier(underlyingType: .product, itemID: 1),
          formattedPrice: String,
          productImageSource: String? = nil,
          orderItemsToMatch: [OrderItem] = [],

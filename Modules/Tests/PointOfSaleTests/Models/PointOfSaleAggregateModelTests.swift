@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
+import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import protocol Yosemite.POSSearchHistoryProviding

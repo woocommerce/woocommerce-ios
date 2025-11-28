@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import enum Yosemite.POSItem
 import enum Yosemite.POSItemType
+import struct Yosemite.POSItemIdentifier
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 @testable import PointOfSale

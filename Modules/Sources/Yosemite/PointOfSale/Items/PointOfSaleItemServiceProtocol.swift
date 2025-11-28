@@ -35,6 +35,7 @@ public struct POSItemIdentifier: Hashable, Sendable {
         case variation
         case coupon
         case loading
+        case error
     }
 }
 

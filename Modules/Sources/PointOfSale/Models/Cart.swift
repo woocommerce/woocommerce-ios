@@ -45,7 +45,7 @@ extension Cart {
             case .loading:
                 return POSItemIdentifier(underlyingType: .loading, itemID: 0)
             case .error:
-                return POSItemIdentifier(underlyingType: .loading, itemID: 0)
+                return POSItemIdentifier(underlyingType: .error, itemID: 0)
             }
         }
 

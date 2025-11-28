@@ -5,6 +5,10 @@ import Combine
 import protocol Storage.StorageManagerType
 import class Networking.BookingsRemote
 
+protocol BookingListsRefreshCoordinating: AnyObject {
+    func refreshAllLists() async
+}
+
 /// View model for `BookingListView`
 final class BookingListViewModel: ObservableObject {
 
@@ -14,7 +18,7 @@ final class BookingListViewModel: ObservableObject {
 
     @Published private(set) var hasFilters = false
 
-    weak var parent: BookingListContainerViewModel?
+    weak var refreshCoordinator: BookingListsRefreshCoordinating?
 
     var emptyStateTitle: String {
         type.emptyStateTitle(hasFilters: hasFilters)
@@ -101,7 +105,7 @@ final class BookingListViewModel: ObservableObject {
 
     /// Called when the user pulls down the list to refresh.
     func onRefreshAction() async {
-        await parent?.pullToRefresh(on: type)
+        await refreshCoordinator?.refreshAllLists()
     }
 
     @MainActor

@@ -307,7 +307,7 @@ struct BookingListViewModelTests {
         let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
 
         // When
-        await viewModel.onRefreshAction()
+        await viewModel.onRefreshSelfAction()
 
         // Then
         #expect(skip == 0)
@@ -441,26 +441,18 @@ struct BookingListViewModelTests {
         #expect(actionCallCount == 2, "Should have made two API calls")
     }
 
-    @Test func on_refresh_action_clears_cache() async {
+    @Test func on_refresh_action_calls_refreshcoordiantor() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var capturedShouldClearCache: Bool?
-
-        stores.whenReceivingAction(ofType: BookingAction.self) { action in
-            guard case let .synchronizeBookings(_, _, _, _, _, shouldClearCache, onCompletion) = action else {
-                return
-            }
-            capturedShouldClearCache = shouldClearCache
-            onCompletion(.success(false))
-        }
-
+        let mockRefresher = MockBookingListsRefreshCoordinating()
         let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
+        viewModel.refreshCoordinator = mockRefresher
 
         // When
         await viewModel.onRefreshAction()
 
         // Then
-        #expect(capturedShouldClearCache == true, "Refresh action should clear cache")
+        #expect(mockRefresher.refreshAllListsCalled)
     }
 
     // MARK: - Local storage filtering
@@ -717,5 +709,14 @@ private extension BookingListViewModelTests {
 
     func createBooking(id: Int64, startDate: Date, siteID: Int64? = nil) -> Booking {
         return Booking.fake().copy(siteID: siteID ?? self.sampleSiteID, bookingID: id, startDate: startDate)
+    }
+}
+
+
+class MockBookingListsRefreshCoordinating: BookingListsRefreshCoordinating {
+    private(set) var refreshAllListsCalled = false
+
+    func refreshAllLists() async {
+        refreshAllListsCalled = true
     }
 }

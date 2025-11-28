@@ -107,36 +107,36 @@
 			"screenshot": "iPad Pro 13-inch (M4)-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
-		// Get notified of every sale
+				// Sell online and in person
 		{
 			"device": "iPad Pro 13-inch (M4)",
 			"filename": "iPad Pro 13-inch (M4)-05.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro 13-inch (M4)-5-dark-order-notification.png",
+			"screenshot": "iPad Pro 13-inch (M4)-5-dark-pos-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
-		},
-		// Sell online and in person
-		{
-			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-06.png",
-			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro 13-inch (M4)-6-light-pos-dashboard.png",
-			"text": "metadata/{locale}/app_store_screenshot_6.txt"
 		},
 		// Track orders and view totals in real time
 		{
 			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-07.png",
-			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro 13-inch (M4)-7-dark-pos-payment.png",
-			"text": "metadata/{locale}/app_store_screenshot_7.txt"
+			"filename": "iPad Pro 13-inch (M4)-06.png",
+			"background": "appstoreres/assets/ipad-background-2.png",
+			"screenshot": "iPad Pro 13-inch (M4)-6-light-pos-payment.png",
+			"text": "metadata/{locale}/app_store_screenshot_6.txt"
 		},
 		// Complete payments quickly and efficiently
 		{
 			"device": "iPad Pro 13-inch (M4)",
+			"filename": "iPad Pro 13-inch (M4)-07.png",
+			"background": "appstoreres/assets/ipad-background-1.png",
+			"screenshot": "iPad Pro 13-inch (M4)-7-light-pos-success.png",
+			"text": "metadata/{locale}/app_store_screenshot_7.txt"
+		},
+		// Get notified of every sale
+		{
+			"device": "iPad Pro 13-inch (M4)",
 			"filename": "iPad Pro 13-inch (M4)-08.png",
 			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro 13-inch (M4)-8-light-pos-success.png",
+			"screenshot": "iPad Pro 13-inch (M4)-8-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_8.txt"
 		}
 	]

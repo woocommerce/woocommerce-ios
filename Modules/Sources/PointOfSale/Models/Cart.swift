@@ -2,6 +2,7 @@ import Foundation
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleBarcodeScanError
+import struct Yosemite.POSItemIdentifier
 
 struct Cart {
     var purchasableItems: [Cart.PurchasableItem] = []
@@ -12,6 +13,7 @@ struct Cart {
 
 protocol CartItem {
     var id: UUID { get }
+    var posItemIdentifier: POSItemIdentifier { get }
     var type: CartItemType { get }
 }
 
@@ -34,6 +36,17 @@ extension Cart {
             case loaded(POSOrderableItem)
             case loading
             case error
+        }
+
+        var posItemIdentifier: POSItemIdentifier {
+            switch state {
+            case .loaded(let item):
+                return item.id
+            case .loading:
+                return POSItemIdentifier(underlyingType: .loading, itemID: 0)
+            case .error:
+                return POSItemIdentifier(underlyingType: .loading, itemID: 0)
+            }
         }
 
         var formattedPrice: String? {
@@ -76,6 +89,7 @@ extension Cart {
 
     struct CouponItem: CartItem {
         let id: UUID
+        let posItemIdentifier: POSItemIdentifier
         let code: String
         let summary: String
         let type: CartItemType = .coupon
@@ -89,7 +103,7 @@ extension Cart {
         if let purchasableItem = createPurchasableItem(from: posItem) {
             purchasableItems.insert(purchasableItem, at: purchasableItems.startIndex)
         } else if case .coupon(let coupon) = posItem {
-            let couponItem = Cart.CouponItem(id: coupon.id, code: coupon.code, summary: coupon.summary)
+            let couponItem = Cart.CouponItem(id: UUID(), posItemIdentifier: coupon.id, code: coupon.code, summary: coupon.summary)
             coupons.insert(couponItem, at: coupons.startIndex)
         }
     }

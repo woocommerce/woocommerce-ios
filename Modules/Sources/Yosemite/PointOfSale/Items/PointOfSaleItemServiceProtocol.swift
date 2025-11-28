@@ -7,7 +7,7 @@ public enum POSItem: Equatable, Identifiable, Hashable {
     case variation(POSVariation)
     case coupon(POSCoupon)
 
-    public var id: UUID {
+    public var id: POSItemIdentifier {
         switch self {
         case .simpleProduct(let product):
             return product.id
@@ -21,12 +21,29 @@ public enum POSItem: Equatable, Identifiable, Hashable {
     }
 }
 
+public struct POSItemIdentifier: Hashable, Sendable {
+    public let underlyingType: UnderlyingType
+    public let itemID: Int64
+
+    public init(underlyingType: UnderlyingType, itemID: Int64) {
+        self.underlyingType = underlyingType
+        self.itemID = itemID
+    }
+
+    public enum UnderlyingType: Sendable {
+        case product
+        case variation
+        case coupon
+        case loading
+    }
+}
+
 /// POSOrderableItem extends a displayable item with the functions required for using it in an order.
 /// This currently includes adding it, and checking whether it's already in an order.
 /// This may need to become less specific in future, e.g. we currently convert it to a product input, but
 /// other order items might be added as fees or similar. at that point, we will need a different function requirement here.
 public protocol POSOrderableItem {
-    var id: UUID { get }
+    var id: POSItemIdentifier { get }
     var name: String { get }
     var productImageSource: String? { get }
     var formattedPrice: String { get }

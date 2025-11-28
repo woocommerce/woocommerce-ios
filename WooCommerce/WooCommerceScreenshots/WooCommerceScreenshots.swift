@@ -24,6 +24,7 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
         app.launchArguments.append("mocked-network-layer")
+        app.launchArguments.append("use-mocked-card-present-payment")
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")

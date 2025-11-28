@@ -14,6 +14,8 @@ final class BookingListViewModel: ObservableObject {
 
     @Published private(set) var hasFilters = false
 
+    weak var parent: BookingListContainerViewModel?
+
     var emptyStateTitle: String {
         type.emptyStateTitle(hasFilters: hasFilters)
     }
@@ -58,6 +60,7 @@ final class BookingListViewModel: ObservableObject {
 
     init(siteID: Int64,
          type: BookingListTab,
+         parent: BookingListContainerViewModel? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          currentDate: Date = Date()) {
@@ -95,11 +98,15 @@ final class BookingListViewModel: ObservableObject {
         paginationTracker.ensureNextPageIsSynced()
     }
 
+    func onRefreshAllAction() async {
+        await parent?.pullToRefresh()
+    }
+
     /// Called when the user pulls down the list to refresh.
     @MainActor
-    func onRefreshAction() async {
+    func onRefreshAction2(reason: String? = nil) async {
         await withCheckedContinuation { continuation in
-            paginationTracker.resync(reason: Self.refreshCacheReason) {
+            paginationTracker.resync(reason: reason ?? Self.refreshCacheReason) {
                 continuation.resume(returning: ())
             }
         }

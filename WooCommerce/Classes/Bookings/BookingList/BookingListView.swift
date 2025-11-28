@@ -43,14 +43,14 @@ private extension BookingListView {
             switch viewModel.syncState {
             case .empty:
                 emptyStateView(isSearching: false) {
-                    await viewModel.onRefreshAction()
+                    await viewModel.onRefreshAllAction()
                 }
             case .syncingFirstPage:
                 loadingView
             case .results:
                 bookingList(with: viewModel.bookings,
                             onNextPage: { viewModel.onLoadNextPageAction() },
-                            onRefresh: { await viewModel.onRefreshAction() })
+                            onRefresh: { await viewModel.onRefreshAllAction() })
             }
         }
         .overlay(alignment: .bottom) {

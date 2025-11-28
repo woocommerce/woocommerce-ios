@@ -89,14 +89,28 @@ final class BookingListContainerViewModel: ObservableObject {
         restorePersistedFilters()
     }
 
+    func pullToRefresh() async {
+        async let today = todayListViewModel.onRefreshAction()
+        async let upcoming = upcomingListViewModel.onRefreshAction(reason: "pull-to-refresh")
+        async let all = allListViewModel.onRefreshAction(reason: "pull-to-refresh")
+        _ = await (today, upcoming, all)
+    }
+
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {
+
+
+
+        todayListViewModel.parent = self
+        upcomingListViewModel.parent = self
+        allListViewModel.parent = self
+
         switch tab {
         case .today:
-            todayListViewModel
+            return todayListViewModel
         case .upcoming:
-            upcomingListViewModel
+            return upcomingListViewModel
         case .all:
-            allListViewModel
+            return allListViewModel
         }
     }
 

@@ -996,7 +996,7 @@ struct PointOfSaleAggregateModelTests {
 
 private func makePurchasableItem(name: String = "") -> POSItem {
     return .simpleProduct(POSSimpleProduct(
-        id: UUID(),
+        id: POSItemIdentifier(underlyingType: .product, itemID: 1),
         name: name,
         formattedPrice: "",
         productID: 1,
@@ -1007,7 +1007,7 @@ private func makePurchasableItem(name: String = "") -> POSItem {
 }
 
 private func makeCouponItem(code: String = "") -> POSItem {
-    return .coupon(.init(id: UUID(), code: code))
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: code))
 }
 
 private func makeLoadedOrderState(cartTotal: String = "",

@@ -236,7 +236,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                                                                 name: "Fake Parent",
                                                                                 productImageSource: nil,
                                                                                 productID: 12345))
@@ -268,7 +268,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                                                                 name: "Fake Parent",
                                                                                 productImageSource: nil,
                                                                                 productID: 12345))
@@ -496,7 +496,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                                                                 name: "Parent product",
                                                                                 productImageSource: nil,
                                                                                 productID: 125))
@@ -522,7 +522,7 @@ final class PointOfSaleItemsControllerTests {
             analyticsProvider: MockPOSAnalytics()
         )
 
-        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
+        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                                                                 name: "Parent product",
                                                                                 productImageSource: nil,
                                                                                 productID: 125))

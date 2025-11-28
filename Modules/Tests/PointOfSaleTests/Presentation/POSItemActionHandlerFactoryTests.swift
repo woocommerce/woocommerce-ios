@@ -158,7 +158,7 @@ struct POSItemActionHandlerFactoryTests {
 }
 
 private func makeProductItem() -> POSItem {
-    return .simpleProduct(.init(id: UUID(),
+    return .simpleProduct(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                 name: "Test",
                                 formattedPrice: "$1.00",
                                 productID: 1,
@@ -169,7 +169,7 @@ private func makeProductItem() -> POSItem {
 }
 
 private func makeCouponItem() -> POSItem {
-    return .coupon(.init(id: UUID(), code: "DISCOUNT!"))
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: "DISCOUNT!"))
 }
 
 private func makeVariationItem() -> POSItem {

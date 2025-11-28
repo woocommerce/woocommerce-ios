@@ -125,7 +125,7 @@ struct GRDBObservableDataSourceTests {
         try await insertTestVariations(parentID: 100, count: 3)
 
         let posParent = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,
@@ -151,7 +151,7 @@ struct GRDBObservableDataSourceTests {
         try await insertTestVariations(parentID: 100, count: 2)
 
         let posParent = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,
@@ -184,8 +184,8 @@ struct GRDBObservableDataSourceTests {
         try await insertTestVariations(parentID: 100, count: 2)
         try await insertTestVariations(parentID: 200, count: 3)
 
-        let posParent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
-        let posParent2 = POSVariableParentProduct(id: UUID(), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+        let posParent1 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let posParent2 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
 
         // When: Load parent 1 variations
         await waitForVariationLoad {
@@ -267,7 +267,7 @@ struct GRDBObservableDataSourceTests {
         #expect(sut.variationItems.isEmpty)
 
         // When: Load variations
-        let posParent = POSVariableParentProduct(id: UUID(), name: "Parent", productImageSource: nil, productID: 100, allAttributes: [])
+        let posParent = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent", productImageSource: nil, productID: 100, allAttributes: [])
         await waitForVariationLoad {
             sut.loadVariations(for: posParent)
         }
@@ -296,8 +296,8 @@ struct GRDBObservableDataSourceTests {
         // Insert 3 downloadable variations for parent 2 (should be excluded from count)
         try await insertDownloadableVariations(parentID: 200, count: 3, startID: 2000)
 
-        let posParent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
-        let posParent2 = POSVariableParentProduct(id: UUID(), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+        let posParent1 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let posParent2 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
 
         // When: Load parent 1 variations (first page of 5)
         await waitForVariationLoad {
@@ -349,8 +349,8 @@ struct GRDBObservableDataSourceTests {
         // Parent 2: 8 variations (more than page size of 5)
         try await insertTestVariations(parentID: 200, count: 8)
 
-        let posParent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
-        let posParent2 = POSVariableParentProduct(id: UUID(), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+        let posParent1 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let posParent2 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
 
         // When: Load parent 1 variations
         await waitForVariationLoad {

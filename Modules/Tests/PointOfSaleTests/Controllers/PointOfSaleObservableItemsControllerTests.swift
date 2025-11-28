@@ -7,9 +7,9 @@ final class PointOfSaleObservableItemsControllerTests {
 
     // MARK: - Test Helpers
 
-    private func makeSimpleProduct(id: UUID = UUID(), name: String = "Test Product", productID: Int64 = 1) -> POSItem {
+    private func makeSimpleProduct(id: POSItemIdentifier? = nil, name: String = "Test Product", productID: Int64 = 1) -> POSItem {
         .simpleProduct(POSSimpleProduct(
-            id: id,
+            id: id ?? POSItemIdentifier(underlyingType: .product, itemID: productID),
             name: name,
             formattedPrice: "$2.00",
             productID: productID,
@@ -20,9 +20,9 @@ final class PointOfSaleObservableItemsControllerTests {
         ))
     }
 
-    private func makeVariation(id: UUID = UUID(), name: String = "Test Variation", variationID: Int64 = 1) -> POSItem {
+    private func makeVariation(id: POSItemIdentifier? = nil, name: String = "Test Variation", variationID: Int64 = 1) -> POSItem {
         .variation(POSVariation(
-            id: id,
+            id: id ?? POSItemIdentifier(underlyingType: .variation, itemID: variationID),
             name: name,
             formattedPrice: "$2.00",
             price: "2.00",

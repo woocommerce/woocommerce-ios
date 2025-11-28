@@ -7,6 +7,11 @@ final class BookingListContainerViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
+    private lazy var allTabViewModels: [BookingListViewModel] = [
+        todayListViewModel,
+        upcomingListViewModel,
+        allListViewModel
+    ]
     private let todayListViewModel: BookingListViewModel
     private let upcomingListViewModel: BookingListViewModel
     private let allListViewModel: BookingListViewModel
@@ -89,11 +94,25 @@ final class BookingListContainerViewModel: ObservableObject {
         restorePersistedFilters()
     }
 
-    func pullToRefresh() async {
-        async let today = todayListViewModel.onRefreshAction()
-        async let upcoming = upcomingListViewModel.onRefreshAction(reason: "pull-to-refresh")
-        async let all = allListViewModel.onRefreshAction(reason: "pull-to-refresh")
-        _ = await (today, upcoming, all)
+    @MainActor
+    func pullToRefresh(on tab: BookingListTab) async {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.clearBookingsCache(siteID: siteID) {
+                continuation.resume()
+            }
+            stores.dispatch(action)
+        }
+
+        // Launch all tab refreshes in parallel and wait for all to complete
+        await withTaskGroup(of: Void.self) { group in
+            for viewModel in allTabViewModels {
+                group.addTask { @MainActor in
+                    await viewModel.onRefreshSelfAction(
+                        reason: BookingListViewModel.siblingRefreshReason
+                    )
+                }
+            }
+        }
     }
 
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {

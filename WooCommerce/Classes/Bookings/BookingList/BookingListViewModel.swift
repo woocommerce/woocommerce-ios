@@ -34,6 +34,7 @@ final class BookingListViewModel: ObservableObject {
 
     private static let refreshCacheReason = "refresh-cache"
     private static let reorderReason = "reorder"
+    static let siblingRefreshReason = "sibling-refresh"
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -98,13 +99,13 @@ final class BookingListViewModel: ObservableObject {
         paginationTracker.ensureNextPageIsSynced()
     }
 
-    func onRefreshAllAction() async {
-        await parent?.pullToRefresh()
+    /// Called when the user pulls down the list to refresh.
+    func onRefreshAction() async {
+        await parent?.pullToRefresh(on: type)
     }
 
-    /// Called when the user pulls down the list to refresh.
     @MainActor
-    func onRefreshAction2(reason: String? = nil) async {
+    func onRefreshSelfAction(reason: String? = nil) async {
         await withCheckedContinuation { continuation in
             paginationTracker.resync(reason: reason ?? Self.refreshCacheReason) {
                 continuation.resume(returning: ())

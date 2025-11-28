@@ -79,7 +79,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                                                                         totalItems: 1))
 
         let expectedItem = POSItem.simpleProduct(POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 208),
             name: "Dymo LabelWriter 4XL",
             formattedPrice: "$216.00",
             productID: 208,
@@ -118,7 +118,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
         let mockMappedProducts = mockProducts.map { product in
             POSItem.simpleProduct(POSSimpleProduct(
-                id: UUID(),
+                id: POSItemIdentifier(underlyingType: .product, itemID: product.productID),
                 name: product.name,
                 formattedPrice: "$0.00",
                 productID: product.productID,
@@ -176,7 +176,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let parentProductID: Int64 = 123
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: parentProductID),
             name: "Tea",
             productImageSource: nil,
             productID: parentProductID,
@@ -196,7 +196,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                                                                           totalItems: 1))
 
         let expectedVariation = POSItem.variation(POSVariation(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .variation, itemID: 1274),
             name: "Shape: brick, Flavor: nuts, Darkness: 99%, Size: Any",
             formattedPrice: "$0.00",
             price: "",
@@ -226,7 +226,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let parentProductID: Int64 = 123
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: parentProductID),
             name: "Tea",
             productImageSource: nil,
             productID: parentProductID,
@@ -270,7 +270,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         do {
             _ = try await itemProvider.providePointOfSaleVariationItems(
                 for: .init(
-                    id: UUID(),
+                    id: POSItemIdentifier(underlyingType: .product, itemID: parentProductID),
                     name: "Tea",
                     productImageSource: nil,
                     productID: parentProductID,
@@ -289,7 +289,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let parentProductID: Int64 = 123
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: parentProductID),
             name: "Tea",
             productImageSource: nil,
             productID: parentProductID,
@@ -302,7 +302,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                                                                           totalItems: 1))
 
         let expectedVariation = POSItem.variation(POSVariation(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .variation, itemID: 1274),
             name: "Shape: brick, Flavor: nuts, Darkness: 99%, Size: Any",
             formattedPrice: "$0.00",
             price: "",
@@ -347,7 +347,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                                                                         totalItems: 1))
 
         let expectedItem = POSItem.simpleProduct(POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Test Product",
             formattedPrice: "$10.00",
             productID: 1,
@@ -376,7 +376,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                                                                           totalItems: 1))
 
         let expectedItem = POSItem.variation(POSVariation(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .variation, itemID: 10),
             name: "Test Variation",
             formattedPrice: "$20.00",
             price: "20.00",
@@ -386,7 +386,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         ))
         mockItemMapper.mockMappedVariations = [expectedItem]
 
-        let parentProduct = POSVariableParentProduct.init(id: UUID(),
+        let parentProduct = POSVariableParentProduct.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                                           name: "Test Variable Product",
                                                           productImageSource: nil,
                                                           productID: 1)
@@ -439,7 +439,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let parentProductID: Int64 = 123
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: parentProductID),
             name: "Test Variable Product",
             productImageSource: nil,
             productID: parentProductID,

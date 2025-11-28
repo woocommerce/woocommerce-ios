@@ -107,7 +107,7 @@
 			"screenshot": "iPad Pro 13-inch (M4)-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
-				// Sell online and in person
+		// Sell online and in person
 		{
 			"device": "iPad Pro 13-inch (M4)",
 			"filename": "iPad Pro 13-inch (M4)-05.png",
@@ -128,7 +128,7 @@
 			"device": "iPad Pro 13-inch (M4)",
 			"filename": "iPad Pro 13-inch (M4)-07.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro 13-inch (M4)-7-light-pos-success.png",
+			"screenshot": "iPad Pro 13-inch (M4)-7-dark-pos-success.png",
 			"text": "metadata/{locale}/app_store_screenshot_7.txt"
 		},
 		// Get notified of every sale
@@ -136,7 +136,7 @@
 			"device": "iPad Pro 13-inch (M4)",
 			"filename": "iPad Pro 13-inch (M4)-08.png",
 			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro 13-inch (M4)-8-dark-order-notification.png",
+			"screenshot": "iPad Pro 13-inch (M4)-8-light-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_8.txt"
 		}
 	]

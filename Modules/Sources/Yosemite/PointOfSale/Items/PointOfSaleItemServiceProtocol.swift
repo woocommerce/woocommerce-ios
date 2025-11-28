@@ -1,5 +1,6 @@
 import Foundation
 import struct Networking.PagedItems
+import Codegen
 
 public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
@@ -21,7 +22,7 @@ public enum POSItem: Equatable, Identifiable, Hashable {
     }
 }
 
-public struct POSItemIdentifier: Hashable, Sendable {
+public struct POSItemIdentifier: Hashable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let underlyingType: UnderlyingType
     public let itemID: Int64
 
@@ -30,7 +31,7 @@ public struct POSItemIdentifier: Hashable, Sendable {
         self.itemID = itemID
     }
 
-    public enum UnderlyingType: Sendable {
+    public enum UnderlyingType: Sendable, GeneratedCopiable, GeneratedFakeable {
         case product
         case variation
         case coupon

@@ -5,6 +5,7 @@ import Foundation
 import Networking
 import WooFoundation
 import enum NetworkingCore.OrderStatusEnum
+import struct Networking.PagedItems
 import struct NetworkingCore.Address
 import struct NetworkingCore.MetaData
 import struct NetworkingCore.Order
@@ -54,6 +55,21 @@ extension Yosemite.JustInTimeMessage {
             badgeImageUrl: badgeImageUrl,
             badgeImageDarkUrl: badgeImageDarkUrl,
             template: template
+        )
+    }
+}
+
+extension Yosemite.POSItemIdentifier {
+    public func copy(
+        underlyingType: CopiableProp<POSItemIdentifier.UnderlyingType> = .copy,
+        itemID: CopiableProp<Int64> = .copy
+    ) -> Yosemite.POSItemIdentifier {
+        let underlyingType = underlyingType ?? self.underlyingType
+        let itemID = itemID ?? self.itemID
+
+        return Yosemite.POSItemIdentifier(
+            underlyingType: underlyingType,
+            itemID: itemID
         )
     }
 }

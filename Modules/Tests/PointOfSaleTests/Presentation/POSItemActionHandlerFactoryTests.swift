@@ -169,12 +169,12 @@ private func makeProductItem() -> POSItem {
 }
 
 private func makeCouponItem() -> POSItem {
-    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: "DISCOUNT!"))
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "DISCOUNT!"))
 }
 
 private func makeVariationItem() -> POSItem {
     return .variation(.init(
-        id: .init(),
+        id: POSItemIdentifier(underlyingType: .variation, itemID: 1),
         name: "Test",
         formattedPrice: "$2.00",
         price: "2",

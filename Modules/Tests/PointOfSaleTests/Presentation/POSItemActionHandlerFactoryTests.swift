@@ -3,6 +3,7 @@ import Foundation
 @testable import PointOfSale
 import WooFoundation
 import enum Yosemite.POSItem
+import struct Yosemite.POSItemIdentifier
 
 private enum AnalyticsKeys {
     static let source = "source"

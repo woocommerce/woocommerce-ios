@@ -13,6 +13,7 @@ import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 import enum Networking.NetworkError
+import struct Yosemite.POSItemIdentifier
 
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()

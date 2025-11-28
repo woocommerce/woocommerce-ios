@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-18 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-11-25 15:31:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -4391,6 +4391,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "Plugins";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Documentación";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Obtener ayuda";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Descubre qué productos son compatibles con el punto de venta";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "¿Dónde están mis productos?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Cancelar";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "Ayuda";
+
 /* Section title for popular products on the Select Product screen. */
 "Popular" = "Popular";
 
@@ -8551,6 +8571,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Suscripción variable";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "En curso";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Cancelar";
 
@@ -8678,6 +8701,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "El cambio vence el %1$@";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Selecciona el producto para la campaña Blaze.";
 
@@ -8770,6 +8796,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Solución de problemas de conexión";
+
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "Caducó el %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Dirección";
@@ -10149,8 +10178,1175 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Plugins";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "Código de barras demasiado corto";
+
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "El escáner no ha enviado ningún carácter de fin de línea";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "Solicitud de red fallida";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "Sin conexión a Internet";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "No se ha encontrado el producto superior de la variación";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "Artículo escaneado desconocido";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "No se ha podido leer el código de barras";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "Error de escaneado";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "Tipo de artículo no compatible";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "Pago cancelado en el lector";
+
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Intentar efectuar el pago de nuevo";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "Tarjeta insertada";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "Todo listo para el pago";
+
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "Conectar tu lector";
+
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "Procesando pago";
+
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Cancelar";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "Para encender el lector de tarjetas, pulsa el botón de encendido.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "Buscando lector";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Nuevo pedido";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Intentar efectuar el pago de nuevo";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Debido a un error de red, no podemos confirmar que el pago se haya realizado correctamente. Verifica el pago en un dispositivo con una conexión de red que funcione. Si no lo consigues, vuelve a intentar realizar el pago. Si lo consigues, inicia un nuevo pedido.";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Error de pago";
+
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Volver a la página de pago";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "Error de pago";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Prueba otro método de pago";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Intentar efectuar el pago de nuevo";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Si quieres seguir procesando esta transacción, intenta efectuar el pago de nuevo.";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Error de pago";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Prueba otro método de pago";
+
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Editar pedido";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Error en la preparación del pago";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Intentar efectuar el pago de nuevo";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "Procesando pago";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.title" = "En preparación";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Preparando el lector para el pago";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Insertar tarjeta";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Presentar tarjeta";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Tocar tarjeta";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Tocar o insertar tarjeta";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tocar, deslizar o insertar tarjeta";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Listo para el pago";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Lector no conectado";
+
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Para procesar este pago, conecta tu lector o selecciona el pago en efectivo.";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "Comprobando pedido";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "En preparación";
+
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "El pedido no alcanza la cantidad mínima necesaria para procesar el pago con tarjeta (%1$@). En su lugar, puedes aceptar un pago en efectivo.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "No se puede realizar un pago con tarjeta";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Error al comprobar el pedido";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Intentar de nuevo";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Espera";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Descartar";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Abrir ajustes del dispositivo";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Se necesita permiso para usar el Bluetooth";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Cancelar";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "No hemos podido conectar tu lector";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Volver a intentarlo";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Cancelar";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "El lector tiene muy poca batería. Carga el lector o prueba con otro diferente.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Intentar de nuevo";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "No hemos podido conectar tu lector";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Cancelar";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Abrir ajustes del dispositivo";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Es necesario activar los permisos de los servicios de ubicación para reducir el fraude, evitar discusiones y garantizar pagos seguros.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Para permitir los pagos, activa los servicios de ubicación";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Descartar";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Conexión fallida";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Cancelar";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Introducir dirección";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Inténtalo de nuevo después de actualizar.";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Para proceder, debes corregir la dirección de la tienda.";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Cancelar";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Puedes configurar el código postal o ZIP de la tienda en WP Admin > WooCommerce > Ajustes (General).";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Inténtalo de nuevo después de actualizar.";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Corrige el código postal o ZIP de la tienda.";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Continuar";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Puedes cambiar esta opción más adelante en los ajustes de la aplicación.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Es necesario activar los permisos de los servicios de ubicación para reducir el fraude, evitar discusiones y garantizar pagos seguros.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Para permitir los pagos, activa los servicios de ubicación";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Por favor, espera";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Conectando con el lector";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Hecho";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Lector conectado";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Cancelar";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Conectar";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Se han encontrado varios lectores";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Buscando lectores";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Cancelar";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Conectar con el lector";
+
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "¿Quieres conectarte a este lector?";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Seguir buscando";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "Se ha encontrado %1$@";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Cancelar";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "El lector se reiniciará automáticamente y se volverá a conectar cuando se haya completado la actualización.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% completado";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Actualizando el software";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Lo entiendo";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% completado";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Software actualizado";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Cancelar";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Intentar de nuevo";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "No hemos podido actualizar el software de tu lector.";
+
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "No se ha podido actualizar el lector porque la batería está al %.0f%%. Cárgalo e inténtalo de nuevo.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Cancelar";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "No se ha podido actualizar el lector porque tiene poca batería. Cárgalo e inténtalo de nuevo.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Inténtalo de nuevo";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Carga el lector.";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Descartar";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "No hemos podido actualizar el software de tu lector.";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Cancelar igualmente";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Para recibir pagos, debes actualizar el software de tu lector de tarjetas. Si cancelas esta acción, se bloqueará la conexión con el lector.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% completado";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Actualizando el software";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Descartar";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "La conexión del lector ha fallado";
+
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Cerrar";
+
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Debido a un error de red, no sabemos si el pago se ha realizado correctamente.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Comprueba el pedido en un dispositivo con conexión a la red antes de continuar.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Es posible que el pedido no se haya realizado correctamente";
+
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "Total: %1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "Pago en efectivo";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "Marcar el pago como completo";
+
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Se ha producido un error al procesar el pago. Inténtalo de nuevo.";
+
+/* A description within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.exitButton.description" = "La subida de imágenes continuará en segundo plano";
+
+/* A button that exits POS. */
+"pointOfSale.catalogLoadingView.exitButton.title" = "Salir de POS";
+
+/* A title of a full screen view that is displayed while the POS catalog is being synced. */
+"pointOfSale.catalogLoadingView.title" = "Sincronizando catálogo";
+
+/* A message shown on the coupon if's not valid after attempting to apply it */
+"pointOfSale.couponRow.invalidCoupon" = "Cupón no aplicado";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Espera";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Desconectar lector";
+
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "Salir del punto de venta";
+
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Pedidos";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "Lector conectado";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "Conectar con tu lector";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Desconectando";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Ajustes";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Eliminar";
+
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Cargando";
+
+/* Button to come back to order editing when coupon validation fails. */
+"pointOfSale.orderSync.couponsError.editOrder" = "Editar pedido";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.errorTitle.2" = "No se puede aplicar el cupón";
+
+/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupon" = "Eliminar cupón";
+
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupons" = "Eliminar cupones";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "No se han podido cargar los totales";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "Intentar de nuevo";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "Se ha efectuado correctamente un pago con tarjeta de %1$@.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "Se ha efectuado correctamente un pago en efectivo de %1$@.";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Pago correcto";
+
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Enviar";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Enviar recibo por correo electrónico";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Introduce una dirección de correo electrónico válida.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Se ha producido un error al intentar enviar este correo electrónico. Vuelve a intentarlo.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "Introducir el correo electrónico";
+
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "Cancelar";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.cancel" = "Cancelar";
+
+/* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Desconocido";
+
+/* Title for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "Conectar el lector de tarjetas";
+
+/* Title for card reader disconnect button when reader is already connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDisconnectTitle" = "Desconectar lector";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Obtén más información sobre aceptar pagos a través de móviles";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Documentación";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Lector no conectado";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Lectores de tarjetas";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Configura los ajustes del escáner de códigos de barras";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Escáneres de códigos de barras";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Gestiona las conexiones del lector de tarjetas";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Lectores de tarjetas";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Hardware";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Batería";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Obtén más información sobre el escaneo de códigos de barras en el punto de venta";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Documentación";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Configura y prueba tu escáner de códigos de barras";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Configuración del escáner";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Escáneres de códigos de barras";
+
+/* Subtitle for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle" = "Actualiza la versión del firmware para seguir aceptando pagos.";
+
+/* Title for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle" = "Actualizar la versión del firmware";
+
+/* Title of the button to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle" = "Actualizar firmware";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "Sin definir";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "Dirección";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "Correo electrónico";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.general" = "General";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "Sin definir";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Número de teléfono";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Dirección física";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Información del recibo";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Nombre de la tienda";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Política de devoluciones y reembolsos";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "Nombre de la tienda";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "Tienda";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "Ajustes";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Gestiona las conexiones de hardware";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Hardware";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Obtén ayuda y soporte";
+
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Gestionar los ajustes del catálogo";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Catálogo";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Configuración y ajustes de la tienda";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Tienda";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "Escaneado de códigos de barras";
+
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• Revisa tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "Primero: Revisa tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "Puedes escanear códigos de barras con un escáner externo para crear rápidamente un carrito.";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• Escanea códigos de barras mientras estás en la lista de artículos para añadir productos al carrito.";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "Segundo: Escanea códigos de barras mientras estás en la lista de artículos para añadir productos al carrito.";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• Asegúrate de que el campo de búsqueda no está habilitado al escanear códigos de barras.";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "Tercero: Asegúrate de que el campo de búsqueda no está habilitado al escanear códigos de barras.";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "Puedes escanear códigos de barras con un escáner externo para crear rápidamente un carrito.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "Más detalles.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Más detalles, enlace.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• Configura códigos de barras en el campo «GTIN, UPC, EAN, ISBN» de Productos > Detalles del producto > Inventario. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "Primero: configura códigos de barras en el campo «G-T-I-N, U-P-C, E-A-N, I-S-B-N» desplazándote a Productos, luego Detalles del producto y, luego, Inventario.";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "consulta la documentación";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "Puedes configurar códigos de barras en el campo «GTIN, UPC, EAN, ISBN» en la pestaña del inventario del producto. Para obtener más información, %1$@.";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "Puedes configurar códigos de barras en el campo «G-T-I-N, U-P-C, E-A-N, I-S-B-N» en la pestaña del inventario del producto. Para obtener más información, consulta la documentación, enlace.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• Escanea los códigos de barras mientras estás en la lista de artículos para añadir productos al carrito.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Cuarto: escanea los códigos de barras mientras estás en la lista de artículos para añadir productos al carrito.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "El escáner emula un teclado, por lo que a veces evitará que se muestre el teclado del software, por ejemplo, en búsquedas. Toca el icono del teclado para que se muestre de nuevo.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage.2" = "• Consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo HID. Normalmente, esto requiere que escanees un código de barras especial del manual.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Segundo: consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo H-I-D. Normalmente, esto requiere que escanees un código de barras especial del manual.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• Conecta tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Tercero: conecta tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "Volver";
+
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Imagen de un código que se va a escanear con un escáner de código de barras.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Ya tienes todo listo para empezar a escanear productos. La próxima vez que necesites conectar el escáner, solo tienes que encenderlo y se volverá a conectar automáticamente.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "¡Escáner configurado!";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "Hecho";
+
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "Volver";
+
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Consulta el manual del escáner y restablece los ajustes de fábrica. A continuación, vuelve a intentar el proceso de configuración.";
+
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "Reintentar";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Se ha encontrado un problema en el escaneo";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Utiliza el escáner de códigos de barras para escanear el código siguiente y activar el modo Bluetooth HID.";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "Siguiente";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "Otros";
+
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Utiliza tu escáner de códigos de barras para escanear el código de abajo y que entre en modo emparejamiento.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Habilita el Bluetooth y elige el escáner %1$@ en los ajustes de Bluetooth de iOS. El escáner emitirá un pitido y mostrará una luz LED fija cuando se empareje.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Ir a los ajustes de tu dispositivo";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Emparejar el escáner";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Cómo configurar códigos de barras en los productos";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Cómo configurar códigos de barras en los productos";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Configuración del escáner";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Configuración del escáner";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Otro escáner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Configura un escáner de códigos de barras";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Elige un modelo de la lista:";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Escanea el código de barras para probar tu escáner.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Escanea el código de barras para probar tu escáner. Si el problema persiste, comprueba los ajustes de Bluetooth e inténtalo de nuevo.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Aún no se han encontrado datos de escaneo";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Prueba tu escáner";
+
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Toca un producto para \n añadirlo al carrito, o bien ";
+
+/* Title at the header for the Cart view. */
+"pos.cartView.cartTitle" = "Carrito";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Escanear código de barras";
+
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "Finalizar compra";
+
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "Borrar carrito";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "Sin conexión a Internet";
+
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "Cancelar";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "Crear cupón";
+
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Se perderán los pedidos en curso.";
+
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Salir";
+
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "¿Salir del modo de punto de venta?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "Salir de POS";
+
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Activar la función POS";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "Reintentar";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "Point of Sale debe estar habilitado para continuar. Habilita la función POS más abajo o desde tu administrador de WordPress en Ajustes de WooCommerce > Ajustes avanzados > Funciones, e inténtalo de nuevo.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "Prueba a reiniciar la aplicación para resolver este problema.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "No hemos podido cargar la información de los ajustes del sitio. Revisa tu conexión a Internet e inténtalo de nuevo. Si el problema continúa, ponte en contacto con el servicio de soporte para obtener ayuda.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "El sistema de POS no está disponible para la moneda de tu tienda. En %1$@, en estos momentos solo se admiten %2$@. Comprueba los ajustes de moneda de tu tienda o ponte en contacto con el servicio de soporte para obtener ayuda.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Tu versión de WooCommerce no es compatible. El sistema POS requiere la versión %1$@ de WooCommerce o una superior. Actualiza WooCommerce a la última versión.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "No hemos podido cargar la información del plugin WooCommerce. Asegúrate de que el plugin WooCommerce está instalado y activado desde tu administrador de WordPress. Si todavía hay algún problema, ponte en contacto con el servicio de soporte para obtener ayuda.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "No se puede cargar";
+
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.itemList.connectivityErrorSubtitle" = "Revisa tu conexión a Internet e inténtalo de nuevo.";
+
+/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorTitle.2" = "No se pueden activar los cupones";
+
+/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "No se pueden cargar más cupones";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle.2" = "No se pueden cargar más productos";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle.2" = "No se pueden cargar los productos";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "No se pueden cargar más variaciones";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle.2" = "No se pueden cargar las variaciones";
+
+/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsTitle.2" = "No se pueden actualizar los cupones";
+
+/* Generic subtitle appearing on error screens when there's an error. */
+"pos.itemList.genericErrorSubtitle" = "Inténtalo de nuevo.";
+
+/* Text of the button appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledAction.2" = "Activar cupones";
+
+/* Subtitle appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledSubtitle.2" = "Activa los códigos de cupones en tu tienda para empezar a crear cupones para tus clientes.";
+
+/* Title appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledTitle.2" = "Empieza a aceptar cupones";
+
+/* Title appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorTitle.2" = "No se pueden cargar los cupones";
+
+/* Generic text for retry buttons appearing on error screens. */
+"pos.itemList.retryButtonTitle" = "Reintentar";
+
+/* Title appearing on the item list screen when there's an error syncing the catalog for the first time. */
+"pos.itemList.syncCatalogErrorTitle" = "No se ha podido sincronizar el catálogo";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "Productos";
+
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "Buscar cupones";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "Buscar productos";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "Búsqueda";
+
+/* Title of the button at the top of Point of Sale to switch to Coupons list. */
+"pos.itemlistview.couponsTitle" = "Cupones";
+
+/* Warning title shown when the product catalog hasn't synced in several days */
+"pos.itemlistview.staleSyncWarning.title" = "Actualizar catálogo";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "Productos";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.emptyListText" = "Buscar en tu tienda";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "Productos populares";
+
+/* Title for the list of recent searches shown before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.title" = "Búsquedas recientes";
+
+/* Button text to exit Point of Sale when there's a critical error */
+"pos.listError.exitButton" = "Salir de POS";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Cerrar";
+
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "Estado del pedido: %1$@";
+
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "No hay ningún pedido que mostrar";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Pedido";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "Productos";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Totales";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "Descuento total: %1$@";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Descuento total";
+
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Toca para enviar el recibo del pedido por correo electrónico";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "Enviar recibo por correo electrónico";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Fecha del pedido: %1$@, estado: %2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Correo electrónico del cliente: %1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "Pago neto: %1$@";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Pago neto";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "Total pagado: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "Método de pago: %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel2" = "Total pagado";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "Cantidad: %1$@ a %2$@ cada uno, total %3$@";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "Productos";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "Productos";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Motivo: %1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "Reembolsado: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Motivo: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "Reembolsado";
+
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "Subtotal de productos: %1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "Impuestos: %1$@";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "Impuestos";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "Total del pedido: %1$@";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "Total";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "Totales";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "No se pueden cargar más pedidos";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "No se pueden cargar los pedidos";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Prueba a modificar tu término de búsqueda.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "No se ha podido encontrar nada que coincida con tu búsqueda.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "No se han encontrado pedidos";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle2" = "Descubre cómo puedes aumentar las ventas de tu tienda.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "No hay ningún pedido aún";
+
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "Toca para ver los detalles del pedido";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "Pedido n.º %1$@, Total %2$@, %3$@, Estado: %4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "Correo electrónico: %1$@";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "n.º %1$@";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "Pedidos";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "Buscar pedidos";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Buscar pedidos";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "Opciones disponibles";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "No hemos podido encontrar ningún cupón con ese nombre. Prueba a ajustar el término de búsqueda.";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Los cupones pueden ser una forma eficaz de mejorar las ventas. ¿Te gustaría crear uno?";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "No se han encontrado cupones";
+
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Actualizar";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Para añadir uno, sal del TPV y ve a Productos.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "No se pueden buscar nombres de variaciones, así que usa el nombre del producto principal.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "No hemos podido encontrar ningún producto que coincida. Prueba a ajustar el término de búsqueda.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "No se han encontrado productos";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "El TPV solo admite productos simples y variables.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "No se han encontrado productos compatibles";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Para añadir una, sal del TPV y edita este producto en la pestaña Productos.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "El TPV solo es compatible con variaciones habilitadas y no descargables.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "No se han encontrado variaciones compatibles";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Crear cupón";
+
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "Aceptar";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "Borrar la búsqueda";
+
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Crear un pedido en la gestión de la tienda";
+
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Para aceptar el pago de un producto no compatible, sal del TPV y crea un nuevo pedido desde la pestaña de pedidos.";
+
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Otros tipos de productos estarán disponibles en futuras actualizaciones.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "En estos momentos, solo se pueden utilizar productos simples y variables no descargables con el TPV.";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "¿Por qué no puedo ver mis productos?";
+
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ disponibles";
+
+/* Label to be displayed in the product's card when out of stock */
+"pos.stockStatusLabel.outofstock" = "Sin existencias";
+
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "TPV";
+
+/* Button title for new order button */
+"pos.totalsView.button.newOrder" = "Nuevo pedido";
+
+/* Button title for the receipt button */
+"pos.totalsView.button.sendReceipt" = "Enviar recibo por correo electrónico";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "Pago en efectivo";
+
+/* Title for discount total amount field */
+"pos.totalsView.discountTotal2" = "Descuento total";
+
+/* Title for subtotal amount field */
+"pos.totalsView.subtotal" = "Subtotal";
+
+/* Title for taxes amount field */
+"pos.totalsView.taxes" = "Impuestos";
+
+/* Title for total amount field */
+"pos.totalsView.total" = "Total";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Ajusta la división de la pantalla para que el punto de venta tenga más espacio.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "El punto de venta no se puede visualizar con este ancho de pantalla.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Permitir la actualización completa con datos móviles";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "Tamaño del catálogo";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "Estado del catálogo";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Última actualización completa";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Última actualización";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Gestionar el uso de datos";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Actualización manual del catálogo";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Utiliza esta actualización solo cuando algo parezca no funcionar bien: los datos del TPV se mantienen actualizados automáticamente.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "Actualizar catálogo";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "Ajustes del catálogo";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d productos, %2$ld variaciones";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Tamaño del catálogo no disponible";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "Sin actualizar";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Fecha de actualización no disponible";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Cerrar";

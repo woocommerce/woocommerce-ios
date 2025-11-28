@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-18 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-11-25 23:39:26+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -4388,6 +4388,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "Plugins";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Documentatie";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Vraag om ondersteuning";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Bekijk welke producten worden ondersteund in POS";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Waar zijn mijn producten?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Annuleren";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "Help";
+
 /* Section title for popular products on the Select Product screen. */
 "Popular" = "Populair";
 
@@ -8548,6 +8568,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variabel abonnement";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "Bezig";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuleren";
 
@@ -8675,6 +8698,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Wijziging als gevolg van: %1$@";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Selecteert producten voor Blaze-campagne.";
 
@@ -8767,6 +8793,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Problemen met verbinding oplossen";
+
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "Is vervallen op %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Adres";
@@ -10146,8 +10175,1175 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Plugins";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "Streepjescode te kort";
+
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "De scanner heeft geen regeleinde-teken verzonden";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "Netwerkverzoek mislukt";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "Geen internetverbinding";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "Bovenliggend product niet gevonden voor variatie";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "Onbekend gescand artikel";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "Streepjescode kon niet gelezen worden";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "Scan mislukt";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "Niet-ondersteund artikeltype";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "Betaling geannuleerd op lezer";
+
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Probeer opnieuw te betalen";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "Kaart ingevoerd";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "Gereed voor betaling";
+
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "Verbind je lezer";
+
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "Betaling wordt verwerkt";
+
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Annuleren";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "Zet je kaartlezer aan door kort op de aan\/uit-knop te drukken.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "Scannen op lezer";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Nieuwe bestelling";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Probeer opnieuw te betalen";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Vanwege een netwerkfout kunnen we niet bevestigen dat de betaling voltooid is. Verifieer de betaling op een apparaat dat verbonden is met het internet. Als dit niet lukt, probeer dan opnieuw te betalen. Als dit lukt, start dan een nieuwe bestelling.";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Fout bij betaling";
+
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Terug naar afrekenen";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "Betaling mislukt";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Probeer een andere betaalmethode";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Probeer opnieuw te betalen";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Als je door wilt gaan met deze transactie verwerken, probeer dan opnieuw te betalen.";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betaling mislukt";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Probeer een andere betaalmethode";
+
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Bestelling bewerken";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Fout bij betaling";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Probeer opnieuw te betalen";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "Betaling wordt verwerkt";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.title" = "Gereedmaken...";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Lezer voorbereiden voor betaling";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Voer een kaart in";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Bied een kaart aan";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Tik met een kaart";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Tik of voer een kaart in";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tik, veeg, of voer een kaart in";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Gereed voor betaling";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Lezer niet verbonden";
+
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Kies voor contant geld of sluit je lezer aan om deze betaling te verwerken.";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "Bestelling controleren";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "Gereedmaken...";
+
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Het totaalbedrag van de bestelling is minder dan het minimumbedrag dat je op een kaart kan rekenen. Dit minimumbedrag is %1$@ Je zult een contante betaling moeten aannemen.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kaartbetaling kon niet worden aangenomen";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Fout bij bestelling controleren";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Opnieuw proberen";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Een moment geduld";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Afwijzen";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Apparaatinstellingen openen";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Bluetooth-machtiging vereist";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Annuleren";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "We konden geen verbinding maken met je lezer";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Opnieuw proberen";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Annuleren";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "De batterij van de reader is bijna leeg. Laad de reader op of probeer een andere reader.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Probeer opnieuw";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "We konden geen verbinding maken met je lezer";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Annuleren";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Apparaatinstellingen openen";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Toestemming voor locatiediensten is vereist om fraude en geschillen te voorkomen, en veilige betalingen te verzekeren.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Schakel locatiediensten in om betalingen mogelijk te maken";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Afwijzen";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Verbinding is mislukt";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Annuleren";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Voer adres in";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Opnieuw proberen na bijwerken";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Voer het juiste adres van je winkel in om door te gaan";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Annuleren";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Je kan de postcode van je winkel instellen via wp-admin > WooCommerce > Instellingen (Algemeen)";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Opnieuw proberen na bijwerken";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Voer de juiste postcode van je winkel in";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Doorgaan";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Je kan dit later wijzigen in de instellingen.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Toestemming voor locatiediensten is vereist om fraude en geschillen te voorkomen, en veilige betalingen te verzekeren.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Schakel locatiediensten in om betalingen mogelijk te maken";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Een moment geduld";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Er wordt verbinding gemaakt met lezer";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Gereed";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Lezer verbonden";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Annuleren";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Verbinden";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Meerdere lezers gevonden";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Er wordt gescand op lezers";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Annuleren";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Verbinding maken met lezer";
+
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Wil je verbinding maken met deze lezer?";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Verder zoeken";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "%1$@ gevonden";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Annuleren";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Uw lezer start na de update automatisch opnieuw op en maakt opnieuw verbinding";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% voltooid";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Software bijwerken";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Ik begrijp het";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% voltooid";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Software bijgewerkt";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Annuleren";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Probeer opnieuw";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "We konden de software van je lezer niet bijwerken";
+
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "De lezer kon niet worden geüpdatet omdat de accu nog maar voor %.0f%% is opgeladen. Laad de lezer op en probeer het opnieuw.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Annuleren";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Een update aan de lezer is mislukt omdat het accuniveau te laag was. Laad de lezer op en probeer het opnieuw.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Opnieuw proberen";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Laad de lezer op";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Afwijzen";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "We konden de software van je lezer niet bijwerken";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Toch annuleren";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "De software van je kaartlezer moet worden bijgewerkt om betalingen te innen. Door te annuleren wordt de verbinding van je lezer geblokkeerd.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% voltooid";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Software bijwerken";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Afwijzen";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Verbinding maken met lezer mislukt";
+
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Sluiten";
+
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Vanwege een netwerkfout weten we niet of de betaling voltooid is.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Controleer de bestelling op een apparaat dat verbonden is met het internet voordat je verdergaat.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Deze bestelling is mogelijk mislukt";
+
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "Totaal: %1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "Contante betaling";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "Betaling markeren als voltooid";
+
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Fout bij verwerken van betaling. Probeer het opnieuw.";
+
+/* A description within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.exitButton.description" = "Synchronisatie gaat op de achtergrond door.";
+
+/* A button that exits POS. */
+"pointOfSale.catalogLoadingView.exitButton.title" = "POS afsluiten";
+
+/* A title of a full screen view that is displayed while the POS catalog is being synced. */
+"pointOfSale.catalogLoadingView.title" = "Catalogus synchroniseren";
+
+/* A message shown on the coupon if's not valid after attempting to apply it */
+"pointOfSale.couponRow.invalidCoupon" = "Coupon niet toegepast";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Een moment geduld";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Lezer loskoppelen";
+
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "POS afsluiten";
+
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Bestellingen";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "Verbonden met lezer";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "Verbind je lezer";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Verbinding verbreken ...";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Instellingen";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Verwijderen";
+
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Laden";
+
+/* Button to come back to order editing when coupon validation fails. */
+"pointOfSale.orderSync.couponsError.editOrder" = "Bestelling bewerken";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.errorTitle.2" = "Coupon kan niet worden toegepast";
+
+/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupon" = "Coupon verwijderen";
+
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupons" = "Verwijder coupons";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "Kan totalen niet laden";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "Opnieuw proberen";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "Een kaartbetaling van %1$@ is voldaan.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "Een contante betaling van %1$@ is voldaan.";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Betaling gelukt";
+
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Verzenden";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Betalingsbewijs e-mailen";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Voer een geldig e-mailadres in.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Fout bij verzenden van e-mail. Probeer het opnieuw.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "E-mailadres invoeren";
+
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "Annuleren";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.cancel" = "Annuleren";
+
+/* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Onbekend";
+
+/* Title for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "Kaartlezer koppelen";
+
+/* Title for card reader disconnect button when reader is already connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDisconnectTitle" = "Lezer loskoppelen";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Meer informatie over het aannemen van mobiele betalingen";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Documentatie";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Lezer niet verbonden";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Kaartlezers";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Instellingen streepjescodescanner configureren";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Streepjescodescanners";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Kaartlezerverbindingen beheren";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Kaartlezers";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Hardware";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Batterij";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Meer informatie over streepjescodes scannen in POS";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Documentatie";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Configureer en test je streepjescodescanner";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Scanner ingesteld";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Streepjescodescanners";
+
+/* Subtitle for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle" = "Werk de firmwareversie bij om betalingen te kunnen blijven aannemen.";
+
+/* Title for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle" = "Firmwareversie bijwerken";
+
+/* Title of the button to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle" = "Firmware bijwerken";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "Niet ingesteld";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "Adres";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "E-mailadres";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.general" = "Algemeen";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "Niet ingesteld";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Telefoonnummer";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Fysiek adres";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Gegevens betalingsbewijs";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Winkelnaam";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Terugbetaal- en retourneringsbeleid";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "Winkelnaam";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "Winkel";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "Instellingen";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Hardwareverbindingen beheren";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Hardware";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Krijg hulp en ondersteuning";
+
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Catalogusinstellingen beheren";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Catalogus";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Winkelconfiguratie en -instellingen";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Winkel";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "Streepjescode scannen";
+
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• Verbind je streepjescodescanner in de Bluetooth-instellingen van iOS.";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "Eerste: verbind je streepjescodescanner in de Bluetooth-instellingen van iOS.";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "Je kan streepjescodes scannen met een externe scanner om snel een winkelmandje samen te stellen.";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• Scan streepjescodes in de lijst met artikelen om producten aan het winkelmandje toe te voegen.";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "Tweede: scan streepjescodes in de lijst met artikelen om producten aan het winkelmandje toe te voegen.";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• Zorg ervoor dat het zoekveld niet is ingeschakeld tijdens het scannen van streepjescodes.";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "Derde: zorg ervoor dat het zoekveld niet is ingeschakeld tijdens het scannen van streepjescodes.";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "Je kan streepjescodes scannen met een externe scanner om snel een winkelmandje samen te stellen.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "Meer details.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Meer details, link.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• Stel via Producten > Productgegevens > Inventaris in het veld 'GTIN, UPC, EAN, ISBN' streepjescodes in. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "Stap 1: Stel in het veld 'G-T-I-N, U-P-C, E-A-N, I-S-B-N' streepjescodes in door naar Producten te gaan, vervolgens naar Productgegevens en dan naar Inventaris.";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "bekijk de documentatie";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "Je kan streepjescodes instellen in het veld GTIN, UPC, EAN, ISBN in het voorraadtabblad van het product. Voor meer informatie %1$@.";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "Je kan streepjescodes instellen in het veld G-T-I-N, U-P-C, E-A-N, I-S-B-N in het voorraadtabblad van het product. Bekijk voor meer informatie de documentatie, link.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• Scan streepjescodes in de lijst met artikelen om producten aan het winkelmandje toe te voegen.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Stap 4: Scan streepjescodes in de lijst met artikelen om producten aan het winkelmandje toe te voegen.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "De scanner simuleert een toetsenbord, dus soms wordt het softwaretoetsenbord niet weergegeven, bijvoorbeeld in de zoekbalk. Tik op het toetsenbordpictogram om het opnieuw weer te geven.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage.2" = "• Raadpleeg de instructies van je Bluetooth-streepjescodescanner om de HID-modus in te stellen. Dit vereist meestal het scannen van een speciale streepjescode in de handleiding.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Stap twee: Raadpleeg de instructies van je Bluetooth-streepjescodescanner om de HID-modus in te stellen. Dit vereist meestal het scannen van een speciale streepjescode in de handleiding.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• Verbind je streepjescodescanner in de Bluetooth-instellingen van iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Stap 3: Verbind je streepjescodescanner in de Bluetooth-instellingen van iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "Terug";
+
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Afbeelding van een code die gescand moet worden door een streepjescodescanner.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Je bent klaar om producten te scannen. De volgende keer dat je je scanner moet aansluiten, hoef je hem alleen in te schakelen. Hij maakt dan automatisch opnieuw verbinding.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "Scanner ingesteld!";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "Klaar";
+
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "Terug";
+
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Raadpleeg de handleiding van de scanner en zet deze terug naar de fabrieksinstellingen. Probeer de scanner vervolgens opnieuw in te stellen.";
+
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "Opnieuw proberen";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Scanprobleem gevonden";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Gebruik je streepjescodescanner om de onderstaande code te scannen om de Bluetooth HID-modus in te schakelen.";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "Volgende";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "Overige";
+
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Gebruik je streepjescodescanner om de onderstaande code te scannen en in de koppelmodus te komen.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Schakel Bluetooth in en selecteer je %1$@ scanner in de Bluetooth-instellingen van iOS. De scanner piept en toont een constant brandende led wanneer de scanner is gekoppeld.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Apparaatinstellingen openen";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Koppel je scanner";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Streepjescodes instellen op producten";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Streepjescodes instellen op producten";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Scanner-instelling";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Scanner-instelling";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Andere scanner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Een streepjescodescanner instellen";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Selecteer een model uit de lijst:";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Scan de barcode om je scanner te testen.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Scan de barcode om je scanner te testen. Als het probleem zich blijft voordoen, controleer dan de Bluetooth-instellingen en probeer het opnieuw.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Nog geen scangegevens gevonden";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Test je scanner";
+
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen of ";
+
+/* Title at the header for the Cart view. */
+"pos.cartView.cartTitle" = "Winkelwagen";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Streepjescode scannen";
+
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "Afrekenen";
+
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "Winkelwagen leegmaken";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "Geen internetverbinding";
+
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "Annuleren";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "Coupon aanmaken";
+
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Alle bestellingen die nog in behandeling zijn, zullen verloren gaan.";
+
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Afsluiten";
+
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "POS afsluiten";
+
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS-functie inschakelen";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "Opnieuw proberen";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "Point of Sale moet ingeschakeld zijn om door te gaan. Schakel de POS-functie in vanuit je WordPress-beheer onder WooCommerce-instellingen > Geavanceerd > Functies en probeer het opnieuw.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "Probeer de app opnieuw te starten om dit probleem op te lossen.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "We konden de informatie over de site-instellingen niet laden. Controleer je internetverbinding en probeer het opnieuw. Neem contact op met de klantenservice als het probleem blijft bestaan.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "Het POS-systeem is niet beschikbaar voor de valuta van je winkel. In %1$@ ondersteunt het momenteel slechts %2$@. Controleer de valuta-instellingen van je winkel of neem contact op met de ondersteuning voor hulp.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Je WooCommerce-versie wordt niet ondersteund. Het POS-systeem vereist WooCommerce-versie %1$@ of hoger. Werk WooCommerce bij naar de nieuwste versie.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "We konden de WooCommerce plugin-info niet laden. Zorg ervoor dat de WooCommerce-plugin is geïnstalleerd en geactiveerd vanuit je WordPress-beheer. Als er nog steeds een probleem is, neem dan contact op met ondersteuning voor hulp.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "Kan niet laden";
+
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.itemList.connectivityErrorSubtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
+
+/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorTitle.2" = "Coupons kunnen niet worden ingeschakeld";
+
+/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "Meer coupons kunnen niet worden geladen";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle.2" = "Meer producten kunnen niet worden laden";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle.2" = "Producten kunnen niet worden geladen";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "Meer variaties kunnen niet worden geladen";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle.2" = "Variaties kunnen niet worden geladen";
+
+/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsTitle.2" = "Coupons kunnen niet worden vernieuwd";
+
+/* Generic subtitle appearing on error screens when there's an error. */
+"pos.itemList.genericErrorSubtitle" = "Probeer het opnieuw.";
+
+/* Text of the button appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledAction.2" = "Coupons inschakelen";
+
+/* Subtitle appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledSubtitle.2" = "Schakel couponcodes in je winkel in om ze aan te maken voor je klanten.";
+
+/* Title appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledTitle.2" = "Begin met het accepteren van coupons";
+
+/* Title appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorTitle.2" = "Coupons kunnen niet worden geladen";
+
+/* Generic text for retry buttons appearing on error screens. */
+"pos.itemList.retryButtonTitle" = "Opnieuw proberen";
+
+/* Title appearing on the item list screen when there's an error syncing the catalog for the first time. */
+"pos.itemList.syncCatalogErrorTitle" = "Kan catalogus niet synchroniseren";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "Producten";
+
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "Coupons zoeken";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "Producten zoeken";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "Zoeken";
+
+/* Title of the button at the top of Point of Sale to switch to Coupons list. */
+"pos.itemlistview.couponsTitle" = "Coupons";
+
+/* Warning title shown when the product catalog hasn't synced in several days */
+"pos.itemlistview.staleSyncWarning.title" = "Catalogus vernieuwen";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "Producten";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.emptyListText" = "Doorzoek je winkel";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "Populaire producten";
+
+/* Title for the list of recent searches shown before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.title" = "Recente zoekopdrachten";
+
+/* Button text to exit Point of Sale when there's a critical error */
+"pos.listError.exitButton" = "POS afsluiten";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Negeren";
+
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "Bestelstatus: %1$@";
+
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "Geen bestelling om weer te geven";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Bestelling";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "Producten";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Totalen";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "Totaal aan kortingen: %1$@";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Totaal aan korting";
+
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Tik om het betalingsbewijs via e-mail te verzenden";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "Betalingsbewijs e-mailen";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Besteldatum: %1$@, status: %2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "E-mailadres klant: %1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "Nettobetaling: %1$@";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Netto betaling";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "Totaal betaald: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "Betaalmethode: %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel2" = "Totaal betaald";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "Aantal: %1$@ voor elk %2$@, totaal %3$@";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "Producten";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "Producten";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Reden: %1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "Terugbetaald: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Reden: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "Terugbetaald";
+
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "Subtotaal producten: %1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "Belastingen: %1$@";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "Belastingen";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "Totaalbedrag bestelling: %1$@";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "Totaal";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "Totalen";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "Kan niet meer bestelling laden";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "Kan bestelling niet laden";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Probeer je zoekterm aan te passen.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle" = "We konden geen bestellingen vinden die aan je zoekopdracht voldoet.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "Geen bestellingen gevonden";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle2" = "Ontdek hoe je de verkoop van je winkel kan verhogen.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "Nog geen bestellingen";
+
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "Tik hier voor bestelgegevens";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "Bestelling #%1$@, totaal %2$@, %3$@, status: %4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "E-mail: %1$@";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "#%1$@";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "Bestellingen";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "Bestellingen doorzoeken";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Bestellingen doorzoeken";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "Beschikbare opties";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "We konden geen coupons met deze naam vinden. Probeer je zoekterm aan te passen.";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Coupons kunnen effectief zijn voor je bedrijf. Wil je er een maken?";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Geen coupons gevonden";
+
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Vernieuwen";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Verlaat POS en ga naar Producten om er een toe te voegen.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Variatienamen kunnen niet worden doorzocht, dus gebruik de bovenliggende productnaam.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "We konden geen overeenkomende producten vinden. Probeer je zoekterm aan te passen.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Geen producten gevonden";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS ondersteunt momenteel alleen simpele en variabele producten.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "Geen ondersteunde producten gevonden";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Om er een toe te voegen, verlaat je POS en bewerk je dit product in het tabblad Producten.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS ondersteunt alleen ingeschakelde, niet-downloadbare variaties.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "Geen ondersteunde variaties gevonden";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Coupon aanmaken";
+
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "OK";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "Zoekopdracht wissen";
+
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Maak een bestelling aan in het winkelbeheer";
+
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Verlaat POS en maak een nieuwe bestelling aan vanuit het tabblad Bestellingen om betalingen te ontvangen voor een niet-ondersteund product.";
+
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Andere producttypen worden in toekomstige updates beschikbaar gemaakt.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Alleen simpele en variabele niet-downloadbare producten zijn momenteel beschikbaar met POS.";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "Waarom kan ik mijn producten niet zien?";
+
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ op voorraad";
+
+/* Label to be displayed in the product's card when out of stock */
+"pos.stockStatusLabel.outofstock" = "Niet op voorraad";
+
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
+
+/* Button title for new order button */
+"pos.totalsView.button.newOrder" = "Nieuwe bestelling";
+
+/* Button title for the receipt button */
+"pos.totalsView.button.sendReceipt" = "Betalingsbewijs e-mailen";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "Contante betaling";
+
+/* Title for discount total amount field */
+"pos.totalsView.discountTotal2" = "Totaal van kortingen";
+
+/* Title for subtotal amount field */
+"pos.totalsView.subtotal" = "Subtotaal";
+
+/* Title for taxes amount field */
+"pos.totalsView.taxes" = "Belastingen";
+
+/* Title for total amount field */
+"pos.totalsView.total" = "Totaal";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Pas de splitsing van het scherm aan om Point of Sale meer ruimte te geven.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Point of Sale wordt niet ondersteund op deze schermbreedte.";
+
+/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Volledige update via mobiele data toestaan";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize" = "Catalogusgrootte";
+
+/* Section title for catalog status in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogStatus" = "Catalogusstatus";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Laatste volledige update";
+
+/* Label for last incremental update field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Laatst geüpdatet";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Gegevensgebruik beheren";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Handmatige update van catalogus";
+
+/* Info text explaining when to use manual catalog update. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Vernieuw alleen als er iets mis lijkt te zijn- POS houdt gegevens automatisch actueel.";
+
+/* Button text for refreshing the catalog manually. */
+"posSettingsLocalCatalogDetailView.refreshCatalog" = "Catalogus vernieuwen";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title" = "Catalogus-instellingen";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d producten, %2$ld variaties";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Catalogusgrootte niet beschikbaar";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "Niet geüpdatet";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Datum niet beschikbaar updaten";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Sluiten";

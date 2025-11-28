@@ -1,5 +1,6 @@
 import Testing
 @testable import PointOfSale
+import struct Yosemite.POSItemIdentifier
 
 struct TotalsViewHelperTests {
 

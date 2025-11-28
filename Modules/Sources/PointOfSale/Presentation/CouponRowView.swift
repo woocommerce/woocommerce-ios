@@ -109,6 +109,9 @@ private extension CouponRowView {
 
 #if DEBUG
 #Preview(traits: .sizeThatFitsLayout) {
-    CouponRowView(couponItem: Cart.CouponItem(id: UUID(), code: "10-Discount", summary: "$10 Off · All products"), couponRowState: .idle) {}
+    CouponRowView(couponItem: Cart.CouponItem(id: UUID(),
+                                              posItemIdentifier: .init(underlyingType: .coupon, itemID: 123),
+                                              code: "10-Discount",
+                                              summary: "$10 Off · All products"), couponRowState: .idle) {}
 }
 #endif

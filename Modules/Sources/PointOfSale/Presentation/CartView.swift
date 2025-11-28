@@ -479,7 +479,7 @@ private extension CartView {
 
 #Preview("Cart with one item") {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel()
-    posModel.addToCart(.simpleProduct(.init(id: UUID(),
+    posModel.addToCart(.simpleProduct(.init(id: .init(underlyingType: .product, itemID: 6),
                                             name: "Sample Product",
                                             formattedPrice: "$10.00",
                                             productID: 6,

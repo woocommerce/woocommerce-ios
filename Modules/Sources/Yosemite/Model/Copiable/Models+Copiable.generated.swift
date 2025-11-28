@@ -111,7 +111,7 @@ extension Yosemite.POSOrder {
 
 extension Yosemite.POSSimpleProduct {
     public func copy(
-        id: CopiableProp<UUID> = .copy,
+        id: CopiableProp<POSItemIdentifier> = .copy,
         name: CopiableProp<String> = .copy,
         formattedPrice: CopiableProp<String> = .copy,
         productImageSource: NullableCopiableProp<String> = .copy,

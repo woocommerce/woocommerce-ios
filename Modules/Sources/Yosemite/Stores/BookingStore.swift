@@ -89,6 +89,8 @@ public class BookingStore: Store {
                 note: note,
                 onCompletion: onCompletion
             )
+        case .clearBookingsCache(siteID: let siteID, onCompletion: let onCompletion):
+            clearBookingsCache(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -205,12 +207,12 @@ private extension BookingStore {
     /// Returns results immediately without saving to storage.
     ///
     func searchBookings(siteID: Int64,
-                       searchQuery: String,
-                       pageNumber: Int,
-                       pageSize: Int,
-                       filters: BookingFilters?,
-                       order: BookingsRemote.Order,
-                       onCompletion: @escaping (Result<[Booking], Error>) -> Void) {
+                        searchQuery: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        filters: BookingFilters?,
+                        order: BookingsRemote.Order,
+                        onCompletion: @escaping (Result<[Booking], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let bookings = try await remote.loadAllBookings(for: siteID,
@@ -271,9 +273,9 @@ private extension BookingStore {
     /// Synchronizes booking resources for the specified site.
     ///
     func synchronizeResources(siteID: Int64,
-                             pageNumber: Int,
-                             pageSize: Int,
-                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                              pageNumber: Int,
+                              pageSize: Int,
+                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let resources = try await remote.fetchResources(
@@ -460,6 +462,12 @@ private extension BookingStore {
                 onCompletion(error)
             }
         }
+    }
+
+    func clearBookingsCache(siteID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteBookings(siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 }
 

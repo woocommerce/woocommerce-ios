@@ -65,6 +65,8 @@ class AuthenticationManager: Authentication {
 
     private let userDefaults: UserDefaults
 
+    private var initialized: Bool = false
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -84,6 +86,8 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
+        guard !initialized else { return }
+        initialized = true
         WordPressAuthenticator.initializeWithCustomConfigs()
         WordPressAuthenticator.shared.delegate = self
     }

@@ -109,9 +109,9 @@ final class BookingListViewModel: ObservableObject {
     }
 
     @MainActor
-    func onRefreshSelfAction(reason: String? = nil) async {
+    func reloadData(reason: String = BookingListViewModel.refreshCacheReason) async {
         await withCheckedContinuation { continuation in
-            paginationTracker.resync(reason: reason ?? Self.refreshCacheReason) {
+            paginationTracker.resync(reason: reason) {
                 continuation.resume(returning: ())
             }
         }

@@ -307,7 +307,7 @@ struct BookingListViewModelTests {
         let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores)
 
         // When
-        await viewModel.onRefreshSelfAction()
+        await viewModel.reloadData()
 
         // Then
         #expect(skip == 0)

@@ -59,7 +59,7 @@ final class BookingSearchViewModel: ObservableObject {
 
     /// Called when the user pulls down the list to refresh.
     @MainActor
-    func onRefreshAction(reason: String? = nil) async {
+    func onRefreshAction() async {
         await withCheckedContinuation { continuation in
             searchPaginationTracker.resync(reason: nil) {
                 continuation.resume(returning: ())

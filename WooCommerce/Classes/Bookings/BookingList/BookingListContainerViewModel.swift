@@ -101,11 +101,11 @@ final class BookingListContainerViewModel: ObservableObject {
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {
         switch tab {
         case .today:
-            return todayListViewModel
+            todayListViewModel
         case .upcoming:
-            return upcomingListViewModel
+            upcomingListViewModel
         case .all:
-            return allListViewModel
+            allListViewModel
         }
     }
 
@@ -204,7 +204,7 @@ extension BookingListContainerViewModel: BookingListsRefreshCoordinating {
         await withTaskGroup(of: Void.self) { group in
             for viewModel in allTabViewModels {
                 group.addTask { @MainActor in
-                    await viewModel.onRefreshSelfAction(
+                    await viewModel.reloadData(
                         reason: BookingListViewModel.siblingRefreshReason
                     )
                 }

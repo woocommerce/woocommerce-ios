@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.8
+This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.
+
 ## 23.7
 This update brings Tap to Pay on iPhone to UK stores using Stripe, and automatic SSO sign-ins for web admin tasks. We made card payment onboarding error tips clearer, and fixed an intermittent bug with adding variations to an order. Lastly, iPad users can share quick feedback about Point of Sale.
 

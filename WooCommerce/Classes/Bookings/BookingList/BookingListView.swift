@@ -143,19 +143,28 @@ private extension BookingListView {
     }
 
     func bookingItem(_ booking: Booking) -> some View {
-        VStack(alignment: .leading) {
-            Text(booking.startDate.toString(dateStyle: .short,
-                                            timeStyle: .short,
-                                            timeZone: BookingListTab.utcTimeZone))
+        VStack(alignment: .leading, spacing: BookingListViewLayout.bookingSummaryBadgeSpacing) {
+            VStack(alignment: .leading, spacing: BookingListViewLayout.bookingSummarySpacing) {
+                Text(booking.startDate.toString(dateStyle: .short,
+                                                timeStyle: .short,
+                                                timeZone: BookingListTab.utcTimeZone))
                 .font(.body)
                 .fontWeight(.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(Color.primary)
 
-            Text(booking.summaryText)
-                .font(.footnote)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.secondary)
+                if let productName = booking.productName {
+                    Text(productName)
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.secondary)
+                }
+
+                Text(booking.customerName)
+                    .font(.footnote)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.secondary)
+            }
 
             HStack {
                 BookingBadgeView(booking.attendanceStatus)
@@ -249,6 +258,8 @@ fileprivate enum BookingListViewLayout {
     static let emptyStateImageWidth: CGFloat = 67
     static let cornerRadius: CGFloat = 8
     static let defaultHeaderHeight: CGFloat = 98
+    static let bookingSummarySpacing: CGFloat = 2
+    static let bookingSummaryBadgeSpacing: CGFloat = 8
 }
 
 fileprivate enum BookingListViewLocalization {

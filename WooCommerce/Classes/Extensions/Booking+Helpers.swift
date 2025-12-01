@@ -13,12 +13,6 @@ extension Booking {
         return name.isEmpty ? Localization.guest : name
     }
 
-    var summaryText: String {
-        return [productName, customerName]
-            .compactMap { $0 }
-            .joined(separator: "  •  ")
-    }
-
     var isEligibleForMarkAsPaid: Bool {
         bookingStatus == .unpaid
     }

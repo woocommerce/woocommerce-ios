@@ -1,6 +1,1 @@
-- [*] Better support site credential login for sites with captcha plugins [https://github.com/woocommerce/woocommerce-ios/pull/16372]
-- [*] Crash fix attempt to resolve the race condition in request authenticator swapping [https://github.com/woocommerce/woocommerce-ios/pull/16370]
-- [*] Update products on the Top Performers card when there are changes made to displayed products [https://github.com/woocommerce/woocommerce-ios/pull/16380]
-- [*] Fixed issue unregistering device from push notifications [https://github.com/woocommerce/woocommerce-ios/pull/16386]
-- [Internal] Fix broken navigation to a variable product selector [https://github.com/woocommerce/woocommerce-ios/pull/16363]
--[***] POS uses a local on-device product catalog for fast barcode scanning, search, and product selection [https://github.com/woocommerce/woocommerce-ios/pull/16395]
+This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.

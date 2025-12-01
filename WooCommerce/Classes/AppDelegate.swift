@@ -57,6 +57,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let analytics = ServiceLocator.analytics
         let pushNotesManager = ServiceLocator.pushNotesManager
         setupAnalytics(analytics)
+        ServiceLocator.authenticationManager.initialize()
+        ServiceLocator.stores.initializeAfterDependenciesAreInitialized()
 
         setupCocoaLumberjack()
         setupLibraryLogger()

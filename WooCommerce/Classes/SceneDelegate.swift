@@ -21,12 +21,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.appCoordinator = coordinator
         coordinator.start()
 
-        /// IMPORTANT:
-        /// `AppCoordinator.start()` must be called before this, so that
-        /// AuthenticationManager.initialize() has already initialized WordPressAuthenticator.
-        /// See AuthenticationManager.hasInitializedAuthenticator and restoreWordPressSite().
-        ServiceLocator.stores.initializeAfterDependenciesAreInitialized()
-
         // Scene-scoped initializations that need UI
         setupNoticePresenter()
         setupUniversalLinkRouter()

@@ -54,16 +54,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup Components
         setupStartupWaitingTimeTracker()
 
-        let stores = ServiceLocator.stores
         let analytics = ServiceLocator.analytics
         let pushNotesManager = ServiceLocator.pushNotesManager
-        stores.initializeAfterDependenciesAreInitialized()
         setupAnalytics(analytics)
 
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
-        setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
+        setupPushNotificationsManagerIfPossible(pushNotesManager)
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()
@@ -268,7 +266,7 @@ extension AppDelegate {
     /// Push Notifications: Authorization + Registration!
     ///
     // periphery: ignore - Fails when build on simulator
-    func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
+    func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager) {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
@@ -417,7 +415,7 @@ extension AppDelegate {
     /// Runs whenever the Authentication Flow is completed successfully.
     ///
     func authenticatorWasDismissed() {
-        setupPushNotificationsManagerIfPossible(ServiceLocator.pushNotesManager, stores: ServiceLocator.stores)
+        setupPushNotificationsManagerIfPossible(ServiceLocator.pushNotesManager)
         requirementsChecker.checkEligibilityForDefaultStore()
     }
 }

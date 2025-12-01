@@ -25,7 +25,7 @@ import Combine
 import struct Yosemite.PaymentIntent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSOrderRefundCondensed
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
@@ -339,7 +339,7 @@ struct POSPreviewHelpers {
                 )
             ],
             refunds: [
-                POSOrderRefund(
+                POSOrderRefundCondensed(
                     refundID: 1,
                     formattedTotal: "-$19.99",
                     reason: "Customer requested partial refund"

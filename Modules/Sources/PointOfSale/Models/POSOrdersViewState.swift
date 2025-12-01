@@ -1,7 +1,7 @@
 import Foundation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSOrderRefundCondensed
 
 enum POSOrderListState: Equatable {
     case loading([POSOrder])

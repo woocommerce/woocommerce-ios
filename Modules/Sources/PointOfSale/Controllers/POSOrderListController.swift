@@ -6,7 +6,7 @@ import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSOrderRefundCondensed
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 

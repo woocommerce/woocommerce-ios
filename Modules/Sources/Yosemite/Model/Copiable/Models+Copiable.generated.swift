@@ -69,7 +69,7 @@ extension Yosemite.POSOrder {
         customerEmail: NullableCopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
         lineItems: CopiableProp<[POSOrderItem]> = .copy,
-        refunds: CopiableProp<[POSOrderRefund]> = .copy,
+        refunds: CopiableProp<[POSOrderRefundCondensed]> = .copy,
         formattedDiscountTotal: NullableCopiableProp<String> = .copy,
         formattedTotalTax: CopiableProp<String> = .copy,
         formattedPaymentTotal: CopiableProp<String> = .copy,

@@ -63,8 +63,8 @@ struct POSOrderMapper {
         )
     }
 
-    private func map(orderRefund: NetworkingCore.OrderRefundCondensed, currency: String) -> POSOrderRefund {
-        return POSOrderRefund(
+    private func map(orderRefund: NetworkingCore.OrderRefundCondensed, currency: String) -> POSOrderRefundCondensed {
+        return POSOrderRefundCondensed(
             refundID: orderRefund.refundID,
             formattedTotal: currencyFormatter.formatAmount(orderRefund.total, with: currency) ?? "",
             reason: orderRefund.reason

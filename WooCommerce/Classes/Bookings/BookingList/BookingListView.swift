@@ -109,6 +109,9 @@ private extension BookingListView {
             Section {
                 ForEach(bookings) { item in
                     bookingItem(item)
+                        .if(item == bookings.first) {
+                            $0.listSectionSeparator(.hidden, edges: .top)
+                        }
                         .tag(item)
                 }
 
@@ -131,11 +134,9 @@ private extension BookingListView {
                 $0.listStyle(.plain)
             } else {
                 $0.listStyle(.grouped)
+                    .scrollContentBackground(.hidden)
             }
         }
-        .listStyle(.grouped)
-        .scrollContentBackground(.hidden)
-        .listSectionSeparator(.hidden, edges: .top)
         .background(Color(.listBackground))
         .refreshable {
             await onRefresh()

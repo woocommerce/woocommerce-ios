@@ -234,7 +234,6 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     private func refreshFetchedObjects(predicate: NSPredicate?) {
         controller.fetchRequest.predicate = predicate
         try? controller.performFetch()
-        onDidChangeContent?()
     }
 
     /// Refreshes all of the Fetched Objects, so that the new sort descriptors are applied.
@@ -242,7 +241,6 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]?) {
         controller.fetchRequest.sortDescriptors = sortDescriptors
         try? controller.performFetch()
-        onDidChangeContent?()
     }
 
     /// Initializes the FetchedResultsController

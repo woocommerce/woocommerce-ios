@@ -3,7 +3,7 @@
 
 23.9
 -----
-
+- [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
 
 23.8
 -----

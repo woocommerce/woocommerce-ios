@@ -3,7 +3,7 @@
 
 23.9
 -----
-
+- [*] Show specific error when a variation is missing at POS checkout via WPCom login [https://github.com/woocommerce/woocommerce-ios/pull/16430]
 
 23.8
 -----

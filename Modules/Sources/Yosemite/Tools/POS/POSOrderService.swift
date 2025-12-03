@@ -143,37 +143,34 @@ private extension POSOrderService {
         _ error: Error,
         cart: POSCart
     ) -> [CartOrderComparison.MissingCartItem]? {
-        // Check if this is an AFError wrapping a DotcomError or NetworkError
-        let underlyingError: Error? = {
-            if let afError = error as? AFError {
-                return afError.underlyingError
+        let (code, data) = errorCodeAndData(from: error)
+        guard let code, isProductValidationError(code: code) else {
+            return nil
+        }
+
+        guard let variationID = extractVariationID(from: data) else {
+            return unknownMissingProductsInCart()
+        }
+        return createMissingProductInfo(forVariationID: variationID, cart: cart)
+    }
+
+    func errorCodeAndData(from error: Error) -> (code: String?, data: [String: AnyDecodable]?) {
+        // Unwrap AFError if present
+        let underlyingError: Error = {
+            if let afError = error as? AFError, let underlying = afError.underlyingError {
+                return underlying
             }
             return error
         }()
 
-        // Check for DotcomError with product/variation validation error codes
+        // Extract error code and data from either error type
         if case .unknown(let code, _, let data) = underlyingError as? DotcomError {
-            if isProductValidationError(code: code) {
-                if let variationID = extractVariationID(from: data) {
-                    return createMissingProductInfo(forVariationID: variationID, cart: cart)
-                }
-                return extractMissingProductsFromCart()
-            }
+            return (code, data)
         }
-
-        // Check for NetworkError with product/variation validation error codes
-        if let networkError = underlyingError as? NetworkError,
-           let errorCode = networkError.errorCode,
-           isProductValidationError(code: errorCode) {
-            // Try to extract variation_id from NetworkError data if available
-            if let variationID = extractVariationID(from: networkError.errorData) {
-                return createMissingProductInfo(forVariationID: variationID, cart: cart)
-            }
-            // Fall back to generic error if no variation_id in data
-            return extractMissingProductsFromCart()
+        if let networkError = underlyingError as? NetworkError {
+            return (networkError.errorCode, networkError.errorData)
         }
-
-        return nil
+        return (nil, nil)
     }
 
     /// Extracts variation_id from error data dictionary
@@ -239,7 +236,7 @@ private extension POSOrderService {
 
     /// Extracts missing products by trying to identify items in cart that might have caused the validation error
     /// Since server doesn't tell us which specific products failed, we return generic error info
-    func extractMissingProductsFromCart() -> [CartOrderComparison.MissingCartItem]? {
+    func unknownMissingProductsInCart() -> [CartOrderComparison.MissingCartItem] {
         // We can't determine which specific products are invalid from the server error
         // So we return a generic missing product message with 0 for both IDs (meaning unknown)
         // The user will need to remove all products and retry

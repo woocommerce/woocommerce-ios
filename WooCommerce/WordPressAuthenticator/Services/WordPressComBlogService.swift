@@ -2,9 +2,7 @@ import Foundation
 
 // MARK: - WordPress.com BlogService
 //
-public class WordPressComBlogService {
-
-    public init() {}
+class WordPressComBlogService {
 
     /// Returns a new anonymous instance of WordPressComRestApi.
     ///
@@ -15,7 +13,7 @@ public class WordPressComBlogService {
     }
 
 
-    public func fetchUnauthenticatedSiteInfoForAddress(for address: String, success: @escaping (WordPressComSiteInfo) -> Void, failure: @escaping (Error) -> Void) {
+     func fetchUnauthenticatedSiteInfoForAddress(for address: String, success: @escaping (WordPressComSiteInfo) -> Void, failure: @escaping (Error) -> Void) {
         let remote = BlogServiceRemoteREST(wordPressComRestApi: anonymousAPI, siteID: 0)
         remote.fetchUnauthenticatedSiteInfo(forAddress: address, success: { response in
             guard let response = response else {

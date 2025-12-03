@@ -27,6 +27,10 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")
+        app.launchArguments.append("bypass-pos-eligibility-checks")
+        app.launchArguments.append("load-mocked-pos-products")
+        app.launchArguments.append("bypass-pos-order-syncing")
+        app.launchArguments.append("bypass-card-present-payment")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()
@@ -69,6 +73,26 @@ class WooCommerceScreenshots: XCTestCase {
         .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
         .goBackToOrdersScreen()
+
+        // POS
+        try TabNavComponent()
+            .goToPOSScreen()
+            .tapAddProduct(productID: 1)
+            .tapAddProduct(productID: 2)
+            .thenTakeScreenshot(named: "pos-dashboard", orientation: .landscapeLeft)
+            .tapConnectReader()
+            .waitForReaderConnected()
+            .tapCheckout()
+            .waitForTotalsLoaded()
+            .waitForCardPaymentReady()
+            .thenTakeScreenshot(named: "pos-payment", orientation: .landscapeLeft)
+            .tapCashPayment()
+            .tapMarkPaymentComplete()
+            .waitForPaymentSuccess()
+            .thenTakeScreenshot(named: "pos-success", orientation: .landscapeLeft)
+            .tapMenuButton()
+            .tapExitMenuItem()
+            .confirmExitPOS()
 
         // Products
         try TabNavComponent()
@@ -150,7 +174,8 @@ fileprivate var screenshotCount = 0
 extension BaseScreen {
 
     @MainActor @discardableResult
-    func thenTakeScreenshot(named title: String) -> Self {
+    func thenTakeScreenshot(named title: String, orientation: UIDeviceOrientation = .portrait) -> Self {
+        XCUIDevice.shared.orientation = orientation
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
@@ -185,7 +210,8 @@ extension ScreenObject {
     }
 
     @MainActor @discardableResult
-    func thenTakeScreenshot(named title: String) -> Self {
+    func thenTakeScreenshot(named title: String, orientation: UIDeviceOrientation = .portrait) -> Self {
+        XCUIDevice.shared.orientation = orientation
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"

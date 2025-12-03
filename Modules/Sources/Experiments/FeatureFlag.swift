@@ -216,4 +216,8 @@ public enum FeatureFlag: Int {
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
     case pointOfSaleCatalogAPI
+
+    /// Enables the refunds functionality within POS
+    ///
+    case pointOfSaleRefundsi1
 }

@@ -18,6 +18,7 @@ import struct Yosemite.POSProduct
 import struct Yosemite.POSProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
+import enum Yosemite.SearchDebounceStrategy
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
@@ -105,6 +106,8 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
+    var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
+    var searchDebounceStrategy: SearchDebounceStrategy { .smart() }
     func enableCoupons() async { }
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
@@ -117,6 +120,9 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
+
+    var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
+    var searchDebounceStrategy: SearchDebounceStrategy { .smart() }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {
@@ -642,8 +648,21 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         return false
     }
 
+    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
+        // Preview implementation - return 48 hours for testing stale warning
+        return 48
+    }
+
     func stopOngoingSyncs(for siteID: Int64) async {
         // Preview implementation - no-op
+    }
+
+    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+        // no-op
+    }
+
+    func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
     }
 }
 

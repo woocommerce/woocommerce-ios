@@ -2,6 +2,7 @@ import CocoaLumberjackSwift
 import Yosemite
 import Foundation
 import Storage
+import WooFoundation
 
 @Observable
 final class POSSettingsLocalCatalogViewModel {
@@ -11,17 +12,27 @@ final class POSSettingsLocalCatalogViewModel {
 
     private(set) var isLoading: Bool = false
     private(set) var isRefreshingCatalog: Bool = false
+    let deviceHasCellularCapability: Bool = CellularCapabilityChecker.deviceHasCellularCapability()
+
+    var catalogRefreshError: POSIdentifiableErrorState? = nil
 
     private let siteID: Int64
     private let catalogSettingsService: POSCatalogSettingsServiceProtocol
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
+    private let syncStateModel: POSCatalogSyncStateModel
     private let dateFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.dateTimeStyle = .named
         formatter.unitsStyle = .full
         return formatter
     }()
+
+    private var syncStateObservationTask: Task<Void, Never>?
+
+    private var currentSyncState: POSCatalogSyncState {
+        syncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
+    }
 
     var allowFullSyncOnCellular: Bool {
         get {
@@ -39,7 +50,15 @@ final class POSSettingsLocalCatalogViewModel {
         self.siteID = siteID
         self.catalogSettingsService = catalogSettingsService
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.syncStateModel = catalogSyncCoordinator.fullSyncStateModel
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
+
+        // Observe sync state changes to update UI when sync completes in background
+        startObservingSyncState()
+    }
+
+    deinit {
+        syncStateObservationTask?.cancel()
     }
 
     @MainActor
@@ -63,13 +82,64 @@ final class POSSettingsLocalCatalogViewModel {
     @MainActor
     func refreshCatalog() async {
         isRefreshingCatalog = true
-        defer { isRefreshingCatalog = false }
+        catalogRefreshError = nil
 
         do {
             try await catalogSyncCoordinator.performFullSync(for: siteID, regenerateCatalog: true)
+            isRefreshingCatalog = false
             await loadCatalogData()
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
+            isRefreshingCatalog = false
+            catalogRefreshError = POSIdentifiableErrorState(errorState: .errorOnRefreshingCatalog(error: error))
+        }
+    }
+
+    /// Starts observing sync state changes to update UI when sync completes in background
+    private func startObservingSyncState() {
+        syncStateObservationTask = Task { @MainActor in
+            var previousState = currentSyncState
+
+            while !Task.isCancelled {
+                // Wait for the next state change
+                await observeNextStateChange()
+
+                // Read the new state after change is detected
+                let newState = currentSyncState
+                guard newState != previousState else { continue }
+
+                // Handle terminal states when user initiated refresh
+                switch newState {
+                case .syncCompleted, .syncFailed, .initialSyncFailed:
+                    // Sync finished - clear the refreshing state if it was set
+                    if isRefreshingCatalog {
+                        isRefreshingCatalog = false
+                        // Reload catalog data to show updated info
+                        await loadCatalogData()
+                    }
+                case .syncStarted, .initialSyncStarted:
+                    // Sync is running - keep spinner active
+                    break
+                case .syncNeverDone:
+                    // No sync has been done
+                    break
+                }
+                previousState = newState
+            }
+        }
+    }
+
+    /// Waits for the next change to the observed sync state.
+    /// Re-registers observation each time it's called.
+    private func observeNextStateChange() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            withObservationTracking {
+                // Access the observed property to register observation
+                _ = currentSyncState
+            } onChange: {
+                // When state changes, resume the continuation
+                continuation.resume()
+            }
         }
     }
 }
@@ -85,7 +155,7 @@ private extension POSSettingsLocalCatalogViewModel {
     enum Localization {
         static let catalogSizeFormat = NSLocalizedString(
             "posSettingsLocalCatalogViewModel.catalogSizeFormat",
-            value: "%1$d products, %2$ld variations",
+            value: "%1$d products and %2$ld variations",
             comment: "Format string for catalog size showing product count and variation count. " +
             "%1$d will be replaced by the product count, and %2$ld will be replaced by the variation count."
         )
@@ -108,4 +178,9 @@ private extension POSSettingsLocalCatalogViewModel {
             comment: "Text shown when update date cannot be determined."
         )
     }
+}
+
+struct POSIdentifiableErrorState: Identifiable, Equatable {
+    let errorState: PointOfSaleErrorState
+    let id = UUID()
 }

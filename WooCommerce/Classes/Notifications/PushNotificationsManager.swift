@@ -167,18 +167,19 @@ extension PushNotificationsManager {
 
     /// Unregisters the Application from WordPress.com Push Notifications Service.
     ///
-    func unregisterForRemoteNotifications() {
+    func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
         unregisterDotcomDeviceIfPossible() { error in
             if let error = error {
                 DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
-                return
+            } else {
+                DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+                self.deviceID = nil
+                self.deviceToken = nil
             }
-
-            DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
-            self.deviceID = nil
-            self.deviceToken = nil
+            // Always call completion, even on error
+            onCompletion()
         }
     }
 
@@ -249,7 +250,7 @@ extension PushNotificationsManager {
     ///
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
-        unregisterForRemoteNotifications()
+        unregisterForRemoteNotifications {}
     }
 
     /// Handles a notification while the app is in foreground

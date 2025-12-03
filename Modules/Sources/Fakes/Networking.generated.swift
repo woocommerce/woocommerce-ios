@@ -814,6 +814,7 @@ extension Networking.POSProduct {
             manageStock: .fake(),
             stockQuantity: .fake(),
             stockStatusKey: .fake(),
+            statusKey: .fake(),
             variationIDs: .fake()
         )
     }

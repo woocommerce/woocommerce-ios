@@ -275,7 +275,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_upserts_attributes_for_updated_product() async throws {
+    @Test func persistIncrementalCatalogData_replaces_attributes_for_updated_product() async throws {
         // Given
         let attribute1 = Yosemite.ProductAttribute.fake().copy(name: "Color", options: ["Indigo", "Blue"])
         let attribute2 = Yosemite.ProductAttribute.fake().copy(name: "Size")
@@ -291,17 +291,40 @@ struct POSCatalogPersistenceServiceTests {
 
         // Then
         try await grdbManager.databaseConnection.read { db in
-            // Should have 4 attributes: original 2 + updated 2 (upsert adds new ones, keeps old ones)
+            // Should have 2 attributes - old ones deleted, new ones added (no duplicates)
             let attributeCount = try PersistedProductAttribute.fetchCount(db)
-            #expect(attributeCount == 4)
+            #expect(attributeCount == 2)
 
             let attributes = try PersistedProductAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
             #expect(attributes[0].name == "Color")
-            #expect(attributes[0].options == ["Indigo", "Blue"]) // Original unchanged
-            #expect(attributes[1].name == "Color")
-            #expect(attributes[1].options == ["Cardinal", "Blue"]) // Updated version
-            #expect(attributes[2].name == "Material") // New attribute
-            #expect(attributes[3].name == "Size") // Original unchanged
+            #expect(attributes[0].options == ["Cardinal", "Blue"]) // Updated version
+            #expect(attributes[1].name == "Material") // New attribute
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_prevents_duplicate_attributes_on_multiple_syncs() async throws {
+        // Given - product with attributes
+        let attribute1 = Yosemite.ProductAttribute.fake().copy(name: "Color", options: ["Red", "Blue"])
+        let attribute2 = Yosemite.ProductAttribute.fake().copy(name: "Size", options: ["S", "M", "L"])
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, attributes: [attribute1, attribute2])
+        try await insertProduct(product)
+
+        // When - perform multiple incremental syncs with the same product/attributes
+        let catalog = POSCatalog(products: [product], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - should have exactly 2 attributes, not duplicates
+        try await grdbManager.databaseConnection.read { db in
+            let attributeCount = try PersistedProductAttribute.fetchCount(db)
+            #expect(attributeCount == 2)
+
+            let attributes = try PersistedProductAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
+            #expect(attributes[0].name == "Color")
+            #expect(attributes[0].options == ["Red", "Blue"])
+            #expect(attributes[1].name == "Size")
+            #expect(attributes[1].options == ["S", "M", "L"])
         }
     }
 
@@ -445,6 +468,36 @@ struct POSCatalogPersistenceServiceTests {
             #expect(attributes[0].productVariationID == 1)
             #expect(attributes[1].name == "Material")
             #expect(attributes[1].option == "Cotton")
+            #expect(attributes[1].productVariationID == 1)
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_prevents_duplicate_variation_attributes_on_multiple_syncs() async throws {
+        // Given - variation with attributes
+        let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
+        let attribute1 = Yosemite.ProductVariationAttribute.fake().copy(name: "Color", option: "Red")
+        let attribute2 = Yosemite.ProductVariationAttribute.fake().copy(name: "Size", option: "L")
+        let variation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, attributes: [attribute1, attribute2])
+        try await insertProduct(parentProduct)
+        try await insertVariation(variation)
+
+        // When - perform multiple incremental syncs with the same variation/attributes
+        let catalog = POSCatalog(products: [parentProduct], variations: [variation], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - should have exactly 2 attributes, not duplicates
+        try await grdbManager.databaseConnection.read { db in
+            let attributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+            #expect(attributeCount == 2)
+
+            let attributes = try PersistedProductVariationAttribute.fetchAll(db).sorted(by: { $0.name < $1.name })
+            #expect(attributes[0].name == "Color")
+            #expect(attributes[0].option == "Red")
+            #expect(attributes[0].productVariationID == 1)
+            #expect(attributes[1].name == "Size")
+            #expect(attributes[1].option == "L")
             #expect(attributes[1].productVariationID == 1)
         }
     }
@@ -695,6 +748,150 @@ struct POSCatalogPersistenceServiceTests {
             #expect(variation?.productID == 10)
             let variationImage = try PersistedProductVariationImage.fetchOne(db)
             #expect(variationImage?.imageID == 100)
+        }
+    }
+
+    // MARK: - Delete Products Tests
+
+    @Test func deleteProducts_removes_specified_products_from_catalog() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 100),
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 200),
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 300)
+            ],
+            variations: [],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When
+        try await sut.deleteProducts([100, 300], variationIDs: [], siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let products = try PersistedProduct
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)")
+                .fetchAll(db)
+            #expect(products.count == 1)
+            #expect(products.first?.id == 200)
+        }
+    }
+
+    @Test func deleteProducts_removes_specified_variations_from_catalog() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 100, productTypeKey: "variable")
+            ],
+            variations: [
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 500),
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 501),
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 502)
+            ],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When
+        try await sut.deleteProducts([], variationIDs: [500, 502], siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let variations = try PersistedProductVariation
+                .filter(sql: "\(PersistedProductVariation.Columns.siteID.name) = \(sampleSiteID)")
+                .fetchAll(db)
+            #expect(variations.count == 1)
+            #expect(variations.first?.id == 501)
+        }
+    }
+
+    @Test func deleteProducts_removes_both_products_and_variations() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 100),
+                POSProduct.fake().copy(siteID: sampleSiteID, productID: 200, productTypeKey: "variable")
+            ],
+            variations: [
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 200, productVariationID: 500),
+                POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 200, productVariationID: 501)
+            ],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When - Delete one product and one variation
+        try await sut.deleteProducts([100], variationIDs: [500], siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let products = try PersistedProduct
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)")
+                .fetchAll(db)
+            #expect(products.count == 1)
+            #expect(products.first?.id == 200)
+
+            let variations = try PersistedProductVariation
+                .filter(sql: "\(PersistedProductVariation.Columns.siteID.name) = \(sampleSiteID)")
+                .fetchAll(db)
+            #expect(variations.count == 1)
+            #expect(variations.first?.id == 501)
+        }
+    }
+
+    @Test func deleteProducts_only_affects_specified_site() async throws {
+        // Given - Add products for two different sites
+        let site1Catalog = POSCatalog(
+            products: [POSProduct.fake().copy(siteID: 100, productID: 1)],
+            variations: [],
+            syncDate: .now
+        )
+        let site2Catalog = POSCatalog(
+            products: [POSProduct.fake().copy(siteID: 200, productID: 1)],
+            variations: [],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(site1Catalog, siteID: 100)
+        try await sut.replaceAllCatalogData(site2Catalog, siteID: 200)
+
+        // When - Delete from site 100 only
+        try await sut.deleteProducts([1], variationIDs: [], siteID: 100)
+
+        // Then - Site 100 should have no products, site 200 should still have its product
+        try await db.read { db in
+            let site1Products = try PersistedProduct
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = 100")
+                .fetchAll(db)
+            #expect(site1Products.isEmpty)
+
+            let site2Products = try PersistedProduct
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = 200")
+                .fetchAll(db)
+            #expect(site2Products.count == 1)
+        }
+    }
+
+    @Test func deleteProducts_succeeds_when_product_not_found() async throws {
+        // Given
+        let catalog = POSCatalog(
+            products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 100)],
+            variations: [],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // When - Try to delete a product that doesn't exist
+        try await sut.deleteProducts([999], variationIDs: [], siteID: sampleSiteID)
+
+        // Then - Should not throw, existing product should remain
+        try await db.read { db in
+            let products = try PersistedProduct
+                .filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)")
+                .fetchAll(db)
+            #expect(products.count == 1)
+            #expect(products.first?.id == 100)
         }
     }
 }

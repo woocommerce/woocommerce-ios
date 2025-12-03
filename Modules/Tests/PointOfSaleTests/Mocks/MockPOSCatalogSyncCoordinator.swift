@@ -75,5 +75,33 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         return isSyncStaleResult
     }
 
+    var hoursSinceLastSyncResult: Int? = nil
+
+    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
+        return hoursSinceLastSyncResult
+    }
+
     func stopOngoingSyncs(for siteID: Int64) async {}
+
+    var processBackgroundDownloadResult: Result<Void, Error> = .success(())
+    private(set) var processBackgroundDownloadCallCount = 0
+    private(set) var lastProcessedFileURL: URL?
+    private(set) var lastProcessedSiteID: Int64?
+
+    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+        processBackgroundDownloadCallCount += 1
+        lastProcessedFileURL = fileURL
+        lastProcessedSiteID = siteID
+
+        switch processBackgroundDownloadResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
 }

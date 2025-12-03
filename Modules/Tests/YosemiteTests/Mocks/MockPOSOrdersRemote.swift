@@ -44,13 +44,26 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var createPOSOrderCalled: Bool = false
     var spyCreatePOSOrder: Order?
     var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
+    var createPOSOrderResult: Result<Order, Error>?
     func createPOSOrder(siteID: Int64,
                         order: Networking.Order,
                         fields: [OrdersRemote.CreateOrderField]) async throws -> Order {
         createPOSOrderCalled = true
         spyCreatePOSOrder = order
         spyCreatePOSOrderFields = fields
-        return Order.fake()
+
+        // If a custom result is set, use it
+        if let result = createPOSOrderResult {
+            switch result {
+            case .success(let customOrder):
+                return customOrder
+            case .failure(let error):
+                throw error
+            }
+        }
+
+        // By default, return the order that was passed in (simulating server echo)
+        return order
     }
 
     var mockPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))

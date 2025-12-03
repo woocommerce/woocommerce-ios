@@ -36,6 +36,28 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
         backgroundCompletionHandler = completionHandler
     }
 
+    /// Reconnects to an existing background session after app wake.
+    /// Call this from AppDelegate when iOS wakes the app for background URLSession events.
+    /// - Parameters:
+    ///   - sessionIdentifier: The session identifier from the callback
+    ///   - completionHandler: Completion handler to call when all events are processed
+    /// - Returns: Downloaded file URL if download completed, nil if still in progress
+    public func reconnectToSession(identifier sessionIdentifier: String,
+                                   allowCellular: Bool,
+                                   completionHandler: @escaping () -> Void) async -> URL? {
+        DDLogInfo("🟣 Reconnecting to background session: \(sessionIdentifier)")
+
+        setBackgroundCompletionHandler(completionHandler)
+
+        // Create session with same identifier - this reconnects to the existing download
+        let session = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
+
+        // Wait for delegate callbacks to complete
+        return try? await withCheckedThrowingContinuation { continuation in
+            downloadContinuations[sessionIdentifier] = continuation
+        }
+    }
+
     public func cancelDownloads(for sessionIdentifier: String) async {
         if let task = downloadTasks[sessionIdentifier] {
             task.cancel()

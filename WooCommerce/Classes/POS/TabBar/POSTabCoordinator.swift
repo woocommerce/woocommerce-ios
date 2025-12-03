@@ -2,12 +2,13 @@ import Foundation
 import UIKit
 import SwiftUI
 import Yosemite
+import Combine
 import class WooFoundation.CurrencySettings
+import WooFoundationCore
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
-import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
-import struct Combine.AnyPublisher
+import struct NetworkingCore.OrderItem
 import PointOfSale
 
 protocol POSTabVisibilityCheckerProtocol {
@@ -47,16 +48,21 @@ final class POSTabCoordinator {
     /// Local catalog eligibility service - created asynchronously during init
     private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
-    private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
+    /// Creates item fetch strategy factory with current local catalog eligibility
+    private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                             credentials: credentials,
                                             selectedSite: defaultSitePublisher,
-                                            appPasswordSupportState: isAppPasswordSupported)
-    }()
+                                            appPasswordSupportState: isAppPasswordSupported,
+                                            grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
+                                            isLocalCatalogEnabled: isLocalCatalogEnabled)
+    }
 
-    private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
-        PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
-    }()
+    /// Creates popular item fetch strategy factory with current local catalog eligibility
+    private func createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleFixedItemFetchStrategyFactory {
+        let itemFactory = createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEnabled)
+        return PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: itemFactory.popularStrategy())
+    }
 
     private lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
         PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
@@ -198,9 +204,15 @@ private extension POSTabCoordinator {
 
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
-            let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+
+            let cardPresentPaymentService: CardPresentPaymentFacade
+            if ProcessConfiguration.shouldUseMockCardPresentPayment {
+                cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
+            } else {
+                cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
                                                                             collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor)
+            }
             let settingsService = PointOfSaleSettingsService(siteID: siteID,
                                                              credentials: credentials,
                                                              selectedSite: defaultSitePublisher,
@@ -222,15 +234,30 @@ private extension POSTabCoordinator {
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
                                                       selectedSite: defaultSitePublisher,
-                                                      appPasswordSupportState: isAppPasswordSupported),
-               let orderService = POSOrderService(siteID: siteID,
-                                                  credentials: credentials,
-                                                  selectedSite: defaultSitePublisher,
-                                                  appPasswordSupportState: isAppPasswordSupported) {
+                                                      appPasswordSupportState: isAppPasswordSupported) {
+
+                let orderService: POSOrderServiceProtocol
+                if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+                    orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+                } else if let posOrderService = POSOrderService(siteID: siteID,
+                                                           credentials: credentials,
+                                                           selectedSite: defaultSitePublisher,
+                                                           appPasswordSupportState: isAppPasswordSupported) {
+                    orderService = posOrderService
+                } else {
+                    DDLogError("POSOrderService not provided")
+                    return
+                }
+
+                var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
+                if ProcessConfiguration.shouldLoadMockedPOSProducts {
+                    itemProvider = PointOfSaleItemServiceScreenshotMock()
+                }
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
-                    itemFetchStrategyFactory: posItemFetchStrategyFactory,
-                    popularItemFetchStrategyFactory: posPopularItemFetchStrategyFactory,
+                    itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                    popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
                     couponProvider: posCouponProvider,
                     couponFetchStrategyFactory: posCouponFetchStrategyFactory,
                     orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
@@ -259,7 +286,8 @@ private extension POSTabCoordinator {
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
-                    services: serviceAdaptor
+                    services: serviceAdaptor,
+                    itemProvider: itemProvider
                 )
 
                 let hostingController = UIHostingController(rootView: posView)

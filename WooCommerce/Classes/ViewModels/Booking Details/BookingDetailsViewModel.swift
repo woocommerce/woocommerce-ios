@@ -18,6 +18,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let appointmentDetailsContent = AppointmentDetailsContent()
     private let attendanceContent = AttendanceContent()
     private let paymentContent = PaymentContent()
+    private let notesContent = NotesContent()
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -33,8 +34,6 @@ final class BookingDetailsViewModel: ObservableObject {
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
     }
-
-    var note: String { booking.note }
 
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
@@ -74,7 +73,7 @@ private extension BookingDetailsViewModel {
         let bookingNotes = Section(
             header: .title(Localization.bookingNoteSectionHeaderTitle.uppercased()),
             footerText: Localization.bookingNoteSectionFooterText,
-            content: .bookingNotes
+            content: .bookingNotes(notesContent)
         )
 
         sections = [
@@ -92,8 +91,10 @@ private extension BookingDetailsViewModel {
         headerContent.update(with: booking)
 
         setupCustomerSectionVisibility()
-        if let billingAddress = booking.orderInfo?.customerInfo?.billingAddress, !billingAddress.isEmpty {
-            customerContent.update(with: billingAddress)
+        if let orderInfo = booking.orderInfo,
+           let customerInfo = orderInfo.customerInfo,
+           customerInfo.billingAddress.isEmpty == false {
+            customerContent.update(with: customerInfo)
         }
 
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
@@ -102,6 +103,7 @@ private extension BookingDetailsViewModel {
         attendanceContent.update(with: booking)
 
         paymentContent.update(with: booking)
+        notesContent.update(with: booking)
     }
 
     func setupCustomerSectionVisibility() {
@@ -242,27 +244,57 @@ extension BookingDetailsViewModel {
         ) { [weak self] error in
             if let error, let self {
                 DDLogError("⛔️ Error updating booking attendance status: \(error)")
-                displayAttendanceStatusUpdatedErrorNotice(status: newStatus)
+                displayErrorNotice(
+                    messageFormat: Localization.bookingAttendanceStatusUpdateFailedMessage
+                ) { [weak self] in
+                    self?.updateAttendanceStatus(to: newStatus)
+                }
             }
         }
         stores.dispatch(action)
     }
 
-    private func displayAttendanceStatusUpdatedErrorNotice(status: BookingAttendanceStatus) {
+    @MainActor
+    func updateNote(to newNote: String) async -> MultilineCommitResult {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.updateBookingNote(
+                siteID: booking.siteID,
+                bookingID: booking.bookingID,
+                note: newNote
+            ) { [booking] error in
+                if let error {
+                    DDLogError("⛔️ Error updating booking note: \(error)")
+                    let message = String.localizedStringWithFormat(
+                        Localization.bookingNoteUpdateFailedMessage,
+                        booking.bookingID
+                    )
+
+                    continuation.resume(returning: .failure(message: message))
+                    return
+                }
+
+                continuation.resume(returning: .success)
+            }
+
+            stores.dispatch(action)
+        }
+    }
+
+    private func displayErrorNotice(
+        messageFormat: String,
+        retry: @escaping () -> Void
+    ) {
         let text = String.localizedStringWithFormat(
-            Localization.bookingAttendanceStatusUpdateFailedMessage,
+            messageFormat,
             booking.bookingID
         )
-        self.notice = Notice(
+
+        notice = Notice(
             message: text,
             feedbackType: .error,
             actionTitle: Localization.retryActionTitle
-        ) { [weak self] in
-            guard let self else {
-                return
-            }
-
-            updateAttendanceStatus(to: status)
+        ) {
+            retry()
         }
     }
 }
@@ -472,6 +504,14 @@ private extension BookingDetailsViewModel {
             value: "Unable to change attendance status of Booking #%1$d.",
             comment: "Content of error presented when updating the attendance status of a Booking fails. "
             + "It reads: Unable to change status of Booking #{Booking number}. "
+            + "Parameters: %1$d - Booking number"
+        )
+
+        static let bookingNoteUpdateFailedMessage = NSLocalizedString(
+            "BookingDetailsView.bookingNote.failureMessage.",
+            value: "Unable to update note of Booking #%1$d.",
+            comment: "Content of error presented when updating the not of a Booking fails. "
+            + "It reads: Unable to update note of Booking #{Booking number}. "
             + "Parameters: %1$d - Booking number"
         )
 

@@ -486,9 +486,12 @@ struct BookingListViewModelTests {
                                              storage: storageManager,
                                              currentDate: testDate)
 
-        // When/Then - should only show bookings within today (startDate > start AND startDate < end)
-        #expect(viewModel.bookings.count == 2)
-        #expect(viewModel.bookings.first?.bookingID == withinTodayBooking.bookingID)
+        // When/Then - should only show bookings within today (startDate >= start AND startDate <= end)
+        #expect(viewModel.bookings.count == 3)
+        let bookingIDs = viewModel.bookings.map({ $0.bookingID })
+        #expect(bookingIDs.contains(withinTodayBooking.bookingID))
+        #expect(bookingIDs.contains(atStartOfDayBooking.bookingID))
+        #expect(bookingIDs.contains(startOfNextDayBooking.bookingID))
     }
 
     @Test func upcoming_tab_results_controller_filters_local_storage_correctly() {
@@ -511,14 +514,14 @@ struct BookingListViewModelTests {
                                              storage: storageManager,
                                              currentDate: testDate)
 
-        // When/Then - should only show bookings after today (startDate > end of today)
-        #expect(viewModel.bookings.count == 2, "Upcoming tab should show bookings after today")
+        // When/Then - should only show bookings after today (startDate >= end of today)
+        #expect(viewModel.bookings.count == 3, "Upcoming tab should show bookings after today")
         let bookingIDs = Set(viewModel.bookings.map { $0.bookingID })
         #expect(bookingIDs.contains(afterTodayBooking1.bookingID), "Should contain booking after today")
         #expect(bookingIDs.contains(afterTodayBooking2.bookingID), "Should contain second booking after today")
         #expect(!bookingIDs.contains(withinTodayBooking.bookingID), "Should not contain booking within today")
         #expect(!bookingIDs.contains(beforeTodayBooking.bookingID), "Should not contain booking before today")
-        #expect(!bookingIDs.contains(atEndOfDayBooking.bookingID), "Should not contain booking exactly at end of day")
+        #expect(bookingIDs.contains(atEndOfDayBooking.bookingID), "Should contain booking exactly at end of day")
     }
 
     @Test func all_tab_results_controller_shows_all_bookings_from_local_storage() {

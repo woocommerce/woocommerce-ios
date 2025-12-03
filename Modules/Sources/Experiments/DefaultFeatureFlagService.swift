@@ -95,7 +95,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleHistoricalOrdersi1:
             return true
         case .pointOfSaleLocalCatalogi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .ciabBookings:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ciab:
@@ -104,6 +104,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleCatalogAPI:
             return false
+        case .pointOfSaleRefundsi1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

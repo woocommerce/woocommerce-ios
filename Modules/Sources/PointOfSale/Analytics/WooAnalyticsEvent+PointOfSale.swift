@@ -44,6 +44,8 @@ extension WooAnalyticsEvent {
             static let listPosition = "list_position"
             static let daysSinceCreated = "days_since_created"
             static let pageNumber = "page_number"
+            static let reason = "reason"
+            static let syncStrategy = "sync_strategy"
         }
 
         /// Source of the event where the event is triggered
@@ -303,6 +305,17 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        static func pointOfSaleSearchResultsFetched(itemType: POSItemType,
+                                                    resultsCount: Int,
+                                                    millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSearchResultsFetched,
+                              properties: [
+                                Key.sourceView: SourceView(itemType: itemType).rawValue,
+                                Key.resultsCount: "\(resultsCount)",
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                              ])
+        }
+
         static func pointOfSaleItemsFetched(itemType: POSItemType,
                                             totalItems: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleItemsFetched,
@@ -456,6 +469,47 @@ extension WooAnalyticsEvent {
 
         static func ordersListLoaded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .ordersListLoaded, properties: [:])
+        }
+
+        // MARK: - Checkout Outdated Item Detection Events
+
+        static func checkoutOutdatedItemDetectedScreenShown(
+            reason: String,
+            syncStrategy: String
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
+                properties: [
+                    Key.reason: reason,
+                    Key.syncStrategy: syncStrategy
+                ]
+            )
+        }
+
+        static func checkoutOutdatedItemDetectedEditOrderTapped(
+            reason: String,
+            syncStrategy: String
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
+                properties: [
+                    Key.reason: reason,
+                    Key.syncStrategy: syncStrategy
+                ]
+            )
+        }
+
+        static func checkoutOutdatedItemDetectedRemoveTapped(
+            reason: String,
+            syncStrategy: String
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
+                properties: [
+                    Key.reason: reason,
+                    Key.syncStrategy: syncStrategy
+                ]
+            )
         }
     }
 }

@@ -34,6 +34,7 @@ struct CardReaderConnectionStatusView: View {
                     .padding(.horizontal, Constants.horizontalPadding)
                     .frame(maxHeight: .infinity)
                 }
+                .accessibilityIdentifier("pos-reader-connected")
             case .disconnecting:
                 progressIndicatingCardReaderStatus(title: Localization.readerDisconnecting)
             case .cancellingConnection:
@@ -55,6 +56,7 @@ struct CardReaderConnectionStatusView: View {
                     )
                     .padding(Constants.disconnectedBorderInset)
                 }
+                .accessibilityIdentifier("pos-connect-reader-button")
             }
         }
         .font(Constants.font)

@@ -8,9 +8,9 @@ struct BackgroundTaskScheduleTests {
     private let timeProvider: MockTimeProvider
 
     init() {
-        let userDefaults = UserDefaults(suiteName: #file)!
-        userDefaults.removePersistentDomain(forName: #file)
         timeProvider = MockTimeProvider()
+        let userDefaults = InMemoryUserDefaults()
+
         sut = BackgroundTaskSchedule(timeProvider: timeProvider, userDefaults: userDefaults)
     }
 
@@ -220,5 +220,27 @@ private class MockTimeProvider: TimeProvider {
 
     func scheduleTimer(timeInterval: TimeInterval, target: Any, selector: Selector) -> Timer {
         fatalError("not implemented")
+    }
+}
+
+/// In-memory UserDefaults that doesn't persist to disk
+/// Each instance has its own isolated storage
+private class InMemoryUserDefaults: UserDefaults {
+    private var storage: [String: Any] = [:]
+
+    override func set(_ value: Any?, forKey defaultName: String) {
+        storage[defaultName] = value
+    }
+
+    override func data(forKey defaultName: String) -> Data? {
+        storage[defaultName] as? Data
+    }
+
+    override func object(forKey defaultName: String) -> Any? {
+        storage[defaultName]
+    }
+
+    override func removeObject(forKey defaultName: String) {
+        storage.removeValue(forKey: defaultName)
     }
 }

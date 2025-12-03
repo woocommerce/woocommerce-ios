@@ -32,11 +32,12 @@ public class WaitingTimeTracker {
     /// and returning an analytics event for tracking.
     ///
     /// - Parameter trackingUnit: Defines whether the elapsed time should be tracked in `.seconds` or `.milliseconds` (default is `.seconds`).
+    /// - Parameter additionalProperties: Optional additional properties to include in the analytics event.
     /// - Returns: The analytics event to be tracked.
     ///
-    public func end(using trackingUnit: TrackingUnit = .seconds) -> WooAnalyticsEvent {
+    public func end(using trackingUnit: TrackingUnit = .seconds, additionalProperties: [String: String] = [:]) -> WooAnalyticsEvent {
         let elapsedTime = calculateElapsedTime(in: trackingUnit)
-        return .WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTime)
+        return .WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTime, additionalProperties: additionalProperties)
     }
 
     /// Calculates elapsed time in the specified tracking unit.
@@ -66,21 +67,40 @@ public extension WooAnalyticsEvent {
             static let millisecondsTimeElapsedInSplashScreen = "milliseconds_time_elapsed_in_splash_screen"
         }
 
-        static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
+        static func waitingFinished(scenario: Scenario,
+                                     elapsedTime: TimeInterval,
+                                     additionalProperties: [String: String] = [:]) -> WooAnalyticsEvent {
+            // Convert additional properties to WooAnalyticsEventPropertyType
+            let typedAdditionalProperties: [String: WooAnalyticsEventPropertyType] =
+                additionalProperties.mapValues { $0 as WooAnalyticsEventPropertyType }
+
+            let statName: WooAnalyticsStat
+            var baseProperties: [String: WooAnalyticsEventPropertyType]
+
             switch scenario {
             case .orderDetails:
-                return WooAnalyticsEvent(statName: .orderDetailWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+                statName = .orderDetailWaitingTimeLoaded
+                baseProperties = [Keys.waitingTime: elapsedTime]
             case .dashboardTopPerformers:
-                return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+                statName = .dashboardTopPerformersWaitingTimeLoaded
+                baseProperties = [Keys.waitingTime: elapsedTime]
             case .dashboardMainStats:
-                return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+                statName = .dashboardMainStatsWaitingTimeLoaded
+                baseProperties = [Keys.waitingTime: elapsedTime]
             case .analyticsHub:
-                return WooAnalyticsEvent(statName: .analyticsHubWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+                statName = .analyticsHubWaitingTimeLoaded
+                baseProperties = [Keys.waitingTime: elapsedTime]
             case .appStartup:
-                return WooAnalyticsEvent(statName: .applicationOpenedWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+                statName = .applicationOpenedWaitingTimeLoaded
+                baseProperties = [Keys.waitingTime: elapsedTime]
             case .pointOfSaleLoaded:
-                return WooAnalyticsEvent(statName: .pointOfSaleLoaded, properties: [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime])
+                statName = .pointOfSaleLoaded
+                baseProperties = [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime]
             }
+
+            return WooAnalyticsEvent(
+                statName: statName,
+                properties: baseProperties.merging(typedAdditionalProperties) { $1 })
         }
     }
 }

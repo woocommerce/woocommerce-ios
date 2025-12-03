@@ -13,6 +13,7 @@ extension BookingCustomerInfo {
     @NSManaged public var billingPhone: String?
     @NSManaged public var billingPostcode: String?
     @NSManaged public var billingState: String?
+    @NSManaged public var note: String?
     @NSManaged public var orderInfo: BookingOrderInfo?
 
 }

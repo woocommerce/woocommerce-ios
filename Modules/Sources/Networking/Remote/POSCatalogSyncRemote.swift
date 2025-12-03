@@ -9,10 +9,11 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - modifiedAfter: Only products modified after this date will be returned.
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
+    ///   - includeStatus: Optional status to include (e.g., "trash" to fetch trashed products).
     /// - Returns: Paginated list of POS products.
     // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
     // periphery:ignore
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct>
+    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String?) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations modified after the specified date for incremental sync.
     ///
@@ -46,6 +47,14 @@ public protocol POSCatalogSyncRemoteProtocol {
     func downloadCatalog(for siteID: Int64,
                          downloadURL: String,
                          allowCellular: Bool) async throws -> POSCatalogResponse
+
+    /// Parses a downloaded catalog file.
+    /// Used for processing background downloads after app wake.
+    /// - Parameters:
+    ///   - fileURL: Local file URL of the downloaded catalog.
+    ///   - siteID: Site ID for proper mapping.
+    /// - Returns: Parsed POS catalog response.
+    func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse
 
     /// Loads POS products for full sync.
     ///
@@ -101,17 +110,22 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - modifiedAfter: Only products modified after this date will be returned.
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
+    ///   - includeStatus: Optional status to include (e.g., "trash" to fetch trashed products).
     /// - Returns: Paginated list of POS products.
     ///
-    public func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int)
+    public func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String? = nil)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
-        let parameters = [
+        var parameters: [String: String] = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+
+        if let includeStatus = includeStatus {
+            parameters[ParameterKey.includeStatus] = includeStatus
+        }
 
         let request = JetpackRequest(
             wooApiVersion: .mark3,
@@ -203,10 +217,25 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         let sessionIdentifier = "\(POSCatalogSyncConstants.backgroundDownloadSessionPrefix).\(siteID).\(UUID().uuidString)"
+
+        // Save download state so we can resume if app is terminated
+        let downloadState = BackgroundDownloadState(
+            sessionIdentifier: sessionIdentifier,
+            siteID: siteID
+        )
+        BackgroundDownloadState.save(downloadState)
+
         let fileURL = try await backgroundDownloader.downloadFile(from: url,
                                                                    sessionIdentifier: sessionIdentifier,
                                                                    allowCellular: allowCellular)
-        return try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+
+        // Download completed - parse the file
+        let catalogResponse = try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+
+        // Clear the saved state since we successfully completed
+        BackgroundDownloadState.clear()
+
+        return catalogResponse
     }
 
     /// Parses the downloaded catalog file.
@@ -214,7 +243,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - fileURL: Local file URL of the downloaded catalog.
     ///   - siteID: Site ID for proper mapping.
     /// - Returns: Parsed POS catalog.
-    func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
+    public func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
         let data = try Data(contentsOf: fileURL)
 
         // Clean up downloaded files, but only if they're in our Documents directory.
@@ -376,6 +405,7 @@ private extension POSCatalogSyncRemote {
         static let fields = "_fields"
         static let fullSyncFields = "fields"
         static let forceGenerate = "force_generate"
+        static let includeStatus = "include_status"
     }
 
     enum Path {

@@ -7,6 +7,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
 import class Yosemite.AsyncPaginationTracker
+import enum Yosemite.SearchDebounceStrategy
 
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
@@ -55,6 +56,18 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
     func clearSearchItems(baseItem: ItemListBaseItem) {
         setSearchingState()
+    }
+
+    var currentDebounceStrategy: SearchDebounceStrategy {
+        fetchStrategy.debounceStrategy
+    }
+
+    var searchDebounceStrategy: SearchDebounceStrategy {
+        // Return the debounce strategy that would be used for a search
+        let searchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: "",
+                                                                 analytics: POSItemFetchAnalytics(itemType: .coupon,
+                                                                                                  analytics: analyticsProvider))
+        return searchStrategy.debounceStrategy
     }
 
     @MainActor

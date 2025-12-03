@@ -13,7 +13,11 @@ public protocol POSCatalogIncrementalSyncServiceProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for.
     ///   - lastFullSyncDate: The date of the last full sync to use if no incremental sync date exists.
-    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws
+    /// - Returns: The synced catalog containing updated products and variations
+    @discardableResult
+    func startIncrementalSync(for siteID: Int64,
+                              lastFullSyncDate: Date,
+                              lastIncrementalSyncDate: Date?) async throws -> POSCatalog
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
@@ -52,8 +56,8 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
     }
 
     // MARK: - Protocol Conformance
-
-    public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws {
+    @discardableResult
+    public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
         let modifiedAfter = latestSyncDate(fullSyncDate: lastFullSyncDate, incrementalSyncDate: lastIncrementalSyncDate)
 
         DDLogInfo("🔄 Starting incremental catalog sync for site ID: \(siteID), modifiedAfter: \(modifiedAfter)")
@@ -65,6 +69,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
             try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
             DDLogInfo("✅ Persisted \(catalog.products.count) updated products and \(catalog.variations.count) updated variations to database for siteID \(siteID)")
 
+            return catalog
         } catch {
             DDLogError("❌ Failed to sync and persist catalog incrementally: \(error)")
             throw error
@@ -77,19 +82,36 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 private extension POSCatalogIncrementalSyncService {
     func loadCatalog(for siteID: Int64, modifiedAfter: Date, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
         let syncStartDate = Date.now
-        async let productsTask = batchedLoader.loadAll(
+
+        // Fetch regular products (excluding trash)
+        async let regularProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber)
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber, includeStatus: nil)
             }
         )
+
+        // Fetch trashed products separately to detect products moved to trash
+        async let trashedProductsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: ProductStatus.trash.rawValue)
+            }
+        )
+
         async let variationsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
                 try await syncRemote.loadProductVariations(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber)
             }
         )
 
-        let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
+        let (regularProducts, trashedProducts, variations) = try await (regularProductsTask, trashedProductsTask, variationsTask)
+
+        // Union regular and trashed products before persistence
+        let allProducts = regularProducts + trashedProducts
+
+        return POSCatalog(products: allProducts, variations: variations, syncDate: syncStartDate)
     }
 }
 

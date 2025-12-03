@@ -90,6 +90,11 @@ GLOTPRESS_APP_STRINGS_PROJECT_URL = 'https://translate.wordpress.com/projects/wo
 # URL of the GlotPress project containing App Store Connect metadata
 GLOTPRESS_APP_STORE_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
 
+# Set this to `true` if it's intentional that `fastlane/metadata/en-US/` has some `.txt` files overriding the ones in `fastlane/metadata/default/`
+# (i.e. you want the `en-US` metadata copies to be _different_ from the metadata copies used as base and fallback for the translation in other locales)
+# Set this to `false` otherwise, so that we prevent the accidental case of forgetting to update the `en-US` metadata copies when updating the `default`
+# copies during an ASO update, if it was not the intention for those to differ.
+ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE = false
 # List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
 #
 # TODO: Replace with `LocaleHelper` once provided by release toolkit (https://github.com/wordpress-mobile/release-toolkit/pull/296)
@@ -413,27 +418,45 @@ platform :ios do
 
     # Parse the provided version into an AppVersion object
     parsed_version = VERSION_FORMATTER.parse(version)
+    # Validate that this is a hotfix version (must have a patch component > 0)
+    UI.user_error!("Invalid hotfix version '#{version}'. Must include a patch number.") unless parsed_version.patch.to_i.positive?
     build_code_hotfix = BUILD_CODE_FORMATTER.build_code(version: parsed_version)
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
+    previous_release_branch = "release/#{previous_version}"
+
+    # Determine the base for the hotfix branch: either a tag or a release branch
+    base_ref_for_hotfix = if git_tag_exists(tag: previous_version, remote: true)
+                            previous_version
+                          elsif Fastlane::Helper::GitHelper.branch_exists_on_remote?(branch_name: previous_release_branch)
+                            UI.message("ℹ️  Tag '#{previous_version}' not found on the remote. Using release branch '#{previous_release_branch}' as the base for hotfix instead.")
+                            previous_release_branch
+                          else
+                            UI.user_error!("Neither tag '#{previous_version}' nor branch '#{previous_release_branch}' exists on the remote! A hotfix branch cannot be created.")
+                          end
 
     # Check versions
     UI.important <<-MESSAGE
 
       New hotfix version: #{version}
       New build code: #{build_code_hotfix}
-      Branching from tag: #{previous_version}
+      Branching from #{base_ref_for_hotfix}
 
     MESSAGE
     UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     # Check tags
-    UI.user_error!("Version #{version} already exists! Abort!") if git_tag_exists(tag: version)
-    UI.user_error!("Version #{previous_version} is not tagged! A hotfix branch cannot be created.") unless git_tag_exists(tag: previous_version)
+    UI.user_error!("Version '#{version}' already exists on the remote! Abort!") if git_tag_exists(tag: version, remote: true)
+
+    # Fetch the base ref to ensure it's available locally
+    sh('git', 'fetch', 'origin', base_ref_for_hotfix)
+
+    hotfix_branch = "release/#{version}"
+    ensure_branch_does_not_exist!(hotfix_branch)
 
     # Create the hotfix branch
-    UI.message('Creating hotfix branch...')
-    Fastlane::Helper::GitHelper.create_branch("release/#{version}", from: previous_version)
-    UI.success("Done! New hotfix branch is: #{git_branch}")
+    UI.message("Creating hotfix branch from '#{base_ref_for_hotfix}'...")
+    Fastlane::Helper::GitHelper.create_branch(hotfix_branch, from: base_ref_for_hotfix)
+    UI.success("Done! New hotfix branch is: '#{git_branch}'")
 
     # Bump the hotfix version and build code and write it to the `xcconfig` file
     UI.message('Bumping hotfix version and build code...')
@@ -446,7 +469,7 @@ platform :ios do
     # Push the newly created hotfix branch
     push_to_git_remote(tags: false)
 
-    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
+    UI.success("Done! New Release Version: '#{release_version_current}'. New Build Code: '#{build_code_current}'")
   end
 
   # This lane finalizes the hotfix branch, triggering a release build.
@@ -1042,11 +1065,13 @@ platform :ios do
     files_to_commit = [File.join(metadata_directory, '**', '*.txt')]
 
     # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
-    target_files.values.map { |h| h[:desc] }.each do |file|
-      en_file_path = File.join(metadata_directory, 'en-US', file)
-      if File.exist?(en_file_path)
-        UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
-                       + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.")
+    unless ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE
+      target_files.values.map { |h| h[:desc] }.each do |file|
+        en_file_path = File.join(metadata_directory, 'en-US', file)
+        if File.exist?(en_file_path)
+          UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
+                         + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.")
+        end
       end
     end
 

@@ -11,15 +11,18 @@ struct BookingListView<Header: View>: View {
     @Binding var selectedBooking: Booking?
 
     private let header: Header
+    private let onClearingFilters: (() -> Void)?
 
     init(viewModel: BookingListViewModel,
          searchViewModel: BookingSearchViewModel,
          selectedBooking: Binding<Booking?>,
-         @ViewBuilder header: () -> Header) {
+         @ViewBuilder header: () -> Header,
+         onClearingFilters: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.searchViewModel = searchViewModel
         self._selectedBooking = selectedBooking
         self.header = header()
+        self.onClearingFilters = onClearingFilters
     }
 
     var body: some View {
@@ -117,9 +120,21 @@ private extension BookingListView {
             } header: {
                 header
                     .listRowInsets(EdgeInsets())
+                    .textCase(nil)
             }
         }
-        .listStyle(.plain)
+        .apply {
+            /// Plain list style in iOS prior to 26.0 comes with extra spacing at the top of header.
+            /// Use grouped style for these versions instead.
+            /// Grouped list style doesn't pin header at the top, we have to accept this.
+            if #available(iOS 26.0, *) {
+                $0.listStyle(.plain)
+            } else {
+                $0.listStyle(.grouped)
+            }
+        }
+        .listStyle(.grouped)
+        .scrollContentBackground(.hidden)
         .listSectionSeparator(.hidden, edges: .top)
         .background(Color(.listBackground))
         .refreshable {
@@ -128,23 +143,31 @@ private extension BookingListView {
     }
 
     func bookingItem(_ booking: Booking) -> some View {
-        VStack(alignment: .leading) {
-            Text(booking.startDate.toString(dateStyle: .short,
-                                            timeStyle: .short,
-                                            timeZone: BookingListTab.utcTimeZone))
+        VStack(alignment: .leading, spacing: BookingListViewLayout.bookingSummaryBadgeSpacing) {
+            VStack(alignment: .leading, spacing: BookingListViewLayout.bookingSummarySpacing) {
+                Text(booking.startDate.toString(dateStyle: .short,
+                                                timeStyle: .short,
+                                                timeZone: BookingListTab.utcTimeZone))
                 .font(.body)
                 .fontWeight(.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(Color.primary)
 
-            Text(booking.summaryText)
-                .font(.footnote)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.secondary)
+                if let productName = booking.productName {
+                    Text(productName)
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.secondary)
+                }
+
+                Text(booking.customerName)
+                    .font(.footnote)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.secondary)
+            }
 
             HStack {
                 BookingBadgeView(booking.attendanceStatus)
-                BookingBadgeView(booking.bookingStatus)
                 Spacer()
             }
         }
@@ -199,13 +222,10 @@ private extension BookingListView {
                 }
                 if viewModel.hasFilters {
                     VStack(spacing: BookingListViewLayout.textVerticalPadding) {
-                        Button("Change filters") {
-                            // TODO
+                        Button(BookingListViewLocalization.clearFilters) {
+                            onClearingFilters?()
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        Button("Clear filters") {
-                            // TODO
-                        }
                     }
                 }
             }
@@ -238,6 +258,8 @@ fileprivate enum BookingListViewLayout {
     static let emptyStateImageWidth: CGFloat = 67
     static let cornerRadius: CGFloat = 8
     static let defaultHeaderHeight: CGFloat = 98
+    static let bookingSummarySpacing: CGFloat = 2
+    static let bookingSummaryBadgeSpacing: CGFloat = 8
 }
 
 fileprivate enum BookingListViewLocalization {
@@ -247,8 +269,13 @@ fileprivate enum BookingListViewLocalization {
         comment: "Error message when fetching bookings fails"
     )
     static let emptySearchText = NSLocalizedString(
-        "bookingList.emptySearchText",
-        value: "We couldn't find any bookings with that name — try adjusting your search term to see more results.",
-        comment: "Message displayed when searching bookings by keyword yields no results."
+        "bookingList.emptySearchText.noDash",
+        value: "We couldn't find any bookings with that name. Try adjusting your search term to see more results.",
+        comment: "Message displayed when searching bookings by keyword yields no results. Version without a dash."
+    )
+    static let clearFilters = NSLocalizedString(
+        "bookingList.clearFilters",
+        value: "Clear filters",
+        comment: "Button to clear the filters on booking list"
     )
 }

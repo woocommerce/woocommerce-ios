@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct POSSettingsLocalCatalogDetailView: View {
-    // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
     private let viewModel: POSSettingsLocalCatalogViewModel
 
     init(viewModel: POSSettingsLocalCatalogViewModel) {
@@ -9,6 +8,7 @@ struct POSSettingsLocalCatalogDetailView: View {
     }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         NavigationStack {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(title: Localization.localCatalogTitle)
@@ -18,7 +18,9 @@ struct POSSettingsLocalCatalogDetailView: View {
                 ScrollView {
                     VStack(spacing: POSSpacing.medium) {
                         catalogStatus
-                        managingDataUsage
+                        if viewModel.deviceHasCellularCapability {
+                            managingDataUsage
+                        }
                         manualCatalogUpdate
                     }
                     .padding(.horizontal, POSPadding.medium)
@@ -29,102 +31,100 @@ struct POSSettingsLocalCatalogDetailView: View {
         .task {
             await viewModel.loadCatalogData()
         }
+        .posModal(item: $viewModel.catalogRefreshError) { error in
+            errorView(errorState: error.errorState)
+        }
     }
 }
 
 private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     var catalogStatus: some View {
-        VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.catalogStatus)
-
-            VStack(spacing: POSSpacing.medium) {
-                fieldRowView(label: Localization.catalogSize, value: viewModel.catalogSize)
-                fieldRowView(label: Localization.lastIncrementalUpdate, value: viewModel.lastIncrementalSyncDate)
-                fieldRowView(label: Localization.lastFullSync, value: viewModel.lastFullSyncDate)
+        POSInformationCard {
+            VStack(spacing: POSSpacing.small) {
+                POSInformationCardFieldRow(
+                    label: Localization.catalogSize,
+                    value: viewModel.catalogSize
+                )
+                POSInformationCardFieldRow(
+                    label: Localization.lastIncrementalSync,
+                    value: viewModel.lastIncrementalSyncDate
+                )
+                POSInformationCardFieldRow(
+                    label: Localization.lastFullSync,
+                    value: viewModel.lastFullSyncDate,
+                    showSeparator: false
+                )
             }
-            .padding(.bottom, POSPadding.medium)
-            .redacted(reason: viewModel.isLoading ? .placeholder : [])
-            .shimmering(active: viewModel.isLoading)
         }
+        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+        .shimmering(active: viewModel.isLoading)
     }
 
     @ViewBuilder
     var managingDataUsage: some View {
         @Bindable var viewModel = viewModel
         VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.managingDataUsage)
-
-            VStack(spacing: POSSpacing.medium) {
-                toggleRowView(label: Localization.allowFullSyncOnCellular, isOn: $viewModel.allowFullSyncOnCellular)
+            POSInformationCard {
+                POSInformationCardFieldRowWithToggle(
+                    label: Localization.managingDataUsage,
+                    value: Localization.allowSyncOnCellular,
+                    showSeparator: false,
+                    isOn: $viewModel.allowFullSyncOnCellular
+                )
             }
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
     var manualCatalogUpdate: some View {
         VStack(spacing: POSSpacing.none) {
-            sectionHeaderView(title: Localization.manualCatalogUpdate)
-
-            VStack(spacing: POSSpacing.medium) {
-                Text(Localization.manualUpdateInfo)
-                    .font(.posCaptionRegular)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Button(action: {
-                    Task {
-                        await viewModel.refreshCatalog()
-                    }
-                }) {
-                    Text(Localization.refreshCatalog)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: viewModel.isRefreshingCatalog))
+            POSInformationCard {
+                POSInformationCardFieldRow(
+                    label: Localization.manualCatalogUpdate,
+                    value: Localization.manualUpdateInfo,
+                    showSeparator: false,
+                    labelStyle: .bold,
+                    buttonTitle: Localization.updateCatalog,
+                    buttonAction: {
+                        Task {
+                            await viewModel.refreshCatalog()
+                        }
+                    },
+                    buttonStyle: .primary,
+                    isLoading: viewModel.isRefreshingCatalog
+                )
             }
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.bottom, POSPadding.medium)
         }
     }
 
     @ViewBuilder
-    func sectionHeaderView(title: String) -> some View {
-        ZStack {
-            Style.backgroundColor
-            Text(title)
-                .font(.posBodyLargeBold)
-                .foregroundColor(.posOnSurface)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.vertical, POSPadding.small)
+    func errorView(errorState: PointOfSaleErrorState) -> some View {
+        VStack(spacing: POSSpacing.xxLarge) {
+            POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
+                viewModel.catalogRefreshError = nil
+            }
+
+            POSErrorView(viewModel: errorViewModel(errorState: errorState))
         }
+        .padding(POSPadding.xLarge)
+        .frame(maxWidth: Constants.errorModalMaxWidth)
     }
 
-    @ViewBuilder
-    func fieldRowView(label: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            Text(label)
-                .font(.posBodyMediumRegular())
-            Text(value)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(.secondary)
+    func errorViewModel(errorState: PointOfSaleErrorState) -> POSErrorViewModel {
+        let retryButton = POSErrorButtonViewModel(title: Localization.errorRetryButtonTitle,
+                                                  buttonStyle: POSFilledButtonStyle(size: .normal)) {
+            Task {
+                await viewModel.refreshCatalog()
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
+        let cancelButton = POSErrorButtonViewModel(title: Localization.errorCancelButtonTitle,
+                                                   buttonStyle: POSOutlinedButtonStyle(size: .normal)) {
+            viewModel.catalogRefreshError = nil
+        }
+        return POSErrorViewModel(error: errorState, primaryButton: retryButton, secondaryButton: cancelButton)
     }
 
-    @ViewBuilder
-    func toggleRowView(label: String, isOn: Binding<Bool>) -> some View {
-        HStack {
-            Text(label)
-                .font(.posBodyMediumRegular())
-            Spacer()
-            Toggle("", isOn: isOn)
-                .toggleStyle(SwitchToggleStyle())
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, POSPadding.medium)
-    }
 }
 
 private extension POSSettingsLocalCatalogDetailView {
@@ -134,66 +134,74 @@ private extension POSSettingsLocalCatalogDetailView {
 
     enum Localization {
         static let localCatalogTitle = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.title",
-            value: "Catalog Settings",
+            "posSettingsLocalCatalogDetailView.title.1",
+            value: "Product catalog",
             comment: "Navigation title for the local catalog details in POS settings."
         )
 
-        static let catalogStatus = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.catalogStatus",
-            value: "Catalog Status",
-            comment: "Section title for catalog status in Point of Sale settings."
-        )
-
         static let managingDataUsage = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.managingDataUsage.1",
-            value: "Managing Data Usage",
+            "posSettingsLocalCatalogDetailView.managingDataUsage.2",
+            value: "Cellular data",
             comment: "Section title for managing data usage in Point of Sale settings."
         )
 
-        static let lastIncrementalUpdate = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.lastIncrementalSync",
-            value: "Last update",
-            comment: "Label for last incremental update field in Point of Sale settings."
+        static let lastIncrementalSync = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.lastIncrementalSync.1",
+            value: "Last incremental sync",
+            comment: "Label for last incremental sync field in Point of Sale settings."
         )
 
         static let lastFullSync = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.lastFullSync.1",
-            value: "Last full update",
+            "posSettingsLocalCatalogDetailView.lastFullSync.2",
+            value: "Last full sync",
             comment: "Label for last full sync field in Point of Sale settings."
         )
 
         static let catalogSize = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.catalogSize",
-            value: "Catalog size",
+            "posSettingsLocalCatalogDetailView.catalogSize.1",
+            value: "Size",
             comment: "Label for catalog size field in Point of Sale settings."
         )
 
-
-        static let allowFullSyncOnCellular = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1",
-            value: "Allow full update on cellular data",
-            comment: "Label for allow full sync on cellular data toggle in Point of Sale settings."
+        static let allowSyncOnCellular = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.allowSyncOnCellular.2",
+            value: "Allow sync using cellular data",
+            comment: "Label for allow sync on cellular data toggle in Point of Sale settings."
         )
 
-
         static let manualCatalogUpdate = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.manualCatalogUpdate",
-            value: "Manual Catalog Update",
+            "posSettingsLocalCatalogDetailView.manualCatalogUpdate.1",
+            value: "Catalog update",
             comment: "Section title for manual catalog update in Point of Sale settings."
         )
 
         static let manualUpdateInfo = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.manualUpdateInfo",
-            value: "Use this refresh only when something seems off - POS keeps data current automatically.",
-            comment: "Info text explaining when to use manual catalog update."
+            "posSettingsLocalCatalogDetailView.manualUpdateInfo.1",
+            value: "Update the catalog manually",
+            comment: "Info text explaining the usage of the manual catalog update button."
         )
 
-        static let refreshCatalog = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.refreshCatalog",
-            value: "Refresh catalog",
-            comment: "Button text for refreshing the catalog manually."
+        static let updateCatalog = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalog",
+            value: "Update catalog",
+            comment: "Button text for updating the catalog manually."
         )
+
+        static let errorRetryButtonTitle = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title",
+            value: "Retry",
+            comment: "Button text for retrying a refresh after it fails"
+        )
+
+        static let errorCancelButtonTitle = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title",
+            value: "Cancel",
+            comment: "Button text for closing an error after a refresh fails"
+        )
+    }
+
+    enum Constants {
+        static let errorModalMaxWidth: CGFloat = 832
     }
 }
 

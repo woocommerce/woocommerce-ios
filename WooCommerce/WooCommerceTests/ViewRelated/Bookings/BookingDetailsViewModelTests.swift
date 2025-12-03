@@ -211,6 +211,47 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(customerContent.billingAddressText, expectedAddress)
     }
 
+    func test_customer_content_includes_customer_note() {
+        // Given
+        let billingAddress = Address.fake().copy(
+            firstName: "Alice",
+            lastName: "Johnson",
+            address1: "456 Main St",
+            city: "Springfield",
+            state: "IL",
+            postcode: "62701",
+            country: "US"
+        )
+        let note = "Please ring the bell twice"
+        let customerInfo = BookingCustomerInfo(billingAddress: billingAddress, note: note)
+        let orderInfo = BookingOrderInfo(
+            statusKey: "confirmed",
+            paymentInfo: nil,
+            customerInfo: customerInfo,
+            productInfo: nil
+        )
+        let booking = Booking.fake().copy(orderInfo: orderInfo)
+
+        // When
+        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+
+        // Then
+        let customerSection = viewModel.sections.first { section in
+            if case .customer = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let customerSection = customerSection,
+              case let .customer(customerContent) = customerSection.content else {
+            XCTFail("Customer section not found")
+            return
+        }
+
+        XCTAssertEqual(customerContent.noteText, note)
+    }
+
     func test_navigation_title_includes_booking_id() {
         // Given
         let booking = Booking.fake().copy(bookingID: 12345)
@@ -308,7 +349,6 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
         XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Checked-in")
-        XCTAssertEqual(headerContent.bookingStatus.localizedTitle, "Paid")
     }
 
     func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {

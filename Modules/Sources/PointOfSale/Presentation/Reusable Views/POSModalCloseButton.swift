@@ -5,28 +5,37 @@ extension View {
         action: @escaping (() -> Void),
         accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel) -> some View {
         self.modifier(
-            POSModalCloseButton(
+            POSModalCloseButtonModifier(
                 closeAction: action,
                 accessibilityLabel: accessibilityLabel)
             )
     }
 }
 
-struct POSModalCloseButton: ViewModifier {
+struct POSModalCloseButton: View {
+    let accessibilityLabel: String
+    let closeAction: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+            Button(action: closeAction, label: {
+                Text(Image(systemName: "xmark"))
+                    .font(.posButtonSymbolMedium)
+            })
+            .foregroundColor(Color.posOnSurface)
+            .accessibilityLabel(accessibilityLabel)
+        }
+    }
+}
+
+struct POSModalCloseButtonModifier: ViewModifier {
     let closeAction: () -> Void
     let accessibilityLabel: String
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
-            HStack {
-                Spacer()
-                Button(action: closeAction, label: {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolMedium)
-                })
-                .foregroundColor(Color.posOnSurface)
-                .accessibilityLabel(accessibilityLabel)
-            }
+            POSModalCloseButton(accessibilityLabel: accessibilityLabel, closeAction: closeAction)
 
             Spacer()
 

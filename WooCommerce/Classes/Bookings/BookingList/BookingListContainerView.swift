@@ -19,10 +19,10 @@ struct BookingListContainerView: View {
         BookingListView(
             viewModel: viewModel.listViewModel(for: viewModel.selectedTab),
             searchViewModel: viewModel.searchViewModel(for: viewModel.selectedTab),
-            selectedBooking: $selectedBooking
-        ) {
-            headerView
-        }
+            selectedBooking: $selectedBooking,
+            header: { headerView },
+            onClearingFilters: { viewModel.clearFilters() }
+        )
         .navigationTitle(Localization.viewTitle)
         .if(isSearching, transform: { view in
             view.searchable(text: $viewModel.searchQuery,

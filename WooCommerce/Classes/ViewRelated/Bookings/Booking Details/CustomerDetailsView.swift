@@ -13,6 +13,7 @@ extension BookingDetailsView {
             case email(String)
             case phone(String)
             case billingAddress(String)
+            case note(String)
         }
 
         private var rows: [Row] {
@@ -28,6 +29,9 @@ extension BookingDetailsView {
             }
             if let address = content.billingAddressText, !address.isEmpty {
                 result.append(.billingAddress(address))
+            }
+            if let note = content.noteText, !note.isEmpty {
+                result.append(.note(note))
             }
             return result
         }
@@ -56,6 +60,8 @@ extension BookingDetailsView {
                 phoneView(with: phoneText)
             case .billingAddress(let billingAddressText):
                 billingAddressView(with: billingAddressText)
+            case .note(let noteText):
+                noteView(with: noteText)
             }
         }
 
@@ -136,6 +142,21 @@ extension BookingDetailsView {
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
         }
+
+        private func noteView(with noteText: String) -> some View {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(Localization.noteRowTitle)
+                        .rowTextStyle()
+                    Text(noteText)
+                        .font(TextFont.bodyMedium)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+            }
+            .padding(.vertical, Layout.rowTextVerticalPadding)
+        }
     }
 }
 
@@ -176,6 +197,12 @@ private extension BookingDetailsView.CustomerDetailsView {
             "BookingDetailsView.customer.billingAddress.title",
             value: "Billing address",
             comment: "Billing address row title in customer section in booking details view."
+        )
+
+        static let noteRowTitle = NSLocalizedString(
+            "BookingDetailsView.customer.note.title",
+            value: "Note",
+            comment: "Customer note row title in customer section in booking details view."
         )
     }
 }

@@ -78,7 +78,7 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func unregisterForRemoteNotifications() {
+    func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
 
     }
 

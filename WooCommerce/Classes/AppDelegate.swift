@@ -57,9 +57,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let stores = ServiceLocator.stores
         let analytics = ServiceLocator.analytics
         let pushNotesManager = ServiceLocator.pushNotesManager
-        stores.initializeAfterDependenciesAreInitialized()
-        setupAnalytics(analytics)
 
+        ServiceLocator.authenticationManager.initialize()
+        stores.initializeAfterDependenciesAreInitialized()
+
+        setupAnalytics(analytics)
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
@@ -224,7 +226,7 @@ extension AppDelegate {
         ZendeskProvider.shared.initialize()
     }
 
-    /// Sets up the WordPress Authenticator.
+    /// Sets up app analytics.
     ///
     func setupAnalytics(_ analytics: Analytics) {
         analytics.initialize()

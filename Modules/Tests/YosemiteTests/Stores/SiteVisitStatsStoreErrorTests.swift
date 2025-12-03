@@ -16,7 +16,7 @@ class SiteStatsStoreErrorTests: XCTestCase {
     }
 
     func testOtherDotcomError() {
-        let remoteError = DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected")
+        let remoteError = DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected", data: nil)
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .unknown)
     }

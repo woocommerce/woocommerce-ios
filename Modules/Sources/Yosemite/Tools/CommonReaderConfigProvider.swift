@@ -66,9 +66,9 @@ final public class CommonReaderConfigProvider: CommonReaderConfigProviding {
 private extension CardReaderConfigError {
     init?(error: Error) {
         switch error {
-        case DotcomError.unknown(code: "store_address_is_incomplete", let message):
+        case DotcomError.unknown(code: "store_address_is_incomplete", let message, _):
             self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
-        case DotcomError.unknown(code: "postal_code_invalid", _):
+        case DotcomError.unknown(code: "postal_code_invalid", _, _):
             self = .invalidPostalCode
         case NetworkError.unacceptableStatusCode(_, let responseData):
             guard let responseData,

@@ -34,7 +34,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
 
     /// Unknown: Represents an unmapped remote error. Capisce?
     ///
-    case unknown(code: String, message: String?)
+    case unknown(code: String, message: String?, data: [String: AnyDecodable]?)
 
     /// Stats error cases - API documentation of possible errors:
     /// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/
@@ -55,6 +55,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let error = try container.decode(String.self, forKey: .error)
         let message = try container.decodeIfPresent(String.self, forKey: .message)
+        let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
 
         switch error {
         case Constants.invalidToken:
@@ -75,10 +76,9 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
             Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
             self = .jetpackNotConnected
         default:
-            self = .unknown(code: error, message: message)
+            self = .unknown(code: error, message: message, data: data)
         }
     }
-
 
     /// Constants for Possible Error Identifiers
     ///
@@ -97,6 +97,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     private enum CodingKeys: String, CodingKey {
         case error
         case message
+        case data
     }
 
     /// Possible Error Messages
@@ -134,7 +135,7 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
         case .jetpackNotConnected:
             return NSLocalizedString("Jetpack Not Connected", comment: "WordPress.com error thrown when Jetpack is not connected.")
-        case .unknown(let code, let message):
+        case .unknown(let code, let message, _):
             let theMessage = message ?? String()
             let messageFormat = NSLocalizedString(
                 "Dotcom Error: [%1$@] %2$@",
@@ -157,7 +158,7 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
         (.statsModuleDisabled, .statsModuleDisabled),
         (.jetpackNotConnected, .jetpackNotConnected):
         return true
-    case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
+    case let (.unknown(codeLHS, _, _), .unknown(codeRHS, _, _)):
         return codeLHS == codeRHS
     default:
         return false

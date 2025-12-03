@@ -529,7 +529,7 @@ struct PointOfSaleOrderControllerTests {
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
         let errorMessage = "Invalid coupon code"
-        mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage)
+        mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage, data: nil)
 
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
         var orderStateAppendTask: Task<Void, Never>? = nil

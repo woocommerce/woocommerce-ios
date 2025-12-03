@@ -582,7 +582,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssert(viewStorage.countObjects(ofType: Storage.WCPayCharge.self, matching: nil) == 2)
 
         network.simulateError(requestUrlSuffix: "payments/charges/\(sampleErrorChargeID)",
-                              error: DotcomError.unknown(code: "beep", message: "boop"))
+                              error: DotcomError.unknown(code: "beep", message: "boop", data: nil))
 
         let _: Result<Yosemite.WCPayCharge, Error> = waitFor { [self] promise in
             let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: self.sampleSiteID, chargeID: self.sampleErrorChargeID, onCompletion: { result in

@@ -492,7 +492,7 @@ public enum PackageCreationError: Error, Equatable {
             return
         }
         switch dotcomError {
-        case .unknown(let code, _):
+        case .unknown(let code, _, _):
             guard let errorCode = ErrorCode(rawValue: code) else {
                 self = .unknown(error: dotcomError.toAnyError)
                 return

@@ -104,7 +104,8 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         let expectedError = DotcomError
             .unknown(code: "duplicate_custom_package_names_of_existing_packages",
-                     message: "At least one of the new custom packages has the same name as existing packages.")
+                     message: "At least one of the new custom packages has the same name as existing packages.",
+                     data: nil)
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 

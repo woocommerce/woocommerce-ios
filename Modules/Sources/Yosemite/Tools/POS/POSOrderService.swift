@@ -152,9 +152,11 @@ private extension POSOrderService {
         }()
 
         // Check for DotcomError with product/variation validation error codes
-        if case .unknown(let code, _) = underlyingError as? DotcomError {
+        if case .unknown(let code, _, let data) = underlyingError as? DotcomError {
             if isProductValidationError(code: code) {
-                // DotcomError doesn't include data field, fall back to generic error
+                if let variationID = extractVariationID(from: data) {
+                    return createMissingProductInfo(forVariationID: variationID, cart: cart)
+                }
                 return extractMissingProductsFromCart()
             }
         }

@@ -58,6 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let analytics = ServiceLocator.analytics
         let pushNotesManager = ServiceLocator.pushNotesManager
 
+        /// This is important to initialize early as there are a few code points where the authenticator is used.
         ServiceLocator.authenticationManager.initialize()
         stores.initializeAfterDependenciesAreInitialized()
 

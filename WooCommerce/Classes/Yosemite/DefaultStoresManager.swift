@@ -7,7 +7,7 @@ import class Networking.WordPressOrgNetwork
 import KeychainAccess
 import class WidgetKit.WidgetCenter
 import Experiments
-import WordPressAuthenticator
+import class WordPressAuthenticator.WordPressComBlogService
 import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - DefaultStoresManager
@@ -765,19 +765,17 @@ private extension DefaultStoresManager {
                 self.updateAndReloadWidgetInformation(with: site.siteID)
                 /// Trigger the `v1.1/connect/site-info` API to get information about
                 /// the site's Jetpack status and whether it's a WPCom site.
-                WordPressAuthenticator.fetchSiteInfo(for: url) { [weak self] result in
+                let service = WordPressComBlogService()
+                service.fetchUnauthenticatedSiteInfoForAddress(for: url, success: { [weak self] info in
                     guard let self else { return }
-                    switch result {
-                    case .success(let info):
-                        let updatedSite = site.copy(isJetpackThePluginInstalled: info.hasJetpack,
-                                                    isJetpackConnected: info.isJetpackConnected,
-                                                    isWordPressComStore: info.isWPCom)
-                        self.sessionManager.defaultSite = updatedSite
-                        self.updateAndReloadWidgetInformation(with: site.siteID)
-                    case .failure(let error):
-                        DDLogError("⛔️ Cannot fetch generic site info: \(error)")
-                    }
-                }
+                    let updatedSite = site.copy(isJetpackThePluginInstalled: info.hasJetpack,
+                                                isJetpackConnected: info.isJetpackConnected,
+                                                isWordPressComStore: info.isWPCom)
+                    sessionManager.defaultSite = updatedSite
+                    updateAndReloadWidgetInformation(with: site.siteID)
+                }, failure: { error in
+                    DDLogError("⛔️ Cannot fetch generic site info: \(error)")
+                })
             case .failure(let error):
                 DDLogError("⛔️ Cannot fetch WordPress site info: \(error)")
             }

@@ -10,7 +10,7 @@ class MockPointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
         }
 
         return .simpleProduct(POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Scanned Item",
             formattedPrice: "$10.00",
             productID: 1,

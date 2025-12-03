@@ -48,11 +48,12 @@ import protocol Yosemite.POSItemFetchAnalyticsTracking
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
+import struct Yosemite.POSItemIdentifier
 
 // MARK: - PreviewProvider helpers
 //
 struct POSProductPreview: POSOrderableItem, Equatable {
-    let id: UUID
+    let id: POSItemIdentifier
     let name: String
     let formattedPrice: String
     var productImageSource: String?
@@ -86,7 +87,7 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
     }
 
     func providePointOfSaleItem() -> POSOrderableItem {
-        POSProductPreview(id: UUID(),
+        POSProductPreview(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
@@ -168,7 +169,7 @@ private var mockItems: [POSItem] {
         mockSimpleProductItem(id: 3, price: "3.00"),
         .variableParentProduct(
             .init(
-                id: .init(),
+                id: POSItemIdentifier(underlyingType: .product, itemID: 5),
                 name: "Variable product 1",
                 productImageSource: nil,
                 productID: 5
@@ -179,7 +180,7 @@ private var mockItems: [POSItem] {
 }
 
 private func mockSimpleProductItem(id: Int, price: String) -> POSItem {
-    .simpleProduct(POSSimpleProduct(id: UUID(),
+    .simpleProduct(POSSimpleProduct(id: POSItemIdentifier(underlyingType: .product, itemID: Int64(id)),
                                     name: "Product \(id)",
                                     formattedPrice: "$\(price)",
                                     productID: Int64(id),
@@ -191,19 +192,19 @@ private func mockSimpleProductItem(id: Int, price: String) -> POSItem {
 
 private var mockVariationItems: [POSItem] {
     [
-        .variation(.init(id: UUID(),
+        .variation(.init(id: POSItemIdentifier(underlyingType: .variation, itemID: 256),
                          name: "Variation 1",
                          formattedPrice: "$1.00",
                          price: "1.00",
                          productID: 134,
                          variationID: 256,
                          parentProductName: "Variable product")),
-        .variation(.init(id: UUID(),
+        .variation(.init(id: POSItemIdentifier(underlyingType: .variation, itemID: 257),
                          name: "Variation 2",
                          formattedPrice: "$2.00",
                          price: "2.00",
                          productID: 134,
-                         variationID: 256,
+                         variationID: 257,
                          parentProductName: "Variable product")),
     ]
 }

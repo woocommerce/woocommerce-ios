@@ -3,6 +3,7 @@ import Foundation
 @testable import PointOfSale
 import WooFoundation
 import enum Yosemite.POSItem
+import struct Yosemite.POSItemIdentifier
 
 private enum AnalyticsKeys {
     static let source = "source"
@@ -158,7 +159,7 @@ struct POSItemActionHandlerFactoryTests {
 }
 
 private func makeProductItem() -> POSItem {
-    return .simpleProduct(.init(id: UUID(),
+    return .simpleProduct(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                 name: "Test",
                                 formattedPrice: "$1.00",
                                 productID: 1,
@@ -169,12 +170,12 @@ private func makeProductItem() -> POSItem {
 }
 
 private func makeCouponItem() -> POSItem {
-    return .coupon(.init(id: UUID(), code: "DISCOUNT!"))
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "DISCOUNT!"))
 }
 
 private func makeVariationItem() -> POSItem {
     return .variation(.init(
-        id: .init(),
+        id: POSItemIdentifier(underlyingType: .variation, itemID: 1),
         name: "Test",
         formattedPrice: "$2.00",
         price: "2",

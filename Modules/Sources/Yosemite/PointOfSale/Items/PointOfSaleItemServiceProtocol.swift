@@ -7,7 +7,7 @@ public enum POSItem: Equatable, Identifiable, Hashable {
     case variation(POSVariation)
     case coupon(POSCoupon)
 
-    public var id: UUID {
+    public var id: POSItemIdentifier {
         switch self {
         case .simpleProduct(let product):
             return product.id
@@ -26,7 +26,7 @@ public enum POSItem: Equatable, Identifiable, Hashable {
 /// This may need to become less specific in future, e.g. we currently convert it to a product input, but
 /// other order items might be added as fees or similar. at that point, we will need a different function requirement here.
 public protocol POSOrderableItem {
-    var id: UUID { get }
+    var id: POSItemIdentifier { get }
     var name: String { get }
     var productImageSource: String? { get }
     var formattedPrice: String { get }

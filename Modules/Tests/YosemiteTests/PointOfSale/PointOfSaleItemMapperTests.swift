@@ -186,7 +186,7 @@ struct PointOfSaleItemMapperTests {
 
     private static func createParentProduct() -> POSVariableParentProduct {
         POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent Product",
             productImageSource: nil,
             productID: 125,

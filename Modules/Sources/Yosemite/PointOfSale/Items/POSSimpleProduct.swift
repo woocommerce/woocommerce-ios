@@ -5,7 +5,7 @@ import Networking
 
 public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     // POSOrderableItem
-    public let id: UUID
+    public let id: POSItemIdentifier
     public let name: String
     public let formattedPrice: String
     public var productImageSource: String?
@@ -24,7 +24,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
         return ProductStockStatus(rawValue: stockStatusKey)
     }
 
-    public init(id: UUID,
+    public init(id: POSItemIdentifier,
                 name: String,
                 formattedPrice: String,
                 productImageSource: String? = nil,

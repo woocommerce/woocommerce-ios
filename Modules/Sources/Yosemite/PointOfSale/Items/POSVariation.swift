@@ -2,7 +2,7 @@ import Foundation
 
 public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Hashable, Identifiable {
     // Identifiable & POSOrderableItem
-    public let id: UUID
+    public let id: POSItemIdentifier
 
     // POSOrderableItem
     public let name: String
@@ -17,7 +17,7 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
     // Variation specific
     public let parentProductName: String
 
-    public init(id: UUID,
+    public init(id: POSItemIdentifier,
                 name: String,
                 formattedPrice: String,
                 price: String,

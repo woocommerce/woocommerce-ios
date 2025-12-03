@@ -90,7 +90,7 @@ private extension CouponCardView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             CouponCardView(coupon: .init(
-                id: .init(),
+                id: .init(underlyingType: .coupon, itemID: 1),
                 code: "Coupon-123",
                 summary: "10% off - All Products"
             ))
@@ -101,7 +101,7 @@ private extension CouponCardView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             CouponCardView(coupon: .init(
-                id: .init(),
+                id: .init(underlyingType: .coupon, itemID: 2),
                 code: "Old-Coupon-123",
                 summary: "10% off - All Products",
                 dateExpires: Calendar.current.date(byAdding: .month, value: -1, to: Date())

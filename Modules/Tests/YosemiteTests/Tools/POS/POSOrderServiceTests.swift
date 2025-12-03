@@ -66,7 +66,7 @@ struct POSOrderServiceTests {
         // Given
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
-            coupons: [.init(id: UUID(), code: "SAVE10")]
+            coupons: [.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10")]
         )
 
         // When
@@ -84,9 +84,9 @@ struct POSOrderServiceTests {
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
             coupons: [
-                .init(id: UUID(), code: "SAVE10"),
-                .init(id: UUID(), code: "FREESHIP"),
-                .init(id: UUID(), code: "EXTRA5")
+                .init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10"),
+                .init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 2), code: "FREESHIP"),
+                .init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 3), code: "EXTRA5")
             ]
         )
 
@@ -262,7 +262,7 @@ struct POSOrderServiceTests {
         let cart = POSCart(items: [
             POSCartItem(
                 item: POSVariation(
-                    id: UUID(),
+                    id: POSItemIdentifier(underlyingType: .variation, itemID: 500),
                     name: "Large",
                     formattedPrice: "$20",
                     price: "20",
@@ -296,7 +296,7 @@ struct POSOrderServiceTests {
         let cart = POSCart(items: [
             POSCartItem(
                 item: POSVariation(
-                    id: UUID(),
+                    id: POSItemIdentifier(underlyingType: .variation, itemID: 500),
                     name: "Small",
                     formattedPrice: "$15",
                     price: "15",
@@ -308,7 +308,7 @@ struct POSOrderServiceTests {
             ),
             POSCartItem(
                 item: POSVariation(
-                    id: UUID(),
+                    id: POSItemIdentifier(underlyingType: .variation, itemID: 501),
                     name: "Large",
                     formattedPrice: "$20",
                     price: "20",
@@ -374,7 +374,7 @@ struct POSOrderServiceTests {
         let cart = POSCart(items: [
             POSCartItem(
                 item: POSVariation(
-                    id: UUID(),
+                    id: POSItemIdentifier(underlyingType: .variation, itemID: 500),
                     name: "Large",
                     formattedPrice: "$20",
                     price: "20",
@@ -514,7 +514,7 @@ private func makePOSCartItem(
     productID: Int64,
     quantity: Decimal) -> POSCartItem {
         return POSCartItem(
-            item: POSSimpleProduct(id: UUID(),
+            item: POSSimpleProduct(id: POSItemIdentifier(underlyingType: .product, itemID: productID),
                                    name: "",
                                    formattedPrice: "",
                                    productID: productID,

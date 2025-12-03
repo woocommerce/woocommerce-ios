@@ -22,7 +22,7 @@ final class PointOfSaleItemServiceScreenshotMock: Yosemite.PointOfSaleItemServic
 
     private static func makeScreenshotMockItems(mockResourceUrlHost: String) -> [Yosemite.POSItem] {
         let product1 = Yosemite.POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Rose Gold Shades",
             formattedPrice: "$35.00",
             productImageSource: mockResourceUrlHost + "rose-gold-shades",
@@ -34,7 +34,7 @@ final class PointOfSaleItemServiceScreenshotMock: Yosemite.PointOfSaleItemServic
         )
 
         let product2 = Yosemite.POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 2),
             name: "Black Coral Shades",
             formattedPrice: "$45.00",
             productImageSource: mockResourceUrlHost + "black-coral-shades",
@@ -46,7 +46,7 @@ final class PointOfSaleItemServiceScreenshotMock: Yosemite.PointOfSaleItemServic
         )
 
         let product3 = Yosemite.POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 3),
             name: "Akoya Pearl Shades",
             formattedPrice: "$50.00",
             productImageSource: mockResourceUrlHost + "akoya-pearl-shades",
@@ -58,7 +58,7 @@ final class PointOfSaleItemServiceScreenshotMock: Yosemite.PointOfSaleItemServic
         )
 
         let product4 = Yosemite.POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 4),
             name: "Malaya Shades",
             formattedPrice: "$40.00",
             productImageSource: mockResourceUrlHost + "malaya-shades",

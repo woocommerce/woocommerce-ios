@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 @testable import PointOfSale
+import struct Yosemite.POSItemIdentifier
 
 struct CartViewHelperTests {
     let sut = CartViewHelper()
@@ -114,7 +115,7 @@ struct CartViewHelperTests {
 
     @Test func couponRowState_building_stage_returns_idle() async throws {
         // Given
-        let coupon = Cart.CouponItem(id: UUID(), code: "TEST10", summary: "")
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
         let orderState = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
             cartTotal: "$10.00",
             orderTotal: "$12.00",
@@ -129,7 +130,7 @@ struct CartViewHelperTests {
 
     @Test func couponRowState_finalizing_and_syncing_returns_validating() async throws {
         // Given
-        let coupon = Cart.CouponItem(id: UUID(), code: "TEST10", summary: "")
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
 
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
@@ -140,7 +141,7 @@ struct CartViewHelperTests {
     @Test func couponRowState_finalizing_and_loaded_with_matching_coupon_returns_valid() async throws {
         // Given
         let couponCode = "TEST10"
-        let coupon = Cart.CouponItem(id: UUID(), code: couponCode, summary: "")
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")
         let couponTotal = PointOfSaleCouponTotal(code: couponCode, total: "10.00")
         let orderTotals = PointOfSaleOrderTotals(
             cartTotal: "$10.00",
@@ -157,7 +158,7 @@ struct CartViewHelperTests {
 
     @Test func couponRowState_finalizing_and_loaded_with_no_matching_coupon_returns_idle() async throws {
         // Given
-        let coupon = Cart.CouponItem(id: UUID(), code: "TEST10", summary: "")
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
         let orderTotals = PointOfSaleOrderTotals(
             cartTotal: "$10.00",
             orderTotal: "$12.00",
@@ -173,7 +174,7 @@ struct CartViewHelperTests {
 
     @Test func couponRowState_finalizing_and_invalid_coupon_error_returns_invalid() async throws {
         // Given
-        let coupon = Cart.CouponItem(id: UUID(), code: "TEST10", summary: "")
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
 
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,
@@ -183,7 +184,7 @@ struct CartViewHelperTests {
 
     @Test func couponRowState_finalizing_and_other_error_returns_idle() async throws {
         // Given
-        let coupon = Cart.CouponItem(id: UUID(), code: "TEST10", summary: "")
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
 
         // When, Then
         #expect(sut.couponRowState(orderStage: .finalizing,

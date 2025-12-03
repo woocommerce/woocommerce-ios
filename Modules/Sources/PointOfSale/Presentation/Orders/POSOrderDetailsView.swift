@@ -376,7 +376,7 @@ private extension POSOrderDetailsView {
 
 // MARK: - Actions
 private extension POSOrderDetailsView {
-    enum POSAction: Identifiable, CaseIterable {
+    enum OrderDetailsAction: Identifiable, CaseIterable {
         case issueRefund
         case emailReceipt
 
@@ -414,7 +414,7 @@ private extension POSOrderDetailsView {
         }
     }
 
-    func handler(for action: POSAction) -> @MainActor () -> Void {
+    func handler(for action: OrderDetailsAction) -> @MainActor () -> Void {
         switch action {
         case .emailReceipt:
             return {
@@ -426,14 +426,14 @@ private extension POSOrderDetailsView {
         }
     }
 
-    var availableActions: [POSAction] {
-        POSAction.allCases
+    var availableActions: [OrderDetailsAction] {
+        OrderDetailsAction.allCases
             .filter { $0.isAvailable(for: order, flags: featureFlags) }
             .sorted { $0.priority > $1.priority }
     }
 
     @ViewBuilder
-    func actionsSection(actions: [POSAction]) -> some View {
+    func actionsSection(actions: [OrderDetailsAction]) -> some View {
         if actions.isEmpty {
             EmptyView()
         } else {

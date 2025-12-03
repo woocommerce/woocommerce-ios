@@ -1,6 +1,5 @@
 import Foundation
-import Networking
-import Codegen
+import struct Networking.PagedItems
 
 public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
@@ -19,24 +18,6 @@ public enum POSItem: Equatable, Identifiable, Hashable {
         case .coupon(let coupon):
             return coupon.id
         }
-    }
-}
-
-public struct POSItemIdentifier: Hashable, Sendable, GeneratedCopiable, GeneratedFakeable {
-    public let underlyingType: UnderlyingType
-    public let itemID: Int64
-
-    public init(underlyingType: UnderlyingType, itemID: Int64) {
-        self.underlyingType = underlyingType
-        self.itemID = itemID
-    }
-
-    public enum UnderlyingType: Sendable, GeneratedCopiable, GeneratedFakeable {
-        case product
-        case variation
-        case coupon
-        case loading
-        case error
     }
 }
 

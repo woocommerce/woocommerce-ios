@@ -253,10 +253,22 @@ final class PointOfSaleObservableItemsControllerTests {
         let coordinator = MockPOSCatalogSyncCoordinator()
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
-        let parent1 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let parent1 = POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+            name: "Parent 1",
+            productImageSource: nil,
+            productID: 100,
+            allAttributes: []
+        )
         let parentItem1 = POSItem.variableParentProduct(parent1)
 
-        let parent2 = POSVariableParentProduct(id: POSItemIdentifier(underlyingType: .product, itemID: 1), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+        let parent2 = POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+            name: "Parent 2",
+            productImageSource: nil,
+            productID: 200,
+            allAttributes: []
+        )
         let parentItem2 = POSItem.variableParentProduct(parent2)
 
         // When: Load parent 1 variations

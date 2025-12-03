@@ -431,12 +431,24 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync to set up the order
-        await sut.syncOrder(for: Cart(purchasableItems: [cartItem], coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [cartItem],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         mockOrderService.syncOrderWasCalled = false
 
         // When - sync with same items and coupons
-        await sut.syncOrder(for: Cart(purchasableItems: [cartItem], coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [cartItem],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == false)
@@ -456,12 +468,24 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync
-        await sut.syncOrder(for: Cart(purchasableItems: [cartItem], coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: initialCouponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [cartItem],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: initialCouponCode, summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         mockOrderService.syncOrderWasCalled = false
 
         // When - sync with same items but different coupon
-        await sut.syncOrder(for: Cart(purchasableItems: [cartItem], coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 2), code: "DIFFERENT20", summary: "")]), retryHandler: {})
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [cartItem],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 2), code: "DIFFERENT20", summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == true)
@@ -481,7 +505,13 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync with coupon
-        await sut.syncOrder(for: Cart(purchasableItems: [cartItem], coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [cartItem],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: couponCode, summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         mockOrderService.syncOrderWasCalled = false
 
@@ -518,9 +548,13 @@ struct PointOfSaleOrderControllerTests {
             observeOrderState()
 
             // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()],
-                                           coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]),
-                                retryHandler: {})
+            await sut.syncOrder(
+                for: Cart(
+                    purchasableItems: [makeItem()],
+                    coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
+                ),
+                retryHandler: {}
+            )
         }
 
         await orderStateAppendTask?.value
@@ -566,9 +600,13 @@ struct PointOfSaleOrderControllerTests {
             observeOrderState()
 
             // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()],
-                                           coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]),
-                                retryHandler: {})
+            await sut.syncOrder(
+                for: Cart(
+                    purchasableItems: [makeItem()],
+                    coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
+                ),
+                retryHandler: {}
+            )
         }
 
         await orderStateAppendTask?.value

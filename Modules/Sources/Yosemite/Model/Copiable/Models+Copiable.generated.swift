@@ -5,7 +5,6 @@ import Foundation
 import Networking
 import WooFoundation
 import enum NetworkingCore.OrderStatusEnum
-import struct Networking.PagedItems
 import struct NetworkingCore.Address
 import struct NetworkingCore.MetaData
 import struct NetworkingCore.Order

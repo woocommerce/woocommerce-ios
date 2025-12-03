@@ -1,5 +1,5 @@
 import Foundation
-import struct Networking.PagedItems
+import Networking
 import Codegen
 
 public enum POSItem: Equatable, Identifiable, Hashable {

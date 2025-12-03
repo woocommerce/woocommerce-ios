@@ -294,7 +294,7 @@ final class SiteRemoteTests: XCTestCase {
                                                                        category: "clothing_and_accessories",
                                                                        countryCode: "US"))
         }, errorAssert: { error in
-            (error as? DotcomError) == .unauthorized
+            (error as? DotcomError) == .unauthorized()
         })
     }
 

@@ -134,7 +134,7 @@ final class ProductStoreTests: XCTestCase {
     func test_addProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
-        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
@@ -236,7 +236,7 @@ final class ProductStoreTests: XCTestCase {
     func test_deleteProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
-        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action

@@ -4,13 +4,13 @@ import XCTest
 
 class SiteStatsStoreErrorTests: XCTestCase {
     func testNoPermissionError() {
-        let remoteError = DotcomError.noStatsPermission
+        let remoteError = DotcomError.noStatsPermission()
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .noPermission)
     }
 
     func testStatsModuleDisabledError() {
-        let remoteError = DotcomError.statsModuleDisabled
+        let remoteError = DotcomError.statsModuleDisabled()
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .statsModuleDisabled)
     }

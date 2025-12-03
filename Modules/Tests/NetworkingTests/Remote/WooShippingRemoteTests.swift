@@ -164,7 +164,7 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedError = DotcomError.unauthorized
+        let expectedError = DotcomError.unauthorized()
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 

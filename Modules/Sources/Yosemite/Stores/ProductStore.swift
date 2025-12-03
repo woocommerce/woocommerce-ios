@@ -685,7 +685,7 @@ private extension ProductStore {
                                                                                 feature: .productDetailsFromScannedTexts,
                                                                                 responseFormat: .json)
                 guard let jsonData = jsonString.data(using: .utf8) else {
-                    return completion(.failure(DotcomError.resourceDoesNotExist))
+                    return completion(.failure(DotcomError.resourceDoesNotExist()))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
                 completion(.success(.init(name: details.name, description: details.description)))

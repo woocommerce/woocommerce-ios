@@ -184,7 +184,7 @@ extension FancyAlertViewController {
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
     }
 
-    /// Shows a WPWalkthroughOverlayView for a bad url error message.
+    /// Shows a view for a bad url error message.
     ///
     /// - Parameter message: The error message to show.
     ///

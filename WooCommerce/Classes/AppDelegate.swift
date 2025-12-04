@@ -272,6 +272,9 @@ extension AppDelegate {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
+            /// We're sending notifications for logged in state only.
+            /// Revisit this check if a local notification in unauthenticated state is needed.
+            guard stores.isAuthenticated else { return }
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)

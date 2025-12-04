@@ -3,6 +3,7 @@
 
 23.9
 -----
+- [Internal] Moved the request for push notification authorization after login [https://github.com/woocommerce/woocommerce-ios/pull/16428]
 - [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
 
 23.8

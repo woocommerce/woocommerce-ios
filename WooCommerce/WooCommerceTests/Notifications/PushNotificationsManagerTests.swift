@@ -174,24 +174,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
     }
 
-    /// Verifies that `registerDevice` effectively dispatches a `registerDevice` Action.
-    ///
-    func testRegisterForRemoteNotificationsDispatchesRegisterDeviceAction() {
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            XCTFail()
-            return
-        }
-
-        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
-
-        guard case let .registerDevice(_, _, _, storeID, _) = storesManager.receivedActions.first as! NotificationAction else {
-            XCTFail()
-            return
-        }
-
-        XCTAssertEqual(storeID, Sample.defaultStoreID)
-    }
-
 
     /// Verifies that `registerDeviceToken` effectively stores the Device Token.
     ///
@@ -202,7 +184,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
-        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
+        manager.registerDeviceToken(with: tokenAsData)
         XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
     }
 
@@ -707,10 +689,6 @@ private struct Sample {
     /// Sample DeviceToken
     ///
     static let deviceToken = "4fa963db2cfc824b0d67740ed2b1c0b472cce8eafcb82184905361eb88be55b9"
-
-    /// Sample StoreID
-    ///
-    static let defaultStoreID: Int64 = 9999
 
     /// UserDefaults Suite Name
     ///

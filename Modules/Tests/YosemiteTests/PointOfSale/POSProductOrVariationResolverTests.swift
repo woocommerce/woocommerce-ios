@@ -29,7 +29,7 @@ struct POSProductOrVariationResolverTests {
             price: "10.00"
         )
         let expectedItem = POSItem.simpleProduct(POSSimpleProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Simple Product",
             formattedPrice: "$10.00",
             productID: 123,
@@ -67,14 +67,14 @@ struct POSProductOrVariationResolverTests {
             productTypeKey: "variable"
         )
         let expectedParentItem = POSItem.variableParentProduct(POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent Product",
             productImageSource: nil,
             productID: 123,
             allAttributes: []
         ))
         let expectedVariationItem = POSItem.variation(POSVariation(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Variation",
             formattedPrice: "$15.00",
             price: "15.00",

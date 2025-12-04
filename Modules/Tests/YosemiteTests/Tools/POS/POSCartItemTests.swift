@@ -101,7 +101,12 @@ struct POSCartItemTests {
         #expect(sut.matches(order: order) == false)
     }
 
-    private func makeCartItem(id: UUID = UUID(), quantity: Decimal, matching: [OrderItem] = [], matcher: ((OrderItem) -> Bool)? = nil) -> POSCartItem {
+    private func makeCartItem(
+        id: POSItemIdentifier = POSItemIdentifier(underlyingType: .product, itemID: 1),
+        quantity: Decimal,
+        matching: [OrderItem] = [],
+        matcher: ((OrderItem) -> Bool)? = nil
+    ) -> POSCartItem {
         return POSCartItem(item: MockPOSOrderableItem(name: "",
                                                       id: id,
                                                       formattedPrice: "",

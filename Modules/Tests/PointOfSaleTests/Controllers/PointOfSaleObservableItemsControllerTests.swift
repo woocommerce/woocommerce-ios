@@ -7,9 +7,9 @@ final class PointOfSaleObservableItemsControllerTests {
 
     // MARK: - Test Helpers
 
-    private func makeSimpleProduct(id: UUID = UUID(), name: String = "Test Product", productID: Int64 = 1) -> POSItem {
+    private func makeSimpleProduct(id: POSItemIdentifier? = nil, name: String = "Test Product", productID: Int64 = 1) -> POSItem {
         .simpleProduct(POSSimpleProduct(
-            id: id,
+            id: id ?? POSItemIdentifier(underlyingType: .product, itemID: productID),
             name: name,
             formattedPrice: "$2.00",
             productID: productID,
@@ -20,9 +20,9 @@ final class PointOfSaleObservableItemsControllerTests {
         ))
     }
 
-    private func makeVariation(id: UUID = UUID(), name: String = "Test Variation", variationID: Int64 = 1) -> POSItem {
+    private func makeVariation(id: POSItemIdentifier? = nil, name: String = "Test Variation", variationID: Int64 = 1) -> POSItem {
         .variation(POSVariation(
-            id: id,
+            id: id ?? POSItemIdentifier(underlyingType: .variation, itemID: variationID),
             name: name,
             formattedPrice: "$2.00",
             price: "2.00",
@@ -118,7 +118,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,
@@ -145,7 +145,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,
@@ -179,7 +179,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let mockVariations = [makeVariation()]
 
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,
@@ -253,10 +253,22 @@ final class PointOfSaleObservableItemsControllerTests {
         let coordinator = MockPOSCatalogSyncCoordinator()
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
-        let parent1 = POSVariableParentProduct(id: UUID(), name: "Parent 1", productImageSource: nil, productID: 100, allAttributes: [])
+        let parent1 = POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+            name: "Parent 1",
+            productImageSource: nil,
+            productID: 100,
+            allAttributes: []
+        )
         let parentItem1 = POSItem.variableParentProduct(parent1)
 
-        let parent2 = POSVariableParentProduct(id: UUID(), name: "Parent 2", productImageSource: nil, productID: 200, allAttributes: [])
+        let parent2 = POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+            name: "Parent 2",
+            productImageSource: nil,
+            productID: 200,
+            allAttributes: []
+        )
         let parentItem2 = POSItem.variableParentProduct(parent2)
 
         // When: Load parent 1 variations
@@ -393,7 +405,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,
@@ -640,7 +652,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         let parentProduct = POSVariableParentProduct(
-            id: UUID(),
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent",
             productImageSource: nil,
             productID: 100,

@@ -1,5 +1,6 @@
 import Testing
 @testable import PointOfSale
+import struct Yosemite.POSItemIdentifier
 
 struct TotalsViewHelperTests {
 
@@ -139,7 +140,7 @@ struct TotalsViewHelperTests {
     @Test
     func test_shouldShowTotalDiscountField_returns_true_when_cart_has_coupons_order_syncing() {
         var cart = Cart()
-        cart.add(.coupon(.init(id: .init(), code: "TEST10", summary: "")))
+        cart.add(.coupon(.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")))
 
         #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: nil))
     }
@@ -147,7 +148,7 @@ struct TotalsViewHelperTests {
     @Test
     func test_shouldShowTotalDiscountField_returns_true_when_cart_has_coupons_and_orderTotals_with_discount() {
         var cart = Cart()
-        cart.add(.coupon(.init(id: .init(), code: "TEST10", summary: "")))
+        cart.add(.coupon(.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")))
         let orderTotals = PointOfSaleOrderTotals(cartTotal: "10",
                                                  orderTotal: "8",
                                                  taxTotal: "0",
@@ -160,7 +161,7 @@ struct TotalsViewHelperTests {
     @Test
     func test_shouldShowTotalDiscountField_returns_false_when_cart_has_coupons_and_orderTotals_without_discount() {
         var cart = Cart()
-        cart.add(.coupon(.init(id: .init(), code: "TEST10", summary: "")))
+        cart.add(.coupon(.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")))
         let orderTotals = PointOfSaleOrderTotals(cartTotal: "10",
                                                  orderTotal: "10",
                                                  taxTotal: "0",

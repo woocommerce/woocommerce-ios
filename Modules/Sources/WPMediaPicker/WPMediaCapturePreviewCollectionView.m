@@ -110,8 +110,8 @@
                         CALayer *viewLayer = self.previewView.layer;
                         self.captureVideoPreviewLayer.frame = viewLayer.bounds;
                         self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-                        UIWindowScene *currentScene = [[[[UIApplication sharedApplication] windows] lastObject] windowScene];
-                        self.captureVideoPreviewLayer.connection.videoOrientation = [self videoOrientationForInterfaceOrientation:[currentScene interfaceOrientation]];
+                        UIWindowScene *currentScene = [self activeWindowScene];
+                        self.captureVideoPreviewLayer.connection.videoRotationAngle = [self videoRotationAngleForInterfaceOrientation:[currentScene interfaceOrientation]];
                         [viewLayer addSublayer:self.captureVideoPreviewLayer];
                 });
             }
@@ -121,24 +121,39 @@
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification
 {
-    if (self.captureVideoPreviewLayer.connection.supportsVideoOrientation) {
-        UIWindowScene *currentScene = [[[[UIApplication sharedApplication] windows] lastObject] windowScene];
-        self.captureVideoPreviewLayer.connection.videoOrientation = [self videoOrientationForInterfaceOrientation:[currentScene interfaceOrientation]];
-    }
+    UIWindowScene *currentScene = [self activeWindowScene];
+    self.captureVideoPreviewLayer.connection.videoRotationAngle = [self videoRotationAngleForInterfaceOrientation:[currentScene interfaceOrientation]];
 }
 
-- (AVCaptureVideoOrientation)videoOrientationForInterfaceOrientation:(UIInterfaceOrientation)orientation
+- (UIWindowScene *)activeWindowScene
+{
+    for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+        if ([scene isKindOfClass:[UIWindowScene class]] && scene.activationState == UISceneActivationStateForegroundActive) {
+            return (UIWindowScene *)scene;
+        }
+    }
+    // Fallback to first window scene if no active one found
+    for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+        if ([scene isKindOfClass:[UIWindowScene class]]) {
+            return (UIWindowScene *)scene;
+        }
+    }
+    return nil;
+}
+
+- (CGFloat)videoRotationAngleForInterfaceOrientation:(UIInterfaceOrientation)orientation
 {
     switch (orientation) {
         case UIInterfaceOrientationPortrait:
-            return AVCaptureVideoOrientationPortrait;
+            return 90.0;
         case UIInterfaceOrientationPortraitUpsideDown:
-            return AVCaptureVideoOrientationPortraitUpsideDown;
+            return 270.0;
         case UIInterfaceOrientationLandscapeLeft:
-            return AVCaptureVideoOrientationLandscapeLeft;
+            return 180.0;
         case UIInterfaceOrientationLandscapeRight:
-            return AVCaptureVideoOrientationLandscapeRight;
-        default:return AVCaptureVideoOrientationPortrait;
+            return 0.0;
+        default:
+            return 90.0;
     }
 }
 

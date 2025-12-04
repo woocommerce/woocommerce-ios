@@ -169,7 +169,7 @@ private struct CouponResultsControllerAdapter {
     private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
                 .coupon(POSCoupon(
-                    id: UUID(),
+                    id: POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID),
                     code: coupon.code,
                     summary: coupon.summary(currencySettings: currencySettings),
                     dateExpires: coupon.dateExpires

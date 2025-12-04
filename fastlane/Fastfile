@@ -777,10 +777,10 @@ platform :ios do
     build_for_prototype_build
 
     release_notes = <<~NOTES
-      Pull Request: ##{pull_request_number || 'N/A'}
       Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
       Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
     NOTES
+    release_notes += "Pull Request: ##{pull_request_number}" unless pull_request_number.nil?
 
     firebase_app_distribution(
       app: FIREBASE_APP_ID,

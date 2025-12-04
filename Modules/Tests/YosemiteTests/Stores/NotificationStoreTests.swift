@@ -366,7 +366,7 @@ class NotificationStoreTests: XCTestCase {
                                                            applicationId: self.sampleApplicationID,
                                                            applicationVersion: self.sampleApplicationVersion) { (device, error) in
                 promise((device, error))
-            } 
+            }
             noteStore.onAction(action)
         }
 

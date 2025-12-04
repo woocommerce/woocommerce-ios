@@ -31,6 +31,20 @@ steps:
       - github_commit_status:
           context: Prototype Build
 
+  - group: ":rocket: Prototype Build"
+    if: build.branch == "trunk"
+    steps:
+      - input: Deploy Prototype Build
+        prompt: Share a Prototype Build via Firebase App Distribution?
+        key: prototype_triggered
+      - label: Prototype Build
+        depends: prototype_triggered
+        command: .buildkite/commands/prototype-build.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Prototype Build From Trunk
+
   #################
   # Run Unit Tests
   #################

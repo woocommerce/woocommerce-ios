@@ -10,7 +10,7 @@ env:
 # This is the default pipeline – it will build and test the app
 steps:
   - group: ":rocket: Prototype Build"
-    if: build.branch == "test-fad-on-trunk"
+    if: build.branch == "test-fad-from-trunk"
     steps:
       - input: Deploy Prototype Build
         prompt: Share a Prototype Build via Firebase App Distribution?

@@ -14,6 +14,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
@@ -32,9 +33,7 @@ struct POSOrderDetailsView: View {
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    if actions.isNotEmpty {
-                        actionsSection(actions)
-                    }
+                    actionsSection(setup: availableActionsSetup)
                 },
                 bottomContent: {
                     headerBottomContent(for: order)
@@ -377,59 +376,102 @@ private extension POSOrderDetailsView {
 
 // MARK: - Actions
 private extension POSOrderDetailsView {
-    enum POSOrderDetailsAction: Identifiable, CaseIterable {
+    enum OrderDetailsAction: Identifiable, CaseIterable {
+        case issueRefund
         case emailReceipt
 
         var id: String { title }
 
         var title: String {
             switch self {
-            case .emailReceipt:
-                Localization.emailReceiptActionTitle
+            case .issueRefund:  Localization.issueRefundActionTitle
+            case .emailReceipt: Localization.emailReceiptActionTitle
             }
         }
 
-        func available(for order: POSOrder) -> Bool {
+        var accessibilityHint: String {
             switch self {
+            case .issueRefund:  Localization.issueRefundAccessibilityHint
+            case .emailReceipt: Localization.emailReceiptAccessibilityHint
+            }
+        }
+
+        var priority: Int {
+            switch self {
+            case .issueRefund:  100
+            case .emailReceipt: 50
+            }
+        }
+
+        func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
+            guard order.status == .completed else { return false }
+            switch self {
+            case .issueRefund:
+                return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
             case .emailReceipt:
-                order.status == .completed
+                return true
             }
         }
     }
 
-    var actions: [POSOrderDetailsAction] {
-        POSOrderDetailsAction.allCases.filter { $0.available(for: order) }
+    func handler(for action: OrderDetailsAction) -> @MainActor () -> Void {
+        switch action {
+        case .emailReceipt:
+            return {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+                isShowingEmailReceiptView = true
+            }
+        case .issueRefund:
+            return { }
+        }
+    }
+
+    struct OrderDetailsActionsSetup {
+        let primary: OrderDetailsAction?
+        let secondary: [OrderDetailsAction]
+    }
+
+    var availableActionsSetup: OrderDetailsActionsSetup {
+        let available = OrderDetailsAction.allCases
+            .filter { $0.isAvailable(for: order, flags: featureFlags) }
+            .sorted { $0.priority > $1.priority }
+
+        let primary = available.first
+        let secondary = Array(available.dropFirst())
+
+        return OrderDetailsActionsSetup(primary: primary, secondary: secondary)
     }
 
     @ViewBuilder
-    func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
-        VStack {
-            HStack {
-                ForEach(actions) { action in
-                    Button(action: {
-                        switch action {
-                        case .emailReceipt:
-                            analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-                            isShowingEmailReceiptView = true
-                        }
-                    }) {
-                        Text(Localization.emailReceiptActionTitle)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                    }
+    func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
+        if let primary = setup.primary {
+            HStack(spacing: POSSpacing.large) {
+                Button(primary.title, action: handler(for: primary))
                     .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-                    .accessibilityHint(accessibilityHint(for: action))
+                    .accessibilityHint(primary.accessibilityHint)
+
+                if !setup.secondary.isEmpty {
+                    Menu {
+                        ForEach(setup.secondary) { action in
+                            Button(action.title, action: handler(for: action))
+                                .accessibilityHint(action.accessibilityHint)
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.posBodyLargeBold)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            .foregroundColor(.posOnSurface)
+                            .padding(POSPadding.small)
+                    }
+                    .menuIndicator(.hidden)
                 }
             }
-            Spacer()
         }
     }
 
-    private func accessibilityHint(for action: POSOrderDetailsAction) -> String {
-        switch action {
-        case .emailReceipt:
-            return Localization.emailReceiptAccessibilityHint
-        }
+    func emailReceiptAction() {
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
+        isShowingEmailReceiptView = true
     }
 }
 
@@ -527,6 +569,24 @@ private enum Localization {
         "pos.orderDetailsView.emailReceiptAction.accessibilityHint",
         value: "Tap to send order receipt via email",
         comment: "Accessibility hint for email receipt button on order details view"
+    )
+
+    static let issueRefundActionTitle = NSLocalizedString(
+            "pos.orderDetailsView.issueRefundAction.title",
+            value: "Issue refund",
+            comment: "Primary action button to start issuing a refund on the order details view"
+        )
+
+    static let issueRefundAccessibilityHint = NSLocalizedString(
+        "pos.orderDetailsView.issueRefundAction.accessibilityHint",
+        value: "Start refund flow for this order",
+        comment: "Accessibility hint for issue refund button"
+    )
+
+    static let moreActionsA11yLabel = NSLocalizedString(
+        "pos.orderDetailsView.moreActions.label",
+        value: "More actions",
+        comment: "Accessibility label for the overflow actions menu button (three dots)"
     )
 
     static func headerBottomContentAccessibilityLabel(date: String, email: String?, status: String) -> String {

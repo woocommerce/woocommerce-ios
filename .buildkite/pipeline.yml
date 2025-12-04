@@ -38,7 +38,7 @@ steps:
         prompt: Share a Prototype Build via Firebase App Distribution?
         key: prototype_triggered
       - label: Prototype Build
-        depends: prototype_triggered
+        depends_on: prototype_triggered
         command: .buildkite/commands/prototype-build.sh
         plugins: [$CI_TOOLKIT]
         notify:

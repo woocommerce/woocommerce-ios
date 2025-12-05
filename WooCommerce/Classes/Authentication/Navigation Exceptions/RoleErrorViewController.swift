@@ -102,11 +102,13 @@ class RoleErrorViewController: UIViewController {
     }
 
     private func observeTraitChanges() {
-        registerForTraitChanges([UITraitVerticalSizeClass.self, UITraitUserInterfaceStyle.self]) { (self: Self, _) in
-            // Hide image in compact height sizes (e.g. landscape iPhones)
-            // With limited space, text description should have higher priority
+        // Image visibility depends on vertical size class only
+        registerForTraitChanges([UITraitVerticalSizeClass.self]) { (self: Self, _) in
             self.imageView.isHidden = self.traitCollection.verticalSizeClass == .compact
+        }
 
+        // Appearance updates only when dark/light mode changes
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
             self.updateViewAppearances()
         }
     }

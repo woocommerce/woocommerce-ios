@@ -621,7 +621,7 @@ private extension DefaultStoresManager {
     func synchronizeAddOnsGroups(siteID: Int64) {
         let action = AddOnGroupAction.synchronizeAddOnGroups(siteID: siteID) { result in
             if let error = result.failure {
-                if error as? DotcomError == .noRestRoute {
+                if case .noRestRoute = error as? DotcomError {
                     DDLogError("⚠️ Endpoint for add-on groups is unreachable for siteID: \(siteID). WC Product Add-Ons plugin may be missing.")
                 } else {
                     DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")

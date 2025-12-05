@@ -134,7 +134,7 @@ final class ProductStoreTests: XCTestCase {
     func test_addProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
-        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
@@ -236,7 +236,7 @@ final class ProductStoreTests: XCTestCase {
     func test_deleteProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
-        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
@@ -763,7 +763,7 @@ final class ProductStoreTests: XCTestCase {
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let dotComError = DotcomError.unknown(code: ProductLoadError.ErrorCode.invalidID.rawValue, message: nil)
+        let dotComError = DotcomError.unknown(code: ProductLoadError.ErrorCode.invalidID.rawValue, message: nil, data: nil)
 
         // Action
         network.simulateError(requestUrlSuffix: "products/282", error: dotComError)

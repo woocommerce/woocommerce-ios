@@ -317,8 +317,9 @@ private extension ProductStore {
                                                    shouldDeleteExistingProducts: shouldDeleteExistingProducts)
             let hasNextPage = products.count == pageSize
             return hasNextPage
-        } catch let error as DotcomError where error == .unknown(code: "rest_invalid_param", message: "Invalid parameter(s): type") {
-            if let productType,
+        } catch let error as DotcomError {
+            if case .unknown(code: "rest_invalid_param", message: "Invalid parameter(s): type", data: _) = error,
+               let productType,
                ProductType.coreTypes.contains(productType) == false {
                 return false
             }
@@ -684,7 +685,7 @@ private extension ProductStore {
                                                                                 feature: .productDetailsFromScannedTexts,
                                                                                 responseFormat: .json)
                 guard let jsonData = jsonString.data(using: .utf8) else {
-                    return completion(.failure(DotcomError.resourceDoesNotExist))
+                    return completion(.failure(DotcomError.resourceDoesNotExist()))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
                 completion(.success(.init(name: details.name, description: details.description)))
@@ -1388,7 +1389,7 @@ public enum ProductUpdateError: Error, Equatable {
             return
         }
         switch dotcomError {
-        case let .unknown(code, message):
+        case let .unknown(code, message, _):
             guard let errorCode = ErrorCode(rawValue: code) else {
                 self = .unknown(error: dotcomError.toAnyError)
                 return
@@ -1476,7 +1477,7 @@ public enum ProductLoadError: Error, Equatable {
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {
-        guard case let DotcomError.unknown(code, _) = error else {
+        guard case let DotcomError.unknown(code, _, _) = error else {
             self = .unknown(error: error.toAnyError)
             return
         }

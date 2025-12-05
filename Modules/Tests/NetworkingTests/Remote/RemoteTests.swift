@@ -181,7 +181,7 @@ final class RemoteTests: XCTestCase {
             let _: String = try await remote.enqueue(request)
         } catch {
             let error = try XCTUnwrap(error as? DotcomError)
-            XCTAssertEqual(error, .requestFailed)
+            XCTAssertEqual(error, .requestFailed())
         }
 
         await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
@@ -258,7 +258,7 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? DotcomError, DotcomError.requestFailed)
+        XCTAssertEqual(result.failure as? DotcomError, DotcomError.requestFailed())
     }
 
     /// Verifies that dotcom v1.1 request parses DotcomError

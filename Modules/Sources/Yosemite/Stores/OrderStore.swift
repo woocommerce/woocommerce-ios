@@ -663,7 +663,7 @@ private extension OrderStore {
                 })
             case .failure(let error):
                 if let dotcomError = error as? DotcomError,
-                   case let .unknown(code, message) = dotcomError {
+                   case let .unknown(code, message, _) = dotcomError {
                     switch code {
                         case "woocommerce_rest_gift_card_cannot_apply":
                             return onCompletion(.failure(GiftCardError.cannotApply(reason: message)))

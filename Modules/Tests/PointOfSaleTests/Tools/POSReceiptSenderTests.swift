@@ -43,7 +43,7 @@ struct POSReceiptSenderTests {
                                          systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                 version: "10.0.0-dev",
                                                                                 active: true))
-        mockReceiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error"))
+        mockReceiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error", data: nil))
         let order = Order.fake()
 
         // When

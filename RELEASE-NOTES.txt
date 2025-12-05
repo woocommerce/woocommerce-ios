@@ -3,6 +3,7 @@
 
 23.9
 -----
+- [*] Show specific error when a variation is missing at POS checkout via WPCom login [https://github.com/woocommerce/woocommerce-ios/pull/16430]
 - [Internal] Moved the request for push notification authorization after login [https://github.com/woocommerce/woocommerce-ios/pull/16428]
 - [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
 

@@ -193,7 +193,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_deletePackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let error = DotcomError.requestFailed
+        let error = DotcomError.requestFailed()
         remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .failure(error))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 

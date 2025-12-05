@@ -203,7 +203,8 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let remote = MockProductsRemote()
         remote.whenLoadingAllProducts(siteID: sampleSiteID,
                                       thenReturn: .failure(DotcomError.unknown(code: "rest_invalid_param",
-                                                                               message: "Invalid parameter(s): type")))
+                                                                               message: "Invalid parameter(s): type",
+                                                                               data: nil)))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -238,7 +239,8 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         let remote = MockProductsRemote()
         remote.whenLoadingAllProducts(siteID: sampleSiteID,
                                       thenReturn: .failure(DotcomError.unknown(code: "rest_invalid_param",
-                                                                               message: "Invalid parameter(s): type")))
+                                                                               message: "Invalid parameter(s): type",
+                                                                               data: nil)))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -265,7 +267,8 @@ final class ProductStore_FilterProductsTests: XCTestCase {
             XCTAssertTrue(result.isFailure)
             let error = try XCTUnwrap(result.failure)
             XCTAssertEqual(error as? DotcomError, .unknown(code: "rest_invalid_param",
-                                                           message: "Invalid parameter(s): type"))
+                                                           message: "Invalid parameter(s): type",
+                                                           data: nil))
         }
     }
 

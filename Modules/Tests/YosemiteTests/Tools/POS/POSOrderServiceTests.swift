@@ -351,7 +351,7 @@ struct POSOrderServiceTests {
     @Test func syncOrder_throws_missingProducts_error_for_DotcomError_with_invalid_variation_code() async throws {
         // Given
         let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
-        let dotcomError = DotcomError.unknown(code: "order_item_product_invalid_variation_id", message: "Invalid variation")
+        let dotcomError = DotcomError.unknown(code: "order_item_product_invalid_variation_id", message: "Invalid variation", data: nil)
         mockOrdersRemote.createPOSOrderResult = .failure(dotcomError)
 
         // When/Then
@@ -444,7 +444,7 @@ struct POSOrderServiceTests {
     @Test func syncOrder_throws_missingProducts_error_for_AFError_wrapping_DotcomError() async throws {
         // Given
         let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
-        let dotcomError = DotcomError.unknown(code: "order_item_product_invalid_variation_id", message: "Invalid")
+        let dotcomError = DotcomError.unknown(code: "order_item_product_invalid_variation_id", message: "Invalid", data: nil)
         let afError = AFError.sessionTaskFailed(error: dotcomError)
         mockOrdersRemote.createPOSOrderResult = .failure(afError)
 
@@ -463,7 +463,7 @@ struct POSOrderServiceTests {
     @Test func syncOrder_throws_original_error_for_unrecognized_DotcomError_code() async throws {
         // Given
         let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
-        let dotcomError = DotcomError.unknown(code: "some_other_error_code", message: "Different error")
+        let dotcomError = DotcomError.unknown(code: "some_other_error_code", message: "Different error", data: nil)
         mockOrdersRemote.createPOSOrderResult = .failure(dotcomError)
 
         // When/Then

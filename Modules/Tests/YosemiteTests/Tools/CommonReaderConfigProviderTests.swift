@@ -11,7 +11,8 @@ struct CommonReaderConfigProviderTests {
         let mockRemote = MockCardReaderCapableRemote(
             resultForDefaultReaderLocation: .failure(
                 DotcomError.unknown(code: "store_address_is_incomplete",
-                                    message: adminURL)))
+                                    message: adminURL,
+                                    data: nil)))
 
         let sut = CommonReaderConfigProvider(siteID: 123,
                                              readerConfigRemote: mockRemote)
@@ -30,7 +31,8 @@ struct CommonReaderConfigProviderTests {
         let mockRemote = MockCardReaderCapableRemote(
             resultForDefaultReaderLocation: .failure(
                 DotcomError.unknown(code: "postal_code_invalid",
-                                    message: "")))
+                                    message: "",
+                                    data: nil)))
 
         let sut = CommonReaderConfigProvider(siteID: 123,
                                              readerConfigRemote: mockRemote)

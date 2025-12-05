@@ -123,9 +123,13 @@ private struct TextViewWrapper: UIViewRepresentable {
     final class Coordinator: NSObject, UITextViewDelegate {
         var openURL: ((URL) -> Void)?
 
-        func textView(_: UITextView, shouldInteractWith URL: URL, in _: NSRange, interaction _: UITextItemInteraction) -> Bool {
-            openURL?(URL)
-            return false
+        func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+            if case .link(let url) = textItem.content {
+                openURL?(url)
+                // Prevent default action
+                return nil
+            }
+            return defaultAction
         }
     }
 

@@ -56,6 +56,15 @@ public class NotificationStore: Store {
             updateReadStatus(for: noteIDs, read: read, onCompletion: onCompletion)
         case .updateLocalDeletedStatus(let noteID, let deleteInProgress, let onCompletion):
             updateDeletedStatus(noteID: noteID, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
+        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, onCompletion):
+            registerDeviceForSelfDrivenPushNotifications(
+                siteID: siteID,
+                device: device,
+                applicationID: applicationID,
+                onCompletion: onCompletion
+            )
+        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, onCompletion):
+            unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID, onCompletion: onCompletion)
         }
     }
 }
@@ -81,6 +90,41 @@ private extension NotificationStore {
     ///
     func unregisterDevice(deviceId: String, onCompletion: @escaping (Error?) -> Void) {
         devicesRemote.unregisterDevice(deviceId: deviceId, completion: onCompletion)
+    }
+
+    /// Registers a device for Push Notifications Delivery with the self-driven push notification system.
+    ///
+    func registerDeviceForSelfDrivenPushNotifications(siteID: Int64,
+                                                      device: APNSDevice,
+                                                      applicationID: String,
+                                                      onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let tokenID = try await devicesRemote.registerForSelfDrivenPushNotifications(
+                    siteID: siteID,
+                    device: device,
+                    applicationID: applicationID
+                )
+                onCompletion(.success(tokenID))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes a given tokenID from the the self-driven push notification system.
+    ///
+    func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
+                                                   tokenID: Int64,
+                                                   onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID)
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
     }
 
 

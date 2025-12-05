@@ -7,7 +7,7 @@ import XCTest
 
 /// NotificationStore Unit Tests
 ///
-class NotificationStoreTests: XCTestCase {
+final class NotificationStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -439,6 +439,127 @@ class NotificationStoreTests: XCTestCase {
     }
 
 
+    // MARK: - NotificationAction.registerDeviceForSelfDrivenPushNotifications
+
+    /// Verifies that NotificationAction.registerDeviceForSelfDrivenPushNotifications successfully handles a success response from the backend.
+    ///
+    func test_registerDeviceForSelfDrivenPushNotifications_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration")
+
+        // When
+        let result: Result<Int64, Error> = waitFor { promise in
+            let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                device: self.sampleAPNSDevice(),
+                applicationID: self.sampleApplicationID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success(let tokenID):
+            XCTAssertEqual(tokenID, 123)
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that NotificationAction.registerDeviceForSelfDrivenPushNotifications successfully handles a failure response from the backend.
+    ///
+    func test_registerDeviceForSelfDrivenPushNotifications_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "generic_error")
+
+        // When
+        let result: Result<Int64, Error> = waitFor { promise in
+            let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                device: self.sampleAPNSDevice(),
+                applicationID: self.sampleApplicationID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
+    // MARK: - NotificationAction.unregisterFromSelfDrivenPushNotifications
+
+    /// Verifies that NotificationAction.unregisterFromSelfDrivenPushNotifications successfully handles a success response from the backend.
+    ///
+    func test_unregisterFromSelfDrivenPushNotifications_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens/\(sampleTokenID)", filename: "generic_success")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                tokenID: self.sampleTokenID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            // Test passes - no error thrown
+            break
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that NotificationAction.unregisterFromSelfDrivenPushNotifications successfully handles a failure response from the backend.
+    ///
+    func test_unregisterFromSelfDrivenPushNotifications_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens/\(sampleTokenID)", filename: "generic_error")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                tokenID: self.sampleTokenID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
     // MARK: - NotificationAction.updateLocalDeletedStatus
 
     /// Verifies that `markLocalNoteAsDeleted` works as expected.
@@ -486,6 +607,18 @@ private extension NotificationStoreTests {
     ///
     var sampleDotcomDeviceID: String {
         return "1234"
+    }
+
+    /// Returns a sample Site ID
+    ///
+    var sampleSiteID: Int64 {
+        return 123456
+    }
+
+    /// Returns a sample Token ID
+    ///
+    var sampleTokenID: Int64 {
+        return 123
     }
 
     /// Returns a sample Apple Device

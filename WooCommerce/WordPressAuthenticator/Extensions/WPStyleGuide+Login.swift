@@ -4,12 +4,16 @@ import Gridicons
 import AuthenticationServices
 
 final class SubheadlineButton: UIButton {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-            setTitleColor(WordPressAuthenticator.shared.style.textButtonColor, for: .normal)
-            setTitleColor(WordPressAuthenticator.shared.style.textButtonHighlightColor, for: .highlighted)
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        observeTraitChanges()
+    }
+
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
+            self.setTitleColor(WordPressAuthenticator.shared.style.textButtonColor, for: .normal)
+            self.setTitleColor(WordPressAuthenticator.shared.style.textButtonHighlightColor, for: .highlighted)
         }
     }
 }

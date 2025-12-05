@@ -562,10 +562,13 @@ private extension SettingsViewController {
 //
 extension SettingsViewController: UITextViewDelegate {
 
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        weAreHiringWasPressed(url: URL)
-        return false
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        if case .link(let url) = textItem.content {
+            weAreHiringWasPressed(url: url)
+            // Prevent default action
+            return nil
+        }
+        return defaultAction
     }
 }
 

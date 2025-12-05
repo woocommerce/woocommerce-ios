@@ -17,12 +17,13 @@ struct AddressMapPickerView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
-                Map(coordinateRegion: $viewModel.region,
-                    showsUserLocation: true,
-                    annotationItems: viewModel.annotations) { item in
-                    MapMarker(coordinate: item.coordinate)
+                Map(position: $viewModel.position) {
+                    UserAnnotation()
+                    ForEach(viewModel.annotations) { item in
+                        Marker("", coordinate: item.coordinate)
+                    }
                 }
-                    .ignoresSafeArea()
+                .ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     searchBar

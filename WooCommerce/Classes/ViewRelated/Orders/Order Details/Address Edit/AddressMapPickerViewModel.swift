@@ -33,9 +33,11 @@ final class AddressMapPickerViewModel: NSObject {
         }
     }
     private(set) var searchResults: [MKLocalSearchCompletion] = []
-    var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.3361, longitude: -122.0380),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    var position: MapCameraPosition = .region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 37.3361, longitude: -122.0380),
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
     )
     var annotations: [MapAnnotation] = []
     var showsSearchResults: Bool {
@@ -138,9 +140,11 @@ private extension AddressMapPickerViewModel {
                let currentLocation = locationManager.location {
                 DispatchQueue.main.async { [weak self] in
                     guard let self else { return }
-                    region = MKCoordinateRegion(
-                        center: currentLocation.coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    position = .region(
+                        MKCoordinateRegion(
+                            center: currentLocation.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        )
                     )
                 }
                 return
@@ -157,9 +161,11 @@ private extension AddressMapPickerViewModel {
                         return
                     }
 
-                    region = MKCoordinateRegion(
-                        center: location.coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    position = .region(
+                        MKCoordinateRegion(
+                            center: location.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        )
                     )
                     annotations = [MapAnnotation(coordinate: location.coordinate)]
                 } catch {
@@ -175,9 +181,11 @@ private extension AddressMapPickerViewModel {
             withAnimation { [weak self] in
                 guard let self else { return }
                 searchResults = []
-                region = MKCoordinateRegion(
-                    center: placemark.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                position = .region(
+                    MKCoordinateRegion(
+                        center: placemark.coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    )
                 )
                 annotations = [MapAnnotation(coordinate: placemark.coordinate)]
                 selectedPlace = placemark

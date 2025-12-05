@@ -261,4 +261,3 @@ public struct NUXButtonStyle {
         return isEnabled ? style.normal.titleColor : style.disabled.titleColor
     }
 }
-

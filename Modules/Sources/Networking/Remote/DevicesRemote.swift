@@ -60,16 +60,67 @@ public class DevicesRemote: Remote {
             completion(nil)
         }
     }
+
+    /// Registers a device for Push Notifications Delivery with the self-driven push notification system.
+    ///
+    /// - Parameters:
+    ///     - siteID: ID of the site
+    ///     - device: APNS Device to be registered.
+    ///     - applicationId: App ID.
+    /// - Returns: The unique ID of the push token record
+    ///
+    public func registerForSelfDrivenPushNotifications(siteID: Int64,
+                                                       device: APNSDevice,
+                                                       applicationID: String) async throws -> Int64 {
+        var parameters = [
+            ParameterKeys.origin: applicationID,
+            ParameterKeys.token: device.token,
+            ParameterKeys.platform: Values.platform
+        ]
+
+        if let deviceUUID = device.identifierForVendor {
+            parameters[ParameterKeys.deviceUUID] = deviceUUID
+        }
+
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Paths.selfDrivenPN,
+                                     availableAsRESTRequest: true)
+        let mapper = TokenIDMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Removes a given tokenID from the the self-driven push notification system.
+    ///
+    /// - Parameters:
+    ///     - siteID: ID of the site
+    ///     - tokenID: The push token ID to delete
+    ///
+    public func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
+                                                          tokenID: Int64) async throws {
+        let path = Paths.selfDrivenPN + "/\(tokenID)"
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        try await enqueue(request)
+    }
 }
 
 
 // MARK: - Constants!
 //
 private extension DevicesRemote {
+    enum Values {
+        static let platform = "ios"
+    }
 
     enum Paths {
         static let register = "devices/new"
         static let delete = "devices/%@/delete"
+        static let selfDrivenPN = "/wc-push-notifications/push-tokens"
     }
 
     enum ParameterKeys {
@@ -81,5 +132,8 @@ private extension DevicesRemote {
         static let deviceName = "device_name"
         static let deviceOSVersion = "os_version"
         static let deviceUUID = "device_uuid"
+        static let token = "token"
+        static let platform = "platform"
+        static let origin = "origin"
     }
 }

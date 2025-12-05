@@ -131,11 +131,18 @@ public struct NUXButtonStyle {
     open override func didMoveToWindow() {
         super.didMoveToWindow()
         configureAppearance()
+        observeTraitChanges()
     }
 
     open override func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
+    }
+
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.didChangePreferredContentSize()
+        }
     }
 
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
@@ -255,13 +262,3 @@ public struct NUXButtonStyle {
     }
 }
 
-// MARK: -
-//
-extension NUXButton {
-    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            didChangePreferredContentSize()
-        }
-    }
-}

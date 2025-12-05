@@ -262,7 +262,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
     private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async throws -> Bool {
-        guard try await checkSyncEligibility(for: siteID) else {
+        guard try await checkSyncEligibility(for: siteID, ignoreTemporalCriteria: maxAge == .zero) else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Full sync skipped - site \(siteID) is not eligible")
             return false
         }
@@ -402,7 +402,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     private func shouldPerformIncrementalSync(for siteID: Int64, maxAge: TimeInterval) async throws -> Bool {
-        guard try await checkSyncEligibility(for: siteID) else {
+        guard try await checkSyncEligibility(for: siteID, ignoreTemporalCriteria: maxAge == .zero) else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Incremental sync skipped - site \(siteID) is not eligible")
             return false
         }
@@ -600,7 +600,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Check sync eligibility
         do {
-            let eligibility = try await syncEligibility(for: siteID)
+            let eligibility = try await syncEligibility(for: siteID, ignoreTemporalCriteria: maxAge == .zero)
             if case .ineligible(let reason) = eligibility {
                 return reason.skipReason
             }
@@ -634,7 +634,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Check sync eligibility
         do {
-            let eligibility = try await syncEligibility(for: siteID)
+            let eligibility = try await syncEligibility(for: siteID, ignoreTemporalCriteria: maxAge == .zero)
             if case .ineligible(let reason) = eligibility {
                 return reason.skipReason
             }
@@ -724,8 +724,8 @@ private extension POSCatalogSyncCoordinator {
     // MARK: - Sync Eligibility
 
     /// Checks if sync is eligible for the given site based on catalog eligibility and temporal criteria
-    func checkSyncEligibility(for siteID: Int64) async throws -> Bool {
-        switch try await syncEligibility(for: siteID) {
+    func checkSyncEligibility(for siteID: Int64, ignoreTemporalCriteria: Bool = false) async throws -> Bool {
+        switch try await syncEligibility(for: siteID, ignoreTemporalCriteria: ignoreTemporalCriteria) {
         case .eligible(reason: let reason):
             switch reason {
             case .neverSynced:
@@ -733,7 +733,10 @@ private extension POSCatalogSyncCoordinator {
             case .openedRecently(daysSinceOpened: let daysSinceOpened):
                 DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (last opened \(daysSinceOpened) days ago)")
             case .recentFirstSync(daysSinceFirstSync: let daysSinceFirstSync):
-                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (within grace period: \(daysSinceFirstSync) days since first sync)")
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (within grace period: " +
+                          "\(daysSinceFirstSync) days since first sync)")
+            case .ignoredTemporalEligibilityCheck:
+                DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) eligible (ignored temporal criteria check)")
             }
             return true
         case .ineligible(reason: let reason):
@@ -750,9 +753,13 @@ private extension POSCatalogSyncCoordinator {
         }
     }
 
-    func syncEligibility(for siteID: Int64) async throws -> SyncEligibility {
+    func syncEligibility(for siteID: Int64, ignoreTemporalCriteria: Bool) async throws -> SyncEligibility {
         guard try await catalogEligibilityChecker.catalogEligibility(for: siteID) == .eligible else {
             return .ineligible(reason: .notEligibleForLocalCatalog)
+        }
+
+        guard !ignoreTemporalCriteria else {
+            return .eligible(reason: .ignoredTemporalEligibilityCheck)
         }
 
         // Then check temporal eligibility (30-day criteria)
@@ -794,6 +801,7 @@ private extension POSCatalogSyncCoordinator {
             case neverSynced
             case openedRecently(daysSinceOpened: Int)
             case recentFirstSync(daysSinceFirstSync: Int)
+            case ignoredTemporalEligibilityCheck
         }
 
         enum IneligibleReason {

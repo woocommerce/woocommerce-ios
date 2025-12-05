@@ -5,12 +5,12 @@
 #import "WPMediaGroupPickerViewController.h"
 #import "WPPHAssetDataSource.h"
 #import "WPMediaCapturePresenter.h"
-#import "WPInputMediaPickerViewController.h"
 #import "WPCarouselAssetsViewController.h"
 #import "UIViewController+MediaAdditions.h"
 
 @import MobileCoreServices;
 @import AVFoundation;
+@import UniformTypeIdentifiers;
 
 static CGFloat const IPhoneSELandscapeWidth = 568.0f;
 static CGFloat const IPhone7PortraitWidth = 375.0f;
@@ -114,7 +114,8 @@ static CGFloat SelectAnimationTime = 0.2;
     [self.view addGestureRecognizer:self.longPressGestureRecognizer];
 
     self.layout.sectionInsetReference = UICollectionViewFlowLayoutSectionInsetFromSafeArea;
-    
+    [self registerForTraitObservation];
+
     [self refreshDataAnimated:NO];
 }
 
@@ -317,18 +318,6 @@ static CGFloat SelectAnimationTime = 0.2;
     [self unregisterForKeyboardNotifications];
 }
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
-    [super traitCollectionDidChange:previousTraitCollection];
-
-    if ([self shouldShowCustomHeaderView]) {
-        // If there's a custom header, we'll invalidate it so that it can adapt itself to dynamic type changes.
-        UICollectionViewFlowLayoutInvalidationContext *context  = [UICollectionViewFlowLayoutInvalidationContext new];
-        [context invalidateSupplementaryElementsOfKind:UICollectionElementKindSectionHeader atIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ]];
-        [self.collectionView.collectionViewLayout invalidateLayout];
-    }
-}
-
 - (UIViewController *)viewControllerToUseToPresent
 {
     // viewControllerToUseToPresent defaults to self but could be set to nil. Reset to self if needed.
@@ -381,7 +370,6 @@ static CGFloat SelectAnimationTime = 0.2;
 - (void)setupSearchBar
 {
     BOOL shouldShowSearchBar = self.options.showSearchBar &&
-        ![self.parentViewController isKindOfClass:[WPInputMediaPickerViewController class]] && //Disable search bar on WPInputMediaPicker
         [self.dataSource respondsToSelector:@selector(searchFor:)];
 
     if (shouldShowSearchBar && self.searchBar == nil) {
@@ -999,7 +987,8 @@ static CGFloat SelectAnimationTime = 0.2;
     NSString *uttype = [asset UTTypeIdentifier];
 
     if ([self.options.badgedUTTypes containsObject:uttype]) {
-        NSString *tagName = (__bridge_transfer NSString *)(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)uttype, kUTTagClassFilenameExtension));
+        UTType *type = [UTType typeWithIdentifier:uttype];
+        NSString *tagName = type.preferredFilenameExtension;
         cell.badgeView.label.text = [tagName uppercaseString];
         cell.badgeView.hidden = NO;
         return;
@@ -1274,12 +1263,12 @@ referenceSizeForFooterInSection:(NSInteger)section
         }
         [self addMedia:media animated:YES];
     };
-    if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeImage]) {
+    if ([info[UIImagePickerControllerMediaType] isEqual:UTTypeImage.identifier]) {
         UIImage *image = (UIImage *)info[UIImagePickerControllerOriginalImage];
         [self.dataSource addImage:image
                          metadata:info[UIImagePickerControllerMediaMetadata]
                   completionBlock:completionBlock];
-    } else if ([info[UIImagePickerControllerMediaType] isEqual:(NSString *)kUTTypeMovie]) {
+    } else if ([info[UIImagePickerControllerMediaType] isEqual:UTTypeMovie.identifier]) {
         [self.dataSource addVideoFromURL:info[UIImagePickerControllerMediaURL] completionBlock:completionBlock];
     }
 }
@@ -1466,20 +1455,30 @@ referenceSizeForFooterInSection:(NSInteger)section
     return NO;
 }
 
+- (void)registerForTraitObservation
+{
+    __weak typeof(self) weakSelf = self;
+    [self registerForTraitChanges:@[UITraitPreferredContentSizeCategory.class]
+                      withHandler:^(id<UITraitEnvironment> traitEnvironment, UITraitCollection *previousCollection) {
+        if ([weakSelf shouldShowCustomHeaderView]) {
+            // If there's a custom header, invalidate it so that it can adapt itself to dynamic type changes.
+            UICollectionViewFlowLayoutInvalidationContext *context = [UICollectionViewFlowLayoutInvalidationContext new];
+            [context invalidateSupplementaryElementsOfKind:UICollectionElementKindSectionHeader atIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ]];
+            [weakSelf.collectionView.collectionViewLayout invalidateLayout];
+        }
+    }];
+}
+
 - (void)registerForKeyboardNotifications
 {
-    if (![self.parentViewController isKindOfClass:[WPInputMediaPickerViewController class]]) {
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
-    }
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)unregisterForKeyboardNotifications
 {
-    if (![self.parentViewController isKindOfClass:[WPInputMediaPickerViewController class]]) {
-        [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-        [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    }
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)keyboardWillShowNotification:(NSNotification *)notification

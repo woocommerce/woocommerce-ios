@@ -61,6 +61,7 @@ class RoleErrorViewController: UIViewController {
         super.viewDidLoad()
 
         configureViews()
+        observeTraitChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -95,6 +96,21 @@ class RoleErrorViewController: UIViewController {
         configureLinkButton()
         configurePrimaryActionButton()
         configureSecondaryActionButton()
+
+        // Set initial image visibility based on vertical size class
+        imageView.isHidden = traitCollection.verticalSizeClass == .compact
+    }
+
+    private func observeTraitChanges() {
+        // Image visibility depends on vertical size class only
+        registerForTraitChanges([UITraitVerticalSizeClass.self]) { (self: Self, _) in
+            self.imageView.isHidden = self.traitCollection.verticalSizeClass == .compact
+        }
+
+        // Appearance updates only when dark/light mode changes
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
+            self.updateViewAppearances()
+        }
     }
 
     func configureDescriptionLabel() {
@@ -128,24 +144,9 @@ class RoleErrorViewController: UIViewController {
         }
     }
 
-    // MARK: Trait Change Adjustments
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        // hide image in compact height sizes (e.g. landscape iphones).
-        // with limited space, text description should have higher priority.
-        imageView.isHidden = traitCollection.verticalSizeClass == .compact
-
-        // handle dynamic color appearance changes.
-        if let previousTrait = previousTraitCollection,
-           previousTrait.hasDifferentColorAppearance(comparedTo: traitCollection) {
-            updateViewAppearances()
-        }
-    }
 
     /// update views that can adjust to color appearance changes.
-    /// this method is called when color appearance changes are detected in `traitCollectionDidChange`.
+    /// this method is called when color appearance changes are detected via trait change registration.
     private func updateViewAppearances() {
         // illustrations
         imageView.image = viewModel.image

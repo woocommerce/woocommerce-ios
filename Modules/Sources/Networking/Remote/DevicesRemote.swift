@@ -120,7 +120,7 @@ private extension DevicesRemote {
     enum Paths {
         static let register = "devices/new"
         static let delete = "devices/%@/delete"
-        static let selfDrivenPN = "/wc-push-notifications/push-tokens"
+        static let selfDrivenPN = "wc-push-notifications/push-tokens"
     }
 
     enum ParameterKeys {

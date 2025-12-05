@@ -34,7 +34,7 @@ steps:
   - group: ":rocket: Prototype Build"
     if: build.branch == "trunk"
     steps:
-      - input: Deploy Prototype Build
+      - input: Deploy Prototype Build?
         prompt: Share a Prototype Build via Firebase App Distribution?
         key: prototype_triggered
       - label: Prototype Build

@@ -25,7 +25,6 @@ final class DefaultAddressMapLocalSearchProvider: AddressMapLocalSearchProviding
     }
 }
 
-@available(iOS 17, *)
 @Observable
 final class AddressMapPickerViewModel: NSObject {
     var searchQuery = "" {
@@ -124,7 +123,6 @@ final class AddressMapPickerViewModel: NSObject {
     }
 }
 
-@available(iOS 17, *)
 private extension AddressMapPickerViewModel {
     func configureSearchCompleter() {
         searchCompleter.resultTypes = .address
@@ -196,7 +194,6 @@ private extension AddressMapPickerViewModel {
     }
 }
 
-@available(iOS 17, *)
 extension AddressMapPickerViewModel: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         searchResults = completer.results

@@ -3,7 +3,6 @@ import SwiftUI
 import Observation
 import struct Yosemite.Country
 
-@available(iOS 17, *)
 struct AddressMapPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: AddressMapPickerViewModel
@@ -134,7 +133,6 @@ struct AddressMapPickerView: View {
     }
 }
 
-@available(iOS 17, *)
 private extension AddressMapPickerView {
     enum Localization {
         static let close = NSLocalizedString("addressMapPicker.button.close", value: "Close", comment: "Text for the close button in the Edit Address Form.")

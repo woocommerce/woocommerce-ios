@@ -219,7 +219,7 @@ extension PushNotificationsManager {
     ///     - tokenData: APNS's Token Data
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
-    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64) {
+    func registerDeviceToken(with tokenData: Data) {
         let newToken = tokenData.hexString
 
         if let _ = deviceToken, deviceToken != newToken {
@@ -231,7 +231,7 @@ extension PushNotificationsManager {
         deviceToken = newToken
 
         // Register in the Dotcom's Infrastructure
-        registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
+        registerDotcomDevice(with: newToken) { (device, error) in
             guard let deviceID = device?.deviceID else {
                 DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
                 return
@@ -556,12 +556,11 @@ private extension PushNotificationsManager {
 
     /// Registers an APNS DeviceToken in the WordPress.com backend.
     ///
-    func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int64, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
+    func registerDotcomDevice(with deviceToken: String, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
         let action = NotificationAction.registerDevice(device: device,
                                                        applicationId: WooConstants.pushApplicationID,
                                                        applicationVersion: Bundle.main.version,
-                                                       defaultStoreID: defaultStoreID,
                                                        onCompletion: onCompletion)
         stores.dispatch(action)
     }

@@ -270,7 +270,6 @@ class DefaultStoresManager: StoresManager {
         sessionManager.deleteApplicationPassword(locally: true)
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
-        ServiceLocator.pushNotesManager.unregisterForRemoteNotifications {}
     }
 
     /// Fully deauthenticates the user, if needed.

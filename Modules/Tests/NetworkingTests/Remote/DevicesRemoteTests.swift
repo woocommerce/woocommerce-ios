@@ -29,8 +29,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -39,24 +38,6 @@ final class DevicesRemoteTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    /// Verifies that registerDevice sets the `selected_blog_id` parameter to empty string.
-    ///
-    func test_registerDevice_sets_selected_blog_id_to_empty_string() throws {
-        // Given
-        let remote = DevicesRemote(network: network)
-
-        // When
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (_, _) in }
-
-        // Then
-        let queryParameters = try XCTUnwrap(network.queryParameters)
-        let expectedParam = "selected_blog_id="
-        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
     /// Verifies that registerDevice parses a "Failure" Backend Response.
@@ -69,8 +50,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)
@@ -124,6 +104,5 @@ private enum Parameters {
                                         identifierForVendor: "1234")
     static let applicationId = "9"
     static let applicationVersion = "99"
-    static let defaultStoreID: Int64 = 1234
     static let dotcomDeviceID = "1234"
 }

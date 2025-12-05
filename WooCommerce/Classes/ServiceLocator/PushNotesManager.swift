@@ -72,9 +72,8 @@ protocol PushNotesManager {
     ///
     /// - Parameters:
     ///     - tokenData: APNS's Token Data
-    ///     - defaultStoreID: Default WooCommerce Store ID
     ///
-    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64)
+    func registerDeviceToken(with tokenData: Data)
 
     /// Handles a remote push notification payload when the app is in the background.
     /// - Parameter userInfo: Push notification payload.

@@ -90,7 +90,7 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64) {
+    func registerDeviceToken(with tokenData: Data) {
 
     }
 

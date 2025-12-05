@@ -364,8 +364,7 @@ class NotificationStoreTests: XCTestCase {
         let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
             let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
                                                            applicationId: self.sampleApplicationID,
-                                                           applicationVersion: self.sampleApplicationVersion,
-                                                           defaultStoreID: self.sampleDefaultStoreID) { (device, error) in
+                                                           applicationVersion: self.sampleApplicationVersion) { (device, error) in
                 promise((device, error))
             }
             noteStore.onAction(action)
@@ -389,8 +388,7 @@ class NotificationStoreTests: XCTestCase {
         let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
             let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
                                                            applicationId: self.sampleApplicationID,
-                                                           applicationVersion: self.sampleApplicationVersion,
-                                                           defaultStoreID: self.sampleDefaultStoreID) { (device, error) in
+                                                           applicationVersion: self.sampleApplicationVersion) { (device, error) in
                 promise((device, error))
             }
             noteStore.onAction(action)
@@ -488,12 +486,6 @@ private extension NotificationStoreTests {
     ///
     var sampleDotcomDeviceID: String {
         return "1234"
-    }
-
-    /// Returns a sample Default Store ID
-    ///
-    var sampleDefaultStoreID: Int64 {
-        return 1234
     }
 
     /// Returns a sample Apple Device

@@ -37,12 +37,10 @@ public class NotificationStore: Store {
         case .registerDevice(let device,
                              let applicationId,
                              let applicationVersion,
-                             let defaultStoreID,
                              let onCompletion):
             registerDevice(device: device,
                            applicationId: applicationId,
                            applicationVersion: applicationVersion,
-                           defaultStoreID: defaultStoreID,
                            onCompletion: onCompletion)
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
@@ -72,12 +70,10 @@ private extension NotificationStore {
     func registerDevice(device: APNSDevice,
                         applicationId: String,
                         applicationVersion: String,
-                        defaultStoreID: Int64,
                         onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         devicesRemote.registerDevice(device: device,
                               applicationId: applicationId,
                               applicationVersion: applicationVersion,
-                              defaultStoreID: defaultStoreID,
                               completion: onCompletion)
     }
 

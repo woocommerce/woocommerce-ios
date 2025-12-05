@@ -104,6 +104,7 @@ open class NUXStackedButtonsViewController: UIViewController {
 
         shadowView?.image = style.buttonViewTopShadowImage
         configureDivider()
+        observeTraitChanges()
     }
 
     override open func viewWillAppear(_ animated: Bool) {
@@ -202,13 +203,10 @@ private extension NUXStackedButtonsViewController {
     func didChangePreferredContentSize() {
         reloadViews()
     }
-}
 
-extension NUXStackedButtonsViewController {
-    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            didChangePreferredContentSize()
+    func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.didChangePreferredContentSize()
         }
     }
 }

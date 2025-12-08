@@ -47,6 +47,12 @@ public class EntityListener<T: ReadOnlyType> {
         self.init(viewContext: storageManager.persistentContainer.viewContext,
                   readOnlyEntity: readOnlyEntity)
     }
+
+    deinit {
+        if let token = notificationsToken {
+            NotificationCenter.default.removeObserver(token)
+        }
+    }
 }
 
 

@@ -38,4 +38,15 @@ public enum NotificationAction: Action {
     ///
     case updateMultipleReadStatus(noteIDs: [Int64], read: Bool, onCompletion: (Error?) -> Void)
     case updateLocalDeletedStatus(noteID: Int64, deleteInProgress: Bool, onCompletion: (Error?) -> Void)
+
+    /// Registers a device for Push Notifications Delivery with the self-driven push notification system.
+    ///
+    case registerDeviceForSelfDrivenPushNotifications(siteID: Int64,
+                                                      device: APNSDevice,
+                                                      applicationID: String,
+                                                      onCompletion: (Result<Int64, Error>) -> Void)
+
+    /// Removes a given tokenID from the the self-driven push notification system.
+    ///
+    case unregisterFromSelfDrivenPushNotifications(siteID: Int64, tokenID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 }

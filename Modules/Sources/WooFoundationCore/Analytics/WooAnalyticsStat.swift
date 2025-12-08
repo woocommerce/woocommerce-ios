@@ -298,6 +298,7 @@ public enum WooAnalyticsStat: String {
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
     case settingsBetaFeaturesApplicationPasswordsToggled = "settings_beta_features_application_passwords_toggled"
+    case settingsBetaFeaturesPOSLocalCatalogToggled = "settings_beta_features_pos_local_catalog_toggled"
     case settingsBetaFeatureToggled = "settings_beta_feature_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"

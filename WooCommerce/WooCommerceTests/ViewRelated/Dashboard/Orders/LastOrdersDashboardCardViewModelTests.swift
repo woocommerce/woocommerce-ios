@@ -1,8 +1,8 @@
 import XCTest
+import CoreData
 import Yosemite
+import Storage
 @testable import WooCommerce
-import protocol Storage.StorageManagerType
-import protocol Storage.StorageType
 
 final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
@@ -112,7 +112,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
                                                          storageManager: storageManager)
-        insertOrderStatuses(sampleOrderStatuses)
+        await insertOrderStatuses(sampleOrderStatuses)
 
         mockFetchFilteredOrders()
         mockOrderStatuses()
@@ -201,15 +201,59 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         }
         await viewModel.reloadData()
     }
+
+    @MainActor
+    func test_rows_are_updated_when_storage_order_is_upserted() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+        XCTAssertEqual(viewModel.rows.first?.statusDescription, sampleOrders[0].status.description)
+
+        // When
+        let updatedStatus: OrderStatusEnum = .onHold
+        await upsertStorageOrder(sampleOrders[0].copy(status: updatedStatus))
+        try await Task.sleep(nanoseconds: 50_000_000) // allow async Task in listener to run
+
+        // Then
+        XCTAssertEqual(viewModel.rows.first?.statusDescription, updatedStatus.description)
+    }
+
+    @MainActor
+    func test_row_is_removed_when_storage_order_is_deleted() async throws {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        mockFetchFilteredOrders()
+        mockOrderStatuses()
+        await viewModel.reloadData()
+        XCTAssertEqual(viewModel.rows.count, 3)
+
+        // Ensure order exists in storage so deletion triggers listener
+        await upsertStorageOrder(sampleOrders[0])
+
+        // When
+        await deleteStorageOrder(siteID: sampleSiteID, orderID: sampleOrders[0].orderID)
+        try await Task.sleep(nanoseconds: 50_000_000) // allow async Task in listener to run
+
+        // Then
+        XCTAssertEqual(viewModel.rows.count, 2)
+        XCTAssertFalse(viewModel.rows.contains(where: { $0.id == sampleOrders[0].orderID }))
+    }
 }
 
 private extension LastOrdersDashboardCardViewModelTests {
-    func insertOrderStatuses(_ readOnlyOrderStatuses: [OrderStatus]) {
-        readOnlyOrderStatuses.forEach { orderStatus in
-            let newOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
-            newOrderStatus.update(with: orderStatus)
-        }
-        storage.saveIfNeeded()
+    func insertOrderStatuses(_ readOnlyOrderStatuses: [Yosemite.OrderStatus]) async {
+        await storageManager.performAndSaveAsync({ storage in
+            readOnlyOrderStatuses.forEach { orderStatus in
+                let newOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+                newOrderStatus.update(with: orderStatus)
+            }
+        }, on: .main)
     }
 
     func mockFetchFilteredOrders() {
@@ -232,5 +276,21 @@ private extension LastOrdersDashboardCardViewModelTests {
                 break
             }
         }
+    }
+
+    func upsertStorageOrder(_ order: Yosemite.Order) async {
+        await storageManager.performAndSaveAsync({ storage in
+            let storageOrder = storage.loadOrder(siteID: order.siteID, orderID: order.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
+            storageOrder.update(with: order)
+        }, on: .main)
+    }
+
+    func deleteStorageOrder(siteID: Int64, orderID: Int64) async {
+        await storageManager.performAndSaveAsync({ storage in
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+            storage.deleteObject(storageOrder)
+        }, on: .main)
     }
 }

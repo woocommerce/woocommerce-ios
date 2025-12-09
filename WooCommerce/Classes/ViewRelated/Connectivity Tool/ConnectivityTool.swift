@@ -265,7 +265,7 @@ struct ConnectivityToolCard: View {
             }
         }
         .sheet(item: $selectedTechnicalDetails) { item in
-            TechnicalDetailsView(title: title, technicalDetails: item.details)
+            TechnicalDetailsView(technicalDetails: item.details)
                 .presentationDetents([.medium, .large])
         }
     }

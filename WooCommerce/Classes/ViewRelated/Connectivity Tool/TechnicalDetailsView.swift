@@ -10,10 +10,9 @@ struct TechnicalDetailsItem: Identifiable {
 /// View for displaying technical error details with copy functionality
 ///
 struct TechnicalDetailsView: View {
-    let title: String
     let technicalDetails: String
     @Environment(\.dismiss) var dismiss
-    @State private var showCopiedConfirmation = false
+    @State private var notice: Notice?
 
     var body: some View {
         NavigationView {
@@ -27,7 +26,7 @@ struct TechnicalDetailsView: View {
                     Spacer()
                 }
             }
-            .navigationTitle(title)
+            .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -38,19 +37,20 @@ struct TechnicalDetailsView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button(Localization.copy) {
                         UIPasteboard.general.string = technicalDetails
-                        showCopiedConfirmation = true
+                        notice = Notice(message: Localization.copiedAlertMessage, feedbackType: .success)
                     }
                 }
             }
-            .alert(Localization.copiedAlertTitle, isPresented: $showCopiedConfirmation) {
-                Button(Localization.ok, role: .cancel) { }
-            } message: {
-                Text(Localization.copiedAlertMessage)
-            }
+            .notice($notice)
         }
     }
 
     private enum Localization {
+        static let title = NSLocalizedString(
+            "technicalDetailsView.title",
+            value: "Technical details",
+            comment: "Title of technical details screen"
+        )
         static let close = NSLocalizedString(
             "technicalDetailsView.close",
             value: "Close",
@@ -60,11 +60,6 @@ struct TechnicalDetailsView: View {
             "technicalDetailsView.copy",
             value: "Copy",
             comment: "Button to copy technical details to clipboard"
-        )
-        static let copiedAlertTitle = NSLocalizedString(
-            "technicalDetailsView.copiedAlert.title",
-            value: "Copied",
-            comment: "Alert title shown when technical details are copied"
         )
         static let copiedAlertMessage = NSLocalizedString(
             "technicalDetailsView.copiedAlert.message",
@@ -82,7 +77,6 @@ struct TechnicalDetailsView: View {
 #Preview("Tool") {
     NavigationView {
         TechnicalDetailsView(
-            title: "Loading products",
             technicalDetails:
             """
             Error Type: Decoding Error

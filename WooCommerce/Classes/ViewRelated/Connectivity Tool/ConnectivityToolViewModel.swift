@@ -185,7 +185,7 @@ final class ConnectivityToolViewModel {
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
 
-                let state = self.stateForSiteResult(result)
+                let state = self.stateForSiteResult(result, operation: .site)
                 continuation.resume(returning: state)
             }
         }
@@ -197,10 +197,10 @@ final class ConnectivityToolViewModel {
         do {
             _ = try await orderRemote.loadAllOrders(for: siteID)
             DDLogInfo("Connectivity Tool: ✅ Site Orders")
-            return stateForSiteResult(Result<[Order], Error>.success([]))
+            return stateForSiteResult(Result<[Order], Error>.success([]), operation: .siteOrders)
         } catch {
             DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
-            return stateForSiteResult(Result<[Order], Error>.failure(error))
+            return stateForSiteResult(Result<[Order], Error>.failure(error), operation: .siteOrders)
         }
     }
 
@@ -210,14 +210,14 @@ final class ConnectivityToolViewModel {
         do {
             _ = try await productsRemote.loadAllProducts(for: siteID)
             DDLogInfo("Connectivity Tool: ✅ Retrieving products successfully")
-            return stateForSiteResult(Result<[Product], Error>.success([]))
+            return stateForSiteResult(Result<[Product], Error>.success([]), operation: .loadingProducts)
         } catch {
             DDLogError("Connectivity Tool: ❌ Failed to load products\n\(error)")
-            return stateForSiteResult(Result<[Product], Error>.failure(error))
+            return stateForSiteResult(Result<[Product], Error>.failure(error), operation: .loadingProducts)
         }
     }
 
-    private func stateForSiteResult<T>(_ result: Result<T, Error>) -> ConnectivityToolCard.ConnectivityState {
+    private func stateForSiteResult<T>(_ result: Result<T, Error>, operation: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState {
         guard case let .failure(error) = result else {
             return .success
         }
@@ -241,7 +241,7 @@ final class ConnectivityToolViewModel {
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
         case (let decodingError as DecodingError, _):
             message = Localization.ErrorMessage.decodingError
-            let technicalDetails = formatDecodingError(decodingError)
+            let technicalDetails = formatDecodingError(decodingError, operation: operation)
             let viewDetailsTitle = Localization.Action.viewDetails
             let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: viewDetailsTitle,
@@ -293,9 +293,10 @@ final class ConnectivityToolViewModel {
     /// Extracts detailed technical information from a DecodingError for debugging purposes.
     /// Contents are intentionally not localized for simplicity.
     ///
-    private func formatDecodingError(_ error: DecodingError) -> String {
+    private func formatDecodingError(_ error: DecodingError, operation: ConnectivityTest) -> String {
         var details: [String] = []
 
+        details.append("Operation: \(operation.title)")
         details.append("Error Type: Decoding Error")
         details.append("")
 
@@ -414,8 +415,8 @@ private extension ConnectivityToolViewModel {
             )
             static let retry = NSLocalizedString(
                 "connectivityToolViewModel.action.retry",
-                value: "Retry connection",
-                comment: "Retry connection button in the connectivity tool screen"
+                value: "Retry test",
+                comment: "Retry test button in the connectivity tool screen"
             )
         }
     }

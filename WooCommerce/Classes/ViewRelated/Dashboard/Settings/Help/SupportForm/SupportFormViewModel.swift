@@ -98,7 +98,7 @@ public final class SupportFormViewModel: ObservableObject {
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
-         defaultSite: Site? = nil) {
+         defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider

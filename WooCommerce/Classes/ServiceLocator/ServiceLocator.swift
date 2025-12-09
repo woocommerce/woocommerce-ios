@@ -70,7 +70,7 @@ final class ServiceLocator {
     private static var _fileLogger: Logs = DDFileLogger()
 
     /// Application Log Provider
-    /// 
+    ///
     private static var _applicationLogProvider: ApplicationLogProvider = DefaultApplicationLogProvider()
 
     /// Crash Logging Stack

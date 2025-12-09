@@ -69,6 +69,10 @@ final class ServiceLocator {
     ///
     private static var _fileLogger: Logs = DDFileLogger()
 
+    /// Application Log Provider
+    /// 
+    private static var _applicationLogProvider: ApplicationLogProvider = DefaultApplicationLogProvider()
+
     /// Crash Logging Stack
     ///
     private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack(
@@ -228,6 +232,10 @@ final class ServiceLocator {
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
         return _fileLogger
+    }
+
+    static var applicationLogProvider: ApplicationLogProvider {
+        return _applicationLogProvider
     }
 
     /// Provides an instance of `WordPressLoggingDelegate` for logging in WordPress libraries.

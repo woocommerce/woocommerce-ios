@@ -220,16 +220,38 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
                               description: String,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        let requestProvider = ZDKRequestProvider()
-        let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
-        requestProvider.createRequest(request) { _, error in
-            // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
-            // Lets make sure we always dispatch the completion block on the main queue.
-            DispatchQueue.main.async {
-                if let error {
-                    return onCompletion(.failure(error))
+        CoreLogger.enabled = true
+        CoreLogger.logLevel = .debug
+        // 1. Upload logs
+        if let logs = customFields[10901699622036] {
+            ZDKUploadProvider().uploadAttachment(logs.data(using: .utf8),
+                                                 withFilename: "application_log.txt",
+                                                 andContentType: "text/plain") { response, error in
+
+
+
+                let requestProvider = ZDKRequestProvider()
+                let request = self.createAPIRequest(formID: formID,
+                                                    customFields: customFields,
+                                                    tags: tags,
+                                                    subject: subject,
+                                                    description: description,
+                                                    attachment: response)
+
+                let req = ZDKRequestProvider()
+
+
+                requestProvider.createRequest(request) { _, error in
+                    // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
+                    // Lets make sure we always dispatch the completion block on the main queue.
+                    DispatchQueue.main.async {
+                        if let error {
+                            return onCompletion(.failure(error))
+                        }
+                        onCompletion(.success(()))
+                    }
                 }
-                onCompletion(.success(()))
+
             }
         }
     }
@@ -340,13 +362,16 @@ private extension ZendeskManager {
 
     /// Creates a Zendesk Request to be consumed by a Request Provider.
     ///
-    func createAPIRequest(formID: Int64, customFields: [Int64: String], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
+    func createAPIRequest(formID: Int64, customFields: [Int64: String], tags: [String], subject: String, description: String, attachment: ZDKUploadResponse?) -> ZDKCreateRequest {
         let request = ZDKCreateRequest()
         request.ticketFormId = formID as NSNumber
         request.customFields = customFields.map { CustomField(fieldId: $0, value: $1) }
         request.tags = tags
         request.subject = subject
         request.requestDescription = description
+        if let attachment {
+            request.attachments = [attachment]
+        }
         return request
     }
 

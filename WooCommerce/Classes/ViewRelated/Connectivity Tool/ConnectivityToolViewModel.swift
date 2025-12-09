@@ -1,8 +1,14 @@
 import Foundation
 import Combine
-import Networking
 import UIKit
 import Yosemite
+import enum Networking.DotcomError
+import class Networking.AlamofireNetwork
+import class Networking.AnnouncementsRemote
+import class Networking.SystemStatusRemote
+import class Networking.OrdersRemote
+import class Networking.ProductsRemote
+import class Networking.UserAgent
 
 final class ConnectivityToolViewModel {
 
@@ -20,7 +26,11 @@ final class ConnectivityToolViewModel {
 
     /// Remote used to check the site orders.
     ///
-    private let orderRemote: OrdersRemote?
+    private let orderRemote: OrdersRemote
+
+    /// Remote used to check loading products
+    ///
+    private let productsRemote: ProductsRemote
 
     /// Site to be tested.
     ///
@@ -32,6 +42,7 @@ final class ConnectivityToolViewModel {
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
         self.orderRemote = OrdersRemote(network: network)
+        self.productsRemote = ProductsRemote(network: network)
         self.siteID = session.defaultStoreID ?? .zero
 
         Task {
@@ -46,9 +57,9 @@ final class ConnectivityToolViewModel {
 
         let supportedTests: [ConnectivityTest] = {
             if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders]
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts]
             } else {
-                [.internetConnection, .site, .siteOrders]
+                [.internetConnection, .site, .siteOrders, .loadingProducts]
             }
         }()
         for (index, testCase) in supportedTests.enumerated().dropFirst(sinceTest.rawValue) {
@@ -93,6 +104,8 @@ final class ConnectivityToolViewModel {
             return await testSiteConnectivity()
         case .siteOrders:
             return await testFetchingOrders()
+        case .loadingProducts:
+            return await testFetchingProducts()
 
         }
     }
@@ -185,12 +198,25 @@ final class ConnectivityToolViewModel {
     ///
     func testFetchingOrders() async -> ConnectivityToolCard.State {
         do {
-            _ = try await orderRemote?.loadAllOrders(for: siteID)
+            _ = try await orderRemote.loadAllOrders(for: siteID)
             DDLogInfo("Connectivity Tool: ✅ Site Orders")
             return stateForSiteResult(Result<[Order], Error>.success([]))
         } catch {
             DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
             return stateForSiteResult(Result<[Order], Error>.failure(error))
+        }
+    }
+
+    /// Test fetching products.
+    ///
+    func testFetchingProducts() async -> ConnectivityToolCard.State {
+        do {
+            _ = try await productsRemote.loadAllProducts(for: siteID)
+            DDLogInfo("Connectivity Tool: ✅ Retrieving products successfully")
+            return stateForSiteResult(Result<[Product], Error>.success([]))
+        } catch {
+            DDLogError("Connectivity Tool: ❌ Failed to load products\n\(error)")
+            return stateForSiteResult(Result<[Product], Error>.failure(error))
         }
     }
 
@@ -252,6 +278,7 @@ final class ConnectivityToolViewModel {
             case .wpComServers: return .wpCom
             case .site: return .site
             case .siteOrders: return .orders
+            case .loadingProducts: return .products
             }
         }()
         ServiceLocator.analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
@@ -277,6 +304,7 @@ private extension ConnectivityToolViewModel {
         case wpComServers
         case site
         case siteOrders
+        case loadingProducts
 
         var title: String {
             switch self {
@@ -288,6 +316,12 @@ private extension ConnectivityToolViewModel {
                 NSLocalizedString("Connecting to your site", comment: "Title for the Your Site connectivity tool card")
             case .siteOrders:
                 NSLocalizedString("Fetching your site orders", comment: "Title for the Your Site Orders connectivity tool card")
+            case .loadingProducts:
+                NSLocalizedString(
+                    "connectivityToolViewModel.connectivityTest.loadingProducts",
+                    value: "Fetching products in your store",
+                    comment: "Title for the test to load products in connectivity tool"
+                )
             }
         }
 
@@ -301,6 +335,8 @@ private extension ConnectivityToolViewModel {
                     .system("storefront")
             case .siteOrders:
                     .system("list.clipboard")
+            case .loadingProducts:
+                    .system("cart")
             }
         }
 

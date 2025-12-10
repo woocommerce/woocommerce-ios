@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-25 23:28:23+0000 */
+/* Translation-Revision-Date: 2025-12-10 17:22:17+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "Tambahkan catatan";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "Tidak dapat memperbarui catatan Pemesanan #%1$d.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "Ini adalah catatan pribadi. Catatan ini tidak akan dibagikan kepada pelanggan.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Pelanggan";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "Catatan";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "Status";
@@ -8364,6 +8370,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Pelanggan";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "Hapus";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "Tanggal";
 
@@ -8409,8 +8418,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "Sampai %1$@";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "Kami tidak dapat menemukan pemesanan dengan nama tersebut. Coba sesuaikan istilah pencarian untuk melihat hasil lainnya.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "Hapus filter";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "Kami tidak dapat menemukan pemesanan apa pun dengan nama tersebut. Coba sesuaikan istilah pencarian Anda untuk melihat hasil lainnya.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "Terjadi error saat mengambil pemesanan";
@@ -8424,20 +8436,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "Semua";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "Tidak ada pemesanan yang cocok dengan penyaring Anda. Coba sesuaikan untuk melihat hasil lainnya.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "Pemesanan akan muncul di sini setelah pelanggan mulai menjadwalkan layanan Anda atau mendaftarkan diri di acara Anda.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "Belum ada pemesanan";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "Coba sesuaikan atau hapus filter Anda untuk melihat hasil lainnya.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "Pemesanan tidak ditemukan";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "Anda tidak memiliki janji temu atau acara hari ini yang dijadwalkan.";
+"bookingListView.emptyState.today.description.i3" = "Semua pemesanan yang dijadwalkan untuk hari ini akan muncul di sini.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "Tidak ada pemesanan hari ini";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "Anda belum memiliki janji temu atau acara mendatang yang dijadwalkan.";
+"bookingListView.emptyState.upcoming.description.i3" = "Pemesanan baru akan muncul di sini ketika pelanggan menjadwalkan layanan Anda atau mendaftarkan diri di acara Anda.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "Tidak ada pemesanan mendatang";
@@ -8462,18 +8480,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Pemesanan";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "Sudah dibayar";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "Dana dikembalikan";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "Tidak diketahui";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "Belum dibayar";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Coba sesuaikan istilah pencarian Anda untuk melihat hasil lainnya";
@@ -10601,6 +10607,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.tryAgain" = "Coba lagi";
 
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "Edit pesanan";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "Hapus produk";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "Hapus produk";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "Satu produk di keranjang sudah tidak tersedia.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "Beberapa produk di keranjang Anda sudah tidak tersedia.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "%@ sudah tidak tersedia.";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "Produk sudah tidak tersedia";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "Produk sudah tidak tersedia";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "Satu produk atau lebih";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "Pembayaran dengan kartu senilai %1$@ berhasil dilakukan.";
 
@@ -10636,6 +10669,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Tidak diketahui";
+
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "Hubungkan pembaca kartu Anda dan mulai terima pembayaran";
 
 /* Title for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "Hubungkan pembaca kartu";
@@ -10764,7 +10800,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Kelola pengaturan katalog";
 
 /* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Katalog";
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Katalog produk";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Konfigurasi dan pengaturan toko";
@@ -10955,6 +10991,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "Hapus keranjang";
 
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "Tidak dapat memuat ulang katalog";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Tidak ada koneksi internet";
 
@@ -11062,6 +11101,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Kupon";
+
+/* Message shown when the product catalog hasn't synced in the specified number of days. %1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days. */
+"pos.itemlistview.staleSyncWarning.description" = "Katalog belum disinkronisasi dalam %1$ld hari terakhir. Pastikan Anda telah terhubung ke internet dan sinkronisasikan lagi di Pengaturan POS.";
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Muat ulang katalog";
@@ -11187,7 +11229,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchHint" = "Coba ubah istilah pencarian.";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "Kami tidak menemukan hasil yang cocok dengan pencarian.";
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "Kami tidak dapat menemukan pesanan dengan nama tersebut.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Tidak ada pesanan";
@@ -11223,7 +11265,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "Kami tidak dapat menemukan kupon dengan nama tersebut — coba sesuaikan istilah pencarian.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Kami tidak dapat menemukan kupon dengan nama tersebut. Coba sesuaikan istilah pencarian Anda.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Kupon dapat menjadi cara yang efektif untuk meningkatkan bisnis. Ingin membuat kupon?";
@@ -11241,7 +11283,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Nama variasi tidak dapat dicari, maka gunakan nama produk induk.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "Kami tidak dapat menemukan produk yang sesuai — coba sesuaikan istilah pencarian Anda.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "Kami tidak dapat menemukan produk yang cocok. Coba sesuaikan istilah pencarian Anda.";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Produk tidak ditemukan";
@@ -11321,38 +11363,41 @@ which should be translated separately and considered part of this sentence. */
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Point of Sale tidak didukung pada lebar layar ini.";
 
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Izinkan pembaruan penuh menggunakan koneksi data seluler";
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Izinkan sinkronisasi menggunakan data seluler";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "Batalkan";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "Coba lagi";
 
 /* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "Ukuran katalog";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "Status Katalog";
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "Ukuran";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Pembaruan penuh terakhir";
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "Sinkronisasi penuh terakhir";
 
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Pembaruan terakhir";
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "Sinkronisasi tambahan terakhir";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Mengelola Penggunaan Data";
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "Data seluler";
 
 /* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Pembaruan Katalog Manual";
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "Pembaruan katalog";
 
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Gunakan segarkan ini hanya saat ada masalah - POS menyimpan data terkini secara otomatis.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "Segarkan katalog";
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "Perbarui katalog secara manual";
 
 /* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "Pengaturan Katalog";
+"posSettingsLocalCatalogDetailView.title.1" = "Katalog produk";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "Perbarui katalog";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produk, %2$ld variasi";
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produk dan %2$ld variasi";
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Ukuran katalog tidak tersedia";

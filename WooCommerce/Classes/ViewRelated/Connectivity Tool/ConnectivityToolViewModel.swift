@@ -44,7 +44,14 @@ final class ConnectivityToolViewModel {
     ///
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
 
-        for (index, testCase) in ConnectivityTest.allCases.enumerated().dropFirst(sinceTest.rawValue) {
+        let supportedTests: [ConnectivityTest] = {
+            if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+                [.internetConnection, .wpComServers, .site, .siteOrders]
+            } else {
+                [.internetConnection, .site, .siteOrders]
+            }
+        }()
+        for (index, testCase) in supportedTests.enumerated().dropFirst(sinceTest.rawValue) {
 
             // Add an inProgress card for the current test.
             cards.append(testCase.inProgressCard)
@@ -265,7 +272,7 @@ private extension ConnectivityToolViewModel {
         case readMore = "arrow.up.forward.app"
     }
 
-    enum ConnectivityTest: Int, CaseIterable {
+    enum ConnectivityTest: Int {
         case internetConnection
         case wpComServers
         case site

@@ -1,1 +1,1 @@
-This update brings smooth UK Tap to Pay via Stripe, clearer card onboarding error tips, and automatic SSO sign-ins for key admin tasks. Order creation now picks the right variations, and eligible merchants can share quick POS feedback.
+This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.

@@ -216,6 +216,7 @@ struct ConnectivityToolCard: View {
     /// Internal layout values
     ///
     private static let verticalSpacing = 16.0
+    private static let iconSize = 24.0
 
     @State private var selectedTechnicalDetails: TechnicalDetailsItem?
 
@@ -231,6 +232,7 @@ struct ConnectivityToolCard: View {
 
                 icon.buildAsset()
                     .foregroundColor(Color(uiColor: .text))
+                    .frame(width: Self.iconSize, height: Self.iconSize)
 
                 Text(title)
                     .bodyStyle()

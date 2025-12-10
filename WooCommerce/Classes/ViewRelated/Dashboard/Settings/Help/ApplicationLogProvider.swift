@@ -10,7 +10,7 @@ extension ApplicationLogProvider {
     }
 }
 
-class DefaultApplicationLogProvider: ApplicationLogProvider {
+final class DefaultApplicationLogProvider: ApplicationLogProvider {
     private let fileLogger: Logs
 
     init(fileLogger: Logs = ServiceLocator.fileLogger) {

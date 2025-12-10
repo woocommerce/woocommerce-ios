@@ -23,7 +23,7 @@ struct ZendeskSupportRequest {
     let tags: [String]
     let subject: String
     let description: String
-    let attachment: ZendeskAttachment?
+    let attachments: [ZendeskAttachment]
 }
 
 /// Defines methods for showing Zendesk UI.
@@ -225,9 +225,9 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     func createSupportRequest(_ request: ZendeskSupportRequest,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        uploadAttachment(request.attachment) { uploadResponse  in
+        uploadAttachments(request.attachments) { uploadResponses  in
             let request = self.createAPIRequest(request: request,
-                                                attachment: uploadResponse)
+                                                attachments: uploadResponses)
             ZDKRequestProvider().createRequest(request) { _, error in
                 // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
                 // Lets make sure we always dispatch the completion block on the main queue.
@@ -242,7 +242,38 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
-    private func uploadAttachment(_ attachment: ZendeskAttachment?, _ completionHandler: @escaping (ZDKUploadResponse?) -> Void) {
+    private func uploadAttachments(
+        _ attachments: [ZendeskAttachment],
+        _ completionHandler: @escaping ([ZDKUploadResponse]) -> Void
+    ) {
+        guard !attachments.isEmpty else {
+            completionHandler([])
+            return
+        }
+
+        let dispatchGroup = DispatchGroup()
+        var responses: [ZDKUploadResponse] = []
+        let lock = NSLock()
+
+        attachments.forEach { attachment in
+            dispatchGroup.enter()
+
+            uploadSingleAttachment(attachment) { response in
+                if let response {
+                    lock.lock()
+                    responses.append(response)
+                    lock.unlock()
+                }
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            completionHandler(responses)
+        }
+    }
+
+    private func uploadSingleAttachment(_ attachment: ZendeskAttachment?, _ completionHandler: @escaping (ZDKUploadResponse?) -> Void) {
         guard let attachment else {
             return completionHandler(nil)
         }
@@ -366,16 +397,14 @@ private extension ZendeskManager {
     /// Creates a Zendesk Request to be consumed by a Request Provider.
     ///
     func createAPIRequest(request: ZendeskSupportRequest,
-                          attachment: ZDKUploadResponse?) -> ZDKCreateRequest {
+                          attachments: [ZDKUploadResponse]) -> ZDKCreateRequest {
         let zdkRequest = ZDKCreateRequest()
         zdkRequest.ticketFormId = request.formID as NSNumber
         zdkRequest.customFields = request.customFields.map { CustomField(fieldId: $0, value: $1) }
         zdkRequest.tags = request.tags
         zdkRequest.subject = request.subject
         zdkRequest.requestDescription = request.description
-        if let attachment {
-            zdkRequest.attachments = [attachment]
-        }
+        zdkRequest.attachments = attachments
         return zdkRequest
     }
 

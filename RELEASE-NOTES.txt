@@ -8,6 +8,7 @@
 - [Internal] Cleaned up logic for push notification token registration [https://github.com/woocommerce/woocommerce-ios/pull/16434]
 - [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
 - [*] Enabled site troubleshooting for users authenticated with site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16441]
+- [*] Troubleshooting tool: Add step to load products and technical details for decoding errors [https://github.com/woocommerce/woocommerce-ios/pull/16444]
 
 23.8
 -----

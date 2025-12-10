@@ -10,6 +10,7 @@ extension WooAnalyticsEvent {
             case wpCom
             case site
             case orders
+            case products
         }
 
         static func automaticTimeoutRetry() -> WooAnalyticsEvent {

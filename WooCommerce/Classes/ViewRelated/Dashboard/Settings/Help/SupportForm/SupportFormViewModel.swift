@@ -56,6 +56,8 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let zendeskProvider: ZendeskManagerProtocol
 
+    private let applicationLogsProvider: ApplicationLogProvider
+
     /// Handles the communication with Tracks..
     ///
     private let analyticsProvider: Analytics
@@ -95,11 +97,13 @@ public final class SupportFormViewModel: ObservableObject {
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
-         defaultSite: Site? = nil) {
+         applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
+         defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
+        self.applicationLogsProvider = applicationLogsProvider
         self.defaultSite = defaultSite
     }
 
@@ -131,11 +135,14 @@ public final class SupportFormViewModel: ObservableObject {
         guard let area else { return }
 
         showLoadingIndicator = true
-        zendeskProvider.createSupportRequest(formID: area.datasource.formID,
-                                             customFields: area.datasource.customFields(siteAddress: siteAddress),
-                                             tags: assembleTags(),
-                                             subject: subject,
-                                             description: description) { [weak self] result in
+
+        let request = ZendeskSupportRequest(formID: area.datasource.formID,
+                                            customFields: area.datasource.customFields(siteAddress: siteAddress),
+                                            tags: assembleTags(),
+                                            subject: subject,
+                                            description: description,
+                                            attachment: attachment())
+        zendeskProvider.createSupportRequest(request) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
 
@@ -212,6 +219,15 @@ private extension SupportFormViewModel {
         contactName = identity.name ?? ""
         contactEmailAddress = identity.emailAddress ?? ""
         shouldShowIdentityInput = true
+    }
+
+    func attachment() -> ZendeskAttachment? {
+        guard let applicationLogs = applicationLogsProvider.applicationLogs()?.data(using: .utf8) else {
+            return nil
+        }
+        return ZendeskAttachment(data: applicationLogs,
+                                 filename: "application_log.txt",
+                                 contentType: "text/plain")
     }
 }
 

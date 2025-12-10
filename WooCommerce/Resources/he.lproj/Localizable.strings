@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-25 15:52:58+0000 */
+/* Translation-Revision-Date: 2025-12-10 16:41:16+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "להוסיף הערה";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "לא ניתן לשנות את הפתק של הזמנה מס' ⁦%1$d⁩.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "זוהי הערה פרטית. לא נשתף אותה עם הלקוח.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "לקוח";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "הערה";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "סטטוס";
@@ -8367,6 +8373,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "לקוח";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "בהיר";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "תאריך";
 
@@ -8412,8 +8421,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "עד %1$@";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "לא הצלחנו למצוא הזמנות עם השם הזה – כדאי לשנות את המונח לחיפוש כדי להציג תוצאות נוספות.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "לנקות את המסננים";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "לא הצלחנו למצוא הזמנות בשם זה. כדאי לשנות את מונח החיפוש כדי להציג תוצאות נוספות.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "שגיאה בהבאת ההזמנות";
@@ -8427,20 +8439,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "הכול";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "אין הזמנות שתואמות למסננים שלך. כדאי לשנות את ההגדרות כדי להציג תוצאות נוספות.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "הזמנות יופיעו כאן לאחר שלקוחות יקבעו תזמון לקבלת שירותים ממך או יירשמו לאירועים שלך.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "עדיין אין הזמנות";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "כדאי לשנות או למחוק את המסננים כדי להציג תוצאות נוספות.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "לא נמצאו הזמנות";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "אין לך פגישות או אירועים מתוזמנים להיום.";
+"bookingListView.emptyState.today.description.i3" = "כל ההזמנות המתוזמנות להיום יופיעו כאן.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "אין הזמנות היום";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "עדיין אין לך פגישות או אירועים עתידיים שמתוזמנים.";
+"bookingListView.emptyState.upcoming.description.i3" = "הזמנות חדשות יופיעו כאן כשלקוחות יקבעו תזמון לקבלת שירותים ממך או יירשמו לאירועים שלך.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "אין הזמנות קרובות";
@@ -8465,18 +8483,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "הזמנות";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "שולם";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "הוחזר";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "לא ידוע";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "לא שולם";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "כדאי לשנות את מונח החיפוש כדי להציג תוצאות נוספות";
@@ -10544,6 +10550,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "שגיאה בניסיון לעבד את התשלום. יש לנסות שוב.";
 
+/* A description within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.exitButton.description" = "הסנכרון יתבצע ברקע.";
+
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "לצאת מ-POS";
 
@@ -10601,6 +10610,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.tryAgain" = "יש לנסות שוב";
 
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "לערוך את ההזמנה";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "להסיר את המוצר";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "להסיר את המוצרים";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "מוצר בעגלת הקניות לא זמין עוד.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "כמה מוצרים בתשלום בעגלת הקניות שלך לא זמינים עוד.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "המוצר %@ אינו זמין עוד.";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "המוצרים לא זמינים עוד";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "המוצר לא זמין עוד";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "לפחות מוצר אחד";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "תשלום בכרטיס של %1$@ חויב בהצלחה.";
 
@@ -10637,6 +10673,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "לא ידוע";
 
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "לחבר את קורא הכרטיסים ולהתחיל לקבל תשלומים";
+
 /* Title for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "לחבר קורא כרטיסים";
 
@@ -10655,6 +10694,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for card readers settings in Point of Sale. */
 "pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "קוראי כרטיסים";
 
+/* Title for the card reader firmware section in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.firmwareTitle" = "קושחה";
+
+/* Text displayed on Point of Sale settings when card reader firmware version is unknown. */
+"pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown" = "לא ידוע";
+
 /* Description of Barcode scanner settings configuration. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "לקבוע את ההגדרות של סורק הברקוד";
 
@@ -10670,8 +10715,14 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "חומרה";
 
+/* Button to dismiss the support form from POS settings. */
+"pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "לבטל";
+
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "סוללה";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "שם המכשיר";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "למידע נוסף בנושא סריקת ברקוד ב-POS";
@@ -10745,11 +10796,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Help section in Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "לקבל עזרה ותמיכה";
 
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle.1" = "לקבל עזרה ותמיכה";
+
 /* Description of the settings to be found within the Local catalog section. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "לנהל את הגדרות הקטלוג";
 
 /* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "קטלוג";
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "קטלוג מוצרים";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "תצורה והגדרות של החנות";
@@ -10939,6 +10993,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "לנקות את עגלת הקניות";
+
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "אין אפשרות לרענן את הקטלוג";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "אין חיבור אינטרנט";
@@ -11168,11 +11225,14 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "לא ניתן לטעון את ההזמנות";
 
+/* Button text for opening an information view when orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle2" = "למידע נוסף";
+
 /* Hint text suggesting to modify search terms when no orders are found. */
 "pos.orderListView.emptyOrdersSearchHint" = "כדאי לשנות את מונח החיפוש.";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "לא הצלחנו למצוא הזמנות שתואמות לחיפוש שלך.";
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "לא הצלחנו למצוא הזמנות בשם זה.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "לא נמצאו הזמנות";
@@ -11208,7 +11268,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "לא הצלחנו למצוא מוצרים עם השם הזה – כדאי לשנות את מונח החיפוש.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "לא הצלחנו למצוא קופונים עם השם הזה. כדאי לשנות את מונח החיפוש.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "קופונים יכולים לעזור לך לקדם את העסק. האם ברצונך ליצור אתר כעת?";
@@ -11226,7 +11286,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "לא ניתן לחפש בשמות סוגים, ולכן יש להשתמש בשם מוצר האב.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "לא הצלחנו למצוא מוצרים תואמים – כדאי לשנות את מונח החיפוש.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "לא הצלחנו למצוא מוצרים תואמים. כדאי לשנות את מונח החיפוש.";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "לא נמצאו מוצרים";
@@ -11306,38 +11366,41 @@ which should be translated separately and considered part of this sentence. */
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "התצוגה של 'נקודת מכירה' לא נתמכת ברוחב המסך הזה.";
 
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "לאפשר עדכון מלא באמצעות נתונים סלולריים";
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "לאפשר סנכרון באמצעות נתונים סלולריים";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "לבטל";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "לנסות שוב";
 
 /* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "גודל הקטלוג";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "מצב הקטלוג";
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "גודל";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "עדכון מלא אחרון";
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "סנכרון מלא אחרון";
 
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "עדכון אחרון";
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "הסנכרון המצטבר האחרון";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "ניהול השימוש בנתונים";
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "נתונים סלולריים";
 
 /* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "עדכון ידני לקטלוג";
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "עדכון הקטלוג";
 
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "ניתן להשתמש ברענון הזה רק כאשר משהו נראה לא כשורה – האפשרות של POS שומרת שהנתונים יהיו מעודכנים באופן אוטומטי.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "לרענן את הקטלוג";
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "לעדכן את הקטלוג באופן ידני";
 
 /* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "הגדרות קטלוג";
+"posSettingsLocalCatalogDetailView.title.1" = "קטלוג מוצרים";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "לעדכן את הקטלוג";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "⁦%1$d⁩ מוצרים, ⁦%2$ld⁩ וריאציות";
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "⁦%1$d⁩ מוצרים ו-⁦%2$ld⁩ סוגים";
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "גודל הקטלוג לא זמין";

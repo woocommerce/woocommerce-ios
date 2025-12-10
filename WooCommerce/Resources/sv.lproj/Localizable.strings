@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-26 09:54:19+0000 */
+/* Translation-Revision-Date: 2025-12-10 13:30:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "Lägg till anteckning";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "Det gick inte att uppdatera anteckning om Bokning nr. %1$d.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "Detta är en privat anteckning. Den kommer inte att delas med kunden.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Kund";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "Anteckning";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "Status";
@@ -8367,6 +8373,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Kund";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "Rensa";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "Datum";
 
@@ -8412,8 +8421,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "Till %1$@";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "Vi kunde inte hitta några bokningar med det namnet — prova att justera din sökterm för att se fler resultat.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "Rensa filter";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "Vi kunde inte hitta några bokningar med det namnet. Prova justera din sökterm för att se fler resultat.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "Fel vid hämtning av bokningar";
@@ -8427,20 +8439,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "Alla";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "Inga bokningar matchar dina filter. Prova att justera dem för att se fler resultat.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "Bokningar visas här när kunder börjar boka dina tjänster eller registrera sig för evenemang.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "Inga bokningar än";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "Prova justera eller rensa dina filter för att se fler resultat.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "Inga bokningar hittades";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "Du har inga möten eller händelser schemalagda för idag.";
+"bookingListView.emptyState.today.description.i3" = "Alla bokningar som är tidsinställda för idag visas här.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "Inga bokningar idag";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "Du har inga framtida möten eller händelser schemalagda än.";
+"bookingListView.emptyState.upcoming.description.i3" = "Nya bokningar visas här när kunder bokar dina tjänster eller registrerar sig för evenemang.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "Inga kommande bokningar";
@@ -8465,18 +8483,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Bokningar";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "Betald";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "Återbetald";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "Okänd";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "Obetald";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Prova att justera din sökterm för att se fler resultat";
@@ -10604,6 +10610,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.tryAgain" = "Försök igen";
 
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "Redigera beställning";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "Ta bort produkt";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "Ta bort produkter";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "En produkt i varukorgen är inte längre tillgänglig.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "Några produkter i din varukorg är inte längre tillgängliga.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "%@ är inte längre tillgänglig.";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "Produkter inte längre tillgängliga";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "Produkt inte längre tillgänglig";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "En eller flera produkter";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "En kortbetalning på %1$@ har genomförts.";
 
@@ -10770,7 +10803,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Hantera kataloginställningar";
 
 /* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Katalog";
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Produktkatalog";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Butikskonfiguration och inställningar";
@@ -10960,6 +10993,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "Rensa varukorg";
+
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "Kan inte uppdatera katalog";
 
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Ingen internetanslutning";
@@ -11196,7 +11232,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchHint" = "Prova att justera din sökterm.";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "Vi kunde inte hitta några beställningar som matchar din sökning.";
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "Vi kunde inte hitta några beställningar med det namnet.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Inga beställningar hittades";
@@ -11232,7 +11268,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Alternativ tillgängliga";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "Vi kunde inte hitta några rabattkoder med det namnet — prova att justera din sökterm.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Vi kunde inte hitta några rabattkoder med det namnet. Prova justera din sökterm.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Rabattkoder kan vara ett effektivt sätt att öka försäljningen. Vill du skapa en?";
@@ -11250,7 +11286,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Variationsnamn går inte att söka efter, så använd det överordnade produktnamnet.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "Vi kunde inte hitta några matchande produkter — prova att justera din sökterm.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "Vi kunde inte hitta några matchande produkter. Prova justera din sökterm.";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Inga produkter hittades";
@@ -11330,38 +11366,41 @@ which should be translated separately and considered part of this sentence. */
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Försäljningsplats stöds inte med den här skärmbredden.";
 
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Tillåt fullständig uppdatering med mobildata";
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Tillåt synkronisering med mobildata";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "Avbryt";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "Försök igen";
 
 /* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "Katalogstorlek";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "Katalogstatus";
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "Storlek";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Senaste fullständiga uppdatering";
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "Senaste fullständiga synkronisering";
 
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Senast uppdaterad";
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "Senaste inkrementella synkronisering";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Hantera dataanvändning";
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "Mobildata";
 
 /* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Manuell kataloguppdatering";
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "Kataloguppdatering";
 
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Använd endast den här uppdateringen när något verkar vara fel – POS håller data aktuella automatiskt.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "Uppdatera katalog";
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "Uppdatera katalogen manuellt";
 
 /* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "Kataloginställningar";
+"posSettingsLocalCatalogDetailView.title.1" = "Produktkatalog";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "Uppdatera katalog";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produkter, %2$ld variationer";
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produkter och %2$ld varianter";
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Katalogstorlek ej tillgänglig";

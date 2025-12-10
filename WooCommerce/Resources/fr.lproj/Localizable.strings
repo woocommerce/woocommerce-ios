@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-25 15:44:03+0000 */
+/* Translation-Revision-Date: 2025-12-05 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "Ajouter une note";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "Impossible de mettre à jour la note de la réservation nº %1$d.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "Ceci est une note privée. Il ne sera pas partagé avec le client.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Client";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "Remarque";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "État";
@@ -8367,6 +8373,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Client";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "Effacer";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "Date";
 
@@ -8412,8 +8421,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "Jusqu’au %1$@";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "Nous n’avons trouvé aucune réservation avec ce nom. Essayez d’ajuster votre terme de recherche pour voir plus de résultats.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "Effacer les filtres";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "Nous n’avons trouvé aucune réservation avec ce nom. Essayez d’ajuster votre terme de recherche pour voir plus de résultats.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "Erreur lors de l’extraction des réservations…";
@@ -8427,20 +8439,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "Tout";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "Aucune réservation ne correspond à vos filtres. Essayez de les ajuster pour voir plus de résultats.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "Les réservations apparaîtront ici lorsque les clients commenceront à réserver vos services ou à s’inscrire à des événements.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "Pas encore de réservations";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "Essayez d’ajuster ou de supprimer vos filtres pour voir plus de résultats.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "Aucune réservation trouvée";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "Vous n’avez aucun rendez-vous ou événement planifié pour aujourd’hui.";
+"bookingListView.emptyState.today.description.i3" = "Toute réservation programmée pour aujourd’hui apparaîtra ici.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "Aucune réservation aujourd’hui";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "Vous n’avez pas encore de rendez-vous ou d’événements planifiés.";
+"bookingListView.emptyState.upcoming.description.i3" = "Les nouvelles réservations apparaîtront ici lorsque les clients réserveront vos services ou s’inscriront à des événements.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "Aucune réservation à venir";
@@ -8465,18 +8483,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Réservations";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "Payée";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "Remboursée";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "Inconnu";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "Non payée";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Essayez d’ajuster votre terme de recherche pour voir plus de résultats";
@@ -10604,6 +10610,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.tryAgain" = "Réessayer";
 
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "Modifier la commande";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "Supprimer le produit";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "Supprimer les produits";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "Un produit du panier n’est plus disponible.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "Certains produits de votre panier ne sont plus disponibles.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "%@ n’est plus disponible.";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "Ces produits ne sont plus disponibles";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "Ce produit n’est plus disponible";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "Un produit ou plus";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "Un paiement de %1$@ par carte a été effectué avec succès.";
 
@@ -10640,6 +10673,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Inconnu";
 
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "Connecter votre lecteur de carte et commencer à accepter les paiements";
+
 /* Title for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "Connecter le lecteur de carte";
 
@@ -10658,6 +10694,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for card readers settings in Point of Sale. */
 "pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Lecteurs de carte";
 
+/* Title for the card reader firmware section in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.firmwareTitle" = "Micrologiciel";
+
+/* Text displayed on Point of Sale settings when card reader firmware version is unknown. */
+"pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown" = "Inconnu";
+
 /* Description of Barcode scanner settings configuration. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Configurer les réglages du scanner de codes-barres";
 
@@ -10673,8 +10715,14 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Matériel";
 
+/* Button to dismiss the support form from POS settings. */
+"pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "Annuler";
+
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Batterie";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "Nom de l’appareil";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "En savoir plus sur la lecture de codes-barres dans le PDV";
@@ -10748,11 +10796,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Help section in Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Obtenir de l’aide et de l’assistance";
 
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle.1" = "Obtenir de l’aide et de l’assistance";
+
 /* Description of the settings to be found within the Local catalog section. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Gérer les réglages du catalogue";
 
 /* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Catalogue";
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Catalogue de produits";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Réglages et configuration de la boutique";
@@ -10943,6 +10994,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "Effacer le panier";
 
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "Impossible d’actualiser le catalogue";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Aucune connexion internet";
 
@@ -11050,6 +11104,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Codes promo";
+
+/* Message shown when the product catalog hasn't synced in the specified number of days. %1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days. */
+"pos.itemlistview.staleSyncWarning.description" = "Le catalogue n’a pas été synchronisé ces %1$ld derniers jours. Veuillez vous assurer que vous êtes connecté(e) à Internet et synchronisez à nouveau dans les réglages du PDV.";
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Actualiser le catalogue";
@@ -11168,11 +11225,14 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Impossible de charger les commandes";
 
+/* Button text for opening an information view when orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle2" = "Lire la suite";
+
 /* Hint text suggesting to modify search terms when no orders are found. */
 "pos.orderListView.emptyOrdersSearchHint" = "Essayez d’ajuster votre terme de recherche.";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "Nous n’avons trouvé aucune commande correspondant à votre recherche.";
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "Nous n’avons trouvé aucune commande portant ce nom.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Aucune commande trouvée";
@@ -11208,7 +11268,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Options disponibles";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "Nous n’avons trouvé aucun code promo avec ce nom. Essayez d’ajuster votre terme de recherche.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Nous n’avons trouvé aucun code promo avec ce nom. Essayez d’ajuster votre terme de recherche.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Les codes promo peuvent être un moyen efficace de stimuler l’activité. Souhaitez-vous en créer un ?";
@@ -11226,7 +11286,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Les noms de variantes ne peuvent pas faire l’objet d’une recherche, utilisez donc le nom du produit parent.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "Nous n’avons trouvé aucun produit correspondant. Essayez d’ajuster votre terme de recherche.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "Nous n’avons trouvé aucun produit correspondant. Essayez d’ajuster votre terme de recherche.";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Aucun produit trouvé";
@@ -11306,38 +11366,41 @@ which should be translated separately and considered part of this sentence. */
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Point de vente n’est pas pris en charge sur les écrans de cette taille.";
 
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Autoriser la mise à jour complète sur les données cellulaires";
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Autoriser la synchronisation à l’aide de données mobiles";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "Annuler";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "Réessayer";
 
 /* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "Taille du catalogue";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "État du catalogue";
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "Taille";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Dernière mise à jour complète";
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "Dernière synchronisation complète";
 
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Dernière mise à jour";
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "Dernière synchronisation incrémentielle";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Gestion de l’utilisation des données";
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "Données mobiles";
 
 /* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Mise à jour manuelle du catalogue";
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "Mise à jour du catalogue";
 
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Utilisez cette actualisation uniquement lorsque quelque chose semble désactivé – le PDV maintient les données à jour automatiquement.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "Actualiser le catalogue";
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "Mettre à jour le catalogue manuellement";
 
 /* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "Réglages du catalogue";
+"posSettingsLocalCatalogDetailView.title.1" = "Catalogue de produits";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "Mettre à jour le catalogue";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produits, %2$ld variantes";
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produits et %2$ld variantes";
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Taille du catalogue indisponible";

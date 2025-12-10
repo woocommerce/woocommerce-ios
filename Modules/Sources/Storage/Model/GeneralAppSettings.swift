@@ -28,6 +28,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isApplicationPasswordsSwitchEnabled: Bool
 
+    /// The state(`true` or `false`) for the POS local catalog beta feature switch.
+    ///
+    public var isPOSLocalCatalogSwitchEnabled: Bool
+
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
@@ -72,6 +76,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 isApplicationPasswordsSwitchEnabled: Bool,
+                isPOSLocalCatalogSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
@@ -86,6 +91,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.isApplicationPasswordsSwitchEnabled = isApplicationPasswordsSwitchEnabled
+        self.isPOSLocalCatalogSwitchEnabled = isPOSLocalCatalogSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
@@ -103,6 +109,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               feedbacks: [:],
               isViewAddOnsSwitchEnabled: false,
               isApplicationPasswordsSwitchEnabled: true,
+              isPOSLocalCatalogSwitchEnabled: true,
               knownCardReaders: [],
               lastEligibilityErrorInfo: nil,
               featureAnnouncementCampaignSettings: [:],
@@ -136,6 +143,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isApplicationPasswordsSwitchEnabled: isApplicationPasswordsSwitchEnabled,
+            isPOSLocalCatalogSwitchEnabled: isPOSLocalCatalogSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
@@ -160,6 +168,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isApplicationPasswordsSwitchEnabled: isApplicationPasswordsSwitchEnabled,
+            isPOSLocalCatalogSwitchEnabled: isPOSLocalCatalogSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: updatedSettings,
@@ -184,6 +193,7 @@ extension GeneralAppSettings {
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isApplicationPasswordsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isApplicationPasswordsSwitchEnabled) ?? false
+        self.isPOSLocalCatalogSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isPOSLocalCatalogSwitchEnabled) ?? true
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)

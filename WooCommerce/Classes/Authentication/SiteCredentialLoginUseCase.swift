@@ -162,8 +162,9 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, U
             } catch let error as SiteCredentialLoginError {
                 errorHandler?(error)
             } catch {
-                if receivedAuthChallengeMethod != nil {
+                if let receivedAuthChallengeMethod {
                     errorHandler?(.failedAuthenticationChallenge)
+                    DDLogError("⛔️ Authentication Error: Nonce retrieval blocked by authentication challenge \(receivedAuthChallengeMethod)")
                 } else {
                     errorHandler?(.genericFailure(underlyingError: error as NSError))
                 }

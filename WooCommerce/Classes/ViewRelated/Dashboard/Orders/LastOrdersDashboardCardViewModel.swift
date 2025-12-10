@@ -1,4 +1,5 @@
 import Foundation
+import CoreData
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -89,6 +90,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     @Published private(set) var rows: [LastOrderDashboardRowViewModel] = []
     @Published private(set) var allStatuses: [OrderStatusRow] = []
 
+    private var orderEntityListeners: [Int64: EntityListener<Order>] = [:]
+
     var status: String {
         selectedOrderStatus?.description ?? Localization.anyStatusCase
     }
@@ -127,12 +130,15 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         rows = []
+        tearDownOrderEntityListeners()
 
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
-            rows = try await orders
+            let fetchedOrders = try await orders
+            rows = fetchedOrders
                 .map { LastOrderDashboardRowViewModel(order: $0) }
+            setupOrderEntityListeners(for: fetchedOrders)
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
         } catch {
             syncingError = error
@@ -238,6 +244,48 @@ private extension LastOrdersDashboardCardViewModel {
                 continuation.resume(returning: OrderStatusEnum(rawValue: rawStatus))
             }))
         }
+    }
+}
+
+// MARK: Orders observing
+//
+private extension LastOrdersDashboardCardViewModel {
+    func setupOrderEntityListeners(for orders: [Order]) {
+        tearDownOrderEntityListeners()
+        guard let viewContext = storageManager.viewStorage as? NSManagedObjectContext else {
+            return
+        }
+
+        for order in orders {
+            let listener = EntityListener(viewContext: viewContext, readOnlyEntity: order)
+            listener.onUpsert = { updatedOrder in
+                Task { @MainActor [weak self] in
+                    self?.updateRow(with: updatedOrder)
+                }
+            }
+            listener.onDelete = {
+                Task { @MainActor [weak self] in
+                    self?.removeRow(with: order.orderID)
+                }
+            }
+            orderEntityListeners[order.orderID] = listener
+        }
+    }
+
+    func tearDownOrderEntityListeners() {
+        orderEntityListeners.removeAll()
+    }
+
+    func updateRow(with order: Order) {
+        guard let index = rows.firstIndex(where: { $0.id == order.orderID }) else {
+            return
+        }
+        rows[index] = LastOrderDashboardRowViewModel(order: order)
+    }
+
+    func removeRow(with orderID: Int64) {
+        rows.removeAll { $0.id == orderID }
+        orderEntityListeners[orderID] = nil
     }
 }
 

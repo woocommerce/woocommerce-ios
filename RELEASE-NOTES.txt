@@ -7,6 +7,7 @@
 - [Internal] Moved the request for push notification authorization after login [https://github.com/woocommerce/woocommerce-ios/pull/16428]
 - [Internal] Cleaned up logic for push notification token registration [https://github.com/woocommerce/woocommerce-ios/pull/16434]
 - [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
+- [*] Keep order statuses in "Most recent orders" dashboard card up to date (https://github.com/woocommerce/woocommerce-ios/pull/16442)
 
 23.8
 -----

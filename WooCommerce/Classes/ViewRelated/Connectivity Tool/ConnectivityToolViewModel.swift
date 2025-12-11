@@ -50,12 +50,6 @@ final class ConnectivityToolViewModel {
         }
     }
 
-    fileprivate struct TestCaseResult {
-        let test: ConnectivityToolViewModel.ConnectivityTest
-        let result: ConnectivityToolCard.ConnectivityState
-        let timeTaken: Double
-    }
-
     private var lastResults: [TestCaseResult] = []
 
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
@@ -91,7 +85,6 @@ final class ConnectivityToolViewModel {
             // Track test result
             trackResponseEvent(for: testCase, success: testResult.isSuccess, timeTaken: timeTaken)
 
-
             lastResults.append(TestCaseResult(test: testCase,
                                               result: testResult,
                                               timeTaken: timeTaken))
@@ -106,29 +99,13 @@ final class ConnectivityToolViewModel {
         cards.append(noConnectionsIssueState())
     }
 
-    func zendeskAttachment() -> ZendeskAttachment? {
+    /// This is not a user facing text but will be part of the Zendesk submission for troubleshooting.
+    func troubleshootingDescription() -> String? {
         guard !lastResults.isEmpty else {
             return nil
         }
 
-        var output = ""
-        lastResults.forEach { result in
-            output = output
-                .appending("## \(result.test.reportName) \n")
-                .appending("Took: \(result.timeTaken)ms \n")
-                .appending("Result: \n")
-                .appending(result.result.reportDescription)
-                .appending("\n")
-                .appending("\n")
-        }
-
-        guard let data = output.data(using: .utf8) else {
-            return nil
-        }
-
-        return ZendeskAttachment(data: data,
-                                 filename: "connectivitytest_log.txt",
-                                 contentType: "text/plain")
+        return lastResults.map { $0.description() }.joined()
     }
 
     /// Perform the test for a provided test case.
@@ -262,12 +239,12 @@ final class ConnectivityToolViewModel {
         }
 
         let message: String
-        let readMoreAction: ConnectivityToolCard.ConnectivityState.Action
         let readMore = Localization.Action.readMore
         let generalTroubleshootAction = {
             UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
             ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
+        var readMoreAction = ConnectivityToolCard.ConnectivityState.Action(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
         let jetpackTroubleshootAction = {
             UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
             ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
@@ -277,7 +254,8 @@ final class ConnectivityToolViewModel {
         switch (error, error.isTimeoutError) {
         case (_, true):
             message = Localization.ErrorMessage.timeout
-            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
+            return .error(message, [readMoreAction, retryAction()])
+
         case (let decodingError as DecodingError, _):
             message = Localization.ErrorMessage.decodingError
             let technicalDetails = formatDecodingError(decodingError, operation: operation)
@@ -287,17 +265,25 @@ final class ConnectivityToolViewModel {
                 systemImage: SystemImages.viewDetails.rawValue,
                 technicalDetails: technicalDetails
             )
-            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
             return .error(message, [viewDetailsAction, readMoreAction, retryAction()])
+
         case (DotcomError.jetpackNotConnected, _):
             message = Localization.ErrorMessage.noJetpackConnection
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: jetpackTroubleshootAction)
-        default:
-            message = Localization.ErrorMessage.generic
-            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
-        }
+            return .error(message, [readMoreAction, retryAction()])
 
-        return .error(message, [readMoreAction, retryAction()])
+        case (let error, _):
+            message = Localization.ErrorMessage.generic
+            let technicalDetails = String(describing: error)
+            let viewDetailsTitle = Localization.Action.viewDetails
+            let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
+                title: viewDetailsTitle,
+                systemImage: SystemImages.viewDetails.rawValue,
+                technicalDetails: technicalDetails
+            )
+            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
+            return .error(message, [viewDetailsAction, readMoreAction, retryAction()])
+        }
     }
 
     private func retryAction() -> ConnectivityToolCard.ConnectivityState.Action {
@@ -392,6 +378,52 @@ final class ConnectivityToolViewModel {
         return codingPath.map { $0.stringValue }.joined(separator: " → ")
     }
 }
+
+fileprivate struct TestCaseResult {
+    let test: ConnectivityToolViewModel.ConnectivityTest
+    let result: ConnectivityToolCard.ConnectivityState
+    let timeTaken: TimeInterval
+
+    /// This is not a user facing text, but will be part of the attachment sent to Zendesk
+    func description() -> String {
+        let lines: [String] = [
+            "## \(caseName)",
+            "Took: \(formattedTimeTaken)",
+            "Result: \(resultDescription)",
+            ""
+        ]
+        return lines.joined(separator: "\n")
+    }
+
+    private var formattedTimeTaken: String {
+        let milliseconds = timeTaken * 1000
+        return String(format: "%.0fms", milliseconds)
+    }
+
+    /// This is not a user facing text, but will be part of the attachment sent to Zendesk
+    private var caseName: String {
+        switch test {
+        case .internetConnection: "Internet Connection"
+        case .wpComServers: "Connecting to WordPress.com Servers"
+        case .site: "Connecting to your site"
+        case .siteOrders: "Fetching your site orders"
+        case .loadingProducts: "Fetching products in your store"
+        }
+    }
+
+    /// This is not a user facing text, but will be part of the attachment sent to Zendesk
+    private var resultDescription: String {
+        switch result {
+        case .inProgress: return "In progress"
+        case .success: return "Success"
+        case .empty(let message): return message
+        case .error(_, let actions):
+            let lines = actions.compactMap { $0.technicalDetails }
+            return lines.joined(separator: "\n")
+        }
+    }
+}
+
 
 private extension ConnectivityToolViewModel {
     enum Localization {
@@ -528,17 +560,6 @@ private extension ConnectivityToolViewModel {
 
         var inProgressCard: ConnectivityTool.Card {
             .init(title: title, icon: icon, state: .inProgress)
-        }
-
-        /// This is not a user facing text, but will be part of the attachment sent to Zendesk
-        var reportName: String {
-            switch self {
-            case .internetConnection: "Internet Connection"
-            case .wpComServers: "Connecting to WordPress.com Servers"
-            case .site: "Connecting to your site"
-            case .siteOrders: "Fetching your site orders"
-            case .loadingProducts: "Fetching products in your store"
-            }
         }
     }
 }

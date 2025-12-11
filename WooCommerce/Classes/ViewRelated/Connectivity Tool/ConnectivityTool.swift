@@ -42,8 +42,15 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     private func showContactSupportForm() {
         let attachments: [ZendeskAttachment] = {
-            guard let report = self.viewModel.zendeskAttachment() else { return [] }
-            return [report]
+            guard let troubleshootingDescription = self.viewModel.troubleshootingDescription(),
+                  let data = troubleshootingDescription.data(using: .utf8) else { return [] }
+            return [
+                ZendeskAttachment(
+                    data: data,
+                    filename: "connectivitytest_log.txt",
+                    contentType: "text/plain"
+                )
+            ]
         }()
         let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
         supportController.show(from: self)
@@ -180,21 +187,6 @@ struct ConnectivityToolCard: View {
                 return true
             default:
                 return false
-            }
-        }
-
-        var reportDescription: String {
-            switch self {
-            case .inProgress: return "In progress"
-            case .success: return "Success"
-            case .empty(let message): return message
-            case .error(_, let actions):
-                return actions.reduce("") { partialResult, action in
-                    if let technicalDetails = action.technicalDetails {
-                        return partialResult.appending("\(technicalDetails)\n")
-                    }
-                    return partialResult
-                }
             }
         }
     }

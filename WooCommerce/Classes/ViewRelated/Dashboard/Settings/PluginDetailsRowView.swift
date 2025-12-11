@@ -59,7 +59,7 @@ struct PluginDetailsRowView: View {
                     viewModel.refreshPlugin()
                 }) {
                     if let updateURL = viewModel.updateURL {
-                        SafariView(url: updateURL)
+                        AuthenticatableWebView(url: updateURL, title: viewModel.updatePluginTitle)
                     }
                 }
         },

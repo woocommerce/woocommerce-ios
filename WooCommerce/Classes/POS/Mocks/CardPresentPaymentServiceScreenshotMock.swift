@@ -68,6 +68,24 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
         return .success(CardPresentPaymentTransaction())
     }
 
+    func collectPOSPayment(for order: Yosemite.Order, using connectionMethod: PointOfSale.CardReaderConnectionMethod, captureHandler: @escaping (String) async throws -> Void) async throws -> PointOfSale.CardPresentPaymentResult {
+        // 1. Validating order
+        paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // 2. Preparing reader
+        paymentEventSubject.send(.show(eventDetails: .preparingForPayment(cancelPayment: {})))
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // 3. Ready to accept card
+        let inputMethods: Yosemite.CardReaderInput = [.tap, .swipe, .insert]
+        paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: inputMethods, cancelPayment: {})))
+
+        try await Task.sleep(nanoseconds: 3_000_000_000) // 3 seconds, give it some time for the screenshot
+
+        return .success(CardPresentPaymentTransaction())
+    }
+
     func cancelPayment() {
         // No-op for screenshots
     }

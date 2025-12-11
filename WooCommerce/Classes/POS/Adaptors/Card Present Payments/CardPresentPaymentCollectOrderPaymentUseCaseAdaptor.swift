@@ -108,6 +108,87 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             }
         }
     }
+
+    /// Creates a task for collecting POS payment with Store API capture.
+    ///
+    func collectPOSPaymentTask(for order: Order,
+                               using connectionMethod: CardReaderConnectionMethod,
+                               siteID: Int64,
+                               preflightController: CardPresentPaymentPreflightController<
+                               CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
+                               CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
+                               CardPresentPaymentsAlertPresenterAdaptor>,
+                               configuration: CardPresentPaymentsConfiguration,
+                               alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
+                               paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
+                               captureHandler: @escaping (String) async throws -> Void) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
+        return Task {
+            guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
+                throw CardPresentPaymentServiceError.invalidAmount
+            }
+
+            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator()
+
+            let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
+                                                                 CardPresentPaymentsTransactionAlertsProvider,
+                                                                    CardPresentPaymentsAlertPresenterAdaptor>(
+                siteID: siteID,
+                order: order,
+                formattedAmount: formattedAmount,
+                rootViewController: NullViewControllerPresenting(),
+                configuration: configuration,
+                paymentOrchestrator: invalidatablePaymentOrchestrator,
+                alertsPresenter: alertsPresenter,
+                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                preflightController: preflightController,
+                analyticsTracker: collectOrderPaymentAnalyticsTracker,
+                posCaptureHandler: captureHandler)
+
+            return try await withTaskCancellationHandler {
+                return try await withCheckedThrowingContinuation { continuation in
+                    var nillableContinuation: CheckedContinuation<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>? = continuation
+
+                    orderPaymentUseCase.collectPayment(
+                        using: connectionMethod.discoveryMethod,
+                        channel: .pos,
+                        onFailure: { error in
+                            guard let continuation = nillableContinuation else { return }
+                            nillableContinuation = nil
+
+                            if let error = error as? CardPaymentErrorProtocol {
+                                continuation.resume(throwing: error)
+                            } else {
+                                continuation.resume(throwing: CardPresentPaymentServiceError.unknownPaymentError(underlyingError: error))
+                            }
+                        },
+                        onCancel: {
+                            guard let continuation = nillableContinuation else { return }
+                            nillableContinuation = nil
+                            paymentEventSubject.send(.idle)
+                            continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.cancellation)
+                        },
+                        onPaymentCompletion: {
+                            guard let continuation = nillableContinuation else { return }
+                            nillableContinuation = nil
+                            continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.success)
+                        },
+                        onCompleted: {
+                            // Not required for this use case
+                        }
+                    )
+                }
+            } onCancel: {
+                invalidatablePaymentOrchestrator.invalidatePayment()
+                switch latestPaymentEvent {
+                    case .show(let eventDetails):
+                        onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
+                    case .idle, .showOnboarding:
+                        return
+                }
+            }
+        }
+    }
 }
 
 enum CardPresentPaymentAdaptedCollectOrderPaymentResult {

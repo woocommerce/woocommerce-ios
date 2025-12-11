@@ -50,6 +50,18 @@ public protocol CardPresentPaymentFacade {
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult
 
+    /// Collects a card present payment for a POS order using Store API for capture.
+    /// - Parameters:
+    ///   - order: The order to collect payment for.
+    ///   - connectionMethod: Allows specifying Tap to Pay or bluetooth reader.
+    ///   - captureHandler: Async closure called with payment intent ID to capture via Store API.
+    /// - Returns: `CardPresentPaymentResult` for a success, or cancellation.
+    /// - Throws: `CardPresentPaymentError` for any failures.
+    /// - Output: publishes intermediate events on the `paymentEventPublisher` as required.
+    func collectPOSPayment(for order: Order,
+                           using connectionMethod: CardReaderConnectionMethod,
+                           captureHandler: @escaping (String) async throws -> Void) async throws -> CardPresentPaymentResult
+
     /// Cancels any in-progress payment.
     func cancelPayment()
 

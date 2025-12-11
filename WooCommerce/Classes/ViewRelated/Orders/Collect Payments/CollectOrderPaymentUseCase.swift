@@ -92,6 +92,10 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private let receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol
 
+    /// Optional capture handler for POS Store API payments.
+    /// When set, uses `collectPOSPayment` instead of `collectPayment`.
+    private let posCaptureHandler: ((String) async throws -> Void)?
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -107,7 +111,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase()) {
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         posCaptureHandler: ((String) async throws -> Void)? = nil) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
@@ -124,6 +129,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.posCaptureHandler = posCaptureHandler
     }
 
     /// Starts the collect payment flow.
@@ -309,81 +315,116 @@ private extension CollectOrderPaymentUseCase {
                     return
                 }
 
-                // Start collect payment process
-                self.paymentOrchestrator.collectPayment(
-                    for: self.order,
-                    orderTotal: orderTotal,
-                    paymentGatewayAccount: paymentGatewayAccount,
-                    paymentMethodTypes: self.configuration.paymentMethods,
-                    stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
-                    channel: channel,
-                    onPreparingReader: { [weak self] in
-                        self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
-                            self?.cancelPayment(from: .paymentPreparingReader) {
-                                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                            }
-                        }))
-                    },
-                    onWaitingForInput: { [weak self] inputMethods in
-                        guard let self = self else { return }
-                        self.alertsPresenter.present(
-                            viewModel: paymentAlerts.tapOrInsertCard(
-                                title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
-                                    username: self.order.billingAddress?.firstName),
-                                amount: self.formattedAmount,
-                                inputMethods: inputMethods,
-                                onCancel: { [weak self] in
-                                    self?.cancelPayment(from: .paymentWaitingForInput) {
-                                        onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-                                    }
-                                })
-                        )
-                    }, onCardInserted: { [weak self] in
-                        guard let self = self else { return }
-                        self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
+                // Define common handlers
+                let onPreparingReader: () -> Void = { [weak self] in
+                    self?.alertsPresenter.present(viewModel: paymentAlerts.preparingReader(onCancel: {
+                        self?.cancelPayment(from: .paymentPreparingReader) {
+                            onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                        }
+                    }))
+                }
+
+                let onWaitingForInput: (CardReaderInput) -> Void = { [weak self] inputMethods in
+                    guard let self = self else { return }
+                    self.alertsPresenter.present(
+                        viewModel: paymentAlerts.tapOrInsertCard(
                             title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
                                 username: self.order.billingAddress?.firstName),
                             amount: self.formattedAmount,
+                            inputMethods: inputMethods,
                             onCancel: { [weak self] in
                                 self?.cancelPayment(from: .paymentWaitingForInput) {
                                     onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                                 }
                             })
-                        )
-                    }, onProcessingMessage: { [weak self] in
-                        guard let self = self else { return }
-                        // Waiting message
-                        self.alertsPresenter.present(
-                            viewModel: paymentAlerts.processingTransaction(
-                                title: CollectOrderPaymentUseCaseDefinitions.Localization.processingPaymentTitle(
-                                    username: self.order.billingAddress?.firstName)))
-                    }, onDisplayMessage: { [weak self] message in
-                        guard let self = self else { return }
-                        // Reader messages. EG: Remove Card
-                        self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
-                    }, onProcessingCompletion: { [weak self] intent in
-                        self?.analyticsTracker.trackProcessingCompletion(intent: intent)
-                        self?.markOrderAsPaidIfNeeded(intent: intent)
-                    }, onCompletion: { [weak self] result in
-                        switch result {
-                        case .success(let capturedPaymentData):
-                            self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
-                            onCompletion(.success(capturedPaymentData))
-                        case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
-                            switch cancellationSource {
-                            case .reader:
-                                self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
-                            default:
-                                self?.handlePaymentCancellation(from: .other)
+                    )
+                }
+
+                let onCardInserted: () -> Void = { [weak self] in
+                    guard let self = self else { return }
+                    self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
+                        title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
+                            username: self.order.billingAddress?.firstName),
+                        amount: self.formattedAmount,
+                        onCancel: { [weak self] in
+                            self?.cancelPayment(from: .paymentWaitingForInput) {
+                                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                             }
-                        case .failure(let error):
-                            self?.checkThenHandlePaymentFailureAndRetryPayment(error,
-                                                                               alertProvider: paymentAlerts,
-                                                                               paymentGatewayAccount: paymentGatewayAccount,
-                                                                               channel: channel,
-                                                                               onCompletion: onCompletion)
+                        })
+                    )
+                }
+
+                let onProcessingMessage: () -> Void = { [weak self] in
+                    guard let self = self else { return }
+                    self.alertsPresenter.present(
+                        viewModel: paymentAlerts.processingTransaction(
+                            title: CollectOrderPaymentUseCaseDefinitions.Localization.processingPaymentTitle(
+                                username: self.order.billingAddress?.firstName)))
+                }
+
+                let onDisplayMessage: (String) -> Void = { [weak self] message in
+                    guard let self = self else { return }
+                    self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
+                }
+
+                let onProcessingCompletion: (PaymentIntent) -> Void = { [weak self] intent in
+                    self?.analyticsTracker.trackProcessingCompletion(intent: intent)
+                    self?.markOrderAsPaidIfNeeded(intent: intent)
+                }
+
+                let onPaymentCompletion: (Result<CardPresentCapturedPaymentData, Error>) -> Void = { [weak self] result in
+                    switch result {
+                    case .success(let capturedPaymentData):
+                        self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+                        onCompletion(.success(capturedPaymentData))
+                    case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                        switch cancellationSource {
+                        case .reader:
+                            self?.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                        default:
+                            self?.handlePaymentCancellation(from: .other)
                         }
-                    })
+                    case .failure(let error):
+                        self?.checkThenHandlePaymentFailureAndRetryPayment(error,
+                                                                           alertProvider: paymentAlerts,
+                                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                                           channel: channel,
+                                                                           onCompletion: onCompletion)
+                    }
+                }
+
+                // Start collect payment process - use POS capture if handler is provided
+                if let captureHandler = self.posCaptureHandler {
+                    self.paymentOrchestrator.collectPOSPayment(
+                        for: self.order,
+                        orderTotal: orderTotal,
+                        paymentGatewayAccount: paymentGatewayAccount,
+                        paymentMethodTypes: self.configuration.paymentMethods,
+                        stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
+                        captureHandler: captureHandler,
+                        onPreparingReader: onPreparingReader,
+                        onWaitingForInput: onWaitingForInput,
+                        onCardInserted: onCardInserted,
+                        onProcessingMessage: onProcessingMessage,
+                        onDisplayMessage: onDisplayMessage,
+                        onProcessingCompletion: onProcessingCompletion,
+                        onCompletion: onPaymentCompletion)
+                } else {
+                    self.paymentOrchestrator.collectPayment(
+                        for: self.order,
+                        orderTotal: orderTotal,
+                        paymentGatewayAccount: paymentGatewayAccount,
+                        paymentMethodTypes: self.configuration.paymentMethods,
+                        stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
+                        channel: channel,
+                        onPreparingReader: onPreparingReader,
+                        onWaitingForInput: onWaitingForInput,
+                        onCardInserted: onCardInserted,
+                        onProcessingMessage: onProcessingMessage,
+                        onDisplayMessage: onDisplayMessage,
+                        onProcessingCompletion: onProcessingCompletion,
+                        onCompletion: onPaymentCompletion)
+                }
             }
         }
     }

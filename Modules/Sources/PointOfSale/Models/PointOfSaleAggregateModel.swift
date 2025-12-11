@@ -5,7 +5,7 @@ import Observation
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
-import struct Yosemite.Order
+import struct Networking.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
@@ -19,6 +19,9 @@ import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.POSStoreAPICheckoutServiceProtocol
+import struct Yosemite.POSCart
+import struct Yosemite.POSStoreAPICheckoutResult
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -66,6 +69,10 @@ protocol PointOfSaleAggregateModelProtocol {
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    private let storeAPICheckoutService: POSStoreAPICheckoutServiceProtocol?
+
+    /// Result from Store API checkout, used for card payment capture.
+    private var storeAPICheckoutResult: POSStoreAPICheckoutResult?
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -119,7 +126,8 @@ protocol PointOfSaleAggregateModelProtocol {
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
-         isLocalCatalogEligible: Bool = false) {
+         isLocalCatalogEligible: Bool = false,
+         storeAPICheckoutService: POSStoreAPICheckoutServiceProtocol? = nil) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -138,6 +146,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
+        self.storeAPICheckoutService = storeAPICheckoutService
 
         publishCardReaderConnectionStatus()
         publishCardReaderUpdateState()
@@ -415,6 +424,21 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func collectCardPayment() async {
+        // If we have a Store API checkout result, use that for payment
+        if let checkoutResult = storeAPICheckoutResult,
+           let checkoutService = storeAPICheckoutService {
+            do {
+                try await collectPOSPaymentViaStoreAPI(
+                    checkoutResult: checkoutResult,
+                    checkoutService: checkoutService
+                )
+            } catch {
+                DDLogError("Error taking POS Store API payment: \(error)")
+            }
+            return
+        }
+
+        // Fall back to REST API order-based payment
         guard case let .loaded(totals, order) = internalOrderState,
               totals.orderTotalDecimal > 0.0
         else {
@@ -426,6 +450,74 @@ extension PointOfSaleAggregateModel {
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
+    }
+
+    /// Collects card payment using Store API for capture.
+    ///
+    @MainActor
+    private func collectPOSPaymentViaStoreAPI(
+        checkoutResult: POSStoreAPICheckoutResult,
+        checkoutService: POSStoreAPICheckoutServiceProtocol
+    ) async throws {
+        // Create a minimal Order object with the data we need for payment collection
+        let order = Order(
+            siteID: siteID,
+            orderID: checkoutResult.checkoutResponse.orderID,
+            parentID: 0,
+            customerID: 0,
+            orderKey: checkoutResult.checkoutResponse.orderKey,
+            isEditable: false,
+            needsPayment: true,
+            needsProcessing: false,
+            number: String(checkoutResult.checkoutResponse.orderID),
+            status: .pending,
+            currency: checkoutResult.cartTotals.currencyCode,
+            currencySymbol: "",
+            customerNote: nil,
+            dateCreated: Date(),
+            dateModified: Date(),
+            datePaid: nil,
+            discountTotal: "0",
+            discountTax: "0",
+            shippingTotal: "0",
+            shippingTax: "0",
+            total: checkoutResult.cartTotals.totalPrice,
+            totalTax: checkoutResult.cartTotals.totalTax,
+            paymentMethodID: "pos_card",
+            paymentMethodTitle: "POS Card",
+            paymentURL: nil,
+            chargeID: nil,
+            items: [],
+            billingAddress: nil,
+            shippingAddress: nil,
+            shippingLines: [],
+            coupons: [],
+            refunds: [],
+            fees: [],
+            taxes: [],
+            customFields: [],
+            renewalSubscriptionID: nil,
+            appliedGiftCards: [],
+            attributionInfo: nil,
+            shippingLabels: [],
+            createdVia: "store-api"
+        )
+
+        // Create capture handler that uses Store API checkout
+        let captureHandler: (String) async throws -> Void = { [checkoutService] paymentIntentID in
+            DDLogInfo("🔄 Capturing POS payment via Store API with payment intent: \(paymentIntentID)")
+            _ = try await checkoutService.captureCardPayment(paymentIntentID: paymentIntentID)
+            DDLogInfo("✅ POS payment captured successfully")
+        }
+
+        _ = try await cardPresentPaymentService.collectPOSPayment(
+            for: order,
+            using: .bluetooth,
+            captureHandler: captureHandler
+        )
+
+        // Clear the checkout result after successful payment
+        storeAPICheckoutResult = nil
     }
 
     // Prevents card payments from the moment the merchant decides we start collecting cash
@@ -659,12 +751,55 @@ extension PointOfSaleAggregateModel {
     func checkOut() async {
         collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
-        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
-            await self?.checkOut()
-        })
-        trackOrderSyncState(syncOrderResult)
-        await removeMissingProductsFromCatalogAfterSync()
-        await startPaymentWhenCardReaderConnected()
+
+        // Use Store API checkout if service is available
+        if let storeAPICheckoutService {
+            await checkOutViaStoreAPI(checkoutService: storeAPICheckoutService)
+        } else {
+            // Fall back to REST API order sync
+            let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+                await self?.checkOut()
+            })
+            trackOrderSyncState(syncOrderResult)
+            await removeMissingProductsFromCatalogAfterSync()
+            await startPaymentWhenCardReaderConnected()
+        }
+    }
+
+    /// Performs checkout via Store API for card payments.
+    ///
+    /// This creates a pending order using Store API checkout with `pos_card` payment method.
+    /// The order is completed when the card payment is captured.
+    ///
+    @MainActor
+    private func checkOutViaStoreAPI(checkoutService: POSStoreAPICheckoutServiceProtocol) async {
+        do {
+            let posCart = POSCart(cart: cart)
+
+            // Call Store API checkout with pos_card to create pending order
+            let checkoutResult = try await checkoutService.checkout(
+                cart: posCart,
+                paymentMethod: .card,
+                billingEmail: nil
+            )
+
+            DDLogInfo("✅ Store API checkout created order \(checkoutResult.checkoutResponse.orderID)")
+
+            // Store the checkout result for use in card payment capture
+            storeAPICheckoutResult = checkoutResult
+
+            // Start payment collection when card reader is connected
+            await startPaymentWhenCardReaderConnected()
+        } catch {
+            DDLogError("⛔️ Store API checkout failed: \(error)")
+            // TODO: Handle error state - for now, fall back to REST API
+            let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+                await self?.checkOut()
+            })
+            trackOrderSyncState(syncOrderResult)
+            await removeMissingProductsFromCatalogAfterSync()
+            await startPaymentWhenCardReaderConnected()
+        }
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync

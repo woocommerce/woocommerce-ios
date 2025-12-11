@@ -254,6 +254,20 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                // Create Store API checkout service for POS
+                let storeAPICheckoutService: POSStoreAPICheckoutService?
+                if let siteURL = storesManager.sessionManager.defaultSite?.url {
+                    storeAPICheckoutService = POSStoreAPICheckoutService(
+                        siteURL: siteURL,
+                        credentials: credentials,
+                        selectedSite: defaultSitePublisher,
+                        appPasswordSupportState: isAppPasswordSupported
+                    )
+                } else {
+                    storeAPICheckoutService = nil
+                    DDLogWarn("⚠️ Could not create POSStoreAPICheckoutService - no site URL available")
+                }
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -287,7 +301,8 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor,
-                    itemProvider: itemProvider
+                    itemProvider: itemProvider,
+                    storeAPICheckoutService: storeAPICheckoutService
                 )
 
                 let hostingController = UIHostingController(rootView: posView)

@@ -16,6 +16,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.POSStoreAPICheckoutServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -44,6 +45,7 @@ public struct PointOfSaleEntryPointView: View {
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let isLocalCatalogEligible: Bool
+    private let storeAPICheckoutService: POSStoreAPICheckoutServiceProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -69,7 +71,8 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          services: POSDependencyProviding,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         storeAPICheckoutService: POSStoreAPICheckoutServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -138,6 +141,7 @@ public struct PointOfSaleEntryPointView: View {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
+        self.storeAPICheckoutService = storeAPICheckoutService
     }
 
     public var body: some View {
@@ -169,7 +173,8 @@ public struct PointOfSaleEntryPointView: View {
                 barcodeScanService: barcodeScanService,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
-                isLocalCatalogEligible: isLocalCatalogEligible)
+                isLocalCatalogEligible: isLocalCatalogEligible,
+                storeAPICheckoutService: storeAPICheckoutService)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

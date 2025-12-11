@@ -285,7 +285,7 @@ private extension PointOfSaleOrderController {
 
 // MARK: - Mapping
 
-private extension POSCart {
+extension POSCart {
     init(cart: Cart) {
         let items = cart.purchasableItems.compactMap { (purchasableItem: Cart.PurchasableItem) -> POSCartItem? in
             guard case let .loaded(item) = purchasableItem.state else { return nil }

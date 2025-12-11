@@ -18,6 +18,8 @@ public enum OrderPaymentMethod: RawRepresentable {
     /// Other
     case unknown
 
+    case posCard
+
     /// Designated Initializer.
     ///
     public init(rawValue: String) {
@@ -32,6 +34,8 @@ public enum OrderPaymentMethod: RawRepresentable {
             self = .stripe
         case Keys.none:
             self = .none
+        case Keys.posCard:
+            self = .posCard
         default:
             self = .unknown
         }
@@ -49,6 +53,8 @@ public enum OrderPaymentMethod: RawRepresentable {
             return Keys.stripe
         case .none:
             return Keys.none
+        case .posCard:
+            return Keys.posCard
         default:
             return Keys.unknown
         }
@@ -63,4 +69,5 @@ private enum Keys {
     static let stripe = "stripe"
     static let none = ""
     static let unknown = "unknown"
+    static let posCard = "pos_card"
 }

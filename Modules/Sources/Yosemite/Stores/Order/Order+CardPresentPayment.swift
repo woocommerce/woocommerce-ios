@@ -51,7 +51,7 @@ import protocol Storage.StorageManagerType
     private var isPaymentMethodEligibleForCardPayment: Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: paymentMethodID)
         switch paymentMethod {
-        case .booking, .cod, .woocommercePayments, .stripe, .none:
+        case .booking, .cod, .woocommercePayments, .stripe, .none, .posCard:
             return true
         case .unknown:
             return false

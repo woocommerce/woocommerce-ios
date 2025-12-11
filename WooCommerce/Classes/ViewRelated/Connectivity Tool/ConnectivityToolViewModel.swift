@@ -50,11 +50,20 @@ final class ConnectivityToolViewModel {
         }
     }
 
+    fileprivate struct TestCaseResult {
+        let test: ConnectivityToolViewModel.ConnectivityTest
+        let result: ConnectivityToolCard.ConnectivityState
+        let timeTaken: Double
+    }
+
+    private var lastResults: [TestCaseResult] = []
+
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
     /// Provide a `sinceTest` parameter to omit test cases before it..
     ///
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
 
+        lastResults = []
         let supportedTests: [ConnectivityTest] = {
             if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
                 [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts]
@@ -82,6 +91,11 @@ final class ConnectivityToolViewModel {
             // Track test result
             trackResponseEvent(for: testCase, success: testResult.isSuccess, timeTaken: timeTaken)
 
+
+            lastResults.append(TestCaseResult(test: testCase,
+                                              result: testResult,
+                                              timeTaken: timeTaken))
+
             // Only continue with another test if the current test was successful.
             if !testResult.isSuccess {
                 return // Exit connectivity test.
@@ -90,6 +104,31 @@ final class ConnectivityToolViewModel {
 
         // Add no connections issues card if all tests are successful.
         cards.append(noConnectionsIssueState())
+    }
+
+    func zendeskAttachment() -> ZendeskAttachment? {
+        guard !lastResults.isEmpty else {
+            return nil
+        }
+
+        var output = ""
+        lastResults.forEach { result in
+            output = output
+                .appending("## \(result.test.reportName) \n")
+                .appending("Took: \(result.timeTaken)ms \n")
+                .appending("Result: \n")
+                .appending(result.result.reportDescription)
+                .appending("\n")
+                .appending("\n")
+        }
+
+        guard let data = output.data(using: .utf8) else {
+            return nil
+        }
+
+        return ZendeskAttachment(data: data,
+                                 filename: "connectivitytest_log.txt",
+                                 contentType: "text/plain")
     }
 
     /// Perform the test for a provided test case.
@@ -489,6 +528,17 @@ private extension ConnectivityToolViewModel {
 
         var inProgressCard: ConnectivityTool.Card {
             .init(title: title, icon: icon, state: .inProgress)
+        }
+
+        /// This is not a user facing text, but will be part of the attachment sent to Zendesk
+        var reportName: String {
+            switch self {
+            case .internetConnection: "Internet Connection"
+            case .wpComServers: "Connecting to WordPress.com Servers"
+            case .site: "Connecting to your site"
+            case .siteOrders: "Fetching your site orders"
+            case .loadingProducts: "Fetching products in your store"
+            }
         }
     }
 }

@@ -41,7 +41,11 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     }
 
     private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: .init())
+        let attachments: [ZendeskAttachment] = {
+            guard let report = self.viewModel.zendeskAttachment() else { return [] }
+            return [report]
+        }()
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
@@ -176,6 +180,21 @@ struct ConnectivityToolCard: View {
                 return true
             default:
                 return false
+            }
+        }
+
+        var reportDescription: String {
+            switch self {
+            case .inProgress: return "In progress"
+            case .success: return "Success"
+            case .empty(let message): return message
+            case .error(_, let actions):
+                return actions.reduce("") { partialResult, action in
+                    if let technicalDetails = action.technicalDetails {
+                        return partialResult.appending("\(technicalDetails)\n")
+                    }
+                    return partialResult
+                }
             }
         }
     }

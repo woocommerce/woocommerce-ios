@@ -26,6 +26,37 @@ protocol PaymentCaptureOrchestrating {
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
 
+    /// Collects payment for POS using Store API for capture.
+    ///
+    /// - Parameters:
+    ///   - order: The order to collect payment for.
+    ///   - orderTotal: The order total as decimal.
+    ///   - paymentGatewayAccount: Payment gateway configuration.
+    ///   - paymentMethodTypes: Allowed payment methods.
+    ///   - stripeSmallestCurrencyUnitMultiplier: Currency multiplier for Stripe.
+    ///   - captureHandler: Async closure called with payment intent ID to capture via Store API.
+    ///   - onPreparingReader: Called when preparing the reader.
+    ///   - onWaitingForInput: Called when waiting for card input.
+    ///   - onCardInserted: Called when card is inserted.
+    ///   - onProcessingMessage: Called during processing.
+    ///   - onDisplayMessage: Called to display reader messages.
+    ///   - onProcessingCompletion: Called when payment is processed (before capture).
+    ///   - onCompletion: Final completion handler.
+    ///
+    func collectPOSPayment(for order: Order,
+                           orderTotal: NSDecimalNumber,
+                           paymentGatewayAccount: PaymentGatewayAccount,
+                           paymentMethodTypes: [PaymentMethodType],
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
+                           captureHandler: @escaping (String) async throws -> Void,
+                           onPreparingReader: @escaping () -> Void,
+                           onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                           onCardInserted: @escaping () -> Void,
+                           onProcessingMessage: @escaping () -> Void,
+                           onDisplayMessage: @escaping (String) -> Void,
+                           onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
+
     func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
 
@@ -105,6 +136,72 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             siteID: order.siteID,
             orderID: order.orderID,
             parameters: parameters,
+            onCardReaderMessage: { event in
+                switch event {
+                case .waitingForInput(let inputMethods):
+                    onWaitingForInput(inputMethods)
+                case .displayMessage(let message):
+                    onDisplayMessage(message)
+                case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
+                    onProcessingMessage()
+                case .cardInserted:
+                    onCardInserted()
+                case .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                    DDLogInfo("💳 Unhandled card reader event received: \(event)")
+                }
+            },
+            onProcessingCompletion: { intent in
+                onProcessingCompletion(intent)
+            },
+            onCompletion: { [weak self] result in
+                self?.allowPassPresentation()
+                self?.completePaymentIntentCapture(
+                    order: order,
+                    captureResult: result,
+                    onCompletion: onCompletion
+                )
+            }
+        )
+
+        stores.dispatch(paymentAction)
+    }
+
+    func collectPOSPayment(for order: Order,
+                           orderTotal: NSDecimalNumber,
+                           paymentGatewayAccount: PaymentGatewayAccount,
+                           paymentMethodTypes: [PaymentMethodType],
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
+                           captureHandler: @escaping (String) async throws -> Void,
+                           onPreparingReader: @escaping () -> Void,
+                           onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                           onCardInserted: @escaping () -> Void,
+                           onProcessingMessage: @escaping () -> Void,
+                           onDisplayMessage: @escaping (String) -> Void,
+                           onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
+                                                   onWaitingForInput: onWaitingForInput,
+                                                   onCardInserted: onCardInserted,
+                                                   onProcessingMessage: onProcessingMessage,
+                                                   onDisplayMessage: onDisplayMessage,
+                                                   onProcessingCompletion: onProcessingCompletion)
+        onPreparingReader()
+
+        let parameters = paymentParameters(order: order,
+                                           orderTotal: orderTotal,
+                                           country: paymentGatewayAccount.country,
+                                           statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                                           paymentMethodTypes: paymentMethodTypes,
+                                           stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                           channel: .pos)
+
+        suppressPassPresentation()
+
+        let paymentAction = CardPresentPaymentAction.collectPOSPayment(
+            siteID: order.siteID,
+            orderID: order.orderID,
+            parameters: parameters,
+            captureHandler: captureHandler,
             onCardReaderMessage: { event in
                 switch event {
                 case .waitingForInput(let inputMethods):

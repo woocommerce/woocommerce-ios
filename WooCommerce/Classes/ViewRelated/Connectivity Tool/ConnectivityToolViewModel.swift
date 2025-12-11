@@ -36,6 +36,8 @@ final class ConnectivityToolViewModel {
     ///
     private let siteID: Int64
 
+    private var latestTestResult: [ConnectivityTestResult] = []
+
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
@@ -50,14 +52,10 @@ final class ConnectivityToolViewModel {
         }
     }
 
-    private var lastResults: [TestCaseResult] = []
-
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
     /// Provide a `sinceTest` parameter to omit test cases before it..
     ///
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
-
-        lastResults = []
         let supportedTests: [ConnectivityTest] = {
             if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
                 [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts]
@@ -85,9 +83,9 @@ final class ConnectivityToolViewModel {
             // Track test result
             trackResponseEvent(for: testCase, success: testResult.isSuccess, timeTaken: timeTaken)
 
-            lastResults.append(TestCaseResult(test: testCase,
-                                              result: testResult,
-                                              timeTaken: timeTaken))
+            latestTestResult.append(ConnectivityTestResult(testCase: testCase,
+                                                           result: testResult,
+                                                           timeTaken: timeTaken))
 
             // Only continue with another test if the current test was successful.
             if !testResult.isSuccess {
@@ -101,11 +99,13 @@ final class ConnectivityToolViewModel {
 
     /// This is not a user facing text but will be part of the Zendesk submission for troubleshooting.
     func troubleshootingDescription() -> String? {
-        guard !lastResults.isEmpty else {
+        guard !latestTestResult.isEmpty else {
             return nil
         }
 
-        return lastResults.map { $0.description() }.joined()
+        return latestTestResult.enumerated().map { index, result in
+            "## \(index + 1). " + result.description()
+        }.joined()
     }
 
     /// Perform the test for a provided test case.
@@ -244,7 +244,9 @@ final class ConnectivityToolViewModel {
             UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
             ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
-        var readMoreAction = ConnectivityToolCard.ConnectivityState.Action(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
+        var readMoreAction = ConnectivityToolCard.ConnectivityState.Action(title: readMore,
+                                                                           systemImage: SystemImages.readMore.rawValue,
+                                                                           action: generalTroubleshootAction)
         let jetpackTroubleshootAction = {
             UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
             ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
@@ -379,15 +381,15 @@ final class ConnectivityToolViewModel {
     }
 }
 
-fileprivate struct TestCaseResult {
-    let test: ConnectivityToolViewModel.ConnectivityTest
+fileprivate struct ConnectivityTestResult {
+    let testCase: ConnectivityToolViewModel.ConnectivityTest
     let result: ConnectivityToolCard.ConnectivityState
     let timeTaken: TimeInterval
 
     /// This is not a user facing text, but will be part of the attachment sent to Zendesk
     func description() -> String {
         let lines: [String] = [
-            "## \(caseName)",
+            caseName,
             "Took: \(formattedTimeTaken)",
             "Result: \(resultDescription)",
             ""
@@ -402,7 +404,7 @@ fileprivate struct TestCaseResult {
 
     /// This is not a user facing text, but will be part of the attachment sent to Zendesk
     private var caseName: String {
-        switch test {
+        switch testCase {
         case .internetConnection: "Internet Connection"
         case .wpComServers: "Connecting to WordPress.com Servers"
         case .site: "Connecting to your site"

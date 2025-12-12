@@ -116,6 +116,10 @@ final class ServiceLocator {
     ///
     private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
 
+    /// Age range verification (Declared Age Range API wrapper)
+    ///
+    private static var _ageRangeVerificationService: AgeRangeVerificationServiceProtocol = AgeRangeVerificationService()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -308,6 +312,10 @@ final class ServiceLocator {
         _startupWaitingTimeTracker
     }
 
+    static var ageRangeVerificationService: AgeRangeVerificationServiceProtocol {
+        _ageRangeVerificationService
+    }
+
     /// Provides access point to the `POSCatalogSyncCoordinator`.
     /// Returns nil if feature flag is disabled or user is not authenticated.
     ///
@@ -444,6 +452,14 @@ extension ServiceLocator {
         }
 
         _receiptPrinter = mock
+    }
+
+    static func setAgeRangeVerificationService(_ mock: AgeRangeVerificationServiceProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _ageRangeVerificationService = mock
     }
 
     static func setConnectivityObserver(_ mock: ConnectivityObserver) {

@@ -982,6 +982,8 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
+		2D047C9E2EE6DA590014B255 /* AgeRangeVerificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D047C9C2EE6DA590014B255 /* AgeRangeVerificationService.swift */; };
+		2D0490542EEAF5E90014B255 /* AgeGateBlockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0490522EEAF5E90014B255 /* AgeGateBlockedView.swift */; };
 		2D052FB42E9408AF004111FD /* CustomerDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */; };
 		2D052FB52E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */; };
 		2D05337E2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */; };
@@ -3874,6 +3876,8 @@
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
+		2D047C9C2EE6DA590014B255 /* AgeRangeVerificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationService.swift; sourceTree = "<group>"; };
+		2D0490522EEAF5E90014B255 /* AgeGateBlockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeGateBlockedView.swift; sourceTree = "<group>"; };
 		2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsView+RowTextStyle.swift"; sourceTree = "<group>"; };
 		2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailsView.swift; sourceTree = "<group>"; };
 		2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+PriceFormatting.swift"; sourceTree = "<group>"; };
@@ -7913,6 +7917,22 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		2D047C9D2EE6DA590014B255 /* AgeVerification */ = {
+			isa = PBXGroup;
+			children = (
+				2D047C9C2EE6DA590014B255 /* AgeRangeVerificationService.swift */,
+			);
+			path = AgeVerification;
+			sourceTree = "<group>";
+		};
+		2D0490532EEAF5E90014B255 /* AgeGate */ = {
+			isa = PBXGroup;
+			children = (
+				2D0490522EEAF5E90014B255 /* AgeGateBlockedView.swift */,
+			);
+			path = AgeGate;
+			sourceTree = "<group>";
+		};
 		2D7A3E212E7891C400C46401 /* CIAB */ = {
 			isa = PBXGroup;
 			children = (
@@ -9591,6 +9611,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				2D047C9D2EE6DA590014B255 /* AgeVerification */,
 				01BB6C082D09E9200094D55B /* Location */,
 				26BCA03E2C35E965000BE96C /* BackgroundTasks */,
 				EEADF61C281A3DB7001B40F1 /* ShippingValueLocalizer */,
@@ -9707,6 +9728,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				2D0490532EEAF5E90014B255 /* AgeGate */,
 				2DAC2C952E82A15C008521AF /* Bookings */,
 				68B3BA242D91473D0000B2F2 /* AI Settings */,
 				B626C7192876599B0083820C /* Custom Fields */,
@@ -14186,6 +14208,7 @@
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */,
+				2D0490542EEAF5E90014B255 /* AgeGateBlockedView.swift in Sources */,
 				B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
 				EE1B07F32C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift in Sources */,
@@ -14652,6 +14675,7 @@
 				DE3650682B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
 				DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */,
+				2D047C9E2EE6DA590014B255 /* AgeRangeVerificationService.swift in Sources */,
 				CEFA16F12B74F64D00512782 /* AnalyticsHubCustomizeView.swift in Sources */,
 				68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
@@ -16578,6 +16602,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -17319,6 +17344,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -17385,6 +17411,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

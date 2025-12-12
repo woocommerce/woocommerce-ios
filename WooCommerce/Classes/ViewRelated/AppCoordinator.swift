@@ -32,6 +32,9 @@ final class AppCoordinator {
     ///
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
+    /// Handles the age range verification process and corresponding app/UI state behaviour.
+    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()
+
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -90,6 +93,14 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
+                        self.ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
+                            hostingWindow: self.window
+                        ) { [weak self] in
+                            guard let self else { return }
+                            // Log out and return to login flow.
+                            stores.deauthenticate()
+                            displayAuthenticatorWithOnboardingIfNeeded()
+                        }
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
@@ -429,6 +440,67 @@ private extension AppCoordinator {
         } else {
             onCompletion(false)
         }
+    }
+}
+
+protocol AgeRangeVerificationCoordinatorProtocol {
+    func triggerAgeVerificationIfNeeded(
+        hostingWindow: UIWindow,
+        onBlockingFallback: @escaping () -> Void
+    )
+}
+
+final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
+    /// Triggers the age range verification flow.
+    /// Handles "blocking UI" presenting in case of ineligible age and performs a logout.
+    /// - Parameters:
+    ///   - hostingWindow: The window that handles the dialogue UI. Basically the main app window works well.
+    ///   - onBlockingFallback: Called when a confirmation CTA is tapped inside "blocking UI". Designed to trigger a logout on tap.
+    func triggerAgeVerificationIfNeeded(
+        hostingWindow: UIWindow,
+        onBlockingFallback: @escaping () -> Void
+    ) {
+        guard let anchor = hostingWindow.topmostPresentedViewController else {
+            DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
+            return
+        }
+
+        ServiceLocator.ageRangeVerificationService.verifyAgeRange(
+            in: anchor,
+            minimumAge: 18
+        ) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .eligible:
+                /// The specified user age range satisfies requirements
+                break
+            case .ineligible:
+                /// The specified user age range is below requirement
+                presentAgeGateBlock(
+                    reason: .tooYoung,
+                    hostingWindow: hostingWindow,
+                    onCTATap: onBlockingFallback
+                )
+            case .declinedSharing,
+                 .featureUnavailable,
+                 .invalidUIState,
+                 .sdkError,
+                 .unknown:
+                /// We don't block the app usage if the age verifying is not possible
+                break
+            }
+        }
+    }
+
+    func presentAgeGateBlock(
+        reason: AgeGateBlockReason,
+        hostingWindow: UIWindow,
+        onCTATap: @escaping () -> Void
+    ) {
+        hostingWindow.rootViewController = AgeGateBlockedHostingController(
+            reason: reason,
+            onPrimaryAction: onCTATap
+        )
     }
 }
 

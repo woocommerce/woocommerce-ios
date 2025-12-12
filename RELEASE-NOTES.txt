@@ -10,6 +10,7 @@
 - [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16446]
 - [*] Enabled site troubleshooting for users authenticated with site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16441]
 - [*] Troubleshooting tool: Add step to load products and technical details for decoding errors [https://github.com/woocommerce/woocommerce-ios/pull/16444]
+- [*] Use authenticated web view for updating plugins [https://github.com/woocommerce/woocommerce-ios/pull/16448]
 
 23.8
 -----

@@ -66,6 +66,8 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let defaultSite: Site?
 
+    private let attachments: [ZendeskAttachment]
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -98,13 +100,15 @@ public final class SupportFormViewModel: ObservableObject {
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
-         defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite) {
+         defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+         attachments: [ZendeskAttachment] = []) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
         self.applicationLogsProvider = applicationLogsProvider
         self.defaultSite = defaultSite
+        self.attachments = attachments
     }
 
     /// Tracks when the support form is viewed.
@@ -141,7 +145,7 @@ public final class SupportFormViewModel: ObservableObject {
                                             tags: assembleTags(),
                                             subject: subject,
                                             description: description,
-                                            attachment: attachment())
+                                            attachments: wrapAttachments())
         zendeskProvider.createSupportRequest(request) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
@@ -221,13 +225,14 @@ private extension SupportFormViewModel {
         shouldShowIdentityInput = true
     }
 
-    func attachment() -> ZendeskAttachment? {
+    func wrapAttachments() -> [ZendeskAttachment] {
         guard let applicationLogs = applicationLogsProvider.applicationLogs()?.data(using: .utf8) else {
-            return nil
+            return []
         }
-        return ZendeskAttachment(data: applicationLogs,
-                                 filename: "application_log.txt",
-                                 contentType: "text/plain")
+
+        return attachments + [ZendeskAttachment(data: applicationLogs,
+                                                filename: "application_log.txt",
+                                                contentType: "text/plain")]
     }
 }
 

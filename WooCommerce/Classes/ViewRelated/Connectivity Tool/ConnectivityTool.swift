@@ -41,7 +41,18 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     }
 
     private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: .init())
+        let attachments: [ZendeskAttachment] = {
+            guard let troubleshootingDescription = self.viewModel.troubleshootingDescription(),
+                  let data = troubleshootingDescription.data(using: .utf8) else { return [] }
+            return [
+                ZendeskAttachment(
+                    data: data,
+                    filename: "connectivitytest_log.txt",
+                    contentType: "text/plain"
+                )
+            ]
+        }()
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
@@ -216,6 +227,7 @@ struct ConnectivityToolCard: View {
     /// Internal layout values
     ///
     private static let verticalSpacing = 16.0
+    private static let iconSize = 24.0
 
     @State private var selectedTechnicalDetails: TechnicalDetailsItem?
 
@@ -231,6 +243,7 @@ struct ConnectivityToolCard: View {
 
                 icon.buildAsset()
                     .foregroundColor(Color(uiColor: .text))
+                    .frame(width: Self.iconSize, height: Self.iconSize)
 
                 Text(title)
                     .bodyStyle()

@@ -54,9 +54,17 @@ public final class POSStoreAPIRemote: Remote {
     ///   - productID: The product ID to add.
     ///   - quantity: The quantity to add.
     ///   - variationID: Optional variation ID (for variable products).
+    ///   - giftCardRecipientEmail: Optional recipient email for gift card products.
+    ///   - giftCardSenderName: Optional sender name for gift card products.
     /// - Returns: The updated cart.
     ///
-    public func addItem(productID: Int64, quantity: Int, variationID: Int64? = nil) async throws -> StoreAPICart {
+    public func addItem(
+        productID: Int64,
+        quantity: Int,
+        variationID: Int64? = nil,
+        giftCardRecipientEmail: String? = nil,
+        giftCardSenderName: String? = nil
+    ) async throws -> StoreAPICart {
         var parameters: [String: Any] = [
             ParameterKey.id: productID,
             ParameterKey.quantity: quantity
@@ -64,6 +72,14 @@ public final class POSStoreAPIRemote: Remote {
 
         if let variationID, variationID > 0 {
             parameters[ParameterKey.variation] = variationID
+        }
+
+        if let email = giftCardRecipientEmail {
+            parameters[ParameterKey.giftCardTo] = email
+        }
+
+        if let senderName = giftCardSenderName {
+            parameters[ParameterKey.giftCardFrom] = senderName
         }
 
         let request = POSStoreAPIRequest(
@@ -171,5 +187,7 @@ private extension POSStoreAPIRemote {
         static let paymentMethod = "payment_method"
         static let billingAddress = "billing_address"
         static let paymentData = "payment_data"
+        static let giftCardTo = "wc_gc_giftcard_to"
+        static let giftCardFrom = "wc_gc_giftcard_from"
     }
 }

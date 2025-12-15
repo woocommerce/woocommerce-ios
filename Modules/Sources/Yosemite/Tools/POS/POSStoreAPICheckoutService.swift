@@ -10,6 +10,18 @@ public enum POSStoreAPIPaymentMethod: String {
     case card = "pos_card"
 }
 
+/// Gift card information for a cart item during checkout.
+///
+public struct POSGiftCardItemInfo {
+    public let recipientEmail: String
+    public let senderName: String
+
+    public init(recipientEmail: String, senderName: String) {
+        self.recipientEmail = recipientEmail
+        self.senderName = senderName
+    }
+}
+
 /// Result of a Store API checkout operation.
 ///
 public struct POSStoreAPICheckoutResult {
@@ -41,12 +53,14 @@ public protocol POSStoreAPICheckoutServiceProtocol {
     ///   - cart: The local POS cart to sync and checkout.
     ///   - paymentMethod: Payment method to use (cash or card).
     ///   - billingEmail: Optional billing email for the order.
+    ///   - giftCardInfo: Gift card info per cart item, keyed by cart item UUID.
     /// - Returns: Checkout result with order details and cart totals.
     ///
     func checkout(
         cart: POSCart,
         paymentMethod: POSStoreAPIPaymentMethod,
-        billingEmail: String?
+        billingEmail: String?,
+        giftCardInfo: [UUID: POSGiftCardItemInfo]
     ) async throws -> POSStoreAPICheckoutResult
 
     /// Captures a card payment by calling checkout with the payment intent ID.
@@ -125,7 +139,8 @@ public final class POSStoreAPICheckoutService: POSStoreAPICheckoutServiceProtoco
     public func checkout(
         cart: POSCart,
         paymentMethod: POSStoreAPIPaymentMethod,
-        billingEmail: String?
+        billingEmail: String?,
+        giftCardInfo: [UUID: POSGiftCardItemInfo] = [:]
     ) async throws -> POSStoreAPICheckoutResult {
         // Step 1: Clear any existing cart
         try await clearCart()
@@ -135,10 +150,15 @@ public final class POSStoreAPICheckoutService: POSStoreAPICheckoutServiceProtoco
             let (productID, variationID) = extractProductIDs(from: cartItem.item)
             let quantity = Int(truncating: cartItem.quantity as NSDecimalNumber)
 
+            // Get gift card info for this cart item if available
+            let gcInfo = giftCardInfo[cartItem.id]
+
             _ = try await remote.addItem(
                 productID: productID,
                 quantity: quantity,
-                variationID: variationID > 0 ? variationID : nil
+                variationID: variationID > 0 ? variationID : nil,
+                giftCardRecipientEmail: gcInfo?.recipientEmail,
+                giftCardSenderName: gcInfo?.senderName
             )
         }
 

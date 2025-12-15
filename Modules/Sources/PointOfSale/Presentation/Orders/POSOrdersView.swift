@@ -29,7 +29,11 @@ struct POSOrdersView: View {
         default:
             CustomNavigationSplitView(selection: Binding(
                 get: { orderListModel.ordersController.selectedOrder },
-                set: { orderListModel.ordersController.selectOrder($0) }
+                set: { newValue in
+                    Task {
+                        await orderListModel.ordersController.selectOrder(newValue)
+                    }
+                }
             )) { _ in
                 POSOrderListView(isSearching: $isSearching, searchTerm: $searchTerm) {
                     isPresented = false
@@ -39,7 +43,9 @@ struct POSOrdersView: View {
                 POSOrderDetailsView(
                     order: selection,
                     onBack: {
-                        orderListModel.ordersController.selectOrder(nil)
+                        Task {
+                            await orderListModel.ordersController.selectOrder(nil)
+                        }
                     }
                 )
                 .id(selection.id)
@@ -53,7 +59,9 @@ struct POSOrdersView: View {
             } setDefaultValue: {
                 if orderListModel.ordersController.selectedOrder == nil,
                    let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
-                    orderListModel.ordersController.selectOrder(firstOrder)
+                    Task {
+                        await orderListModel.ordersController.selectOrder(firstOrder)
+                    }
                 }
             }
             .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
@@ -67,14 +75,18 @@ struct POSOrdersView: View {
                     return
                 }
 
-                orderListModel.ordersController.selectOrder(firstOrder)
+                Task {
+                    await orderListModel.ordersController.selectOrder(firstOrder)
+                }
             }
             .animation(.default, value: orderListModel.ordersController.ordersViewState.orders.isEmpty)
             .onAppear {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListLoaded())
             }
             .onDisappear {
-                orderListModel.ordersController.selectOrder(nil)
+                Task {
+                    await orderListModel.ordersController.selectOrder(nil)
+                }
             }
         }
     }

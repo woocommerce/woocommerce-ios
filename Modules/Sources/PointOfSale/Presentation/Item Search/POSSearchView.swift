@@ -17,7 +17,7 @@ protocol POSSearchable {
     /// - Parameter term: The search term to use
     func performSearch(term: String) async
 
-    func clearSearchResults()
+    func clearSearchResults() async
 }
 
 /// A reusable search field view for POS items
@@ -148,7 +148,7 @@ private extension POSSearchField {
         if let threshold = loadingDelayThreshold {
             await performSearchWithDelayedLoading(searchTerm: searchTerm, threshold: threshold)
         } else {
-            searchable.clearSearchResults()
+            await searchable.clearSearchResults()
             await searchable.performSearch(term: searchTerm)
         }
 
@@ -173,12 +173,14 @@ private extension POSSearchField {
             return Task { @MainActor in
                 try? await Task.sleep(nanoseconds: threshold)
                 if !Task.isCancelled {
-                    searchable.clearSearchResults()
+                    await searchable.clearSearchResults()
                 }
             }
         } else {
             // No threshold - show loading immediately for responsive feel
-            searchable.clearSearchResults()
+            Task {
+                await searchable.clearSearchResults()
+            }
             return nil
         }
     }
@@ -188,7 +190,7 @@ private extension POSSearchField {
         let loadingTask = Task { @MainActor in
             try? await Task.sleep(nanoseconds: threshold)
             if !Task.isCancelled {
-                searchable.clearSearchResults()
+                await searchable.clearSearchResults()
             }
         }
 

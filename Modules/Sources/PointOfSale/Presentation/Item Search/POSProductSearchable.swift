@@ -37,7 +37,7 @@ final class POSProductSearchable: POSSearchable {
         await itemsController.searchItems(searchTerm: term, baseItem: .root)
     }
 
-    func clearSearchResults() {
-        itemsController.clearSearchItems(baseItem: .root)
+    func clearSearchResults() async {
+        await itemsController.clearSearchItems(baseItem: .root)
     }
 }

@@ -41,7 +41,9 @@ struct POSOrderListView: View {
                             imageColor: .posOnSurface
                         ) {
                             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListSearchButtonTapped())
-                            setSearch(true)
+                            Task {
+                                await setSearch(true)
+                            }
                         }
                         .accessibilityLabel(Localization.searchButtonAccessibilityLabel)
                         .transition(.asymmetric(
@@ -56,7 +58,9 @@ struct POSOrderListView: View {
                             searchTerm: $searchTerm,
                             searchable: POSOrderSearchable(ordersController: orderListModel.ordersController),
                             onBack: {
-                                setSearch(false)
+                                Task {
+                                    await setSearch(false)
+                                }
                             }
                         )
                         .posSearchTextFieldUnfocusedBorderColor(.posOutlineVariant)
@@ -68,7 +72,9 @@ struct POSOrderListView: View {
                         ))
                         .onChange(of: searchTerm) { _, newValue in
                             if newValue.isEmpty {
-                                orderListModel.ordersController.clearSearchOrders()
+                                Task {
+                                    await orderListModel.ordersController.clearSearchOrders()
+                                }
                             }
                         }
                     }
@@ -141,7 +147,9 @@ struct POSOrderListView: View {
                                 orderCreatedDate: order.dateCreated,
                                 siteTimezone: siteTimezone
                             ))
-                            orderListModel.ordersController.selectOrder(order)
+                            Task { @MainActor in
+                                await orderListModel.ordersController.selectOrder(order)
+                            }
                         }) {
                             POSOrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                         }
@@ -339,14 +347,14 @@ private struct POSGhostOrderRowView: View {
 // MARK: - Search
 
 private extension POSOrderListView {
-    func setSearch(_ isSearchingValue: Bool) {
+    func setSearch(_ isSearchingValue: Bool) async {
         if isSearchingValue {
             isSearching = true
         } else {
             searchTerm = ""
             isSearching = false
             // Clear search results and return to default orders
-            orderListModel.ordersController.clearSearchOrders()
+            await orderListModel.ordersController.clearSearchOrders()
         }
     }
 }
@@ -382,8 +390,8 @@ final class POSOrderSearchable: POSSearchable {
         await ordersController.searchOrders(searchTerm: term)
     }
 
-    func clearSearchResults() {
-        ordersController.clearSearchOrders()
+    func clearSearchResults() async {
+        await ordersController.clearSearchOrders()
     }
 }
 

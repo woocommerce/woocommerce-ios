@@ -362,7 +362,7 @@ private extension CardPresentPaymentStore {
     private func capturePOSPayment(paymentIntentID: String,
                                    captureHandler: @escaping (String) async throws -> Void) -> AnyPublisher<Result<Void, Error>, Never> {
         Future<Result<Void, Error>, Never> { promise in
-            Task {
+            Task { @MainActor in
                 do {
                     try await captureHandler(paymentIntentID)
                     promise(.success(.success(())))

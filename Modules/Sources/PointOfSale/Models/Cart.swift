@@ -3,6 +3,8 @@ import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleBarcodeScanError
 import struct Yosemite.POSItemIdentifier
+import struct Yosemite.POSSimpleProduct
+import struct Yosemite.POSVariation
 
 struct Cart {
     var purchasableItems: [Cart.PurchasableItem] = []
@@ -149,5 +151,18 @@ extension Cart {
 
     var isNotEmpty: Bool {
         return !isEmpty
+    }
+
+    /// Returns true if any purchasable item in the cart is a downloadable product
+    var containsDownloadableItems: Bool {
+        purchasableItems.contains { item in
+            guard case .loaded(let orderableItem) = item.state else { return false }
+            if let simpleProduct = orderableItem as? POSSimpleProduct {
+                return simpleProduct.downloadable
+            } else if let variation = orderableItem as? POSVariation {
+                return variation.downloadable
+            }
+            return false
+        }
     }
 }

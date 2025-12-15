@@ -111,8 +111,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let grdbManager: GRDBManagerProtocol
     private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
-    private let analytics: Analytics?
-    private let connectivityObserver: ConnectivityObserver?
+    nonisolated private let analytics: Analytics?
+    nonisolated private let connectivityObserver: ConnectivityObserver?
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []

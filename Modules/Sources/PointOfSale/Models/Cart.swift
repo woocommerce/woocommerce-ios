@@ -165,4 +165,30 @@ extension Cart {
             return false
         }
     }
+
+    /// Returns true if any purchasable item in the cart is a gift card product
+    var containsGiftCards: Bool {
+        purchasableItems.contains { item in
+            guard case .loaded(let orderableItem) = item.state else { return false }
+            if let simpleProduct = orderableItem as? POSSimpleProduct {
+                return simpleProduct.isGiftCard
+            } else if let variation = orderableItem as? POSVariation {
+                return variation.isGiftCard
+            }
+            return false
+        }
+    }
+
+    /// Returns all gift card items in the cart
+    var giftCardItems: [Cart.PurchasableItem] {
+        purchasableItems.filter { item in
+            guard case .loaded(let orderableItem) = item.state else { return false }
+            if let simpleProduct = orderableItem as? POSSimpleProduct {
+                return simpleProduct.isGiftCard
+            } else if let variation = orderableItem as? POSVariation {
+                return variation.isGiftCard
+            }
+            return false
+        }
+    }
 }

@@ -16,13 +16,13 @@ protocol POSOrderListControllerProtocol {
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
-    func selectOrder(_ order: POSOrder?)
+    func selectOrder(_ order: POSOrder?) async
     func updateOrder(orderID: Int64) async throws
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
-    func clearSearchOrders()
+    func clearSearchOrders() async
 }
 
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
@@ -161,12 +161,18 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
         ordersViewState = .loading(cachedOrders)
     }
 
+    /*
+     Options:
+     1. Make implementations non-@MainActor -> Test use await for these methods, so are expected to be actor-isolated
+     2. Mark protocol as @MainActor -> Cascading effect where we'll have to start marking a bunch of stuff
+     3. Mark as nonisolated -> unexplored
+     4. Make functions async
+     */
     @MainActor
-    func selectOrder(_ order: POSOrder?) {
+    func selectOrder(_ order: POSOrder?) async {
         selectedOrder = order
     }
 
-    @MainActor
     func searchOrders(searchTerm: String) async {
         fetchStrategy = orderListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
         ordersViewState = .loading([])
@@ -174,7 +180,7 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     }
 
     @MainActor
-    func clearSearchOrders() {
+    func clearSearchOrders() async {
         fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         if cachedOrders.isNotEmpty {
             ordersViewState = .loaded(cachedOrders, hasMoreItems: true)

@@ -298,7 +298,7 @@ extension POSCart {
     init(cart: Cart) {
         let items = cart.purchasableItems.compactMap { (purchasableItem: Cart.PurchasableItem) -> POSCartItem? in
             guard case let .loaded(item) = purchasableItem.state else { return nil }
-            return POSCartItem(item: item, quantity: Decimal(purchasableItem.quantity))
+            return POSCartItem(id: purchasableItem.id, item: item, quantity: Decimal(purchasableItem.quantity))
         }
         let coupons = cart.coupons.map { POSCoupon(id: $0.posItemIdentifier, code: $0.code, summary: $0.summary) }
         self.init(items: items, coupons: coupons)

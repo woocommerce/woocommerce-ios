@@ -318,7 +318,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
     }
 
-    func test_sections_does_not_contain_connectivity_row_if_user_authenticated_without_wpcom() {
+    func test_sections_contains_connectivity_row_if_user_authenticated_without_wpcom() {
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
         let viewModel = SettingsViewModel(stores: stores)
@@ -327,7 +327,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
     }
 
     func test_sections_contains_connectivity_row_if_user_authenticated_with_wpcom_to_non_wpcom_site() {

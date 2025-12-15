@@ -86,8 +86,12 @@ class AuthenticatedState: StoresManagerState {
                 dispatcher: dispatcher,
                 storageManager: storageManager,
                 network: network,
+                crashLogger: ServiceLocator.crashLogging,
+                isCIABEnvironmentSupported: {
+                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciab)
+                },
                 currentSite: {
-                    ServiceLocator.stores.sessionManager.defaultSite
+                    sessionManager.defaultSite
                 }
             ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -196,7 +200,12 @@ class AuthenticatedState: StoresManagerState {
                     storageManager: ServiceLocator.storageManager
                 ),
                 isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
-                remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher)
+                remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
+                betaFeatureToggleProvider: {
+                    await MainActor.run {
+                        ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
+                    }
+                }
             )
             posCatalogEligibilityChecker = eligibilityService
 

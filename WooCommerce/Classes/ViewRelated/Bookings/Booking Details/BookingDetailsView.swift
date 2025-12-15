@@ -159,8 +159,10 @@ private extension BookingDetailsView {
             })
         case .payment(let content):
             paymentDetailsView(with: content)
-        case .bookingNotes:
-            bookingNotesView()
+        case .bookingNotes(let content):
+            BookingNotesRowView(content: content) { newNote in
+                await viewModel.updateNote(to: newNote)
+            }
         }
     }
 
@@ -239,14 +241,6 @@ private extension BookingDetailsView {
             .padding(.top)
         }
         .padding(.vertical)
-    }
-
-    func bookingNotesView() -> some View {
-        MultilineEditableTextRow(value: viewModel.note,
-                                 placeholder: Localization.bookingNotesRowText,
-                                 detailTitle: Localization.bookingNoteNavbarText) { newNote in
-            return await viewModel.updateNote(to: newNote)
-        }
     }
 }
 

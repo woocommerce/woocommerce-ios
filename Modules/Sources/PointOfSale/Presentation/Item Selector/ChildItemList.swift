@@ -120,7 +120,7 @@ private extension ChildItemList {
 
 #Preview("Variable product child items") {
     let parentProduct = POSVariableParentProduct(
-        id: .init(),
+        id: .init(underlyingType: .product, itemID: 1),
         name: "Variable latte",
         productImageSource: nil,
         productID: 1
@@ -134,7 +134,7 @@ private extension ChildItemList {
                 [
                     .variation(
                         POSVariation(
-                            id: .init(),
+                            id: .init(underlyingType: .variation, itemID: 256),
                             name: "Cinamon chestnut latte",
                             formattedPrice: "$5.75",
                             price: "5.75",
@@ -145,12 +145,12 @@ private extension ChildItemList {
                     ),
                     .variation(
                         POSVariation(
-                            id: .init(),
+                            id: .init(underlyingType: .variation, itemID: 2567),
                             name: "Choco latte",
                             formattedPrice: "$6.5",
                             price: "6.5",
                             productID: 134,
-                            variationID: 256,
+                            variationID: 2567,
                             parentProductName: parentProduct.name
                         )
                     )
@@ -170,7 +170,7 @@ private extension ChildItemList {
 
 #Preview("Variable items load error") {
     let parentProduct = POSVariableParentProduct(
-        id: .init(),
+        id: .init(underlyingType: .product, itemID: 1),
         name: "Variable latte",
         productImageSource: nil,
         productID: 1

@@ -204,6 +204,11 @@ public enum FeatureFlag: Int {
     ///
     case ciabBookings
 
+    /// Represents CIAB environment availability overall
+    /// Has same underlying logic as `ciabBookings` flag.
+    ///
+    case ciab
+
     /// Enables surveys for potential and current POS merchants
     ///
     case pointOfSaleSurveys
@@ -211,4 +216,8 @@ public enum FeatureFlag: Int {
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
     case pointOfSaleCatalogAPI
+
+    /// Enables the refunds functionality within POS
+    ///
+    case pointOfSaleRefundsi1
 }

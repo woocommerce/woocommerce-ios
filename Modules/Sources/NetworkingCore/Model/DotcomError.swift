@@ -7,47 +7,47 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
 
     /// Non explicit reason
     ///
-    case empty
+    case empty(data: [String: AnyDecodable]? = nil)
 
     /// Missing Token!
     ///
-    case unauthorized
+    case unauthorized(data: [String: AnyDecodable]? = nil)
 
     /// We're not properly authenticated
     ///
-    case invalidToken
+    case invalidToken(data: [String: AnyDecodable]? = nil)
 
     /// Remote Request Failed
     ///
-    case requestFailed
+    case requestFailed(data: [String: AnyDecodable]? = nil)
 
     /// No route was found matching the URL and request method
     ///
-    case noRestRoute
+    case noRestRoute(data: [String: AnyDecodable]? = nil)
 
     /// Jetpack is not connected
     ///
     /// This can be caused by an `unknown_token` error from Jetpack
     /// or an `invalid_blog` error from WordPress.com Stats.
     ///
-    case jetpackNotConnected
+    case jetpackNotConnected(data: [String: AnyDecodable]? = nil)
 
     /// Unknown: Represents an unmapped remote error. Capisce?
     ///
-    case unknown(code: String, message: String?)
+    case unknown(code: String, message: String?, data: [String: AnyDecodable]?)
 
     /// Stats error cases - API documentation of possible errors:
     /// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/
     /// Note: when the cases get large, consider refactoring them into a separate error enum that conforms to a Dotcom error protocol
 
     /// No permission to view site stats
-    case noStatsPermission
+    case noStatsPermission(data: [String: AnyDecodable]? = nil)
 
     /// Jetpack site stats module disabled
-    case statsModuleDisabled
+    case statsModuleDisabled(data: [String: AnyDecodable]? = nil)
 
     /// The requested resourced does not exist remotely
-    case resourceDoesNotExist
+    case resourceDoesNotExist(data: [String: AnyDecodable]? = nil)
 
     /// Decodable Initializer.
     ///
@@ -55,30 +55,30 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let error = try container.decode(String.self, forKey: .error)
         let message = try container.decodeIfPresent(String.self, forKey: .message)
+        let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
 
         switch error {
         case Constants.invalidToken:
-            self = .invalidToken
+            self = .invalidToken(data: data)
         case Constants.requestFailed:
-            self = .requestFailed
+            self = .requestFailed(data: data)
         case Constants.unauthorized where message == ErrorMessages.noStatsPermission:
-            self = .noStatsPermission
+            self = .noStatsPermission(data: data)
         case Constants.unauthorized:
-            self = .unauthorized
+            self = .unauthorized(data: data)
         case Constants.noRestRoute:
-            self = .noRestRoute
+            self = .noRestRoute(data: data)
         case Constants.invalidBlog where message == ErrorMessages.statsModuleDisabled:
-            self = .statsModuleDisabled
+            self = .statsModuleDisabled(data: data)
         case Constants.restTermInvalid where message == ErrorMessages.resourceDoesNotExist:
-            self = .resourceDoesNotExist
+            self = .resourceDoesNotExist(data: data)
         case Constants.unknownToken,
             Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
-            self = .jetpackNotConnected
+            self = .jetpackNotConnected(data: data)
         default:
-            self = .unknown(code: error, message: message)
+            self = .unknown(code: error, message: message, data: data)
         }
     }
-
 
     /// Constants for Possible Error Identifiers
     ///
@@ -97,6 +97,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     private enum CodingKeys: String, CodingKey {
         case error
         case message
+        case data
     }
 
     /// Possible Error Messages
@@ -134,7 +135,7 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
         case .jetpackNotConnected:
             return NSLocalizedString("Jetpack Not Connected", comment: "WordPress.com error thrown when Jetpack is not connected.")
-        case .unknown(let code, let message):
+        case .unknown(let code, let message, _):
             let theMessage = message ?? String()
             let messageFormat = NSLocalizedString(
                 "Dotcom Error: [%1$@] %2$@",
@@ -150,14 +151,17 @@ extension DotcomError: CustomStringConvertible {
 //
 public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
     switch (lhs, rhs) {
-    case (.requestFailed, .requestFailed),
+    case (.empty, .empty),
         (.unauthorized, .unauthorized),
+        (.invalidToken, .invalidToken),
+        (.requestFailed, .requestFailed),
         (.noRestRoute, .noRestRoute),
+        (.jetpackNotConnected, .jetpackNotConnected),
         (.noStatsPermission, .noStatsPermission),
         (.statsModuleDisabled, .statsModuleDisabled),
-        (.jetpackNotConnected, .jetpackNotConnected):
+        (.resourceDoesNotExist, .resourceDoesNotExist):
         return true
-    case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
+    case let (.unknown(codeLHS, _, _), .unknown(codeRHS, _, _)):
         return codeLHS == codeRHS
     default:
         return false

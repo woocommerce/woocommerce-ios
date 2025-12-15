@@ -18,6 +18,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let appointmentDetailsContent = AppointmentDetailsContent()
     private let attendanceContent = AttendanceContent()
     private let paymentContent = PaymentContent()
+    private let notesContent = NotesContent()
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -33,8 +34,6 @@ final class BookingDetailsViewModel: ObservableObject {
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
     }
-
-    var note: String { booking.note }
 
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
@@ -74,7 +73,7 @@ private extension BookingDetailsViewModel {
         let bookingNotes = Section(
             header: .title(Localization.bookingNoteSectionHeaderTitle.uppercased()),
             footerText: Localization.bookingNoteSectionFooterText,
-            content: .bookingNotes
+            content: .bookingNotes(notesContent)
         )
 
         sections = [
@@ -104,6 +103,7 @@ private extension BookingDetailsViewModel {
         attendanceContent.update(with: booking)
 
         paymentContent.update(with: booking)
+        notesContent.update(with: booking)
     }
 
     func setupCustomerSectionVisibility() {

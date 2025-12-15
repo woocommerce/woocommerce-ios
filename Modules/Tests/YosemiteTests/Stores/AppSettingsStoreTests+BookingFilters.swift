@@ -56,7 +56,6 @@ struct AppSettingsStoreTests_BookingFilters {
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
             attendanceStatuses: [.booked, .noShow],
-            paymentStatuses: [.unpaid, .paid],
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -97,7 +96,6 @@ struct AppSettingsStoreTests_BookingFilters {
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
             attendanceStatuses: [.booked],
-            paymentStatuses: [.unpaid],
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -106,7 +104,6 @@ struct AppSettingsStoreTests_BookingFilters {
             teamMembers: [BookingTeamMemberFilter(resourceID: 200, name: "Team Member 2")],
             products: [BookingProductFilter(productID: 2, name: "Product 2")],
             attendanceStatuses: [.noShow],
-            paymentStatuses: [.paid, .refunded],
             customers: [],
             dateRange: nil
         )
@@ -162,7 +159,6 @@ struct AppSettingsStoreTests_BookingFilters {
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
             attendanceStatuses: [],
-            paymentStatuses: [.unpaid],
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -171,7 +167,6 @@ struct AppSettingsStoreTests_BookingFilters {
             teamMembers: [],
             products: [],
             attendanceStatuses: [.booked],
-            paymentStatuses: [.paid],
             customers: [BookingCustomerFilter(customerID: 20, name: "Customer 2")],
             dateRange: nil
         )
@@ -221,7 +216,6 @@ struct AppSettingsStoreTests_BookingFilters {
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [],
             attendanceStatuses: [.booked],
-            paymentStatuses: [.refunded],
             customers: [],
             dateRange: nil
         )

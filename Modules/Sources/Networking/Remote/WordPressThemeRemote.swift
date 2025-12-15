@@ -71,7 +71,7 @@ public enum InstallThemeError: Error {
 
     init?(_ error: Error) {
         guard let dotcomError = error as? DotcomError,
-              case let .unknown(code, _) = dotcomError else {
+              case let .unknown(code, _, _) = dotcomError else {
             return nil
         }
 

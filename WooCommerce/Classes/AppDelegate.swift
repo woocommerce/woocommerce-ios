@@ -57,9 +57,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let stores = ServiceLocator.stores
         let analytics = ServiceLocator.analytics
         let pushNotesManager = ServiceLocator.pushNotesManager
-        stores.initializeAfterDependenciesAreInitialized()
-        setupAnalytics(analytics)
 
+        /// This is important to initialize early as there are a few code points where the authenticator is used.
+        ServiceLocator.authenticationManager.initialize()
+        stores.initializeAfterDependenciesAreInitialized()
+
+        setupAnalytics(analytics)
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
@@ -112,11 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        guard let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -231,7 +230,7 @@ extension AppDelegate {
         ZendeskProvider.shared.initialize()
     }
 
-    /// Sets up the WordPress Authenticator.
+    /// Sets up app analytics.
     ///
     func setupAnalytics(_ analytics: Analytics) {
         analytics.initialize()
@@ -272,6 +271,9 @@ extension AppDelegate {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
+            /// We're sending notifications for logged in state only.
+            /// Revisit this check if a local notification in unauthenticated state is needed.
+            guard stores.isAuthenticated else { return }
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)

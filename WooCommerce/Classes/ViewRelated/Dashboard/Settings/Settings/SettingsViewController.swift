@@ -433,7 +433,8 @@ private extension SettingsViewController {
         guard let url = woocommercePluginViewModel.updateURL else {
             return
         }
-        let vc = SFSafariViewController(url: url)
+        let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
+        let vc = UIHostingController(rootView: webView)
         vc.modalPresentationStyle = .formSheet
 
         present(vc, animated: true)
@@ -562,10 +563,13 @@ private extension SettingsViewController {
 //
 extension SettingsViewController: UITextViewDelegate {
 
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        weAreHiringWasPressed(url: URL)
-        return false
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        if case .link(let url) = textItem.content {
+            weAreHiringWasPressed(url: url)
+            // Prevent default action
+            return nil
+        }
+        return defaultAction
     }
 }
 
@@ -882,6 +886,12 @@ private extension SettingsViewController {
         static let wooCommerce = NSLocalizedString(
             "WooCommerce",
             comment: "Navigates to about WooCommerce app screen"
+        )
+
+        static let updateWooCommerce = NSLocalizedString(
+            "settingsViewController.title.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin"
         )
 
         static let openDeviceSettings = NSLocalizedString(

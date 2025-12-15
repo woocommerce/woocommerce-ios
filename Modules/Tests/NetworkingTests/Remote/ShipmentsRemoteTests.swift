@@ -94,7 +94,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertTrue(dotComError == .noRestRoute())
             expectation.fulfill()
         })
 
@@ -188,7 +188,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertTrue(dotComError == .noRestRoute())
             expectation.fulfill()
         }
 
@@ -286,7 +286,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertTrue(dotComError == .noRestRoute())
             expectation.fulfill()
         }
 
@@ -366,7 +366,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertTrue(dotComError == .noRestRoute())
             expectation.fulfill()
         }
 
@@ -441,7 +441,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertTrue(dotComError == .noRestRoute())
             expectation.fulfill()
         }
 

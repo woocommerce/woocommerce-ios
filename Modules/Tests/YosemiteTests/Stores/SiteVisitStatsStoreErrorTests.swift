@@ -4,19 +4,19 @@ import XCTest
 
 class SiteStatsStoreErrorTests: XCTestCase {
     func testNoPermissionError() {
-        let remoteError = DotcomError.noStatsPermission
+        let remoteError = DotcomError.noStatsPermission()
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .noPermission)
     }
 
     func testStatsModuleDisabledError() {
-        let remoteError = DotcomError.statsModuleDisabled
+        let remoteError = DotcomError.statsModuleDisabled()
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .statsModuleDisabled)
     }
 
     func testOtherDotcomError() {
-        let remoteError = DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected")
+        let remoteError = DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected", data: nil)
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .unknown)
     }

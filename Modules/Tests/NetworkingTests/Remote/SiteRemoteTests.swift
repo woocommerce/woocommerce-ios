@@ -50,8 +50,10 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "wapuu.store"))
-        }, errorAssert: { ($0 as? DotcomError) == .unknown(code: "blog_name_only_lowercase_letters_and_numbers",
-                                                message: "Site names can only contain lowercase letters (a-z) and numbers.")
+        }, errorAssert: { ($0 as? DotcomError) == .unknown(
+            code: "blog_name_only_lowercase_letters_and_numbers",
+            message: "Site names can only contain lowercase letters (a-z) and numbers.",
+            data: nil)
         })
     }
 
@@ -128,8 +130,10 @@ final class SiteRemoteTests: XCTestCase {
             // When
             try await remote.enableFreeTrial(siteID: 134)
         }, errorAssert: { error in
-            (error as? DotcomError) == .unknown(code: "no-upgrades-permitted",
-                                                message: "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades")
+            (error as? DotcomError) == .unknown(
+                code: "no-upgrades-permitted",
+                message: "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades",
+                data: nil)
         })
     }
 
@@ -290,7 +294,7 @@ final class SiteRemoteTests: XCTestCase {
                                                                        category: "clothing_and_accessories",
                                                                        countryCode: "US"))
         }, errorAssert: { error in
-            (error as? DotcomError) == .unauthorized
+            (error as? DotcomError) == .unauthorized()
         })
     }
 
@@ -320,7 +324,8 @@ final class SiteRemoteTests: XCTestCase {
             _ = try await remote.loadSite(domain: domain)
         }, errorAssert: { ($0 as? DotcomError) == .unknown(
             code: "parse_error",
-            message: "The Jetpack site is inaccessible or returned an error: parse error (local). not well formed [-32710]"
+            message: "The Jetpack site is inaccessible or returned an error: parse error (local). not well formed [-32710]",
+            data: nil
         )})
     }
 

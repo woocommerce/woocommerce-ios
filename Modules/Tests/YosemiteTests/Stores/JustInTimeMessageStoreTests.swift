@@ -84,7 +84,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
 
     func test_loadMessage_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
-        network.simulateError(requestUrlSuffix: "jetpack/v4/jitm", error: DotcomError.noRestRoute)
+        network.simulateError(requestUrlSuffix: "jetpack/v4/jitm", error: DotcomError.noRestRoute())
 
         // When dispatching a `loadAllInboxNotes` action
         let result = waitFor { promise in
@@ -103,6 +103,6 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             let error = error as? DotcomError else {
             return XCTFail("Expected error not recieved")
         }
-        assertEqual(DotcomError.noRestRoute, error)
+        assertEqual(DotcomError.noRestRoute(), error)
     }
 }

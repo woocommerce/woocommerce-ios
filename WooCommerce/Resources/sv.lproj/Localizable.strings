@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-18 18:54:03+0000 */
+/* Translation-Revision-Date: 2025-12-10 13:30:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "Lägg till anteckning";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "Det gick inte att uppdatera anteckning om Bokning nr. %1$d.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "Detta är en privat anteckning. Den kommer inte att delas med kunden.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Kund";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "Anteckning";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "Status";
@@ -4390,6 +4396,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "Tillägg";
+
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "Dokumentation";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Skaffa support";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Läs om vilka produkter som stöds i POS";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Var är mina produkter?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "Avbryt";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "Hjälp";
 
 /* Section title for popular products on the Select Product screen. */
 "Popular" = "Populära";
@@ -8347,6 +8373,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Kund";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "Rensa";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "Datum";
 
@@ -8392,8 +8421,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "Till %1$@";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "Vi kunde inte hitta några bokningar med det namnet — prova att justera din sökterm för att se fler resultat.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "Rensa filter";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "Vi kunde inte hitta några bokningar med det namnet. Prova justera din sökterm för att se fler resultat.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "Fel vid hämtning av bokningar";
@@ -8407,20 +8439,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "Alla";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "Inga bokningar matchar dina filter. Prova att justera dem för att se fler resultat.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "Bokningar visas här när kunder börjar boka dina tjänster eller registrera sig för evenemang.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "Inga bokningar än";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "Prova justera eller rensa dina filter för att se fler resultat.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "Inga bokningar hittades";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "Du har inga möten eller händelser schemalagda för idag.";
+"bookingListView.emptyState.today.description.i3" = "Alla bokningar som är tidsinställda för idag visas här.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "Inga bokningar idag";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "Du har inga framtida möten eller händelser schemalagda än.";
+"bookingListView.emptyState.upcoming.description.i3" = "Nya bokningar visas här när kunder bokar dina tjänster eller registrerar sig för evenemang.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "Inga kommande bokningar";
@@ -8445,18 +8483,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Bokningar";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "Betald";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "Återbetald";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "Okänd";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "Obetald";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Prova att justera din sökterm för att se fler resultat";
@@ -8550,6 +8576,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variabel prenumeration";
+
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "Pågår";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Avbryt";
@@ -8678,6 +8707,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Växel: %1$@";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Välj produkter för Blaze-kampanj.";
 
@@ -8770,6 +8802,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Felsök anslutning";
+
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "Upphörde den %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Adress";
@@ -10149,8 +10184,1232 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Tillägg";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "Streckkod för kort";
+
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "Skannern skickade inte något radslutstecken";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "Nätverksbegäran misslyckades";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "Ingen internetanslutning";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "Överordnad produkt hittades inte för variationen";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "Okänt skannat objekt";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "Kunde inte läsa streckkod";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "Skanning misslyckades";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "Objekttypen stöds inte";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "Betalning avbruten på läsare";
+
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Försök att genomföra betalningen igen";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "Kort isatt";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "Redo för betalning";
+
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "Anslut din läsare";
+
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "Behandlar betalning";
+
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Avbryt";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "För att starta din kortläsare, tryck kort på dess strömknapp.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Ny beställning";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Försök med betalningen igen";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "På grund av ett nätverksfel kan vi inte bekräfta att betalningen lyckades. Verifiera betalningen på en enhet med fungerande nätverksanslutning. Om det misslyckas, försök genomföra betalningen igen. Om det lyckas, starta en ny beställning.";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Betalningsfel";
+
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Gå tillbaka till kassa";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "Betalning misslyckades";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Prova med en annan betalningsmetod";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Försök med betalningen igen";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Om du vill fortsätta med transaktionen, försök att genomföra betalningen igen.";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betalning misslyckades";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Prova annan betalningsmetod";
+
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "Redigera beställning";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Fel vid betalningsförberedelse";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Försök att genomföra betalningen igen";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.title" = "Förbereder";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Förbereder läsare för betalning";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Sätt in kort";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Presentera kort";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Tryck kort";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Tryck eller sätt i kort";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tryck, svep eller sätt i kort";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Redo för betalning";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Läsare inte ansluten";
+
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "För att behandla den här betalningen, anslut din läsare eller välj kontantbetalning.";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "Kontrollerar beställning";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "Förbereder";
+
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Det totala beställningsbeloppet understiger minimibeloppet för kortdebitering, vilket är %1$@. Du kan ta emot en kontantbetalning istället.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kunde inte ta emot kortbetalning";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Fel vid kontroll av order";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Prova igen";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Vänta";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Avfärda";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Öppna enhetens inställningar";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Bluetooth-behörighet krävs";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Avbryt";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "Vi kunde inte ansluta din läsare";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Försök igen";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Avbryt";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "Batterinivån i läsaren är mycket låg. Ladda läsaren eller prova en annan läsare.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Försök igen";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Vi kunde inte ansluta din läsare";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Avbryt";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Öppna enhetens inställningar";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Det krävs behörighet för platstjänster för att begränsa bedrägerier, förhindra tvister och säkerställa säkra betalningar.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Aktivera platstjänster för att tillåta betalningar";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Avfärda";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Anslutning misslyckades";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Avbryt";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Ange adress";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Försök igen efter uppdatering";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Korrigera din butiksadress för att fortsätta";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Avbryt";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Du kan ange din butiks postnummer i WP-admin > WooCommerce > Inställningar (Allmänt)";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Försök igen efter uppdatering";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Korrigera din butiks postnummer";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Fortsätt";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Du kan ändra det här alternativet senare i appen för Inställningar.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Det krävs behörighet för platstjänster för att begränsa bedrägerier, förhindra tvister och säkerställa säkra betalningar.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Aktivera platstjänster för att tillåta betalningar.";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Vänta …";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Ansluter till läsare";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Klar";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Läsare ansluten";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Avbryt";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Anslut";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Flera läsare hittades";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Skannar efter läsare";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Avbryt";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Anslut till läsare";
+
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Vill du ansluta till denna läsare?";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Fortsätt söka";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "Hittade %1$@";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Avbryt";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Din läsare kommer att startas om automatiskt och sedan återansluta när uppdateringen är klar";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% slutfört";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Uppdaterar programvara";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Jag förstår";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% slutfört";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Programvaran har uppdaterats";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Avbryt";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Försök igen";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Vi kunde inte uppdatera din läsares programvara";
+
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "En läsaruppdatering misslyckades eftersom läsarens batteri endast är laddat till %.0f%%. Ladda läsaren och försök sedan igen.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Avbryt";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "En läsaruppdatering misslyckades eftersom läsarens batterinivå är låg. Ladda läsaren och försök sedan igen.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Försök igen";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Ladda läsare";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Avfärda";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "Vi kunde inte uppdatera din läsares programvara";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Avbryt ändå";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Din kortläsarprogramvara behöver uppdateras för att du ska kunna ta emot betalningar. Om du avbryter blockeras din läsaranslutning.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% slutfört";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Uppdaterar programvara";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Avfärda";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Det gick inte att ansluta läsaren";
+
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Stäng";
+
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "På grund av ett nätverksfel vet vi inte om betalningen lyckades.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Dubbelkolla beställningen på en enhet med nätverksanslutning innan du fortsätter.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Denna beställning kan ha misslyckats";
+
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "Totalt: %1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "Kontant betalning";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "Markera betalning som slutförd";
+
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Det gick inte att behandla betalningen. Försök igen.";
+
+/* A description within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.exitButton.description" = "Synkronisering kommer fortsätta i bakgrunden.";
+
+/* A button that exits POS. */
+"pointOfSale.catalogLoadingView.exitButton.title" = "Avsluta POS";
+
+/* A title of a full screen view that is displayed while the POS catalog is being synced. */
+"pointOfSale.catalogLoadingView.title" = "Synkroniserar katalog";
+
+/* A message shown on the coupon if's not valid after attempting to apply it */
+"pointOfSale.couponRow.invalidCoupon" = "Rabattkod ej tillämpad";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Vänta";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Koppla från läsare";
+
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "Avsluta POS";
+
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Beställningar";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "Läsare ansluten";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "Anslut din läsare";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Kopplar ifrån";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Inställningar";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Ta bort";
+
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Laddar in";
+
+/* Button to come back to order editing when coupon validation fails. */
+"pointOfSale.orderSync.couponsError.editOrder" = "Redigera beställning";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.errorTitle.2" = "Kan inte tillämpa rabattkod";
+
+/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupon" = "Ta bort rabattkod";
+
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupons" = "Ta bort rabattkoder";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "Försök igen";
+
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "Redigera beställning";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "Ta bort produkt";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "Ta bort produkter";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "En produkt i varukorgen är inte längre tillgänglig.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "Några produkter i din varukorg är inte längre tillgängliga.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "%@ är inte längre tillgänglig.";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "Produkter inte längre tillgängliga";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "Produkt inte längre tillgänglig";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "En eller flera produkter";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "En kortbetalning på %1$@ har genomförts.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "En kontantbetalning på %1$@ har genomförts.";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Betalning lyckades";
+
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Skicka";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Kvitto via e-post";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Ange en giltig e-post.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Ett fel uppstod när e-postmeddelandet skulle skickas. Försök igen.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "Skriv e-post";
+
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "Avbryt";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.cancel" = "Avbryt";
+
+/* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Okänd";
+
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "Anslut din kortläsare och börja ta emot betalningar";
+
+/* Title for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "Anslut kortläsare";
+
+/* Title for card reader disconnect button when reader is already connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDisconnectTitle" = "Koppla från läsare";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "Lär dig mer om att ta emot mobila betalningar";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "Dokumentation";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "Läsare inte ansluten";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Kortläsare";
+
+/* Title for the card reader firmware section in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.firmwareTitle" = "Firmware";
+
+/* Text displayed on Point of Sale settings when card reader firmware version is unknown. */
+"pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown" = "Okänd";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Konfigurera streckkodsskannerinställningar";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Streckkodsskanners";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Hantera kortläsaranslutningar";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Kortläsare";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Hårdvara";
+
+/* Button to dismiss the support form from POS settings. */
+"pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "Avbryt";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Batteri";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "Enhetsnamn";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Läs mer om streckkodsskanning i POS";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Dokumentation";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Konfigurera och testa din streckkodsskanner";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Skannerkonfiguration";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Streckkodsläsare";
+
+/* Subtitle for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle" = "Uppdatera firmware-versionen för att fortsätta ta emot betalningar.";
+
+/* Title for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle" = "Uppdatera firmware-version";
+
+/* Title of the button to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle" = "Uppdatera firmware";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "Inte inställt";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "Adress";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "E-post";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.general" = "Allmänt";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "Inte inställt";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "Telefonnummer";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "Fysisk adress";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "Kvittoinformation";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "Butiksnamn";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "Återbetalnings- och returpolicy";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "Butiksnamn";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "Butik";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "Inställningar";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "Hantera hårdvaruanslutningar";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "Hårdvara";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Skaffa hjälp och support";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle.1" = "Skaffa hjälp och support";
+
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Hantera kataloginställningar";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Produktkatalog";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Butikskonfiguration och inställningar";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Butik";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "Streckkodsskanning";
+
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• Se din Bluetooth-streckkodsskanner i Bluetooth-inställningarna för iOS.";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "För det första: Se din Bluetooth-streckkodsskanner i Bluetooth-inställningarna för iOS.";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "Du kan skanna streckkoder med hjälp av en extern skanner för att snabbt skapa en varukorg.";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• Skanna streckkoder när du är i artikellistan för att lägga till produkter i varukorgen.";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "För det andra: Skanna streckkoder när du är i artikellistan för att lägga till produkter i varukorgen.";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• Se till att sökfältet inte är aktiverat när du skannar streckkoder.";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "För det tredje: Se till att sökfältet inte är aktiverat när du skannar streckkoder.";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "Du kan skanna streckkoder med hjälp av en extern skanner för att snabbt skapa en varukorg.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "Mer detaljer.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Mer detaljer, länk.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• Ställ in streckkoder i fältet \"GTIN, UPC, EAN, ISBN\" i Produkter > Produktinformation > Lager. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "Ett: Ställ in streckkoder i fältet \"GTIN, UPC, EAN, ISBN\"  genom att navigera till Produkter > Produktinformation > Lager.";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "besök dokumentationen";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "Du kan konfigurera streckkoder i fältet \"GTIN, UPC, EAN, ISBN\" på produktens lagerflik. För mer information, %1$@.";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "Du kan konfigurera streckkoder i fältet \"GTIN, UPC, EAN, ISBN\" på produktens lagerflik. För mer information, se dokumentationslänken.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• Skanna streckkoder när du är i artikellistan för att lägga till produkter i varukorgen.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Fyra: Skanna streckkoder när du är i artikellistan för att lägga till produkter i varukorgen.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "Skannern emulerar ett tangentbord, så ibland kommer det att förhindra programvaran tangentbordet från att visas, t.ex. i sökningar. Tryck på tangentbordsikonen för att visa det igen.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage.2" = "• Se instruktionerna för Bluetooth-streckkodsskannern för att ställa in HID-läge. Detta kräver vanligtvis skanning av en speciell streckkod i manualen.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Två: Se instruktionerna för Bluetooth-streckkodsskannern för att ställa in HID-läge. Detta kräver vanligtvis skanning av en speciell streckkod i manualen.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• Anslut streckkodsskannern i Bluetooth-inställningarna för iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Tre: Anslut streckkodsskannern i Bluetooth-inställningarna för iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "Tillbaka";
+
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Bild på en kod som ska skannas med en streckkodsskanner.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Du kan nu börja skanna produkter. Nästa gång du behöver ansluta skannern är det bara att slå på den så återansluts den automatiskt.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "Skanner konfigurerad!";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "Klar";
+
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "Tillbaka";
+
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Läs i skannerns handbok och återställ skannern till fabriksinställningarna. Kör sedan konfigurationsflödet igen.";
+
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "Försök igen";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Skanningsproblem upptäcktes";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Använd streckkodsskannern för att skanna koden nedan och aktivera Bluetooth HID-läge.";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "Nästa";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "Annan";
+
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Använd din streckkodsskanner för att skanna koden nedan och gå in i parkopplingsläge.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Aktivera Bluetooth och välj din %1$@-skanner i iOS Bluetooth-inställningarna. Skannern piper och dess lysdiod lyser med ett fast sken när den är parkopplad.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Gå till enhetens inställningar";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Para din skanner";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Hur man ställer in streckkoder på produkter";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Hur man ställer in streckkoder på produkter";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Skannerkonfiguration";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Skannerkonfiguration";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Annan skanner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Konfigurera en streckkodsskanner";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Välj en modell från listan:";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Skanna streckkoden för att testa din skanner.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Skanna streckkoden för att testa din skanner. Kontrollera Bluetooth-inställningarna och försök igen om problemet kvarstår.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Inga skanningsdata hittade än";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Testa din skanner";
+
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Klicka på en produkt för att \n lägga till den i varukorgen, eller ";
+
+/* Title at the header for the Cart view. */
+"pos.cartView.cartTitle" = "Varukorg";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "Skanna streckkod";
+
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "Gå till kassa";
+
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "Rensa varukorg";
+
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "Kan inte uppdatera katalog";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "Ingen internetanslutning";
+
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "Avbryt";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "Skapa rabattkod";
+
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Eventuella pågående beställningar kommer att gå förlorade.";
+
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Avsluta";
+
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "Lämna Försäljningsplatsläge?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "Avsluta POS";
+
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Aktivera POS-funktionen";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "Försök igen";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "Försäljningsplats måste vara aktiverat för att fortsätta. Aktivera POS-funktionen nedan eller från din WordPress-adminpanel under WooCommerce-inställningar > Avancerat > Funktioner och försök igen.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "Prova starta om appen för att lösa detta problem.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Vi kunde inte ladda webbplatsinställningsinformationen. Kontrollera din internetanslutning och försök igen. Kontakta supporten för att få hjälp om problemet kvarstår.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "POS-systemet är inte tillgängligt för din butiks valuta. I %1$@ stöder den för närvarande endast %2$@. Kontrollera din butiks valutainställningar eller kontakta supporten för att få hjälp.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Din WooCommerce-version stöds inte. POS-systemet kräver WooCommerce-version %1$@ eller senare. Uppdatera till den senaste versionen av WooCommerce.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "Vi kunde inte ladda WooCommerce-tilläggets information. Se till att WooCommerce-tillägget installeras och aktiveras från din WordPress-adminpanel. Om du fortfarande upplever problem, kontakta supporten för att få hjälp.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "Kan inte ladda";
+
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.itemList.connectivityErrorSubtitle" = "Kontrollera din internetanslutning och försök igen.";
+
+/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorTitle.2" = "Kan inte aktivera rabattkoder";
+
+/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "Kan inte ladda fler rabattkoder";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle.2" = "Kan inte ladda fler produkter";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle.2" = "Kan inte ladda produkter";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "Kan inte ladda fler varianter";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle.2" = "Kan inte ladda varianter";
+
+/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsTitle.2" = "Kan inte uppdatera rabattkoder";
+
+/* Generic subtitle appearing on error screens when there's an error. */
+"pos.itemList.genericErrorSubtitle" = "Försök igen.";
+
+/* Text of the button appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledAction.2" = "Aktivera rabattkoder";
+
+/* Subtitle appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledSubtitle.2" = "Aktivera rabattkoder i din butik för att börja skapa dem för dina kunder.";
+
+/* Title appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledTitle.2" = "Börja acceptera rabattkoder";
+
+/* Title appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorTitle.2" = "Kan inte ladda rabattkoder";
+
+/* Generic text for retry buttons appearing on error screens. */
+"pos.itemList.retryButtonTitle" = "Försök igen";
+
+/* Title appearing on the item list screen when there's an error syncing the catalog for the first time. */
+"pos.itemList.syncCatalogErrorTitle" = "Kan inte synkronisera katalog";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "Produkter";
+
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "Sök rabattkoder";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "Sök produkter";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "Sök";
+
+/* Title of the button at the top of Point of Sale to switch to Coupons list. */
+"pos.itemlistview.couponsTitle" = "Rabattkoder";
+
+/* Message shown when the product catalog hasn't synced in the specified number of days. %1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days. */
+"pos.itemlistview.staleSyncWarning.description" = "Katalogen har inte synkroniserats under de senaste %1$ld dagarna. Se till att du är ansluten till internet och synkronisera igen i POS-inställningarna.";
+
+/* Warning title shown when the product catalog hasn't synced in several days */
+"pos.itemlistview.staleSyncWarning.title" = "Uppdatera katalog";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "Produkter";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.emptyListText" = "Sök i din butik";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "Populära produkter";
+
+/* Title for the list of recent searches shown before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.title" = "Senaste sökningarna";
+
+/* Button text to exit Point of Sale when there's a critical error */
+"pos.listError.exitButton" = "Avsluta POS";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Avfärda";
+
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "Beställningsstatus: %1$@";
+
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "Ingen beställning att visa";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "Beställning";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "Produkter";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Totalt";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "Total rabatt: %1$@";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Total rabatt";
+
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Tryck för att skicka beställningskvitto via e-post";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "E-postkvitto";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "Beställningsdatum: %1$@, Status: %2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Kundens e-post: %1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "Nettobetalning: %1$@";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Nettobetalning";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "Betalat totalt: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "Betalningsmetod: %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel2" = "Betalat totalt";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "Antal: %1$@ för %2$@ styck, %3$@ totalt";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "Produkter";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "Produkter";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Anledning: %1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "Har återbetalats: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Orsak: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "Återbetald";
+
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "Delsumma för produkter: %1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "Moms: %1$@";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "Moms";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "Beställningssumma: %1$@";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "Totalt";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "Totalt";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "Kan inte ladda fler beställningar";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "Kan inte ladda beställningar";
+
+/* Button text for opening an information view when orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle2" = "Lär dig mer";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "Prova att justera din sökterm.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "Vi kunde inte hitta några beställningar med det namnet.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "Inga beställningar hittades";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle2" = "Utforska hur du kan öka din butiksförsäljning.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "Inga beställningar än";
+
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "Tryck för att visa beställningsdetaljer";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "Beställning #%1$@, Totalt %2$@, %3$@, Status: %4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "E-post: %1$@";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "#%1$@";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "Beställningar";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "Sök beställningar";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "Sök beställningar";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "Alternativ tillgängliga";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Vi kunde inte hitta några rabattkoder med det namnet. Prova justera din sökterm.";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Rabattkoder kan vara ett effektivt sätt att öka försäljningen. Vill du skapa en?";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Inga rabattkoder hittades";
+
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Uppdatera";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "För att lägga till en, avsluta POS och gå till produkter.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Variationsnamn går inte att söka efter, så använd det överordnade produktnamnet.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "Vi kunde inte hitta några matchande produkter. Prova justera din sökterm.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Inga produkter hittades";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS stöder för närvarande bara enkla och variabla produkter.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "Inga produkter som stöds hittades";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "För att lägga till en, lämna POS och redigera produkten på fliken Produkter.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS stöder endast aktiverade, icke-nedladdningsbara variationer.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "Inga varianter som stöds hittades";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Skapa rabattkod";
+
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "OK";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "Rensa sök";
+
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
+
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "För att ta betalt för en produkt som inte stöds, lämna POS och skapa en ny beställning från fliken Beställningar.";
+
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "Varför kan jag inte se mina produkter?";
+
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ i lager";
+
+/* Label to be displayed in the product's card when out of stock */
+"pos.stockStatusLabel.outofstock" = "Slut i lager";
+
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
+
+/* Button title for new order button */
+"pos.totalsView.button.newOrder" = "Ny beställning";
+
+/* Button title for the receipt button */
+"pos.totalsView.button.sendReceipt" = "Kvitto via e-post";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "Kontant betalning";
+
+/* Title for discount total amount field */
+"pos.totalsView.discountTotal2" = "Total rabatt";
+
+/* Title for subtotal amount field */
+"pos.totalsView.subtotal" = "Delsumma";
+
+/* Title for taxes amount field */
+"pos.totalsView.taxes" = "Moms";
+
+/* Title for total amount field */
+"pos.totalsView.total" = "Totalt";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Justera din skärmdelning för att ge Försäljningsplats mer utrymme.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Försäljningsplats stöds inte med den här skärmbredden.";
+
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Tillåt synkronisering med mobildata";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "Avbryt";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "Försök igen";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "Storlek";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "Senaste fullständiga synkronisering";
+
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "Senaste inkrementella synkronisering";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "Mobildata";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "Kataloguppdatering";
+
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "Uppdatera katalogen manuellt";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title.1" = "Produktkatalog";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "Uppdatera katalog";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produkter och %2$ld varianter";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Katalogstorlek ej tillgänglig";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "Inte uppdaterad";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Uppdateringsdatum ej tillgängligt";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Stäng";

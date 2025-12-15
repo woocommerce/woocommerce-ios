@@ -55,6 +55,14 @@ struct BookingDateTimeFilterView: View {
         .listStyle(.plain)
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(Localization.clear) {
+                    clearDateRange()
+                }
+                .renderedIf(selectedFromDate != nil || selectedToDate != nil)
+            }
+        }
         .background(Color(.listBackground))
         .environment(\.timeZone, TimeZone(identifier: "UTC")!) // API treats dates as no timezone so use UTC to display and select dates
         .onChange(of: fromDate) { _, newValue in
@@ -157,6 +165,12 @@ private extension BookingDateTimeFilterView {
             return fromDate...Date.distantFuture
         }
     }
+
+    func clearDateRange() {
+        selectedFromDate = nil
+        selectedToDate = nil
+        expandedPicker = nil
+    }
 }
 
 private extension BookingDateTimeFilterView {
@@ -185,6 +199,11 @@ private extension BookingDateTimeFilterView {
             "bookingDateTimeFilterView.time",
             value: "Time",
             comment: "Title of the Time row in the date time picker for booking filter"
+        )
+        static let clear = NSLocalizedString(
+            "bookingDateTimeFilterView.clear",
+            value: "Clear",
+            comment: "Title of the Clear button in the date time picker for booking filter"
         )
     }
 }

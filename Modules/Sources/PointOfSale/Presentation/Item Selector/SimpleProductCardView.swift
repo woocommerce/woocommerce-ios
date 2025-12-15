@@ -60,7 +60,7 @@ private extension SimpleProductCardView {
 
 #if DEBUG
 #Preview {
-    SimpleProductCardView(product: POSSimpleProduct(id: UUID(),
+    SimpleProductCardView(product: POSSimpleProduct(id: .init(underlyingType: .product, itemID: 123),
                                                     name: "Product name",
                                                     formattedPrice: "$3.00",
                                                     productID: 123,

@@ -3,6 +3,7 @@
 
 @import MobileCoreServices;
 @import AVFoundation;
+@import UniformTypeIdentifiers;
 
 @interface WPMediaCapturePresenter () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic, strong, nullable) UIViewController *presentingViewController;
@@ -79,11 +80,10 @@
                                                            UIImagePickerControllerSourceTypeCamera]];
     NSMutableSet *mediaDesired = [NSMutableSet new];
     if (self.mediaType & WPMediaTypeImage) {
-        [mediaDesired addObject:(__bridge NSString *)kUTTypeImage];
+        [mediaDesired addObject:UTTypeImage.identifier];
     }
     if (self.mediaType & WPMediaTypeVideo) {
-        [mediaDesired addObject:(__bridge NSString *)kUTTypeMovie];
-
+        [mediaDesired addObject:UTTypeMovie.identifier];
     }
     if (mediaDesired.count > 0){
         [mediaTypes intersectSet:mediaDesired];

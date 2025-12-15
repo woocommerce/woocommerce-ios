@@ -137,7 +137,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() async {
         // Given
-        let error = DotcomError.noRestRoute
+        let error = DotcomError.noRestRoute()
         mockReloadingData(jitmResult: .failure(error))
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,

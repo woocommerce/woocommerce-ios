@@ -24,6 +24,11 @@ final class BookingListContainerViewModel: ObservableObject {
     private var searchQuerySubscription: AnyCancellable?
     private var sortBySubscription: AnyCancellable?
 
+    private lazy var allTabViewModels: [BookingListViewModel] = [
+        todayListViewModel,
+        upcomingListViewModel,
+        allListViewModel
+    ]
 
     private var filters = BookingFiltersViewModel.Filters()
 
@@ -87,6 +92,10 @@ final class BookingListContainerViewModel: ObservableObject {
             }
 
         restorePersistedFilters()
+
+        todayListViewModel.refreshCoordinator = self
+        upcomingListViewModel.refreshCoordinator = self
+        allListViewModel.refreshCoordinator = self
     }
 
     func listViewModel(for tab: BookingListTab) -> BookingListViewModel {
@@ -139,7 +148,6 @@ private extension BookingListContainerViewModel {
                 teamMembers: storedFilters.teamMembers,
                 products: storedFilters.products,
                 attendanceStatuses: storedFilters.attendanceStatuses,
-                paymentStatuses: storedFilters.paymentStatuses,
                 customers: storedFilters.customers,
                 dateRange: storedFilters.dateRange,
                 numberOfActiveFilters: storedFilters.numberOfActiveFilters
@@ -170,7 +178,6 @@ private extension BookingListContainerViewModel {
             teamMembers: filters.teamMembers,
             products: filters.products,
             attendanceStatuses: filters.attendanceStatuses,
-            paymentStatuses: filters.paymentStatuses,
             customers: filters.customers,
             dateRange: filters.dateRange
         )
@@ -180,6 +187,29 @@ private extension BookingListContainerViewModel {
             }
         }
         stores.dispatch(action)
+    }
+}
+
+extension BookingListContainerViewModel: BookingListsRefreshCoordinating {
+    @MainActor
+    func refreshAllLists() async {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.clearBookingsCache(siteID: siteID) {
+                continuation.resume()
+            }
+            stores.dispatch(action)
+        }
+
+        // Launch all tab refreshes in parallel and wait for all to complete
+        await withTaskGroup(of: Void.self) { group in
+            for viewModel in allTabViewModels {
+                group.addTask { @MainActor in
+                    await viewModel.reloadData(
+                        reason: BookingListViewModel.siblingRefreshReason
+                    )
+                }
+            }
+        }
     }
 }
 

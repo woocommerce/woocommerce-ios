@@ -20,10 +20,11 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem] {
         return products.compactMap { product in
             let thumbnailSource = product.images.first?.src
+            let id = POSItemIdentifier(underlyingType: .product, itemID: product.productID)
 
             switch product.productType {
                 case .simple:
-                    return .simpleProduct(POSSimpleProduct(id: UUID(),
+                return .simpleProduct(POSSimpleProduct(id: id,
                                                            name: product.name,
                                                            formattedPrice: formatPrice(product.price),
                                                            productImageSource: thumbnailSource,
@@ -34,7 +35,7 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                                            stockStatusKey: product.stockStatusKey))
                 case .variable:
                     return .variableParentProduct(POSVariableParentProduct(
-                        id: UUID(),
+                        id: id,
                         name: product.name,
                         productImageSource: thumbnailSource,
                         productID: product.productID,
@@ -48,13 +49,14 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
 
     func mapVariationsToPOSItems(variations: [POSProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem] {
         return variations.compactMap { variation in
+            let id = POSItemIdentifier(underlyingType: .variation, itemID: variation.productVariationID)
             let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
                 for: variation,
                 from: parentProduct.allAttributes,
                 separator: ", "
             )
             return POSItem
-                .variation(.init(id: UUID(),
+                .variation(.init(id: id,
                                  name: variationName,
                                  formattedPrice: formatPrice(variation.price),
                                  price: variation.price,

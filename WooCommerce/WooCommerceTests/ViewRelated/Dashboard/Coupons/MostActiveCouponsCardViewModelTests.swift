@@ -126,7 +126,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
     func test_analyticsEnabled_is_updated_correctly_when_loading_most_active_coupons_fails_with_noRestRoute() async {
         // Given
         let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID, stores: stores)
-        let error = DotcomError.noRestRoute
+        let error = DotcomError.noRestRoute()
         XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
 
         // When

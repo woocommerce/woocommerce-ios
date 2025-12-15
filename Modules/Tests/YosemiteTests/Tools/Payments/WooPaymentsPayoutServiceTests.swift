@@ -99,7 +99,7 @@ final class WooPaymentsPayoutServiceTests: XCTestCase {
 
     func testFetchPayoutsOverviewError() async {
         // Given
-        let mockError = DotcomError.noRestRoute
+        let mockError = DotcomError.noRestRoute()
         mockNetwork.simulateError(requestUrlSuffix: "payments/deposits/overview-all", error: mockError)
 
         do {

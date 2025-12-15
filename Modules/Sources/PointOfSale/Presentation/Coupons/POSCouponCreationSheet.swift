@@ -2,6 +2,7 @@ import SwiftUI
 import class WooFoundation.CurrencySettings
 import struct Yosemite.Coupon
 import enum Yosemite.POSItem
+import struct Yosemite.POSItemIdentifier
 import struct Yosemite.POSCoupon
 
 extension View {
@@ -31,7 +32,8 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
                     onSuccess: { coupon in
-                        addedCouponItem = .coupon(.init(id: UUID(), code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))
+                        let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
+                        addedCouponItem = .coupon(.init(id: id, code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))
                     },
                     dismissHandler: {
                         selectedType = nil

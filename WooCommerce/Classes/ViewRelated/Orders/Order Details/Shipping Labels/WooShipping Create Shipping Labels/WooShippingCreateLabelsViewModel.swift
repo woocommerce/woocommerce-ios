@@ -377,7 +377,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
             let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
             try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
-        } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
+        } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch {
             labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,

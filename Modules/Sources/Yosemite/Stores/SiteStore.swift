@@ -210,7 +210,7 @@ public enum SiteCreationError: Error, Equatable {
             }
         case let remoteError as DotcomError:
             switch remoteError {
-            case let .unknown(code, _):
+            case let .unknown(code, _, _):
                 switch code {
                 case "blog_name_exists":
                     self = .domainExists

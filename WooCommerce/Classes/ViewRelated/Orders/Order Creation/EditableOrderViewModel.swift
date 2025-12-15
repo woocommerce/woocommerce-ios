@@ -2519,7 +2519,7 @@ extension EditableOrderViewModel {
         ///
         private static func isEmailError(_ error: Error, order: Order) -> Bool {
             switch error as? DotcomError {
-            case .unknown(code: "rest_invalid_param", let message?):
+            case .unknown(code: "rest_invalid_param", let message?, _):
                 return message.contains("billing") && order.billingAddress?.hasEmailAddress == false
             default:
                 return false
@@ -2527,7 +2527,7 @@ extension EditableOrderViewModel {
         }
 
         private static func isCouponsError(_ error: Error) -> Bool {
-            if case .unknown(code: "woocommerce_rest_invalid_coupon", _) = error as? DotcomError {
+            if case .unknown(code: "woocommerce_rest_invalid_coupon", _, _) = error as? DotcomError {
                 return true
             }
 

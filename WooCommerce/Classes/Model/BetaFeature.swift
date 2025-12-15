@@ -7,6 +7,7 @@ import WooFoundationCore
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
     case applicationPasswords
+    case posLocalCatalog
 }
 
 extension BetaFeature {
@@ -16,6 +17,8 @@ extension BetaFeature {
             return Localization.viewAddOnsTitle
         case .applicationPasswords:
             return Localization.applicationPasswordsTitle
+        case .posLocalCatalog:
+            return Localization.posLocalCatalogTitle
         }
     }
 
@@ -25,6 +28,8 @@ extension BetaFeature {
             return Localization.viewAddOnsDescription
         case .applicationPasswords:
             return Localization.applicationPasswordsDescription
+        case .posLocalCatalog:
+            return Localization.posLocalCatalogDescription
         }
     }
 
@@ -34,6 +39,8 @@ extension BetaFeature {
             return \.isViewAddOnsSwitchEnabled
         case .applicationPasswords:
             return \.isApplicationPasswordsSwitchEnabled
+        case .posLocalCatalog:
+            return \.isPOSLocalCatalogSwitchEnabled
         }
     }
 
@@ -45,6 +52,8 @@ extension BetaFeature {
             return .settingsBetaFeaturesOrderAddOnsToggled
         case .applicationPasswords:
             return .settingsBetaFeaturesApplicationPasswordsToggled
+        case .posLocalCatalog:
+            return .settingsBetaFeaturesPOSLocalCatalogToggled
         }
     }
 
@@ -73,6 +82,8 @@ extension BetaFeature {
                 text: Localization.applicationPasswordsDescriptionLinkText,
                 url: url
             )
+        case .posLocalCatalog:
+            return nil
         }
     }
 }
@@ -132,6 +143,15 @@ private extension BetaFeature {
             value: "Application Passwords",
             comment: "Link text to open Application Passwords documentation page"
         )
+
+        static let posLocalCatalogTitle = NSLocalizedString(
+            "experimentalFeatures.posLocalCatalog.title",
+            value: "POS Local Catalog",
+            comment: "Cell title on the beta features screen to enable the POS local catalog feature")
+        static let posLocalCatalogDescription = NSLocalizedString(
+            "experimentalFeatures.posLocalCatalog.description",
+            value: "Store your product catalog locally for faster access in Point of Sale",
+            comment: "Cell description on the beta features screen to enable the POS local catalog feature")
     }
 
     enum Constants {

@@ -5,6 +5,10 @@ import Combine
 import protocol Storage.StorageManagerType
 import class Networking.BookingsRemote
 
+protocol BookingListsRefreshCoordinating: AnyObject {
+    func refreshAllLists() async
+}
+
 /// View model for `BookingListView`
 final class BookingListViewModel: ObservableObject {
 
@@ -13,6 +17,8 @@ final class BookingListViewModel: ObservableObject {
     @Published var errorFetching = false
 
     @Published private(set) var hasFilters = false
+
+    weak var refreshCoordinator: BookingListsRefreshCoordinating?
 
     var emptyStateTitle: String {
         type.emptyStateTitle(hasFilters: hasFilters)
@@ -32,6 +38,7 @@ final class BookingListViewModel: ObservableObject {
 
     private static let refreshCacheReason = "refresh-cache"
     private static let reorderReason = "reorder"
+    static let siblingRefreshReason = "sibling-refresh"
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -58,6 +65,7 @@ final class BookingListViewModel: ObservableObject {
 
     init(siteID: Int64,
          type: BookingListTab,
+         parent: BookingListContainerViewModel? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          currentDate: Date = Date()) {
@@ -96,10 +104,14 @@ final class BookingListViewModel: ObservableObject {
     }
 
     /// Called when the user pulls down the list to refresh.
-    @MainActor
     func onRefreshAction() async {
+        await refreshCoordinator?.refreshAllLists()
+    }
+
+    @MainActor
+    func reloadData(reason: String = BookingListViewModel.refreshCacheReason) async {
         await withCheckedContinuation { continuation in
-            paginationTracker.resync(reason: Self.refreshCacheReason) {
+            paginationTracker.resync(reason: reason) {
                 continuation.resume(returning: ())
             }
         }

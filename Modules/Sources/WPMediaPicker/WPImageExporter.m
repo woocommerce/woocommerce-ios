@@ -2,6 +2,7 @@
 
 @import MobileCoreServices;
 @import ImageIO;
+@import UniformTypeIdentifiers;
 
 @implementation WPImageExporter
 
@@ -33,7 +34,7 @@
         adjustedMetadata[(NSString *)kCGImagePropertyIPTCDictionary] = adjustedIPTC;
     }
 
-    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)fileURL, kUTTypeJPEG, 1, nil);
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)fileURL, (CFStringRef)UTTypeJPEG.identifier, 1, nil);
     if (destination == NULL) {
         return NO;
     }

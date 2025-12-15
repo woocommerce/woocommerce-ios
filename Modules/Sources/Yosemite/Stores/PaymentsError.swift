@@ -19,7 +19,7 @@ public enum PaymentsError: Error, LocalizedError {
 
     private static func unwrapError(error: Error) -> PaymentsErrorConvertible? {
         switch error {
-        case let DotcomError.unknown(code, message):
+        case let DotcomError.unknown(code, message, _):
             return PaymentsDotcomErrorDetails(code: code, message: message)
         case let NetworkError.unacceptableStatusCode(_, response):
             guard let response,

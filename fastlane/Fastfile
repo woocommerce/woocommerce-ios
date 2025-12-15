@@ -29,6 +29,9 @@ WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 FIREBASE_APP_ID = '1:124902176124:ios:02259de1e7c42b291620f9'
 FIREBASE_TESTERS_GROUP = 'woocommerce-ios---prototype-builds'
 
+# Buildkite sets this env var to the PR number if on a PR, but to 'false' (and not nil) if not on a PR
+pull_request_number = ENV['BUILDKITE_PULL_REQUEST']&.then { |n| n == 'false' ? nil : Integer(n) }
+
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '18.5' # For screenshots
@@ -418,27 +421,45 @@ platform :ios do
 
     # Parse the provided version into an AppVersion object
     parsed_version = VERSION_FORMATTER.parse(version)
+    # Validate that this is a hotfix version (must have a patch component > 0)
+    UI.user_error!("Invalid hotfix version '#{version}'. Must include a patch number.") unless parsed_version.patch.to_i.positive?
     build_code_hotfix = BUILD_CODE_FORMATTER.build_code(version: parsed_version)
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
+    previous_release_branch = "release/#{previous_version}"
+
+    # Determine the base for the hotfix branch: either a tag or a release branch
+    base_ref_for_hotfix = if git_tag_exists(tag: previous_version, remote: true)
+                            previous_version
+                          elsif Fastlane::Helper::GitHelper.branch_exists_on_remote?(branch_name: previous_release_branch)
+                            UI.message("ℹ️  Tag '#{previous_version}' not found on the remote. Using release branch '#{previous_release_branch}' as the base for hotfix instead.")
+                            previous_release_branch
+                          else
+                            UI.user_error!("Neither tag '#{previous_version}' nor branch '#{previous_release_branch}' exists on the remote! A hotfix branch cannot be created.")
+                          end
 
     # Check versions
     UI.important <<-MESSAGE
 
       New hotfix version: #{version}
       New build code: #{build_code_hotfix}
-      Branching from tag: #{previous_version}
+      Branching from #{base_ref_for_hotfix}
 
     MESSAGE
     UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     # Check tags
-    UI.user_error!("Version #{version} already exists! Abort!") if git_tag_exists(tag: version)
-    UI.user_error!("Version #{previous_version} is not tagged! A hotfix branch cannot be created.") unless git_tag_exists(tag: previous_version)
+    UI.user_error!("Version '#{version}' already exists on the remote! Abort!") if git_tag_exists(tag: version, remote: true)
+
+    # Fetch the base ref to ensure it's available locally
+    sh('git', 'fetch', 'origin', base_ref_for_hotfix)
+
+    hotfix_branch = "release/#{version}"
+    ensure_branch_does_not_exist!(hotfix_branch)
 
     # Create the hotfix branch
-    UI.message('Creating hotfix branch...')
-    Fastlane::Helper::GitHelper.create_branch("release/#{version}", from: previous_version)
-    UI.success("Done! New hotfix branch is: #{git_branch}")
+    UI.message("Creating hotfix branch from '#{base_ref_for_hotfix}'...")
+    Fastlane::Helper::GitHelper.create_branch(hotfix_branch, from: base_ref_for_hotfix)
+    UI.success("Done! New hotfix branch is: '#{git_branch}'")
 
     # Bump the hotfix version and build code and write it to the `xcconfig` file
     UI.message('Bumping hotfix version and build code...')
@@ -451,7 +472,7 @@ platform :ios do
     # Push the newly created hotfix branch
     push_to_git_remote(tags: false)
 
-    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
+    UI.success("Done! New Release Version: '#{release_version_current}'. New Build Code: '#{build_code_current}'")
   end
 
   # This lane finalizes the hotfix branch, triggering a release build.
@@ -759,10 +780,10 @@ platform :ios do
     build_for_prototype_build
 
     release_notes = <<~NOTES
-      Pull Request: ##{pull_request_number || 'N/A'}
       Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
       Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
     NOTES
+    release_notes += "Pull Request: ##{pull_request_number}" unless pull_request_number.nil?
 
     firebase_app_distribution(
       app: FIREBASE_APP_ID,
@@ -1507,12 +1528,6 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
 # -----------------------------------------------------------------------------------
 # Release Management Utils
 # -----------------------------------------------------------------------------------
-
-def pull_request_number
-  # Buildkite sets this env var to the PR number if on a PR, but to 'false' (and not nil) if not on a PR
-  pr_num = ENV.fetch('BUILDKITE_PULL_REQUEST', 'false')
-  pr_num == 'false' ? nil : Integer(pr_num)
-end
 
 def create_backmerge_pr
   version = release_version_current

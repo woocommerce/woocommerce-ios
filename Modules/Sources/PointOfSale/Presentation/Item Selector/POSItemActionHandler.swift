@@ -58,7 +58,7 @@ extension POSItemActionHandler {
     func shouldSkipDuplicate(_ item: POSItem, posModel: PointOfSaleAggregateModelProtocol) -> Bool {
         switch item {
         case .coupon:
-            return posModel.cart.coupons.contains(where: { $0.id == item.id })
+            return posModel.cart.coupons.contains(where: { $0.posItemIdentifier == item.id })
         default:
             return false
         }

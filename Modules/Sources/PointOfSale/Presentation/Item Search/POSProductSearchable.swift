@@ -38,6 +38,6 @@ final class POSProductSearchable: POSSearchable {
     }
 
     func clearSearchResults() async {
-        await itemsController.clearSearchItems(baseItem: .root)
+        itemsController.clearSearchItems(baseItem: .root)
     }
 }

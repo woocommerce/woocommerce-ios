@@ -96,10 +96,7 @@ final class AppCoordinator {
                         self.ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
                             hostingWindow: self.window
                         ) { [weak self] in
-                            guard let self else { return }
-                            // Log out and return to login flow.
-                            stores.deauthenticate()
-                            displayAuthenticatorWithOnboardingIfNeeded()
+                            self?.forceLogoutAndReturnToLogin()
                         }
                         self.synchronizeAndShowWhatsNew()
                     }
@@ -501,6 +498,14 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             reason: reason,
             onPrimaryAction: onCTATap
         )
+    }
+}
+
+private extension AppCoordinator {
+    /// Centralized flow to log out and present the login/onboarding UI.
+    func forceLogoutAndReturnToLogin() {
+        stores.deauthenticate()
+        displayAuthenticatorWithOnboardingIfNeeded()
     }
 }
 

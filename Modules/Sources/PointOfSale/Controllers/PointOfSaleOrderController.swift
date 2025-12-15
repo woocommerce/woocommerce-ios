@@ -43,6 +43,10 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+
+    /// Sets the order state for Store API checkout.
+    /// This is used when bypassing the REST API order sync in favor of Store API checkout.
+    func setOrderState(totals: PointOfSaleOrderTotals, order: Order)
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -122,6 +126,11 @@ protocol PointOfSaleOrderControllerProtocol {
     func clearOrder() {
         order = nil
         orderState = .idle
+    }
+
+    func setOrderState(totals: PointOfSaleOrderTotals, order: Order) {
+        self.order = order
+        self.orderState = .loaded(totals, order)
     }
 
     private func celebrate() {

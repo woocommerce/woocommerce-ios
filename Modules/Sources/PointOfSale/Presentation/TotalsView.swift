@@ -46,11 +46,7 @@ struct TotalsView: View {
                                 orderState: posModel.orderState,
                                 paymentState: posModel.paymentState,
                                 cart: posModel.cart,
-                                totalsFieldAnimation: totalsFieldAnimation,
-                                requiresEmail: posModel.requiresEmailForCheckout,
-                                billingEmail: posModel.billingEmail,
-                                onEmailChange: { posModel.setBillingEmail($0) },
-                                onProceedWithCheckout: { await posModel.proceedWithCheckout() }
+                                totalsFieldAnimation: totalsFieldAnimation
                             )
                             .opacity(shouldShowTotalsFields ? 1 : 0)
                         }
@@ -292,52 +288,13 @@ private struct TotalsFieldsContent: View {
     let paymentState: PointOfSalePaymentState
     let cart: Cart
     let totalsFieldAnimation: Namespace.ID
-    let requiresEmail: Bool
-    let billingEmail: String
-    let onEmailChange: (String) -> Void
-    let onProceedWithCheckout: () async -> Void
     private let viewHelper = TotalsViewHelper()
-
-    @State private var emailInput: String = ""
-
-    private var isValidEmail: Bool {
-        emailInput.contains("@") && emailInput.contains(".")
-    }
-
-    /// Whether to show a continue button (waiting for email before proceeding)
-    private var shouldShowContinueButton: Bool {
-        requiresEmail && orderState.isIdle
-    }
 
     /// Used for synchronizing animations of shimmeringLine and textField
     static let matchedGeometryId: String = "pos_totals_view_matched_geometry_id"
 
     var body: some View {
         VStack(spacing: POSSpacing.medium) {
-            if requiresEmail {
-                POSEmailInputView(email: $emailInput)
-                    .onChange(of: emailInput) { _, newValue in
-                        onEmailChange(newValue)
-                    }
-                    .onAppear {
-                        emailInput = billingEmail
-                    }
-            }
-
-            if shouldShowContinueButton {
-                Button {
-                    Task { @MainActor in
-                        await onProceedWithCheckout()
-                    }
-                } label: {
-                    Text(Localization.continueButtonTitle)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .disabled(!isValidEmail)
-                .padding(.horizontal, POSPadding.medium)
-                .accessibilityIdentifier("pos-continue-checkout-button")
-            }
-
             HStack(alignment: .center) {
                 Spacer()
                 switch orderState {
@@ -354,14 +311,6 @@ private struct TotalsFieldsContent: View {
         .opacity(viewHelper.shouldShowTotalsFields(for: paymentState) ? 1 : 0)
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-    }
-
-    private enum Localization {
-        static let continueButtonTitle = NSLocalizedString(
-            "pos.totalsView.continue.button.title",
-            value: "Continue",
-            comment: "Title for the continue button when email is required for downloadable products"
-        )
     }
 
     @ViewBuilder func totalsFields(orderTotals: PointOfSaleOrderTotals?) -> some View {

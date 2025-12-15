@@ -23,6 +23,7 @@ struct CartView: View {
     }
 
     @State private var showBarcodeScanningModal: Bool = false
+    @State private var showEmailSheet: Bool = false
 
     var body: some View {
         ZStack {
@@ -53,7 +54,8 @@ struct CartView: View {
                     CartScrollViewContent(
                         offSetPosition: $offSetPosition,
                         cartContentHeight: $cartContentHeight,
-                        scrollViewHeight: $scrollViewHeight
+                        scrollViewHeight: $scrollViewHeight,
+                        showEmailSheet: $showEmailSheet
                     )
                 } else {
                     Spacer()
@@ -70,6 +72,18 @@ struct CartView: View {
             }
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
+            }
+            .sheet(isPresented: $showEmailSheet) {
+                POSEmailEntrySheet(
+                    email: posModel.billingEmail,
+                    onSave: { email in
+                        posModel.setBillingEmail(email)
+                        showEmailSheet = false
+                    },
+                    onCancel: {
+                        showEmailSheet = false
+                    }
+                )
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -175,7 +189,7 @@ private extension CartView {
             Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
+        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart) || !posModel.canProceedWithCheckout)
         .accessibilityIdentifier("pos-checkout-button")
     }
 
@@ -267,6 +281,7 @@ private struct CartScrollViewContent: View {
     @Binding var offSetPosition: CGFloat
     @Binding var cartContentHeight: CGFloat
     @Binding var scrollViewHeight: CGFloat
+    @Binding var showEmailSheet: Bool
 
     @State private var shouldShowItemImages: Bool = false
 
@@ -280,7 +295,8 @@ private struct CartScrollViewContent: View {
                 VStack(spacing: Constants.cartItemSpacing) {
                     CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
 
-                    PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages,
+                                                showEmailSheet: $showEmailSheet)
                 }
                 .padding(.bottom, Constants.cartLastItemBottomPadding)
                 .background(GeometryReader { geometry in
@@ -405,6 +421,7 @@ private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Binding var shouldShowItemImages: Bool
+    @Binding var showEmailSheet: Bool
     @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
     var body: some View {
@@ -414,7 +431,11 @@ private struct PurchasableItemsCartSection: View {
                     cartItem: cartItem,
                     showImage: $shouldShowItemImages,
                     onItemRemoveTapped: itemRemoveCallback(for: cartItem),
-                    onCancelLoading: cancelLoadingCallback(for: cartItem)
+                    onCancelLoading: cancelLoadingCallback(for: cartItem),
+                    billingEmail: posModel.billingEmail,
+                    onSetEmailTapped: posModel.orderStage == .building ? {
+                        showEmailSheet = true
+                    } : nil
                 )
                 .id(cartItem.id)
                 .transition(.opacity)

@@ -734,21 +734,12 @@ extension PointOfSaleAggregateModel {
         collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
 
-        // For downloadable products, wait for email before proceeding
-        // User enters email in TotalsView, then calls proceedWithCheckout()
+        // Guard for downloadable products - checkout button should be disabled
+        // when email is required but not provided, but this is a safety check
         guard canProceedWithCheckout else {
             return
         }
 
-        await performCheckout()
-    }
-
-    /// Proceeds with checkout after email validation (for downloadable products)
-    @MainActor
-    func proceedWithCheckout() async {
-        guard canProceedWithCheckout else {
-            return
-        }
         await performCheckout()
     }
 

@@ -109,6 +109,16 @@ protocol PointOfSaleAggregateModelProtocol {
         cart.containsDownloadableItems
     }
 
+    /// Whether the email is valid (basic validation)
+    private var isValidEmail: Bool {
+        billingEmail.contains("@") && billingEmail.contains(".")
+    }
+
+    /// Whether checkout can proceed (email valid or not required)
+    var canProceedWithCheckout: Bool {
+        !requiresEmailForCheckout || isValidEmail
+    }
+
     var showStaleSyncWarning: Bool {
         // Only show warning if using local catalog
         guard isLocalCatalogEligible else {
@@ -724,6 +734,26 @@ extension PointOfSaleAggregateModel {
         collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
 
+        // For downloadable products, wait for email before proceeding
+        // User enters email in TotalsView, then calls proceedWithCheckout()
+        guard canProceedWithCheckout else {
+            return
+        }
+
+        await performCheckout()
+    }
+
+    /// Proceeds with checkout after email validation (for downloadable products)
+    @MainActor
+    func proceedWithCheckout() async {
+        guard canProceedWithCheckout else {
+            return
+        }
+        await performCheckout()
+    }
+
+    @MainActor
+    private func performCheckout() async {
         // Use Store API checkout if service is available
         if let storeAPICheckoutService {
             await checkOutViaStoreAPI(checkoutService: storeAPICheckoutService)
@@ -749,10 +779,11 @@ extension PointOfSaleAggregateModel {
             let posCart = POSCart(cart: cart)
 
             // Call Store API checkout with pos_card to create pending order
+            // Pass billing email for downloadable product fulfillment
             let checkoutResult = try await checkoutService.checkout(
                 cart: posCart,
                 paymentMethod: .card,
-                billingEmail: nil
+                billingEmail: billingEmail.isEmpty ? nil : billingEmail
             )
 
             DDLogInfo("✅ Store API checkout created order \(checkoutResult.checkoutResponse.orderID)")

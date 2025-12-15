@@ -93,11 +93,7 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
-                        self.ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
-                            hostingWindow: self.window
-                        ) { [weak self] in
-                            self?.forceLogoutAndReturnToLogin()
-                        }
+                        self.triggerAgeVerification()
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
@@ -269,6 +265,7 @@ private extension AppCoordinator {
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
+        triggerAgeVerification()
         ServiceLocator.analytics.track(.openedLogin)
         return authenticationUI
     }
@@ -469,10 +466,8 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             guard let self else { return }
             switch result {
             case .eligible:
-                /// The specified user age range satisfies requirements
                 break
             case .ineligible:
-                /// The specified user age range is below requirement
                 presentAgeGateBlock(
                     reason: .tooYoung,
                     hostingWindow: hostingWindow,
@@ -483,7 +478,6 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
                  .invalidUIState,
                  .sdkError,
                  .unknown:
-                /// We don't block the app usage if the age verifying is not possible
                 break
             }
         }
@@ -502,6 +496,14 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
 }
 
 private extension AppCoordinator {
+    func triggerAgeVerification() {
+        ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
+            hostingWindow: window
+        ) { [weak self] in
+            self?.forceLogoutAndReturnToLogin()
+        }
+    }
+
     /// Centralized flow to log out and present the login/onboarding UI.
     func forceLogoutAndReturnToLogin() {
         stores.deauthenticate()

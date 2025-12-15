@@ -104,7 +104,6 @@ private extension AgeRangeVerificationService {
         _ response: AgeRangeService.Response,
         minimumAge: Int
     ) -> AgeRangeVerificationResult {
-        // TODO: Check user region
         switch response {
         case let .sharing(range):
             if let lowerBound = range.lowerBound, lowerBound >= minimumAge {

@@ -28,6 +28,19 @@
 			"device_frame": "appstoreres/assets/ipad-x.png",
 			"device_frame_size": [1531, 1998],
 			"device_frame_offset": [259, 559]
+		},
+		{
+			"name": "iPad Pro 13-inch (M4) - landscape",
+			"canvas_size": [2732, 2048],
+			"text_size": [1848, 559],
+			"text_offset": [100, 0],
+			"font_size": "100px",
+			"screenshot_size": [1868, 1401],
+			"screenshot_offset": [517, 500],
+			"screenshot_mask": "appstoreres/assets/ipad-x-mask-landscape.png",
+			"device_frame": "appstoreres/assets/ipad-x-landscape.png",
+			"device_frame_size": [1998, 1531],
+			"device_frame_offset": [458, 447]
 		}
 	],
 	"entries": [
@@ -101,25 +114,25 @@
 		},
 		// Sell online and in person
 		{
-			"device": "iPad Pro 13-inch (M4)",
+			"device": "iPad Pro 13-inch (M4) - landscape",
 			"filename": "iPad Pro 13-inch (M4)-04.png",
-			"background": "appstoreres/assets/ipad-background-2.png",
+			"background": "appstoreres/assets/ipad-background-2-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M4)-4-light-pos-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Track orders and view totals in real time
 		{
-			"device": "iPad Pro 13-inch (M4)",
+			"device": "iPad Pro 13-inch (M4) - landscape",
 			"filename": "iPad Pro 13-inch (M4)-05.png",
-			"background": "appstoreres/assets/ipad-background-1.png",
+			"background": "appstoreres/assets/ipad-background-1-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M4)-5-dark-pos-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 		// Complete payments quickly and efficiently
 		{
-			"device": "iPad Pro 13-inch (M4)",
+			"device": "iPad Pro 13-inch (M4) - landscape",
 			"filename": "iPad Pro 13-inch (M4)-06.png",
-			"background": "appstoreres/assets/ipad-background-2.png",
+			"background": "appstoreres/assets/ipad-background-2-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M4)-6-light-pos-success.png",
 			"text": "metadata/{locale}/app_store_screenshot_6.txt"
 		},

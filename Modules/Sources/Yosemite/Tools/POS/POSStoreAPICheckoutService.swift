@@ -71,6 +71,20 @@ public protocol POSStoreAPICheckoutServiceProtocol {
 public final class POSStoreAPICheckoutService: POSStoreAPICheckoutServiceProtocol {
     private let remote: POSStoreAPIRemote
 
+    /// Creates a checkout service with a pre-configured network.
+    ///
+    /// Use this initializer when you have an existing network that's already
+    /// configured for application password authentication.
+    ///
+    /// - Parameters:
+    ///   - siteURL: URL of the WooCommerce site.
+    ///   - network: Pre-configured network for making requests.
+    ///
+    public convenience init(siteURL: String, network: Network) {
+        let remote = POSStoreAPIRemote(network: network, siteURL: siteURL)
+        self.init(remote: remote)
+    }
+
     /// Creates a checkout service with the provided credentials.
     ///
     /// - Parameters:

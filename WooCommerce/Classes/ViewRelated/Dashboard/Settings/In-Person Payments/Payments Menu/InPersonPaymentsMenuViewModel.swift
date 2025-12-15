@@ -340,15 +340,23 @@ private extension InPersonPaymentsMenuViewModel {
 
 // MARK: - Deeplink navigation
 extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
-    func navigate(to destination: any DeepLinkDestinationProtocol) {
+    /*
+     options:
+     1. Add 'nonisolated' to 'navigate(to:)' to make this instance method not isolated to the actor
+     2. Add '@preconcurrency' to the 'DeepLinkNavigator' conformance to defer isolation checking to run time -> Defers strict concurrency checking to runtime -> could crash on bg call
+     */
+    nonisolated func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let paymentsDestination = destination as? PaymentsMenuDestination else {
             return
         }
-        switch paymentsDestination {
-        case .tapToPay:
-            presentSetUpTryOutTapToPay = true
-        case .aboutTapToPay:
-            presentAboutTapToPay = true
+
+        Task { @MainActor in
+            switch paymentsDestination {
+            case .tapToPay:
+                presentSetUpTryOutTapToPay = true
+            case .aboutTapToPay:
+                presentAboutTapToPay = true
+            }
         }
     }
 }

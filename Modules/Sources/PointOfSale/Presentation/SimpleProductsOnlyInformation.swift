@@ -55,7 +55,7 @@ private extension SimpleProductsOnlyInformation {
 
         static let variableAndSimpleProductsOnlyIssueMessage = NSLocalizedString(
             "pos.simpleProductsModal.message.issue.variableAndSimple",
-            value: "Only simple and variable non-downloadable products can be used with POS right now.",
+            value: "Only simple and variable products can be used with POS right now.",
             comment: "Message in the simple products information modal in POS when variable products are supported"
         )
         static let variableAndSimpleProductsOnlyFutureMessage = NSLocalizedString(

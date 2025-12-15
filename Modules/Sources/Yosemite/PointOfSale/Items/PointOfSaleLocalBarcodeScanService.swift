@@ -71,10 +71,6 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
             // Validate that the product status is allowed for POS
             try validateProductStatus(posProduct, scannedCode: scannedCode)
 
-            guard !posProduct.downloadable else {
-                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: posProduct.name)
-            }
-
             // Validate product type - only simple products can be scanned directly
             // Variable parent products cannot be added to cart (only their variations can)
             guard posProduct.productType == .simple else {
@@ -115,11 +111,6 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
                   case .variableParentProduct(let variableParentProduct) = mappedParent,
                   let item = itemMapper.mapVariationsToPOSItems(variations: [posVariation], parentProduct: variableParentProduct).first else {
                 throw PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)
-            }
-
-            guard !persistedVariation.downloadable else {
-                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode,
-                                                                      productName: variationName(for: item))
             }
 
             return item

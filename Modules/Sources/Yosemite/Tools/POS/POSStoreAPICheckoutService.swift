@@ -147,16 +147,15 @@ public final class POSStoreAPICheckoutService: POSStoreAPICheckoutServiceProtoco
 
         // Step 2: Add all cart items
         for cartItem in cart.items {
-            let (productID, variationID) = extractProductIDs(from: cartItem.item)
+            let itemID = extractItemID(from: cartItem.item)
             let quantity = Int(truncating: cartItem.quantity as NSDecimalNumber)
 
             // Get gift card info for this cart item if available
             let gcInfo = giftCardInfo[cartItem.id]
 
             _ = try await remote.addItem(
-                productID: productID,
+                id: itemID,
                 quantity: quantity,
-                variationID: variationID > 0 ? variationID : nil,
                 giftCardRecipientEmail: gcInfo?.recipientEmail,
                 giftCardSenderName: gcInfo?.senderName
             )
@@ -210,17 +209,20 @@ public final class POSStoreAPICheckoutService: POSStoreAPICheckoutServiceProtoco
 // MARK: - Private Helpers
 
 private extension POSStoreAPICheckoutService {
-    /// Extracts product and variation IDs from a POS orderable item.
+    /// Extracts the item ID to use for the Store API add-item request.
     ///
-    func extractProductIDs(from item: POSOrderableItem) -> (productID: Int64, variationID: Int64) {
+    /// For simple products, returns the product ID.
+    /// For variations, returns the variation ID (not the parent product ID).
+    ///
+    func extractItemID(from item: POSOrderableItem) -> Int64 {
         if let simpleProduct = item as? POSSimpleProduct {
-            return (simpleProduct.productID, 0)
+            return simpleProduct.productID
         } else if let variation = item as? POSVariation {
-            return (variation.productID, variation.productVariationID)
+            return variation.productVariationID
         }
         // Fallback - shouldn't happen for valid cart items
         DDLogWarn("⚠️ Unknown POSOrderableItem type: \(type(of: item))")
-        return (0, 0)
+        return 0
     }
 }
 

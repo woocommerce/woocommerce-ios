@@ -51,28 +51,23 @@ public final class POSStoreAPIRemote: Remote {
     /// Adds an item to the cart.
     ///
     /// - Parameters:
-    ///   - productID: The product ID to add.
+    ///   - id: The product or variation ID to add. For simple products, use the product ID.
+    ///         For variations, use the variation ID directly.
     ///   - quantity: The quantity to add.
-    ///   - variationID: Optional variation ID (for variable products).
     ///   - giftCardRecipientEmail: Optional recipient email for gift card products.
     ///   - giftCardSenderName: Optional sender name for gift card products.
     /// - Returns: The updated cart.
     ///
     public func addItem(
-        productID: Int64,
+        id: Int64,
         quantity: Int,
-        variationID: Int64? = nil,
         giftCardRecipientEmail: String? = nil,
         giftCardSenderName: String? = nil
     ) async throws -> StoreAPICart {
         var parameters: [String: Any] = [
-            ParameterKey.id: productID,
+            ParameterKey.id: id,
             ParameterKey.quantity: quantity
         ]
-
-        if let variationID, variationID > 0 {
-            parameters[ParameterKey.variation] = variationID
-        }
 
         if let email = giftCardRecipientEmail {
             parameters[ParameterKey.giftCardTo] = email
@@ -182,7 +177,6 @@ private extension POSStoreAPIRemote {
     enum ParameterKey {
         static let id = "id"
         static let quantity = "quantity"
-        static let variation = "variation"
         static let code = "code"
         static let paymentMethod = "payment_method"
         static let billingAddress = "billing_address"

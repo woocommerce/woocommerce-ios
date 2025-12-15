@@ -86,11 +86,12 @@ struct POSOrderListView: View {
                     }
                 }
             case (.error(let errorState), true):
-                POSListErrorView(error: errorState) {
+                // Not Swift6: Backward matching of the unlabeled trailing closure is deprecated; label the argument with 'onExit' to suppress this warning
+                POSListErrorView(error: errorState, onExit:  {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
-                }
+                })
             default:
                 listView
             }

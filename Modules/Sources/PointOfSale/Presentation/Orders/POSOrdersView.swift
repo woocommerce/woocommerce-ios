@@ -84,11 +84,12 @@ struct POSOrdersView: View {
         ZStack {
             VStack {
                 Spacer()
-                POSListErrorView(error: error) {
+                // Not Swift6: Backward matching of the unlabeled trailing closure is deprecated; label the argument with 'onExit' to suppress this warning
+                POSListErrorView(error: error, onExit:  {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
-                }
+                })
                 Spacer()
             }
 

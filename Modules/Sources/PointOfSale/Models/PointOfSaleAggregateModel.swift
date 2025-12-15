@@ -459,49 +459,8 @@ extension PointOfSaleAggregateModel {
         checkoutResult: POSStoreAPICheckoutResult,
         checkoutService: POSStoreAPICheckoutServiceProtocol
     ) async throws {
-        // Create a minimal Order object with the data we need for payment collection
-        let order = Order(
-            siteID: siteID,
-            orderID: checkoutResult.checkoutResponse.orderID,
-            parentID: 0,
-            customerID: 0,
-            orderKey: checkoutResult.checkoutResponse.orderKey,
-            isEditable: false,
-            needsPayment: true,
-            needsProcessing: false,
-            number: String(checkoutResult.checkoutResponse.orderID),
-            status: .pending,
-            currency: checkoutResult.cartTotals.currencyCode,
-            currencySymbol: "",
-            customerNote: nil,
-            dateCreated: Date(),
-            dateModified: Date(),
-            datePaid: nil,
-            discountTotal: "0",
-            discountTax: "0",
-            shippingTotal: "0",
-            shippingTax: "0",
-            total: checkoutResult.cartTotals.totalPrice,
-            totalTax: checkoutResult.cartTotals.totalTax,
-            paymentMethodID: "pos_card",
-            paymentMethodTitle: "POS Card",
-            paymentURL: nil,
-            chargeID: nil,
-            items: [],
-            billingAddress: nil,
-            shippingAddress: nil,
-            shippingLines: [],
-            coupons: [],
-            refunds: [],
-            fees: [],
-            taxes: [],
-            customFields: [],
-            renewalSubscriptionID: nil,
-            appliedGiftCards: [],
-            attributionInfo: nil,
-            shippingLabels: [],
-            createdVia: "store-api"
-        )
+        // Get the order from createOrderAndTotals (reusing the same order we set on orderController)
+        let (order, _) = createOrderAndTotals(from: checkoutResult)
 
         // Create capture handler that uses Store API checkout
         let captureHandler: (String) async throws -> Void = { [checkoutService] paymentIntentID in
@@ -788,6 +747,13 @@ extension PointOfSaleAggregateModel {
             // Store the checkout result for use in card payment capture
             storeAPICheckoutResult = checkoutResult
 
+            // Create the order and totals for the UI
+            let (order, totals) = createOrderAndTotals(from: checkoutResult)
+            orderController.setOrderState(totals: totals, order: order)
+
+            // Track analytics for order sync success
+            collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
+
             // Start payment collection when card reader is connected
             await startPaymentWhenCardReaderConnected()
         } catch {
@@ -800,6 +766,67 @@ extension PointOfSaleAggregateModel {
             await removeMissingProductsFromCatalogAfterSync()
             await startPaymentWhenCardReaderConnected()
         }
+    }
+
+    /// Creates an Order and PointOfSaleOrderTotals from Store API checkout result.
+    ///
+    private func createOrderAndTotals(from checkoutResult: POSStoreAPICheckoutResult) -> (Order, PointOfSaleOrderTotals) {
+        let cartTotals = checkoutResult.cartTotals
+
+        // Create Order object with properly formatted totals
+        let order = Order(
+            siteID: siteID,
+            orderID: checkoutResult.checkoutResponse.orderID,
+            parentID: 0,
+            customerID: 0,
+            orderKey: checkoutResult.checkoutResponse.orderKey,
+            isEditable: false,
+            needsPayment: true,
+            needsProcessing: false,
+            number: String(checkoutResult.checkoutResponse.orderID),
+            status: .pending,
+            currency: cartTotals.currencyCode,
+            currencySymbol: cartTotals.currencySymbol,
+            customerNote: nil,
+            dateCreated: Date(),
+            dateModified: Date(),
+            datePaid: nil,
+            discountTotal: cartTotals.formatAsDecimalString(cartTotals.totalDiscount),
+            discountTax: cartTotals.formatAsDecimalString(cartTotals.totalDiscountTax),
+            shippingTotal: cartTotals.formatAsDecimalString(cartTotals.totalShipping),
+            shippingTax: cartTotals.formatAsDecimalString(cartTotals.totalShippingTax),
+            total: cartTotals.formatAsDecimalString(cartTotals.totalPrice),
+            totalTax: cartTotals.formatAsDecimalString(cartTotals.totalTax),
+            paymentMethodID: "pos_card",
+            paymentMethodTitle: "POS Card",
+            paymentURL: nil,
+            chargeID: nil,
+            items: [],
+            billingAddress: nil,
+            shippingAddress: nil,
+            shippingLines: [],
+            coupons: [],
+            refunds: [],
+            fees: [],
+            taxes: [],
+            customFields: [],
+            renewalSubscriptionID: nil,
+            appliedGiftCards: [],
+            attributionInfo: nil,
+            shippingLabels: [],
+            createdVia: "store-api"
+        )
+
+        // Create formatted totals for display
+        let totals = PointOfSaleOrderTotals(
+            cartTotal: cartTotals.formatAsCurrencyString(cartTotals.totalItems),
+            orderTotal: cartTotals.formatAsCurrencyString(cartTotals.totalPrice),
+            taxTotal: cartTotals.formatAsCurrencyString(cartTotals.totalTax),
+            orderTotalDecimal: cartTotals.totalPriceDecimal,
+            discountTotal: Int(cartTotals.totalDiscount) ?? 0 > 0 ? cartTotals.formatAsCurrencyString(cartTotals.totalDiscount) : nil
+        )
+
+        return (order, totals)
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync

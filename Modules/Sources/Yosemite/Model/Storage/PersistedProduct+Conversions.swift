@@ -1,4 +1,5 @@
 import Foundation
+import NetworkingCore
 import Storage
 
 // MARK: - PersistedProduct Conversions
@@ -24,7 +25,7 @@ extension PersistedProduct {
         )
     }
 
-    func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = [], variationIDs: [Int64] = []) -> POSProduct {
+    func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = [], variationIDs: [Int64] = [], metaData: [MetaData] = []) -> POSProduct {
         return POSProduct(
             siteID: siteID,
             productID: id,
@@ -43,7 +44,8 @@ extension PersistedProduct {
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,
             statusKey: statusKey,
-            variationIDs: variationIDs
+            variationIDs: variationIDs,
+            metaData: metaData
         )
     }
 

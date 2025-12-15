@@ -19,6 +19,7 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
 
     // Digital product
     public let downloadable: Bool
+    public let isGiftCard: Bool
 
     public init(id: POSItemIdentifier,
                 name: String,
@@ -28,7 +29,8 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
                 productID: Int64,
                 variationID: Int64,
                 parentProductName: String,
-                downloadable: Bool = false) {
+                downloadable: Bool = false,
+                isGiftCard: Bool = false) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -38,6 +40,7 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
         self.productVariationID = variationID
         self.parentProductName = parentProductName
         self.downloadable = downloadable
+        self.isGiftCard = isGiftCard
     }
 }
 

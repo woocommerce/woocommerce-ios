@@ -1,6 +1,7 @@
 import Foundation
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
+import NetworkingCore
 
 public protocol PointOfSaleItemMapperProtocol {
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem]
@@ -21,6 +22,7 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
         return products.compactMap { product in
             let thumbnailSource = product.images.first?.src
             let id = POSItemIdentifier(underlyingType: .product, itemID: product.productID)
+            let isGiftCard = isGiftCardProduct(product.metaData)
 
             switch product.productType {
                 case .simple:
@@ -33,7 +35,8 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                                            manageStock: product.manageStock,
                                                            stockQuantity: product.stockQuantity,
                                                            stockStatusKey: product.stockStatusKey,
-                                                           downloadable: product.downloadable))
+                                                           downloadable: product.downloadable,
+                                                           isGiftCard: isGiftCard))
                 case .variable:
                     return .variableParentProduct(POSVariableParentProduct(
                         id: id,
@@ -72,5 +75,11 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
     private func formatPrice(_ price: String) -> String {
         let zeroOrPlaceholder = currencyFormatter.formatAmount("0") ?? "-"
         return currencyFormatter.formatAmount(price) ?? zeroOrPlaceholder
+    }
+
+    /// Checks if a product is a gift card based on its meta_data.
+    /// Gift cards have `_gift_card: "yes"` in their meta_data.
+    private func isGiftCardProduct(_ metaData: [MetaData]) -> Bool {
+        metaData.contains { $0.key == "_gift_card" && $0.value.stringValue == "yes" }
     }
 }

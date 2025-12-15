@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import NetworkingCore
 
 /// Represents a Product Entity, for use in Point of Sale.
 /// This deliberately only includes a subset of the fields available for Product.
@@ -51,6 +52,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
 
     public let variationIDs: [Int64]
 
+    public let metaData: [MetaData]
+
     public init(siteID: Int64,
                 productID: Int64,
                 name: String,
@@ -68,7 +71,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 stockQuantity: Decimal?,
                 stockStatusKey: String,
                 statusKey: String,
-                variationIDs: [Int64]) {
+                variationIDs: [Int64],
+                metaData: [MetaData]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -95,6 +99,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.statusKey = statusKey
 
         self.variationIDs = variationIDs
+
+        self.metaData = metaData
     }
 
     public init(from decoder: any Decoder) throws {
@@ -142,6 +148,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
 
         let variationIDs = try container.decodeIfPresent([Int64].self, forKey: .variationIDs) ?? []
 
+        let metaData = try container.decodeIfPresent([MetaData].self, forKey: .metaData) ?? []
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -159,7 +167,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   stockQuantity: stockQuantity,
                   stockStatusKey: stockStatusKey,
                   statusKey: statusKey,
-                  variationIDs: variationIDs)
+                  variationIDs: variationIDs,
+                  metaData: metaData)
     }
 
     static let requestFields: [String] = {
@@ -194,5 +203,6 @@ private extension POSProduct {
         case stockStatusKey = "stock_status"
         case statusKey = "status"
         case variationIDs = "variations"
+        case metaData = "meta_data"
     }
 }

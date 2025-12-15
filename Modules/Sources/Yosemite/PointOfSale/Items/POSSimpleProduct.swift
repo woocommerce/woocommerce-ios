@@ -26,6 +26,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
 
     // Digital product
     public let downloadable: Bool
+    public let isGiftCard: Bool
 
     public init(id: POSItemIdentifier,
                 name: String,
@@ -38,7 +39,8 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
                 manageStock: Bool,
                 stockQuantity: Decimal?,
                 stockStatusKey: String,
-                downloadable: Bool = false) {
+                downloadable: Bool = false,
+                isGiftCard: Bool = false) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -49,6 +51,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
         self.downloadable = downloadable
+        self.isGiftCard = isGiftCard
     }
 }
 

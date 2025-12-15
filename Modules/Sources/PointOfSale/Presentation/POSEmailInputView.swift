@@ -13,7 +13,7 @@ struct POSEmailInputView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             Text(Localization.title)
-                .font(.posBodyRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundColor(.posOnSurface)
 
             TextField(Localization.placeholder, text: $email)
@@ -47,7 +47,7 @@ private struct POSEmailTextFieldStyle: TextFieldStyle {
                 RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
                     .stroke(Color.posOutline, lineWidth: 1)
             )
-            .font(.posBodyRegular())
+            .font(.posBodyMediumRegular())
     }
 }
 

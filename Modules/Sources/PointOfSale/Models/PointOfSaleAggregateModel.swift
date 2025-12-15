@@ -22,6 +22,7 @@ import struct Yosemite.POSVariation
 import protocol Yosemite.POSStoreAPICheckoutServiceProtocol
 import struct Yosemite.POSCart
 import struct Yosemite.POSStoreAPICheckoutResult
+import struct Yosemite.POSGiftCardItemInfo
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -114,9 +115,26 @@ protocol PointOfSaleAggregateModelProtocol {
         billingEmail.contains("@") && billingEmail.contains(".")
     }
 
-    /// Whether checkout can proceed (email valid or not required)
+    // Gift card info per cart item (keyed by Cart.PurchasableItem UUID)
+    private(set) var giftCardInfo: [UUID: GiftCardInfo] = [:]
+
+    /// Whether checkout requires gift card info (cart contains gift cards)
+    var requiresGiftCardInfoForCheckout: Bool {
+        cart.containsGiftCards
+    }
+
+    /// Whether all gift cards in the cart have their required info
+    var allGiftCardsHaveInfo: Bool {
+        cart.giftCardItems.allSatisfy { item in
+            giftCardInfo[item.id] != nil
+        }
+    }
+
+    /// Whether checkout can proceed (all required data is present)
     var canProceedWithCheckout: Bool {
-        !requiresEmailForCheckout || isValidEmail
+        let emailOK = !requiresEmailForCheckout || isValidEmail
+        let giftCardOK = !requiresGiftCardInfoForCheckout || allGiftCardsHaveInfo
+        return emailOK && giftCardOK
     }
 
     var showStaleSyncWarning: Bool {
@@ -216,10 +234,19 @@ extension PointOfSaleAggregateModel {
         setStateForEditing()
         viewStateCoordinator.reset()
         billingEmail = ""
+        giftCardInfo = [:]
     }
 
     func setBillingEmail(_ email: String) {
         billingEmail = email
+    }
+
+    func setGiftCardInfo(_ info: GiftCardInfo, for itemID: UUID) {
+        giftCardInfo[itemID] = info
+    }
+
+    func removeGiftCardInfo(for itemID: UUID) {
+        giftCardInfo[itemID] = nil
     }
 
     private func setStateForEditing() {
@@ -769,12 +796,19 @@ extension PointOfSaleAggregateModel {
         do {
             let posCart = POSCart(cart: cart)
 
+            // Convert local GiftCardInfo to POSGiftCardItemInfo for the API
+            let posGiftCardInfo = giftCardInfo.mapValues { info in
+                POSGiftCardItemInfo(recipientEmail: info.recipientEmail, senderName: info.senderName)
+            }
+
             // Call Store API checkout with pos_card to create pending order
             // Pass billing email for downloadable product fulfillment
+            // Pass gift card info for gift card products
             let checkoutResult = try await checkoutService.checkout(
                 cart: posCart,
                 paymentMethod: .card,
-                billingEmail: billingEmail.isEmpty ? nil : billingEmail
+                billingEmail: billingEmail.isEmpty ? nil : billingEmail,
+                giftCardInfo: posGiftCardInfo
             )
 
             DDLogInfo("✅ Store API checkout created order \(checkoutResult.checkoutResponse.orderID)")

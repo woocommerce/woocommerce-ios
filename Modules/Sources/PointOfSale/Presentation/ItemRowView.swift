@@ -8,6 +8,8 @@ struct ItemRowView: View {
     private let onCancelLoading: (() -> Void)?
     private let billingEmail: String?
     private let onSetEmailTapped: (() -> Void)?
+    private let giftCardInfo: GiftCardInfo?
+    private let onSetGiftCardInfoTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding private var showProductImage: Bool
@@ -27,18 +29,33 @@ struct ItemRowView: View {
         return false
     }
 
+    /// Whether this cart item is a gift card product
+    private var isGiftCard: Bool {
+        guard case .loaded(let orderableItem) = cartItem.state else { return false }
+        if let simpleProduct = orderableItem as? POSSimpleProduct {
+            return simpleProduct.isGiftCard
+        } else if let variation = orderableItem as? POSVariation {
+            return variation.isGiftCard
+        }
+        return false
+    }
+
     init(cartItem: Cart.PurchasableItem,
          showImage: Binding<Bool> = .constant(true),
          onItemRemoveTapped: (() -> Void)? = nil,
          onCancelLoading: (() -> Void)? = nil,
          billingEmail: String? = nil,
-         onSetEmailTapped: (() -> Void)? = nil) {
+         onSetEmailTapped: (() -> Void)? = nil,
+         giftCardInfo: GiftCardInfo? = nil,
+         onSetGiftCardInfoTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
         self.onCancelLoading = onCancelLoading
         self.billingEmail = billingEmail
         self.onSetEmailTapped = onSetEmailTapped
+        self.giftCardInfo = giftCardInfo
+        self.onSetGiftCardInfoTapped = onSetGiftCardInfoTapped
     }
 
     var body: some View {
@@ -91,6 +108,11 @@ struct ItemRowView: View {
                 // Show email recipient info for downloadable items
                 if isDownloadable {
                     downloadableEmailRow
+                }
+
+                // Show gift card info for gift card items
+                if isGiftCard {
+                    giftCardInfoRow
                 }
             }
             .multilineTextAlignment(.leading)
@@ -171,6 +193,33 @@ struct ItemRowView: View {
             }
         }
     }
+
+    /// Shows the gift card recipient/sender info, or a button to set it
+    @ViewBuilder
+    private var giftCardInfoRow: some View {
+        HStack(spacing: POSSpacing.xSmall) {
+            Image(systemName: "gift")
+                .font(.posBodySmallRegular())
+                .foregroundColor(.posOnSurfaceVariantLowest)
+
+            if let info = giftCardInfo {
+                Text(Localization.giftCardInfoSummary(recipient: info.recipientEmail, sender: info.senderName))
+                    .font(.posBodySmallRegular())
+                    .foregroundColor(.posOnSurfaceVariantLowest)
+                    .lineLimit(1)
+            }
+
+            if let onSetGiftCardInfoTapped {
+                Button {
+                    onSetGiftCardInfoTapped()
+                } label: {
+                    Text(giftCardInfo == nil ? Localization.setGiftCardDetails : Localization.changeGiftCardDetails)
+                        .font(.posBodySmallRegular())
+                        .foregroundColor(.posPrimary)
+                }
+            }
+        }
+    }
 }
 
 private extension ItemRowView {
@@ -185,6 +234,24 @@ private extension ItemRowView {
             value: "Change",
             comment: "Button to change the email recipient for a downloadable product in POS cart"
         )
+        static let setGiftCardDetails = NSLocalizedString(
+            "pos.itemRow.giftCard.setDetails",
+            value: "Set details",
+            comment: "Button to set the recipient and sender details for a gift card in POS cart"
+        )
+        static let changeGiftCardDetails = NSLocalizedString(
+            "pos.itemRow.giftCard.changeDetails",
+            value: "Change",
+            comment: "Button to change the recipient and sender details for a gift card in POS cart"
+        )
+
+        static func giftCardInfoSummary(recipient: String, sender: String) -> String {
+            String(format: NSLocalizedString(
+                "pos.itemRow.giftCard.summary",
+                value: "To: %@ from %@",
+                comment: "Summary of gift card recipient and sender. %1$@ is the recipient email, %2$@ is the sender name"
+            ), recipient, sender)
+        }
     }
 }
 

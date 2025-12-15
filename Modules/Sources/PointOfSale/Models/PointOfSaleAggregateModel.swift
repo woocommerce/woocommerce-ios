@@ -101,6 +101,14 @@ protocol PointOfSaleAggregateModelProtocol {
     var isSyncStale: Bool = false
     var isStaleSyncWarningDismissed: Bool = false
 
+    // Billing email for downloadable products checkout
+    private(set) var billingEmail: String = ""
+
+    /// Whether checkout requires an email (cart contains downloadable items)
+    var requiresEmailForCheckout: Bool {
+        cart.containsDownloadableItems
+    }
+
     var showStaleSyncWarning: Bool {
         // Only show warning if using local catalog
         guard isLocalCatalogEligible else {
@@ -197,6 +205,11 @@ extension PointOfSaleAggregateModel {
         orderController.clearOrder()
         setStateForEditing()
         viewStateCoordinator.reset()
+        billingEmail = ""
+    }
+
+    func setBillingEmail(_ email: String) {
+        billingEmail = email
     }
 
     private func setStateForEditing() {

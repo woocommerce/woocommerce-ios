@@ -46,7 +46,10 @@ struct TotalsView: View {
                                 orderState: posModel.orderState,
                                 paymentState: posModel.paymentState,
                                 cart: posModel.cart,
-                                totalsFieldAnimation: totalsFieldAnimation
+                                totalsFieldAnimation: totalsFieldAnimation,
+                                requiresEmail: posModel.requiresEmailForCheckout,
+                                billingEmail: posModel.billingEmail,
+                                onEmailChange: { posModel.setBillingEmail($0) }
                             )
                             .opacity(shouldShowTotalsFields ? 1 : 0)
                         }
@@ -288,21 +291,38 @@ private struct TotalsFieldsContent: View {
     let paymentState: PointOfSalePaymentState
     let cart: Cart
     let totalsFieldAnimation: Namespace.ID
+    let requiresEmail: Bool
+    let billingEmail: String
+    let onEmailChange: (String) -> Void
     private let viewHelper = TotalsViewHelper()
+
+    @State private var emailInput: String = ""
 
     /// Used for synchronizing animations of shimmeringLine and textField
     static let matchedGeometryId: String = "pos_totals_view_matched_geometry_id"
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            switch orderState {
-            case .idle, .syncing, .error:
-                totalsFields(orderTotals: nil)
-            case .loaded(let orderTotals):
-                totalsFields(orderTotals: orderTotals)
+        VStack(spacing: POSSpacing.medium) {
+            if requiresEmail {
+                POSEmailInputView(email: $emailInput)
+                    .onChange(of: emailInput) { _, newValue in
+                        onEmailChange(newValue)
+                    }
+                    .onAppear {
+                        emailInput = billingEmail
+                    }
             }
-            Spacer()
+
+            HStack(alignment: .center) {
+                Spacer()
+                switch orderState {
+                case .idle, .syncing, .error:
+                    totalsFields(orderTotals: nil)
+                case .loaded(let orderTotals):
+                    totalsFields(orderTotals: orderTotals)
+                }
+                Spacer()
+            }
         }
         .transition(.opacity)
         .animation(.default, value: orderState.isSyncing)

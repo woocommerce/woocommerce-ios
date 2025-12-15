@@ -439,8 +439,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            // TODO: Add bookings tab reselected analytics
-            break
+            ServiceLocator.analytics.track(.bookingsReselected)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break

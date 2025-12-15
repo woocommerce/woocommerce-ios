@@ -115,6 +115,68 @@ public struct StoreAPICartTotals: Decodable, Equatable {
     }
 }
 
+// MARK: - Formatting Helpers
+//
+public extension StoreAPICartTotals {
+    /// Converts a value from minor units (cents) to a decimal string.
+    ///
+    /// Store API returns values in minor units (e.g., "1000" for $10.00).
+    /// This converts them to decimal format (e.g., "10.00") for compatibility
+    /// with REST API models like `Order` which expect decimal strings.
+    ///
+    /// - Parameter minorUnitsValue: The value in minor units as a string.
+    /// - Returns: The value as a decimal string.
+    ///
+    func formatAsDecimalString(_ minorUnitsValue: String) -> String {
+        guard let intValue = Int(minorUnitsValue) else {
+            return minorUnitsValue
+        }
+
+        let divisor = pow(10.0, Double(currencyMinorUnit))
+        let decimalValue = Double(intValue) / divisor
+
+        return String(format: "%.\(currencyMinorUnit)f", decimalValue)
+    }
+
+    /// Converts a value from minor units to a formatted currency string for display.
+    ///
+    /// Store API returns values in minor units (e.g., "1000" for $10.00).
+    /// This formats them with the currency symbol and separators (e.g., "$10.00").
+    ///
+    /// - Parameter minorUnitsValue: The value in minor units as a string.
+    /// - Returns: The formatted currency string for display.
+    ///
+    func formatAsCurrencyString(_ minorUnitsValue: String) -> String {
+        guard let intValue = Int(minorUnitsValue) else {
+            return minorUnitsValue
+        }
+
+        let divisor = pow(10.0, Double(currencyMinorUnit))
+        let decimalValue = Double(intValue) / divisor
+
+        // Format the number with proper decimal places
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = currencyMinorUnit
+        formatter.maximumFractionDigits = currencyMinorUnit
+        formatter.decimalSeparator = currencyDecimalSeparator
+        formatter.groupingSeparator = currencyThousandSeparator
+        formatter.usesGroupingSeparator = true
+
+        let formattedNumber = formatter.string(from: NSNumber(value: decimalValue)) ?? String(format: "%.\(currencyMinorUnit)f", decimalValue)
+
+        return "\(currencyPrefix)\(formattedNumber)\(currencySuffix)"
+    }
+
+    /// Returns the total price as a Decimal value.
+    ///
+    var totalPriceDecimal: Decimal {
+        guard let intValue = Int(totalPrice) else {
+            return 0
+        }
+        return Decimal(intValue) / pow(10, currencyMinorUnit)
+    }
+}
+
 private extension StoreAPICartTotals {
     enum CodingKeys: String, CodingKey {
         case currencyCode = "currency_code"

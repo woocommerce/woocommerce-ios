@@ -17,6 +17,9 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
     // Variation specific
     public let parentProductName: String
 
+    // Digital product
+    public let downloadable: Bool
+
     public init(id: POSItemIdentifier,
                 name: String,
                 formattedPrice: String,
@@ -24,7 +27,8 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
                 productImageSource: String? = nil,
                 productID: Int64,
                 variationID: Int64,
-                parentProductName: String) {
+                parentProductName: String,
+                downloadable: Bool = false) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -33,6 +37,7 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
         self.productID = productID
         self.productVariationID = variationID
         self.parentProductName = parentProductName
+        self.downloadable = downloadable
     }
 }
 

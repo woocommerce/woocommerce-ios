@@ -32,7 +32,8 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                                            price: product.price,
                                                            manageStock: product.manageStock,
                                                            stockQuantity: product.stockQuantity,
-                                                           stockStatusKey: product.stockStatusKey))
+                                                           stockStatusKey: product.stockStatusKey,
+                                                           downloadable: product.downloadable))
                 case .variable:
                     return .variableParentProduct(POSVariableParentProduct(
                         id: id,
@@ -63,7 +64,8 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                  productImageSource: variation.image?.src,
                                  productID: variation.productID,
                                  variationID: variation.productVariationID,
-                                 parentProductName: parentProduct.name))
+                                 parentProductName: parentProduct.name,
+                                 downloadable: variation.downloadable))
         }
     }
 

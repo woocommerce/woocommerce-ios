@@ -3,25 +3,16 @@ import Alamofire
 
 /// Represents a WooCommerce Store API request for Point of Sale operations.
 ///
-/// This request type wraps a standard REST request and adds the `X-WC-POS: 1` header
+/// This request type wraps a `RESTRequest` and adds the `X-WC-POS: 1` header
 /// required for POS Store API operations.
 ///
+/// By wrapping `RESTRequest`, this request type is properly authenticated using
+/// application passwords (Basic auth) instead of WPCOM token auth.
+///
 public struct POSStoreAPIRequest: Request {
-    /// URL of the site to make the request with
+    /// The underlying REST request
     ///
-    private let siteURL: String
-
-    /// HTTP Request Method
-    ///
-    private let method: HTTPMethod
-
-    /// Path to the target endpoint (relative to Store API version path)
-    ///
-    private let path: String
-
-    /// Parameters
-    ///
-    private let parameters: [String: Any]?
+    private let restRequest: RESTRequest
 
     /// Designated Initializer.
     ///
@@ -35,36 +26,26 @@ public struct POSStoreAPIRequest: Request {
                 method: HTTPMethod,
                 path: String,
                 parameters: [String: Any]? = nil) {
-        self.siteURL = siteURL
-        self.method = method
-        self.path = path
-        self.parameters = parameters
+        // Build the full path with Store API version
+        let fullPath = [WooAPIVersion.storeV1.path, path]
+            .map { $0.trimSlashes() }
+            .filter { $0.isEmpty == false }
+            .joined(separator: "/")
+
+        self.restRequest = RESTRequest(
+            siteURL: siteURL,
+            method: method,
+            path: fullPath,
+            parameters: parameters,
+            additionalHeaders: [Settings.posHeaderKey: Settings.posHeaderValue]
+        )
     }
 
     /// Returns a URLRequest instance representing the current POS Store API Request.
     ///
     public func asURLRequest() throws -> URLRequest {
-        let components = [siteURL, Settings.basePath, WooAPIVersion.storeV1.path, path]
-            .compactMap { $0 }
-            .map { $0.trimSlashes() }
-            .filter { $0.isEmpty == false }
-        let url = try components.joined(separator: "/").asURL()
-
-        var request = try URLRequest(url: url, method: method)
-
-        // Add the POS header
-        request.setValue(Settings.posHeaderValue, forHTTPHeaderField: Settings.posHeaderKey)
-
-        // Encode parameters
-        switch method {
-        case .post, .put:
-            return try JSONEncoding.default.encode(request, with: parameters)
-        case .delete:
-            // DELETE requests may have parameters in the URL
-            return try URLEncoding.default.encode(request, with: parameters)
-        default:
-            return try URLEncoding.default.encode(request, with: parameters)
-        }
+        // The POS header is included in the underlying REST request via additionalHeaders
+        try restRequest.asURLRequest()
     }
 
     public func responseDataValidator() -> ResponseDataValidator {
@@ -72,11 +53,19 @@ public struct POSStoreAPIRequest: Request {
     }
 }
 
+// MARK: - RESTRequestConvertible conformance for authentication
+//
+extension POSStoreAPIRequest: RESTRequestConvertible {
+    func asRESTRequest(with siteAddress: String) -> RESTRequest? {
+        // Return the underlying REST request for proper authentication handling
+        restRequest
+    }
+}
+
 // MARK: - Constants
 //
 private extension POSStoreAPIRequest {
     enum Settings {
-        static let basePath = "?rest_route="
         static let posHeaderKey = "X-WC-POS"
         static let posHeaderValue = "1"
     }

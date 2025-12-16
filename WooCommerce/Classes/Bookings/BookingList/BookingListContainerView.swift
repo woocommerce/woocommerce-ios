@@ -57,6 +57,9 @@ struct BookingListContainerView: View {
                 // no-op
             }
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 }
 

@@ -4,12 +4,30 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingListTabSelected,
                               properties: [Properties.selectedTab: tab.analyticsName])
         }
+
+        static func bookingListDisplayed(
+            tab: BookingListTab,
+            isDefaultTab: Bool,
+            isListEmpty: Bool,
+            isFiltered: Bool
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListDisplayed,
+                              properties: [
+                                Properties.selectedTab: tab.analyticsName,
+                                Properties.isDefaultTab: isDefaultTab,
+                                Properties.isListEmpty: isListEmpty,
+                                Properties.isFiltered: isFiltered,
+                              ])
+        }
     }
 }
 
 fileprivate extension WooAnalyticsEvent.BookingList {
     enum Properties {
         static let selectedTab = "selected_tab"
+        static let isDefaultTab = "is_default_tab"
+        static let isListEmpty = "is_list_empty"
+        static let isFiltered = "is_filtered"
     }
 }
 

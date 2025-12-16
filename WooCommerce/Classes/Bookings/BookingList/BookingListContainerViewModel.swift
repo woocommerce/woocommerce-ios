@@ -16,7 +16,8 @@ final class BookingListContainerViewModel: ObservableObject {
     private let upcomingSearchViewModel: BookingSearchViewModel
     private let allSearchViewModel: BookingSearchViewModel
 
-    @Published private(set) var selectedTab: BookingListTab = .today
+    private static let defaultTab: BookingListTab = .today
+    @Published private(set) var selectedTab: BookingListTab = BookingListContainerViewModel.defaultTab
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
     @Published var numberOfActiveFilters: Int = 0
@@ -145,6 +146,20 @@ final class BookingListContainerViewModel: ObservableObject {
     func setSelectedTab(to newTab: BookingListTab) {
         selectedTab = newTab
         analytics.track(event: .BookingList.tabSelected(newTab))
+        // Manually trigger onAppear as we are just
+        // changing the tab which will not trigger
+        // onAppear.
+        onAppear()
+    }
+
+    func onAppear() {
+        let tabViewModel = listViewModel(for: selectedTab)
+        analytics.track(event: .BookingList.bookingListDisplayed(
+            tab: selectedTab,
+            isDefaultTab: selectedTab == BookingListContainerViewModel.defaultTab,
+            isListEmpty: tabViewModel.bookings.isEmpty,
+            isFiltered: tabViewModel.hasFilters
+        ))
     }
 }
 

@@ -95,7 +95,7 @@ private extension BookingListContainerView {
                 ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            viewModel.selectedTab = tab
+                            viewModel.setSelectedTab(to: tab)
                         }
                     } label: {
                         Text(tab.title)

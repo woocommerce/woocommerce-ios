@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
@@ -15,7 +16,7 @@ final class BookingListContainerViewModel: ObservableObject {
     private let upcomingSearchViewModel: BookingSearchViewModel
     private let allSearchViewModel: BookingSearchViewModel
 
-    @Published var selectedTab: BookingListTab = .today
+    @Published private(set) var selectedTab: BookingListTab = .today
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
     @Published var numberOfActiveFilters: Int = 0
@@ -23,6 +24,7 @@ final class BookingListContainerViewModel: ObservableObject {
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
     private var sortBySubscription: AnyCancellable?
+    private let analytics: Analytics
 
     private lazy var allTabViewModels: [BookingListViewModel] = [
         todayListViewModel,
@@ -40,9 +42,12 @@ final class BookingListContainerViewModel: ObservableObject {
         BookingFiltersViewModel(filter: filters, siteID: siteID)
     }
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
+        self.analytics = analytics
 
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
         self.todayListViewModel = BookingListViewModel(
@@ -135,6 +140,11 @@ final class BookingListContainerViewModel: ObservableObject {
         guard selectedTab == .all else { return }
         let filters = BookingFiltersViewModel.Filters()
         updateFilters(filters)
+    }
+
+    func setSelectedTab(to newTab: BookingListTab) {
+        selectedTab = newTab
+        analytics.track(event: .BookingList.tabSelected(newTab))
     }
 }
 

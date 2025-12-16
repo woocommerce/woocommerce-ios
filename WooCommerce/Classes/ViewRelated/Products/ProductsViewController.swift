@@ -1140,7 +1140,9 @@ extension ProductsViewController: UITableViewDelegate {
             updatedSelectedItems()
         } else {
             ServiceLocator.analytics.track(event:
-                    .Products.productListProductTapped(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                    .Products.productListProductTapped(
+                        productType: product.productType,
+                        horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
 
             didSelectProduct(product: product)
         }

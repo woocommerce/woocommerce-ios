@@ -439,6 +439,7 @@ extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func navigateToOrderDetails() {
+        analytics.track(event: .BookingsDetail.bookingViewLinkedOrderTapped())
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
 }

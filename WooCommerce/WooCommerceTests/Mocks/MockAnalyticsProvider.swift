@@ -2,6 +2,7 @@ import Foundation
 import protocol WooFoundation.AnalyticsProvider
 @testable import WooCommerce
 @testable import WordPressShared
+import XCTest
 
 public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTracker {
     var receivedEvents = [String]()
@@ -76,5 +77,33 @@ extension MockAnalyticsProvider {
         static let propertyKeyTimeInApp = "time_in_app"
         static let blogIDKey = "blog_id"
         static let wpcomStoreKey = "is_wpcom_store"
+    }
+}
+
+// MARK: - Helper
+extension MockAnalyticsProvider {
+    func assertReceived(
+        event: String,
+        with expectedProperties: [String: Any],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        guard let index = receivedEvents.firstIndex(of: event) else {
+            XCTFail("Expected analytics event not received: \(event)", file: file, line: line)
+            return
+        }
+
+        let properties = receivedProperties[index]
+
+        for (key, expectedValue) in expectedProperties {
+            let actualValue = properties[key] as Any?
+            XCTAssertEqual(
+                actualValue as? NSObject,
+                expectedValue as? NSObject,
+                "Mismatch for analytics property '\(key)'",
+                file: file,
+                line: line
+            )
+        }
     }
 }

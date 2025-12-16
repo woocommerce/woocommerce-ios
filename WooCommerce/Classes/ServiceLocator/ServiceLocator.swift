@@ -25,6 +25,8 @@ final class ServiceLocator {
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
 
+    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+
     /// FeatureFlagService
     ///
     private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
@@ -164,6 +166,10 @@ final class ServiceLocator {
     /// - Returns: An implementation of the AuthenticationManager protocol. It defaults to DefaultAuthenticationManager
     static var authenticationManager: Authentication {
         return _authenticationManager
+    }
+
+    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
+        return _ciabEligibilityChecker
     }
 
     /// Shipping Settings

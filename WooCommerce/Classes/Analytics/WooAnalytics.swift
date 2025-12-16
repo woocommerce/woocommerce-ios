@@ -198,6 +198,12 @@ private extension Analytics {
         updatedProperties[PropertyKeys.planKey] = site?.plan
         updatedProperties[PropertyKeys.siteURL] = site?.url
         updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
+        if let site {
+            updatedProperties[PropertyKeys.isCIAB] = ServiceLocator.ciabEligibilityChecker.isSiteCIAB(site)
+            if let gardenPartner = site.gardenPartner {
+                updatedProperties[PropertyKeys.gardenPartner] = gardenPartner
+            }
+        }
         return updatedProperties
     }
 
@@ -337,4 +343,6 @@ private enum PropertyKeys {
     static let planKey              = "plan"
     static let siteURL              = "site_url"
     static let storeID              = "store_id"
+    static let isCIAB               = "is_ciab"
+    static let gardenPartner        = "garden_partner"
 }

@@ -84,7 +84,7 @@ extension MockAnalyticsProvider {
 extension MockAnalyticsProvider {
     func assertReceived(
         event: String,
-        with expectedProperties: [String: Any],
+        with expectedProperties: [String: Any] = [:],
         file: StaticString = #filePath,
         line: UInt = #line
     ) {

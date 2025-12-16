@@ -433,10 +433,75 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isViewOrderAvailable)
         XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
     }
+
+    func test_event_fired_when_booking_marked_as_paid() async throws {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        let task = Task { try await viewModel.markBookingAsPaid() }
+        let action = try await waitForFirstBookingAction()
+        guard case let .markBookingAsPaid(_, _, onCompletion) = action else {
+            return XCTFail("Expected markBookingAsPaid action")
+        }
+        onCompletion(nil)
+        try await task.value
+
+        // Then
+        analyticsProvider.assertReceived(event: "booking_detail_mark_as_paid_tapped")
+    }
+
+    func test_event_fired_when_booking_cancelled() async throws {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        let task = Task { try await viewModel.cancelBooking() }
+        let action = try await waitForFirstBookingAction()
+        guard case let .cancelBooking(_, _, onCompletion) = action else {
+            return XCTFail("Expected cancelBooking action")
+        }
+        onCompletion(nil)
+        try await task.value
+
+        // Then
+        analyticsProvider.assertReceived(event: "booking_detail_cancel_booking")
+    }
+
+    func test_event_fired_when_notes_tapped() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.notesTapped()
+
+        // Then
+        analyticsProvider.assertReceived(event: "booking_detail_add_note_tapped")
+    }
+
+
 }
 
 private extension BookingDetailsViewModelTests {
-    func givenViewModel(booking: Booking) -> BookingDetailsViewModel {
+    func givenViewModel(booking: Booking = Booking.fake()) -> BookingDetailsViewModel {
         return BookingDetailsViewModel(booking: booking, stores: storesManager, analytics: analytics)
+    }
+
+    func waitForFirstBookingAction(
+        timeout: TimeInterval = 1,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws -> BookingAction {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if let action = storesManager.receivedActions.first as? BookingAction {
+                return action
+            }
+            await Task.yield()
+        }
+
+        XCTFail("Timed out waiting for BookingAction to be dispatched", file: file, line: line)
+        throw XCTSkip("No BookingAction dispatched")
     }
 }

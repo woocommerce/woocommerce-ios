@@ -1,7 +1,9 @@
 import Foundation
-import DeclaredAgeRange
 import CocoaLumberjack
 import UIKit
+#if canImport(DeclaredAgeRange)
+import DeclaredAgeRange
+#endif
 
 enum AgeRangeVerificationResult {
     /// The feature is supported and declared user age is within the required range
@@ -39,6 +41,7 @@ protocol AgeRangeVerificationServiceProtocol {
     )
 }
 
+#if canImport(DeclaredAgeRange)
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
     private enum Constants {
         static let minimumAge = 13
@@ -117,3 +120,15 @@ private extension AgeRangeVerificationService {
         }
     }
 }
+#else
+/// Fallback implementation when the DeclaredAgeRange SDK is unavailable (e.g., older Xcode/SDK).
+final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
+    func verifyAgeRange(
+        in viewController: UIViewController,
+        minimumAge: Int,
+        completion: @escaping (AgeRangeVerificationResult) -> Void
+    ) {
+        completion(.featureUnavailable)
+    }
+}
+#endif

@@ -259,6 +259,10 @@ extension BookingDetailsViewModel {
         analytics.track(event: .BookingsDetail.bookingAttenceStatusUpdated(status: newStatus))
     }
 
+    func notesTapped() {
+        analytics.track(event: .BookingsDetail.bookingAddNoteTapped())
+    }
+
     @MainActor
     func updateNote(to newNote: String) async -> MultilineCommitResult {
         await withCheckedContinuation { continuation in

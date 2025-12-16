@@ -12,6 +12,10 @@ extension WooAnalyticsEvent {
                 properties: [Properties.bookingStatus: status.rawValue]
             )
         }
+
+        static func bookingAddNoteTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingAddNoteTapped)
+        }
     }
 }
 

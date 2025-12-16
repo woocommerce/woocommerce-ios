@@ -186,9 +186,7 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
             ordersViewState = .loaded(cachedOrders, hasMoreItems: true)
         } else {
             ordersViewState = .loading([])
-            Task {
-                await loadFirstPage()
-            }
+            await loadFirstPage()
         }
     }
 

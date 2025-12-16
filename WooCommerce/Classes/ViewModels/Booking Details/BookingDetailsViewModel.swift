@@ -350,6 +350,7 @@ extension BookingDetailsViewModel {
 
     @MainActor
     func markBookingAsPaid() async throws {
+        analytics.track(event: .BookingsDetail.bookingMarkAsPaidTapped())
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { error in
                 if let error {

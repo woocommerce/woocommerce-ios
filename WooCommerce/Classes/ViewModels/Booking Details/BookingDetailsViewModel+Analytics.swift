@@ -16,6 +16,10 @@ extension WooAnalyticsEvent {
         static func bookingAddNoteTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingAddNoteTapped)
         }
+
+        static func bookingMarkAsPaidTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingMarkAsPaidTapped)
+        }
     }
 }
 

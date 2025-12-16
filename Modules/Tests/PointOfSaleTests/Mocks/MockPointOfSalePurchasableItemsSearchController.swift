@@ -11,7 +11,18 @@ final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchin
     var currentDebounceStrategy: SearchDebounceStrategy = .immediate
     var searchDebounceStrategy: SearchDebounceStrategy = .smart()
 
-    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {}
+    var searchItemsCalled = false
+    var lastSearchTerm: String?
+    var lastSearchBaseItem: ItemListBaseItem?
+
+    var clearSearchItemsCalled = false
+    var lastClearBaseItem: ItemListBaseItem?
+
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
+        searchItemsCalled = true
+        lastSearchTerm = searchTerm
+        lastSearchBaseItem = baseItem
+    }
 
     func loadItems(base: ItemListBaseItem) async { }
 
@@ -19,5 +30,8 @@ final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchin
 
     func loadNextItems(base: ItemListBaseItem) async { }
 
-    func clearSearchItems(baseItem: ItemListBaseItem) { }
+    func clearSearchItems(baseItem: ItemListBaseItem) {
+        clearSearchItemsCalled = true
+        lastClearBaseItem = baseItem
+    }
 }

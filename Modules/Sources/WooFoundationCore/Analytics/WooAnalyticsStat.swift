@@ -1061,6 +1061,7 @@ public enum WooAnalyticsStat: String {
     case bookingsSelected = "main_tab_bookings_selected"
     case bookingsReselected = "main_tab_bookings_reselected"
     case bookingCancelled = "booking_detail_cancel_booking"
+    case bookingAttenceStatusUpdated = "booking_detail_attendance_status_updated"
 
     // MARK: Hub Menu
     //

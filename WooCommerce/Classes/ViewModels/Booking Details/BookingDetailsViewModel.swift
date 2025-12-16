@@ -256,6 +256,7 @@ extension BookingDetailsViewModel {
             }
         }
         stores.dispatch(action)
+        analytics.track(event: .BookingsDetail.bookingAttenceStatusUpdated(status: newStatus))
     }
 
     @MainActor

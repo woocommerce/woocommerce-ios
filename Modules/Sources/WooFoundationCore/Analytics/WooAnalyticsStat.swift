@@ -1067,6 +1067,7 @@ public enum WooAnalyticsStat: String {
     case bookingViewLinkedOrderTapped = "booking_detail_view_linked_order_tapped"
     case bookingListTabSelected = "booking_list_tab_selected"
     case bookingListDisplayed = "booking_list_displayed"
+    case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
 
     // MARK: Hub Menu
     //

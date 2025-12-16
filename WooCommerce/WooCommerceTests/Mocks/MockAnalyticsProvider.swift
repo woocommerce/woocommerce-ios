@@ -3,10 +3,11 @@ import protocol WooFoundation.AnalyticsProvider
 @testable import WooCommerce
 @testable import WordPressShared
 import XCTest
+import Testing
 
 public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTracker {
     var receivedEvents = [String]()
-    var receivedProperties = [[AnyHashable: Any]]()
+    var receivedProperties = [[AnyHashable: Any]]() // aligned by index with `receivedEvents`
     var userID: String?
     var userOptedIn = true
 }
@@ -25,13 +26,13 @@ public extension MockAnalyticsProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         receivedEvents.append(eventName)
-        if let properties = properties {
-            receivedProperties.append(properties)
-        }
+        // Keep properties aligned with events by index.
+        receivedProperties.append(properties ?? [:])
     }
 
     func clearEvents() {
         receivedEvents.removeAll()
+        receivedProperties.removeAll()
     }
 
     func clearUsers() {
@@ -82,6 +83,38 @@ extension MockAnalyticsProvider {
 
 // MARK: - Helper
 extension MockAnalyticsProvider {
+    /// Returns `true` if the event was tracked and the expected properties match.
+    /// Useful for Swift Testing: `#expect(analyticsProvider.received(event: ..., with: ...))`.
+    func received(event: String, with expectedProperties: [String: Any] = [:]) -> Bool {
+        guard let index = receivedEvents.firstIndex(of: event) else {
+            return false
+        }
+
+        guard index < receivedProperties.count else {
+            return expectedProperties.isEmpty
+        }
+
+        let properties = receivedProperties[index]
+        for (key, expectedValue) in expectedProperties {
+            let actualValue = properties[key] as Any?
+            if (actualValue as? NSObject) != (expectedValue as? NSObject) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    func properties(for event: String) -> [AnyHashable: Any]? {
+        guard let index = receivedEvents.firstIndex(of: event) else {
+            return nil
+        }
+        guard index < receivedProperties.count else {
+            return nil
+        }
+        return receivedProperties[index]
+    }
+
     func assertReceived(
         event: String,
         with expectedProperties: [String: Any] = [:],
@@ -93,14 +126,18 @@ extension MockAnalyticsProvider {
             return
         }
 
-        let properties = receivedProperties[index]
+        guard index < receivedProperties.count else {
+            XCTFail("Expected analytics properties for event but none were recorded: \(event)", file: file, line: line)
+            return
+        }
 
+        let properties = receivedProperties[index]
         for (key, expectedValue) in expectedProperties {
             let actualValue = properties[key] as Any?
             XCTAssertEqual(
                 actualValue as? NSObject,
                 expectedValue as? NSObject,
-                "Mismatch for analytics property '\(key)'",
+                "Mismatch for analytics property '\(key)' on event '\(event)'",
                 file: file,
                 line: line
             )

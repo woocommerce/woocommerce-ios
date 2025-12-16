@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 import SwiftUI
 
 final class BookingDetailsViewModel: ObservableObject {
@@ -19,6 +20,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let attendanceContent = AttendanceContent()
     private let paymentContent = PaymentContent()
     private let notesContent = NotesContent()
+    private let analytics: Analytics
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -37,9 +39,11 @@ final class BookingDetailsViewModel: ObservableObject {
 
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.booking = booking
         self.stores = stores
+        self.analytics = analytics
         self.bookingResource = storage.viewStorage.loadBookingResource(
             siteID: booking.siteID,
             resourceID: booking.resourceID
@@ -309,11 +313,12 @@ extension BookingDetailsViewModel {
     @MainActor
     func cancelBooking() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { error in
+            stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: ())
+                    analytics.track(event: .BookingsDetail.bookingCancelled())
                 }
             })
         }

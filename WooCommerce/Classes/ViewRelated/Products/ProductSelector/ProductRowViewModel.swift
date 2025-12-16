@@ -254,7 +254,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
     ///
     var secondaryProductDetailsLabel: String {
-        if case .unsupported(let reason) = selectedState {
+        if case .unsupported = selectedState {
             return ""
         }
 

@@ -50,7 +50,7 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
         setBackgroundCompletionHandler(completionHandler)
 
         // Create session with same identifier - this reconnects to the existing download
-        let session = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
+        let _ = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
 
         // Wait for delegate callbacks to complete
         return try? await withCheckedThrowingContinuation { continuation in

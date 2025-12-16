@@ -195,8 +195,7 @@ struct ProductSelectorView: View {
     }
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
-        guard let horizontalSizeClass,
-              let presentationStyle else {
+        guard let horizontalSizeClass else {
             return
         }
 

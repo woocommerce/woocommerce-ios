@@ -1613,7 +1613,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_it_loads_favorite_products_on_init() {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+        let _ = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  stores: stores,

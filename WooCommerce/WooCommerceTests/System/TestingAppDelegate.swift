@@ -16,7 +16,7 @@ class TestingAppDelegate: AppDelegate {
         // Don't call super so nothing gets set up.
 
         let bundle = Bundle(for: type(of: self))
-        let storyboard = UIStoryboard(name: "TestingMode", bundle: bundle)
+        let _ = UIStoryboard(name: "TestingMode", bundle: bundle)
 
         return true
     }

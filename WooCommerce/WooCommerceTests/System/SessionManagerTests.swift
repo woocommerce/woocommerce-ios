@@ -482,7 +482,7 @@ final class SessionManagerTests: XCTestCase {
         }
 
         // When
-        let sut = SessionManager(defaults: defaults, keychainServiceName: uuid)
+        let _ = SessionManager(defaults: defaults, keychainServiceName: uuid)
         NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: nil)
 
         // Then
@@ -509,7 +509,7 @@ final class SessionManagerTests: XCTestCase {
         }
 
         // When
-        let sut = SessionManager(defaults: defaults, keychainServiceName: uuid)
+        let _ = SessionManager(defaults: defaults, keychainServiceName: uuid)
         NotificationCenter.default.post(name: .StorageManagerDidDropDatabase, object: nil)
 
         // Then

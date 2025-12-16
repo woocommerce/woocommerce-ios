@@ -158,7 +158,7 @@ final class DefaultImageServiceTests: XCTestCase {
         let waitForFirstRetrieval = expectation(description: "Wait for first image retrieval")
         let waitForSecondRetrieval = expectation(description: "Wait for second image retrieval")
 
-        let task = imageService.retrieveImage(
+        let _ = imageService.retrieveImage(
             with: url,
             targetSize: nil,
             shouldCacheImage: true
@@ -187,7 +187,7 @@ final class DefaultImageServiceTests: XCTestCase {
         let waitForRetrieval = expectation(description: "Wait for image retrieval")
         let waitForCacheCheck = expectation(description: "Wait for cache check")
 
-        let task = imageService.retrieveImage(
+        let _ = imageService.retrieveImage(
             with: url,
             targetSize: nil,
             shouldCacheImage: false
@@ -216,7 +216,7 @@ final class DefaultImageServiceTests: XCTestCase {
         // When
         let waitForRetrieval = expectation(description: "Wait for image retrieval")
 
-        let task = imageService.retrieveImage(
+        let _ = imageService.retrieveImage(
             with: url,
             targetSize: targetSize,
             shouldCacheImage: true
@@ -253,7 +253,7 @@ final class DefaultImageServiceTests: XCTestCase {
         // When
         let waitForRetrieval = expectation(description: "Wait for image retrieval")
 
-        let task = imageService.retrieveImage(
+        let _ = imageService.retrieveImage(
             with: encodedURL,
             targetSize: nil,
             shouldCacheImage: true

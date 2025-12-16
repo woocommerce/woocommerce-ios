@@ -73,9 +73,9 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         // Given
         let factory = MockSurveyViewControllersFactory()
         // Keeps the instance as a local variable so that it is not deallocated later in the test case.
-        let coordinatingController = SurveyCoordinatingController(survey: .inAppFeedback,
-                                                                  viewControllersFactory: factory,
-                                                                  analytics: analytics)
+        let _ = SurveyCoordinatingController(survey: .inAppFeedback,
+                                             viewControllersFactory: factory,
+                                             analytics: analytics)
 
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
 

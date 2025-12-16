@@ -46,7 +46,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let viewModel = BookingSearchViewModel(
+        let _ = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .all,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -74,7 +74,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let viewModel = BookingSearchViewModel(
+        let _ = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .all,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -244,7 +244,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let viewModel = BookingSearchViewModel(
+        let _ = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .today,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -276,7 +276,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let viewModel = BookingSearchViewModel(
+        let _ = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .upcoming,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -308,7 +308,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let viewModel = BookingSearchViewModel(
+        let _ = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .all,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),

@@ -10,7 +10,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         ///
         /// This can be used to enable/disable a feature flag specifically for UI testing.
         ///
-        let isUITesting = CommandLine.arguments.contains("-ui_testing")
+        let _ = CommandLine.arguments.contains("-ui_testing")
 
         switch featureFlag {
         case .inbox:

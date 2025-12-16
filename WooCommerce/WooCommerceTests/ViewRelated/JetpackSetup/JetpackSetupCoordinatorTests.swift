@@ -128,7 +128,6 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
-        let expectedScheme = "scheme"
         let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)

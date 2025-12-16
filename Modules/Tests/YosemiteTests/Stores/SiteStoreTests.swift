@@ -349,7 +349,6 @@ final class SiteStoreTests: XCTestCase {
 
    func test_syncSiteByDomain_returns_error_on_failure() throws {
        // Given
-       let siteID: Int64 = 123
        let domain = "example.com"
        remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 

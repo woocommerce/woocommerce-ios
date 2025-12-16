@@ -84,7 +84,7 @@ final class WooShippingOriginAddressListViewModelTests: XCTestCase {
         viewModel.editAddress(addressToEdit)
 
         // Then
-        let addressToEditViewModel = try XCTUnwrap(viewModel.addressToEdit, "addressToEdit was unexpectedly nil")
+        let _ = try XCTUnwrap(viewModel.addressToEdit, "addressToEdit was unexpectedly nil")
     }
 
 }

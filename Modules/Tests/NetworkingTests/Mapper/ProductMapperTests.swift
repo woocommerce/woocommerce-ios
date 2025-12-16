@@ -493,7 +493,7 @@ final class ProductMapperTests: XCTestCase {
     ///
     func test_metadata_and_subscription_are_properly_encoded() throws {
         // Given
-        let customFields = [
+        let _ = [
             MetaData(metadataID: 4223, key: "customKey1", value: "customValue1"),
             MetaData(metadataID: 4224, key: "customKey2", value: "customValue2")
         ]

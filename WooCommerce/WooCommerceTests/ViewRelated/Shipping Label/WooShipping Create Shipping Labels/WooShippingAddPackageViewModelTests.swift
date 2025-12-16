@@ -223,7 +223,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
         mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .deletePackage(receivedSiteID, packageID, packageType, completion):
+            case let .deletePackage(_, packageID, packageType, completion):
                 triggeredSiteID = siteID
                 triggeredPackagedID = packageID
                 triggeredPackageType = packageType

@@ -21,10 +21,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingMarkAsPaidTapped)
         }
 
-//        static func bookingRefundTapped() -> WooAnalyticsEvent {
-//            WooAnalyticsEvent(statName: .bookingRefundTapped)
-//        }
-
         static func bookingViewLinkedOrderTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingViewLinkedOrderTapped)
         }

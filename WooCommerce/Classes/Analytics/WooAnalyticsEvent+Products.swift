@@ -7,7 +7,6 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let horizontalSizeClass = "horizontal_size_class"
             static let productType = "product_type"
-
         }
 
         static func productListSelected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {

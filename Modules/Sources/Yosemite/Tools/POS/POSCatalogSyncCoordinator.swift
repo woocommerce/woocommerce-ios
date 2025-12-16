@@ -3,8 +3,10 @@ import Foundation
 import Storage
 import GRDB
 import Alamofire
-import protocol WooFoundation.Analytics
-import protocol WooFoundation.ConnectivityObserver
+// In swift6 without strict checking we might get warnings but they won't block compilation,
+// we'll need to make its usage Sendable eventually
+@preconcurrency import protocol WooFoundation.Analytics
+@preconcurrency import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.ConnectionType
 import struct WooFoundationCore.WooAnalyticsEvent
 
@@ -111,6 +113,18 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let grdbManager: GRDBManagerProtocol
     private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
+    /*
+     Not a "good" solution, marking these nonisolated works but if we switch Swift6 strict concurrency will likely fail
+     since the protocols are not Sendable (Analytics, ConnectivityObserver), and we're crossing actor isolation boundaries
+
+     Options:
+     1. Keep Actor-Isolated -> Make all callers await
+     2. Make protocols sendable
+     3. Dispatch to main actor?
+
+     For now we can keep it nonisolated & marked the imports as preconcurrency (not strictly necessary)
+     -
+     */
     nonisolated private let analytics: Analytics?
     nonisolated private let connectivityObserver: ConnectivityObserver?
 

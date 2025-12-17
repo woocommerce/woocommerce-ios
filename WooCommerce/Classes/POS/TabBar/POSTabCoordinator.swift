@@ -9,6 +9,8 @@ import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import struct NetworkingCore.JetpackSite
 import struct NetworkingCore.OrderItem
+import class NetworkingCore.AlamofireNetwork
+import enum NetworkingCore.RequestAuthenticationMode
 import PointOfSale
 
 protocol POSTabVisibilityCheckerProtocol {
@@ -254,6 +256,37 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                // Create Store API checkout service for POS
+                let storeAPICheckoutService: POSStoreAPICheckoutService?
+                if let siteURL = storesManager.sessionManager.defaultSite?.url {
+                    let storeAPINetwork = AlamofireNetwork(
+                        credentials: credentials,
+                        selectedSite: defaultSitePublisher,
+                        appPasswordSupportState: isAppPasswordSupported
+                    )
+
+                    // Wait for the network to switch to app password authentication mode.
+                    // For WPCOM-authenticated Jetpack sites, this happens asynchronously when
+                    // the site publisher emits. We poll briefly to ensure the network is ready.
+                    var attempts = 0
+                    while storeAPINetwork.authenticationMode != .appPasswordsWithJetpack && attempts < 10 {
+                        try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
+                        attempts += 1
+                    }
+
+                    if storeAPINetwork.authenticationMode != .appPasswordsWithJetpack {
+                        DDLogWarn("⚠️ Store API network did not switch to app password mode, auth mode: \(String(describing: storeAPINetwork.authenticationMode))")
+                    }
+
+                    storeAPICheckoutService = POSStoreAPICheckoutService(
+                        siteURL: siteURL,
+                        network: storeAPINetwork
+                    )
+                } else {
+                    storeAPICheckoutService = nil
+                    DDLogWarn("⚠️ Could not create POSStoreAPICheckoutService - no site URL available")
+                }
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -287,7 +320,8 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor,
-                    itemProvider: itemProvider
+                    itemProvider: itemProvider,
+                    storeAPICheckoutService: storeAPICheckoutService
                 )
 
                 let hostingController = UIHostingController(rootView: posView)

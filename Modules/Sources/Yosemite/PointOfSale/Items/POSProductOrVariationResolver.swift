@@ -17,10 +17,6 @@ struct POSProductOrVariationResolver {
                                    scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         let items: [POSItem]
 
-        guard productOrVariation.downloadable == false else {
-            throw .downloadableProduct(scannedCode: scannedCode, productName: productOrVariation.name)
-        }
-
         switch productOrVariation.productType {
         case .simple:
             let product = productOrVariation

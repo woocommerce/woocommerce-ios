@@ -271,7 +271,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.orderBy: orderBy.value,
             ParameterKey.order: order.value,
             ParameterKey.productStatus: POSConstants.productStatus,
-            ParameterKey.downloadable: String(false),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
     }

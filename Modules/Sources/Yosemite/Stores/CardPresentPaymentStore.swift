@@ -138,6 +138,20 @@ public final class CardPresentPaymentStore: Store {
             publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
             fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
+        case .collectPOSPayment(let siteID,
+                                let orderID,
+                                let parameters,
+                                let captureHandler,
+                                let onCardReaderMessage,
+                                let onProcessingCompletion,
+                                let onCompletion):
+            collectPOSPayment(siteID: siteID,
+                              orderID: orderID,
+                              parameters: parameters,
+                              captureHandler: captureHandler,
+                              onCardReaderMessage: onCardReaderMessage,
+                              onProcessingCompletion: onProcessingCompletion,
+                              onCompletion: onCompletion)
         }
     }
 }
@@ -280,6 +294,85 @@ private extension CardPresentPaymentStore {
                                                  onCardReaderMessage: onCardReaderMessage,
                                                  onProcessingCompletion: onProcessingCompletion,
                                                  onCompletion: onCompletion)
+    }
+
+    /// Collects payment for POS using a custom capture handler (Store API).
+    ///
+    func collectPOSPayment(siteID: Int64,
+                           orderID: Int64,
+                           parameters: PaymentParameters,
+                           captureHandler: @escaping (String) async throws -> Void,
+                           onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                           onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                           onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
+        // Observe status events fired by the card reader
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
+            onCardReaderMessage(event)
+        }
+
+        paymentCancellable = handlePOSPaymentEvents(from: cardReaderService.capturePayment(parameters),
+                                                    readerEventsSubscription: readerEventsSubscription,
+                                                    captureHandler: captureHandler,
+                                                    onCardReaderMessage: onCardReaderMessage,
+                                                    onProcessingCompletion: onProcessingCompletion,
+                                                    onCompletion: onCompletion)
+    }
+
+    /// Handles payment events for POS, using a custom capture handler instead of WCPay/Stripe capture.
+    ///
+    private func handlePOSPaymentEvents(from paymentEventPublisher: AnyPublisher<PaymentIntent, Error>,
+                                        readerEventsSubscription: AnyCancellable,
+                                        captureHandler: @escaping (String) async throws -> Void,
+                                        onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                                        onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) -> AnyCancellable? {
+        return paymentEventPublisher.handleEvents(receiveOutput: { intent in
+            onProcessingCompletion(intent)
+        })
+        .flatMap { intent in
+            Publishers.CombineLatest(
+                self.cardReaderService.waitForInsertedCardToBeRemoved()
+                    .handleEvents(receiveOutput: {
+                        onCardReaderMessage(.cardRemovedAfterClientSidePaymentCapture)
+                    })
+                    .map { intent },
+                self.capturePOSPayment(paymentIntentID: intent.id, captureHandler: captureHandler)
+            )
+        }
+        .sink { completion in
+            readerEventsSubscription.cancel()
+            switch completion {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        } receiveValue: { intent, captureResult in
+            switch captureResult {
+            case .success:
+                onCompletion(.success(intent))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Captures a POS payment using the provided capture handler.
+    ///
+    private func capturePOSPayment(paymentIntentID: String,
+                                   captureHandler: @escaping (String) async throws -> Void) -> AnyPublisher<Result<Void, Error>, Never> {
+        Future<Result<Void, Error>, Never> { promise in
+            Task { @MainActor in
+                do {
+                    try await captureHandler(paymentIntentID)
+                    promise(.success(.success(())))
+                } catch {
+                    DDLogError("⛔️ POS payment capture failed: \(error)")
+                    promise(.success(.failure(error)))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
     private func handlePaymentEvents(from paymentEventPublisher: AnyPublisher<PaymentIntent, Error>,

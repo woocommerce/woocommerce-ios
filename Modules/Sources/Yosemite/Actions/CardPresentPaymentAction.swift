@@ -102,4 +102,26 @@ public enum CardPresentPaymentAction: Action {
     /// Fetches Charge details by charge ID
     ///
     case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
+
+    /// Collects payment for a POS order using Store API for capture.
+    ///
+    /// This is similar to `collectPayment` but uses the Store API checkout endpoint
+    /// with the payment_intent_id to capture the payment, instead of `capture_terminal_payment`.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site ID.
+    ///   - orderID: The order ID (from Store API checkout).
+    ///   - parameters: Payment parameters for the card reader.
+    ///   - captureHandler: Closure called with payment intent ID to capture via Store API.
+    ///   - onCardReaderMessage: Callback for card reader events.
+    ///   - onProcessingCompletion: Callback when payment is processed (before capture).
+    ///   - onCompletion: Final completion with success or failure.
+    ///
+    case collectPOSPayment(siteID: Int64,
+                           orderID: Int64,
+                           parameters: PaymentParameters,
+                           captureHandler: (String) async throws -> Void,
+                           onCardReaderMessage: (CardReaderEvent) -> Void,
+                           onProcessingCompletion: (PaymentIntent) -> Void,
+                           onCompletion: (Result<PaymentIntent, Error>) -> Void)
 }

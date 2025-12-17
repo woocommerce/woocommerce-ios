@@ -46,6 +46,23 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                    onCompletion)
     }
 
+    var spyDidCallCollectPOSPayment = false
+    func collectPOSPayment(for order: Order,
+                           orderTotal: NSDecimalNumber,
+                           paymentGatewayAccount: PaymentGatewayAccount,
+                           paymentMethodTypes: [PaymentMethodType],
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
+                           captureHandler: @escaping (String) async throws -> Void,
+                           onPreparingReader: @escaping () -> Void,
+                           onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                           onCardInserted: @escaping () -> Void,
+                           onProcessingMessage: @escaping () -> Void,
+                           onDisplayMessage: @escaping (String) -> Void,
+                           onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        spyDidCallCollectPOSPayment = true
+    }
+
     var spyDidCallRetryPayment = false
     func retryPayment(for order: Yosemite.Order,
                       onCompletion: @escaping (Result<WooCommerce.CardPresentCapturedPaymentData, Error>) -> Void) {

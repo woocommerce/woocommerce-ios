@@ -14,10 +14,12 @@ public struct POSCart {
 }
 
 public struct POSCartItem {
+    public let id: UUID
     public let item: POSOrderableItem
     public let quantity: Decimal
 
-    public init(item: POSOrderableItem, quantity: Decimal) {
+    public init(id: UUID = UUID(), item: POSOrderableItem, quantity: Decimal) {
+        self.id = id
         self.item = item
         self.quantity = quantity
     }
@@ -87,7 +89,7 @@ extension [POSCartItem] {
         let consolidatedCartItems = self.reduce(into: [POSCartItem]()) { partialResult, nextItem in
             if let matchingIndex = partialResult.firstIndex(where: { $0.item.isEqual(to: nextItem.item) }) {
                 let itemToUpdate = partialResult[matchingIndex]
-                partialResult[matchingIndex] = POSCartItem(item: itemToUpdate.item, quantity: itemToUpdate.quantity + nextItem.quantity)
+                partialResult[matchingIndex] = POSCartItem(id: itemToUpdate.id, item: itemToUpdate.item, quantity: itemToUpdate.quantity + nextItem.quantity)
             } else {
                 partialResult.append(nextItem)
             }

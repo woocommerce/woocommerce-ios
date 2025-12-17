@@ -46,6 +46,15 @@ enum PointOfSaleOrderState: Equatable {
         }
     }
 
+    var isIdle: Bool {
+        switch self {
+        case .idle:
+            return true
+        default:
+            return false
+        }
+    }
+
     var isSyncing: Bool {
         switch self {
         case .syncing:

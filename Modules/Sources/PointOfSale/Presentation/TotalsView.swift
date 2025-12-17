@@ -294,15 +294,17 @@ private struct TotalsFieldsContent: View {
     static let matchedGeometryId: String = "pos_totals_view_matched_geometry_id"
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            switch orderState {
-            case .idle, .syncing, .error:
-                totalsFields(orderTotals: nil)
-            case .loaded(let orderTotals):
-                totalsFields(orderTotals: orderTotals)
+        VStack(spacing: POSSpacing.medium) {
+            HStack(alignment: .center) {
+                Spacer()
+                switch orderState {
+                case .idle, .syncing, .error:
+                    totalsFields(orderTotals: nil)
+                case .loaded(let orderTotals):
+                    totalsFields(orderTotals: orderTotals)
+                }
+                Spacer()
             }
-            Spacer()
         }
         .transition(.opacity)
         .animation(.default, value: orderState.isSyncing)

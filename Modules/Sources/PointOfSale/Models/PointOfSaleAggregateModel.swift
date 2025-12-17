@@ -5,7 +5,7 @@ import Observation
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
-import struct Yosemite.Order
+import struct Networking.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
@@ -19,6 +19,10 @@ import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.POSStoreAPICheckoutServiceProtocol
+import struct Yosemite.POSCart
+import struct Yosemite.POSStoreAPICheckoutResult
+import struct Yosemite.POSGiftCardItemInfo
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -66,6 +70,10 @@ protocol PointOfSaleAggregateModelProtocol {
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    private let storeAPICheckoutService: POSStoreAPICheckoutServiceProtocol?
+
+    /// Result from Store API checkout, used for card payment capture.
+    private var storeAPICheckoutResult: POSStoreAPICheckoutResult?
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -94,6 +102,41 @@ protocol PointOfSaleAggregateModelProtocol {
     var isSyncStale: Bool = false
     var isStaleSyncWarningDismissed: Bool = false
 
+    // Billing email for downloadable products checkout
+    private(set) var billingEmail: String = ""
+
+    /// Whether checkout requires an email (cart contains downloadable items)
+    var requiresEmailForCheckout: Bool {
+        cart.containsDownloadableItems
+    }
+
+    /// Whether the email is valid (basic validation)
+    private var isValidEmail: Bool {
+        billingEmail.contains("@") && billingEmail.contains(".")
+    }
+
+    // Gift card info per cart item (keyed by Cart.PurchasableItem UUID)
+    private(set) var giftCardInfo: [UUID: GiftCardInfo] = [:]
+
+    /// Whether checkout requires gift card info (cart contains gift cards)
+    var requiresGiftCardInfoForCheckout: Bool {
+        cart.containsGiftCards
+    }
+
+    /// Whether all gift cards in the cart have their required info
+    var allGiftCardsHaveInfo: Bool {
+        cart.giftCardItems.allSatisfy { item in
+            giftCardInfo[item.id] != nil
+        }
+    }
+
+    /// Whether checkout can proceed (all required data is present)
+    var canProceedWithCheckout: Bool {
+        let emailOK = !requiresEmailForCheckout || isValidEmail
+        let giftCardOK = !requiresGiftCardInfoForCheckout || allGiftCardsHaveInfo
+        return emailOK && giftCardOK
+    }
+
     var showStaleSyncWarning: Bool {
         // Only show warning if using local catalog
         guard isLocalCatalogEligible else {
@@ -119,7 +162,8 @@ protocol PointOfSaleAggregateModelProtocol {
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
-         isLocalCatalogEligible: Bool = false) {
+         isLocalCatalogEligible: Bool = false,
+         storeAPICheckoutService: POSStoreAPICheckoutServiceProtocol? = nil) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -138,6 +182,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
+        self.storeAPICheckoutService = storeAPICheckoutService
 
         publishCardReaderConnectionStatus()
         publishCardReaderUpdateState()
@@ -188,6 +233,20 @@ extension PointOfSaleAggregateModel {
         orderController.clearOrder()
         setStateForEditing()
         viewStateCoordinator.reset()
+        billingEmail = ""
+        giftCardInfo = [:]
+    }
+
+    func setBillingEmail(_ email: String) {
+        billingEmail = email
+    }
+
+    func setGiftCardInfo(_ info: GiftCardInfo, for itemID: UUID) {
+        giftCardInfo[itemID] = info
+    }
+
+    func removeGiftCardInfo(for itemID: UUID) {
+        giftCardInfo[itemID] = nil
     }
 
     private func setStateForEditing() {
@@ -415,6 +474,21 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func collectCardPayment() async {
+        // If we have a Store API checkout result, use that for payment
+        if let checkoutResult = storeAPICheckoutResult,
+           let checkoutService = storeAPICheckoutService {
+            do {
+                try await collectPOSPaymentViaStoreAPI(
+                    checkoutResult: checkoutResult,
+                    checkoutService: checkoutService
+                )
+            } catch {
+                DDLogError("Error taking POS Store API payment: \(error)")
+            }
+            return
+        }
+
+        // Fall back to REST API order-based payment
         guard case let .loaded(totals, order) = internalOrderState,
               totals.orderTotalDecimal > 0.0
         else {
@@ -426,6 +500,33 @@ extension PointOfSaleAggregateModel {
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
+    }
+
+    /// Collects card payment using Store API for capture.
+    ///
+    @MainActor
+    private func collectPOSPaymentViaStoreAPI(
+        checkoutResult: POSStoreAPICheckoutResult,
+        checkoutService: POSStoreAPICheckoutServiceProtocol
+    ) async throws {
+        // Get the order from createOrderAndTotals (reusing the same order we set on orderController)
+        let (order, _) = createOrderAndTotals(from: checkoutResult)
+
+        // Create capture handler that uses Store API checkout
+        let captureHandler: (String) async throws -> Void = { [checkoutService] paymentIntentID in
+            DDLogInfo("🔄 Capturing POS payment via Store API with payment intent: \(paymentIntentID)")
+            _ = try await checkoutService.captureCardPayment(paymentIntentID: paymentIntentID)
+            DDLogInfo("✅ POS payment captured successfully")
+        }
+
+        _ = try await cardPresentPaymentService.collectPOSPayment(
+            for: order,
+            using: .bluetooth,
+            captureHandler: captureHandler
+        )
+
+        // Clear the checkout result after successful payment
+        storeAPICheckoutResult = nil
     }
 
     // Prevents card payments from the moment the merchant decides we start collecting cash
@@ -659,12 +760,142 @@ extension PointOfSaleAggregateModel {
     func checkOut() async {
         collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
-        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
-            await self?.checkOut()
-        })
-        trackOrderSyncState(syncOrderResult)
-        await removeMissingProductsFromCatalogAfterSync()
-        await startPaymentWhenCardReaderConnected()
+
+        // Guard for downloadable products - checkout button should be disabled
+        // when email is required but not provided, but this is a safety check
+        guard canProceedWithCheckout else {
+            return
+        }
+
+        await performCheckout()
+    }
+
+    @MainActor
+    private func performCheckout() async {
+        // Use Store API checkout if service is available
+        if let storeAPICheckoutService {
+            await checkOutViaStoreAPI(checkoutService: storeAPICheckoutService)
+        } else {
+            // Fall back to REST API order sync
+            let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+                await self?.checkOut()
+            })
+            trackOrderSyncState(syncOrderResult)
+            await removeMissingProductsFromCatalogAfterSync()
+            await startPaymentWhenCardReaderConnected()
+        }
+    }
+
+    /// Performs checkout via Store API for card payments.
+    ///
+    /// This creates a pending order using Store API checkout with `pos_card` payment method.
+    /// The order is completed when the card payment is captured.
+    ///
+    @MainActor
+    private func checkOutViaStoreAPI(checkoutService: POSStoreAPICheckoutServiceProtocol) async {
+        do {
+            let posCart = POSCart(cart: cart)
+
+            // Convert local GiftCardInfo to POSGiftCardItemInfo for the API
+            let posGiftCardInfo = giftCardInfo.mapValues { info in
+                POSGiftCardItemInfo(recipientEmail: info.recipientEmail, senderName: info.senderName)
+            }
+
+            // Call Store API checkout with pos_card to create pending order
+            // Pass billing email for downloadable product fulfillment
+            // Pass gift card info for gift card products
+            let checkoutResult = try await checkoutService.checkout(
+                cart: posCart,
+                paymentMethod: .card,
+                billingEmail: billingEmail.isEmpty ? nil : billingEmail,
+                giftCardInfo: posGiftCardInfo
+            )
+
+            DDLogInfo("✅ Store API checkout created order \(checkoutResult.checkoutResponse.orderID)")
+
+            // Store the checkout result for use in card payment capture
+            storeAPICheckoutResult = checkoutResult
+
+            // Create the order and totals for the UI
+            let (order, totals) = createOrderAndTotals(from: checkoutResult)
+            orderController.setOrderState(totals: totals, order: order)
+
+            // Track analytics for order sync success
+            collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
+
+            // Start payment collection when card reader is connected
+            await startPaymentWhenCardReaderConnected()
+        } catch {
+            DDLogError("⛔️ Store API checkout failed: \(error)")
+            // TODO: Handle error state - for now, fall back to REST API
+            let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+                await self?.checkOut()
+            })
+            trackOrderSyncState(syncOrderResult)
+            await removeMissingProductsFromCatalogAfterSync()
+            await startPaymentWhenCardReaderConnected()
+        }
+    }
+
+    /// Creates an Order and PointOfSaleOrderTotals from Store API checkout result.
+    ///
+    private func createOrderAndTotals(from checkoutResult: POSStoreAPICheckoutResult) -> (Order, PointOfSaleOrderTotals) {
+        let cartTotals = checkoutResult.cartTotals
+
+        // Create Order object with properly formatted totals
+        let order = Order(
+            siteID: siteID,
+            orderID: checkoutResult.checkoutResponse.orderID,
+            parentID: 0,
+            customerID: 0,
+            orderKey: checkoutResult.checkoutResponse.orderKey,
+            isEditable: false,
+            needsPayment: true,
+            needsProcessing: false,
+            number: String(checkoutResult.checkoutResponse.orderID),
+            status: .pending,
+            currency: cartTotals.currencyCode,
+            currencySymbol: cartTotals.currencySymbol,
+            customerNote: nil,
+            dateCreated: Date(),
+            dateModified: Date(),
+            datePaid: nil,
+            discountTotal: cartTotals.formatAsDecimalString(cartTotals.totalDiscount),
+            discountTax: cartTotals.formatAsDecimalString(cartTotals.totalDiscountTax),
+            shippingTotal: cartTotals.formatAsDecimalString(cartTotals.totalShipping),
+            shippingTax: cartTotals.formatAsDecimalString(cartTotals.totalShippingTax),
+            total: cartTotals.formatAsDecimalString(cartTotals.totalPrice),
+            totalTax: cartTotals.formatAsDecimalString(cartTotals.totalTax),
+            paymentMethodID: "pos_card",
+            paymentMethodTitle: "POS Card",
+            paymentURL: nil,
+            chargeID: nil,
+            items: [],
+            billingAddress: nil,
+            shippingAddress: nil,
+            shippingLines: [],
+            coupons: [],
+            refunds: [],
+            fees: [],
+            taxes: [],
+            customFields: [],
+            renewalSubscriptionID: nil,
+            appliedGiftCards: [],
+            attributionInfo: nil,
+            shippingLabels: [],
+            createdVia: "store-api"
+        )
+
+        // Create formatted totals for display
+        let totals = PointOfSaleOrderTotals(
+            cartTotal: cartTotals.formatAsCurrencyString(cartTotals.totalItems),
+            orderTotal: cartTotals.formatAsCurrencyString(cartTotals.totalPrice),
+            taxTotal: cartTotals.formatAsCurrencyString(cartTotals.totalTax),
+            orderTotalDecimal: cartTotals.totalPriceDecimal,
+            discountTotal: Int(cartTotals.totalDiscount) ?? 0 > 0 ? cartTotals.formatAsCurrencyString(cartTotals.totalDiscount) : nil
+        )
+
+        return (order, totals)
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync

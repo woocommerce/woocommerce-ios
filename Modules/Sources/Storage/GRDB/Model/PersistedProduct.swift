@@ -161,7 +161,6 @@ public extension PersistedProduct {
         return PersistedProduct
             .filter(Columns.siteID == siteID)
             .filter([ProductType.simple.rawValue, ProductType.variable.rawValue].contains(Columns.productTypeKey))
-            .filter(Columns.downloadable == false)
             .filter(!excludedStatuses.contains(Columns.statusKey))
     }
 }

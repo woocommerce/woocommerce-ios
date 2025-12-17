@@ -40,6 +40,37 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                                            onCompletion: onCompletion)
     }
 
+    func collectPOSPayment(for order: Order,
+                           orderTotal: NSDecimalNumber,
+                           paymentGatewayAccount: PaymentGatewayAccount,
+                           paymentMethodTypes: [PaymentMethodType],
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
+                           captureHandler: @escaping (String) async throws -> Void,
+                           onPreparingReader: @escaping () -> Void,
+                           onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                           onCardInserted: @escaping () -> Void,
+                           onProcessingMessage: @escaping () -> Void,
+                           onDisplayMessage: @escaping (String) -> Void,
+                           onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
+        guard invalidated == false else {
+            return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
+        }
+        paymentOrchestrator.collectPOSPayment(for: order,
+                                              orderTotal: orderTotal,
+                                              paymentGatewayAccount: paymentGatewayAccount,
+                                              paymentMethodTypes: paymentMethodTypes,
+                                              stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                              captureHandler: captureHandler,
+                                              onPreparingReader: onPreparingReader,
+                                              onWaitingForInput: onWaitingForInput,
+                                              onCardInserted: onCardInserted,
+                                              onProcessingMessage: onProcessingMessage,
+                                              onDisplayMessage: onDisplayMessage,
+                                              onProcessingCompletion: onProcessingCompletion,
+                                              onCompletion: onCompletion)
+    }
+
     func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
         guard invalidated == false else {

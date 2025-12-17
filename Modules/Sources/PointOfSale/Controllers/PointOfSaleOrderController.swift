@@ -43,6 +43,10 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+
+    /// Sets the order state for Store API checkout.
+    /// This is used when bypassing the REST API order sync in favor of Store API checkout.
+    func setOrderState(totals: PointOfSaleOrderTotals, order: Order)
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -122,6 +126,11 @@ protocol PointOfSaleOrderControllerProtocol {
     func clearOrder() {
         order = nil
         orderState = .idle
+    }
+
+    func setOrderState(totals: PointOfSaleOrderTotals, order: Order) {
+        self.order = order
+        self.orderState = .loaded(totals, order)
     }
 
     private func celebrate() {
@@ -285,11 +294,11 @@ private extension PointOfSaleOrderController {
 
 // MARK: - Mapping
 
-private extension POSCart {
+extension POSCart {
     init(cart: Cart) {
         let items = cart.purchasableItems.compactMap { (purchasableItem: Cart.PurchasableItem) -> POSCartItem? in
             guard case let .loaded(item) = purchasableItem.state else { return nil }
-            return POSCartItem(item: item, quantity: Decimal(purchasableItem.quantity))
+            return POSCartItem(id: purchasableItem.id, item: item, quantity: Decimal(purchasableItem.quantity))
         }
         let coupons = cart.coupons.map { POSCoupon(id: $0.posItemIdentifier, code: $0.code, summary: $0.summary) }
         self.init(items: items, coupons: coupons)

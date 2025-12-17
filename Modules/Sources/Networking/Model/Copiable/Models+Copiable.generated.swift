@@ -3,6 +3,7 @@
 import CocoaLumberjackSwift
 import Codegen
 import Foundation
+import NetworkingCore
 import WooFoundation
 import struct Alamofire.JSONEncoding
 import struct NetworkingCore.JetpackSite
@@ -1372,7 +1373,8 @@ extension Networking.POSProduct {
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
         stockStatusKey: CopiableProp<String> = .copy,
         statusKey: CopiableProp<String> = .copy,
-        variationIDs: CopiableProp<[Int64]> = .copy
+        variationIDs: CopiableProp<[Int64]> = .copy,
+        metaData: CopiableProp<[MetaData]> = .copy
     ) -> Networking.POSProduct {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1392,6 +1394,7 @@ extension Networking.POSProduct {
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
         let statusKey = statusKey ?? self.statusKey
         let variationIDs = variationIDs ?? self.variationIDs
+        let metaData = metaData ?? self.metaData
 
         return Networking.POSProduct(
             siteID: siteID,
@@ -1411,7 +1414,8 @@ extension Networking.POSProduct {
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,
             statusKey: statusKey,
-            variationIDs: variationIDs
+            variationIDs: variationIDs,
+            metaData: metaData
         )
     }
 }

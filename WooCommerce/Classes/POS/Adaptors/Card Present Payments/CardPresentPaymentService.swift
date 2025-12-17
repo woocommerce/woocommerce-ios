@@ -179,6 +179,37 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         }
     }
 
+    @MainActor
+    func collectPOSPayment(for order: Order,
+                           using connectionMethod: CardReaderConnectionMethod,
+                           captureHandler: @escaping (String) async throws -> Void) async throws -> CardPresentPaymentResult {
+        paymentTask?.cancel()
+
+        let preflightController = createPreflightController()
+
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher,
+                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker
+        ).collectPOSPaymentTask(
+            for: order,
+            using: connectionMethod,
+            siteID: siteID,
+            preflightController: preflightController,
+            configuration: cardPresentPaymentsConfiguration,
+            alertsPresenter: paymentAlertsPresenterAdaptor,
+            paymentEventSubject: paymentEventSubject,
+            captureHandler: captureHandler)
+
+        self.paymentTask = paymentTask
+
+        switch try await paymentTask.value {
+        case .success:
+            let transaction = CardPresentPaymentTransaction()
+            return .success(transaction)
+        case .cancellation:
+            return .cancellation
+        }
+    }
+
     func cancelPayment() {
         cancelPaymentTask()
     }

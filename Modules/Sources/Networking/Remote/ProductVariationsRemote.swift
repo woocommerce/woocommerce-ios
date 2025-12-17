@@ -82,7 +82,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
-                                               downloadable: false,
+                                               downloadable: nil,
                                                status: .published,
                                                orderBy: .menuOrder,
                                                order: .ascending,

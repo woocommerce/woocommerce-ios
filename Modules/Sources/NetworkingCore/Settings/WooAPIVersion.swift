@@ -54,6 +54,11 @@ public enum WooAPIVersion: String {
     ///
     case wcBookings = "wc-bookings/v2"
 
+    /// WooCommerce Store API v1.
+    /// Used for cart and checkout operations, particularly in Point of Sale.
+    ///
+    case storeV1 = "wc/store/v1"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

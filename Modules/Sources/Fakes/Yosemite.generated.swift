@@ -67,7 +67,9 @@ extension Yosemite.POSSimpleProduct {
             bundledItems: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),
-            stockStatusKey: .fake()
+            stockStatusKey: .fake(),
+            downloadable: .fake(),
+            isGiftCard: .fake()
         )
     }
 }

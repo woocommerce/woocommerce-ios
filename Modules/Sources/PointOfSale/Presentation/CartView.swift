@@ -23,6 +23,8 @@ struct CartView: View {
     }
 
     @State private var showBarcodeScanningModal: Bool = false
+    @State private var showEmailSheet: Bool = false
+    @State private var giftCardSheetItem: GiftCardSheetItem?
 
     var body: some View {
         ZStack {
@@ -53,7 +55,9 @@ struct CartView: View {
                     CartScrollViewContent(
                         offSetPosition: $offSetPosition,
                         cartContentHeight: $cartContentHeight,
-                        scrollViewHeight: $scrollViewHeight
+                        scrollViewHeight: $scrollViewHeight,
+                        showEmailSheet: $showEmailSheet,
+                        giftCardSheetItem: $giftCardSheetItem
                     )
                 } else {
                     Spacer()
@@ -71,6 +75,33 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
+            .sheet(isPresented: $showEmailSheet) {
+                POSEmailEntrySheet(
+                    email: posModel.billingEmail,
+                    onSave: { email in
+                        posModel.setBillingEmail(email)
+                        showEmailSheet = false
+                    },
+                    onCancel: {
+                        showEmailSheet = false
+                    }
+                )
+            }
+            .sheet(item: $giftCardSheetItem) { sheetItem in
+                if let cartItem = posModel.cart.purchasableItems.first(where: { $0.id == sheetItem.id }) {
+                    POSGiftCardEntrySheet(
+                        productName: cartItem.title,
+                        existingInfo: posModel.giftCardInfo[sheetItem.id],
+                        onSave: { info in
+                            posModel.setGiftCardInfo(info, for: sheetItem.id)
+                            giftCardSheetItem = nil
+                        },
+                        onCancel: {
+                            giftCardSheetItem = nil
+                        }
+                    )
+                }
+            }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
             .background(content: {
@@ -83,6 +114,11 @@ struct CartView: View {
             .accessibilityIdentifier("pos-cart-view")
         }
     }
+}
+
+/// Wrapper struct to make cart item ID identifiable for sheet presentation
+private struct GiftCardSheetItem: Identifiable {
+    let id: UUID
 }
 
 private struct ScrollOffSetPreferenceKey: PreferenceKey {
@@ -175,7 +211,7 @@ private extension CartView {
             Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
+        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart) || !posModel.canProceedWithCheckout)
         .accessibilityIdentifier("pos-checkout-button")
     }
 
@@ -267,6 +303,8 @@ private struct CartScrollViewContent: View {
     @Binding var offSetPosition: CGFloat
     @Binding var cartContentHeight: CGFloat
     @Binding var scrollViewHeight: CGFloat
+    @Binding var showEmailSheet: Bool
+    @Binding var giftCardSheetItem: GiftCardSheetItem?
 
     @State private var shouldShowItemImages: Bool = false
 
@@ -280,7 +318,9 @@ private struct CartScrollViewContent: View {
                 VStack(spacing: Constants.cartItemSpacing) {
                     CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
 
-                    PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages,
+                                                showEmailSheet: $showEmailSheet,
+                                                giftCardSheetItem: $giftCardSheetItem)
                 }
                 .padding(.bottom, Constants.cartLastItemBottomPadding)
                 .background(GeometryReader { geometry in
@@ -405,6 +445,8 @@ private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Binding var shouldShowItemImages: Bool
+    @Binding var showEmailSheet: Bool
+    @Binding var giftCardSheetItem: GiftCardSheetItem?
     @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
     var body: some View {
@@ -414,7 +456,15 @@ private struct PurchasableItemsCartSection: View {
                     cartItem: cartItem,
                     showImage: $shouldShowItemImages,
                     onItemRemoveTapped: itemRemoveCallback(for: cartItem),
-                    onCancelLoading: cancelLoadingCallback(for: cartItem)
+                    onCancelLoading: cancelLoadingCallback(for: cartItem),
+                    billingEmail: posModel.billingEmail,
+                    onSetEmailTapped: posModel.orderStage == .building ? {
+                        showEmailSheet = true
+                    } : nil,
+                    giftCardInfo: posModel.giftCardInfo[cartItem.id],
+                    onSetGiftCardInfoTapped: posModel.orderStage == .building ? {
+                        giftCardSheetItem = GiftCardSheetItem(id: cartItem.id)
+                    } : nil
                 )
                 .id(cartItem.id)
                 .transition(.opacity)

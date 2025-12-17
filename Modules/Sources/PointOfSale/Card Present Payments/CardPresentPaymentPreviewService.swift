@@ -31,6 +31,12 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
         // no-op
     }
 
+    func collectPOSPayment(for order: Yosemite.Order,
+                           using connectionMethod: CardReaderConnectionMethod,
+                           captureHandler: @escaping (String) async throws -> Void) async throws -> CardPresentPaymentResult {
+        .success(CardPresentPaymentTransaction())
+    }
+
     func collectPayment(for order: Yosemite.Order,
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult {

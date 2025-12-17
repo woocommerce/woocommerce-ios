@@ -79,6 +79,7 @@ private extension BookingListContainerView {
                 Spacer()
                 Button {
                     showingFilters = true
+                    viewModel.filtersTapped()
                 } label: {
                     Text(viewModel.filterText)
                         .font(.body)

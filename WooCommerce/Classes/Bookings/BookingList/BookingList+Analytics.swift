@@ -25,6 +25,21 @@ extension WooAnalyticsEvent {
                               properties: error.analyticsProperties)
 
         }
+
+        static func bookingTapped(selectedTab: BookingListTab,
+                                  isSearchActive: Bool,
+                                  isFilteringActive: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListBookingTapped,
+                              properties: [
+                                Properties.selectedTab: selectedTab.analyticsName,
+                                Properties.isSearchActive: isSearchActive,
+                                Properties.isFilteringActive: isFilteringActive,
+                              ])
+        }
+
+        static func filtersTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListFiltersTapped)
+        }
     }
 }
 
@@ -34,6 +49,8 @@ fileprivate extension WooAnalyticsEvent.BookingList {
         static let isDefaultTab = "is_default_tab"
         static let isListEmpty = "is_list_empty"
         static let isFiltered = "is_filtered"
+        static let isSearchActive = "is_search_active"
+        static let isFilteringActive = "is_filtering_active"
     }
 }
 

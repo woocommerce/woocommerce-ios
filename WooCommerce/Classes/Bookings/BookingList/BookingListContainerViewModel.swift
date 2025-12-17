@@ -161,6 +161,19 @@ final class BookingListContainerViewModel: ObservableObject {
             isFiltered: tabViewModel.hasFilters
         ))
     }
+
+    func selectedBookingChanged() {
+        let tabViewModel = listViewModel(for: selectedTab)
+        let searchViewModel = searchViewModel(for: selectedTab)
+        analytics.track(event: .BookingList.bookingTapped(
+            selectedTab: selectedTab,
+            isSearchActive: !searchViewModel.currentSearchQuery.isEmpty,
+            isFilteringActive: tabViewModel.hasFilters))
+    }
+
+    func filtersTapped() {
+        analytics.track(event: .BookingList.filtersTapped())
+    }
 }
 
 private extension BookingListContainerViewModel {

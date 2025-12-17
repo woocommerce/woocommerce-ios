@@ -71,9 +71,10 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
 
     func test_it_tracks_a_surveyScreen_completed_event_when_the_survey_is_submitted() throws {
         // Given
+        // same as 1ecb2d178da11972a8dbef102a40f65ee8e53d68
         let factory = MockSurveyViewControllersFactory()
         // Keeps the instance as a local variable so that it is not deallocated later in the test case.
-        let _ = SurveyCoordinatingController(survey: .inAppFeedback,
+        let surveyCoordinatingController = SurveyCoordinatingController(survey: .inAppFeedback,
                                              viewControllersFactory: factory,
                                              analytics: analytics)
 

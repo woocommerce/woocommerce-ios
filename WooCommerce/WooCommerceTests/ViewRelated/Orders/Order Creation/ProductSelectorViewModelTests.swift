@@ -1610,10 +1610,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
     }
 
     // MARK: - Favorite products
+    // same as 1ecb2d178da11972a8dbef102a40f65ee8e53d68
     func test_it_loads_favorite_products_on_init() {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
-        let _ = ProductSelectorViewModel(siteID: sampleSiteID,
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  stores: stores,

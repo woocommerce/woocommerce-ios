@@ -46,7 +46,14 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let _ = BookingSearchViewModel(
+        /*
+         A very odd one, removing the unused viewModel variable and making it let _, makes the test fail
+         this seems to be a combination of Swift ARC + Combine + async/await not playing nice:
+         - let _ discards the value immediately -> ARC deallocates immediately -> searchQuerySubject combine subscription tied to the VM lifecycle is deallocated -> subscription cancelled -> async work never fires -> whenReceivingAction never called -> invocation count = 0
+         So we have to deal and supress the warning of unused let because it's actually used under the hood to hold the reference to the assertion
+         It seems we had the same issue on 470b77a, and was reverted as well
+         */
+        let viewModel = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .all,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -74,7 +81,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let _ = BookingSearchViewModel(
+        let viewModel = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .all,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -244,7 +251,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let _ = BookingSearchViewModel(
+        let viewModel = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .today,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -276,7 +283,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let _ = BookingSearchViewModel(
+        let viewModel = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .upcoming,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
@@ -308,7 +315,7 @@ struct BookingSearchViewModelTests {
             onCompletion(.success([]))
         }
 
-        let _ = BookingSearchViewModel(
+        let viewModel = BookingSearchViewModel(
             siteID: sampleSiteID,
             type: .all,
             searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),

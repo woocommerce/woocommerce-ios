@@ -7,6 +7,7 @@ import protocol Storage.StorageType
 @testable import WooCommerce
 @testable import Networking
 
+@MainActor
 class BookingListContainerViewModelTests {
 
     private let site = Site.fake()
@@ -17,8 +18,7 @@ class BookingListContainerViewModelTests {
         storageManager.viewStorage
     }()
 
-    @MainActor
-    @Test func test_event_fire_when_tab_selected() {
+    @Test func event_fire_when_tab_selected() {
         // Given
         let viewModel = givenViewModel()
 
@@ -37,8 +37,7 @@ class BookingListContainerViewModelTests {
                                            ]))
     }
 
-    @MainActor
-    @Test func test_event_fire_when_onAppear() {
+    @Test func event_fire_when_onAppear() {
         // Given
         let viewModel = givenViewModel()
 
@@ -53,6 +52,102 @@ class BookingListContainerViewModelTests {
                                             "is_list_empty": true,
                                             "is_filtered": false
                                            ]))
+    }
+
+    @Test func event_fire_when_selectedBookingChanged() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.selectedBookingChanged()
+
+        // Then
+        #expect(analyticsProvider.received(
+            event: "booking_list_booking_tapped",
+            with: [
+                "selected_tab": "today",
+                "is_search_active": false,
+                "is_filtering_active": false
+            ]))
+    }
+
+    @Test func event_fire_when_filtersTapped() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.filtersTapped()
+
+        // Then
+        #expect(analyticsProvider.received(event: "booking_list_filters_tapped"))
+    }
+
+    @Test func event_fire_when_applyFiltersTapped() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.applyFiltersTapped()
+
+        // Then
+        #expect(analyticsProvider.received(
+            event: "booking_list_apply_filters",
+            with: ["selected_filters": ""]))
+    }
+
+    @Test func event_fire_when_applyFiltersTapped_withFilters() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        let filters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "")],
+            products: [BookingProductFilter(productID: 0, name: "")],
+            attendanceStatuses: [BookingAttendanceStatus.booked],
+            customers: [BookingCustomerFilter(customerID: 0, name: "")],
+            dateRange: BookingDateRangeFilter(startDate: Date(), endDate: Date()),
+            numberOfActiveFilters: 5
+        )
+        viewModel.setSelectedTab(to: .all)
+        viewModel.updateFilters(filters)
+        viewModel.applyFiltersTapped()
+        #expect(analyticsProvider.received(
+            event: "booking_list_apply_filters",
+            with: ["selected_filters": "attendance_status,customer,date_time,service_events,team_member"]))
+    }
+
+    @Test func event_fire_when_searchTapped() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.searchTapped()
+
+        // Then
+        #expect(analyticsProvider.received(event: "booking_list_search_tapped"))
+    }
+
+    @Test func event_fire_when_sortByTapped() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.sortByTapped()
+
+        // Then
+        #expect(analyticsProvider.received(event: "booking_list_sort_by_tapped"))
+    }
+
+    @Test func event_fire_when_sortByOptionSelected() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.sortByOptionSelected(.newestToOldest)
+
+        // Then
+        #expect(analyticsProvider.received(event: "booking_list_sort_by_option_tapped",
+                                           with: ["sort_option": "newest_first"]))
     }
 }
 

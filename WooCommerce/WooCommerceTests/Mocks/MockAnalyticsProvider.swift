@@ -7,7 +7,7 @@ import Testing
 
 public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTracker {
     var receivedEvents = [String]()
-    var receivedProperties = [[AnyHashable: Any]]() // aligned by index with `receivedEvents`
+    var receivedProperties = [[AnyHashable: Any]]()
     var userID: String?
     var userOptedIn = true
 }
@@ -26,8 +26,9 @@ public extension MockAnalyticsProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         receivedEvents.append(eventName)
-        // Keep properties aligned with events by index.
-        receivedProperties.append(properties ?? [:])
+        if let properties = properties {
+            receivedProperties.append(properties)
+        }
     }
 
     func clearEvents() {

@@ -41,9 +41,25 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingListFiltersTapped)
         }
 
-        static func applyFilters(_ filters: [Filter]) -> WooAnalyticsEvent {
+        static func applyFilters(_ filters: BookingFiltersViewModel.Filters) -> WooAnalyticsEvent {
+            var appliedFilters = [WooAnalyticsEvent.BookingList.Filter]()
+            if filters.attendanceStatuses.isNotEmpty {
+                appliedFilters.append(.attendanceStatus)
+            }
+            if filters.bookingFilters.customerIDs.isNotEmpty {
+                appliedFilters.append(.customer)
+            }
+            if filters.dateRange != nil {
+                appliedFilters.append(.dateTime)
+            }
+            if filters.products.isNotEmpty {
+                appliedFilters.append(.serviceEvents)
+            }
+            if filters.teamMembers.isNotEmpty {
+                appliedFilters.append(.teamMember)
+            }
             let properties = [
-                Properties.selectedFilters: filters.map { $0.rawValue }.joined(separator: ",")
+                Properties.selectedFilters: appliedFilters.map { $0.rawValue }.joined(separator: ",")
             ]
             return WooAnalyticsEvent(statName: .bookingListApplyFilters,
                                      properties: properties)

@@ -423,10 +423,13 @@ final class ProductListViewModelTests: XCTestCase {
 
     // MARK: Favorite products
     //
+    // same as 1ecb2d178da11972a8dbef102a40f65ee8e53d68, we need to ignore the compiler telling us:
+    // Initialization of immutable value 'viewModel' was never used; consider replacing with assignment to '_' or removing it
+    // If we do so it fails since waitUntil will never trigger, as ProductListViewModel is deallocated immediately
     func test_it_loads_favorite_products_on_init() {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
-        let _ = ProductListViewModel(siteID: sampleSiteID,
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
                                              stores: storesManager,
                                              favoriteProductsUseCase: favoriteProductsUseCase)
 

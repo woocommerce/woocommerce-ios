@@ -1,5 +1,3 @@
-import protocol WooFoundationCore.WooAnalyticsEventPropertyType
-
 extension WooAnalyticsEvent {
     enum BookingList {
         static func tabSelected(_ tab: BookingListTab) -> WooAnalyticsEvent {
@@ -27,15 +25,6 @@ extension WooAnalyticsEvent {
                               properties: error.analyticsProperties)
 
         }
-
-        static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [
-                Properties.action: action.rawValue
-            ]
-            properties += error.analyticsProperties
-            return  WooAnalyticsEvent(statName: .bookingListFailedToFetchBookings,
-                                      properties: properties)
-        }
     }
 }
 
@@ -45,7 +34,6 @@ fileprivate extension WooAnalyticsEvent.BookingList {
         static let isDefaultTab = "is_default_tab"
         static let isListEmpty = "is_list_empty"
         static let isFiltered = "is_filtered"
-        static let action = "action"
     }
 }
 
@@ -56,13 +44,5 @@ fileprivate extension BookingListTab {
         case .upcoming: "upcoming"
         case .all: "all"
         }
-    }
-}
-
-extension WooAnalyticsEvent.BookingList {
-    enum Action: String {
-        case cancelBooking = "cancel_booking"
-        case updateAttendance = "update_attendance"
-        case markAsPaid = "mark_as_paid"
     }
 }

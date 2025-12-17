@@ -30,3 +30,9 @@ fileprivate enum Properties {
     static let errorDescription = "error_description"
     static let errorCode = "error_code"
 }
+
+extension Dictionary where Key == String, Value == WooAnalyticsEventPropertyType {
+    static func += (lhs: inout Dictionary, rhs: Dictionary) {
+        lhs.merge(rhs) { _, new in new }
+    }
+}

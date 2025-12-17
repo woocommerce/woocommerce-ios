@@ -35,7 +35,7 @@ public protocol SessionManagerProtocol {
 
     /// Cached WooCommerce version for the default store.
     ///
-    var cachedWooCommerceVersion: String? { get }
+    var cachedWooCommerceVersion: String? { get set }
 
     /// Publishes default store ID on change.
     ///

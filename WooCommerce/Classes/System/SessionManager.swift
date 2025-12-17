@@ -193,16 +193,7 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Cached WooCommerce version for the default store.
     ///
-    var cachedWooCommerceVersion: String? {
-        guard let siteID = defaultStoreID else {
-            return nil
-        }
-        return ServiceLocator.storageManager.viewStorage.loadSystemPlugin(
-            siteID: siteID,
-            fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
-            active: nil
-        )?.toReadOnly().version
-    }
+    var cachedWooCommerceVersion: String?
 
     /// Keeps strong reference of the use case to keep the password deletion request alive
     /// periphery: ignore
@@ -238,6 +229,7 @@ final class SessionManager: SessionManagerProtocol {
         defaultStoreID = nil
         defaultStoreUUID = nil
         defaultSite = nil
+        cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.hasSavedPrivacyBannerSettings] = nil

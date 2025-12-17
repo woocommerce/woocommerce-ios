@@ -1073,6 +1073,7 @@ public enum WooAnalyticsStat: String {
     case bookingListFiltersTapped = "booking_list_filters_tapped"
     case bookingListApplyFilters = "booking_list_apply_filters"
     case bookingListSearchTapped = "booking_list_search_tapped"
+    case bookingListSortByTapped = "booking_list_sort_by_tapped"
 
     // MARK: Hub Menu
     //

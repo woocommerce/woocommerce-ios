@@ -198,6 +198,10 @@ final class BookingListContainerViewModel: ObservableObject {
     func searchTapped() {
         analytics.track(event: .BookingList.searchTapped())
     }
+
+    func sortByTapped() {
+        analytics.track(event: .BookingList.sortByTapped())
+    }
 }
 
 private extension BookingListContainerViewModel {

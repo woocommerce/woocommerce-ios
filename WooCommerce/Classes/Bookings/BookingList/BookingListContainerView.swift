@@ -73,6 +73,7 @@ private extension BookingListContainerView {
             HStack {
                 Button {
                     showingSortOptions = true
+                    viewModel.sortByTapped()
                 } label: {
                     Text(Localization.sortBy)
                         .font(.body)

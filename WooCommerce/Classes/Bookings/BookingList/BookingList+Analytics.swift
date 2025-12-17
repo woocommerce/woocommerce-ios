@@ -52,6 +52,10 @@ extension WooAnalyticsEvent {
         static func searchTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingListSearchTapped)
         }
+
+        static func sortByTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListSortByTapped)
+        }
     }
 }
 

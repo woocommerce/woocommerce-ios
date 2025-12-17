@@ -284,7 +284,7 @@ final class POSOrderListControllerTests {
         #expect(restoredOrders != searchResults, "Restored orders should be different from search results")
     }
 
-    @Test func clearSearchOrders_when_no_cache_then_shows_loading_state() async throws {
+    @Test func clearSearchOrders_when_no_cache_then_loads_empty_state() async throws {
         // Given
         try #require(sut.ordersViewState.isLoading)
         await sut.searchOrders(searchTerm: "test")
@@ -293,12 +293,45 @@ final class POSOrderListControllerTests {
         await sut.clearSearchOrders()
 
         // Then
-        guard case .loading(let orders) = sut.ordersViewState else {
-            Issue.record("Expected loading state when no cache exists, but got \(sut.ordersViewState)")
-            return
-        }
-        #expect(orders.isEmpty, "Should show empty loading state when no cache exists")
+        #expect(sut.ordersViewState == .empty)
     }
+
+    // Potentially flaky/racy as it relies on polling to capture an intermediate state.
+    // Just to verify that .loading state is set before
+    // loadFirstPage() completes. If it fails intermittently we should remove it
+//    @Test func clearSearchOrders_transitions_through_loading_state_when_no_cache() async throws {
+//        // Given
+//        try #require(sut.ordersViewState.isLoading)
+//        await sut.searchOrders(searchTerm: "test")
+//
+//        var capturedStates: [POSOrderListState] = []
+//
+//        // When - start operation and capture states as they change
+//        let clearTask = Task { @MainActor in
+//            await sut.clearSearchOrders()
+//        }
+//
+//        // Poll for state changes - this is inherently racy without mock delays
+//        for _ in 0..<10 {
+//            capturedStates.append(sut.ordersViewState)
+//            await Task.yield()
+//
+//            // Stop once we reach a terminal state
+//            if case .empty = sut.ordersViewState { break }
+//            if case .loaded = sut.ordersViewState { break }
+//        }
+//
+//        await clearTask.value
+//
+//        // Then - verify we observed .loading state at some point during the operation
+//        let sawLoadingState = capturedStates.contains { state in
+//            if case .loading = state { return true }
+//            return false
+//        }
+//
+//        #expect(sawLoadingState, "Expected to observe .loading state during clear operation")
+//        #expect(sut.ordersViewState == .empty, "Final state should be empty")
+//    }
 
     @Test func searchOrders_uses_search_strategy() async throws {
         // Given

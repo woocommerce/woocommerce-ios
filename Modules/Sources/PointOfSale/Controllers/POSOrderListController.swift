@@ -186,7 +186,14 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
             ordersViewState = .loaded(cachedOrders, hasMoreItems: true)
         } else {
             ordersViewState = .loading([])
-            await loadFirstPage()
+            //Task {
+                // By wrapping on a task we ensure clearSearchOrders() returns immediately with .loading state,
+                // while loadFirstPage() runs, otherwise clearSearchOrders_when_no_cache_then_shows_loading_state fails
+                // However, this test is now wrongly testing this if requires loadFirstPage to be wrapped.
+                // intermediate .loading([]) state is set synchronously and immediately overwritten by loadFirstPage()
+                // so should be simplified
+                await loadFirstPage()
+            //}
         }
     }
 

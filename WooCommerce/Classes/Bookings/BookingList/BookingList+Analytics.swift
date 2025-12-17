@@ -19,6 +19,12 @@ extension WooAnalyticsEvent {
                                 Properties.isFiltered: isFiltered,
                               ])
         }
+
+        static func failedToFetchBookings(_ error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListFailedToFetchBookings,
+                              properties: error.analyticsProperties)
+
+        }
     }
 }
 

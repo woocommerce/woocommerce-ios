@@ -146,9 +146,9 @@ final class BookingListContainerViewModel: ObservableObject {
     func setSelectedTab(to newTab: BookingListTab) {
         selectedTab = newTab
         analytics.track(event: .BookingList.tabSelected(newTab))
-        // Manually trigger onAppear as we are just
+        // Manually trigger onAppear as we are programaticcaly
         // changing the tab which will not trigger
-        // onAppear.
+        // onAppear on the View.
         onAppear()
     }
 

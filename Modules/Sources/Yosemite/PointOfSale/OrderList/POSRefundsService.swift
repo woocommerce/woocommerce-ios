@@ -18,7 +18,6 @@ public final class POSRefundsService {
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> [POSRefund] {
         let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
 
-
-
+        return refunds.map { mapper.map(refund: $0) }
     }
 }

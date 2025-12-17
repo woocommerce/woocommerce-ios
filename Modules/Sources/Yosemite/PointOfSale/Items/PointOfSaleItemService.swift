@@ -48,8 +48,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             let pagedVariations = try await fetchStrategy.fetchVariations(parentProductID: parentProduct.productID,
                                                                           pageNumber: pageNumber)
             let variations = pagedVariations.items
-            // Remove this when WC version 9.7 has significant adoption in POS stores.
-                .filter { !$0.downloadable }
+
             return .init(
                 items: itemMapper.mapVariationsToPOSItems(variations: variations, parentProduct: parentProduct),
                 hasMorePages: pagedVariations.hasMorePages,

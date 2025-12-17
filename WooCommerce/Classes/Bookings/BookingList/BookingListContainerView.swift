@@ -38,6 +38,7 @@ struct BookingListContainerView: View {
                         if !isSearching {
                             viewModel.searchQuery = ""
                         }
+                        viewModel.searchTapped()
                     }
                 } label: {
                     Image(systemName: "magnifyingglass")

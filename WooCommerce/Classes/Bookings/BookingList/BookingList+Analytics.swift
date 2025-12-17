@@ -48,6 +48,10 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .bookingListApplyFilters,
                                      properties: properties)
         }
+
+        static func searchTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListSearchTapped)
+        }
     }
 }
 

@@ -40,6 +40,8 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var anonymousUserID: String? = nil
 
+    public var cachedWooCommerceVersion: String? = nil
+
     public func reset() {
         // Do nothing
     }

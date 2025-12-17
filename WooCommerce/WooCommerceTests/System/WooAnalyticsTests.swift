@@ -194,6 +194,9 @@ class WooAnalyticsTests: XCTestCase {
             let receivedPropertyValue = try? XCTUnwrap(receivedProperties[property.key], "Property \(property.key) not found")
             assertEqual(property.value, receivedPropertyValue)
         }
+
+        XCTAssertTrue(receivedProperties.keys.contains("cached_woo_core_version"),
+                      "cached_woo_core_version property should be included in analytics events")
     }
 
     func test_events_when_logged_out_do_not_include_site_properties() {
@@ -222,7 +225,8 @@ class WooAnalyticsTests: XCTestCase {
             "was_ecommerce_trial",
             "plan",
             "site_url",
-            "store_id"
+            "store_id",
+            "cached_woo_core_version"
         ]
 
         for property in expectedToBeAbsentProperties {

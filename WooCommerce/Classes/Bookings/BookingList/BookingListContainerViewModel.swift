@@ -202,6 +202,11 @@ final class BookingListContainerViewModel: ObservableObject {
     func sortByTapped() {
         analytics.track(event: .BookingList.sortByTapped())
     }
+
+    func sortByOptionSelected(_ option: BookingListViewModel.SortBy) {
+        sortBy = option
+        analytics.track(event: .BookingList.sortByOptionTapped(option))
+    }
 }
 
 private extension BookingListContainerViewModel {

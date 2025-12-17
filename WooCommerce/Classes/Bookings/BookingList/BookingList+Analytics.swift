@@ -56,6 +56,11 @@ extension WooAnalyticsEvent {
         static func sortByTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingListSortByTapped)
         }
+
+        static func sortByOptionTapped(_ option: BookingListViewModel.SortBy) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListSortByOptionTapped,
+                              properties: [Properties.sortOption: option.analyticsName])
+        }
     }
 }
 
@@ -68,6 +73,7 @@ fileprivate extension WooAnalyticsEvent.BookingList {
         static let isSearchActive = "is_search_active"
         static let isFilteringActive = "is_filtering_active"
         static let selectedFilters = "selected_filters"
+        static let sortOption = "sort_option"
     }
 }
 
@@ -88,6 +94,14 @@ extension WooAnalyticsEvent.BookingList {
         case dateTime = "date_time"
         case serviceEvents = "service_events"
         case teamMember = "team_member"
+    }
+}
 
+fileprivate extension BookingListViewModel.SortBy {
+    var analyticsName: String {
+        switch self {
+        case .newestToOldest: "newest_first"
+        case .oldestToNewest: "oldest_first"
+        }
     }
 }

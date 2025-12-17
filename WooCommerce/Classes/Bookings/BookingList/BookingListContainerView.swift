@@ -152,7 +152,7 @@ private extension BookingListContainerView {
 
                 ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
                     Button {
-                        viewModel.sortBy = sortBy
+                        viewModel.sortByOptionSelected(sortBy)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             showingSortOptions = false
                         }

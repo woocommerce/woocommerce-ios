@@ -50,6 +50,7 @@ struct BookingListContainerView: View {
         }
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterViewModel) { filters in
+                viewModel.applyFiltersTapped()
                 viewModel.updateFilters(filters)
             } onClearAction: {
                 // no-op

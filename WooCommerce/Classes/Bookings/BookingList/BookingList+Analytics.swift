@@ -40,6 +40,14 @@ extension WooAnalyticsEvent {
         static func filtersTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingListFiltersTapped)
         }
+
+        static func applyFilters(_ filters: [Filter]) -> WooAnalyticsEvent {
+            let properties = [
+                Properties.selectedFilters: filters.map { $0.rawValue }.joined(separator: ",")
+            ]
+            return WooAnalyticsEvent(statName: .bookingListApplyFilters,
+                                     properties: properties)
+        }
     }
 }
 
@@ -51,6 +59,7 @@ fileprivate extension WooAnalyticsEvent.BookingList {
         static let isFiltered = "is_filtered"
         static let isSearchActive = "is_search_active"
         static let isFilteringActive = "is_filtering_active"
+        static let selectedFilters = "selected_filters"
     }
 }
 
@@ -61,5 +70,16 @@ fileprivate extension BookingListTab {
         case .upcoming: "upcoming"
         case .all: "all"
         }
+    }
+}
+
+extension WooAnalyticsEvent.BookingList {
+    enum Filter: String {
+        case attendanceStatus = "attendance_status"
+        case customer = "customer"
+        case dateTime = "date_time"
+        case serviceEvents = "service_events"
+        case teamMember = "team_member"
+
     }
 }

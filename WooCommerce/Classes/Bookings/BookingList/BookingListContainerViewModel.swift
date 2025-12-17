@@ -174,6 +174,26 @@ final class BookingListContainerViewModel: ObservableObject {
     func filtersTapped() {
         analytics.track(event: .BookingList.filtersTapped())
     }
+
+    func applyFiltersTapped() {
+        var appliedFilters = [WooAnalyticsEvent.BookingList.Filter]()
+        if filters.attendanceStatuses.isNotEmpty {
+            appliedFilters.append(.attendanceStatus)
+        }
+        if filters.bookingFilters.customerIDs.isNotEmpty {
+            appliedFilters.append(.customer)
+        }
+        if filters.dateRange != nil {
+            appliedFilters.append(.dateTime)
+        }
+        if filters.products.isNotEmpty {
+            appliedFilters.append(.serviceEvents)
+        }
+        if filters.teamMembers.isNotEmpty {
+            appliedFilters.append(.teamMember)
+        }
+        analytics.track(event: .BookingList.applyFilters(appliedFilters))
+    }
 }
 
 private extension BookingListContainerViewModel {

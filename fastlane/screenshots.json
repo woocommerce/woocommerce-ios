@@ -75,7 +75,7 @@
 			"filename": "iPhone 16 Plus-04.png",
 			"background": "appstoreres/assets/iphone-background-2.png",
 			"screenshot": "iPhone 16 Plus-4-light-product-add.png",
-			"text": "metadata/{locale}/app_store_screenshot_4.txt"
+			"text": "metadata/{locale}/app_store_screenshot_7.txt"
 		},
 		// Get notified of every sale
 		{
@@ -83,7 +83,7 @@
 			"filename": "iPhone 16 Plus-05.png",
 			"background": "appstoreres/assets/iphone-background-1.png",
 			"screenshot": "iPhone 16 Plus-5-dark-order-notification.png",
-			"text": "metadata/{locale}/app_store_screenshot_5.txt"
+			"text": "metadata/{locale}/app_store_screenshot_8.txt"
 		},
 
 

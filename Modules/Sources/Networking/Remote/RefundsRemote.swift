@@ -166,6 +166,6 @@ struct POSRefundsRemote {
     let refundsRemote: RefundsRemote
 
     func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
-        refundsRemote.loadRefunds(for: <#T##Int64#>, by: <#T##Int64#>, with: <#T##[Int64]#>)
+        try await refundsRemote.loadRefunds(for: siteID, by: orderID, with: refundIDs)
     }
 }

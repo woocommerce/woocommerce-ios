@@ -1,17 +1,23 @@
 import Foundation
+import Combine
+import Networking
 import protocol NetworkingCore.POSRefundsRemoteProtocol
 
-public final class POSRefundsService {
+public final class POSRefundsService: POSRefundsServiceProtocol {
     private let refundsRemote: POSRefundsRemoteProtocol
     private let siteID: Int64
     private let mapper: POSRefundMapper
 
-    public init(
-        siteID: Int64,
-        refundsRemote: POSRefundsRemoteProtocol
+    public init(siteID: Int64,
+                credentials: Credentials?,
+                selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>
     ) {
         self.siteID = siteID
-        self.refundsRemote = refundsRemote
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
+        self.refundsRemote = RefundsRemote(network: network)
         self.mapper = POSRefundMapper()
     }
 

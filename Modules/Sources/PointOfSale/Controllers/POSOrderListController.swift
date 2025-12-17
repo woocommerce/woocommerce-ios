@@ -4,7 +4,10 @@ import enum Yosemite.POSOrderListServiceError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
+import protocol Yosemite.POSRefundsServiceProtocol
+import class Yosemite.POSRefundsService
 import struct Yosemite.POSOrder
+import struct Yosemite.POSRefund
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefundCondensed
 import class Yosemite.Store
@@ -18,6 +21,7 @@ protocol POSOrderListControllerProtocol {
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
+    func loadRefunds(of order: POSOrder) async throws
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -32,6 +36,7 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
+    private let refundsService: POSRefundsServiceProtocol
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -42,10 +47,12 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     }
 
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
+         refundsService: POSRefundsServiceProtocol,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
+        self.refundsService = refundsService
     }
 
     @MainActor
@@ -201,5 +208,8 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
         if selectedOrder?.id == orderID {
             selectedOrder = updatedOrder
         }
+    }
+
+    func loadRefunds(of order: Yosemite.POSOrder) async throws {
     }
 }

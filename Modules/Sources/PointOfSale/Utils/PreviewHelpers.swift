@@ -26,6 +26,7 @@ import struct Yosemite.PaymentIntent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefundCondensed
+import struct Yosemite.POSRefund
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
@@ -48,6 +49,7 @@ import protocol Yosemite.POSItemFetchAnalyticsTracking
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
+import protocol Yosemite.POSRefundsServiceProtocol
 
 // MARK: - PreviewProvider helpers
 //
@@ -475,6 +477,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
+    func loadRefunds(of order: POSOrder) async throws {}
 }
 
 // MARK: - Barcode Scan Service
@@ -515,6 +518,12 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+}
+
+final class POSRefundsServicePreview: POSRefundsServiceProtocol {
+    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSRefund] {
+        []
+    }
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

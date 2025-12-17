@@ -230,6 +230,10 @@ private extension POSTabCoordinator {
             // otherwise falls back to remote API-based scanning
             let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
                                                               grdbManager: grdbManager)
+            let refundsService = POSRefundsService(siteID: siteID,
+                                                   credentials: credentials,
+                                                   selectedSite: defaultSitePublisher,
+                                                   appPasswordSupportState: isAppPasswordSupported)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -269,6 +273,7 @@ private extension POSTabCoordinator {
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
                     orderService: orderService,
+                    refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },
@@ -318,3 +323,4 @@ private extension POSTabCoordinator {
         TracksProvider.setPOSMode(isPointOfSaleActive)
     }
 }
+

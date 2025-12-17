@@ -33,14 +33,14 @@
 			"name": "iPad Pro 13-inch (M4) - landscape",
 			"canvas_size": [2732, 2048],
 			"text_size": [1848, 559],
-			"text_offset": [100, 0],
+			"text_offset": [442, 0],
 			"font_size": "100px",
 			"screenshot_size": [1868, 1401],
-			"screenshot_offset": [517, 500],
+			"screenshot_offset": [432, 512],
 			"screenshot_mask": "appstoreres/assets/ipad-x-mask-landscape.png",
 			"device_frame": "appstoreres/assets/ipad-x-landscape.png",
 			"device_frame_size": [1998, 1531],
-			"device_frame_offset": [458, 447]
+			"device_frame_offset": [367, 447]
 		}
 	],
 	"entries": [

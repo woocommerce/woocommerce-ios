@@ -265,7 +265,6 @@ private extension AppCoordinator {
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
-        triggerAgeVerification()
         ServiceLocator.analytics.track(.openedLogin)
         return authenticationUI
     }
@@ -438,15 +437,18 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
-    func triggerAgeVerification() {
+    func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window
         ) { [weak self] isEligible, _ in
-            if !isEligible {
-                self?.forceLogoutAndShowAgeAlert()
+            guard let self else { return }
+            if isEligible {
+                onAllowed()
+            } else {
+                self.forceLogoutAndShowAgeAlert()
             }
 
-            //TODO: - consider adding analytics event and pass the second argument as result
+            //TODO: consider adding analytics event with the result
         }
     }
 

@@ -19,6 +19,8 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     ) {
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
+            // Allow flow to continue if we can't present the dialogue.
+            onResult(true, .invalidUIState)
             return
         }
 
@@ -37,6 +39,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
                  .invalidUIState,
                  .sdkError,
                  .unknown:
+                // Non-deterministic/unavailable results are treated as allowed.
                 isEligible = true
             }
 

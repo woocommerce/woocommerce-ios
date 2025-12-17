@@ -437,70 +437,16 @@ private extension AppCoordinator {
     }
 }
 
-protocol AgeRangeVerificationCoordinatorProtocol {
-    func triggerAgeVerificationIfNeeded(
-        hostingWindow: UIWindow,
-        onBlockingFallback: @escaping () -> Void
-    )
-}
-
-final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
-    /// Triggers the age range verification flow.
-    /// Handles "blocking UI" presenting in case of ineligible age and performs a logout.
-    /// - Parameters:
-    ///   - hostingWindow: The window that handles the dialogue UI. Basically the main app window works well.
-    ///   - onBlockingFallback: Called when a confirmation CTA is tapped inside "blocking UI". Designed to trigger a logout on tap.
-    func triggerAgeVerificationIfNeeded(
-        hostingWindow: UIWindow,
-        onBlockingFallback: @escaping () -> Void
-    ) {
-        guard let anchor = hostingWindow.topmostPresentedViewController else {
-            DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
-            return
-        }
-
-        ServiceLocator.ageRangeVerificationService.verifyAgeRange(
-            in: anchor,
-            minimumAge: 18
-        ) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .eligible:
-                break
-            case .ineligible:
-                presentAgeGateBlock(
-                    reason: .tooYoung,
-                    hostingWindow: hostingWindow,
-                    onCTATap: onBlockingFallback
-                )
-            case .declinedSharing,
-                 .featureUnavailable,
-                 .invalidUIState,
-                 .sdkError,
-                 .unknown:
-                break
-            }
-        }
-    }
-
-    func presentAgeGateBlock(
-        reason: AgeGateBlockReason,
-        hostingWindow: UIWindow,
-        onCTATap: @escaping () -> Void
-    ) {
-        hostingWindow.rootViewController = AgeGateBlockedHostingController(
-            reason: reason,
-            onPrimaryAction: onCTATap
-        )
-    }
-}
-
 private extension AppCoordinator {
     func triggerAgeVerification() {
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window
-        ) { [weak self] in
-            self?.forceLogoutAndReturnToLogin()
+        ) { [weak self] isEligible, _ in
+            if !isEligible {
+                self?.forceLogoutAndShowAgeAlert()
+            }
+
+            //TODO: - consider adding analytics event and pass the second argument as result
         }
     }
 
@@ -508,6 +454,24 @@ private extension AppCoordinator {
     func forceLogoutAndReturnToLogin() {
         stores.deauthenticate()
         displayAuthenticatorWithOnboardingIfNeeded()
+    }
+
+    func forceLogoutAndShowAgeAlert() {
+        forceLogoutAndReturnToLogin()
+
+        DispatchQueue.main.async { [weak self] in
+            guard
+                let self,
+                let presenter = self.window.topmostPresentedViewController
+            else { return }
+            let alert = UIAlertController(
+                title: Localization.AgeVerificationAlert.title,
+                message: Localization.AgeVerificationAlert.message,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Got it", style: .default, handler: nil))
+            presenter.present(alert, animated: true)
+        }
     }
 }
 
@@ -517,6 +481,26 @@ private extension AppCoordinator {
     }
 
     enum Localization {
+        enum AgeVerificationAlert {
+            static let title = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.title",
+                value: "Access Not Allowed",
+                comment: "Alert title displayed when user identified as underage and taken to force logout."
+            )
+
+            static let message = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.message",
+                value: "Based on your account settings, you're not eligible to use this app.",
+                comment: "Alert message displayed when user identified as underage and taken to force logout."
+            )
+
+            static let confirmationButton = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.confirmationButton",
+                value: "Got it",
+                comment: "Alert confirmation button displayed when user identified as underage and taken to force logout."
+            )
+        }
+
         enum StoreReadyAlert {
             static let title = NSLocalizedString("appCoordinator.storeReadyAlert.title",
                                                  value: "Your new store is ready.",

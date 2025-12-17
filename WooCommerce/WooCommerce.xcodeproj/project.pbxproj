@@ -983,7 +983,6 @@
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		2D047C9E2EE6DA590014B255 /* AgeRangeVerificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D047C9C2EE6DA590014B255 /* AgeRangeVerificationService.swift */; };
-		2D0490542EEAF5E90014B255 /* AgeGateBlockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0490522EEAF5E90014B255 /* AgeGateBlockedView.swift */; };
 		2D052FB42E9408AF004111FD /* CustomerDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */; };
 		2D052FB52E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */; };
 		2D05337E2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */; };
@@ -1001,6 +1000,7 @@
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D200F072ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */; };
+		2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
@@ -3877,7 +3877,6 @@
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
 		2D047C9C2EE6DA590014B255 /* AgeRangeVerificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationService.swift; sourceTree = "<group>"; };
-		2D0490522EEAF5E90014B255 /* AgeGateBlockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeGateBlockedView.swift; sourceTree = "<group>"; };
 		2D052FB22E9408AF004111FD /* BookingDetailsView+RowTextStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsView+RowTextStyle.swift"; sourceTree = "<group>"; };
 		2D052FB32E9408AF004111FD /* CustomerDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailsView.swift; sourceTree = "<group>"; };
 		2D05337D2E951A62004111FD /* BookingDetailsViewModel+PriceFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+PriceFormatting.swift"; sourceTree = "<group>"; };
@@ -3895,6 +3894,7 @@
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDateTimeFilterViewTests.swift; sourceTree = "<group>"; };
+		2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinator.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
@@ -7928,7 +7928,7 @@
 		2D0490532EEAF5E90014B255 /* AgeGate */ = {
 			isa = PBXGroup;
 			children = (
-				2D0490522EEAF5E90014B255 /* AgeGateBlockedView.swift */,
+				2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */,
 			);
 			path = AgeGate;
 			sourceTree = "<group>";
@@ -14049,6 +14049,7 @@
 				03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */,
 				57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */,
 				0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */,
+				2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */,
 				26E7EE6E29300E8100793045 /* AnalyticsTopPerformersCard.swift in Sources */,
 				03E471DA29424E82001A58AD /* CardPresentModalTapToPaySuccess.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
@@ -14208,7 +14209,6 @@
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */,
-				2D0490542EEAF5E90014B255 /* AgeGateBlockedView.swift in Sources */,
 				B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
 				EE1B07F32C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift in Sources */,

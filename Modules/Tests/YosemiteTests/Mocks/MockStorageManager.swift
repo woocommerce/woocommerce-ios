@@ -139,8 +139,8 @@ extension MockStorageManager {
     ///
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription()
-        description.type = NSSQLiteStoreType
-        description.url = URL(fileURLWithPath: "/dev/null")
+        description.type = NSInMemoryStoreType//NSSQLiteStoreType
+//        description.url = URL(fileURLWithPath: "/dev/null")
         return description
     }
 }

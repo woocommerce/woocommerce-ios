@@ -124,7 +124,7 @@ private extension HubMenu {
             case .payments:
                 paymentsView
             case .marketingTools:
-                MarketingToolsView()
+                MarketingToolsView(siteID: viewModel.siteID)
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:

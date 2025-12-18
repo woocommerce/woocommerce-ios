@@ -183,10 +183,10 @@ enum POSOrderListSelectedOrderRefundsState {
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) {
-            selectedOrderRefundsState = .idle
-            startLoadingRefundsIfPossible()
-        }
+        selectedOrderRefundsState = .idle
+
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
+        startLoadingRefundsIfPossible()
     }
 
     @MainActor

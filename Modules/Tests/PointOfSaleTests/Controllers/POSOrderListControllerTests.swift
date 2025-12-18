@@ -1,15 +1,20 @@
 import Testing
+import TestKit
 import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
 import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
+@testable import struct Yosemite.POSRefund
+@testable import struct Yosemite.POSRefundItem
 
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
+    private let refundsService = MockPOSRefundsService()
     private lazy var fetchStrategyFactory = MockPOSOrderListFetchStrategyFactory(orderService: orderListService)
-    private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory)
+    private lazy var featureFlags = MockFeatureFlagService()
+    private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory, refundsService: refundsService, featureFlags: featureFlags)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
@@ -363,5 +368,87 @@ final class POSOrderListControllerTests {
 
         // Then
         #expect(sut.selectedOrder?.customerEmail == "selected-updated@example.com")
+    }
+
+    @Test func selectOrder_then_calls_refunds_service_for_selected_order() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = MockPOSOrderListService.makeInitialOrders()[0]
+
+        // When
+        await sut.selectOrder(order)
+
+        await waitUntil { [weak self] in
+            self?.refundsService.spyProvidePointOfSaleRefundsOrder != nil
+        }
+
+        // Then
+        #expect(refundsService.spyProvidePointOfSaleRefundsOrder == order)
+    }
+
+    @Test func selectOrder_then_updates_refunds_state_with_loading() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = MockPOSOrderListService.makeInitialOrders()[0]
+
+        // When
+        await sut.selectOrder(order)
+
+        // Then
+        await waitUntil { [weak self] in
+            if case .loading = self?.sut.selectedOrderRefundsState {
+                return true
+            }
+
+            return false
+        }
+    }
+
+    @Test func selectOrder_when_provides_refunds_then_updates_refunds_state_with_results() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = MockPOSOrderListService.makeInitialOrders()[0]
+
+        let items = [POSRefundItem(productID: 1, variationID: 1, quantity: 2)]
+        let refunds = [POSRefund(items: items)]
+        refundsService.providePointOfSaleRefundsToReturn = refunds
+
+        // When
+        await sut.selectOrder(order)
+
+        await waitUntil { [weak self] in
+            if case .loaded = self?.sut.selectedOrderRefundsState { return true }
+            return false
+        }
+
+        guard case .loaded(let loadedRefunds) = sut.selectedOrderRefundsState else {
+            Issue.record("Expected loaded state")
+            return
+        }
+
+        // Then
+        #expect(loadedRefunds == refunds)
+    }
+
+    @Test func selectOrder_when_refunds_service_errors_then_failed_contains_same_error_type() async throws {
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = MockPOSOrderListService.makeInitialOrders()[0]
+
+        struct TestError: Error {}
+        refundsService.errorToThrow = TestError()
+
+        await sut.selectOrder(order)
+
+        await waitUntil { [weak self] in
+            if case .failed = self?.sut.selectedOrderRefundsState { return true }
+            return false
+        }
+
+        guard case .failed(let error) = sut.selectedOrderRefundsState else {
+            Issue.record("Expected failed state")
+            return
+        }
+
+        #expect(error is TestError)
     }
 }

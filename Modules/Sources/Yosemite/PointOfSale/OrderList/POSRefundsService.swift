@@ -21,6 +21,13 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         self.mapper = POSRefundMapper()
     }
 
+    init(siteID: Int64,
+        refundsRemote: POSRefundsRemoteProtocol) {
+        self.siteID = siteID
+        self.refundsRemote = refundsRemote
+        self.mapper = POSRefundMapper()
+    }
+
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> [POSRefund] {
         let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
 

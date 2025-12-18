@@ -24,6 +24,7 @@ struct LocalNotification {
         case productImageBackgroundUpload
         case pointOfSalePotentialMerchant
         case pointOfSaleCurrentMerchant
+        case marketingEventReminder
         case unknown(siteID: Int64)
 
         var identifier: String {
@@ -38,6 +39,8 @@ struct LocalNotification {
                 return "woo_pos_survey_potential_user_survey"
             case .pointOfSaleCurrentMerchant:
                 return "woo_pos_survey_current_user_survey"
+            case .marketingEventReminder:
+                return "marketing_event_reminder"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -70,6 +73,8 @@ struct LocalNotification {
         // periphery:ignore - will be removed on PR-16128
         static let isIAPAvailable = WooAnalyticsEvent.LocalNotification.Key.isIAPAvailable
         static let surveyURL = "surveyURL"
+        static let eventID = "eventID"
+        static let eventName = "eventName"
     }
 
     enum SurveyURL {
@@ -113,6 +118,9 @@ extension LocalNotification {
         case .pointOfSaleCurrentMerchant:
             title = Localization.PointOfSaleCurrentMerchant.title
             body = Localization.PointOfSaleCurrentMerchant.body
+        case .marketingEventReminder:
+            title = Localization.MarketingEventReminder.title
+            body = Localization.MarketingEventReminder.body
         case .unknown:
             title = ""
             body = ""
@@ -187,6 +195,18 @@ extension LocalNotification {
                 "localNotification.PointOfSaleCurrentMerchant.body",
                 value: "Share your experience in a quick 2-minute survey and help us improve.",
                 comment: "Body of the local notification for current POS merchants survey."
+            )
+        }
+        enum MarketingEventReminder {
+            static let title = NSLocalizedString(
+                "localNotification.MarketingEventReminder.title",
+                value: "Marketing Event Coming Up",
+                comment: "Title of the local notification for marketing event reminders."
+            )
+            static let body = NSLocalizedString(
+                "localNotification.MarketingEventReminder.body",
+                value: "Your event is starting soon. Check the details and get ready!",
+                comment: "Message body of the local notification for marketing event reminders."
             )
         }
     }

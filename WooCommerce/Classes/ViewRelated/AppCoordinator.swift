@@ -150,6 +150,12 @@ private extension AppCoordinator {
             presentSurveyWebView(url: surveyURL)
         }
 
+        // Handle marketing event reminder notification
+        if identifier == LocalNotification.Scenario.marketingEventReminder.identifier,
+           let eventID = userInfo[LocalNotification.UserInfoKey.eventID] as? String {
+            navigateToMarketingEvent(eventID: eventID)
+        }
+
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
     }
@@ -162,6 +168,15 @@ private extension AppCoordinator {
             topmostPresentedViewController.present(safariViewController, animated: true)
         } else {
             tabBarController.present(safariViewController, animated: true)
+        }
+    }
+
+    private func navigateToMarketingEvent(eventID: String) {
+        // Navigate to Hub Menu tab
+        MainTabBarController.switchToHubMenuTab { _ in
+            // TODO: Navigate to Marketing Tools and show event detail for eventID
+            // For now just navigating to Hub Menu is sufficient
+            // Future enhancement: push to Marketing Tools view and select the event
         }
     }
 }

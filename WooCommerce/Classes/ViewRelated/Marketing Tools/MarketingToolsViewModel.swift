@@ -12,6 +12,7 @@ final class MarketingToolsViewModel: ObservableObject {
     let siteID: Int64
 
     private let stores: StoresManager
+    private let notificationScheduler: MarketingEventNotificationScheduling
 
     /// Store timezone for event scheduling
     var storeTimezone: TimeZone {
@@ -24,10 +25,12 @@ final class MarketingToolsViewModel: ObservableObject {
 
     init(
         siteID: Int64,
-        stores: StoresManager = ServiceLocator.stores
+        stores: StoresManager = ServiceLocator.stores,
+        notificationScheduler: MarketingEventNotificationScheduling = MarketingEventNotificationScheduler()
     ) {
         self.siteID = siteID
         self.stores = stores
+        self.notificationScheduler = notificationScheduler
         loadEvents()
     }
 
@@ -46,6 +49,11 @@ final class MarketingToolsViewModel: ObservableObject {
         for event in suggestedEvents {
             if !events.contains(where: { $0.id == event.id }) {
                 events.append(event)
+
+                // Schedule notification for this event
+                Task {
+                    await notificationScheduler.scheduleNotification(for: event, daysBeforeEvent: 3)
+                }
             }
         }
     }
@@ -59,6 +67,11 @@ final class MarketingToolsViewModel: ObservableObject {
             type: .custom
         )
         events.append(newEvent)
+
+        // Schedule notification for this event (3 days before)
+        Task {
+            await notificationScheduler.scheduleNotification(for: newEvent, daysBeforeEvent: 3)
+        }
     }
 
     /// Returns available actions for a given event

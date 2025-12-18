@@ -1348,6 +1348,7 @@
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
 		680E36B72BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */; };
+		680E4F2D2EF3B84600910A04 /* MarketingToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E4F2C2EF3B84000910A04 /* MarketingToolsView.swift */; };
 		682140AF2E125437005E86AB /* UILabel+SalesChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
@@ -4247,6 +4248,7 @@
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
 		680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSubscriptionTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		680E4F2C2EF3B84000910A04 /* MarketingToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingToolsView.swift; sourceTree = "<group>"; };
 		682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SalesChannel.swift"; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
@@ -8838,6 +8840,14 @@
 			path = TitleAndEditableValueTableViewCell;
 			sourceTree = "<group>";
 		};
+		680E4F2B2EF3B83400910A04 /* Marketing Tools */ = {
+			isa = PBXGroup;
+			children = (
+				680E4F2C2EF3B84000910A04 /* MarketingToolsView.swift */,
+			);
+			path = "Marketing Tools";
+			sourceTree = "<group>";
+		};
 		682210EB2909664800814E14 /* Customer */ = {
 			isa = PBXGroup;
 			children = (
@@ -9707,6 +9717,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				680E4F2B2EF3B83400910A04 /* Marketing Tools */,
 				2DAC2C952E82A15C008521AF /* Bookings */,
 				68B3BA242D91473D0000B2F2 /* AI Settings */,
 				B626C7192876599B0083820C /* Custom Fields */,
@@ -14755,6 +14766,7 @@
 				02C1853D27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift in Sources */,
 				AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */,
 				024DF31B23742E1C006658FE /* FormatBarItemViewProperties.swift in Sources */,
+				680E4F2D2EF3B84600910A04 /* MarketingToolsView.swift in Sources */,
 				26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */,
 				CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */,
 				45FDDD65267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift in Sources */,

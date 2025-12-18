@@ -397,10 +397,3 @@ struct HubMenu_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }
-
-
-struct MarketingToolsView: View {
-    var body: some View {
-        EmptyView()
-    }
-}

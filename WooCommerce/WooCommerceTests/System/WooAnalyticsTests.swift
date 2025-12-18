@@ -168,7 +168,8 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL),
-                                                                   defaultStoreUUID: "sample_store_uuid"))
+                                                                   defaultStoreUUID: "sample_store_uuid",
+                                                                   cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
         analytics = WooAnalytics(analyticsProvider: testingProvider)
 
@@ -187,16 +188,14 @@ class WooAnalyticsTests: XCTestCase {
             "plan": "",
             "site_url": sampleSiteURL,
             "prop-key1": "prop-value1",
-            "store_id": "sample_store_uuid"
+            "store_id": "sample_store_uuid",
+            "cached_woo_core_version": "10.0"
         ]
 
         for property in expectedProperties {
             let receivedPropertyValue = try? XCTUnwrap(receivedProperties[property.key], "Property \(property.key) not found")
             assertEqual(property.value, receivedPropertyValue)
         }
-
-        XCTAssertTrue(receivedProperties.keys.contains("cached_woo_core_version"),
-                      "cached_woo_core_version property should be included in analytics events")
     }
 
     func test_events_when_logged_out_do_not_include_site_properties() {

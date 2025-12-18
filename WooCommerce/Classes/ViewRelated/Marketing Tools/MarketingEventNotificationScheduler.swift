@@ -31,10 +31,10 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
             return
         }
 
-        // Don't schedule if notification time has passed
-        guard notificationDate > Date.now else {
-            return
-        }
+        // TODO: Restore. Just for testing. Allows notifications even if event date has passed
+        // guard notificationDate > Date.now else {
+        //     return
+        // }
 
         // Check if already scheduled to avoid duplicates
         let isAlreadyScheduled = await isNotificationScheduled(for: event)
@@ -51,15 +51,22 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
             ]
         )
 
-        // Create calendar trigger for the notification time
-        let dateComponents = Calendar.current.dateComponents(
-            [.year, .month, .day, .hour, .minute],
-            from: notificationDate
-        )
-        let trigger = UNCalendarNotificationTrigger(
-            dateMatching: dateComponents,
+        // TODO: Remove this bit and testore calendar trigger
+        // Fire notification in 10 seconds instead of calendar-based just for testing
+        let trigger = UNTimeIntervalNotificationTrigger(
+            timeInterval: 10,
             repeats: false
         )
+
+        // TODO: Restore
+        // let dateComponents = Calendar.current.dateComponents(
+        //     [.year, .month, .day, .hour, .minute],
+        //     from: notificationDate
+        // )
+        // let trigger = UNCalendarNotificationTrigger(
+        //     dateMatching: dateComponents,
+        //     repeats: false
+        // )
 
         // Schedule the notification
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)

@@ -187,6 +187,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let path = "products/catalog"
         let parameters: [String: Any] = [
             ParameterKey.fullSyncFields: POSProduct.requestFields,
+            ParameterKey.fullSyncVariationFields: POSProductVariation.requestFields,
             ParameterKey.forceGenerate: forceGeneration
         ]
         let request = JetpackRequest(
@@ -252,12 +253,21 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             cleanupDownloadedFileIfNeeded(at: fileURL)
         }
 
-        let mapper = ListMapper<POSProduct>(siteID: siteID)
+        let mapper = ListMapper<POSCatalogItem>(siteID: siteID)
         let items = try mapper.map(response: data)
-        let variationProductTypeKey = "variation"
-        let products = items.filter { $0.productTypeKey != variationProductTypeKey }
-        let variations = items.filter { $0.productTypeKey == variationProductTypeKey }
-            .map { $0.toVariation }
+
+        var products: [POSProduct] = []
+        var variations: [POSProductVariation] = []
+
+        for item in items {
+            switch item {
+            case .product(let product):
+                products.append(product)
+            case .variation(let variation):
+                variations.append(variation)
+            }
+        }
+
         return POSCatalogResponse(products: products, variations: variations)
     }
 
@@ -404,6 +414,7 @@ private extension POSCatalogSyncRemote {
         static let perPage = "per_page"
         static let fields = "_fields"
         static let fullSyncFields = "fields"
+        static let fullSyncVariationFields = "variation_fields"
         static let forceGenerate = "force_generate"
         static let includeStatus = "include_status"
     }
@@ -435,6 +446,30 @@ public enum POSCatalogStatus: String, Decodable {
     case processing
     case complete
     case failed
+}
+
+/// Represents a single item in the POS catalog download response.
+/// Decodes the type-tagged wrapper and directly parses the nested data in a single pass.
+public enum POSCatalogItem: Decodable {
+    case product(POSProduct)
+    case variation(POSProductVariation)
+
+    private enum CodingKeys: String, CodingKey {
+        case type
+        case data
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
+
+        switch type {
+        case "variation":
+            self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
+        default:
+            self = .product(try container.decode(POSProduct.self, forKey: .data))
+        }
+    }
 }
 
 /// POS catalog from download.

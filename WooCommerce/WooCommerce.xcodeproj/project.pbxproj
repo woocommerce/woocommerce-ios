@@ -1354,6 +1354,7 @@
 		680E4F332EF3BDDD00910A04 /* MarketingToolsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E4F322EF3BDDB00910A04 /* MarketingToolsViewModel.swift */; };
 		680E4F352EF3BE1C00910A04 /* MarketingEventRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E4F342EF3BE1700910A04 /* MarketingEventRowView.swift */; };
 		680E4F372EF3BF5B00910A04 /* MarketingEventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E4F362EF3BF5900910A04 /* MarketingEventDetailView.swift */; };
+		680E4F392EF3C92400910A04 /* CreateMarketingEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E4F382EF3C92200910A04 /* CreateMarketingEventView.swift */; };
 		682140AF2E125437005E86AB /* UILabel+SalesChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
@@ -4259,6 +4260,7 @@
 		680E4F322EF3BDDB00910A04 /* MarketingToolsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingToolsViewModel.swift; sourceTree = "<group>"; };
 		680E4F342EF3BE1700910A04 /* MarketingEventRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingEventRowView.swift; sourceTree = "<group>"; };
 		680E4F362EF3BF5900910A04 /* MarketingEventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingEventDetailView.swift; sourceTree = "<group>"; };
+		680E4F382EF3C92200910A04 /* CreateMarketingEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMarketingEventView.swift; sourceTree = "<group>"; };
 		682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SalesChannel.swift"; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
@@ -8854,6 +8856,7 @@
 			isa = PBXGroup;
 			children = (
 				680E4F2C2EF3B84000910A04 /* MarketingToolsView.swift */,
+				680E4F382EF3C92200910A04 /* CreateMarketingEventView.swift */,
 				680E4F362EF3BF5900910A04 /* MarketingEventDetailView.swift */,
 				680E4F342EF3BE1700910A04 /* MarketingEventRowView.swift */,
 				680E4F322EF3BDDB00910A04 /* MarketingToolsViewModel.swift */,
@@ -15422,6 +15425,7 @@
 				CC72BB6427BD842500837876 /* DisclosureIndicator.swift in Sources */,
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
 				01BB6C0A2D09E9630094D55B /* LocationService.swift in Sources */,
+				680E4F392EF3C92400910A04 /* CreateMarketingEventView.swift in Sources */,
 				3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */,
 				02A239742E811A920067AB38 /* SiteAddress+ServiceLocator.swift in Sources */,
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,

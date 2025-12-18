@@ -6,6 +6,7 @@ struct MarketingToolsView: View {
     let siteID: Int64
 
     @StateObject private var viewModel: MarketingToolsViewModel
+    @State private var showingCreateEvent = false
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -17,7 +18,7 @@ struct MarketingToolsView: View {
             // Action Buttons Section
             Section {
                 Button {
-                    viewModel.createEvent()
+                    showingCreateEvent = true
                 } label: {
                     HStack {
                         Image(systemName: "plus.circle.fill")
@@ -61,6 +62,9 @@ struct MarketingToolsView: View {
         }
         .navigationTitle("Marketing Tools")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showingCreateEvent) {
+            CreateMarketingEventView(viewModel: viewModel, isPresented: $showingCreateEvent)
+        }
     }
 
     private var emptyStateView: some View {

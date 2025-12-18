@@ -50,9 +50,15 @@ final class MarketingToolsViewModel: ObservableObject {
         }
     }
 
-    /// Handles create event action (placeholder for now)
-    func createEvent() {
-        // TODO: Navigate to event creation form
+    /// Creates a new custom marketing event and adds it to the events list
+    func createEvent(name: String, date: Date) {
+        let newEvent = MarketingEvent(
+            id: UUID().uuidString,
+            name: name,
+            date: date,
+            type: .custom
+        )
+        events.append(newEvent)
     }
 
     /// Returns available actions for a given event

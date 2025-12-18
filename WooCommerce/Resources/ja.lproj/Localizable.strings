@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-25 15:59:57+0000 */
+/* Translation-Revision-Date: 2025-12-10 17:22:39+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "メモを追加";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "予約番号%1$dのメモを更新できません。";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "これは非公開のメモです。 顧客と共有されることはありません。";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "顧客";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "注意";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "ステータス";
@@ -8367,6 +8373,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "お客様";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "クリア";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "日付";
 
@@ -8412,8 +8421,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "%1$@まで";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "その名前の予約は見つかりませんでした。より多くの結果を表示するには、検索キーワードを調整してみてください。";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "フィルターをクリア";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "この名前の予約は見つかりませんでした。 さらに結果を表示するには、検索キーワードを調整してみてください。";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "予約取得時のエラー";
@@ -8427,20 +8439,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "すべて";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "フィルターに一致する予約がありません。 より多くの結果を表示するには、調整してみてください。";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "お客様がサービスの予約やイベントの登録を開始すると、予約がこちらに表示されます。";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "まだ予約がありません";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "さらに結果を表示するには、フィルターを調整またはクリアしてみてください。";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "予約はありません";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "今日予定された予約やイベントはありません。";
+"bookingListView.emptyState.today.description.i3" = "本日予定されている予約がこちらに表示されます。";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "今日の予約はありません";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "予定された今後の予約やイベントはまだありません。";
+"bookingListView.emptyState.upcoming.description.i3" = "顧客がサービスを予約したり、イベントに登録したりすると、新しい予約がこちらに表示されます。";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "今後の予約はありません";
@@ -8465,18 +8483,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "予約";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "有料";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "返金済み";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "不明";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "未払い";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "より多くの結果を表示するには、検索キーワードを調整してみてください";
@@ -10604,6 +10610,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.tryAgain" = "もう一度お試しください";
 
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "注文を編集";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "商品を削除";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "商品を削除";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "お買い物カゴ内の商品は現在ご利用いただけません。";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "お買い物カゴ内の一部の商品は現在ご利用いただけません。";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "%@ は現在ご利用いただけません。";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "商品は現在ご利用いただけません";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "商品は現在ご利用いただけません";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "1つ以上の商品";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "%1$@のカード支払いが正常に行われました。";
 
@@ -10640,6 +10673,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "不明";
 
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "カードリーダーを接続し、支払いの受け取りを開始します";
+
 /* Title for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "カードリーダーを接続";
 
@@ -10658,6 +10694,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for card readers settings in Point of Sale. */
 "pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "カードリーダー";
 
+/* Title for the card reader firmware section in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.firmwareTitle" = "ファームウェア";
+
+/* Text displayed on Point of Sale settings when card reader firmware version is unknown. */
+"pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown" = "不明";
+
 /* Description of Barcode scanner settings configuration. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "バーコードスキャナー設定を構成";
 
@@ -10673,8 +10715,14 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "ハードウェア";
 
+/* Button to dismiss the support form from POS settings. */
+"pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "キャンセル";
+
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "バッテリー";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "デバイス名";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "POS のバーコードスキャンについてさらに詳しく";
@@ -10748,11 +10796,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Help section in Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "ヘルプとサポートを利用";
 
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle.1" = "ヘルプとサポートを利用";
+
 /* Description of the settings to be found within the Local catalog section. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "カタログ設定を管理";
 
 /* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "カタログ";
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "商品カタログ";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "ストアの構成と設定";
@@ -10943,6 +10994,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "カートをクリア";
 
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "カタログを更新できません";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "インターネットに接続していません";
 
@@ -11050,6 +11104,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "クーポン";
+
+/* Message shown when the product catalog hasn't synced in the specified number of days. %1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days. */
+"pos.itemlistview.staleSyncWarning.description" = "カタログは過去%1$ld日間、同期されていません。 インターネットに接続されていることを確認し、POS 設定で再度同期してください。";
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "カタログを更新";
@@ -11168,11 +11225,14 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "注文を読み込めません";
 
+/* Button text for opening an information view when orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle2" = "さらに詳しく";
+
 /* Hint text suggesting to modify search terms when no orders are found. */
 "pos.orderListView.emptyOrdersSearchHint" = "検索キーワードを調整してみてください。";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "検索に一致する注文が見つかりませんでした。";
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "この名前の注文は見つかりませんでした。";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "注文がありません";
@@ -11208,7 +11268,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "オプションを使用可能";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "その名前のクーポンは見つかりませんでした。検索語句を調整してみてください。";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "この名前のクーポンは見つかりませんでした。 検索キーワードを調整してみてください。";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "クーポンはビジネスを促進する効果的な方法になり得ます。 作成しますか ?";
@@ -11226,7 +11286,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "バリエーション名は検索できないため、親商品名を使用してください。";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "一致する商品が見つかりませんでした。検索語句を調整してみてください。";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "一致する商品が見つかりませんでした。 検索キーワードを調整してみてください。";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "商品が見つかりません";
@@ -11306,38 +11366,41 @@ which should be translated separately and considered part of this sentence. */
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "販売時点管理は、この画面幅ではサポートされていません。";
 
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "携帯データの完全更新を許可";
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "モバイルデータを使用した同期を許可";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "キャンセル";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "再試行";
 
 /* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "カタログのサイズ";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "カタログのステータス";
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "サイズ";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "最終の完全更新";
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "最後の完全同期";
 
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "最終更新";
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "前回の増分同期";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "データ使用量の管理";
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "モバイルデータ";
 
 /* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "カタログの手動更新";
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "カタログの更新";
 
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "この更新は、何かがおかしいと思われる場合にのみ使用します。POS はデータを自動的に最新の状態に保ちます。";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "カタログを更新";
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "カタログを手動で更新";
 
 /* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "カタログ設定";
+"posSettingsLocalCatalogDetailView.title.1" = "商品カタログ";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "カタログを更新";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "商品%1$d点、バリエーション%2$ld点";
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d個の商品と%2$ld種類のバリエーション";
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "カタログのサイズを利用できません";

@@ -21,8 +21,6 @@ struct AddressMapPickerViewModelTests {
     }
 
     // MARK: - Initialization Tests
-
-    @available(iOS 17, *)
     @Test func initialization_with_empty_fields_sets_properties_with_default_values() {
         // Given
         let emptyFields = AddressFormFields()
@@ -38,7 +36,6 @@ struct AddressMapPickerViewModelTests {
 
     // MARK: - Selection Tests
 
-    @available(iOS 17, *)
     @Test func selectLocation_updates_annotations_and_hasValidSelection() async {
         // Given
         let fields = AddressFormFields()
@@ -56,7 +53,6 @@ struct AddressMapPickerViewModelTests {
 
     // MARK: - Address Field Updates Tests
 
-    @available(iOS 17, *)
     @Test func updateFields_with_no_selected_place_does_not_modify_fields() {
         // Given
         let sut = AddressMapPickerViewModel(fields: .init(), countryByCode: mockCountryByCode)
@@ -72,7 +68,6 @@ struct AddressMapPickerViewModelTests {
         #expect(updatedFields.city == "Original City")
     }
 
-    @available(iOS 17, *)
     @Test func updateFields_when_country_not_found_in_countryByCode_sets_country_and_state_as_strings() async {
         // Given
         let mockSearchProvider = MockAddressMapLocalSearchProvider.withFrenchAddress()
@@ -95,7 +90,6 @@ struct AddressMapPickerViewModelTests {
         #expect(updatedFields.selectedState == nil)
     }
 
-   @available(iOS 17, *)
    @Test func updateFields_when_country_is_found_in_countryByCode_sets_selected_country_and_state() async {
        // Given
        let mockSearchProvider = MockAddressMapLocalSearchProvider.withUSAddress()

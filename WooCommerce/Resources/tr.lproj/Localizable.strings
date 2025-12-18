@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-25 23:35:54+0000 */
+/* Translation-Revision-Date: 2025-12-10 17:23:20+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "Not ekle";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "%1$d numaralı Rezervasyonun notu güncellenemiyor.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "Bu özel bir nottur. Bu, müşteriyle paylaşılmayacak.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "Müşteri";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "Not";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "Durum";
@@ -8364,6 +8370,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "Müşteri";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "Temizle";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "Tarih";
 
@@ -8409,8 +8418,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "%1$@ tarihine kadar";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "Bu ada sahip herhangi bir rezervasyon bulamadık; daha fazla sonuç görmek için arama terimlerinizi düzenlemeyi deneyin.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "Filtreleri temizle";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "Bu ada sahip herhangi bir rezervasyon bulamadık. Daha fazla sonuç görmek için arama teriminizi düzenlemeyi deneyin.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "Rezervasyonlar alınırken hata oluştu";
@@ -8424,20 +8436,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "Tümü";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "Filtrelerinizle eşleşen rezervasyon yok. Daha fazla sonuç görmek için düzenlemeyi deneyin.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "Müşteriler hizmetlerinizi zamanlamaya veya etkinlikler için kaydolmaya başladıktan sonra rezervasyonlar burada görünür.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "Henüz rezervasyon yok";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "Daha fazla sonuç görmek için filtrelerinizi düzenlemeyi veya temizlemeyi deneyin.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "Rezervasyon bulunamadı";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "Bugün için zamanlanmış herhangi bir randevunuz veya etkinliğiniz yok.";
+"bookingListView.emptyState.today.description.i3" = "Bugün için zamanlanan tüm rezervasyonlar burada görünür.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "Bugün rezervasyon yok";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "Henüz zamanlanmış gelecekteki randevunuz veya etkinliğiniz yok.";
+"bookingListView.emptyState.upcoming.description.i3" = "Müşteriler hizmetlerinizi zamanladıkça veya etkinlikler için kaydolurken yeni rezervasyonlar burada görünür.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "Yaklaşan rezervasyon yok";
@@ -8462,18 +8480,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Rezervasyonlar";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "Ücretli";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "Geri ödeme yapıldı";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "Bilinmiyor";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "Ödenmemiş";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Daha fazla sonuç görmek için arama teriminizi düzenlemeyi deneyin";
@@ -10601,6 +10607,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.tryAgain" = "Tekrar dene";
 
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "Siparişi düzenle";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "Ürünü kaldır";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "Ürünleri kaldır";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "Sepetteki bir ürün artık mevcut değil.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "Sepetinizdeki bazı ürünler artık mevcut değil.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "%@ artık mevcut değil";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "Ürünler artık mevcut değil";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "Ürün artık mevcut değil";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "Bir veya daha fazla ürün";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "%1$@ tutarındaki bir kart ödemesi başarıyla alındı.";
 
@@ -10637,6 +10670,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Bilinmiyor";
 
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "Kart okuyucunuzu bağlayın ve ödemeleri kabul etmeye başlayın";
+
 /* Title for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "Kart okuyucu bağlayın";
 
@@ -10655,6 +10691,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for card readers settings in Point of Sale. */
 "pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Kart okuyucular";
 
+/* Title for the card reader firmware section in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.firmwareTitle" = "Ürün Yazılımı";
+
+/* Text displayed on Point of Sale settings when card reader firmware version is unknown. */
+"pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown" = "Bilinmiyor";
+
 /* Description of Barcode scanner settings configuration. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Barkod tarayıcı ayarlarını yapılandırın";
 
@@ -10670,8 +10712,14 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Donanım";
 
+/* Button to dismiss the support form from POS settings. */
+"pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "İptal Et";
+
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Pil";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "Cihaz adı";
 
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "POS'ta barkod taraması hakkında daha fazla bilgi edinin";
@@ -10745,11 +10793,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Help section in Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "Yardım ve destek alın";
 
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle.1" = "Yardım ve destek alın";
+
 /* Description of the settings to be found within the Local catalog section. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "Katalog ayarlarını yönetin";
 
 /* Title of the Local catalog section within Point of Sale settings. */
-"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle" = "Katalog";
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Ürün kataloğu";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Mağaza yapılandırması ve ayarları";
@@ -10940,6 +10991,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle.1" = "Sepeti temizle";
 
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "Katalog yenilenemedi";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "İnternet bağlantısı yok";
 
@@ -11047,6 +11101,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Kuponlar";
+
+/* Message shown when the product catalog hasn't synced in the specified number of days. %1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days. */
+"pos.itemlistview.staleSyncWarning.description" = "Katalog son %1$ld gün içinde senkronize edilmedi. Lütfen POS ayarlarında internete bağlı olduğunuzdan emin olun ve yeniden senkronize edin.";
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Kataloğu yenile";
@@ -11165,11 +11222,14 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Siparişler yüklenemiyor";
 
+/* Button text for opening an information view when orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle2" = "Daha fazla bilgi edinin";
+
 /* Hint text suggesting to modify search terms when no orders are found. */
 "pos.orderListView.emptyOrdersSearchHint" = "Arama teriminizi düzenlemeyi deneyin.";
 
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle" = "Aramanızla eşleşen hiçbir sipariş bulamadık.";
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "Bu ada sahip herhangi bir sipariş bulamadık.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Sipariş bulunamadı";
@@ -11205,7 +11265,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Kullanılabilir seçenekler var";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "Bu ada sahip herhangi bir kupon bulunamadı, arama teriminizi düzenlemeyi deneyin.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Bu ada sahip herhangi bir kupon bulamadık. Arama teriminizi düzenlemeyi deneyin.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Kuponlar, işinizi teşvik etmenin etkili bir yolu olabilir. Kupon oluşturmak ister misiniz?";
@@ -11223,7 +11283,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Varyasyon adlarında arama yapılamaz, bu nedenle ana ürün adını kullanın.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "Eşleşen ürün bulunamadı, arama teriminizi düzenlemeyi deneyin.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "Eşleşen ürün bulamadık. Arama teriminizi düzenlemeyi deneyin.";
 
 /* Text appearing on screen when a POS product search returns no results. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Hiç ürün bulunamadı";
@@ -11303,38 +11363,41 @@ which should be translated separately and considered part of this sentence. */
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Satış Noktası bu ekran genişliğinde desteklenmiyor.";
 
-/* Label for allow full sync on cellular data toggle in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1" = "Hücresel veri kullanılırken tam güncellemeye izin ver";
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Hücresel veri kullanarak senkronizasyona izin ver";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "İptal Et";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "Tekrar dene";
 
 /* Label for catalog size field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogSize" = "Katalog boyutu";
-
-/* Section title for catalog status in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.catalogStatus" = "Katalog Durumu";
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "Boyut";
 
 /* Label for last full sync field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastFullSync.1" = "Son tam güncelleme";
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "Son tam eşleme";
 
-/* Label for last incremental update field in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.lastIncrementalSync" = "Son güncelleme";
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "Son artımlı senkronizasyon";
 
 /* Section title for managing data usage in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.managingDataUsage.1" = "Veri Kullanımını Yönetme";
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "Hücresel veri";
 
 /* Section title for manual catalog update in Point of Sale settings. */
-"posSettingsLocalCatalogDetailView.manualCatalogUpdate" = "Manuel Katalog Güncellemesi";
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "Katalog güncellemesi";
 
-/* Info text explaining when to use manual catalog update. */
-"posSettingsLocalCatalogDetailView.manualUpdateInfo" = "Bu yenilemeyi yalnızca bir şeyler yanlış göründüğünde kullanın - POS verileri otomatik olarak güncel tutar.";
-
-/* Button text for refreshing the catalog manually. */
-"posSettingsLocalCatalogDetailView.refreshCatalog" = "Kataloğu yenile";
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "Kataloğu manuel olarak güncelleyin";
 
 /* Navigation title for the local catalog details in POS settings. */
-"posSettingsLocalCatalogDetailView.title" = "Katalog Ayarları";
+"posSettingsLocalCatalogDetailView.title.1" = "Ürün kataloğu";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "Kataloğu güncelle";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
-"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d ürün, %2$ld varyasyon";
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d ürün ve %2$ld varyasyon";
 
 /* Text shown when catalog size cannot be determined. */
 "posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "Katalog boyutu mevcut değil";

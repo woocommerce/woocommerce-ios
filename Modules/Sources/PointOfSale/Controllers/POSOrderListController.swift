@@ -12,6 +12,7 @@ import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefundCondensed
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
+import protocol Experiments.FeatureFlagService
 
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
@@ -21,12 +22,18 @@ protocol POSOrderListControllerProtocol {
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
-    func loadRefunds(of order: POSOrder) async throws
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
     func clearSearchOrders()
+}
+
+enum POSOrderListSelectedOrderRefundsState {
+    case idle
+    case loading
+    case loaded([POSRefund])
+    case failed(Error)
 }
 
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
@@ -35,8 +42,11 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
+    private var refundsTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
+    private let featureFlags: POSFeatureFlagProviding
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -48,11 +58,13 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
 
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
+         featureFlags: POSFeatureFlagProviding,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
+        self.featureFlags = featureFlags
     }
 
     @MainActor
@@ -171,6 +183,10 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) {
+            selectedOrderRefundsState = .idle
+            startLoadingRefundsIfPossible()
+        }
     }
 
     @MainActor
@@ -210,6 +226,30 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
         }
     }
 
-    func loadRefunds(of order: Yosemite.POSOrder) async throws {
+    @MainActor
+    private func startLoadingRefundsIfPossible() {
+        refundsTask?.cancel()
+        guard let order = selectedOrder else { return }
+
+        selectedOrderRefundsState = .loading
+        let orderID = order.id
+
+        refundsTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let refunds = try await self.refundsService.providePointOfSaleRefunds(for: order)
+                await MainActor.run {
+                    guard self.selectedOrder?.id == orderID else { return }
+                    self.selectedOrderRefundsState = .loaded(refunds)
+                }
+            }
+            catch is CancellationError {}
+            catch {
+                await MainActor.run {
+                    guard self.selectedOrder?.id == orderID else { return }
+                    self.selectedOrderRefundsState = .failed(error)
+                }
+            }
+        }
     }
 }

@@ -18,7 +18,26 @@ class BookingListContainerViewModelTests {
         storageManager.viewStorage
     }()
 
-    @Test func event_fire_when_tab_selected() {
+    @Test func event_fire_when_default_tab_selected() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.setSelectedTab(to: .today)
+
+        // Then
+        #expect(analyticsProvider.received(event: "booking_list_tab_selected",
+                                         with: ["selected_tab": "today"]))
+        #expect(analyticsProvider.received(event: "booking_list_displayed",
+                                           with: [
+                                            "selected_tab": "today",
+                                            "is_default_tab": true,
+                                            "is_list_empty": true,
+                                            "is_filtered": false
+                                           ]))
+    }
+
+    @Test func event_fire_when_nonDefault_tab_selected() {
         // Given
         let viewModel = givenViewModel()
 
@@ -111,6 +130,8 @@ class BookingListContainerViewModelTests {
         viewModel.setSelectedTab(to: .all)
         viewModel.updateFilters(filters)
         viewModel.applyFiltersTapped()
+
+        // Then
         #expect(analyticsProvider.received(
             event: "booking_list_apply_filters",
             with: ["selected_filters": "attendance_status,customer,date_time,service_events,team_member"]))

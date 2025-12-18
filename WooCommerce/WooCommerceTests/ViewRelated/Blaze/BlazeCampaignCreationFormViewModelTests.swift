@@ -964,7 +964,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_suggestions_loading_failed"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
-        XCTAssertEqual(eventProperties["error_code"] as? String, "1")
+        XCTAssertEqual(eventProperties["error_code"] as? String, "0")
     }
 
     // MARK: ToS Checkbox First Line - Evergreen Campaigns

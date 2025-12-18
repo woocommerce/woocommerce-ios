@@ -44,7 +44,7 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
 
         // Create notification with event data in userInfo
         let notification = LocalNotification(
-            scenario: .marketingEventReminder,
+            scenario: .marketingEventReminder(eventID: event.id),
             userInfo: [
                 LocalNotification.UserInfoKey.eventID: event.id,
                 LocalNotification.UserInfoKey.eventName: event.name
@@ -68,7 +68,7 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
     /// Cancels a scheduled notification for a marketing event
     /// - Parameter event: The marketing event whose notification should be canceled
     func cancelNotification(for event: MarketingEvent) async {
-        await pushNotificationsManager.cancelLocalNotification(scenarios: [.marketingEventReminder])
+        await pushNotificationsManager.cancelLocalNotification(scenarios: [.marketingEventReminder(eventID: event.id)])
     }
 
     /// Checks if a notification is already scheduled for the given event
@@ -78,10 +78,10 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
         let center = UNUserNotificationCenter.current()
         let pendingRequests = await center.pendingNotificationRequests()
 
-        // Check if any pending notification matches this event ID
+        // Check if any pending notification matches this event-specific identifier
+        let eventIdentifier = LocalNotification.Scenario.marketingEventReminder(eventID: event.id).identifier
         return pendingRequests.contains { request in
-            request.identifier == LocalNotification.Scenario.marketingEventReminder.identifier &&
-            request.content.userInfo[LocalNotification.UserInfoKey.eventID] as? String == event.id
+            request.identifier == eventIdentifier
         }
     }
 }

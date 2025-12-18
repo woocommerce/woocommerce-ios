@@ -24,7 +24,7 @@ struct LocalNotification {
         case productImageBackgroundUpload
         case pointOfSalePotentialMerchant
         case pointOfSaleCurrentMerchant
-        case marketingEventReminder
+        case marketingEventReminder(eventID: String)
         case unknown(siteID: Int64)
 
         var identifier: String {
@@ -39,8 +39,8 @@ struct LocalNotification {
                 return "woo_pos_survey_potential_user_survey"
             case .pointOfSaleCurrentMerchant:
                 return "woo_pos_survey_current_user_survey"
-            case .marketingEventReminder:
-                return "marketing_event_reminder"
+            case .marketingEventReminder(let eventID):
+                return "marketing_event_reminder_\(eventID)"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }

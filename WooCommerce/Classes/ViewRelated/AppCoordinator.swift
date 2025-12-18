@@ -151,7 +151,7 @@ private extension AppCoordinator {
         }
 
         // Handle marketing event reminder notification
-        if identifier == LocalNotification.Scenario.marketingEventReminder.identifier,
+        if identifier.starts(with: "marketing_event_reminder_"),
            let eventID = userInfo[LocalNotification.UserInfoKey.eventID] as? String {
             navigateToMarketingEvent(eventID: eventID)
         }

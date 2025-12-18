@@ -560,3 +560,15 @@ extension JetpackSetupViewModel {
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }
+
+fileprivate extension Error {
+    var errorCode: Int? {
+        if let error = self as? NetworkError, let code = error.responseCode {
+            return code
+        } else if let error = self as? AFError, let code = error.responseCode {
+            return code
+        } else {
+            return (self as NSError).code
+        }
+    }
+}

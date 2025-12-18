@@ -123,6 +123,8 @@ private extension HubMenu {
                     .navigationTitle(HubMenuViewModel.Localization.settings)
             case .payments:
                 paymentsView
+            case .marketingTools:
+                MarketingToolsView()
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:
@@ -393,5 +395,12 @@ struct HubMenu_Previews: PreviewProvider {
 
         HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 1024, height: 768))
+    }
+}
+
+
+struct MarketingToolsView: View {
+    var body: some View {
+        EmptyView()
     }
 }

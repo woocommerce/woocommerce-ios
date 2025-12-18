@@ -220,4 +220,8 @@ public enum FeatureFlag: Int {
     /// Enables the refunds functionality within POS
     ///
     case pointOfSaleRefundsi1
+
+    /// Enables Marketing Tools in the Hub Menu for event-based marketing campaigns
+    ///
+    case marketingTools
 }

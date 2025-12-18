@@ -28,6 +28,7 @@ enum HubMenuNavigationDestination: Hashable {
     case coupons
     case customers
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
+    case marketingTools
 }
 
 /// View model for `HubMenu`.
@@ -98,6 +99,10 @@ final class HubMenuViewModel: ObservableObject {
 
     private var shouldShowAISettings: Bool {
         featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey)
+    }
+
+    private var shouldShowMarketingTools: Bool {
+        featureFlagService.isFeatureFlagEnabled(.marketingTools)
     }
 
     private var cancellables: Set<AnyCancellable> = []
@@ -293,6 +298,10 @@ private extension HubMenuViewModel {
                 items.append(
                     Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
                 )
+        }
+
+        if shouldShowMarketingTools {
+            items.append(MarketingTools())
         }
 
         if shouldShowAISettings {
@@ -635,6 +644,19 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .customers
     }
 
+    struct MarketingTools: HubMenuItem {
+        static var id = "marketing-tools"
+
+        let title: String = Localization.marketingTools
+        let description: String = Localization.marketingToolsDescription
+        let icon: UIImage = .megaphoneIcon
+        let iconColor: UIColor = .primary
+        let accessibilityIdentifier: String = "menu-marketing-tools"
+        let trackingOption: String = "marketing_tools"
+        let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .marketingTools
+    }
+
     enum Localization {
         static let settings = NSLocalizedString(
             "Settings",
@@ -735,6 +757,16 @@ extension HubMenuViewModel {
             "hubMenu.customersDescription",
             value: "Get customer insights",
             comment: "Description of one of the hub menu options")
+
+        static let marketingTools = NSLocalizedString(
+            "hubMenu.marketingTools",
+            value: "Marketing Tools",
+            comment: "Title of the Marketing Tools menu in the hub menu")
+
+        static let marketingToolsDescription = NSLocalizedString(
+            "hubMenu.marketingToolsDescription",
+            value: "Schedule event-based marketing campaigns",
+            comment: "Description of the Marketing Tools menu in the hub menu")
     }
 
     enum AnalyticsKeys {

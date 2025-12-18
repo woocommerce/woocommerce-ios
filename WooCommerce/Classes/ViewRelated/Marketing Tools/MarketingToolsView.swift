@@ -1,8 +1,5 @@
 import SwiftUI
-import Foundation
-import Combine
 import Yosemite
-
 
 /// Displays a list of marketing events that merchants can schedule actions for
 struct MarketingToolsView: View {
@@ -35,7 +32,7 @@ struct MarketingToolsView: View {
                     viewModel.loadSuggestedEvents()
                 } label: {
                     HStack {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "lightbulb.fill")
                             .foregroundColor(.orange)
                         Text("Suggest Events")
                             .foregroundColor(.primary)
@@ -89,4 +86,3 @@ struct MarketingToolsView: View {
         MarketingToolsView(siteID: 123)
     }
 }
-

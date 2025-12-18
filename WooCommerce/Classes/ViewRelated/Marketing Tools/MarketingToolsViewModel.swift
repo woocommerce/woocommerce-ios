@@ -60,8 +60,18 @@ final class MarketingToolsViewModel: ObservableObject {
         MarketingAction.availableActions(for: event)
     }
 
-    /// Handles action selection (placeholder for now)
+    /// Handles action selection and navigates to appropriate screen
     func handleActionTap(action: MarketingAction, for event: MarketingEvent) {
-        // TODO: Navigate to product edit or coupon creation
+        switch action.type {
+        case .editProduct:
+            // Navigate to Products tab
+            MainTabBarController.switchToProductsTab()
+
+        case .createCoupon:
+            // Navigate to Hub Menu's coupon section
+            MainTabBarController.switchToHubMenuTab { hubMenuViewController in
+                hubMenuViewController?.showCoupons()
+            }
+        }
     }
 }

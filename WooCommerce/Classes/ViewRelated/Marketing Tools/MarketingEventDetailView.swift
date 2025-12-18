@@ -4,7 +4,6 @@ import SwiftUI
 struct MarketingEventDetailView: View {
     let event: MarketingEvent
     @ObservedObject var viewModel: MarketingToolsViewModel
-    @State private var selectedAction: MarketingAction?
 
     var body: some View {
         List {
@@ -19,7 +18,6 @@ struct MarketingEventDetailView: View {
             Section {
                 ForEach(viewModel.availableActions(for: event)) { action in
                     Button {
-                        selectedAction = action
                         viewModel.handleActionTap(action: action, for: event)
                     } label: {
                         MarketingActionRowView(action: action)
@@ -28,7 +26,7 @@ struct MarketingEventDetailView: View {
             } header: {
                 Text("Choose Action")
             } footer: {
-                Text("Select an action to prepare for this marketing event. You'll be able to schedule reminders in a future update.")
+                Text("Select an action to prepare for this marketing event.")
                     .font(.caption)
             }
         }

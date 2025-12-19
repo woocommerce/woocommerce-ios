@@ -43,15 +43,11 @@ protocol AgeRangeVerificationServiceProtocol {
 
 #if canImport(DeclaredAgeRange)
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
-    private enum Constants {
-        static let minimumAge = 13
-    }
-
     /// Requests the user's declared age range using Apple's DeclaredAgeRange API (iOS 26+).
     /// The system will present its own consent UI if needed.
     func verifyAgeRange(
         in viewController: UIViewController,
-        minimumAge: Int = Constants.minimumAge,
+        minimumAge: Int,
         completion: @escaping (AgeRangeVerificationResult) -> Void
     ) {
         guard #available(iOS 26.0, *) else {

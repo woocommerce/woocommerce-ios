@@ -7,6 +7,12 @@ protocol AgeRangeVerificationCoordinatorProtocol {
     )
 }
 
+extension AgeRangeVerificationCoordinator {
+    enum Constants {
+        static let minimumTOSRequiredAge = 13
+    }
+}
+
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
     /// Triggers the age range verification flow.
     /// Handles "blocking UI" presenting in case of ineligible age and performs a logout.
@@ -26,7 +32,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
 
         ServiceLocator.ageRangeVerificationService.verifyAgeRange(
             in: anchor,
-            minimumAge: 18
+            minimumAge: Constants.minimumTOSRequiredAge
         ) { result in
             let isEligible: Bool
             switch result {

@@ -468,10 +468,19 @@ private extension AppCoordinator {
             else { return }
             let alert = UIAlertController(
                 title: Localization.AgeVerificationAlert.title,
-                message: Localization.AgeVerificationAlert.message,
+                message: String(
+                    format: Localization.AgeVerificationAlert.message,
+                    AgeRangeVerificationCoordinator.Constants.minimumTOSRequiredAge
+                ),
                 preferredStyle: .alert
             )
-            alert.addAction(UIAlertAction(title: "Got it", style: .default, handler: nil))
+            alert.addAction(
+                UIAlertAction(
+                    title: Localization.AgeVerificationAlert.confirmationButton,
+                    style: .default,
+                    handler: nil
+                )
+            )
             presenter.present(alert, animated: true)
         }
     }
@@ -486,14 +495,15 @@ private extension AppCoordinator {
         enum AgeVerificationAlert {
             static let title = NSLocalizedString(
                 "appCoordinator.ineligibleAgeRangeAlert.title",
-                value: "Access Not Allowed",
+                value: "Access Restricted",
                 comment: "Alert title displayed when user identified as underage and taken to force logout."
             )
 
             static let message = NSLocalizedString(
                 "appCoordinator.ineligibleAgeRangeAlert.message",
-                value: "Based on your account settings, you're not eligible to use this app.",
-                comment: "Alert message displayed when user identified as underage and taken to force logout."
+                value: "Your Apple account age is below the minimum required for this app (%1d+).",
+                comment: "Alert message displayed when user identified as underage and taken to force logout." +
+                "The %1d placeholder is the minimum required age."
             )
 
             static let confirmationButton = NSLocalizedString(

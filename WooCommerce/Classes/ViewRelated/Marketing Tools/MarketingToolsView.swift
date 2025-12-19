@@ -29,16 +29,30 @@ struct MarketingToolsView: View {
                     }
                 }
 
-                Button {
-                    viewModel.loadSuggestedEvents()
-                } label: {
-                    HStack {
-                        Image(systemName: "lightbulb.fill")
-                            .foregroundColor(.orange)
-                        Text("Suggest Events")
-                            .foregroundColor(.primary)
-                        Spacer()
+                if #available(iOS 26.0, *) {
+                    Button {
+                        viewModel.loadSuggestedEventsWithAI()
+                    } label: {
+                        HStack {
+                            Image(systemName: "sparkles")
+                                .foregroundColor(.accentColor)
+                            Text("Event Suggestions")
+                                .foregroundColor(.primary)
+                            Spacer()
+                        }
                     }
+                } else {
+                    HStack {
+                        Image(systemName: "sparkles")
+                            .foregroundColor(.secondary)
+                        Text("AI Event Suggestions")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("Requires iOS 26")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .opacity(0.5)
                 }
             }
 

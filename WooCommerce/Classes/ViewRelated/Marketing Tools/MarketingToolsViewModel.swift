@@ -58,6 +58,37 @@ final class MarketingToolsViewModel: ObservableObject {
         }
     }
 
+    /// Loads AI-generated event suggestions using Foundation Models
+    @available(iOS 26.0, *)
+    func loadSuggestedEventsWithAI() {
+        Task {
+            let aiEvents = await generateAIEventSuggestions()
+
+            // Add AI-generated events that don't already exist
+            for event in aiEvents {
+                if !events.contains(where: { $0.id == event.id }) {
+                    events.append(event)
+
+                    // Schedule notification for this event
+                    await notificationScheduler.scheduleNotification(for: event, daysBeforeEvent: 3)
+                }
+            }
+        }
+    }
+
+    /// Generates event suggestions using Foundation Models
+    @available(iOS 26.0, *)
+    private func generateAIEventSuggestions() async -> [MarketingEvent] {
+        // TODO: Implement Foundation Models integration
+        // For now, fall back to hardcoded events
+        // Later:
+        // 1. Use SystemLanguageModel to generate event names/dates
+        // 2. Consider store category, current date, seasonality
+
+        let currentYear = Calendar.current.component(.year, from: Date())
+        return MarketingEvent.suggestedEvents(for: currentYear)
+    }
+
     /// Creates a new custom marketing event and adds it to the events list
     func createEvent(name: String, date: Date) {
         let newEvent = MarketingEvent(

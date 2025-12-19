@@ -31,10 +31,12 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
             return
         }
 
-        // TODO: Restore. Just for testing. Allows notifications even if event date has passed
-        // guard notificationDate > Date.now else {
-        //     return
-        // }
+        // Only validate future dates in production builds, so is easier for testing immediate notifications
+        #if !DEBUG
+        guard notificationDate > Date.now else {
+            return
+        }
+        #endif
 
         // Check if already scheduled to avoid duplicates
         let isAlreadyScheduled = await isNotificationScheduled(for: event)
@@ -51,22 +53,23 @@ final class MarketingEventNotificationScheduler: MarketingEventNotificationSched
             ]
         )
 
-        // TODO: Remove this bit and testore calendar trigger
-        // Fire notification in 10 seconds instead of calendar-based just for testing
+        #if DEBUG
+        // Debug: Fire in 10 seconds
         let trigger = UNTimeIntervalNotificationTrigger(
             timeInterval: 10,
             repeats: false
         )
-
-        // TODO: Restore
-        // let dateComponents = Calendar.current.dateComponents(
-        //     [.year, .month, .day, .hour, .minute],
-        //     from: notificationDate
-        // )
-        // let trigger = UNCalendarNotificationTrigger(
-        //     dateMatching: dateComponents,
-        //     repeats: false
-        // )
+        #else
+        // Release: Calendar-based trigger 3 days (hardcoded for now, to be changed later) before event
+        let dateComponents = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour, .minute],
+            from: notificationDate
+        )
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: dateComponents,
+            repeats: false
+        )
+        #endif
 
         // Schedule the notification
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)

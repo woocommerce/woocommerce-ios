@@ -33,7 +33,7 @@ struct POSOrderDetailsView: View {
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    actionsSection(actions: availableActions)
+                    actionsSection(setup: availableActionsSetup)
                 },
                 bottomContent: {
                     headerBottomContent(for: order)
@@ -376,7 +376,7 @@ private extension POSOrderDetailsView {
 
 // MARK: - Actions
 private extension POSOrderDetailsView {
-    enum POSAction: Identifiable, CaseIterable {
+    enum OrderDetailsAction: Identifiable, CaseIterable {
         case issueRefund
         case emailReceipt
 
@@ -414,7 +414,7 @@ private extension POSOrderDetailsView {
         }
     }
 
-    func handler(for action: POSAction) -> @MainActor () -> Void {
+    func handler(for action: OrderDetailsAction) -> @MainActor () -> Void {
         switch action {
         case .emailReceipt:
             return {
@@ -426,29 +426,33 @@ private extension POSOrderDetailsView {
         }
     }
 
-    var availableActions: [POSAction] {
-        POSAction.allCases
+    struct OrderDetailsActionsSetup {
+        let primary: OrderDetailsAction?
+        let secondary: [OrderDetailsAction]
+    }
+
+    var availableActionsSetup: OrderDetailsActionsSetup {
+        let available = OrderDetailsAction.allCases
             .filter { $0.isAvailable(for: order, flags: featureFlags) }
             .sorted { $0.priority > $1.priority }
+
+        let primary = available.first
+        let secondary = Array(available.dropFirst())
+
+        return OrderDetailsActionsSetup(primary: primary, secondary: secondary)
     }
 
     @ViewBuilder
-    func actionsSection(actions: [POSAction]) -> some View {
-        if actions.isEmpty {
-            EmptyView()
-        } else {
+    func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
+        if let primary = setup.primary {
             HStack(spacing: POSSpacing.large) {
-                let primary = actions[0]
                 Button(primary.title, action: handler(for: primary))
                     .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
                     .accessibilityHint(primary.accessibilityHint)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
 
-                let overflow = actions.dropFirst()
-                if !overflow.isEmpty {
+                if !setup.secondary.isEmpty {
                     Menu {
-                        ForEach(Array(overflow)) { action in
+                        ForEach(setup.secondary) { action in
                             Button(action.title, action: handler(for: action))
                                 .accessibilityHint(action.accessibilityHint)
                         }

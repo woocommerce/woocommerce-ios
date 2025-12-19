@@ -231,6 +231,13 @@ final class MainTabBarController: UITabBarController {
         startListeningToHubMenuTabBadgeUpdates()
 
         fixTabBarTraitCollectionOnIpadForiOS18()
+        observeTraitChanges()
+    }
+
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
+            self.fixTabBarTraitCollectionOnIpadForiOS18()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -309,12 +316,6 @@ final class MainTabBarController: UITabBarController {
     }
 
     // MARK: - iPadOS 18 tabs support
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-         super.traitCollectionDidChange(previousTraitCollection)
-         fixTabBarTraitCollectionOnIpadForiOS18()
-     }
-
 
     /// Force a previous bottom tab bar design on iPadOS 18 when built with Xcode 16
     ///
@@ -417,13 +418,11 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            // TODO: Add bookings tab selected analytics
-            break
+            ServiceLocator.analytics.track(.bookingsSelected)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
             ServiceLocator.analytics.track(.pointOfSaleTabSelected)
-            break
         }
     }
 
@@ -440,8 +439,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            // TODO: Add bookings tab reselected analytics
-            break
+            ServiceLocator.analytics.track(.bookingsReselected)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break

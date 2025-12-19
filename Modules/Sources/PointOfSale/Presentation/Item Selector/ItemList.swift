@@ -68,6 +68,7 @@ struct ItemList<HeaderView: View>: View {
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, Constants.itemListPadding)
                     .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? Constants.itemListPadding : floatingControlAreaSize.height)
+                    .animation(.default, value: state?.items)
                 }
             )
 

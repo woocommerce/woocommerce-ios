@@ -298,6 +298,7 @@ public enum WooAnalyticsStat: String {
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
     case settingsBetaFeaturesApplicationPasswordsToggled = "settings_beta_features_application_passwords_toggled"
+    case settingsBetaFeaturesPOSLocalCatalogToggled = "settings_beta_features_pos_local_catalog_toggled"
     case settingsBetaFeatureToggled = "settings_beta_feature_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
@@ -1055,6 +1056,15 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
     case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
+
+    // MARK: - Bookings
+    case bookingsSelected = "main_tab_bookings_selected"
+    case bookingsReselected = "main_tab_bookings_reselected"
+    case bookingCancelled = "booking_detail_cancel_booking"
+    case bookingAttenceStatusUpdated = "booking_detail_attendance_status_updated"
+    case bookingAddNoteTapped = "booking_detail_add_note_tapped"
+    case bookingMarkAsPaidTapped = "booking_detail_mark_as_paid_tapped"
+    case bookingViewLinkedOrderTapped = "booking_detail_view_linked_order_tapped"
 
     // MARK: Hub Menu
     //

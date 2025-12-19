@@ -29,8 +29,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -39,24 +38,6 @@ final class DevicesRemoteTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    /// Verifies that registerDevice sets the `selected_blog_id` parameter to empty string.
-    ///
-    func test_registerDevice_sets_selected_blog_id_to_empty_string() throws {
-        // Given
-        let remote = DevicesRemote(network: network)
-
-        // When
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (_, _) in }
-
-        // Then
-        let queryParameters = try XCTUnwrap(network.queryParameters)
-        let expectedParam = "selected_blog_id="
-        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
     /// Verifies that registerDevice parses a "Failure" Backend Response.
@@ -69,8 +50,7 @@ final class DevicesRemoteTests: XCTestCase {
 
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+                              applicationVersion: Parameters.applicationVersion) { (settings, error) in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)
@@ -111,6 +91,73 @@ final class DevicesRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that registerForSelfDrivenPushNotifications successfully parses the token ID.
+    ///
+    func test_registerForSelfDrivenPushNotifications_successfully_parses_tokenID() async throws {
+        let remote = DevicesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration")
+
+        let tokenID = try await remote.registerForSelfDrivenPushNotifications(
+            siteID: Parameters.siteID,
+            device: Parameters.appleDevice,
+            applicationID: Parameters.applicationId
+        )
+
+        XCTAssertEqual(tokenID, 123)
+    }
+
+    /// Verifies that registerForSelfDrivenPushNotifications parses a "Failure" Backend Response.
+    ///
+    func test_registerForSelfDrivenPushNotifications_parses_failure_response() async {
+        let remote = DevicesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "generic_error")
+
+        do {
+            _ = try await remote.registerForSelfDrivenPushNotifications(
+                siteID: Parameters.siteID,
+                device: Parameters.appleDevice,
+                applicationID: Parameters.applicationId
+            )
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+
+    /// Verifies that unregisterFromSelfDrivenPushNotifications parses a "Success" Backend Response.
+    ///
+    func test_unregisterFromSelfDrivenPushNotifications_parses_success_response() async throws {
+        let remote = DevicesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens/\(Parameters.tokenID)", filename: "generic_success")
+
+        try await remote.unregisterFromSelfDrivenPushNotifications(
+            siteID: Parameters.siteID,
+            tokenID: Parameters.tokenID
+        )
+        // If no error is thrown, the test passes
+    }
+
+    /// Verifies that unregisterFromSelfDrivenPushNotifications parses a "Failure" Backend Response.
+    ///
+    func test_unregisterFromSelfDrivenPushNotifications_parses_failure_response() async {
+        let remote = DevicesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens/\(Parameters.tokenID)", filename: "generic_error")
+
+        do {
+            try await remote.unregisterFromSelfDrivenPushNotifications(
+                siteID: Parameters.siteID,
+                tokenID: Parameters.tokenID
+            )
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
 }
 
 
@@ -124,6 +171,7 @@ private enum Parameters {
                                         identifierForVendor: "1234")
     static let applicationId = "9"
     static let applicationVersion = "99"
-    static let defaultStoreID: Int64 = 1234
     static let dotcomDeviceID = "1234"
+    static let siteID: Int64 = 123456
+    static let tokenID: Int64 = 123
 }

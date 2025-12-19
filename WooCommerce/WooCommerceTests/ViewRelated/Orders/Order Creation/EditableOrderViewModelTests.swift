@@ -215,7 +215,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, _, onCompletion):
-                    onCompletion(.failure(DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: "")))
+                    onCompletion(.failure(DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: "", data: nil)))
                     expectation.fulfill()
                 default:
                     XCTFail("Received unsupported action: \(action)")

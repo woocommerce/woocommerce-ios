@@ -238,7 +238,11 @@ private extension AppCoordinator {
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
     func configureAuthenticator() {
-        authenticationManager.initialize()
+        if isRunningTests {
+            /// This is needed to fix crashes in unit tests.
+            /// The authenticator is initialized in AppDelegate when running the app.
+            authenticationManager.initialize()
+        }
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         authenticationManager.displayAuthenticatorIfLoggedOut = { [weak self] in
             guard let self, self.isLoggedIn == false else { return nil }

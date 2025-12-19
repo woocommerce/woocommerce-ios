@@ -29,9 +29,12 @@ WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 FIREBASE_APP_ID = '1:124902176124:ios:02259de1e7c42b291620f9'
 FIREBASE_TESTERS_GROUP = 'woocommerce-ios---prototype-builds'
 
+# Buildkite sets this env var to the PR number if on a PR, but to 'false' (and not nil) if not on a PR
+pull_request_number = ENV['BUILDKITE_PULL_REQUEST']&.then { |n| n == 'false' ? nil : Integer(n) }
+
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '18.5' # For screenshots
+SIMULATOR_VERSION = '26.1' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 16 Plus',
@@ -330,6 +333,7 @@ platform :ios do
 
     files = {
       whats_new: RELEASE_NOTES_PATH,
+      app_store_name: File.join(source_metadata_folder, 'name.txt'),
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -777,10 +781,10 @@ platform :ios do
     build_for_prototype_build
 
     release_notes = <<~NOTES
-      Pull Request: ##{pull_request_number || 'N/A'}
       Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
       Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
     NOTES
+    release_notes += "Pull Request: ##{pull_request_number}" unless pull_request_number.nil?
 
     firebase_app_distribution(
       app: FIREBASE_APP_ID,
@@ -1105,6 +1109,7 @@ platform :ios do
     files = {
 
       # Metadata fields
+      'app_store_name' => { desc: 'name.txt' },
       'app_store_desc' => { desc: 'description.txt' },
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },
@@ -1525,12 +1530,6 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
 # -----------------------------------------------------------------------------------
 # Release Management Utils
 # -----------------------------------------------------------------------------------
-
-def pull_request_number
-  # Buildkite sets this env var to the PR number if on a PR, but to 'false' (and not nil) if not on a PR
-  pr_num = ENV.fetch('BUILDKITE_PULL_REQUEST', 'false')
-  pr_num == 'false' ? nil : Integer(pr_num)
-end
 
 def create_backmerge_pr
   version = release_version_current

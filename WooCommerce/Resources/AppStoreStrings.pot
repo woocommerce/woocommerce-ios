@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v23.7-whats-new"
+msgctxt "v23.8-whats-new"
 msgid ""
-"This update brings smooth UK Tap to Pay via Stripe, clearer card onboarding error tips, and automatic SSO sign-ins for key admin tasks. Order creation now picks the right variations, and eligible merchants can share quick POS feedback.\n"
+"This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

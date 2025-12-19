@@ -3,7 +3,6 @@ import SwiftUI
 import Observation
 import struct Yosemite.Country
 
-@available(iOS 17, *)
 struct AddressMapPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: AddressMapPickerViewModel
@@ -18,12 +17,13 @@ struct AddressMapPickerView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
-                Map(coordinateRegion: $viewModel.region,
-                    showsUserLocation: true,
-                    annotationItems: viewModel.annotations) { item in
-                    MapMarker(coordinate: item.coordinate)
+                Map(position: $viewModel.position) {
+                    UserAnnotation()
+                    ForEach(viewModel.annotations) { item in
+                        Marker("", coordinate: item.coordinate)
+                    }
                 }
-                    .ignoresSafeArea()
+                .ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     searchBar
@@ -134,7 +134,6 @@ struct AddressMapPickerView: View {
     }
 }
 
-@available(iOS 17, *)
 private extension AddressMapPickerView {
     enum Localization {
         static let close = NSLocalizedString("addressMapPicker.button.close", value: "Close", comment: "Text for the close button in the Edit Address Form.")

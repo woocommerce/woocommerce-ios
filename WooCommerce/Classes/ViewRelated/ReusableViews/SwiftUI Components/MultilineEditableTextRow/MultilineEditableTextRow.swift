@@ -4,16 +4,19 @@ struct MultilineEditableTextRow: View {
     @Binding var value: String
     let placeholder: String
     let detailTitle: String?
+    let onTap: (() -> Void)?
     let onCommit: (String) async -> MultilineCommitResult
 
     init(value: Binding<String>,
          placeholder: String,
          detailTitle: String? = nil,
+         onTap: (() -> Void)? = nil,
          onCommit: @escaping (String) async -> MultilineCommitResult
     ) {
         self._value = value
         self.placeholder = placeholder
         self.detailTitle = detailTitle
+        self.onTap = onTap
         self.onCommit = onCommit
     }
 
@@ -23,6 +26,9 @@ struct MultilineEditableTextRow: View {
         } label: {
             content
         }
+        .simultaneousGesture(TapGesture().onEnded {
+            onTap?()
+        })
     }
 
     @ViewBuilder
@@ -35,6 +41,7 @@ struct MultilineEditableTextRow: View {
             DisclosureIndicator()
         }
         .padding(.vertical, Layout.padding)
+        .contentShape(Rectangle())
     }
 
     @ViewBuilder

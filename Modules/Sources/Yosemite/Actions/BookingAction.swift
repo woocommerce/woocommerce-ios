@@ -103,4 +103,12 @@ public enum BookingAction: Action {
                            bookingID: Int64,
                            note: String,
                            onCompletion: (Error?) -> Void)
+
+
+    /// Clears the booking cache.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter onCompletion: Called when clear completes.
+    case clearBookingsCache(siteID: Int64,
+                            onCompletion: () -> Void)
 }

@@ -210,7 +210,6 @@ private extension SettingsViewModel {
             var rows: [Row] = []
 
             if stores.isAuthenticated,
-               stores.isAuthenticatedWithoutWPCom == false,
                stores.sessionManager.defaultSite?.isWordPressComStore == false {
                 rows.append(.connectivity)
             }

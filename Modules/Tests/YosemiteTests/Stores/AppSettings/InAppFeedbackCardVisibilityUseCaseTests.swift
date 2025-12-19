@@ -240,6 +240,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isApplicationPasswordsSwitchEnabled: false,
+            isPOSLocalCatalogSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],

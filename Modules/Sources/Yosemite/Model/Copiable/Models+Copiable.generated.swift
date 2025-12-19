@@ -58,6 +58,21 @@ extension Yosemite.JustInTimeMessage {
     }
 }
 
+extension Yosemite.POSItemIdentifier {
+    public func copy(
+        underlyingType: CopiableProp<POSItemIdentifier.UnderlyingType> = .copy,
+        itemID: CopiableProp<Int64> = .copy
+    ) -> Yosemite.POSItemIdentifier {
+        let underlyingType = underlyingType ?? self.underlyingType
+        let itemID = itemID ?? self.itemID
+
+        return Yosemite.POSItemIdentifier(
+            underlyingType: underlyingType,
+            itemID: itemID
+        )
+    }
+}
+
 extension Yosemite.POSOrder {
     public func copy(
         id: CopiableProp<Int64> = .copy,
@@ -111,7 +126,7 @@ extension Yosemite.POSOrder {
 
 extension Yosemite.POSSimpleProduct {
     public func copy(
-        id: CopiableProp<UUID> = .copy,
+        id: CopiableProp<POSItemIdentifier> = .copy,
         name: CopiableProp<String> = .copy,
         formattedPrice: CopiableProp<String> = .copy,
         productImageSource: NullableCopiableProp<String> = .copy,

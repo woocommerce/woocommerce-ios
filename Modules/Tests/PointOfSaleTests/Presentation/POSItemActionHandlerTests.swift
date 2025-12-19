@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import enum Yosemite.POSItem
 import enum Yosemite.POSItemType
+import struct Yosemite.POSItemIdentifier
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 @testable import PointOfSale
@@ -83,11 +84,11 @@ struct POSItemActionHandlerTests {
 }
 
 private func makeCouponItem(code: String = "") -> POSItem {
-    return .coupon(.init(id: UUID(), code: code))
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: code))
 }
 
 private func makeProductItem() -> POSItem {
-    return .simpleProduct(.init(id: UUID(),
+    return .simpleProduct(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1),
                                 name: "some product name",
                                 formattedPrice: "$10.00",
                                 productID: 123,

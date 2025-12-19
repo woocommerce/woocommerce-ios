@@ -2,6 +2,7 @@ import CocoaLumberjackSwift
 import Yosemite
 import Foundation
 import Storage
+import WooFoundation
 
 @Observable
 final class POSSettingsLocalCatalogViewModel {
@@ -11,6 +12,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     private(set) var isLoading: Bool = false
     private(set) var isRefreshingCatalog: Bool = false
+    let deviceHasCellularCapability: Bool = CellularCapabilityChecker.deviceHasCellularCapability()
 
     var catalogRefreshError: POSIdentifiableErrorState? = nil
 

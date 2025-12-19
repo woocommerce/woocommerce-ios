@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-11-20 13:54:10+0000 */
+/* Translation-Revision-Date: 2025-12-10 16:41:16+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -841,6 +841,9 @@ which should be translated separately and considered part of this sentence. */
 /* Add a booking note section in booking details view. */
 "BookingDetailsView.bookingNote.addNoteRow.title" = "להוסיף הערה";
 
+/* Content of error presented when updating the not of a Booking fails. It reads: Unable to update note of Booking #{Booking number}. Parameters: %1$d - Booking number */
+"BookingDetailsView.bookingNote.failureMessage." = "לא ניתן לשנות את הפתק של הזמנה מס' ⁦%1$d⁩.";
+
 /* Footer text for the `Booking note` section in the booking details screen. */
 "BookingDetailsView.bookingNote.footerText" = "זוהי הערה פרטית. לא נשתף אותה עם הלקוח.";
 
@@ -879,6 +882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Customer' section in the booking details screen. */
 "BookingDetailsView.customer.headerTitle" = "לקוח";
+
+/* Customer note row title in customer section in booking details view. */
+"BookingDetailsView.customer.note.title" = "הערה";
 
 /* 'Status' row title in attendance section in booking details view. */
 "BookingDetailsView.customer.status.title" = "סטטוס";
@@ -4390,6 +4396,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "תוספים";
+
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "תיעוד";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "לקבלת תמיכה";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "לקבל מידע לגבי המוצרים הנתמכים ב-POS";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "היכן המוצרים שלי?";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "ביטול";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "עזרה";
 
 /* Section title for popular products on the Select Product screen. */
 "Popular" = "פופולארי";
@@ -8347,6 +8373,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking customer selector view */
 "bookingCustomerSelectorView.title" = "לקוח";
 
+/* Title of the Clear button in the date time picker for booking filter */
+"bookingDateTimeFilterView.clear" = "בהיר";
+
 /* Title of the Date row in the date time picker for booking filter */
 "bookingDateTimeFilterView.date" = "תאריך";
 
@@ -8392,8 +8421,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description for booking date range filter with only end date. Placeholder is a date. Reads as: Until October 27, 2025. */
 "bookingFiltersViewModel.dateRangeFilter.until" = "עד %1$@";
 
-/* Message displayed when searching bookings by keyword yields no results. */
-"bookingList.emptySearchText" = "לא הצלחנו למצוא הזמנות עם השם הזה – כדאי לשנות את המונח לחיפוש כדי להציג תוצאות נוספות.";
+/* Button to clear the filters on booking list */
+"bookingList.clearFilters" = "לנקות את המסננים";
+
+/* Message displayed when searching bookings by keyword yields no results. Version without a dash. */
+"bookingList.emptySearchText.noDash" = "לא הצלחנו למצוא הזמנות בשם זה. כדאי לשנות את מונח החיפוש כדי להציג תוצאות נוספות.";
 
 /* Error message when fetching bookings fails */
 "bookingList.errorMessage" = "שגיאה בהבאת ההזמנות";
@@ -8407,20 +8439,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab title for all bookings */
 "bookingListView.all" = "הכול";
 
-/* Description for the empty state when there's no bookings for the given filter */
-"bookingListView.emptyState.filter.description" = "אין הזמנות שתואמות למסננים שלך. כדאי לשנות את ההגדרות כדי להציג תוצאות נוספות.";
+/* Description for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.description" = "הזמנות יופיעו כאן לאחר שלקוחות יקבעו תזמון לקבלת שירותים ממך או יירשמו לאירועים שלך.";
 
-/* Title for the empty state when there's no bookings for the given filter */
+/* Title for the empty state when there's no bookings at all so far */
+"bookingListView.emptyState.all.title" = "עדיין אין הזמנות";
+
+/* Description for the empty state when there's no bookings for the given filters */
+"bookingListView.emptyState.filter.description.i3" = "כדאי לשנות או למחוק את המסננים כדי להציג תוצאות נוספות.";
+
+/* Title for the empty state when there's no bookings for the given filters */
 "bookingListView.emptyState.filter.title" = "לא נמצאו הזמנות";
 
 /* Description for the empty state when no bookings for today is found */
-"bookingListView.emptyState.today.description" = "אין לך פגישות או אירועים מתוזמנים להיום.";
+"bookingListView.emptyState.today.description.i3" = "כל ההזמנות המתוזמנות להיום יופיעו כאן.";
 
 /* Title for the empty state when no bookings for today is found */
 "bookingListView.emptyState.today.title" = "אין הזמנות היום";
 
 /* Description for the empty state when there's no upcoming bookings */
-"bookingListView.emptyState.upcoming.description" = "עדיין אין לך פגישות או אירועים עתידיים שמתוזמנים.";
+"bookingListView.emptyState.upcoming.description.i3" = "הזמנות חדשות יופיעו כאן כשלקוחות יקבעו תזמון לקבלת שירותים ממך או יירשמו לאירועים שלך.";
 
 /* Title for the empty state when there's no bookings for today */
 "bookingListView.emptyState.upcoming.title" = "אין הזמנות קרובות";
@@ -8445,18 +8483,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "הזמנות";
-
-/* Status of a paid booking */
-"bookingPaymentStatus.title.paid" = "שולם";
-
-/* Status of a refunded booking */
-"bookingPaymentStatus.title.refunded" = "הוחזר";
-
-/* Status of a booking with unexpected payment status */
-"bookingPaymentStatus.title.unknown" = "לא ידוע";
-
-/* Status of an unpaid booking */
-"bookingPaymentStatus.title.unpaid" = "לא שולם";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "כדאי לשנות את מונח החיפוש כדי להציג תוצאות נוספות";
@@ -8550,6 +8576,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "מינוי משתנה";
+
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "בתהליך";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "ביטול";
@@ -8678,6 +8707,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "העודף הנדרש: %1$@";
+
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "בוחר מוצר לקמפיין של Blaze.";
 
@@ -8770,6 +8802,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "פתרון בעיות לחיבור";
+
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "פג תוקף מתאריך %@";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "כתובת";
@@ -10149,8 +10184,1232 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "תוספים";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "הברקוד קצר מדי";
+
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "הסורק לא שלח תו של סוף שורה";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "בקשת הרשת נכשלה";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "אין חיבור אינטרנט";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "מוצר האב לא נמצא עבור הסוג";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "הפריט שנסרק לא מוכר";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "לא ניתן לקרוא את הברקוד";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "הסריקה נכשלה";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "סוג פריט לא נתמך";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "התשלום בוטל דרך הקורא";
+
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "הכרטיס הוכנס";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "מוכן לתשלום";
+
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "לחבר את הקורא";
+
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "מעבד תשלום";
+
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "ביטול";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "כדי להפעיל את קורא הכרטיסים, יש ללחוץ לחיצה קצרה על כפתור ההפעלה שלו.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "הזמנה חדשה";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "עקב שגיאת רשת, אנחנו לא יכולים לאשר שהתשלום בוצע בהצלחה. עליך לאמת את התשלום במכשיר עם חיבור פעיל לרשת. אם הפעולה לא הצליחה, יש לנסות את התשלום שוב. אם הפעולה הצליחה, יש ליצור הזמנה חדשה.";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "שגיאת תשלום";
+
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "לחזור לתשלום בקופה";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "התשלום נכשל";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "לנסות אמצעי תשלום אחר";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "אם ברצונך להמשיך לעבד את העסקה, יש לנסות לגבות את התשלום שוב.";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "התשלום נכשל";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "לנסות אמצעי תשלום אחר";
+
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.checkout.button.title" = "עריכת הזמנה";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "שגיאה בהכנת התשלום";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "מעבד תשלום";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.title" = "מתכוננים…";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "מכין את קורא הכרטיסים לתשלום";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "יש להכניס את הכרטיס";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "יש להציג את הכרטיס";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "יש להצמיד את הכרטיס";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "יש להצמיד או להכניס את הכרטיס";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "יש להצמיד, להעביר או להכניס את הכרטיס";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "מוכן לתשלום";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "הקורא לא מחובר";
+
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "כדי לעבד את התשלומים, יש לחבר את קורא הכרטיסים או לבחור בתשלום במזומן.";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "בודק הזמנה";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "מתכוננים…";
+
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "הסכום הכולל של ההזמנה נמוך מהסכום המינימלי שאפשר לגבות בכרטיס, שהוא %1$@. במקום זאת, אפשר לגבות את התשלום במזומן.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "אין אפשרות לגבות תשלום באמצעות כרטיס";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "שגיאה בעת בדיקת ההזמנה";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "יש לנסות שוב";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "רק רגע";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "לבטל";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "פתיחת הגדרות מכשיר";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "נדרשות הרשאות ל-Bluetooth";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "ביטול";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "לא הצלחנו לחבר את הקורא";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "יש לנסות שוב";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "ביטול";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "רמת הסוללה של הקורא נמוכה מאוד. יש לטעון את הקורא או לנסות קורא אחר.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "יש לנסות שוב";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "לא הצלחנו לחבר את הקורא";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "ביטול";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "לפתוח את הגדרות המכשיר";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "נדרשת הרשאה לשירותי המיקום כדי לצמצם הונאות, למנוע מחלוקות ולוודא שהתשלומים מאובטחים.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "יש להפעיל את שירותי המיקום כדי לאפשר תשלומים";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "לבטל";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "החיבור נכשל";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "ביטול";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "יש להזין כתובת";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "יש לנסות שוב לאחר העדכון";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "עליך לתקן את הכתובת של החנות שלך כדי להמשיך";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "ביטול";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "אפשר להגדיר את המיקוד של החנות שלך במקטע 'wp-admin' > ‏WooCommerce > הגדרות (כללי)";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "יש לנסות שוב לאחר העדכון";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "עליך לתקן את המיקוד של החנות שלך";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "להמשיך";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "אפשר לשנות את האפשרות הזאת בשלב מאוחר יותר דרך אפליקציית ההגדרות.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "נדרשת הרשאה לשירותי המיקום כדי לצמצם הונאות, למנוע מחלוקות ולוודא שהתשלומים מאובטחים.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "יש להפעיל את שירותי המיקום כדי לאפשר תשלומים";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "רק רגע...";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "מתחבר אל קורא הכרטיסים";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "בוצע";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "הקורא חובר";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "ביטול";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "להתחבר";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "נמצאו כמה קוראים";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "סורק לאיתור קוראים";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "ביטול";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "להתחבר לקורא";
+
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "האם ברצונך להתחבר אל הקורא הזה?";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "להמשיך בחיפוש";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "%1$@ נמצא";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "ביטול";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% הושלמו";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "מעדכן את התוכנה";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "הבנתי";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% הושלמו";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "התוכנה עודכנה";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "ביטול";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "יש לנסות שוב";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "לא הצלחנו לעדכן את התוכנה של קורא הכרטיסים שלך";
+
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "העדכון של הקורא נכשל מאחר שהסוללה טעונה ב-%.0f%% בלבד. יש לטעון את הקורא ולנסות שוב.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "ביטול";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "העדכון של הקורא נכשל מאחר שהסוללה חלשה. יש לטעון את הקורא ולנסות שוב.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "יש לנסות שוב";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "יש להטעין את הקורא";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "לבטל";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "לא הצלחנו לעדכן את התוכנה של קורא הכרטיסים שלך";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "לבטל בכל זאת";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "עליך לעדכן את התוכנה של קורא הכרטיסים שלך כדי לגבות תשלומים. הביטול יחסום את החיבור של קורא הכרטיסים.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% הושלמו";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "מעדכן את התוכנה";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "לבטל";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "החיבור לקורא נכשל";
+
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "לסגור";
+
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "עקב שגיאת רשת, אנחנו לא יודעים אם התשלום בוצע בהצלחה.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "יש לבדוק שוב את ההזמנה במכשיר עם חיבור לאינטרנט לפני ההמשך.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "ייתכן שההזמנה נכשלה";
+
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "סכום כולל: %1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "תשלום במזומן";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "לסמן את התשלום כ'הושלם'";
+
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "שגיאה בניסיון לעבד את התשלום. יש לנסות שוב.";
+
+/* A description within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.exitButton.description" = "הסנכרון יתבצע ברקע.";
+
+/* A button that exits POS. */
+"pointOfSale.catalogLoadingView.exitButton.title" = "לצאת מ-POS";
+
+/* A title of a full screen view that is displayed while the POS catalog is being synced. */
+"pointOfSale.catalogLoadingView.title" = "מסנכרן את הקטלוג";
+
+/* A message shown on the coupon if's not valid after attempting to apply it */
+"pointOfSale.couponRow.invalidCoupon" = "הקופון לא הוחל";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "רק רגע";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "לנתק את הקורא";
+
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "לצאת מ-POS";
+
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "הזמנות";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "הקורא חובר";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "לחבר את הקורא";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "מתנתק";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "הגדרות";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "להסיר";
+
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "טוען";
+
+/* Button to come back to order editing when coupon validation fails. */
+"pointOfSale.orderSync.couponsError.editOrder" = "עריכת הזמנה";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.errorTitle.2" = "אין אפשרות להחיל את הקופון";
+
+/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupon" = "להסיר קופון";
+
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupons" = "להסיר את הקופונים";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "יש לנסות שוב";
+
+/* Button to return to order editing when products are no longer available */
+"pointOfSale.orderSync.missingProductsError.editOrder" = "לערוך את ההזמנה";
+
+/* Button title to remove a single unavailable product and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductSingular" = "להסיר את המוצר";
+
+/* Button title to remove multiple unavailable products and retry creating the order */
+"pointOfSale.orderSync.missingProductsError.removeProductsPlural" = "להסיר את המוצרים";
+
+/* Subtitle of the error when we can't identify which specific product is no longer available. */
+"pointOfSale.orderSync.missingProductsError.subtitleGenericProduct" = "מוצר בעגלת הקניות לא זמין עוד.";
+
+/* Subtitle of the error when multiple products are no longer available */
+"pointOfSale.orderSync.missingProductsError.subtitlePlural" = "כמה מוצרים בתשלום בעגלת הקניות שלך לא זמינים עוד.";
+
+/* Subtitle of the error when a single product is no longer available. Placeholder is the product name. */
+"pointOfSale.orderSync.missingProductsError.subtitleSingular" = "המוצר %@ אינו זמין עוד.";
+
+/* Title of the error when multiple products in the cart are no longer available */
+"pointOfSale.orderSync.missingProductsError.titlePlural" = "המוצרים לא זמינים עוד";
+
+/* Title of the error when a single product in the cart is no longer available */
+"pointOfSale.orderSync.missingProductsError.titleSingular" = "המוצר לא זמין עוד";
+
+/* Generic product name used when we can't identify which specific product is unavailable */
+"pointOfSale.orderSync.missingProductsError.unknownProductName" = "לפחות מוצר אחד";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "תשלום בכרטיס של %1$@ חויב בהצלחה.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "תשלום במזומן של %1$@ חויב בהצלחה.";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "התשלום בוצע בהצלחה";
+
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "לשלוח";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "לשלוח קבלה באימייל";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "יש להזין אימייל תקין.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "שגיאה בניסיון לשלוח את האימייל. יש לנסות שוב.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "להקליד אימייל";
+
+/* Button to dismiss the payments onboarding sheet from the POS dashboard. */
+"pointOfSaleDashboard.payments.onboarding.cancel" = "ביטול";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.cancel" = "לבטל";
+
+/* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
+
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "לא ידוע";
+
+/* Subtitle for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "לחבר את קורא הכרטיסים ולהתחיל לקבל תשלומים";
+
+/* Title for card reader connect button when no reader is connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle" = "לחבר קורא כרטיסים";
+
+/* Title for card reader disconnect button when reader is already connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDisconnectTitle" = "לנתק את הקורא";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "למידע נוסף על קבלת תשלומים באמצעות המכשיר הנייד";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "תיעוד";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "קורא הכרטיסים לא מחובר";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "קוראי כרטיסים";
+
+/* Title for the card reader firmware section in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.firmwareTitle" = "קושחה";
+
+/* Text displayed on Point of Sale settings when card reader firmware version is unknown. */
+"pointOfSaleSettingsHardwareDetailView.firmwareVersionUnknown" = "לא ידוע";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "לקבוע את ההגדרות של סורק הברקוד";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "סורקי ברקוד";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "לנהל את החיבורים של קורא הכרטיסים";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "קוראי כרטיסים";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "חומרה";
+
+/* Button to dismiss the support form from POS settings. */
+"pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "לבטל";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "סוללה";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "שם המכשיר";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "למידע נוסף בנושא סריקת ברקוד ב-POS";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "תיעוד";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "להגדיר ולבדוק את סורק הברקוד";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "הגדרת הסורק";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "סורקי ברקוד";
+
+/* Subtitle for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerSubtitle" = "עליך לעדכן את גרסת הקושחה כדי להמשיך לקבל תשלומים.";
+
+/* Title for the CTA banner to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareBannerTitle" = "לעדכן את גרסת הקושחה";
+
+/* Title of the button to update firmware in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.updateFirmwareButtontitle" = "לעדכן את הקושחה";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "לא הוגדר";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "כתובת";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "אימייל";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.general" = "כללי";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "לא הוגדר";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "מספר טלפון";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "כתובת פיזית";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "פרטי הקבלה";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "שם החנות";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "מדיניות החזרים כספיים והחזרות";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "שם החנות";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "חנות";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "הגדרות";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "לנהל את החיבורים של החומרה";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "חומרה";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "לקבל עזרה ותמיכה";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle.1" = "לקבל עזרה ותמיכה";
+
+/* Description of the settings to be found within the Local catalog section. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle" = "לנהל את הגדרות הקטלוג";
+
+/* Title of the Local catalog section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "קטלוג מוצרים";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "תצורה והגדרות של החנות";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "חנות";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "סריקת ברקוד";
+
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• יש לחבר את סורק הברקוד באמצעות Bluetooth בהגדרות של Bluetooth במערכת iOS.";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "שלב ראשון: יש לחבר את סורק הברקוד באמצעות Bluetooth בהגדרות של Bluetooth במערכת iOS.";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "אפשר לסרוק ברקוד באמצעות סורק חיצוני כדי לבנות עגלת קניות במהירות.";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• יש לסרוק את הברקוד כאשר נמצאים ברשימת הפריטים כדי להוסיף מוצרים לעגלת הקניות.";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "שלב שני: יש לסרוק את הברקוד כאשר נמצאים ברשימת הפריטים כדי להוסיף מוצרים לעגלת הקניות.";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• יש לוודא ששדה החיפוש לא מופעל במהלך סריקת הברקודים.";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "שלב שלישי: יש לוודא ששדה החיפוש לא מופעל במהלך סריקת הברקודים.";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "אפשר לסרוק ברקוד באמצעות סורק חיצוני כדי לבנות עגלת קניות במהירות.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "פרטים נוספים.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "פרטים נוספים, קישור.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• יש להגדיר ברקודים בשדה \"GTIN, UPC, EAN, ISBN\" שבמקטע 'מוצרים' > 'פרטי המוצר' > 'מלאי'. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "יש להגדיר ברקודים בשדה 'G-T-I-N‏, U-P-C‏, E-A-N‏, I-S-B-N' שבמקטע 'מוצרים' > 'פרטי המוצר' > 'מלאי'.";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "אפשר לעיין בתיעוד";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "אפשר להגדיר ברקודים בשדה 'GTIN‏, UPC,‏ EAN,‏ ISBN' שבלשונית של מלאי המוצר. לקבלת פרטים נוספים %1$@.";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "אפשר להגדיר ברקודים בשדה 'G-T-I-N‏, U-P-C‏, E-A-N‏, I-S-B-N' שבלשונית של מלאי המוצר. לפרטים נוספים, ניתן לעיין בתיעוד (קישור).";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• יש לסרוק את הברקוד כאשר נמצאים ברשימת הפריטים כדי להוסיף מוצרים לעגלת הקניות.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "שלב רביעי: יש לסרוק את הברקוד כאשר נמצאים ברשימת הפריטים כדי להוסיף מוצרים לעגלת הקניות.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "הסורק מדמה מקלדת, לכן לעיתים הוא מונע הצגה של מקלדת התוכנה, למשל בחיפוש. יש להקיש על סמל המקלדת כדי להציג שוב אותה שוב.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage.2" = "• יש לעיין בהוראות של סורק הברקודים של Bluetooth כדי להגדיר את מצב HID. בדרך כלל, יש לסרוק ברקוד מיוחד במדריך למשתמש.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "שלב שני: יש לעיין בהוראות של סורק הברקודים של Bluetooth כדי להגדיר את מצב H-I-D. בדרך כלל, יש לסרוק ברקוד מיוחד במדריך למשתמש.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• יש לחבר את סורק הברקוד בהגדרות של Bluetooth במערכת iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "שלב שלישי: יש לחבר את סורק הברקוד בהגדרות של Bluetooth במערכת iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "חזרה";
+
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "תמונה של קוד לסריקה לצד סורק ברקוד.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "הכול מוכן, אפשר להתחיל לסרוק מוצרים. בפעם הבאה שיהיה צורך לחבר את הסורק, אפשר להדליק אותו והוא יתחבר מחדש אוטומטית.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "הסורק הוגדר!";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "בוצע";
+
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "חזרה";
+
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "עליך לבדוק את המדריך של הסורק ולאפס את הסורק להגדרות היצרן. לאחר מכן יש לנסות שוב את תהליך ההגדרה.";
+
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "לנסות שוב";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "נמצאה בעיה בסריקה";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "יש להשתמש בסורק הברקודים כדי לסרוק את הקוד שלמטה ולהפעיל את מצב Bluetooth HID.";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "הבא";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "אחר";
+
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "יש להשתמש בסורק הברקוד כדי לסרוק את הקוד שלמטה ולהיכנס למצב חיבור.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "יש להפעיל את חיבור ה-Bluetooth ולבחור את הסורק של %1$@ בהגדרות Bluetooth של iOS. הסורק יצפצף ונורת LED תופיע ללא הבהובים כשהוא מקושר.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "לעבור להגדרות המכשיר";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "לחבר את הסורק";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "איך להגדיר ברקוד על מוצרים";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "איך להגדיר ברקוד על מוצרים";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "הגדרת הסורק";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "הגדרת הסורק";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "מקורות אחרים";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "להגדיר סורק ברקוד";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "יש לבחור דגם מהרשימה:";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "יש לסרוק את הברקוד כדי לבדוק את הסורק שלך.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "יש לסרוק את הברקוד כדי לבדוק את הסורק שלך. אם הבעיה ממשיכה, יש לבדוק את הגדרות Bluetooth ולנסות שוב.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "לא נמצאו עדיין נתוני סריקה";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "לבדוק את הסורק";
+
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "יש להקיש על מוצר כדי \n להוסיף את המוצר לעגלה, או ";
+
+/* Title at the header for the Cart view. */
+"pos.cartView.cartTitle" = "עגלת קניות";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "לסרוק ברקוד";
+
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "מומלץ לנסות";
+
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "לנקות את עגלת הקניות";
+
+/* Title appearing in a modal when there's an error refreshing the catalog. */
+"pos.catalog.refreshFailedTitle" = "אין אפשרות לרענן את הקטלוג";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "אין חיבור אינטרנט";
+
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "ביטול";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "ליצור קופון";
+
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "כל התקדמות שנרשמה בהזמנות תאבד.";
+
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "יציאה";
+
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "האם לצאת ממצב 'נקודת מכירה'?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "לצאת מ-POS";
+
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "להפעיל את האפשרות של POS";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "לנסות שוב";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "כדי להמשיך, יש להפעיל את 'נקודת מכירה'. יש להפעיל את האפשרות של POS מתחת או ממנהל המערכת של WordPress במקטע 'הגדרות WooCommerce' > 'מתקדם' > 'אפשרויות' ולנסות שוב.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "כדאי להפעיל מחדש את האפליקציה כדי לפתור בעיה זו.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "לא הצלחנו לטעון את פרטי ההגדרות של האתר. יש לבדוק את החיבור לאינטרנט ולנסות שוב. אם הבעיה ממשיכה, יש ליצור קשר עם צוות התמיכה לקבלת עזרה.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "מערכת POS לא זמינה במטבע של החנות שלך. ב-%1$@, כרגע המערכת תומכת רק ב-%2$@. יש לבדוק את הגדרות המטבע של החנות או לפנות לתמיכה לקבלת סיוע.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "הגרסה של WooCommerce שברשותך לא נתמכת. למערכת POS נדרשת גרסת WooCommerce של %1$@ ומעלה. עליך לעדכן את WooCommerce לגרסה האחרונה.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "לא הצלחנו לטעון את פרטי התוסף של WooCommerce. יש לוודא שהתוסף של WooCommerce הותקן והופעל ממנהל המערכת של WordPress. אם עדיין קיימת בעיה, יש ליצור קשר עם התמיכה לעזרה.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "לא ניתן לטעון";
+
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.itemList.connectivityErrorSubtitle" = "יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
+
+/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorTitle.2" = "אין אפשרות להפעיל את הקופונים";
+
+/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "אין אפשרות לטעון קופונים נוספים";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle.2" = "אין אפשרות לטעון מוצרים נוספים";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadProductsTitle.2" = "אין אפשרות לטעון את המוצרים";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "אין אפשרות לטעון סוגים נוספים";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle.2" = "אין אפשרות לטעון את הסוגים";
+
+/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsTitle.2" = "אין אפשרות לרענן את הקופונים";
+
+/* Generic subtitle appearing on error screens when there's an error. */
+"pos.itemList.genericErrorSubtitle" = "יש לנסות שוב.";
+
+/* Text of the button appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledAction.2" = "להפעיל את הקופונים";
+
+/* Subtitle appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledSubtitle.2" = "יש להפעיל קודי קופון בחנות שלך כדי להתחיל ליצור אותם ללקוחות.";
+
+/* Title appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledTitle.2" = "להתחיל לקבל קופונים";
+
+/* Title appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorTitle.2" = "אין אפשרות להעלות את הקופונים";
+
+/* Generic text for retry buttons appearing on error screens. */
+"pos.itemList.retryButtonTitle" = "לנסות שוב";
+
+/* Title appearing on the item list screen when there's an error syncing the catalog for the first time. */
+"pos.itemList.syncCatalogErrorTitle" = "לא ניתן לסנכרן את הקטלוג";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "מוצרים";
+
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "לחפש קופונים";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "חיפוש מוצרים";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "לחפש";
+
+/* Title of the button at the top of Point of Sale to switch to Coupons list. */
+"pos.itemlistview.couponsTitle" = "קופונים";
+
+/* Message shown when the product catalog hasn't synced in the specified number of days. %1$ld will be replaced with the number of days. Reads like: The catalog hasn't been synced in the last 7 days. */
+"pos.itemlistview.staleSyncWarning.description" = "הקטלוג לא סונכרן ב-%1$ld הימים האחרונים. בבקשה ודא שאתה מחובר לאינטרנט וסנכרן שוב בהגדרות ה-POS.";
+
+/* Warning title shown when the product catalog hasn't synced in several days */
+"pos.itemlistview.staleSyncWarning.title" = "לרענן את הקטלוג";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "מוצרים";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.emptyListText" = "לחפש בחנות שלך";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "מוצרים פופולריים";
+
+/* Title for the list of recent searches shown before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.title" = "חיפושים אחרונים";
+
+/* Button text to exit Point of Sale when there's a critical error */
+"pos.listError.exitButton" = "לצאת מ-POS";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "לבטל";
+
+/* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
+"pos.orderBadgeView.accessibilityLabel" = "סטטוס ההזמנה: %1$@";
+
+/* Text appearing in the order details pane when there are no orders available. */
+"pos.orderDetailsEmptyView.noOrderToDisplay" = "אין הזמנות להצגה";
+
+/* Title at the header for the Order Details empty view. */
+"pos.orderDetailsEmptyView.ordersTitle" = "הזמנה";
+
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "מוצרים";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "סך הכול";
+
+/* Accessibility label for discount total. %1$@ is the discount amount. */
+"pos.orderDetailsView.discount.accessibilityLabel" = "סך כל ההנחה: %1$@";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "סך כל ההנחה";
+
+/* Accessibility hint for email receipt button on order details view */
+"pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "יש להקיש כדי לשלוח את הקבלה של ההזמנה באמצעות האימייל";
+
+/* Label for email receipt action on order details view */
+"pos.orderDetailsView.emailReceiptAction.title" = "לשלוח קבלה באימייל";
+
+/* Accessibility label for order header bottom content. %1$@ is order date and time, %2$@ is order status. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel" = "תאריך הזמנה: %1$@, סטטוס: %2$@";
+
+/* Email portion of order header accessibility label. %1$@ is customer email address. */
+"pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "האימייל של הלקוח: %1$@";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.orderDetailsView.netPayment.accessibilityLabel" = "תשלום נטו: %1$@";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "תשלום נטו";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.orderDetailsView.paid.accessibilityLabel" = "הסכום הכולל ששולם: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.orderDetailsView.paid.accessibilityLabel.method" = "אמצעי תשלום: %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel2" = "סך הכול שולם";
+
+/* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
+"pos.orderDetailsView.productRow.accessibilityLabel" = "כמות: %1$@ במחיר של %2$@ ליחידה, סך הכול %3$@";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "מוצרים";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "מוצרים";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "סיבה: %1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.orderDetailsView.refund.accessibilityLabel" = "החזר כספי שהונפק: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.orderDetailsView.refund.accessibilityLabel.reason" = "סיבה: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "הוחזר";
+
+/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
+"pos.orderDetailsView.subtotal.accessibilityLabel" = "סכום ביניים של מוצרים: %1$@";
+
+/* Accessibility label for taxes. %1$@ is the tax amount. */
+"pos.orderDetailsView.tax.accessibilityLabel" = "מיסים: %1$@";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "מיסים";
+
+/* Accessibility label for order total. %1$@ is the total amount. */
+"pos.orderDetailsView.total.accessibilityLabel" = "סך כל ההזמנה: %1$@";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "סכום כולל";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "סך הכול";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "אין אפשרות לטעון הזמנות נוספות";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "לא ניתן לטעון את ההזמנות";
+
+/* Button text for opening an information view when orders when list is empty. */
+"pos.orderListView.emptyOrdersButtonTitle2" = "למידע נוסף";
+
+/* Hint text suggesting to modify search terms when no orders are found. */
+"pos.orderListView.emptyOrdersSearchHint" = "כדאי לשנות את מונח החיפוש.";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.1" = "לא הצלחנו למצוא הזמנות בשם זה.";
+
+/* Title appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchTitle" = "לא נמצאו הזמנות";
+
+/* Subtitle appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersSubtitle2" = "כדאי לראות איך אפשר להגדיל את המכירות בחנות שלך.";
+
+/* Title appearing when there are no orders to display. */
+"pos.orderListView.emptyOrdersTitle" = "עדיין לא התקבלו הזמנות";
+
+/* Accessibility hint for order row indicating the action when tapped. */
+"pos.orderListView.orderRow.accessibilityHint" = "להקיש כדי להציג את פרטי ההזמנה";
+
+/* Accessibility label for order row. %1$@ is order number, %2$@ is total amount, %3$@ is date and time, %4$@ is order status. */
+"pos.orderListView.orderRow.accessibilityLabel" = "הזמנה #%1$@, סכום כולל %2$@, %3$@, מצב: %4$@";
+
+/* Email portion of order row accessibility label. %1$@ is customer email address. */
+"pos.orderListView.orderRow.accessibilityLabel.email" = "אימייל: %1$@";
+
+/* %1$@ is the order number. # symbol is shown as a prefix to a number. */
+"pos.orderListView.orderTitle" = "#%1$@";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "הזמנות";
+
+/* Accessibility label for the search button in orders list. */
+"pos.orderListView.searchButton.accessibilityLabel" = "חיפוש הזמנות";
+
+/* Placeholder for a search field in the Orders view. */
+"pos.orderListView.searchFieldPlaceholder" = "חיפוש הזמנות";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "לא הצלחנו למצוא קופונים עם השם הזה. כדאי לשנות את מונח החיפוש.";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "קופונים יכולים לעזור לך לקדם את העסק. האם ברצונך ליצור אתר כעת?";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "לא נמצאו קופונים";
+
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "לריענון";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "כדי להוסיף מוצר כזה, יש לצאת מ-POS ולעבור אל 'מוצרים'.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "לא ניתן לחפש בשמות סוגים, ולכן יש להשתמש בשם מוצר האב.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.3" = "לא הצלחנו למצוא מוצרים תואמים. כדאי לשנות את מונח החיפוש.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "לא נמצאו מוצרים";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "האפשרות POS נתמכת כרגע במוצרים פשוטים ובמוצרים עם סוגים בלבד.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "לא נמצאו מוצרים נתמכים";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "כדי להוסיף מוצר כזה, יש לצאת מ-POS ולערוך את המוצר הזה ללשונית 'מוצרים'.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "האפשרות POS נתמכת רק בסוגים מופעלים שלא ניתנים להורדה.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "לא נמצאו סוגים נתמכים";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "ליצור קופון";
+
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "אישור";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "לנקות את החיפוש";
+
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "ליצור הזמנה בניהול החנות";
+
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "כדי לגבות תשלום במוצר לא נתמך, יש לצאת מ-POS וליצור הזמנה חדשה מלשונית ההזמנות.";
+
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "סוגי מוצרים אחרים יהיו זמינים בעדכונים בעתיד.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "נכון לעכשיו, ניתן להשתמש ב-POS רק עבור מוצרים פיזיים פשוטים ומוצרים עם סוגים שאינם ניתנים להורדה.";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "למה המוצרים שלי לא מופיעים?";
+
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ במלאי";
+
+/* Label to be displayed in the product's card when out of stock */
+"pos.stockStatusLabel.outofstock" = "לא במלאי";
+
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "נקודת מכירה";
+
+/* Button title for new order button */
+"pos.totalsView.button.newOrder" = "הזמנה חדשה";
+
+/* Button title for the receipt button */
+"pos.totalsView.button.sendReceipt" = "לשלוח קבלה באימייל";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "תשלום במזומן";
+
+/* Title for discount total amount field */
+"pos.totalsView.discountTotal2" = "סך כל ההנחה";
+
+/* Title for subtotal amount field */
+"pos.totalsView.subtotal" = "סכום ביניים";
+
+/* Title for taxes amount field */
+"pos.totalsView.taxes" = "מיסים";
+
+/* Title for total amount field */
+"pos.totalsView.total" = "סכום כולל";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "עליך להתאים את חלוקת המסך כדי לספק מקום נוסף ל'נקודת מכירה'.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "התצוגה של 'נקודת מכירה' לא נתמכת ברוחב המסך הזה.";
+
+/* Label for allow sync on cellular data toggle in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "לאפשר סנכרון באמצעות נתונים סלולריים";
+
+/* Button text for closing an error after a refresh fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.cancelButton.title" = "לבטל";
+
+/* Button text for retrying a refresh after it fails */
+"posSettingsLocalCatalogDetailView.catalogRefresh.error.retryButton.title" = "לנסות שוב";
+
+/* Label for catalog size field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.catalogSize.1" = "גודל";
+
+/* Label for last full sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastFullSync.2" = "סנכרון מלא אחרון";
+
+/* Label for last incremental sync field in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.lastIncrementalSync.1" = "הסנכרון המצטבר האחרון";
+
+/* Section title for managing data usage in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.managingDataUsage.2" = "נתונים סלולריים";
+
+/* Section title for manual catalog update in Point of Sale settings. */
+"posSettingsLocalCatalogDetailView.manualCatalogUpdate.1" = "עדכון הקטלוג";
+
+/* Info text explaining the usage of the manual catalog update button. */
+"posSettingsLocalCatalogDetailView.manualUpdateInfo.1" = "לעדכן את הקטלוג באופן ידני";
+
+/* Navigation title for the local catalog details in POS settings. */
+"posSettingsLocalCatalogDetailView.title.1" = "קטלוג מוצרים";
+
+/* Button text for updating the catalog manually. */
+"posSettingsLocalCatalogDetailView.updateCatalog" = "לעדכן את הקטלוג";
+
+/* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
+"posSettingsLocalCatalogViewModel.catalogSizeFormat" = "⁦%1$d⁩ מוצרים ו-⁦%2$ld⁩ סוגים";
+
+/* Text shown when catalog size cannot be determined. */
+"posSettingsLocalCatalogViewModel.catalogSizeUnavailable" = "גודל הקטלוג לא זמין";
+
+/* Text shown when no update has been performed yet. */
+"posSettingsLocalCatalogViewModel.neverSynced" = "לא עודכן";
+
+/* Text shown when update date cannot be determined. */
+"posSettingsLocalCatalogViewModel.syncDateUnavailable" = "תאריך העדכון לא זמין";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "לסגור";

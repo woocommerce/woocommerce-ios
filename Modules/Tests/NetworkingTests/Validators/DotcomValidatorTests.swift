@@ -19,7 +19,7 @@ class DotcomValidatorTests: XCTestCase {
             guard let dotcomError = error as? DotcomError else {
                 return XCTFail()
             }
-            XCTAssertEqual(dotcomError, .unauthorized)
+            XCTAssertEqual(dotcomError, .unauthorized())
         }
     }
 
@@ -35,7 +35,7 @@ class DotcomValidatorTests: XCTestCase {
             guard let dotcomError = error as? DotcomError else {
                 return XCTFail()
             }
-            XCTAssertEqual(dotcomError, .noRestRoute)
+            XCTAssertEqual(dotcomError, .noRestRoute())
         }
 
     }
@@ -52,7 +52,7 @@ class DotcomValidatorTests: XCTestCase {
             guard let dotcomError = error as? DotcomError else {
                 return XCTFail()
             }
-            XCTAssertEqual(dotcomError, .noStatsPermission)
+            XCTAssertEqual(dotcomError, .noStatsPermission())
         }
 
     }
@@ -69,7 +69,7 @@ class DotcomValidatorTests: XCTestCase {
             guard let dotcomError = error as? DotcomError else {
                 return XCTFail()
             }
-            XCTAssertEqual(dotcomError, .statsModuleDisabled)
+            XCTAssertEqual(dotcomError, .statsModuleDisabled())
         }
     }
 }

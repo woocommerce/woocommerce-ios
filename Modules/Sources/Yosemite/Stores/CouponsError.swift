@@ -8,7 +8,7 @@ public struct CouponsError: Error, LocalizedError {
 
     public init?(underlyingError error: Error) {
         switch error {
-        case DotcomError.unknown(Constants.invalidCouponCode, let message):
+        case DotcomError.unknown(Constants.invalidCouponCode, let message, _):
             self.message = message ?? Localizations.defaultCouponsError
             self.underlyingError = error
         case let NetworkError.unacceptableStatusCode(_, response):

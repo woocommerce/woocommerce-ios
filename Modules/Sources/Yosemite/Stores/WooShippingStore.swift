@@ -120,7 +120,7 @@ private extension WooShippingStore {
                 }
                 onCompletion(eligibility.isEligible)
             case .failure(let error):
-                if error as? DotcomError == .noRestRoute {
+                if case .noRestRoute = error as? DotcomError {
                     DDLogError("⚠️ Endpoint for shipping label creation eligibility is unreachable for order: \(orderID). WC Shipping plugin may be missing.")
                 } else {
                     DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")

@@ -253,7 +253,7 @@ public enum CreateAccountError: Error, Equatable {
     /// Decodable Initializer.
     ///
     init(dotcomError error: DotcomError) {
-        if case let .unknown(code, message) = error {
+        if case let .unknown(code, message, _) = error {
             switch code {
             case Constants.emailExists:
                 self = .emailExists

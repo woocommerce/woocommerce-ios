@@ -7,7 +7,7 @@ import XCTest
 
 /// NotificationStore Unit Tests
 ///
-class NotificationStoreTests: XCTestCase {
+final class NotificationStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -364,8 +364,7 @@ class NotificationStoreTests: XCTestCase {
         let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
             let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
                                                            applicationId: self.sampleApplicationID,
-                                                           applicationVersion: self.sampleApplicationVersion,
-                                                           defaultStoreID: self.sampleDefaultStoreID) { (device, error) in
+                                                           applicationVersion: self.sampleApplicationVersion) { (device, error) in
                 promise((device, error))
             }
             noteStore.onAction(action)
@@ -389,8 +388,7 @@ class NotificationStoreTests: XCTestCase {
         let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
             let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
                                                            applicationId: self.sampleApplicationID,
-                                                           applicationVersion: self.sampleApplicationVersion,
-                                                           defaultStoreID: self.sampleDefaultStoreID) { (device, error) in
+                                                           applicationVersion: self.sampleApplicationVersion) { (device, error) in
                 promise((device, error))
             }
             noteStore.onAction(action)
@@ -438,6 +436,127 @@ class NotificationStoreTests: XCTestCase {
         noteStore.onAction(action)
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - NotificationAction.registerDeviceForSelfDrivenPushNotifications
+
+    /// Verifies that NotificationAction.registerDeviceForSelfDrivenPushNotifications successfully handles a success response from the backend.
+    ///
+    func test_registerDeviceForSelfDrivenPushNotifications_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "self-driven-pn-registration")
+
+        // When
+        let result: Result<Int64, Error> = waitFor { promise in
+            let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                device: self.sampleAPNSDevice(),
+                applicationID: self.sampleApplicationID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success(let tokenID):
+            XCTAssertEqual(tokenID, 123)
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that NotificationAction.registerDeviceForSelfDrivenPushNotifications successfully handles a failure response from the backend.
+    ///
+    func test_registerDeviceForSelfDrivenPushNotifications_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens", filename: "generic_error")
+
+        // When
+        let result: Result<Int64, Error> = waitFor { promise in
+            let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                device: self.sampleAPNSDevice(),
+                applicationID: self.sampleApplicationID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
+    // MARK: - NotificationAction.unregisterFromSelfDrivenPushNotifications
+
+    /// Verifies that NotificationAction.unregisterFromSelfDrivenPushNotifications successfully handles a success response from the backend.
+    ///
+    func test_unregisterFromSelfDrivenPushNotifications_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens/\(sampleTokenID)", filename: "generic_success")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                tokenID: self.sampleTokenID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            // Test passes - no error thrown
+            break
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that NotificationAction.unregisterFromSelfDrivenPushNotifications successfully handles a failure response from the backend.
+    ///
+    func test_unregisterFromSelfDrivenPushNotifications_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/push-tokens/\(sampleTokenID)", filename: "generic_error")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: self.sampleSiteID,
+                tokenID: self.sampleTokenID
+            ) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
     }
 
 
@@ -490,10 +609,16 @@ private extension NotificationStoreTests {
         return "1234"
     }
 
-    /// Returns a sample Default Store ID
+    /// Returns a sample Site ID
     ///
-    var sampleDefaultStoreID: Int64 {
-        return 1234
+    var sampleSiteID: Int64 {
+        return 123456
+    }
+
+    /// Returns a sample Token ID
+    ///
+    var sampleTokenID: Int64 {
+        return 123
     }
 
     /// Returns a sample Apple Device

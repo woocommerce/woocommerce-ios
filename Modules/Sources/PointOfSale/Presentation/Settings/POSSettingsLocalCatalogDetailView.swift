@@ -18,7 +18,9 @@ struct POSSettingsLocalCatalogDetailView: View {
                 ScrollView {
                     VStack(spacing: POSSpacing.medium) {
                         catalogStatus
-                        managingDataUsage
+                        if viewModel.deviceHasCellularCapability {
+                            managingDataUsage
+                        }
                         manualCatalogUpdate
                     }
                     .padding(.horizontal, POSPadding.medium)

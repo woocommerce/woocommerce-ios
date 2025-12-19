@@ -25,6 +25,8 @@ final class ServiceLocator {
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
 
+    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+
     /// FeatureFlagService
     ///
     private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
@@ -68,6 +70,10 @@ final class ServiceLocator {
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+    /// Application Log Provider
+    ///
+    private static var _applicationLogProvider: ApplicationLogProvider = DefaultApplicationLogProvider()
 
     /// Crash Logging Stack
     ///
@@ -162,6 +168,10 @@ final class ServiceLocator {
         return _authenticationManager
     }
 
+    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
+        return _ciabEligibilityChecker
+    }
+
     /// Shipping Settings
     ///
     static var shippingSettingsService: ShippingSettingsService {
@@ -228,6 +238,10 @@ final class ServiceLocator {
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
         return _fileLogger
+    }
+
+    static var applicationLogProvider: ApplicationLogProvider {
+        return _applicationLogProvider
     }
 
     /// Provides an instance of `WordPressLoggingDelegate` for logging in WordPress libraries.

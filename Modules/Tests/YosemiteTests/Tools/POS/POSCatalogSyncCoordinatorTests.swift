@@ -884,6 +884,53 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
     }
 
+    @Test func performFullSyncIfApplicable_with_zero_maxAge_ignores_temporal_eligibility() async throws {
+        // Given - user past 30-day grace period with no recent open (normally ineligible)
+        let fortyDaysAgo = Date().addingTimeInterval(-40 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fortyDaysAgo
+        // No lastPOSOpenedDate set (never opened recently)
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fortyDaysAgo)
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+
+        // When - maxAge is zero (forced sync, e.g. pull to refresh)
+        try await coordinator.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
+
+        // Then - sync should proceed despite temporal ineligibility
+        #expect(mockSyncService.startFullSyncCallCount == 1)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_with_zero_maxAge_ignores_temporal_eligibility() async throws {
+        // Given - user past 30-day grace period with no recent open (normally ineligible)
+        let fortyDaysAgo = Date().addingTimeInterval(-40 * 24 * 60 * 60)
+        mockSiteSettings.mockFirstPOSCatalogSyncDate = fortyDaysAgo
+        // No lastPOSOpenedDate set (never opened recently)
+
+        let coordinator = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
+        )
+        // Set up database with full sync date (required for incremental sync)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fortyDaysAgo)
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+
+        // When - maxAge is zero (forced sync, e.g. after a purchase)
+        try await coordinator.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
+
+        // Then - sync should proceed despite temporal ineligibility
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+    }
+
     // MARK: - isSyncStale Tests
 
     @Test func isSyncStale_returns_true_when_no_full_sync_performed() async throws {
@@ -1394,8 +1441,9 @@ extension POSCatalogSyncCoordinatorTests {
             connectivityObserver: nil
         )
 
-        // When - Try to perform sync
-        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
+        // When - Try to perform sync with non-zero maxAge (temporal criteria are checked)
+        // Note: maxAge of .zero would bypass temporal eligibility checks
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then - Should track pos_not_opened_30_days
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
@@ -1428,8 +1476,9 @@ extension POSCatalogSyncCoordinatorTests {
             connectivityObserver: nil
         )
 
-        // When - Try to perform incremental sync
-        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: .zero)
+        // When - Try to perform incremental sync with non-zero maxAge (temporal criteria are checked)
+        // Note: maxAge of .zero would bypass temporal eligibility checks
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
 
         // Then - Should track pos_not_opened_30_days
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }

@@ -49,6 +49,7 @@ private extension BookingListView {
                 loadingView
             case .results:
                 bookingList(with: viewModel.bookings,
+                            isSearching: false,
                             onNextPage: { viewModel.onLoadNextPageAction() },
                             onRefresh: { await viewModel.onRefreshAction() })
             }
@@ -66,15 +67,18 @@ private extension BookingListView {
     }
 
     var searchContentView: some View {
-        VStack {
+        VStack(spacing: 0) {
             if searchViewModel.isSearching {
                 loadingView
             } else if searchViewModel.searchResults.isEmpty {
+                header
                 emptyStateView(isSearching: true) {
                     await searchViewModel.onRefreshAction()
                 }
             } else {
+                header
                 bookingList(with: searchViewModel.searchResults,
+                            isSearching: true,
                             onNextPage: { searchViewModel.onLoadNextPageAction() },
                             onRefresh: { await searchViewModel.onRefreshAction() })
             }
@@ -103,24 +107,20 @@ private extension BookingListView {
     }
 
     func bookingList(with bookings: [Booking],
+                     isSearching: Bool,
                      onNextPage: @escaping () -> Void,
                      onRefresh: @escaping () async -> Void) -> some View {
         List(selection: $selectedBooking) {
-            Section {
-                ForEach(bookings) { item in
-                    bookingItem(item)
-                        .tag(item)
+            if isSearching {
+                bookingListSection(with: bookings, onNextPage: onNextPage)
+            } else {
+                Section {
+                    bookingListSection(with: bookings, onNextPage: onNextPage)
+                } header: {
+                    header
+                        .listRowInsets(EdgeInsets())
+                        .textCase(nil)
                 }
-
-                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                    .padding(.top, BookingListViewLayout.viewPadding)
-                    .onAppear {
-                        onNextPage()
-                    }
-            } header: {
-                header
-                    .listRowInsets(EdgeInsets())
-                    .textCase(nil)
             }
         }
         .apply {
@@ -131,31 +131,55 @@ private extension BookingListView {
                 $0.listStyle(.plain)
             } else {
                 $0.listStyle(.grouped)
+                    .scrollContentBackground(.hidden)
             }
         }
-        .listStyle(.grouped)
-        .scrollContentBackground(.hidden)
-        .listSectionSeparator(.hidden, edges: .top)
         .background(Color(.listBackground))
         .refreshable {
             await onRefresh()
         }
     }
 
+    @ViewBuilder
+    func bookingListSection(with bookings: [Booking], onNextPage: @escaping () -> Void) -> some View {
+        ForEach(bookings) { item in
+            bookingItem(item)
+                .if(item == bookings.first) {
+                    $0.listSectionSeparator(.hidden, edges: .top)
+                }
+                .tag(item)
+        }
+
+        InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+            .padding(.top, BookingListViewLayout.viewPadding)
+            .onAppear {
+                onNextPage()
+            }
+    }
+
     func bookingItem(_ booking: Booking) -> some View {
-        VStack(alignment: .leading) {
-            Text(booking.startDate.toString(dateStyle: .short,
-                                            timeStyle: .short,
-                                            timeZone: BookingListTab.utcTimeZone))
+        VStack(alignment: .leading, spacing: BookingListViewLayout.bookingSummaryBadgeSpacing) {
+            VStack(alignment: .leading, spacing: BookingListViewLayout.bookingSummarySpacing) {
+                Text(booking.startDate.toString(dateStyle: .short,
+                                                timeStyle: .short,
+                                                timeZone: BookingListTab.utcTimeZone))
                 .font(.body)
                 .fontWeight(.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(Color.primary)
 
-            Text(booking.summaryText)
-                .font(.footnote)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.secondary)
+                if let productName = booking.productName {
+                    Text(productName)
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.secondary)
+                }
+
+                Text(booking.customerName)
+                    .font(.footnote)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.secondary)
+            }
 
             HStack {
                 BookingBadgeView(booking.attendanceStatus)
@@ -172,13 +196,19 @@ private extension BookingListView {
     func emptyStateView(isSearching: Bool, onRefresh: @escaping () async -> Void) -> some View {
         GeometryReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
-                    Section {
-                        emptyStateContent(isSearching: isSearching)
-                            .frame(minWidth: proxy.size.width,
-                                   minHeight: proxy.size.height - BookingListViewLayout.defaultHeaderHeight * scale)
-                    } header: {
-                        header
+                if isSearching {
+                    emptyStateContent(isSearching: isSearching)
+                        .frame(minWidth: proxy.size.width,
+                               minHeight: proxy.size.height)
+                } else {
+                    LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
+                        Section {
+                            emptyStateContent(isSearching: isSearching)
+                                .frame(minWidth: proxy.size.width,
+                                       minHeight: proxy.size.height - BookingListViewLayout.defaultHeaderHeight * scale)
+                        } header: {
+                            header
+                        }
                     }
                 }
             }
@@ -249,6 +279,8 @@ fileprivate enum BookingListViewLayout {
     static let emptyStateImageWidth: CGFloat = 67
     static let cornerRadius: CGFloat = 8
     static let defaultHeaderHeight: CGFloat = 98
+    static let bookingSummarySpacing: CGFloat = 2
+    static let bookingSummaryBadgeSpacing: CGFloat = 8
 }
 
 fileprivate enum BookingListViewLocalization {

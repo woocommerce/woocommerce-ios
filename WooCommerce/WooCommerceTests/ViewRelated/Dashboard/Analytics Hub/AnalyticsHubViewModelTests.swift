@@ -325,7 +325,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 XCTFail("Request to retrieve site summary stats should not be dispatched when sessions card is hidden")
-                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog", data: nil)))
             default:
                 break
             }
@@ -356,7 +356,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
-                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog", data: nil)))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.success(.fake()))
             default:

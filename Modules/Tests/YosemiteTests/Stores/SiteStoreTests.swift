@@ -126,7 +126,7 @@ final class SiteStoreTests: XCTestCase {
     func test_createSite_returns_domainExists_error_on_Dotcom_blog_name_exists_error() throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
-            DotcomError.unknown(code: "blog_name_exists", message: "Sorry, that site already exists!")
+            DotcomError.unknown(code: "blog_name_exists", message: "Sorry, that site already exists!", data: nil)
         ))
 
         // When
@@ -147,7 +147,8 @@ final class SiteStoreTests: XCTestCase {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
             DotcomError.unknown(code: "blog_name_only_lowercase_letters_and_numbers",
-                                message: "Site names can only contain lowercase letters (a-z) and numbers.")
+                                message: "Site names can only contain lowercase letters (a-z) and numbers.",
+                                data: nil)
         ))
 
         // When
@@ -232,7 +233,7 @@ final class SiteStoreTests: XCTestCase {
 
     func test_enableFreeTrial_returns_error_on_failure() throws {
         // Given
-        remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+        remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
         let result = waitFor { promise in
@@ -243,7 +244,7 @@ final class SiteStoreTests: XCTestCase {
 
         // Then
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil, data: nil))
     }
 
      // MARK: - `updateSiteTitle`
@@ -270,7 +271,7 @@ final class SiteStoreTests: XCTestCase {
     func test_updateSiteTitle_returns_error_on_failure() throws {
         // Given
         let siteID: Int64 = 123
-        remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+        remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
         let result = waitFor { promise in
@@ -282,7 +283,7 @@ final class SiteStoreTests: XCTestCase {
         // Then
         XCTAssertFalse(result.isSuccess)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil, data: nil))
     }
 
     // MARK: - `uploadStoreProfilerAnswers`
@@ -307,7 +308,7 @@ final class SiteStoreTests: XCTestCase {
 
     func test_uploadStoreProfilerAnswers_returns_error_on_failure() throws {
         // Given
-        remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+        remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
         let result = waitFor { promise in
@@ -321,7 +322,7 @@ final class SiteStoreTests: XCTestCase {
 
         // Then
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil, data: nil))
     }
 
     // MARK: - `syncSiteByDomain`
@@ -350,7 +351,7 @@ final class SiteStoreTests: XCTestCase {
        // Given
        let siteID: Int64 = 123
        let domain = "example.com"
-       remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+       remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
        // When
        let result = waitFor { promise in
@@ -362,7 +363,7 @@ final class SiteStoreTests: XCTestCase {
        // Then
        XCTAssertFalse(result.isSuccess)
        let error = try XCTUnwrap(result.failure)
-       XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+       XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil, data: nil))
    }
 
 }

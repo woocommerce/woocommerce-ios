@@ -1109,6 +1109,7 @@ platform :ios do
     files = {
 
       # Metadata fields
+      'app_store_name' => { desc: 'name.txt' },
       'app_store_desc' => { desc: 'description.txt' },
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },

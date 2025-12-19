@@ -70,6 +70,41 @@ struct POSRefundsServiceTests {
         // Then
         #expect(refunds.count == 2)
     }
+
+    @Test func providePointOfSaleRefunds_when_remote_succeeds_then_maps_refund_items_correctly() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = POSRefundsService(siteID: 123, refundsRemote: remote)
+
+        let item1 = MockRefunds.sampleRefundItem(productID: 111, variationID: 222, quantity: 2)
+        let item2 = MockRefunds.sampleRefundItem(productID: 333, variationID: 444, quantity: 5)
+
+        let refund = MockRefunds.sampleRefund(items: [item1, item2])
+        remote.result = .success([refund])
+
+        let order = POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
+                             formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
+                             paymentMethodTitle: "Credit Card", lineItems: [],
+                             refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
+                             formattedPaymentTotal: "$10.00", formattedNetAmount: nil)
+
+        // When
+        let posRefunds = try await sut.providePointOfSaleRefunds(for: order)
+
+        // Then
+        #expect(posRefunds.count == 1)
+        #expect(posRefunds[0].items.count == 2)
+
+        let mappedItems = posRefunds[0].items
+
+        #expect(mappedItems[0].productID == item1.productID)
+        #expect(mappedItems[0].variationID == item1.variationID)
+        #expect(mappedItems[0].quantity == item1.quantity)
+
+        #expect(mappedItems[1].productID == item2.productID)
+        #expect(mappedItems[1].variationID == item2.variationID)
+        #expect(mappedItems[1].quantity == item2.quantity)
+    }
 }
 
 public struct MockRefunds {

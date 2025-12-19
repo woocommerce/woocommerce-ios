@@ -4,6 +4,7 @@
 24.0
 -----
 - [*] Fixed an issue that could cause the keyboard to cover the product title when edited [https://github.com/woocommerce/woocommerce-ios/pull/16470]
+- [*] Fix application logs showing wrong year for some locales. (https://github.com/woocommerce/woocommerce-ios/pull/16471)
 
 23.9
 -----

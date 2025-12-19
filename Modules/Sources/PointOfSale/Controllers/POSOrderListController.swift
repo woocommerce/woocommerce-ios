@@ -185,8 +185,9 @@ enum POSOrderListSelectedOrderRefundsState {
         selectedOrder = order
         selectedOrderRefundsState = .idle
 
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
-        startLoadingRefundsIfPossible()
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) {
+            fetchRefundsOfSelectedOrder()
+        }
     }
 
     @MainActor
@@ -227,7 +228,7 @@ enum POSOrderListSelectedOrderRefundsState {
     }
 
     @MainActor
-    private func startLoadingRefundsIfPossible() {
+    private func fetchRefundsOfSelectedOrder() {
         refundsTask?.cancel()
         guard let order = selectedOrder else { return }
 

@@ -76,8 +76,12 @@ final class CouponListViewModel {
     }
 
     func buildCouponViewModels() {
-        couponViewModels = resultsController.fetchedObjects.map { coupon in
-            CellViewModel(id: "\(coupon.couponID)",
+        var seenIdentifiers: Set<String> = Set<String>()
+
+        couponViewModels = resultsController.fetchedObjects.compactMap { coupon in
+            guard coupon.couponID > 0, coupon.code.isNotEmpty else { return nil }
+            guard seenIdentifiers.insert("\(coupon.couponID)").inserted else { return nil }
+            return CellViewModel(id: "\(coupon.couponID)",
                           title: coupon.code,
                           subtitle: coupon.summary(), // to be updated after UI is finalized
                           accessibilityLabel: coupon.description.isNotEmpty ? coupon.description : coupon.code,

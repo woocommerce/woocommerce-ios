@@ -30,6 +30,9 @@ install_swiftpm_dependencies
 echo "--- :keyboard: Connecting Hardware Keyboard"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
 
+echo "--- 📋 Available simulators (devices available)"
+xcrun simctl list devices available
+
 echo "--- 🚀 Booting Simulator"
 xcrun simctl list >> /dev/null
 xcrun simctl boot "$DEVICE"

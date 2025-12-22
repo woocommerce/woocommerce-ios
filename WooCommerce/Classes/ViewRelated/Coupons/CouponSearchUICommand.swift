@@ -38,7 +38,7 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Coupon) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
-        CellViewModel(id: "\(model.couponID)",
+        CellViewModel(id: model.diffableIdentifier,
                       title: model.code,
                       subtitle: model.discountType.localizedName, // to be updated after UI is finalized
                       accessibilityLabel: model.description.isEmpty ? model.description : model.code,

@@ -77,7 +77,7 @@ final class CouponListViewModel {
 
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
-            CellViewModel(id: "\(coupon.couponID)",
+            CellViewModel(id: coupon.diffableIdentifier,
                           title: coupon.code,
                           subtitle: coupon.summary(), // to be updated after UI is finalized
                           accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,

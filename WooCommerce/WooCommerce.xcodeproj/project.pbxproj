@@ -735,6 +735,7 @@
 		20D3D4372C65EF72004CE6E3 /* OrdersRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */; };
 		20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */; };
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
+		20DA35A72EF9563C0007FD3B /* Coupon+DiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA35A62EF9563C0007FD3B /* Coupon+DiffableDataSource.swift */; };
 		20DA6DDB2B681175002AA0FB /* AdaptiveModalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */; };
 		20E188842AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */; };
 		20FA73882CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */; };
@@ -3658,6 +3659,7 @@
 		20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRouteTests.swift; sourceTree = "<group>"; };
 		20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRow.swift; sourceTree = "<group>"; };
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
+		20DA35A62EF9563C0007FD3B /* Coupon+DiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+DiffableDataSource.swift"; sourceTree = "<group>"; };
 		20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveModalContainer.swift; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitView.swift; sourceTree = "<group>"; };
 		20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsSyncStateController.swift; sourceTree = "<group>"; };
@@ -7251,6 +7253,7 @@
 				03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */,
 				03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */,
 				03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */,
+				20DA35A62EF9563C0007FD3B /* Coupon+DiffableDataSource.swift */,
 				DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */,
 				B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */,
 				B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */,
@@ -15060,6 +15063,7 @@
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,
 				02B21C5329C830EB00C5623B /* WPAdminWebViewModel.swift in Sources */,
 				EEA1E20E2AC55F2200A37ADD /* WooAnalyticsEvent+ProductCreationAI.swift in Sources */,
+				20DA35A72EF9563C0007FD3B /* Coupon+DiffableDataSource.swift in Sources */,
 				DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */,
 				02C3FACE282A93020095440A /* WooAnalyticsEvent+Dashboard.swift in Sources */,
 				DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */,

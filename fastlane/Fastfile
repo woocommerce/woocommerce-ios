@@ -342,7 +342,10 @@ platform :ios do
       'app_store_screenshot-2' => File.join(source_metadata_folder, 'promo_screenshot_2.txt'),
       'app_store_screenshot-3' => File.join(source_metadata_folder, 'promo_screenshot_3.txt'),
       'app_store_screenshot-4' => File.join(source_metadata_folder, 'promo_screenshot_4.txt'),
-      'app_store_screenshot-5' => File.join(source_metadata_folder, 'promo_screenshot_5.txt')
+      'app_store_screenshot-5' => File.join(source_metadata_folder, 'promo_screenshot_5.txt'),
+      'app_store_screenshot-6' => File.join(source_metadata_folder, 'promo_screenshot_6.txt'),
+      'app_store_screenshot-7' => File.join(source_metadata_folder, 'promo_screenshot_7.txt'),
+      'app_store_screenshot-8' => File.join(source_metadata_folder, 'promo_screenshot_8.txt')
     }
 
     ios_update_metadata_source(
@@ -1121,7 +1124,10 @@ platform :ios do
       'app_store_screenshot-2' => { desc: 'app_store_screenshot_2.txt' },
       'app_store_screenshot-3' => { desc: 'app_store_screenshot_3.txt' },
       'app_store_screenshot-4' => { desc: 'app_store_screenshot_4.txt' },
-      'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' }
+      'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' },
+      'app_store_screenshot-6' => { desc: 'app_store_screenshot_6.txt' },
+      'app_store_screenshot-7' => { desc: 'app_store_screenshot_7.txt' },
+      'app_store_screenshot-8' => { desc: 'app_store_screenshot_8.txt' }
     }
 
     metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES

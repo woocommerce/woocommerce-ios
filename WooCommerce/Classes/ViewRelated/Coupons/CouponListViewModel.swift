@@ -80,7 +80,7 @@ final class CouponListViewModel {
             CellViewModel(id: "\(coupon.couponID)",
                           title: coupon.code,
                           subtitle: coupon.summary(), // to be updated after UI is finalized
-                          accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
+                          accessibilityLabel: coupon.description.isNotEmpty ? coupon.description : coupon.code,
                           status: coupon.expiryStatus().localizedName,
                           statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
         }

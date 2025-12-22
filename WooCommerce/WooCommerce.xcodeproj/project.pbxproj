@@ -1009,6 +1009,7 @@
 		2DAC25202E82A02C008521AF /* BookingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */; };
 		2DAC2C992E82A185008521AF /* BookingDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC2C972E82A185008521AF /* BookingDetailsView.swift */; };
 		2DB442942EC3696A00838D88 /* View+HairlineBorders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB442932EC3696300838D88 /* View+HairlineBorders.swift */; };
+		2DB6CCF02EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB6CCEE2EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift */; };
 		2DB877522E25466C0001B175 /* ShippingItemRowAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB877512E25466B0001B175 /* ShippingItemRowAccessibility.swift */; };
 		2DB88DA42E27DD8D0001B175 /* MarkOrderAsReadUseCase+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */; };
 		2DB891662E27F0830001B175 /* Address+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB891652E27F07E0001B175 /* Address+Shared.swift */; };
@@ -3903,6 +3904,7 @@
 		2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsViewModel.swift; sourceTree = "<group>"; };
 		2DAC2C972E82A185008521AF /* BookingDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsView.swift; sourceTree = "<group>"; };
 		2DB442932EC3696300838D88 /* View+HairlineBorders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HairlineBorders.swift"; sourceTree = "<group>"; };
+		2DB6CCEE2EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinatorTests.swift; sourceTree = "<group>"; };
 		2DB877512E25466B0001B175 /* ShippingItemRowAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingItemRowAccessibility.swift; sourceTree = "<group>"; };
 		2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarkOrderAsReadUseCase+Woo.swift"; sourceTree = "<group>"; };
 		2DB891652E27F07E0001B175 /* Address+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Shared.swift"; sourceTree = "<group>"; };
@@ -7980,6 +7982,14 @@
 			path = "Booking Details";
 			sourceTree = "<group>";
 		};
+		2DB6CCEF2EF9936B00EDB54D /* AgeGate */ = {
+			isa = PBXGroup;
+			children = (
+				2DB6CCEE2EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift */,
+			);
+			path = AgeGate;
+			sourceTree = "<group>";
+		};
 		2DCB54F82E6AE8C900621F90 /* CIAB */ = {
 			isa = PBXGroup;
 			children = (
@@ -9696,6 +9706,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				2DB6CCEF2EF9936B00EDB54D /* AgeGate */,
 				6489D8522EA667AC00D96802 /* Routing */,
 				DEB387962C2E80060025256E /* GoogleAds */,
 				DABF35242C11B40C006AF826 /* POS */,
@@ -15949,6 +15960,7 @@
 				2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */,
 				02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */,
 				DED039272BC7934F005D0571 /* StoreStatsChartViewModelTests.swift in Sources */,
+				2DB6CCF02EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift in Sources */,
 				2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */,
 				DE61978D289A5326005E4362 /* WooSetupWebViewModelTests.swift in Sources */,
 				DE7B17F92C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift in Sources */,

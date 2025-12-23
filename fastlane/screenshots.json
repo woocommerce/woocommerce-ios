@@ -4,7 +4,7 @@
 	"stylesheet": "appstoreres/assets/styles/style.css",
 	"devices": [
 		{
-			"name": "iPhone 16 Plus",
+			"name": "iPhone 17 Pro Max",
 			"canvas_size": [1290,2796],
 			"text_size": [1042, 563],
 			"text_offset": [100, 0],
@@ -17,7 +17,7 @@
 			"device_frame_offset": [161, 595]
 		},
 		{
-			"name": "iPad Pro 13-inch (M4)",
+			"name": "iPad Pro 13-inch (M5)",
 			"canvas_size": [2048,2732],
 			"text_size": [1848, 559],
 			"text_offset": [100, 0],
@@ -30,7 +30,7 @@
 			"device_frame_offset": [259, 559]
 		},
 		{
-			"name": "iPad Pro 13-inch (M4) - landscape",
+			"name": "iPad Pro 13-inch (M5) - landscape",
 			"canvas_size": [2732, 2048],
 			"text_size": [1848, 559],
 			"text_offset": [442, 0],
@@ -44,112 +44,112 @@
 		}
 	],
 	"entries": [
-		// iPhone 16 Plus
+		// iPhone 17 Pro Max
 		// Track sales and bestselling products
 		{
-			"device": "iPhone 16 Plus",
-			"filename": "iPhone 16 Plus-01.png",
+			"device": "iPhone 17 Pro Max",
+			"filename": "iPhone 17 Pro Max-01.png",
 			"background": "appstoreres/assets/iphone-background-1.png",
-			"screenshot": "iPhone 16 Plus-1-dark-order-dashboard.png",
+			"screenshot": "iPhone 17 Pro Max-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
-			"device": "iPhone 16 Plus",
-			"filename": "iPhone 16 Plus-02.png",
+			"device": "iPhone 17 Pro Max",
+			"filename": "iPhone 17 Pro Max-02.png",
 			"background": "appstoreres/assets/iphone-background-2.png",
-			"screenshot": "iPhone 16 Plus-2-light-order-creation.png",
+			"screenshot": "iPhone 17 Pro Max-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
-			"device": "iPhone 16 Plus",
-			"filename": "iPhone 16 Plus-03.png",
+			"device": "iPhone 17 Pro Max",
+			"filename": "iPhone 17 Pro Max-03.png",
 			"background": "appstoreres/assets/iphone-background-1.png",
-			"screenshot": "iPhone 16 Plus-3-dark-order-payment.png",
+			"screenshot": "iPhone 17 Pro Max-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
-			"device": "iPhone 16 Plus",
-			"filename": "iPhone 16 Plus-04.png",
+			"device": "iPhone 17 Pro Max",
+			"filename": "iPhone 17 Pro Max-04.png",
 			"background": "appstoreres/assets/iphone-background-2.png",
-			"screenshot": "iPhone 16 Plus-4-light-product-add.png",
+			"screenshot": "iPhone 17 Pro Max-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_7.txt"
 		},
 		// Get notified of every sale
 		{
-			"device": "iPhone 16 Plus",
-			"filename": "iPhone 16 Plus-05.png",
+			"device": "iPhone 17 Pro Max",
+			"filename": "iPhone 17 Pro Max-05.png",
 			"background": "appstoreres/assets/iphone-background-1.png",
-			"screenshot": "iPhone 16 Plus-5-dark-order-notification.png",
+			"screenshot": "iPhone 17 Pro Max-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_8.txt"
 		},
 
 
-		/// iPad Pro 13-inch (M4)
+		/// iPad Pro 13-inch (M5)
 		// Track sales and bestselling products
 		{
-			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-01.png",
+			"device": "iPad Pro 13-inch (M5)",
+			"filename": "iPad Pro 13-inch (M5)-01.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro 13-inch (M4)-1-dark-order-dashboard.png",
+			"screenshot": "iPad Pro 13-inch (M5)-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
-			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-02.png",
+			"device": "iPad Pro 13-inch (M5)",
+			"filename": "iPad Pro 13-inch (M5)-02.png",
 			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro 13-inch (M4)-2-light-order-creation.png",
+			"screenshot": "iPad Pro 13-inch (M5)-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
-			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-03.png",
+			"device": "iPad Pro 13-inch (M5)",
+			"filename": "iPad Pro 13-inch (M5)-03.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro 13-inch (M4)-3-dark-order-payment.png",
+			"screenshot": "iPad Pro 13-inch (M5)-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Sell online and in person
 		{
-			"device": "iPad Pro 13-inch (M4) - landscape",
-			"filename": "iPad Pro 13-inch (M4)-04.png",
+			"device": "iPad Pro 13-inch (M5) - landscape",
+			"filename": "iPad Pro 13-inch (M5)-04.png",
 			"background": "appstoreres/assets/ipad-background-2-landscape.png",
-			"screenshot": "iPad Pro 13-inch (M4)-4-light-pos-dashboard.png",
+			"screenshot": "iPad Pro 13-inch (M5)-4-light-pos-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Track orders and view totals in real time
 		{
-			"device": "iPad Pro 13-inch (M4) - landscape",
-			"filename": "iPad Pro 13-inch (M4)-05.png",
+			"device": "iPad Pro 13-inch (M5) - landscape",
+			"filename": "iPad Pro 13-inch (M5)-05.png",
 			"background": "appstoreres/assets/ipad-background-1-landscape.png",
-			"screenshot": "iPad Pro 13-inch (M4)-5-dark-pos-payment.png",
+			"screenshot": "iPad Pro 13-inch (M5)-5-dark-pos-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 		// Complete payments quickly and efficiently
 		{
-			"device": "iPad Pro 13-inch (M4) - landscape",
-			"filename": "iPad Pro 13-inch (M4)-06.png",
+			"device": "iPad Pro 13-inch (M5) - landscape",
+			"filename": "iPad Pro 13-inch (M5)-06.png",
 			"background": "appstoreres/assets/ipad-background-2-landscape.png",
-			"screenshot": "iPad Pro 13-inch (M4)-6-light-pos-success.png",
+			"screenshot": "iPad Pro 13-inch (M5)-6-light-pos-success.png",
 			"text": "metadata/{locale}/app_store_screenshot_6.txt"
 		},
 		// Add and edit products with a touch
 		{
-			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-07.png",
+			"device": "iPad Pro 13-inch (M5)",
+			"filename": "iPad Pro 13-inch (M5)-07.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro 13-inch (M4)-7-dark-product-add.png",
+			"screenshot": "iPad Pro 13-inch (M5)-7-dark-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_7.txt"
 		},
 		// Get notified of every sale
 		{
-			"device": "iPad Pro 13-inch (M4)",
-			"filename": "iPad Pro 13-inch (M4)-08.png",
+			"device": "iPad Pro 13-inch (M5)",
+			"filename": "iPad Pro 13-inch (M5)-08.png",
 			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro 13-inch (M4)-8-light-order-notification.png",
+			"screenshot": "iPad Pro 13-inch (M5)-8-light-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_8.txt"
 		}
 	]

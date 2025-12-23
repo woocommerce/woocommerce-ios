@@ -17,6 +17,18 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
 
+    /// Whether the announcement banner should be shown.
+    /// Returns true if there's an announcement AND the onboarding card is not visible.
+    var shouldShowAnnouncementBanner: Bool {
+        guard announcementViewModel != nil else {
+            return false
+        }
+        let onboardingCardIsVisible = dashboardCards.contains { card in
+            card.type == .onboarding && card.enabled && card.availability != .hide
+        }
+        return !onboardingCardIsVisible
+    }
+
     let storeOnboardingViewModel: StoreOnboardingViewModel
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
@@ -137,17 +149,20 @@ final class DashboardViewModel: ObservableObject {
                                                      storageManager: storageManager,
                                                      blazeEligibilityChecker: blazeEligibilityChecker)
         self.storePerformanceViewModel = .init(siteID: siteID,
+                                               stores: stores,
                                                usageTracksEventEmitter: usageTracksEventEmitter)
         self.topPerformersViewModel = .init(siteID: siteID,
+                                            stores: stores,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
-        self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
-        self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
-        self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
-        self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
-        self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
+        self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID, stores: stores)
+        self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID, stores: stores)
+        self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID, stores: stores)
+        self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
+        self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID, stores: stores)
         self.googleAdsDashboardCardViewModel = GoogleAdsDashboardCardViewModel(
             siteID: siteID,
-            eligibilityChecker: googleAdsEligibilityChecker
+            eligibilityChecker: googleAdsEligibilityChecker,
+            stores: stores
         )
 
         self.inboxEligibilityChecker = inboxEligibilityChecker

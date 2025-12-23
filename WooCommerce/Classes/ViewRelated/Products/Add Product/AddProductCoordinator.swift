@@ -125,6 +125,13 @@ final class AddProductCoordinator: Coordinator {
     }
 }
 
+// MARK: Accessibility constant
+extension AddProductCoordinator {
+    enum Accessibility {
+        static let createProductSheetIdentifier = "product-creation-sheet"
+    }
+}
+
 // MARK: Navigation
 private extension AddProductCoordinator {
 
@@ -152,7 +159,10 @@ private extension AddProductCoordinator {
     func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
-        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: subtitle)
+        let viewProperties = BottomSheetListSelectorViewProperties(
+            subtitle: subtitle,
+            accessibilityIdentifier: Accessibility.createProductSheetIdentifier
+        )
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,

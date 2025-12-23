@@ -143,6 +143,16 @@ extension ReceiptViewController {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
     }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        DDLogError("⛔️ Receipt WebView failed navigation for orderID \(viewModel.orderID): \(error.localizedDescription)")
+        activityIndicator.stopAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        DDLogError("⛔️ Receipt WebView failed provisional navigation for orderID \(viewModel.orderID): \(error.localizedDescription)")
+        activityIndicator.stopAnimating()
+    }
 }
 extension ReceiptViewController {
     enum Constants {

@@ -17,6 +17,18 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
 
+    /// Whether the announcement banner should be shown.
+    /// Returns true if there's an announcement AND the onboarding card is not visible.
+    var shouldShowAnnouncementBanner: Bool {
+        guard announcementViewModel != nil else {
+            return false
+        }
+        let onboardingCardIsVisible = dashboardCards.contains { card in
+            card.type == .onboarding && card.enabled && card.availability != .hide
+        }
+        return !onboardingCardIsVisible
+    }
+
     let storeOnboardingViewModel: StoreOnboardingViewModel
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 

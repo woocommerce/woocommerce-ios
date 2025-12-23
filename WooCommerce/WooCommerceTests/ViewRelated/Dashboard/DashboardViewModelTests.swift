@@ -754,6 +754,93 @@ final class DashboardViewModelTests: XCTestCase {
             scheduler.scheduleNoCampaignReminderCalled == true
         }
     }
+
+    // MARK: - Announcement Banner Visibility Tests
+
+    @MainActor
+    func test_shouldShowAnnouncementBanner_returns_false_when_no_announcement() async {
+        // Given
+        mockReloadingData(jitmResult: .success([]))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertNil(viewModel.announcementViewModel)
+        XCTAssertFalse(viewModel.shouldShowAnnouncementBanner)
+    }
+
+    @MainActor
+    func test_shouldShowAnnouncementBanner_returns_true_when_announcement_exists_and_onboarding_not_enabled() async throws {
+        // Given - announcement exists and onboarding card is not enabled (all tasks completed)
+        let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
+        userDefaults[.completedAllStoreOnboardingTasks] = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+        mockReloadingData(jitmResult: .success([message]))
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then - onboarding card should be disabled
+        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .onboarding }))
+        XCTAssertFalse(onboardingCard.enabled)
+        // And banner should be visible
+        XCTAssertTrue(viewModel.shouldShowAnnouncementBanner)
+    }
+
+    @MainActor
+    func test_shouldShowAnnouncementBanner_returns_true_when_announcement_exists_and_onboarding_hidden() async throws {
+        // Given - announcement exists and onboarding card is hidden via stored dashboard cards
+        let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
+        let storedCards = [DashboardCard(type: .onboarding, availability: .hide, enabled: true)]
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+        mockReloadingData(jitmResult: .success([message]), storedDashboardCards: storedCards)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then - onboarding card should be hidden
+        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .onboarding }))
+        XCTAssertEqual(onboardingCard.availability, .hide)
+        // And banner should be visible
+        XCTAssertTrue(viewModel.shouldShowAnnouncementBanner)
+    }
+
+    @MainActor
+    func test_shouldShowAnnouncementBanner_returns_false_when_onboarding_card_enabled_and_shown() async throws {
+        // Given - announcement exists but onboarding is enabled and visible
+        let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
+        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true)]
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+        mockReloadingData(jitmResult: .success([message]), storedDashboardCards: storedCards)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then - onboarding card should be enabled and shown
+        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .onboarding }))
+        XCTAssertTrue(onboardingCard.enabled)
+        XCTAssertEqual(onboardingCard.availability, .show)
+        // And banner should be hidden (onboarding takes priority)
+        XCTAssertFalse(viewModel.shouldShowAnnouncementBanner)
+    }
 }
 
 private extension DashboardViewModelTests {

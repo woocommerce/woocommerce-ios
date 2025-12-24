@@ -344,6 +344,7 @@ private enum PropertyKeys {
     static let planKey              = "plan"
     static let siteURL              = "site_url"
     static let storeID              = "store_id"
+    static let cachedWooCommerceVersionKey = "cached_woo_core_version"
     static let isCIAB               = "is_ciab"
     static let gardenPartner        = "garden_partner"
 }

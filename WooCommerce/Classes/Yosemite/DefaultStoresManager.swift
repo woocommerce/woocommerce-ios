@@ -360,6 +360,7 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
+        sessionManager.cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.usedProductDescriptionAI] = nil
@@ -661,6 +662,7 @@ private extension DefaultStoresManager {
                 case let .success(systemInformation):
                     DDLogInfo("🟢 Successfully synced system information")
                     self?.loadStoreUUID(siteID: siteID)
+                    self?.loadCachedWooCommerceVersion(siteID: siteID)
                     continuation.resume(returning: systemInformation)
                 case let .failure(error):
                     DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
@@ -694,6 +696,18 @@ private extension DefaultStoresManager {
             DDLogInfo("🟢 Loaded Store UUID: " + (String(describing: storeUUID)))
         }
         dispatch(action)
+    }
+
+    /// Loads the WooCommerce plugin version from storage and caches it in memory for the session only
+    ///
+    func loadCachedWooCommerceVersion(siteID: Int64) {
+        let version = ServiceLocator.storageManager.viewStorage.loadSystemPlugin(
+            siteID: siteID,
+            fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
+            active: nil
+        )?.toReadOnly().version
+
+        sessionManager.cachedWooCommerceVersion = version
     }
 
     /// Sends telemetry data after availability check

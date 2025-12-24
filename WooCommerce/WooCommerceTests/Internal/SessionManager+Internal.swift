@@ -24,7 +24,8 @@ extension SessionManager {
                                email: String? = nil,
                                username: String? = nil,
                                defaultSite: Site? = nil,
-                               defaultStoreUUID: String? = nil) -> SessionManager {
+                               defaultStoreUUID: String? = nil,
+                               cachedWooCommerceVersion: String? = nil) -> SessionManager {
         let manager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
         // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
         // will be removed.
@@ -49,6 +50,10 @@ extension SessionManager {
 
         if let defaultStoreUUID {
             manager.defaultStoreUUID = defaultStoreUUID
+        }
+
+        if let cachedWooCommerceVersion {
+            manager.cachedWooCommerceVersion = cachedWooCommerceVersion
         }
 
         return manager

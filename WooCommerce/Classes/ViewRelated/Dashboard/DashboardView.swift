@@ -383,8 +383,8 @@ private extension DashboardView {
 
     @ViewBuilder
     var featureAnnouncementCard: some View {
-        if let announcementViewModel = viewModel.announcementViewModel,
-           viewModel.dashboardCards.contains(where: { $0.type == .onboarding }) == false {
+        if viewModel.shouldShowAnnouncementBanner,
+           let announcementViewModel = viewModel.announcementViewModel {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
             })

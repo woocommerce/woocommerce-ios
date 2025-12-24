@@ -15,7 +15,6 @@ enum SiteCredentialLoginError: LocalizedError {
     case inaccessibleLoginPage
     case inaccessibleAdminPage
     case unacceptableStatusCode(code: Int)
-    case failedAuthenticationChallenge
     case genericFailure(underlyingError: Error)
 
     /// Used for tracking error code
@@ -27,8 +26,7 @@ enum SiteCredentialLoginError: LocalizedError {
              .invalidLoginResponse,
              .invalidCredentials,
              .loginFailed,
-             .unacceptableStatusCode,
-             .failedAuthenticationChallenge:
+             .unacceptableStatusCode:
             return NSError(domain: Self.errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
         case .genericFailure(let underlyingError):
             return underlyingError as NSError
@@ -47,8 +45,6 @@ enum SiteCredentialLoginError: LocalizedError {
             return 401
         case .unacceptableStatusCode(let code):
             return code
-        case .failedAuthenticationChallenge:
-            return -2
         case .genericFailure(let underlyingError):
             return (underlyingError as NSError).code
         }
@@ -68,8 +64,6 @@ enum SiteCredentialLoginError: LocalizedError {
             return message
         case .unacceptableStatusCode(let code):
             return String(format: Localization.unacceptableStatusCode, code)
-        case .failedAuthenticationChallenge:
-            return Localization.failedAuthenticationChallenge
         case .genericFailure:
             return ""
         }
@@ -89,8 +83,7 @@ enum SiteCredentialLoginError: LocalizedError {
             comment: "Error message explaining login failure due to blocked WP Admin page"
         )
         static let invalidLoginResponse = NSLocalizedString(
-            "siteCredentialLoginError.invalidLoginResponse.message",
-            value: "Unable to login due to an unexpected response from your site.",
+            "Unable to login due to an unexpected response from your site. We are working on fixing this issue.",
             comment: "Error message explaining login failure due to unexpected response."
         )
         static let unacceptableStatusCode = NSLocalizedString(
@@ -100,11 +93,6 @@ enum SiteCredentialLoginError: LocalizedError {
         static let invalidCredentials = NSLocalizedString(
             "It seems the username or password you entered doesn't quite match. Double-check your credentials and try again.",
             comment: "Error message explaining login failure due to invalid credentials."
-        )
-        static let failedAuthenticationChallenge = NSLocalizedString(
-            "siteCredentialLoginError.failedAuthenticationChallenge.message",
-            value: "Unable to log in due to an unexpected security measure on your store. Please contact support for troubleshooting.",
-            comment: "Error message explaining login failure due to an unexpected authentication challenge."
         )
     }
 }
@@ -116,19 +104,12 @@ enum SiteCredentialLoginError: LocalizedError {
 /// - If the request does not redirect or the redirect fails, login fails.
 /// Ref: pe5sF9-1iQ-p2
 ///
-final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, URLSessionTaskDelegate {
+final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
     private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
-
-    private var receivedAuthChallengeMethod: String?
-
-    private lazy var session = {
-        var configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForResource = 60
-        return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-    }()
+    private lazy var session = URLSession(configuration: .default)
 
     init(siteURL: String,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
@@ -147,14 +128,10 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, U
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-
-        receivedAuthChallengeMethod = nil
-
         guard let loginRequest = buildLoginRequest(username: username, password: password) else {
             DDLogError("⛔️ Error constructing login requests")
             return
         }
-
         Task { @MainActor in
             do {
                 try await startLogin(with: loginRequest)
@@ -162,12 +139,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, U
             } catch let error as SiteCredentialLoginError {
                 errorHandler?(error)
             } catch {
-                if let receivedAuthChallengeMethod {
-                    errorHandler?(.failedAuthenticationChallenge)
-                    DDLogError("⛔️ Authentication Error: Nonce retrieval blocked by authentication challenge \(receivedAuthChallengeMethod)")
-                } else {
-                    errorHandler?(.genericFailure(underlyingError: error as NSError))
-                }
+                errorHandler?(.genericFailure(underlyingError: error as NSError))
             }
         }
     }
@@ -323,16 +295,5 @@ private extension String {
             return false
         }
         return wholeMatch(of: regex) != nil
-    }
-}
-
-// MARK: - URLSessionTaskDelegate
-extension SiteCredentialLoginUseCase {
-    func urlSession(_ session: URLSession,
-                    didReceive challenge: URLAuthenticationChallenge,
-                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        let authMethod = challenge.protectionSpace.authenticationMethod
-        receivedAuthChallengeMethod = authMethod
-        completionHandler(.cancelAuthenticationChallenge, nil)
     }
 }

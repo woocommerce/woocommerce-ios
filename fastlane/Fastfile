@@ -34,7 +34,7 @@ pull_request_number = ENV['BUILDKITE_PULL_REQUEST']&.then { |n| n == 'false' ? n
 
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '18.5' # For screenshots
+SIMULATOR_VERSION = '26.1' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 16 Plus',
@@ -333,6 +333,7 @@ platform :ios do
 
     files = {
       whats_new: RELEASE_NOTES_PATH,
+      app_store_name: File.join(source_metadata_folder, 'name.txt'),
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -341,7 +342,10 @@ platform :ios do
       'app_store_screenshot-2' => File.join(source_metadata_folder, 'promo_screenshot_2.txt'),
       'app_store_screenshot-3' => File.join(source_metadata_folder, 'promo_screenshot_3.txt'),
       'app_store_screenshot-4' => File.join(source_metadata_folder, 'promo_screenshot_4.txt'),
-      'app_store_screenshot-5' => File.join(source_metadata_folder, 'promo_screenshot_5.txt')
+      'app_store_screenshot-5' => File.join(source_metadata_folder, 'promo_screenshot_5.txt'),
+      'app_store_screenshot-6' => File.join(source_metadata_folder, 'promo_screenshot_6.txt'),
+      'app_store_screenshot-7' => File.join(source_metadata_folder, 'promo_screenshot_7.txt'),
+      'app_store_screenshot-8' => File.join(source_metadata_folder, 'promo_screenshot_8.txt')
     }
 
     ios_update_metadata_source(
@@ -1108,6 +1112,7 @@ platform :ios do
     files = {
 
       # Metadata fields
+      'app_store_name' => { desc: 'name.txt' },
       'app_store_desc' => { desc: 'description.txt' },
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },
@@ -1119,7 +1124,10 @@ platform :ios do
       'app_store_screenshot-2' => { desc: 'app_store_screenshot_2.txt' },
       'app_store_screenshot-3' => { desc: 'app_store_screenshot_3.txt' },
       'app_store_screenshot-4' => { desc: 'app_store_screenshot_4.txt' },
-      'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' }
+      'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' },
+      'app_store_screenshot-6' => { desc: 'app_store_screenshot_6.txt' },
+      'app_store_screenshot-7' => { desc: 'app_store_screenshot_7.txt' },
+      'app_store_screenshot-8' => { desc: 'app_store_screenshot_8.txt' }
     }
 
     metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES

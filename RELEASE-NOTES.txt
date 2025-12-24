@@ -7,10 +7,12 @@
 - [Internal] Moved the request for push notification authorization after login [https://github.com/woocommerce/woocommerce-ios/pull/16428]
 - [Internal] Cleaned up logic for push notification token registration [https://github.com/woocommerce/woocommerce-ios/pull/16434]
 - [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
-- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16446]
+- [*] Prevent POS cash payment button showing during a card payment (https://github.com/woocommerce/woocommerce-ios/pull/16440)
 - [*] Enabled site troubleshooting for users authenticated with site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16441]
 - [*] Troubleshooting tool: Add step to load products and technical details for decoding errors [https://github.com/woocommerce/woocommerce-ios/pull/16444]
 - [*] Use authenticated web view for updating plugins [https://github.com/woocommerce/woocommerce-ios/pull/16448]
+- [Internal] Fix display of Just in Time Message banners [https://github.com/woocommerce/woocommerce-ios/pull/16480]
+- [*] Fix a rare crash when opening the Coupon list [https://github.com/woocommerce/woocommerce-ios/pull/16478]
 
 23.8
 -----

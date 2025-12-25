@@ -3,8 +3,7 @@
 
 24.0
 -----
-- [*] Fixed an issue that could cause the keyboard to cover the product title when edited [https://github.com/woocommerce/woocommerce-ios/pull/16470]
-- [*] Fix application logs showing wrong year for some locales. (https://github.com/woocommerce/woocommerce-ios/pull/16471)
+
 
 23.9
 -----
@@ -17,6 +16,8 @@
 - [*] Troubleshooting tool: Add step to load products and technical details for decoding errors [https://github.com/woocommerce/woocommerce-ios/pull/16444]
 - [*] Use authenticated web view for updating plugins [https://github.com/woocommerce/woocommerce-ios/pull/16448]
 - [*] Fix a rare crash when opening the Coupon list [https://github.com/woocommerce/woocommerce-ios/pull/16478]
+- [*] Fixed an issue that could cause the keyboard to cover the product title when edited [https://github.com/woocommerce/woocommerce-ios/pull/16470]
+- [*] Fix application logs showing wrong year for some locales. (https://github.com/woocommerce/woocommerce-ios/pull/16471)
 - [internal] Update Stripe Terminal to 4.7.3 [https://github.com/woocommerce/woocommerce-ios/pull/16467]
 - [Internal] Fix display of Just in Time Message banners [https://github.com/woocommerce/woocommerce-ios/pull/16480]
 

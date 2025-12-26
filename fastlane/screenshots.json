@@ -18,29 +18,29 @@
 		},
 		{
 			"name": "iPad Pro 13-inch (M5)",
-			"canvas_size": [2048,2732],
-			"text_size": [1848, 559],
-			"text_offset": [100, 0],
+			"canvas_size": [2064, 2752],
+			"text_size": [1862, 563],
+			"text_offset": [101, 0],
 			"font_size": "100px",
-			"screenshot_size": [1401, 1868],
-			"screenshot_offset": [324, 624],
+			"screenshot_size": [1412, 1882],
+			"screenshot_offset": [327, 629],
 			"screenshot_mask": "appstoreres/assets/ipad-x-mask.png",
 			"device_frame": "appstoreres/assets/ipad-x.png",
-			"device_frame_size": [1531, 1998],
-			"device_frame_offset": [259, 559]
+			"device_frame_size": [1543, 2013],
+			"device_frame_offset": [261, 563]
 		},
 		{
 			"name": "iPad Pro 13-inch (M5) - landscape",
-			"canvas_size": [2732, 2048],
-			"text_size": [1848, 559],
-			"text_offset": [442, 0],
+			"canvas_size": [2752, 2064],
+			"text_size": [1862, 563],
+			"text_offset": [445, 0],
 			"font_size": "100px",
-			"screenshot_size": [1868, 1401],
-			"screenshot_offset": [432, 512],
+			"screenshot_size": [1882, 1412],
+			"screenshot_offset": [435, 516],
 			"screenshot_mask": "appstoreres/assets/ipad-x-mask-landscape.png",
 			"device_frame": "appstoreres/assets/ipad-x-landscape.png",
-			"device_frame_size": [1998, 1531],
-			"device_frame_offset": [367, 447]
+			"device_frame_size": [2013, 1543],
+			"device_frame_offset": [370, 450]
 		}
 	],
 	"entries": [

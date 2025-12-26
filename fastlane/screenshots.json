@@ -5,16 +5,16 @@
 	"devices": [
 		{
 			"name": "iPhone 17 Pro Max",
-			"canvas_size": [1290,2796],
-			"text_size": [1042, 563],
-			"text_offset": [100, 0],
+			"canvas_size": [1320, 2868],
+			"text_size": [1066, 577],
+			"text_offset": [102, 0],
 			"font_size": "100px",
-			"screenshot_size": [878, 1903],
-			"screenshot_offset": [206, 631],
+			"screenshot_size": [898, 1952],
+			"screenshot_offset": [211, 647],
 			"screenshot_mask": "appstoreres/assets/iphone-16-plus-mask.png",
 			"device_frame": "appstoreres/assets/iphone-16-plus.png",
-			"device_frame_size": [967, 1976],
-			"device_frame_offset": [161, 595]
+			"device_frame_size": [992, 2028],
+			"device_frame_offset": [165, 610]
 		},
 		{
 			"name": "iPad Pro 13-inch (M5)",

@@ -37,8 +37,8 @@ IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv 
 SIMULATOR_VERSION = '26.1' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
-  'iPhone 16 Plus',
-  'iPad Pro 13-inch (M4)'
+  'iPhone 17 Pro Max',
+  'iPad Pro 13-inch (M5)'
 ].freeze
 
 # Instantiate versioning classes

@@ -363,7 +363,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let isAppPasswordAuthError = {
             switch error {
-            case SiteCredentialLoginError.genericFailure, SiteCredentialLoginError.invalidCredentials:
+            case SiteCredentialLoginError.genericFailure,
+                 SiteCredentialLoginError.invalidCredentials,
+                 SiteCredentialLoginError.basicAuthenticationRequired:
                 return false
             case is SiteCredentialLoginError:
                 return true

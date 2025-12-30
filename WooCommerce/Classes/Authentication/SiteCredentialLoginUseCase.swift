@@ -10,6 +10,7 @@ protocol SiteCredentialLoginProtocol {
 enum SiteCredentialLoginError: LocalizedError {
     static let errorDomain = "SiteCredentialLogin"
     case invalidCredentials
+    case basicAuthenticationRequired
     case loginFailed(message: String)
     case invalidLoginResponse
     case inaccessibleLoginPage
@@ -24,6 +25,7 @@ enum SiteCredentialLoginError: LocalizedError {
         case .inaccessibleLoginPage,
              .inaccessibleAdminPage,
              .invalidLoginResponse,
+             .basicAuthenticationRequired,
              .invalidCredentials,
              .loginFailed,
              .unacceptableStatusCode:
@@ -43,6 +45,8 @@ enum SiteCredentialLoginError: LocalizedError {
             return 403
         case .invalidCredentials:
             return 401
+        case .basicAuthenticationRequired:
+            return -2
         case .unacceptableStatusCode(let code):
             return code
         case .genericFailure(let underlyingError):
@@ -56,6 +60,8 @@ enum SiteCredentialLoginError: LocalizedError {
             return Localization.inaccessibleLoginPage
         case .inaccessibleAdminPage:
             return Localization.inaccessibleAdminPage
+        case .basicAuthenticationRequired:
+            return Localization.basicAuthenticationRequired
         case .invalidLoginResponse:
             return Localization.invalidLoginResponse
         case .invalidCredentials:
@@ -93,6 +99,10 @@ enum SiteCredentialLoginError: LocalizedError {
         static let invalidCredentials = NSLocalizedString(
             "It seems the username or password you entered doesn't quite match. Double-check your credentials and try again.",
             comment: "Error message explaining login failure due to invalid credentials."
+        )
+        static let basicAuthenticationRequired = NSLocalizedString(
+            "This site is protected by basic authentication. To log in with the WooCommerce app, turn off basic authentication or allow the app through.",
+            comment: "Error message explaining login failure because the site is protected by HTTP basic authentication."
         )
     }
 }
@@ -155,9 +165,22 @@ private extension SiteCredentialLoginUseCase {
     }
 
     func startLogin(with loginRequest: URLRequest) async throws {
-        let (data, response) = try await session.data(for: loginRequest)
+        try await detectBasicAuthProbe()
+
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: loginRequest)
+        } catch {
+            try throwIfBasicAuth(error)
+            throw error
+        }
+
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.invalidLoginResponse
+        }
+
+        if response.containsHTTPBasicAuthenticationChallenge {
+            throw SiteCredentialLoginError.basicAuthenticationRequired
         }
 
         /// The login request comes with a redirect header to nonce retrieval URL.
@@ -223,6 +246,51 @@ private extension SiteCredentialLoginUseCase {
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
         return request
     }
+
+    /// Issues a lightweight GET to detect Basic Auth without engaging URLSession auth challenge flow.
+    /// Sends a dummy Authorization header so the server immediately responds with 401 + WWW-Authenticate.
+    func detectBasicAuthProbe() async throws {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
+            return
+        }
+        var request = URLRequest(
+            url: loginURL,
+            cachePolicy: .reloadIgnoringLocalCacheData,
+            timeoutInterval: 8
+        )
+        request.httpMethod = "GET"
+        request.setValue(
+            preflightAuthorizationHeader,
+            forHTTPHeaderField: "Authorization"
+        )
+
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let http = response as? HTTPURLResponse else { return }
+            if http.containsHTTPBasicAuthenticationChallenge {
+                throw SiteCredentialLoginError.basicAuthenticationRequired
+            }
+        } catch {
+            try throwIfBasicAuth(error)
+            // Propagate other errors so the caller can decide how to handle them.
+            throw error
+        }
+    }
+}
+
+private extension SiteCredentialLoginUseCase {
+    var preflightAuthorizationHeader: String {
+        // Use dummy credentials so the server responds with 401 immediately.
+        let token = "wcapp-probe:probe".data(using: .utf8)?.base64EncodedString() ?? ""
+        return "Basic \(token)"
+    }
+
+    func throwIfBasicAuth(_ error: Error) throws {
+        let nsError = error as NSError
+        if nsError.isHTTPBasicAuthRequired {
+            throw SiteCredentialLoginError.basicAuthenticationRequired
+        }
+    }
 }
 
 extension SiteCredentialLoginUseCase {
@@ -231,6 +299,32 @@ extension SiteCredentialLoginUseCase {
         static let adminPath = "/wp-admin"
         static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
         static let captchaText = "captcha"
+    }
+}
+
+extension HTTPURLResponse {
+    /// Detects whether the server requires HTTP Basic authentication.
+    ///
+    /// When a site is behind basic auth it responds with a 401 and a `WWW-Authenticate` header containing `Basic`.
+    /// That reliably distinguishes it from a normal WordPress login failure, which returns 200.
+    var containsHTTPBasicAuthenticationChallenge: Bool {
+        guard statusCode == 401 else {
+            return false
+        }
+        return value(forHTTPHeaderField: "WWW-Authenticate")?
+            .localizedCaseInsensitiveContains("basic") == true
+    }
+}
+
+private extension NSError {
+    /// Maps URLSession auth errors to a Basic Auth requirement.
+    var isHTTPBasicAuthRequired: Bool {
+        domain == NSURLErrorDomain &&
+        (
+            code == NSURLErrorUserAuthenticationRequired ||
+            code == NSURLErrorUserCancelledAuthentication ||
+            code == NSURLErrorCancelled    // occurs if we cancel the auth challenge
+        )
     }
 }
 

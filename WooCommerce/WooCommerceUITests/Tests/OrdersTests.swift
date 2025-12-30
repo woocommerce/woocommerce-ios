@@ -1,5 +1,6 @@
 import UITestsFoundation
 import XCTest
+import UIKit
 
 final class OrdersTests: XCTestCase {
 
@@ -28,6 +29,14 @@ final class OrdersTests: XCTestCase {
     }
 
     func test_create_new_order() throws {
+        /// Tracked in WOOMOB-1904
+        /// Temporarily skipping until resolved
+        /// Failing on iPad on CI - `secondary-order-address-form` doesn't appear on switch toggle ON.
+        try XCTSkipIf(
+            UIDevice.current.userInterfaceIdiom == .pad,
+            "Skipped on iPad simulators due to CI flakiness; runs on iPhone simulator."
+        )
+
         let order = try GetMocks.readSingleOrderData()
 
         try TabNavComponent().goToOrdersScreen()

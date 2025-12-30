@@ -61,7 +61,7 @@ enum SiteCredentialLoginError: LocalizedError {
         case .inaccessibleAdminPage:
             return Localization.inaccessibleAdminPage
         case .basicAuthenticationRequired:
-            return Localization.basicAuthenticationRequired
+            return Localization.failedAuthenticationChallenge
         case .invalidLoginResponse:
             return Localization.invalidLoginResponse
         case .invalidCredentials:
@@ -89,7 +89,8 @@ enum SiteCredentialLoginError: LocalizedError {
             comment: "Error message explaining login failure due to blocked WP Admin page"
         )
         static let invalidLoginResponse = NSLocalizedString(
-            "Unable to login due to an unexpected response from your site. We are working on fixing this issue.",
+            "siteCredentialLoginError.invalidLoginResponse.message",
+            value: "Unable to login due to an unexpected response from your site.",
             comment: "Error message explaining login failure due to unexpected response."
         )
         static let unacceptableStatusCode = NSLocalizedString(
@@ -100,9 +101,10 @@ enum SiteCredentialLoginError: LocalizedError {
             "It seems the username or password you entered doesn't quite match. Double-check your credentials and try again.",
             comment: "Error message explaining login failure due to invalid credentials."
         )
-        static let basicAuthenticationRequired = NSLocalizedString(
-            "This site is protected by basic authentication. To log in with the WooCommerce app, turn off basic authentication or allow the app through.",
-            comment: "Error message explaining login failure because the site is protected by HTTP basic authentication."
+        static let failedAuthenticationChallenge = NSLocalizedString(
+            "siteCredentialLoginError.failedAuthenticationChallenge.message",
+            value: "Unable to log in due to an unexpected security measure on your store. Please contact support for troubleshooting.",
+            comment: "Error message explaining login failure due to an unexpected authentication challenge."
         )
     }
 }

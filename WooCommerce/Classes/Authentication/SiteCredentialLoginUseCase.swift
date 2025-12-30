@@ -261,13 +261,9 @@ private extension SiteCredentialLoginUseCase {
             timeoutInterval: 8
         )
         request.httpMethod = "GET"
-        request.setValue(
-            preflightAuthorizationHeader,
-            forHTTPHeaderField: "Authorization"
-        )
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else { return }
             if http.containsHTTPBasicAuthenticationChallenge {
                 throw SiteCredentialLoginError.basicAuthenticationRequired
@@ -281,12 +277,6 @@ private extension SiteCredentialLoginUseCase {
 }
 
 private extension SiteCredentialLoginUseCase {
-    var preflightAuthorizationHeader: String {
-        // Use dummy credentials so the server responds with 401 immediately.
-        let token = "wcapp-probe:probe".data(using: .utf8)?.base64EncodedString() ?? ""
-        return "Basic \(token)"
-    }
-
     func throwIfBasicAuth(_ error: Error) throws {
         let nsError = error as NSError
         if nsError.isHTTPBasicAuthRequired {

@@ -34,7 +34,7 @@ extension WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Properties.action: action.rawValue
             ]
-            return  WooAnalyticsEvent(statName: .bookingListFailedToFetchBookings,
+            return  WooAnalyticsEvent(statName: .bookingListFailedToUpdateBookingDetails,
                                       properties: properties,
                                       error: error)
         }

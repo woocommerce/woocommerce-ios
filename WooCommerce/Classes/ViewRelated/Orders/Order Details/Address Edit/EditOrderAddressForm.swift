@@ -95,6 +95,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
+    @State private var isShowingDifferentAddressForm: Bool = false
 
     var body: some View {
         Group {
@@ -120,7 +121,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 }
 
                 if viewModel.showDifferentAddressToggle, let differentAddressToggleTitle = viewModel.differentAddressToggleTitle {
-                    TitleAndToggleRow(title: differentAddressToggleTitle, isOn: $viewModel.showDifferentAddressForm)
+                    TitleAndToggleRow(title: differentAddressToggleTitle, isOn: $isShowingDifferentAddressForm)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
                         .padding(.horizontal, insets: safeAreaInsets)
@@ -129,7 +130,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .accessibilityIdentifier("order-creation-customer-details-shipping-address-toggle")
                 }
 
-                if viewModel.showDifferentAddressForm {
+                if isShowingDifferentAddressForm {
                     SingleAddressForm(fields: $viewModel.secondaryFields,
                                       countryViewModelClosure: viewModel.createSecondaryCountryViewModel,
                                       stateViewModelClosure: viewModel.createSecondaryStateViewModel,
@@ -176,7 +177,17 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
         .shimmering(active: viewModel.showPlaceholders)
         .onAppear {
+            isShowingDifferentAddressForm = viewModel.showDifferentAddressForm
             viewModel.onLoadTrigger.send()
+        }
+        .onChange(of: isShowingDifferentAddressForm) { _, newValue in
+            viewModel.showDifferentAddressForm = newValue
+        }
+        .onReceive(viewModel.objectWillChange) { _ in
+            let current = viewModel.showDifferentAddressForm
+            if current != isShowingDifferentAddressForm {
+                isShowingDifferentAddressForm = current
+            }
         }
         .notice($viewModel.notice)
         .sheet(isPresented: $showingCustomerSearch, content: {

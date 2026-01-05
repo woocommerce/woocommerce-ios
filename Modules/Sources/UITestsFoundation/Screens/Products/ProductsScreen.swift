@@ -63,7 +63,16 @@ public final class ProductsScreen: ScreenObject {
         }
 
         productAddButton.tap()
-        app.swipeUp() // Make bottom sheet show more product creation options.
+
+        /// WOOMOB-1901
+        /// Since presentation styles may differ (popover / sheet) we should target it by id
+        let sheet = app.otherElements["product-creation-sheet"]
+        if sheet.waitForExistence(timeout: 1) {
+            sheet.swipeUp() // Make bottom sheet show more product creation options.
+        } else {
+            XCTFail("Add product UI did not appear")
+        }
+
         return self
     }
 

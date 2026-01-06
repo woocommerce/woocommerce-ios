@@ -375,15 +375,13 @@ final class POSOrderListControllerTests {
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = MockPOSOrderListService.makeInitialOrders()[0]
 
+        async let calledOrder = refundsService.awaitProvidePointOfSaleRefundsCall()
+
         // When
         await sut.selectOrder(order)
 
-        await waitUntil { [weak self] in
-            self?.refundsService.spyProvidePointOfSaleRefundsOrder != nil
-        }
-
         // Then
-        #expect(refundsService.spyProvidePointOfSaleRefundsOrder == order)
+        #expect(await calledOrder == order)
     }
 
     @Test func selectOrder_then_updates_refunds_state_with_loading() async throws {

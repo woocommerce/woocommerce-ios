@@ -15,7 +15,7 @@ import protocol Experiments.FeatureFlagService
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
-    var shouldShowRefundButton: Bool { get }
+    var refundActionAvailability: RefundActionAvailability { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -33,6 +33,12 @@ enum POSOrderListSelectedOrderRefundsState {
     case loading
     case loaded([POSRefund])
     case failed(Error)
+}
+
+enum RefundActionAvailability {
+    case unknown
+    case available
+    case unavailable
 }
 
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
@@ -67,20 +73,19 @@ enum POSOrderListSelectedOrderRefundsState {
     }
 
     @MainActor
-    var shouldShowRefundButton: Bool {
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
-            return false
-        }
-        guard let order = selectedOrder else {
-            return false
+    var refundActionAvailability: RefundActionAvailability {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
+              let order = selectedOrder else {
+            return .unavailable
         }
 
         switch selectedOrderRefundsState {
-        case .idle, .loading, .failed:
-            return false
-
+        case .idle, .failed:
+            return .unavailable
+        case .loading:
+            return .unknown
         case .loaded(let refunds):
-            return !areAllProductsFullyRefunded(in: order, with: refunds)
+            return areAllProductsFullyRefunded(in: order, with: refunds) ? .unavailable : .available
         }
     }
 

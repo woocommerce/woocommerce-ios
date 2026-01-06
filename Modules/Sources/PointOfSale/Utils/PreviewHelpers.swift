@@ -487,9 +487,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
         ordersViewState.orders.first
     }
 
-    var shouldShowRefundButton: Bool {
-        true
-    }
+    var refundActionAvailability: RefundActionAvailability { .available }
 
     func loadOrders() async {}
     func loadNextOrders() async {}

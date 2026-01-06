@@ -403,11 +403,11 @@ private extension POSOrderDetailsView {
             }
         }
 
-        func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
+        func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding, shouldShowRefundButton: Bool) -> Bool {
             guard order.status == .completed else { return false }
             switch self {
             case .issueRefund:
-                return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
+                return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) && shouldShowRefundButton
             case .emailReceipt:
                 return true
             }
@@ -433,7 +433,7 @@ private extension POSOrderDetailsView {
 
     var availableActionsSetup: OrderDetailsActionsSetup {
         let available = OrderDetailsAction.allCases
-            .filter { $0.isAvailable(for: order, flags: featureFlags) }
+            .filter { $0.isAvailable(for: order, flags: featureFlags, shouldShowRefundButton: orderListModel.ordersController.shouldShowRefundButton) }
             .sorted { $0.priority > $1.priority }
 
         let primary = available.first

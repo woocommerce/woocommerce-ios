@@ -15,6 +15,7 @@ import protocol Experiments.FeatureFlagService
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
+    var shouldShowRefundButton: Bool { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -63,6 +64,24 @@ enum POSOrderListSelectedOrderRefundsState {
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.featureFlags = featureFlags
+    }
+
+    @MainActor
+    var shouldShowRefundButton: Bool {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
+            return false
+        }
+        guard let order = selectedOrder else {
+            return false
+        }
+
+        switch selectedOrderRefundsState {
+        case .idle, .loading, .failed:
+            return false
+
+        case .loaded(let refunds):
+            return !areAllProductsFullyRefunded(in: order, with: refunds)
+        }
     }
 
     @MainActor
@@ -249,6 +268,28 @@ enum POSOrderListSelectedOrderRefundsState {
                     self.selectedOrderRefundsState = .failed(error)
                 }
             }
+        }
+    }
+
+    @MainActor
+    private func areAllProductsFullyRefunded(
+        in order: POSOrder,
+        with refunds: [POSRefund]
+    ) -> Bool {
+        let orderedQuantitiesByID: [Int64: Decimal] =
+            order.lineItems.reduce(into: [:]) { acc, item in
+                acc[item.productOrVariationID, default: 0] += item.quantity
+            }
+
+        let refundedQuantitiesByID: [Int64: Decimal] =
+            refunds.reduce(into: [:]) { acc, refund in
+                for item in refund.items {
+                    acc[item.productOrVariationID, default: 0] += item.quantity
+                }
+            }
+
+        return orderedQuantitiesByID.allSatisfy { id, orderedQty in
+            (refundedQuantitiesByID[id] ?? 0) >= orderedQty
         }
     }
 }

@@ -54,6 +54,8 @@ struct POSOrderMapper {
     private func map(orderItem: NetworkingCore.OrderItem, currency: String) -> POSOrderItem {
         return POSOrderItem(
             itemID: orderItem.itemID,
+            productID: orderItem.productID,
+            variationID: orderItem.variationID,
             name: orderItem.name,
             quantity: orderItem.quantity,
             formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",

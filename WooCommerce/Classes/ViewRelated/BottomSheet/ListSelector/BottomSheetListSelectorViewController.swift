@@ -103,6 +103,10 @@ private extension BottomSheetListSelectorViewController {
 
     func configureMainView() {
         view.backgroundColor = .listForeground(modal: false)
+
+        if let accessibilityIdentifier = viewProperties.accessibilityIdentifier {
+            view.accessibilityIdentifier = accessibilityIdentifier
+        }
     }
 
     func configureTableView() {

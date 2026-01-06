@@ -168,7 +168,8 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL),
-                                                                   defaultStoreUUID: "sample_store_uuid"))
+                                                                   defaultStoreUUID: "sample_store_uuid",
+                                                                   cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
         analytics = WooAnalytics(analyticsProvider: testingProvider)
 
@@ -187,7 +188,8 @@ class WooAnalyticsTests: XCTestCase {
             "plan": "",
             "site_url": sampleSiteURL,
             "prop-key1": "prop-value1",
-            "store_id": "sample_store_uuid"
+            "store_id": "sample_store_uuid",
+            "cached_woo_core_version": "10.0"
         ]
 
         for property in expectedProperties {
@@ -222,7 +224,8 @@ class WooAnalyticsTests: XCTestCase {
             "was_ecommerce_trial",
             "plan",
             "site_url",
-            "store_id"
+            "store_id",
+            "cached_woo_core_version"
         ]
 
         for property in expectedToBeAbsentProperties {

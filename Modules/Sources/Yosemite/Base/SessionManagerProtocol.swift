@@ -33,6 +33,10 @@ public protocol SessionManagerProtocol {
     ///
     var defaultRoles: [User.Role] { get set }
 
+    /// Cached WooCommerce version for the default store.
+    ///
+    var cachedWooCommerceVersion: String? { get set }
+
     /// Publishes default store ID on change.
     ///
     var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> { get }

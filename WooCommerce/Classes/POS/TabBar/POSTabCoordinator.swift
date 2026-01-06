@@ -323,4 +323,3 @@ private extension POSTabCoordinator {
         TracksProvider.setPOSMode(isPointOfSaleActive)
     }
 }
-

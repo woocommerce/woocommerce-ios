@@ -307,7 +307,11 @@ private extension ProductInventorySettingsViewModel {
             sections.append(stockSection)
 
             if productModel is EditableProductModel {
-                sections.append(Section(rows: [.limitOnePerOrder, .posVisible]))
+                var inventoryRows: [ProductInventorySettingsViewController.Row] = [.limitOnePerOrder]
+                if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts) {
+                    inventoryRows.append(.posVisible)
+                }
+                sections.append(Section(rows: inventoryRows))
             }
         }
 

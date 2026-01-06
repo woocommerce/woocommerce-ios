@@ -256,6 +256,8 @@ private extension ProductInventorySettingsViewController {
             configureManageStock(cell: cell)
         case let cell as SwitchTableViewCell where row == .limitOnePerOrder:
             configureLimitOnePerOrder(cell: cell)
+        case let cell as SwitchTableViewCell where row == .posEnabled:
+            configurePOSEnabled(cell: cell)
         case let cell as UnitInputTableViewCell where row == .stockQuantity:
             configureStockQuantity(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .backorders:
@@ -348,6 +350,15 @@ private extension ProductInventorySettingsViewController {
         cell.isOn = viewModel.soldIndividually == true
         cell.onChange = { [weak self] value in
             self?.viewModel.handleSoldIndividuallyChange(value)
+        }
+    }
+
+    func configurePOSEnabled(cell: SwitchTableViewCell) {
+        cell.title = NSLocalizedString("Show in Point of Sale", comment: "Title of the cell in Product Inventory Settings > Show in Point of Sale")
+        cell.isOn = viewModel.posEnabled
+        cell.onChange = { [weak self] value in
+            print("DEBUG: POS visibility toggled to: \(value)")
+            self?.viewModel.handlePOSEnabledChange(value)
         }
     }
 
@@ -475,6 +486,7 @@ extension ProductInventorySettingsViewController {
         case globalUniqueIdentifier
         case manageStock
         case limitOnePerOrder
+        case posEnabled
         // Manage stock is enabled.
         case stockQuantity
         case backorders
@@ -485,7 +497,7 @@ extension ProductInventorySettingsViewController {
             switch self {
             case .sku, .globalUniqueIdentifier:
                 return TitleAndTextFieldTableViewCell.self
-            case .manageStock, .limitOnePerOrder:
+            case .manageStock, .limitOnePerOrder, .posEnabled:
                 return SwitchTableViewCell.self
             case .stockQuantity:
                 return UnitInputTableViewCell.self

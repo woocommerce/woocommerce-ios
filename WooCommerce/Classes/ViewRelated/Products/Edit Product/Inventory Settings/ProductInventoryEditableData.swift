@@ -8,6 +8,7 @@ struct ProductInventoryEditableData: Equatable {
     let globalUniqueIdentifier: String?
     let manageStock: Bool
     let soldIndividually: Bool?
+    let posEnabled: Bool
     let stockQuantity: Decimal?
     let backordersSetting: ProductBackordersSetting?
     let stockStatus: ProductStockStatus?
@@ -19,6 +20,7 @@ extension ProductInventoryEditableData {
         self.globalUniqueIdentifier = productModel.globalUniqueID
         self.manageStock = productModel.manageStock
         self.soldIndividually = productModel.soldIndividually
+        self.posEnabled = true // temp
         self.stockQuantity = productModel.stockQuantity
         self.backordersSetting = productModel.backordersSetting
         self.stockStatus = productModel.stockStatus

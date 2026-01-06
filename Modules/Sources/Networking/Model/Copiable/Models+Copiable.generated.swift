@@ -1599,6 +1599,7 @@ extension Networking.Product {
         backordersAllowed: CopiableProp<Bool> = .copy,
         backordered: CopiableProp<Bool> = .copy,
         soldIndividually: CopiableProp<Bool> = .copy,
+        posVisible: CopiableProp<Bool> = .copy,
         weight: NullableCopiableProp<String> = .copy,
         dimensions: CopiableProp<ProductDimensions> = .copy,
         shippingRequired: CopiableProp<Bool> = .copy,
@@ -1678,6 +1679,7 @@ extension Networking.Product {
         let backordersAllowed = backordersAllowed ?? self.backordersAllowed
         let backordered = backordered ?? self.backordered
         let soldIndividually = soldIndividually ?? self.soldIndividually
+        let posVisible = posVisible ?? self.posVisible
         let weight = weight ?? self.weight
         let dimensions = dimensions ?? self.dimensions
         let shippingRequired = shippingRequired ?? self.shippingRequired
@@ -1758,6 +1760,7 @@ extension Networking.Product {
             backordersAllowed: backordersAllowed,
             backordered: backordered,
             soldIndividually: soldIndividually,
+            posVisible: posVisible,
             weight: weight,
             dimensions: dimensions,
             shippingRequired: shippingRequired,

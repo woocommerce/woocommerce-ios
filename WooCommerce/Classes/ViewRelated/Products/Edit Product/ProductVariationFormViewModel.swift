@@ -271,6 +271,7 @@ extension ProductVariationFormViewModel {
                                  globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
+                                 posVisible: Bool,
                                  stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {

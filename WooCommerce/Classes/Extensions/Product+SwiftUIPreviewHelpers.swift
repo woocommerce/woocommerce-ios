@@ -46,6 +46,7 @@ extension Product {
                 backordersAllowed: false,
                 backordered: false,
                 soldIndividually: true,
+                posVisible: true,
                 weight: "2.9",
                 dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
                 shippingRequired: false,

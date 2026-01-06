@@ -163,6 +163,11 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         nil
     }
 
+    var posVisible: Bool {
+        // Variations inherit POS visibility from parent product
+        true
+    }
+
     func isStockStatusEnabled() -> Bool {
         true
     }

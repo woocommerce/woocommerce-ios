@@ -398,6 +398,7 @@ extension ProductFormViewModel {
                                  globalUniqueIdentifier: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
+                                 posVisible: Bool,
                                  stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
@@ -407,7 +408,8 @@ extension ProductFormViewModel {
                                                                      stockQuantity: stockQuantity,
                                                                      stockStatusKey: stockStatus?.rawValue,
                                                                      backordersKey: backordersSetting?.rawValue,
-                                                                     soldIndividually: soldIndividually))
+                                                                     soldIndividually: soldIndividually,
+                                                                     posVisible: posVisible))
     }
 
     func updateShippingSettings(weight: String?,

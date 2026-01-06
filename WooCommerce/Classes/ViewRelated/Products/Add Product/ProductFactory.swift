@@ -73,6 +73,7 @@ private extension ProductFactory {
                 backordersAllowed: false,
                 backordered: false,
                 soldIndividually: false,
+                posVisible: true,
                 weight: "",
                 dimensions: ProductDimensions(length: "", width: "", height: ""),
                 shippingRequired: true,

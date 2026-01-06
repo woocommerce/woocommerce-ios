@@ -160,6 +160,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        backordersAllowed: backordersAllowed,
                        backordered: backordered,
                        soldIndividually: soldIndividually,
+                       posVisible: true, // WIP: Needs core data update, or some other workaround
                        weight: weight,
                        dimensions: createReadOnlyDimensions(),
                        shippingRequired: shippingRequired,

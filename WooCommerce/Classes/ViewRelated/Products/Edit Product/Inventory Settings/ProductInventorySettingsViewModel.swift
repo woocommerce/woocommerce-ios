@@ -27,7 +27,7 @@ protocol ProductInventorySettingsViewModelOutput {
     var manageStockEnabled: Bool { get }
     // Optional: only editable in `Product`
     var soldIndividually: Bool? { get }
-    var posEnabled: Bool { get }
+    var posVisible: Bool { get }
 
     // Editable data - manage stock enabled.
     var stockQuantity: Decimal? { get }
@@ -53,7 +53,7 @@ protocol ProductInventorySettingsActionHandler {
                                                         onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool)
     func handleSoldIndividuallyChange(_ soldIndividually: Bool?)
-    func handlePOSEnabledChange(_ posEnabled: Bool)
+    func handlePOSEnabledChange(_ posVisible: Bool)
     func handleStockQuantityChange(_ stockQuantity: String?)
     func handleBackordersSettingChange(_ backordersSetting: ProductBackordersSetting?)
     func handleStockStatusChange(_ stockStatus: ProductStockStatus?)
@@ -79,7 +79,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     private(set) var manageStockEnabled: Bool
     // Optional: only editable in `Product`
     private(set) var soldIndividually: Bool?
-    private(set) var posEnabled: Bool = true
+    private(set) var posVisible: Bool
 
     // Editable data - manage stock enabled.
     private(set) var stockQuantity: Decimal?
@@ -123,6 +123,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
         self.globalUniqueID = productModel.globalUniqueID
         self.manageStockEnabled = productModel.manageStock
         self.soldIndividually = productModel.soldIndividually
+        self.posVisible = productModel.posVisible
 
         self.stockQuantity = productModel.stockQuantity
         self.backordersSetting = productModel.backordersSetting
@@ -222,9 +223,9 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         self.soldIndividually = soldIndividually
     }
 
-    func handlePOSEnabledChange(_ posEnabled: Bool) {
-        print("DEBUG: vm received POS enabled change: \(posEnabled)")
-        self.posEnabled = posEnabled
+    func handlePOSEnabledChange(_ posVisible: Bool) {
+        print("DEBUG: vm received POS enabled change: \(posVisible)")
+        self.posVisible = posVisible
     }
 
     func handleStockQuantityChange(_ stockQuantity: String?) {
@@ -254,7 +255,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
                                                     globalUniqueIdentifier: globalUniqueID,
                                                     manageStock: manageStockEnabled,
                                                     soldIndividually: soldIndividually,
-                                                    posEnabled: posEnabled,
+                                                    posVisible: posVisible,
                                                     stockQuantity: stockQuantity,
                                                     backordersSetting: backordersSetting,
                                                     stockStatus: stockStatus)
@@ -306,7 +307,7 @@ private extension ProductInventorySettingsViewModel {
             sections.append(stockSection)
 
             if productModel is EditableProductModel {
-                sections.append(Section(rows: [.limitOnePerOrder, .posEnabled]))
+                sections.append(Section(rows: [.limitOnePerOrder, .posVisible]))
             }
         }
 

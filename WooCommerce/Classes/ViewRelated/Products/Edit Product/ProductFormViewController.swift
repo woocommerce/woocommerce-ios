@@ -1727,6 +1727,7 @@ private extension ProductFormViewController {
                                           globalUniqueIdentifier: data.globalUniqueIdentifier,
                                           manageStock: data.manageStock,
                                           soldIndividually: data.soldIndividually,
+                                          posVisible: data.posVisible,
                                           stockQuantity: data.stockQuantity,
                                           backordersSetting: data.backordersSetting,
                                           stockStatus: data.stockStatus)

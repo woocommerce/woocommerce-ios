@@ -55,6 +55,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     public let backordered: Bool
 
     public let soldIndividually: Bool
+    public let posVisible: Bool
     public let weight: String?
     public let dimensions: ProductDimensions
 
@@ -230,6 +231,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 backordersAllowed: Bool,
                 backordered: Bool,
                 soldIndividually: Bool,
+                posVisible: Bool,
                 weight: String?,
                 dimensions: ProductDimensions,
                 shippingRequired: Bool,
@@ -308,6 +310,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.backordersAllowed = backordersAllowed
         self.backordered = backordered
         self.soldIndividually = soldIndividually
+        self.posVisible = posVisible
         self.weight = weight
         self.dimensions = dimensions
         self.shippingRequired = shippingRequired
@@ -478,6 +481,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let soldIndividually = try container.decodeIfPresent(Bool.self, forKey: .soldIndividually) ?? false
 
+        let posVisible = try container.decodeIfPresent(Bool.self, forKey: .posVisible) ?? true
+
         // Even though a plain install of WooCommerce Core provides String values,
         // some plugins alter the field value from String to Int or Decimal.
         let weight = container.failsafeDecodeIfPresent(targetType: String.self,
@@ -615,6 +620,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   backordersAllowed: backordersAllowed,
                   backordered: backordered,
                   soldIndividually: soldIndividually,
+                  posVisible: posVisible,
                   weight: weight,
                   dimensions: dimensions,
                   shippingRequired: shippingRequired,
@@ -700,6 +706,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(globalUniqueID, forKey: .globalUniqueID)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(soldIndividually, forKey: .soldIndividually)
+        try container.encode(posVisible, forKey: .posVisible)
 
         // API currently only accepts integer values for stock quantity
         if hasIntegerStockQuantity {
@@ -837,6 +844,7 @@ private extension Product {
         case backordered        = "backordered"
 
         case soldIndividually   = "sold_individually"
+        case posVisible         = "pos_visible"
         case weight             = "weight"
         case dimensions         = "dimensions"
 

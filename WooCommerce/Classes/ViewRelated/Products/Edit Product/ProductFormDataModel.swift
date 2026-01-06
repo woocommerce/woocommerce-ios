@@ -54,6 +54,7 @@ protocol ProductFormDataModel {
     var stockQuantity: Decimal? { get }
     var backordersKey: String { get }
     var soldIndividually: Bool? { get }
+    var posVisible: Bool { get }
     // Whether stock status is available for the product.
     func isStockStatusEnabled() -> Bool
 

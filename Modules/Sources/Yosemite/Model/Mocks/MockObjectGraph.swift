@@ -294,6 +294,7 @@ extension MockObjectGraph {
             backordersAllowed: true,
             backordered: quantity < 0,
             soldIndividually: true,
+            posVisible: true,
             weight: "20 grams",
             dimensions: .init(length: "10", width: "10", height: "10"),
             shippingRequired: true,

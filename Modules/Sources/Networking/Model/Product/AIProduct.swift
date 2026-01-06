@@ -166,6 +166,7 @@ public extension Product {
                   backordersAllowed: false,
                   backordered: false,
                   soldIndividually: false,
+                  posVisible: true,
                   weight: aiProduct.shipping.weight,
                   dimensions: ProductDimensions(length: aiProduct.shipping.length, width: aiProduct.shipping.width, height: aiProduct.shipping.height),
                   shippingRequired: true,

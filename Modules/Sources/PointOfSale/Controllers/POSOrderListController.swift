@@ -9,7 +9,6 @@ import class Yosemite.POSRefundsService
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefundCondensed
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService

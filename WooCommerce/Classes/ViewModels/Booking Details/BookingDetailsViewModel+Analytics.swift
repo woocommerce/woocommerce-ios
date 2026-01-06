@@ -1,6 +1,10 @@
 import enum Networking.BookingAttendanceStatus
 
 extension WooAnalyticsEvent {
+    private enum Properties {
+        static let bookingStatus = "booking_status"
+    }
+
     enum BookingsDetail {
         static func bookingCancelled() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingCancelled)
@@ -24,11 +28,5 @@ extension WooAnalyticsEvent {
         static func bookingViewLinkedOrderTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingViewLinkedOrderTapped)
         }
-    }
-}
-
-fileprivate extension WooAnalyticsEvent.BookingsDetail {
-    enum Properties {
-        static let bookingStatus = "booking_status"
     }
 }

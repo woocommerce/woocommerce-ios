@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Yosemite
@@ -44,7 +44,7 @@ extension NetworkingCore.DotcomError {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> NetworkingCore.DotcomError {
-        .empty()
+        .empty
     }
 }
 extension NetworkingCore.MetaContainer {

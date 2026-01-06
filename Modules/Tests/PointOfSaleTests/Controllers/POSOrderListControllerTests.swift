@@ -393,13 +393,16 @@ final class POSOrderListControllerTests {
         await sut.selectOrder(order)
 
         // Then
-        await waitUntil { [weak self] in
-            if case .loading = self?.sut.selectedOrderRefundsState {
-                return true
-            }
-
+        let didBecomeLoading = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loading = sut.selectedOrderRefundsState { return true }
             return false
         }
+
+        #expect(
+            didBecomeLoading,
+            "Expected selectedOrderRefundsState to become .loading before timeout"
+        )
     }
 
     @Test func selectOrder_when_provides_refunds_then_updates_refunds_state_with_results() async throws {
@@ -414,36 +417,51 @@ final class POSOrderListControllerTests {
         // When
         await sut.selectOrder(order)
 
-        await waitUntil { [weak self] in
-            if case .loaded = self?.sut.selectedOrderRefundsState { return true }
+        // Then
+        let didLoad = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
             return false
         }
 
+        #expect(
+            didLoad,
+            "Expected selectedOrderRefundsState to become .loaded before timeout"
+        )
+
         guard case .loaded(let loadedRefunds) = sut.selectedOrderRefundsState else {
-            Issue.record("Expected loaded state")
+            #expect(Bool(false), "Expected .loaded state")
             return
         }
 
-        // Then
         #expect(loadedRefunds == refunds)
     }
 
     @Test func selectOrder_when_refunds_service_errors_then_failed_contains_same_error_type() async throws {
+        // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = MockPOSOrderListService.makeInitialOrders()[0]
 
         struct TestError: Error {}
         refundsService.errorToThrow = TestError()
 
+        // When
         await sut.selectOrder(order)
 
-        await waitUntil { [weak self] in
-            if case .failed = self?.sut.selectedOrderRefundsState { return true }
+        // Then
+        let didFail = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .failed = sut.selectedOrderRefundsState { return true }
             return false
         }
 
+        #expect(
+            didFail,
+            "Expected selectedOrderRefundsState to become .failed before timeout"
+        )
+
         guard case .failed(let error) = sut.selectedOrderRefundsState else {
-            Issue.record("Expected failed state")
+            #expect(Bool(false), "Expected .failed state")
             return
         }
 

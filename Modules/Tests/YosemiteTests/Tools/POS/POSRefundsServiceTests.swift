@@ -11,11 +11,7 @@ struct POSRefundsServiceTests {
         let sut = POSRefundsService(siteID: siteID, refundsRemote: remote)
         let orderRefunds = [POSOrderRefundCondensed(refundID: 10, formattedTotal: "$22"), POSOrderRefundCondensed(refundID: 20, formattedTotal: "$22")]
 
-        let order = POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
-                             formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
-                             paymentMethodTitle: "Credit Card", lineItems: [],
-                             refunds: orderRefunds, formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
-                             formattedPaymentTotal: "$10.00", formattedNetAmount: nil)
+        let order = makeOrder(id: 1, refunds: orderRefunds)
 
         // When
         _ = try await sut.providePointOfSaleRefunds(for: order)
@@ -34,11 +30,8 @@ struct POSRefundsServiceTests {
         struct TestError: Error {}
         remote.result = .failure(TestError())
 
-        let order = POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
-                             formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
-                             paymentMethodTitle: "Credit Card", lineItems: [],
-                             refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
-                             formattedPaymentTotal: "$10.00", formattedNetAmount: nil)
+        let order = makeOrder()
+
 
         // Then
         do {
@@ -58,11 +51,8 @@ struct POSRefundsServiceTests {
         let r2 = MockRefunds.sampleRefund()
         remote.result = .success([r1, r2])
 
-        let order = POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
-                              formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
-                              paymentMethodTitle: "Credit Card", lineItems: [],
-                              refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
-                              formattedPaymentTotal: "$10.00", formattedNetAmount: nil)
+        let order = makeOrder()
+
 
         // When
         let refunds = try await sut.providePointOfSaleRefunds(for: order)
@@ -82,11 +72,7 @@ struct POSRefundsServiceTests {
         let refund = MockRefunds.sampleRefund(items: [item1, item2])
         remote.result = .success([refund])
 
-        let order = POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
-                             formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
-                             paymentMethodTitle: "Credit Card", lineItems: [],
-                             refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
-                             formattedPaymentTotal: "$10.00", formattedNetAmount: nil)
+        let order = makeOrder()
 
         // When
         let posRefunds = try await sut.providePointOfSaleRefunds(for: order)
@@ -104,6 +90,25 @@ struct POSRefundsServiceTests {
         #expect(mappedItems[1].productID == item2.productID)
         #expect(mappedItems[1].variationID == item2.variationID)
         #expect(mappedItems[1].quantity == item2.quantity)
+    }
+
+    private func makeOrder(id: Int64 = 1, refunds: [POSOrderRefundCondensed] = []) -> POSOrder {
+        POSOrder(
+            id: id,
+            number: "1001",
+            dateCreated: Date(),
+            status: .completed,
+            formattedTotal: "$10.00",
+            formattedSubtotal: "$10.00",
+            customerEmail: "test1@example.com",
+            paymentMethodTitle: "Credit Card",
+            lineItems: [],
+            refunds: refunds,
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$10.00",
+            formattedNetAmount: nil
+        )
     }
 }
 

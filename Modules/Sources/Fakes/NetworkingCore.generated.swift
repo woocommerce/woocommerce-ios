@@ -44,7 +44,7 @@ extension NetworkingCore.DotcomError {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> NetworkingCore.DotcomError {
-        .empty
+        .empty()
     }
 }
 extension NetworkingCore.MetaContainer {

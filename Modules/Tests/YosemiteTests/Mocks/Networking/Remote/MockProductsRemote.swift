@@ -447,6 +447,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
+                                    visibleInPOS: Bool?,
                                     pageNumber: Int) async throws -> PagedItems<POSProduct> {
         guard let result = posProductsResultsBySiteID[siteID] else {
             throw NetworkError.notFound()
@@ -462,6 +463,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
+                                      visibleInPOS: Bool?,
                                       pageNumber: Int) async throws -> PagedItems<POSProduct> {
         guard let result = posSearchResultsByQuery[query] else {
             throw NetworkError.notFound()
@@ -481,6 +483,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
+                                           visibleInPOS: Bool?,
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct> {
         lastRequestedPageSize = perPage

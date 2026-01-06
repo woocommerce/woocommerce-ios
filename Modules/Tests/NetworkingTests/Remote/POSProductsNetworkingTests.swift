@@ -61,7 +61,7 @@ struct POSProductsNetworkingTests {
         let remote = ProductsRemote(network: network)
 
         // When
-        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID, productTypes: [.simple, .variable], pageNumber: 1)
+        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID, productTypes: [.simple, .variable], visibleInPOS: true, pageNumber: 1)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
@@ -123,6 +123,7 @@ struct POSProductsNetworkingTests {
             for: sampleSiteID,
             query: "search terms",
             productTypes: [.simple, .variable],
+            visibleInPOS: true,
             pageNumber: 1)
 
         // Then
@@ -176,6 +177,123 @@ struct POSProductsNetworkingTests {
         await #expect(throws: NetworkError.notFound()) {
             try await remote.searchProductsForPointOfSale(for: sampleSiteID, query: "search")
         }
+    }
+
+    @Test func loadProductsForPointOfSale_includes_visible_in_pos_true_parameter() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(
+            for: sampleSiteID,
+            productTypes: [.simple],
+            visibleInPOS: true,
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] as? String == "true")
+    }
+
+    @Test func loadProductsForPointOfSale_includes_visible_in_pos_false_parameter() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(
+            for: sampleSiteID,
+            productTypes: [.simple],
+            visibleInPOS: false,
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] as? String == "false")
+    }
+
+    @Test func loadProductsForPointOfSale_omits_visible_in_pos_when_nil() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(
+            for: sampleSiteID,
+            productTypes: [.simple],
+            visibleInPOS: nil,
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] == nil)
+    }
+
+    @Test func searchProductsForPointOfSale_includes_visible_in_pos_true_parameter() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: "search",
+            productTypes: [.simple],
+            visibleInPOS: true,
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] as? String == "true")
+    }
+
+    @Test func searchProductsForPointOfSale_includes_visible_in_pos_false_parameter() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: "search",
+            productTypes: [.simple],
+            visibleInPOS: false,
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] as? String == "false")
+    }
+
+    @Test func searchProductsForPointOfSale_omits_visible_in_pos_when_nil() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: "search",
+            productTypes: [.simple],
+            visibleInPOS: nil,
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] == nil)
+    }
+
+    @Test func loadPopularProductsForPointOfSale_includes_visible_in_pos_parameter() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        _ = try? await remote.loadPopularProductsForPointOfSale(
+            for: sampleSiteID,
+            productTypes: [.simple],
+            visibleInPOS: true,
+            pageNumber: 1,
+            perPage: 10)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["visible_in_pos"] as? String == "true")
     }
 
     @Test func posProduct_provides_field_names_for_request() {

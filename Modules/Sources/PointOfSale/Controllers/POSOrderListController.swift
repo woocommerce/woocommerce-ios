@@ -5,7 +5,6 @@ import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.POSRefundsServiceProtocol
-import class Yosemite.POSRefundsService
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
 import struct Yosemite.POSOrderItem

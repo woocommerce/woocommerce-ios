@@ -14,13 +14,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var moreDetailsContainerView: UIView!
 
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
-    }()
-
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
 
@@ -159,8 +152,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         configureMainView()
         configureTableView()
         configureMoreDetailsContainerView()
+        configureKeyboardAvoidance()
 
-        startListeningToNotifications()
         handleSwipeBackGesture()
 
         observeProduct()
@@ -701,6 +694,23 @@ private extension ProductFormViewController {
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
 
         updateMoreDetailsButtonVisibility()
+    }
+
+    func configureKeyboardAvoidance() {
+        // This moves the bottom bar above the keyboard and naturally resizes the table view.
+        moreDetailsContainerView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            moreDetailsContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            moreDetailsContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            moreDetailsContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            moreDetailsContainerView.topAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
     }
 }
 
@@ -1373,22 +1383,6 @@ private extension ProductFormViewController {
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
-    }
-}
-
-// MARK: - Keyboard management
-//
-private extension ProductFormViewController {
-    /// Registers for all of the related Notifications
-    ///
-    func startListeningToNotifications() {
-        keyboardFrameObserver.startObservingKeyboardFrame()
-    }
-}
-
-extension ProductFormViewController: KeyboardScrollable {
-    var scrollable: UIScrollView {
-        return tableView
     }
 }
 

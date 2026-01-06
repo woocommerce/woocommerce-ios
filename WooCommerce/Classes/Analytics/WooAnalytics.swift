@@ -198,6 +198,7 @@ private extension Analytics {
         updatedProperties[PropertyKeys.planKey] = site?.plan
         updatedProperties[PropertyKeys.siteURL] = site?.url
         updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
+        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
         if let site {
             updatedProperties[PropertyKeys.isCIAB] = ServiceLocator.ciabEligibilityChecker.isSiteCIAB(site)
             if let gardenPartner = site.gardenPartner {
@@ -343,6 +344,7 @@ private enum PropertyKeys {
     static let planKey              = "plan"
     static let siteURL              = "site_url"
     static let storeID              = "store_id"
+    static let cachedWooCommerceVersionKey = "cached_woo_core_version"
     static let isCIAB               = "is_ciab"
     static let gardenPartner        = "garden_partner"
 }

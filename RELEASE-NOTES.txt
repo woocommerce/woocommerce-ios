@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+24.0
+-----
+
+
 23.9
 -----
 - [*] Show specific error when a variation is missing at POS checkout via WPCom login [https://github.com/woocommerce/woocommerce-ios/pull/16430]
@@ -8,10 +12,14 @@
 - [Internal] Cleaned up logic for push notification token registration [https://github.com/woocommerce/woocommerce-ios/pull/16434]
 - [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
 - [*] Prevent POS cash payment button showing during a card payment (https://github.com/woocommerce/woocommerce-ios/pull/16440)
-- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16446]
 - [*] Enabled site troubleshooting for users authenticated with site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16441]
 - [*] Troubleshooting tool: Add step to load products and technical details for decoding errors [https://github.com/woocommerce/woocommerce-ios/pull/16444]
 - [*] Use authenticated web view for updating plugins [https://github.com/woocommerce/woocommerce-ios/pull/16448]
+- [*] Fix a rare crash when opening the Coupon list [https://github.com/woocommerce/woocommerce-ios/pull/16478]
+- [*] Fixed an issue that could cause the keyboard to cover the product title when edited [https://github.com/woocommerce/woocommerce-ios/pull/16470]
+- [*] Fix application logs showing wrong year for some locales. (https://github.com/woocommerce/woocommerce-ios/pull/16471)
+- [internal] Update Stripe Terminal to 4.7.3 [https://github.com/woocommerce/woocommerce-ios/pull/16467]
+- [Internal] Fix display of Just in Time Message banners [https://github.com/woocommerce/woocommerce-ios/pull/16480]
 
 23.8
 -----

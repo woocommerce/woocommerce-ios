@@ -41,6 +41,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
         let pagedProducts = try await productsRemote.loadProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            visibleInPOS: true,
             pageNumber: pageNumber
         )
 
@@ -94,6 +95,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
             for: siteID,
             query: searchTerm,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            visibleInPOS: true,
             pageNumber: pageNumber
         )
         if pageNumber == 1 {
@@ -132,6 +134,7 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
         let receivedItems = try await productsRemote.loadPopularProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            visibleInPOS: true,
             pageNumber: pageNumber,
             perPage: pageSize
         )

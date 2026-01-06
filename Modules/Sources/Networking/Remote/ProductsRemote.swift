@@ -82,15 +82,18 @@ public protocol ProductsRemoteProtocol {
 
     func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
+                                    visibleInPOS: Bool?,
                                     pageNumber: Int) async throws -> PagedItems<POSProduct>
 
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
+                                      visibleInPOS: Bool?,
                                       pageNumber: Int) async throws -> PagedItems<POSProduct>
 
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
+                                           visibleInPOS: Bool?,
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct>
 
@@ -221,10 +224,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
+                                           visibleInPOS: Bool? = true,
                                            pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
-            productTypes: productTypes)
+            productTypes: productTypes,
+            visibleInPOS: visibleInPOS)
 
         return try await makePagedPointOfSaleProductsRequest(
             for: siteID,
@@ -241,12 +246,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadPopularProductsForPointOfSale(for siteID: Int64,
                                                   productTypes: [ProductType] = [.simple],
+                                                  visibleInPOS: Bool? = true,
                                                   pageNumber: Int = 1,
                                                   perPage: Int = Default.pageSize) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
             productsPerPage: String(perPage),
             productTypes: productTypes,
+            visibleInPOS: visibleInPOS,
             orderBy: .popularity,
             order: .descending
         )
@@ -260,9 +267,10 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],
+                                                   visibleInPOS: Bool? = true,
                                                    orderBy: OrderKey = .name,
                                                    order: Order = .ascending) -> [String: any Hashable] {
-        [
+        var parameters: [String: any Hashable] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
@@ -274,6 +282,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.downloadable: String(false),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+
+        if let visibleInPOS = visibleInPOS {
+            parameters[ParameterKey.visibleInPOS] = String(visibleInPOS)
+        }
+
+        return parameters
     }
 
     private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
@@ -303,10 +317,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func searchProductsForPointOfSale(for siteID: Int64,
                                              query: String,
                                              productTypes: [ProductType] = [.simple],
+                                             visibleInPOS: Bool? = true,
                                              pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         var parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
-            productTypes: productTypes)
+            productTypes: productTypes,
+            visibleInPOS: visibleInPOS)
 
         parameters.updateValue(query, forKey: ParameterKey.search)
 
@@ -774,6 +790,7 @@ public extension ProductsRemote {
         static let after = "after"
         static let extendedInfo = "extended_info"
         static let downloadable = "downloadable"
+        static let visibleInPOS = "visible_in_pos"
     }
 
     private enum ParameterValues {

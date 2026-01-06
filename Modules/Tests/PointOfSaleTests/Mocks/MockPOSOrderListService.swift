@@ -267,7 +267,7 @@ extension MockPOSOrderListService {
                 )
             ],
             refunds: [
-                POSOrderRefundCondensed(refundID: 1001, formattedTotal: "-$12.00", reason: "Customer request")
+                POSOrderRefund(refundID: 1001, formattedTotal: "-$12.00", reason: "Customer request")
             ],
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",

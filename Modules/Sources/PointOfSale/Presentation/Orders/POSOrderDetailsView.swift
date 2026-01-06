@@ -2,7 +2,7 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefundCondensed
+import struct Yosemite.POSOrderRefund
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -322,7 +322,7 @@ private extension POSOrderDetailsView {
     }
 
     @ViewBuilder
-    func refundRow(refund: POSOrderRefundCondensed) -> some View {
+    func refundRow(refund: POSOrderRefund) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             totalsRow(
                 title: Localization.refundLabel,

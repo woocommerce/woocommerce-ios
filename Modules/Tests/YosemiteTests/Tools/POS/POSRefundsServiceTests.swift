@@ -9,7 +9,7 @@ struct POSRefundsServiceTests {
         let remote = MockPOSRefundsRemote()
         let siteID: Int64 = 123
         let sut = POSRefundsService(siteID: siteID, refundsRemote: remote)
-        let orderRefunds = [POSOrderRefundCondensed(refundID: 10, formattedTotal: "$22"), POSOrderRefundCondensed(refundID: 20, formattedTotal: "$22")]
+        let orderRefunds = [POSOrderRefund(refundID: 10, formattedTotal: "$22"), POSOrderRefund(refundID: 20, formattedTotal: "$22")]
 
         let order = makeOrder(id: 1, refunds: orderRefunds)
 
@@ -92,7 +92,7 @@ struct POSRefundsServiceTests {
         #expect(mappedItems[1].quantity == item2.quantity)
     }
 
-    private func makeOrder(id: Int64 = 1, refunds: [POSOrderRefundCondensed] = []) -> POSOrder {
+    private func makeOrder(id: Int64 = 1, refunds: [POSOrderRefund] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "1001",

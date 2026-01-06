@@ -2,7 +2,7 @@ import Foundation
 import struct NetworkingCore.OrderRefundCondensed
 import class WooFoundationCore.CurrencyFormatter
 
-public struct POSOrderRefundCondensed: Equatable, Hashable {
+public struct POSOrderRefund: Equatable, Hashable {
     public let refundID: Int64
     public let formattedTotal: String
     public let reason: String?

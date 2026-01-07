@@ -22,6 +22,17 @@ struct POSSettingsLocalCatalogDetailView: View {
                             managingDataUsage
                         }
                         manualCatalogUpdate
+
+                        // DEBUG: Clear catalog button
+                        Button("DEBUG: Clear Catalog") {
+                            Task {
+                                await viewModel.clearCatalog()
+                            }
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.red)
+                        .cornerRadius(8)
                     }
                     .padding(.horizontal, POSPadding.medium)
                 }

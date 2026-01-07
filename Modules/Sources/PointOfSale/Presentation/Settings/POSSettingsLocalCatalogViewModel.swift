@@ -95,6 +95,16 @@ final class POSSettingsLocalCatalogViewModel {
         }
     }
 
+    @MainActor
+    func clearCatalog() async {
+        do {
+            try await catalogSyncCoordinator.clearAllCatalogData(for: siteID)
+            await loadCatalogData()
+        } catch {
+            DDLogError("⛔️ POSSettingsLocalCatalog: Failed to clear catalog: \(error)")
+        }
+    }
+
     /// Starts observing sync state changes to update UI when sync completes in background
     private func startObservingSyncState() {
         syncStateObservationTask = Task { @MainActor in

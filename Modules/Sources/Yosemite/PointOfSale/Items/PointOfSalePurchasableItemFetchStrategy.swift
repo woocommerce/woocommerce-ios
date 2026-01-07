@@ -26,6 +26,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
     private let analytics: POSItemFetchAnalyticsTracking
 
     static var defaultProductTypes: [ProductType] { [.simple, .variable] }
+    static var defaultProductVisibility: Bool = true // Switch for testing
 
     init(siteID: Int64,
          productsRemote: ProductsRemoteProtocol,
@@ -41,7 +42,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
         let pagedProducts = try await productsRemote.loadProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
-            visibleInPOS: true,
+            visibleInPOS: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductVisibility,
             pageNumber: pageNumber
         )
 
@@ -95,7 +96,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
             for: siteID,
             query: searchTerm,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
-            visibleInPOS: true,
+            visibleInPOS: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductVisibility,
             pageNumber: pageNumber
         )
         if pageNumber == 1 {
@@ -134,7 +135,7 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
         let receivedItems = try await productsRemote.loadPopularProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
-            visibleInPOS: true,
+            visibleInPOS: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductVisibility,
             pageNumber: pageNumber,
             perPage: pageSize
         )

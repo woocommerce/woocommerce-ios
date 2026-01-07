@@ -224,7 +224,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
-                                           visibleInPOS: Bool? = true,
+                                           visibleInPOS: Bool? = true, //
                                            pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
@@ -267,7 +267,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],
-                                                   visibleInPOS: Bool? = true,
+                                                   visibleInPOS: Bool? = true, //
                                                    orderBy: OrderKey = .name,
                                                    order: Order = .ascending) -> [String: any Hashable] {
         var parameters: [String: any Hashable] = [
@@ -293,6 +293,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
                                                      pageNumber: Int,
                                                      parameters: [String: any Hashable]) async throws -> PagedItems<POSProduct> {
+        // DEBUG: Log request parameters to verify visible_in_pos is included
+        print("🍍 DEBUG [POS Request Params]: \(parameters)")
+
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
@@ -302,6 +305,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ListMapper<POSProduct>(siteID: siteID)
 
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+
+        // TESTING:
+        let totalItems = responseHeaders?[PaginationHeaderKey.totalCount] ?? "nil"
+        let totalPages = responseHeaders?[PaginationHeaderKey.totalPagesCount] ?? "nil"
+        print("🍍 DEBUG [POS Products]: Page \(pageNumber) - Items: \(products.count), X-WP-Total: \(totalItems), X-WP-TotalPages: \(totalPages)")
+
         return createPagedItems(items: products, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 

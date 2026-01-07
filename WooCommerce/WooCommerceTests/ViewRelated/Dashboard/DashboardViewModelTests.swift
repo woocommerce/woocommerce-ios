@@ -69,6 +69,8 @@ final class DashboardViewModelTests: XCTestCase {
                 onCompletion(false)
             case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
                 onCompletion(false)
+            case let .loadSelfDrivenPushTokenID(_, onCompletion):
+                onCompletion(nil)
             default:
                 break
             }
@@ -999,6 +1001,8 @@ private extension DashboardViewModelTests {
                 onCompletion(false)
             case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
                 onCompletion(false)
+            case let .loadSelfDrivenPushTokenID(_, onCompletion):
+                onCompletion(nil)
             default:
                 break
             }

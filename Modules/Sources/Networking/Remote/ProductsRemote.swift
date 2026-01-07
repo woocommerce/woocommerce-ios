@@ -224,7 +224,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
-                                           visibleInPOS: Bool? = true, //
+                                           visibleInPOS: Bool?,
                                            pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
@@ -246,7 +246,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadPopularProductsForPointOfSale(for siteID: Int64,
                                                   productTypes: [ProductType] = [.simple],
-                                                  visibleInPOS: Bool? = true,
+                                                  visibleInPOS: Bool?,
                                                   pageNumber: Int = 1,
                                                   perPage: Int = Default.pageSize) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
@@ -267,7 +267,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],
-                                                   visibleInPOS: Bool? = true, //
+                                                   visibleInPOS: Bool?,
                                                    orderBy: OrderKey = .name,
                                                    order: Order = .ascending) -> [String: any Hashable] {
         var parameters: [String: any Hashable] = [
@@ -326,7 +326,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func searchProductsForPointOfSale(for siteID: Int64,
                                              query: String,
                                              productTypes: [ProductType] = [.simple],
-                                             visibleInPOS: Bool? = true,
+                                             visibleInPOS: Bool?,
                                              pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         var parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,

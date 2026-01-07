@@ -26,7 +26,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
     private let analytics: POSItemFetchAnalyticsTracking
 
     static var defaultProductTypes: [ProductType] { [.simple, .variable] }
-    static var defaultProductVisibility: Bool = true // Switch for testing
+    static var defaultProductVisibility: Bool = false // WIP: Switched for testing, should be `true` in prod
 
     init(siteID: Int64,
          productsRemote: ProductsRemoteProtocol,

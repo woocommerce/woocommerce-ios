@@ -14,7 +14,7 @@ enum POSConstants {
 
         /// URL for Point of Sale's barcode scanner documentation
         ///
-        case pointOfSaleBarcodeScannerDocumentation = "https://woocommerce.com/document/barcode-and-qr-code-scanner/"
+        case pointOfSaleBarcodeScannerDocumentation = "https://woocommerce.com/document/point-of-sale-mode-barcode-scanning/"
 
         /// URL for Point of Sale's IPP Woo Payments documentation
         ///

@@ -844,7 +844,7 @@ private extension Product {
         case backordered        = "backordered"
 
         case soldIndividually   = "sold_individually"
-        case posVisible         = "pos_visible"
+        case posVisible         = "visible_in_pos"
         case weight             = "weight"
         case dimensions         = "dimensions"
 

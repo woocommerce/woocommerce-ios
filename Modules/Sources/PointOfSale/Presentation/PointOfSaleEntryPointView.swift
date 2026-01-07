@@ -3,6 +3,7 @@ import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSRefundsServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.PluginsServiceProtocol
@@ -53,6 +54,7 @@ public struct PointOfSaleEntryPointView: View {
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          orderService: POSOrderServiceProtocol,
+         refundsService: POSRefundsServiceProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          receiptService: POSReceiptServiceProtocol,
@@ -131,7 +133,9 @@ public struct PointOfSaleEntryPointView: View {
         )
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
-        let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory)
+        let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
+                                                      refundsService: refundsService,
+                                                      featureFlags: services.featureFlags)
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services
@@ -204,6 +208,7 @@ public struct PointOfSaleEntryPointView: View {
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
         orderService: POSOrderServicePreview(),
+        refundsService: POSRefundsServicePreview(),
         onPointOfSaleModeActiveStateChange: { _ in },
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         receiptService: POSReceiptServicePreview(),

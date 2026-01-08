@@ -30,10 +30,10 @@ final class StripeCardReaderCacheTests: XCTestCase {
 
     func test_cache_matches_stripe_reader() {
         let mockStripeBBPOSReader = MockStripeCardReader.bbposChipper2XBT()
-        let mockStripeVerifoneReader = MockStripeCardReader.verifoneP400()
+        let mockStripeM2Reader = MockStripeCardReader.stripeM2()
 
         let cache = StripeCardReaderDiscoveryCache()
-        cache.insert([mockStripeBBPOSReader, mockStripeVerifoneReader, mockStripeVerifoneReader, mockStripeBBPOSReader])
+        cache.insert([mockStripeBBPOSReader, mockStripeM2Reader, mockStripeM2Reader, mockStripeBBPOSReader])
 
         let cardReader = CardReader(serial: mockStripeBBPOSReader.serialNumber,
                                     vendorIdentifier: nil,

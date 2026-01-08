@@ -153,8 +153,6 @@ extension MockPOSOrderListService {
             lineItems: [
                 POSOrderItem(
                     itemID: 1,
-                    productID: 1,
-                    variationID: 1,
                     name: "Coffee",
                     quantity: 2,
                     formattedPrice: "$10.00",
@@ -164,8 +162,6 @@ extension MockPOSOrderListService {
                 ),
                 POSOrderItem(
                     itemID: 2,
-                    productID: 1,
-                    variationID: 1,
                     name: "Muffin",
                     quantity: 1,
                     formattedPrice: "$5.99",
@@ -193,8 +189,6 @@ extension MockPOSOrderListService {
             lineItems: [
                 POSOrderItem(
                     itemID: 3,
-                    productID: 1,
-                    variationID: 1,
                     name: "Tea",
                     quantity: 1,
                     formattedPrice: "$15.50",
@@ -228,8 +222,6 @@ extension MockPOSOrderListService {
             lineItems: [
                 POSOrderItem(
                     itemID: 4,
-                    productID: 1,
-                    variationID: 1,
                     name: "Sandwich",
                     quantity: 1,
                     formattedPrice: "$12.00",
@@ -239,8 +231,6 @@ extension MockPOSOrderListService {
                 ),
                 POSOrderItem(
                     itemID: 5,
-                    productID: 1,
-                    variationID: 1,
                     name: "Soup",
                     quantity: 2,
                     formattedPrice: "$15.38",
@@ -268,8 +258,6 @@ extension MockPOSOrderListService {
             lineItems: [
                 POSOrderItem(
                     itemID: 6,
-                    productID: 1,
-                    variationID: 1,
                     name: "Cookies",
                     quantity: 1,
                     formattedPrice: "$12.00",
@@ -305,8 +293,6 @@ extension MockPOSOrderListService {
             lineItems: [
                 POSOrderItem(
                     itemID: 7,
-                    productID: 1,
-                    variationID: 1,
                     name: "Test Product",
                     quantity: 1,
                     formattedPrice: "src",

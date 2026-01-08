@@ -3,7 +3,7 @@
 
 24.0
 -----
-
+- [*****] Update Stripe SDK to 5.0 [TBD]
 
 23.9
 -----

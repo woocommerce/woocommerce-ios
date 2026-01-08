@@ -18,6 +18,7 @@
 - [*] Fix a rare crash when opening the Coupon list [https://github.com/woocommerce/woocommerce-ios/pull/16478]
 - [*] Fixed an issue that could cause the keyboard to cover the product title when edited [https://github.com/woocommerce/woocommerce-ios/pull/16470]
 - [*] Fix application logs showing wrong year for some locales. (https://github.com/woocommerce/woocommerce-ios/pull/16471)
+- [*] Updated barcode scanner documentation URL in POS [https://github.com/woocommerce/woocommerce-ios/pull/16490]
 - [internal] Update Stripe Terminal to 4.7.3 [https://github.com/woocommerce/woocommerce-ios/pull/16467]
 - [Internal] Fix display of Just in Time Message banners [https://github.com/woocommerce/woocommerce-ios/pull/16480]
 

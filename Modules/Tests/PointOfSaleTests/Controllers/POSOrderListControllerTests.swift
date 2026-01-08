@@ -9,6 +9,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
+@testable import struct Yosemite.POSRefundsResult
 
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
@@ -411,9 +412,8 @@ final class POSOrderListControllerTests {
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = MockPOSOrderListService.makeInitialOrders()[0]
 
-        let items = [POSRefundItem(productID: 1, variationID: 1, quantity: 2)]
-        let refunds = [POSRefund(items: items)]
-        refundsService.providePointOfSaleRefundsToReturn = refunds
+        let expectedResult = POSRefundsResult(refunds: [POSRefund(items: [])], isFullyRefunded: false)
+        refundsService.providePointOfSaleRefundsResultToReturn = expectedResult
 
         // When
         await sut.selectOrder(order)
@@ -430,12 +430,12 @@ final class POSOrderListControllerTests {
             "Expected selectedOrderRefundsState to become .loaded before timeout"
         )
 
-        guard case .loaded(let loadedRefunds) = sut.selectedOrderRefundsState else {
+        guard case .loaded(let loadedResult) = sut.selectedOrderRefundsState else {
             #expect(Bool(false), "Expected .loaded state")
             return
         }
 
-        #expect(loadedRefunds == refunds)
+        #expect(loadedResult.isFullyRefunded == expectedResult.isFullyRefunded)
     }
 
     @Test func selectOrder_when_refunds_service_errors_then_failed_contains_same_error_type() async throws {
@@ -534,20 +534,13 @@ final class POSOrderListControllerTests {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
 
-        let order = makeOrder(
-            id: 1,
-            lineItems: [
-                makeLineItem(productOrVariationID: 100, quantity: 2),
-                makeLineItem(productOrVariationID: 200, quantity: 1)
-            ]
-        )
+        let order = makeOrder(id: 1)
 
-        // Refund only 1 out of 2 for product 100, so NOT fully refunded.
-        refundsService.providePointOfSaleRefundsToReturn = [
-            POSRefund(items: [
-                POSRefundItem(productID: 100, variationID: 0, quantity: 1)
-            ])
-        ]
+        // Service returns isFullyRefunded = false (not fully refunded)
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false
+        )
 
         // When
         await sut.selectOrder(order)
@@ -568,21 +561,13 @@ final class POSOrderListControllerTests {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
 
-        let order = makeOrder(
-            id: 1,
-            lineItems: [
-                makeLineItem(productOrVariationID: 100, quantity: 2),
-                makeLineItem(productOrVariationID: 200, quantity: 1)
-            ]
-        )
+        let order = makeOrder(id: 1)
 
-        // Fully refund both items (>= ordered quantities).
-        refundsService.providePointOfSaleRefundsToReturn = [
-            POSRefund(items: [
-                POSRefundItem(productID: 100, variationID: 0, quantity: 2),
-                POSRefundItem(productID: 200, variationID: 0, quantity: 1)
-            ])
-        ]
+        // Service returns isFullyRefunded = true (fully refunded)
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: true
+        )
 
         // When
         await sut.selectOrder(order)
@@ -601,36 +586,22 @@ final class POSOrderListControllerTests {
 }
 
 private extension POSOrderListControllerTests {
-    private func makeOrder(id: Int64, lineItems: [POSOrderItem]) -> POSOrder {
+    private func makeOrder(id: Int64) -> POSOrder {
         POSOrder(
-            id: 1001,
-            number: "1001",
+            id: id,
+            number: "\(id)",
             dateCreated: Date(),
             status: .completed,
             formattedTotal: "$25.99",
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
             paymentMethodTitle: "Cash",
-            lineItems: lineItems,
+            lineItems: [],
             refunds: [],
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
             formattedNetAmount: nil
-        )
-    }
-
-    private func makeLineItem(productOrVariationID: Int64, quantity: Decimal) -> POSOrderItem {
-        POSOrderItem(
-            itemID: 2,
-            productID: productOrVariationID,
-            variationID: 0,
-            name: "Muffin",
-            quantity: 1,
-            formattedPrice: "$5.99",
-            formattedTotal: "$5.99",
-            imageSrc: nil,
-            attributes: []
         )
     }
 }

@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSOrderItem
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
@@ -31,7 +32,7 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
 enum POSOrderListSelectedOrderRefundsState {
     case idle
     case loading
-    case loaded([POSRefund])
+    case loaded(POSRefundsResult)
     case failed(Error)
 }
 
@@ -75,7 +76,7 @@ enum RefundActionAvailability {
     @MainActor
     var refundActionAvailability: RefundActionAvailability {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
-              let order = selectedOrder else {
+              selectedOrder != nil else {
             return .unavailable
         }
 
@@ -84,8 +85,8 @@ enum RefundActionAvailability {
             return .unavailable
         case .loading:
             return .unknown
-        case .loaded(let refunds):
-            return areAllProductsFullyRefunded(in: order, with: refunds) ? .unavailable : .available
+        case .loaded(let result):
+            return result.isFullyRefunded ? .unavailable : .available
         }
     }
 
@@ -260,10 +261,10 @@ enum RefundActionAvailability {
         refundsTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let refunds = try await self.refundsService.providePointOfSaleRefunds(for: order)
+                let result = try await self.refundsService.providePointOfSaleRefunds(for: order)
                 await MainActor.run {
                     guard self.selectedOrder?.id == orderID else { return }
-                    self.selectedOrderRefundsState = .loaded(refunds)
+                    self.selectedOrderRefundsState = .loaded(result)
                 }
             }
             catch is CancellationError {}
@@ -273,28 +274,6 @@ enum RefundActionAvailability {
                     self.selectedOrderRefundsState = .failed(error)
                 }
             }
-        }
-    }
-
-    @MainActor
-    private func areAllProductsFullyRefunded(
-        in order: POSOrder,
-        with refunds: [POSRefund]
-    ) -> Bool {
-        let orderedQuantitiesByID: [Int64: Decimal] =
-            order.lineItems.reduce(into: [:]) { acc, item in
-                acc[item.productOrVariationID, default: 0] += item.quantity
-            }
-
-        let refundedQuantitiesByID: [Int64: Decimal] =
-            refunds.reduce(into: [:]) { acc, refund in
-                for item in refund.items {
-                    acc[item.productOrVariationID, default: 0] += item.quantity
-                }
-            }
-
-        return orderedQuantitiesByID.allSatisfy { id, orderedQty in
-            (refundedQuantitiesByID[id] ?? 0) >= orderedQty
         }
     }
 }

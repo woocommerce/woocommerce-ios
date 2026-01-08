@@ -27,6 +27,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundsResult
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
@@ -281,8 +282,6 @@ struct POSPreviewHelpers {
             paymentMethodTitle: "Cash on Delivery",
             lineItems: [
                 POSOrderItem(itemID: 1,
-                             productID: 1,
-                             variationID: 1,
                              name: "Premium Coffee Beans",
                              quantity: 2.0,
                              formattedPrice: "$12.50",
@@ -291,8 +290,6 @@ struct POSPreviewHelpers {
                              attributes: []),
                 POSOrderItem(
                     itemID: 2,
-                    productID: 1,
-                    variationID: 1,
                     name: "Organic Tea - Earl Grey",
                     quantity: 1.0,
                     formattedPrice: "$15.99",
@@ -325,8 +322,6 @@ struct POSPreviewHelpers {
             lineItems: [
                 POSOrderItem(
                     itemID: 4,
-                    productID: 1,
-                    variationID: 1,
                     name: "Artisan Chocolate Box",
                     quantity: 3.0,
                     formattedPrice: "$19.99",
@@ -336,8 +331,6 @@ struct POSPreviewHelpers {
                 ),
                 POSOrderItem(
                     itemID: 5,
-                    productID: 1,
-                    variationID: 1,
                     name: "Gourmet Cookie Set - Mixed",
                     quantity: 1.0,
                     formattedPrice: "$29.99",
@@ -376,8 +369,6 @@ struct POSPreviewHelpers {
             lineItems: [
                 POSOrderItem(
                     itemID: 3,
-                    productID: 1,
-                    variationID: 1,
                     name: "Wireless Headphones",
                     quantity: 1.0,
                     formattedPrice: "$120.00",
@@ -409,8 +400,6 @@ struct POSPreviewHelpers {
             lineItems: [
                 POSOrderItem(
                     itemID: 6,
-                    productID: 1,
-                    variationID: 1,
                     name: "Coffee Mug",
                     quantity: 1.0,
                     formattedPrice: "$22.99",
@@ -440,8 +429,6 @@ struct POSPreviewHelpers {
             lineItems: [
                 POSOrderItem(
                     itemID: 7,
-                    productID: 1,
-                    variationID: 1,
                     name: "Leather Wallet",
                     quantity: 2.0,
                     formattedPrice: "$45.00",
@@ -453,8 +440,6 @@ struct POSPreviewHelpers {
                 ),
                 POSOrderItem(
                     itemID: 8,
-                    productID: 1,
-                    variationID: 1,
                     name: "Sunglasses",
                     quantity: 1.0,
                     formattedPrice: "$55.00",
@@ -540,8 +525,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
-    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSRefund] {
-        []
+    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
+        POSRefundsResult(refunds: [], isFullyRefunded: false)
     }
 }
 

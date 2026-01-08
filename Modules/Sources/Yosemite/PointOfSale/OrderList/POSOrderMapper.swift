@@ -33,6 +33,12 @@ struct POSOrderMapper {
             return order.netAmount(currencyFormatter: currencyFormatter)
         }()
 
+        // Aggregate quantities by product/variation ID for refund comparison
+        let lineItemQuantitiesByProductOrVariationID = order.items.reduce(into: [Int64: Decimal]()) { acc, item in
+            let id = item.variationID != 0 ? item.variationID : item.productID
+            acc[id, default: 0] += item.quantity
+        }
+
         return POSOrder(
             id: order.orderID,
             number: order.number,
@@ -47,15 +53,14 @@ struct POSOrderMapper {
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
-            formattedNetAmount: formattedNetAmount
+            formattedNetAmount: formattedNetAmount,
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 
     private func map(orderItem: NetworkingCore.OrderItem, currency: String) -> POSOrderItem {
         return POSOrderItem(
             itemID: orderItem.itemID,
-            productID: orderItem.productID,
-            variationID: orderItem.variationID,
             name: orderItem.name,
             quantity: orderItem.quantity,
             formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",

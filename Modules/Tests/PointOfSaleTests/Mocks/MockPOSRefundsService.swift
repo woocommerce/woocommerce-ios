@@ -2,7 +2,7 @@
 
 final class MockPOSRefundsService: POSRefundsServiceProtocol {
     var spyProvidePointOfSaleRefundsOrder: Yosemite.POSOrder?
-    var providePointOfSaleRefundsToReturn: [Yosemite.POSRefund] = []
+    var providePointOfSaleRefundsResultToReturn: Yosemite.POSRefundsResult = POSRefundsResult(refunds: [], isFullyRefunded: false)
     var errorToThrow: Error?
 
     private var continuation: CheckedContinuation<Yosemite.POSOrder, Never>?
@@ -21,7 +21,7 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         refundsContinuation = nil
     }
 
-    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSRefund] {
+    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
         spyProvidePointOfSaleRefundsOrder = order
         continuation?.resume(returning: order)
         continuation = nil
@@ -33,6 +33,6 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         }
 
         if let error = errorToThrow { throw error }
-        return providePointOfSaleRefundsToReturn
+        return providePointOfSaleRefundsResultToReturn
     }
 }

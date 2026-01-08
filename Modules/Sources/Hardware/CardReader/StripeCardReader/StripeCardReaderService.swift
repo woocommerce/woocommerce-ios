@@ -800,50 +800,38 @@ extension StripeCardReaderService {
         }
     }
 
-    /// Calling any other SDK methods between collectRefundPaymentMethod and processRefund will result in undefined behavior.
-    /// We have a spinlock to prevent other SDK methods being used until processRefund is done. It will need a timeout.
+    /// Processes a refund using the unified processRefund API (SDK 5.0+).
     ///
     func refund(_ parameters: StripeTerminal.RefundParameters) -> Future<StripeTerminal.Refund, Error> {
         return Future() { [weak self] promise in
-            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { [weak self] collectError in
-                if let error = collectError {
-                    self?.refundCancellable = nil
-                    let underlyingError = Self.logAndDecodeError(error)
+            self?.refundCancellable = Terminal.shared.processRefund(parameters, collectConfig: nil) { [weak self] processedRefund, processError in
+                guard let self = self else { return }
+                self.refundCancellable = nil
+
+                if let error = processError {
                     promise(.failure(CardReaderServiceError.refundPayment(
-                        underlyingError: underlyingError,
-                        shouldRetry: true
+                        underlyingError: Self.logAndDecodeError(error),
+                        shouldRetry: self.shouldRetryRefund(after: error)
                     )))
-                } else {
-                    // Process refund
-                    Terminal.shared.confirmRefund { [weak self] processedRefund, processError in
-                        guard let self = self else { return }
-                        self.refundCancellable = nil
-                        if let error = processError {
-                            promise(.failure(CardReaderServiceError.refundPayment(
-                                underlyingError: Self.logAndDecodeError(error),
-                                shouldRetry: self.shouldRetryRefund(after: error)
-                            )))
-                        } else if let refund = processedRefund {
-                            switch refund.status {
-                                //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
-                            case .succeeded, .pending, .unknown:
-                                promise(.success(refund))
-                            case .failed:
-                                promise(.failure(CardReaderServiceError.refundPayment(
-                                    underlyingError: .internalServiceError,
-                                    shouldRetry: self.shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
-                                )))
-                            @unknown default:
-                                break
-                            }
-                        } else {
-                            promise(.failure(CardReaderServiceError.refundPayment(
-                                underlyingError: .internalServiceError,
-                                shouldRetry: false
-                            )))
-                            //TODO: check why we might have no refund and no error
-                        }
+                } else if let refund = processedRefund {
+                    switch refund.status {
+                        //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
+                    case .succeeded, .pending, .unknown:
+                        promise(.success(refund))
+                    case .failed:
+                        promise(.failure(CardReaderServiceError.refundPayment(
+                            underlyingError: .internalServiceError,
+                            shouldRetry: self.shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
+                        )))
+                    @unknown default:
+                        break
                     }
+                } else {
+                    promise(.failure(CardReaderServiceError.refundPayment(
+                        underlyingError: .internalServiceError,
+                        shouldRetry: false
+                    )))
+                    //TODO: check why we might have no refund and no error
                 }
             }
         }
@@ -851,7 +839,7 @@ extension StripeCardReaderService {
 
     /// Implements refund retry logic as recommended by Stripe
     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)processRefund
-    /// > When `confirmRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
+    /// > When `processRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
     /// > Your app should inspect the `SCPConfirmRefundError` to decide how to proceed.
     /// >
     /// > If the `refund` property is nil, the request to Stripe's servers timed out and the refund's status is unknown.

@@ -333,7 +333,9 @@ extension StripeCardReaderService: CardReaderService {
             connectionAttemptInvalidated = true
         }
 
-        _ = Terminal.shared.clearCachedCredentials()
+        if case .failure(let error) = Terminal.shared.clearCachedCredentials() {
+            DDLogError("[StripeCardReaderService] Failed to clear cached credentials: \(error)")
+        }
     }
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {

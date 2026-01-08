@@ -1315,6 +1315,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleOrdersListSearchResultsFetched = "orders_list_search_results_fetched"
     case pointOfSaleOrderDetailsLoaded = "order_details_loaded"
     case pointOfSaleOrderDetailsEmailReceiptTapped = "order_details_email_receipt_tapped"
+    case pointOfSaleOrderDetailsIssueRefundTapped = "order_details_issue_refund_tapped"
     case pointOfSaleLocalCatalogDownloadingScreenShown = "local_catalog_downloading_screen_shown"
     case pointOfSaleLocalCatalogDownloadingScreenExitPosTapped = "local_catalog_downloading_screen_exit_pos_tapped"
     case pointOfSaleSplashScreenErrorShown = "splash_screen_error_shown"

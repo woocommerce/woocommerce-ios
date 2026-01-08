@@ -17,11 +17,15 @@ protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
     var refundActionAvailability: RefundActionAvailability { get }
+    var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
+    func startRefundFlow()
+    func toggleRefundItemSelection(at index: Int)
+    func clearRefundSelection()
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -49,6 +53,7 @@ enum RefundActionAvailability {
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
+    private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private var refundsTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
@@ -275,5 +280,26 @@ enum RefundActionAvailability {
                 }
             }
         }
+    }
+
+    // MARK: - Refund Item Selection
+
+    @MainActor
+    func startRefundFlow() {
+        guard let order = selectedOrder else { return }
+        refundSelectableItems = order.lineItems.map {
+            POSRefundSelectableItem(from: $0, isSelected: true)
+        }
+    }
+
+    @MainActor
+    func toggleRefundItemSelection(at index: Int) {
+        guard refundSelectableItems.indices.contains(index) else { return }
+        refundSelectableItems[index].isSelected.toggle()
+    }
+
+    @MainActor
+    func clearRefundSelection() {
+        refundSelectableItems = []
     }
 }

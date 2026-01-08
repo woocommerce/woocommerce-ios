@@ -6,6 +6,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
     var refundActionAvailability: RefundActionAvailability = .available
+    var refundSelectableItems: [POSRefundSelectableItem] = []
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
@@ -36,4 +37,20 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     func searchOrders(searchTerm: String) async {}
 
     func clearSearchOrders() {}
+
+    func startRefundFlow() {
+        guard let order = selectedOrder else { return }
+        refundSelectableItems = order.lineItems.map {
+            POSRefundSelectableItem(from: $0, isSelected: true)
+        }
+    }
+
+    func toggleRefundItemSelection(at index: Int) {
+        guard refundSelectableItems.indices.contains(index) else { return }
+        refundSelectableItems[index].isSelected.toggle()
+    }
+
+    func clearRefundSelection() {
+        refundSelectableItems = []
+    }
 }

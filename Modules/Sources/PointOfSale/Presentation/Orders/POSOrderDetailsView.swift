@@ -16,6 +16,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @State private var isShowingEmailReceiptView: Bool = false
+    @State private var isShowingRefundItemsSelection: Bool = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -62,6 +63,17 @@ struct POSOrderDetailsView: View {
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .posModal(isPresented: $isShowingRefundItemsSelection, onDismiss: {
+            orderListModel.ordersController.clearRefundSelection()
+        }) {
+            POSRefundItemsSelectionView(
+                isPresented: $isShowingRefundItemsSelection,
+                onContinue: { selectedItems in
+                    isShowingRefundItemsSelection = false
+                    // Future: Navigate to refund amount/confirmation screen
+                }
+            )
         }
         .onAppear {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -412,7 +424,11 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { }
+            return {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.issueRefundTapped())
+                orderListModel.ordersController.startRefundFlow()
+                isShowingRefundItemsSelection = true
+            }
         }
     }
 

@@ -230,16 +230,45 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        // Register in the Dotcom's Infrastructure
-        registerDotcomDevice(with: newToken) { (device, error) in
-            guard let deviceID = device?.deviceID else {
-                DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
-                return
+        if shouldRegisterSelfDrivenPushNotificaiton {
+            // We will need to remove the old registartion, this is just for the newly registered stores
+            registerSelfDrivenPushNotification(with: newToken) { result in
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
+                case .success(let token):
+                    self.deviceID = "\(token)"
+                }
             }
-
-            DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
-            self.deviceID = deviceID
         }
+        else {
+            // Register in the Dotcom's Infrastructure
+            registerDotcomDevice(with: newToken) { (device, error) in
+                guard let deviceID = device?.deviceID else {
+                    DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
+                    return
+                }
+
+                DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
+                self.deviceID = deviceID
+            }
+        }
+    }
+
+    private var shouldRegisterSelfDrivenPushNotificaiton: Bool {
+        return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
+    }
+
+    private var isWPAdminLogin: Bool {
+        guard let credentials = stores.sessionManager.defaultCredentials else {
+            return false
+        }
+
+        if case .wpcom = credentials {
+            return true
+        }
+
+        return false
     }
 
 
@@ -562,6 +591,45 @@ private extension PushNotificationsManager {
                                                        applicationId: WooConstants.pushApplicationID,
                                                        applicationVersion: Bundle.main.version,
                                                        onCompletion: onCompletion)
+        stores.dispatch(action)
+    }
+
+    func registerSelfDrivenPushNotification(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        guard let siteID else { return }
+
+        // Register Woo token
+        let device = APNSDevice(deviceToken: deviceToken)
+        let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(siteID: siteID,
+                                                                                     device: device,
+                                                                                     applicationID: WooConstants.pushApplicationID) { result in
+            switch result {
+            case .success(let token):
+                // Persist token locally
+                let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: Int64(token)) { result in
+                    switch result {
+                    case .success:
+                        break
+                    case .failure(let error):
+                        DDLogError("⛔️ Unable to set self-driven push token ID: \(error)")
+                    }
+                }
+                self.stores.dispatch(setTokenAction)
+
+                // Unregister WP token if exists if auth with WP com
+                if self.isWPAdminLogin {
+                    self.unregisterDotcomDeviceIfPossible { error in
+                        if let error {
+                            DDLogError("⛔️ Unable to unregister WP token: \(error)")
+                        }
+                        // Remove WP token locally
+
+                    }
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Unable register self-driven push token: \(error)")
+                // Do nothing
+            }
+        }
         stores.dispatch(action)
     }
 

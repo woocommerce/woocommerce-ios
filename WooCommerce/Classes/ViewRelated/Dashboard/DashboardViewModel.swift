@@ -77,7 +77,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
 
-    @Published private(set) var isSelfDrivenPushNotificationRegistered = true
+    @Published private(set) var isSelfDrivenPushNotificationRegisteredIfExpected = false
 
     @Published private var hasOrders = false
 
@@ -807,7 +807,20 @@ private extension DashboardViewModel {
             })
         }
 
-        isSelfDrivenPushNotificationRegistered = (tokenID != nil)
+        isSelfDrivenPushNotificationRegisteredIfExpected = (tokenID != nil) && !isWPAdminLogin
+    }
+
+
+    private var isWPAdminLogin: Bool {
+        guard let credentials = stores.sessionManager.defaultCredentials else {
+            return false
+        }
+
+        if case .wpcom = credentials {
+            return true
+        }
+
+        return false
     }
 }
 

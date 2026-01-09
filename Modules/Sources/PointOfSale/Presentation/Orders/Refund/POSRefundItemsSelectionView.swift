@@ -77,10 +77,12 @@ private extension POSRefundItemsSelectionView {
                 Text(Localization.itemsHeaderTitle)
                     .font(.caption.weight(.semibold))
                     .foregroundColor(.posOnSurface)
+                    .textCase(.uppercase)
 
                 Text(String(format: Localization.itemsSelectedCountFormat, selectedItems.count))
                     .font(.caption.weight(.regular))
                     .foregroundColor(.posOnSurfaceVariantLowest)
+                    .textCase(.uppercase)
             }
 
             Spacer()
@@ -152,13 +154,13 @@ private extension POSRefundItemsSelectionView {
 
         static let itemsHeaderTitle = NSLocalizedString(
             "pos.refundItemsSelectionView.itemsHeaderTitle",
-            value: "SELECT ALL ITEMS",
+            value: "Select all items",
             comment: "Header label for items in the refund items selection modal"
         )
 
         static let itemsSelectedCountFormat = NSLocalizedString(
             "pos.refundItemsSelectionView.itemsSelectedCountFormat",
-            value: "(%d SELECTED)",
+            value: "(%d selected)",
             comment: "Label showing number of selected items in the refund items selection modal"
         )
 

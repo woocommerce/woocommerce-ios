@@ -231,8 +231,9 @@ extension PushNotificationsManager {
         deviceToken = newToken
 
         if shouldRegisterSelfDrivenPushNotificaiton {
+            DDLogInfo("📱 Self Registering Push Notifications")
             // We will need to remove the old registartion, this is just for the newly registered stores
-            registerSelfDrivenPushNotification(with: newToken) { result in
+            registerSelfDrivenPushNotificationFlow(with: newToken) { result in
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
@@ -594,10 +595,11 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func registerSelfDrivenPushNotification(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+    func registerSelfDrivenPushNotificationFlow(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         guard let siteID else { return }
 
         // Register Woo token
+        DDLogInfo("📱 Registering self driven push notification token")
         let device = APNSDevice(deviceToken: deviceToken)
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(siteID: siteID,
                                                                                      device: device,
@@ -605,6 +607,7 @@ private extension PushNotificationsManager {
             switch result {
             case .success(let token):
                 // Persist token locally
+                DDLogInfo("📱 Registering self driven push notification successful token: \(token)")
                 let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: Int64(token)) { result in
                     switch result {
                     case .success:

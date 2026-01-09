@@ -53,4 +53,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     func clearRefundSelection() {
         refundSelectableItems = []
     }
+
+    func toggleAllRefundItemsSelection() {}
 }

@@ -583,10 +583,165 @@ final class POSOrderListControllerTests {
         let availability = await MainActor.run { sut.refundActionAvailability }
         #expect(availability == .unavailable)
     }
+
+    @Test func startRefundFlow_then_creates_one_selectable_per_unit_and_marks_all_selected() async throws {
+           await MainActor.run {
+               // Given
+               let order = makeOrder(lineItems: [
+                   POSOrderItem(
+                       itemID: 1,
+                       name: "Item A",
+                       quantity: 3,
+                       formattedPrice: "$10.00",
+                       formattedTotal: "$30.00",
+                       imageSrc: nil,
+                       attributes: []
+                   ),
+                   POSOrderItem(
+                       itemID: 2,
+                       name: "Item B",
+                       quantity: 1,
+                       formattedPrice: "$5.00",
+                       formattedTotal: "$5.00",
+                       imageSrc: nil,
+                       attributes: []
+                   )
+               ])
+
+               sut.selectOrder(order)
+
+               // When
+               sut.startRefundFlow()
+
+               #expect(sut.refundSelectableItems.count == 4)
+               #expect(sut.refundSelectableItems.allSatisfy { $0.isSelected })
+           }
+       }
+
+    @Test func toggleRefundItemSelection_then_toggles_single_item() async throws {
+            await MainActor.run {
+                // Given
+                let order = makeOrder(lineItems: [
+                    POSOrderItem(
+                        itemID: 1,
+                        name: "Item",
+                        quantity: 2,
+                        formattedPrice: "$10.00",
+                        formattedTotal: "$20.00",
+                        imageSrc: nil,
+                        attributes: []
+                    )
+                ])
+
+                sut.selectOrder(order)
+                sut.startRefundFlow()
+
+                // When
+                sut.toggleRefundItemSelection(at: 0)
+
+                // Then
+                #expect(!sut.refundSelectableItems[0].isSelected)
+            }
+        }
+
+       @Test func toggleRefundItemSelection_when_index_out_of_bounds_does_nothing() async throws {
+           await MainActor.run {
+               // When
+               sut.toggleRefundItemSelection(at: 5)
+
+               // Then
+               #expect(sut.refundSelectableItems.isEmpty)
+           }
+       }
+
+    @Test func clearRefundSelection_then_clears_all_selections() async throws {
+           await MainActor.run {
+               // Given
+               let order = makeOrder(lineItems: [
+                   POSOrderItem(
+                       itemID: 1,
+                       name: "Item",
+                       quantity: 1,
+                       formattedPrice: "$10.00",
+                       formattedTotal: "$10.00",
+                       imageSrc: nil,
+                       attributes: []
+                   )
+               ])
+
+               sut.selectOrder(order)
+               sut.startRefundFlow()
+
+               // When
+               sut.clearRefundSelection()
+
+               // Then
+               #expect(sut.refundSelectableItems.isEmpty)
+           }
+       }
+
+    @Test func toggleAllRefundItemsSelection_when_all_selected_deselects_all() async throws {
+        try await MainActor.run {
+               // Given
+               let order = makeOrder(lineItems: [
+                   POSOrderItem(
+                       itemID: 1,
+                       name: "Item",
+                       quantity: 2,
+                       formattedPrice: "$10.00",
+                       formattedTotal: "$20.00",
+                       imageSrc: nil,
+                       attributes: []
+                   )
+               ])
+
+               sut.selectOrder(order)
+               sut.startRefundFlow()
+
+               try #require(sut.refundSelectableItems.allSatisfy { $0.isSelected })
+
+               // When
+               sut.toggleAllRefundItemsSelection()
+
+               // Then
+               #expect(sut.refundSelectableItems.allSatisfy { !$0.isSelected })
+           }
+       }
+
+    @Test func toggleAllRefundItemsSelection_when_not_all_are_selected_then_selects_all() async throws {
+        try await MainActor.run {
+               // Given
+               let order = makeOrder(lineItems: [
+                   POSOrderItem(
+                       itemID: 1,
+                       name: "Item",
+                       quantity: 2,
+                       formattedPrice: "$10.00",
+                       formattedTotal: "$20.00",
+                       imageSrc: nil,
+                       attributes: []
+                   )
+               ])
+
+               sut.selectOrder(order)
+               sut.startRefundFlow()
+               try #require(!sut.refundSelectableItems.isEmpty)
+
+               // Deselect one
+               sut.toggleRefundItemSelection(at: 0)
+               try #require(sut.refundSelectableItems.contains { !$0.isSelected })
+
+               // When
+               sut.toggleAllRefundItemsSelection()
+
+               // Then
+               #expect(sut.refundSelectableItems.allSatisfy { $0.isSelected })
+           }
+       }
 }
 
 private extension POSOrderListControllerTests {
-    private func makeOrder(id: Int64) -> POSOrder {
+    private func makeOrder(id: Int64 = 1, lineItems: [POSOrderItem] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",
@@ -596,7 +751,7 @@ private extension POSOrderListControllerTests {
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
             paymentMethodTitle: "Cash",
-            lineItems: [],
+            lineItems: lineItems,
             refunds: [],
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",

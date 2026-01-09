@@ -3,6 +3,7 @@ import SwiftUI
 struct POSRefundItemsSelectionView: View {
     @Binding var isPresented: Bool
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(\.posModalParentSize) private var parentSize
     let onContinue: ([POSRefundSelectableItem]) -> Void
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
@@ -17,23 +18,26 @@ struct POSRefundItemsSelectionView: View {
         refundSelectableItems.contains { $0.isSelected }
     }
 
+    private var allItemsSelected: Bool {
+        !refundSelectableItems.isEmpty &&
+        refundSelectableItems.allSatisfy { $0.isSelected }
+    }
+
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
+            itemsHeaderView
 
             Divider()
                 .overlay(Color.posOutlineVariant.opacity(0.5))
 
             itemsList
 
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
-
             continueButton
         }
-        .padding(POSPadding.xxLarge)
+        .padding(POSPadding.large)
         .background(Color.posSurfaceBright)
-        .frame(width: Constants.modalWidth)
+        .frame(width: parentSize.width - (Constants.modalHorizontalPadding * 2))
     }
 }
 
@@ -57,6 +61,33 @@ private extension POSRefundItemsSelectionView {
         }
         .foregroundColor(Color.posOnSurface)
         .padding(.bottom, POSPadding.medium)
+    }
+
+    /// Row with "ITEMS (n selected)" and the "AMOUNT" column header,
+    /// plus a leading checkbox that toggles all items.
+    var itemsHeaderView: some View {
+        HStack(spacing: POSSpacing.small) {
+            POSCheckbox(
+                isSelected: allItemsSelected,
+                onToggle: {
+                    orderListModel.ordersController.toggleAllRefundItemsSelection()
+                }
+            )
+            .accessibilityLabel(Localization.selectAllAccessibilityLabel)
+
+            HStack(spacing: POSSpacing.xSmall) {
+                Text(Localization.itemsHeaderTitle)
+                    .font(.caption.weight(.semibold))
+                    .foregroundColor(.posOnSurface)
+
+                Text(String(format: Localization.itemsSelectedCountFormat, selectedItems.count))
+                    .font(.caption.weight(.regular))
+                    .foregroundColor(.posOnSurfaceVariantLowest)
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, POSPadding.small)
     }
 
     var itemsList: some View {
@@ -94,7 +125,7 @@ private extension POSRefundItemsSelectionView {
 
 private extension POSRefundItemsSelectionView {
     enum Constants {
-        static let modalWidth: CGFloat = 560
+        static let modalHorizontalPadding: CGFloat = 148
     }
 }
 
@@ -118,6 +149,24 @@ private extension POSRefundItemsSelectionView {
             "pos.refundItemsSelectionView.closeButton.accessibilityLabel",
             value: "Close",
             comment: "Accessibility label for close button on refund items selection modal"
+        )
+
+        static let itemsHeaderTitle = NSLocalizedString(
+            "pos.refundItemsSelectionView.itemsHeaderTitle",
+            value: "SELECT ALL ITEMS",
+            comment: "Header label for items in the refund items selection modal"
+        )
+
+        static let itemsSelectedCountFormat = NSLocalizedString(
+            "pos.refundItemsSelectionView.itemsSelectedCountFormat",
+            value: "(%d SELECTED)",
+            comment: "Label showing number of selected items in the refund items selection modal"
+        )
+
+        static let selectAllAccessibilityLabel = NSLocalizedString(
+            "pos.refundItemsSelectionView.selectAll.accessibilityLabel",
+            value: "Select or deselect all items",
+            comment: "Accessibility label for the select-all checkbox in the refund items selection modal"
         )
     }
 }

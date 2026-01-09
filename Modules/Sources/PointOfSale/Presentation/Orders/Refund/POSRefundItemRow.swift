@@ -5,7 +5,7 @@ struct POSRefundItemRow: View {
     let item: POSRefundSelectableItem
     let onToggle: () -> Void
 
-    private let imageSize: CGFloat = 40
+    private let imageSize: CGFloat = 56
 
     var body: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
@@ -31,12 +31,8 @@ struct POSRefundItemRow: View {
             }
 
             Spacer()
-
-            Text(item.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
         }
-        .padding(POSPadding.medium)
+        .padding(.vertical, POSPadding.medium)
         .contentShape(Rectangle())
         .onTapGesture {
             onToggle()
@@ -64,7 +60,6 @@ struct POSRefundItemRow: View {
             label += ", \(attributesText)"
         }
         label += ", \(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))"
-        label += ", \(Localization.totalLabel(item.formattedTotal))"
         label += ", \(selectionState)"
 
         return label
@@ -80,15 +75,6 @@ private extension POSRefundItemRow {
                 comment: "Product quantity and price label for refund item. %1$d is the quantity, %2$@ is the unit price."
             )
             return String(format: format, quantity, unitPrice)
-        }
-
-        static func totalLabel(_ total: String) -> String {
-            let format = NSLocalizedString(
-                "pos.refundItemRow.totalLabel",
-                value: "Total %1$@",
-                comment: "Total price label for accessibility. %1$@ is the total amount."
-            )
-            return String(format: format, total)
         }
 
         static let selectedState = NSLocalizedString(

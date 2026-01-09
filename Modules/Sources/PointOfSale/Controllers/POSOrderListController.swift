@@ -26,6 +26,7 @@ protocol POSOrderListControllerProtocol {
     func startRefundFlow()
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
+    func toggleAllRefundItemsSelection()
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -301,5 +302,14 @@ enum RefundActionAvailability {
     @MainActor
     func clearRefundSelection() {
         refundSelectableItems = []
+    }
+
+    @MainActor
+    func toggleAllRefundItemsSelection() {
+        let allSelected = !refundSelectableItems.isEmpty && refundSelectableItems.allSatisfy { $0.isSelected }
+        let newSelectionState = !allSelected
+        for index in refundSelectableItems.indices {
+            refundSelectableItems[index].isSelected = newSelectionState
+        }
     }
 }

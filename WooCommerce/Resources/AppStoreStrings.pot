@@ -120,6 +120,7 @@ msgstr ""
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-8"
 msgid ""
-"\n"
-"\n"
+"Get notified of\n"
+"every sale\n"
 msgstr ""
+

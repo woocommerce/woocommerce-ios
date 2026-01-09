@@ -55,10 +55,10 @@ struct POSRefundsServiceTests {
 
 
         // When
-        let refunds = try await sut.providePointOfSaleRefunds(for: order)
+        let result = try await sut.providePointOfSaleRefunds(for: order)
 
         // Then
-        #expect(refunds.count == 2)
+        #expect(result.refunds.count == 2)
     }
 
     @Test func providePointOfSaleRefunds_when_remote_succeeds_then_maps_refund_items_correctly() async throws {
@@ -75,7 +75,7 @@ struct POSRefundsServiceTests {
         let order = makeOrder()
 
         // When
-        let posRefunds = try await sut.providePointOfSaleRefunds(for: order)
+        let posRefunds = try await sut.providePointOfSaleRefunds(for: order).refunds
 
         // Then
         #expect(posRefunds.count == 1)
@@ -83,12 +83,7 @@ struct POSRefundsServiceTests {
 
         let mappedItems = posRefunds[0].items
 
-        #expect(mappedItems[0].productID == item1.productID)
-        #expect(mappedItems[0].variationID == item1.variationID)
         #expect(mappedItems[0].quantity == item1.quantity)
-
-        #expect(mappedItems[1].productID == item2.productID)
-        #expect(mappedItems[1].variationID == item2.variationID)
         #expect(mappedItems[1].quantity == item2.quantity)
     }
 

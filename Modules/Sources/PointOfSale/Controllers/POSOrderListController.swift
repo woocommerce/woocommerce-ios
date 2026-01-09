@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSOrderItem
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
@@ -15,6 +16,7 @@ import protocol Experiments.FeatureFlagService
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
+    var refundActionAvailability: RefundActionAvailability { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -30,8 +32,14 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
 enum POSOrderListSelectedOrderRefundsState {
     case idle
     case loading
-    case loaded([POSRefund])
+    case loaded(POSRefundsResult)
     case failed(Error)
+}
+
+enum RefundActionAvailability {
+    case unknown
+    case available
+    case unavailable
 }
 
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
@@ -63,6 +71,23 @@ enum POSOrderListSelectedOrderRefundsState {
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.featureFlags = featureFlags
+    }
+
+    @MainActor
+    var refundActionAvailability: RefundActionAvailability {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
+              selectedOrder != nil else {
+            return .unavailable
+        }
+
+        switch selectedOrderRefundsState {
+        case .idle, .failed:
+            return .unavailable
+        case .loading:
+            return .unknown
+        case .loaded(let result):
+            return result.isFullyRefunded ? .unavailable : .available
+        }
     }
 
     @MainActor
@@ -236,10 +261,10 @@ enum POSOrderListSelectedOrderRefundsState {
         refundsTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let refunds = try await self.refundsService.providePointOfSaleRefunds(for: order)
+                let result = try await self.refundsService.providePointOfSaleRefunds(for: order)
                 await MainActor.run {
                     guard self.selectedOrder?.id == orderID else { return }
-                    self.selectedOrderRefundsState = .loaded(refunds)
+                    self.selectedOrderRefundsState = .loaded(result)
                 }
             }
             catch is CancellationError {}

@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v23.8-whats-new"
+msgctxt "v23.9-whats-new"
 msgid ""
-"This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.\n"
+"This update brings clearer feedback during checkout, more reliable syncing, and safer payment behavior. Troubleshooting is now more powerful with better diagnostics, plugin updates work more smoothly, and we fixed crashes, editing issues, and localization bugs to make everyday store management more stable and predictable.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -101,30 +101,26 @@ msgstr ""
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-4"
-msgid ""
-"Add and edit products\n"
-"with a touch\n"
+msgid "Sell online and in person"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-5"
-msgid ""
-"Get notified of\n"
-"every sale\n"
+msgid "Track orders and view totals in real time"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-6"
-msgid ""
-"Get notified about new\n"
-"customer reviews\n"
+msgid "Complete payments quickly and efficiently"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-7"
-msgid "Create and manage products"
+msgid ""
+"Add and edit products\n"
+"with a touch\n"
 msgstr ""
 

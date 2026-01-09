@@ -238,6 +238,7 @@ extension PushNotificationsManager {
                 case .failure(let error):
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
                 case .success(let token):
+                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
                     self.deviceID = "\(token)"
                 }
             }
@@ -625,12 +626,13 @@ private extension PushNotificationsManager {
                             DDLogError("⛔️ Unable to unregister WP token: \(error)")
                         }
                         // Remove WP token locally
-
+                        self.deviceToken = nil
                     }
                 }
+                onCompletion(.success(token))
             case .failure(let error):
                 DDLogError("⛔️ Unable register self-driven push token: \(error)")
-                // Do nothing
+                onCompletion(.failure(error))
             }
         }
         stores.dispatch(action)

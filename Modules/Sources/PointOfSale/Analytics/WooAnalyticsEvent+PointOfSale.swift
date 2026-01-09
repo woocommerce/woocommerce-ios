@@ -467,10 +467,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleOrderDetailsEmailReceiptTapped, properties: [:])
         }
 
-        static func issueRefundTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleOrderDetailsIssueRefundTapped, properties: [:])
-        }
-
         static func ordersListLoaded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .ordersListLoaded, properties: [:])
         }

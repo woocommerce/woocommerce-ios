@@ -425,7 +425,6 @@ private extension POSOrderDetailsView {
             }
         case .issueRefund:
             return {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.issueRefundTapped())
                 orderListModel.ordersController.startRefundFlow()
                 isShowingRefundItemsSelection = true
             }

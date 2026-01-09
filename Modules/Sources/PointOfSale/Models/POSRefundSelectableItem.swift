@@ -7,7 +7,6 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
     let name: String
     let imageSrc: String?
     let formattedTotal: String
-    let quantity: Decimal
     let formattedPrice: String
     let attributes: [OrderItemAttribute]
     var isSelected: Bool
@@ -16,7 +15,6 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
          name: String,
          imageSrc: String?,
          formattedTotal: String,
-         quantity: Decimal,
          formattedPrice: String,
          attributes: [OrderItemAttribute],
          isSelected: Bool = true) {
@@ -24,7 +22,6 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
         self.name = name
         self.imageSrc = imageSrc
         self.formattedTotal = formattedTotal
-        self.quantity = quantity
         self.formattedPrice = formattedPrice
         self.attributes = attributes
         self.isSelected = isSelected
@@ -35,7 +32,6 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
         self.name = orderItem.name
         self.imageSrc = orderItem.imageSrc
         self.formattedTotal = orderItem.formattedTotal
-        self.quantity = orderItem.quantity
         self.formattedPrice = orderItem.formattedPrice
         self.attributes = orderItem.attributes
         self.isSelected = isSelected

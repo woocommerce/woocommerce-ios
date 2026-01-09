@@ -93,7 +93,9 @@ private extension POSRefundItemsSelectionView {
     var itemsList: some View {
         ScrollView {
             LazyVStack(spacing: POSSpacing.none) {
-                ForEach(Array(refundSelectableItems.enumerated()), id: \.element.id) { index, item in
+                ForEach(refundSelectableItems.indices, id: \.self) { index in
+                    let item = refundSelectableItems[index]
+
                     POSRefundItemRow(
                         item: item,
                         onToggle: {

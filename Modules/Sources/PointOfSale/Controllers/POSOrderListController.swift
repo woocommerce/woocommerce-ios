@@ -288,8 +288,14 @@ enum RefundActionAvailability {
     @MainActor
     func startRefundFlow() {
         guard let order = selectedOrder else { return }
-        refundSelectableItems = order.lineItems.map {
-            POSRefundSelectableItem(from: $0, isSelected: true)
+
+        refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
+            let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
+            guard intQuantity > 0 else { return [] }
+
+            return (0..<intQuantity).map { _ in
+                POSRefundSelectableItem(from: item, isSelected: true)
+            }
         }
     }
 

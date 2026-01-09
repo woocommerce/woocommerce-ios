@@ -25,7 +25,7 @@ struct POSRefundItemRow: View {
                     attributesView(item.attributes)
                 }
 
-                Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
+                Text(item.formattedPrice)
                     .font(.posBodySmallRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
@@ -59,7 +59,7 @@ struct POSRefundItemRow: View {
         if let attributesText {
             label += ", \(attributesText)"
         }
-        label += ", \(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))"
+        label += ", \(item.formattedPrice)"
         label += ", \(selectionState)"
 
         return label
@@ -68,16 +68,7 @@ struct POSRefundItemRow: View {
 
 private extension POSRefundItemRow {
     enum Localization {
-        static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {
-            let format = NSLocalizedString(
-                "pos.refundItemRow.quantityLabel",
-                value: "%1$d × %2$@",
-                comment: "Product quantity and price label for refund item. %1$d is the quantity, %2$@ is the unit price."
-            )
-            return String(format: format, quantity, unitPrice)
-        }
-
-        static let selectedState = NSLocalizedString(
+static let selectedState = NSLocalizedString(
             "pos.refundItemRow.selectedState",
             value: "Selected for refund",
             comment: "Accessibility state when item is selected for refund"
@@ -100,7 +91,6 @@ private extension POSRefundItemRow {
                 name: "Test Product with Long Name",
                 imageSrc: nil,
                 formattedTotal: "$29.99",
-                quantity: 2,
                 formattedPrice: "$14.99",
                 attributes: [],
                 isSelected: true
@@ -116,7 +106,6 @@ private extension POSRefundItemRow {
                 name: "Another Product",
                 imageSrc: nil,
                 formattedTotal: "$9.99",
-                quantity: 1,
                 formattedPrice: "$9.99",
                 attributes: [],
                 isSelected: false

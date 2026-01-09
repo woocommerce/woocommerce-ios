@@ -68,7 +68,7 @@ struct POSRefundItemRow: View {
 
 private extension POSRefundItemRow {
     enum Localization {
-static let selectedState = NSLocalizedString(
+        static let selectedState = NSLocalizedString(
             "pos.refundItemRow.selectedState",
             value: "Selected for refund",
             comment: "Accessibility state when item is selected for refund"

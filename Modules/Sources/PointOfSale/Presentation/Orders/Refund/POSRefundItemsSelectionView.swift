@@ -35,7 +35,7 @@ struct POSRefundItemsSelectionView: View {
 
             continueButton
         }
-        .padding(POSPadding.large)
+        .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
         .frame(width: parentSize.width - (Constants.modalHorizontalPadding * 2))
     }
@@ -60,11 +60,9 @@ private extension POSRefundItemsSelectionView {
             .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(.bottom, POSPadding.medium)
+        .padding(.bottom, POSPadding.xLarge)
     }
 
-    /// Row with "ITEMS (n selected)" and the "AMOUNT" column header,
-    /// plus a leading checkbox that toggles all items.
     var itemsHeaderView: some View {
         HStack(spacing: POSSpacing.small) {
             POSCheckbox(
@@ -87,7 +85,7 @@ private extension POSRefundItemsSelectionView {
 
             Spacer()
         }
-        .padding(.vertical, POSPadding.small)
+        .padding(.bottom, POSPadding.medium)
     }
 
     var itemsList: some View {
@@ -110,7 +108,6 @@ private extension POSRefundItemsSelectionView {
                 }
             }
         }
-        .padding(.vertical, POSPadding.medium)
     }
 
     var continueButton: some View {

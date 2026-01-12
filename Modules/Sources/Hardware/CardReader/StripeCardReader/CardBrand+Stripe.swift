@@ -26,7 +26,6 @@ extension CardBrand {
         case .eftposAu:
             self = .eftposAu
         case .cartesBancaires, .girocard:
-            // TODO: new CardBrand cases would need SVG icons for receipts, just shows generic icon on receipts
             self = .unknown
         case .unknown:
             self = .unknown

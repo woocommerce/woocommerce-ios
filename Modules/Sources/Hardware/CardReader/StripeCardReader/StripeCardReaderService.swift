@@ -673,7 +673,7 @@ private extension StripeCardReaderService {
 
     func processPaymentIntent(intent: StripeTerminal.PaymentIntent) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
         let processPaymentIntentFuture = Future<StripeTerminal.PaymentIntent, Error>() { [weak self] promise in
-            // Send event immediately to preserve "Processing..." UI behavior, since the new Stripe API (5.0) does not have an intermediate callback between
+            // Send event immediately to preserve "Processing..." UI behavior, since the new Stripe API (5.0+) does not have an intermediate callback between
             // "card read" and "confimation complete"
             self?.sendReaderEvent(.cardDetailsCollected)
 
@@ -701,7 +701,6 @@ private extension StripeCardReaderService {
                         DDLogError("💳 Error: process payment intent \(underlyingError)")
                     }
 
-                    // TODO: Switch between error cases and handle separately to make more explicit?
                     guard let confirmError = error as? ConfirmPaymentIntentError, let paymentIntent = confirmError.paymentIntent else {
                         return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }

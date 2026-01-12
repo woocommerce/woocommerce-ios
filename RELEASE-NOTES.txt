@@ -3,11 +3,7 @@
 
 24.0
 -----
-- [*****] Update Stripe SDK to 5.0 [TBD]
-
-24.0
------
-
+- [Internal]: Update Stripe SDK to 5.0 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
 
 23.9
 -----

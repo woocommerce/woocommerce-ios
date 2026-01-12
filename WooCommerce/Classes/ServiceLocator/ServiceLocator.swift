@@ -122,7 +122,10 @@ final class ServiceLocator {
 
     /// Age rating change detector
     ///
-    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector()
+    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+        defaults: .standard,
+        provider: StoreKitAgeRatingProvider()
+    )
 
     // MARK: - Getters
 

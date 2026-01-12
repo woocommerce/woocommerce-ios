@@ -24,7 +24,7 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
         self.isSelected = isSelected
     }
 
-    init(from orderItem: POSOrderItem, isSelected: Bool = true) {
+    init(from orderItem: POSOrderItem, isSelected: Bool) {
         self.id = orderItem.itemID
         self.name = orderItem.name
         self.imageSrc = orderItem.imageSrc

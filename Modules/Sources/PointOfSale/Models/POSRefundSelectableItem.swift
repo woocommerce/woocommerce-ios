@@ -13,7 +13,6 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
     init(id: Int64,
          name: String,
          imageSrc: String?,
-         formattedTotal: String,
          formattedPrice: String,
          attributes: [OrderItemAttribute],
          isSelected: Bool = true) {

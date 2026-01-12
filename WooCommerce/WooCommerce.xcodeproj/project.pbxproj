@@ -1022,6 +1022,7 @@
 		2DF0D1BC2E2907C100F8995C /* MarkOrderAsReadUseCase+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */; };
 		2DFFAFC82F151EBE009C97B0 /* AgeRatingChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFFAFC72F151EBE009C97B0 /* AgeRatingChangeDetector.swift */; };
 		2DFFAFCA2F15240E009C97B0 /* AgeRatingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFFAFC92F15240E009C97B0 /* AgeRatingProvider.swift */; };
+		2DFFAFCC2F153916009C97B0 /* AgeRatingChangeDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFFAFCB2F153916009C97B0 /* AgeRatingChangeDetectorTests.swift */; };
 		310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */; };
 		311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */; };
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
@@ -3916,6 +3917,7 @@
 		2DE9DDFA2E6EF4A300155408 /* MockCIABEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCIABEligibilityChecker.swift; sourceTree = "<group>"; };
 		2DFFAFC72F151EBE009C97B0 /* AgeRatingChangeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRatingChangeDetector.swift; sourceTree = "<group>"; };
 		2DFFAFC92F15240E009C97B0 /* AgeRatingProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRatingProvider.swift; sourceTree = "<group>"; };
+		2DFFAFCB2F153916009C97B0 /* AgeRatingChangeDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRatingChangeDetectorTests.swift; sourceTree = "<group>"; };
 		310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLiveSiteInTestModeView.swift; sourceTree = "<group>"; };
 		311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessage.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
@@ -7991,6 +7993,7 @@
 		2DB6CCEF2EF9936B00EDB54D /* AgeGate */ = {
 			isa = PBXGroup;
 			children = (
+				2DFFAFCB2F153916009C97B0 /* AgeRatingChangeDetectorTests.swift */,
 				2DB6CCEE2EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift */,
 			);
 			path = AgeGate;
@@ -15835,6 +15838,7 @@
 				DE78DE442B2846AF002E58DE /* ThemesCarouselViewModelTests.swift in Sources */,
 				DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */,
 				03B9E52F2A150EED005C77F5 /* MockCardReaderSupportDeterminer.swift in Sources */,
+				2DFFAFCC2F153916009C97B0 /* AgeRatingChangeDetectorTests.swift in Sources */,
 				DED1E3172E8556270089909C /* BookingListViewModelTests.swift in Sources */,
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,
 				023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */,

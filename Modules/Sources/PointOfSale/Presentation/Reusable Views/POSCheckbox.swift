@@ -4,24 +4,20 @@ struct POSCheckbox: View {
     let isSelected: Bool
     let onToggle: () -> Void
 
-    private let size: CGFloat = 24
-    private let cornerRadius: CGFloat = 4
-    private let checkmarkFontSize: CGFloat = 14
-
     var body: some View {
         Button(action: onToggle) {
             ZStack {
                 if isSelected {
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                    RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .fill(Color.posPrimaryContainer)
-                        .frame(width: size, height: size)
+                        .frame(width: Constants.size, height: Constants.size)
                     Image(systemName: "checkmark")
-                        .font(.system(size: checkmarkFontSize, weight: .bold))
+                        .font(.posButtonSymbolXSmall)
                         .foregroundColor(.posOnPrimaryContainer)
                 } else {
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                    RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .strokeBorder(Color.posOutline, lineWidth: 2)
-                        .frame(width: size, height: size)
+                        .frame(width: Constants.size, height: Constants.size)
                 }
             }
             .animation(.easeInOut(duration: 0.15), value: isSelected)
@@ -29,6 +25,12 @@ struct POSCheckbox: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .accessibilityLabel(isSelected ? Localization.selectedLabel : Localization.unselectedLabel)
+    }
+}
+
+private extension POSCheckbox {
+    enum Constants {
+        static let size: CGFloat = 32
     }
 }
 

@@ -4,20 +4,18 @@ import CocoaLumberjack
 import StoreKit
 #endif
 
-/// Abstraction over how we obtain the app's age rating (e.g., via StoreKit).
+/// Abstraction over how we obtain the app's age rating code (e.g., via StoreKit).
 protocol AgeRatingProviding {
-    /// Returns the current age rating string (for example, "17+") if available.
-    func currentAgeRating() async throws -> String?
+    /// Returns the current age rating code if available.
+    func currentAgeRating() async -> Int?
 }
 
-/// StoreKit-backed age rating provider (stubbed until the SDK property is available).
+/// StoreKit-backed age rating provider.
 final class StoreKitAgeRatingProvider: AgeRatingProviding {
-    func currentAgeRating() async throws -> String? {
+    func currentAgeRating() async -> Int? {
         #if canImport(StoreKit)
         if #available(iOS 26.2, *) {
-            // TODO: Read the StoreKit age rating property when available in the SDK.
-            DDLogInfo("AgeRatingProvider: StoreKit age rating not yet wired; returning nil.")
-            return nil
+            return await AppStore.ageRatingCode
         }
         #endif
         return nil

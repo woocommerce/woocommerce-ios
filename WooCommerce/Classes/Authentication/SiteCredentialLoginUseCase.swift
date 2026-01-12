@@ -169,13 +169,7 @@ private extension SiteCredentialLoginUseCase {
     func startLogin(with loginRequest: URLRequest) async throws {
         try await detectBasicAuthProbe()
 
-        let (data, response): (Data, URLResponse)
-        do {
-            (data, response) = try await session.data(for: loginRequest)
-        } catch {
-            try throwIfBasicAuth(error)
-            throw error
-        }
+        let (data, response): (Data, URLResponse) = try await session.data(for: loginRequest)
 
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.invalidLoginResponse
@@ -250,7 +244,6 @@ private extension SiteCredentialLoginUseCase {
     }
 
     /// Issues a lightweight GET to detect Basic Auth without engaging URLSession auth challenge flow.
-    /// Sends a dummy Authorization header so the server immediately responds with 401 + WWW-Authenticate.
     func detectBasicAuthProbe() async throws {
         guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
             return
@@ -262,24 +255,9 @@ private extension SiteCredentialLoginUseCase {
         )
         request.httpMethod = "GET"
 
-        do {
-            let (_, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else { return }
-            if http.containsHTTPBasicAuthenticationChallenge {
-                throw SiteCredentialLoginError.basicAuthenticationRequired
-            }
-        } catch {
-            try throwIfBasicAuth(error)
-            // Propagate other errors so the caller can decide how to handle them.
-            throw error
-        }
-    }
-}
-
-private extension SiteCredentialLoginUseCase {
-    func throwIfBasicAuth(_ error: Error) throws {
-        let nsError = error as NSError
-        if nsError.isHTTPBasicAuthRequired {
+        let (_, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { return }
+        if http.containsHTTPBasicAuthenticationChallenge {
             throw SiteCredentialLoginError.basicAuthenticationRequired
         }
     }
@@ -305,18 +283,6 @@ extension HTTPURLResponse {
         }
         return value(forHTTPHeaderField: "WWW-Authenticate")?
             .localizedCaseInsensitiveContains("basic") == true
-    }
-}
-
-private extension NSError {
-    /// Maps URLSession auth errors to a Basic Auth requirement.
-    var isHTTPBasicAuthRequired: Bool {
-        domain == NSURLErrorDomain &&
-        (
-            code == NSURLErrorUserAuthenticationRequired ||
-            code == NSURLErrorUserCancelledAuthentication ||
-            code == NSURLErrorCancelled    // occurs if we cancel the auth challenge
-        )
     }
 }
 

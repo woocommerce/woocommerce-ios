@@ -5,6 +5,7 @@ import struct Yosemite.POSOrder
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
+    var refundActionAvailability: RefundActionAvailability = .available
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false

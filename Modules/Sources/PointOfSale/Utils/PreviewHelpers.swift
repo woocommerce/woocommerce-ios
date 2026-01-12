@@ -27,6 +27,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundsResult
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
@@ -471,6 +472,8 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
         ordersViewState.orders.first
     }
 
+    var refundActionAvailability: RefundActionAvailability { .available }
+
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}
@@ -522,8 +525,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
-    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSRefund] {
-        []
+    func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
+        POSRefundsResult(refunds: [], isFullyRefunded: false)
     }
 }
 

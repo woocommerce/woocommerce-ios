@@ -5,6 +5,10 @@
 -----
 - [*****] Update Stripe SDK to 5.0 [TBD]
 
+24.0
+-----
+
+
 23.9
 -----
 - [*] Show specific error when a variation is missing at POS checkout via WPCom login [https://github.com/woocommerce/woocommerce-ios/pull/16430]

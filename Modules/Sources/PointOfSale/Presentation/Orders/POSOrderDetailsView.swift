@@ -402,16 +402,6 @@ private extension POSOrderDetailsView {
             case .emailReceipt: 50
             }
         }
-
-        func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
-            guard order.status == .completed else { return false }
-            switch self {
-            case .issueRefund:
-                return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
-            case .emailReceipt:
-                return true
-            }
-        }
     }
 
     func handler(for action: OrderDetailsAction) -> @MainActor () -> Void {
@@ -432,14 +422,26 @@ private extension POSOrderDetailsView {
     }
 
     var availableActionsSetup: OrderDetailsActionsSetup {
-        let available = OrderDetailsAction.allCases
-            .filter { $0.isAvailable(for: order, flags: featureFlags) }
-            .sorted { $0.priority > $1.priority }
+        guard order.status == .completed else {
+            return .init(primary: nil, secondary: [])
+        }
 
-        let primary = available.first
-        let secondary = Array(available.dropFirst())
+        let email: OrderDetailsAction = .emailReceipt
 
-        return OrderDetailsActionsSetup(primary: primary, secondary: secondary)
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
+            return .init(primary: email, secondary: [])
+        }
+
+        switch orderListModel.ordersController.refundActionAvailability {
+        case .available:
+            return .init(primary: .issueRefund, secondary: [email])
+
+        case .unavailable:
+            return .init(primary: email, secondary: [])
+
+        case .unknown:
+            return .init(primary: nil, secondary: [email])
+        }
     }
 
     @ViewBuilder
@@ -449,23 +451,23 @@ private extension POSOrderDetailsView {
                 Button(primary.title, action: handler(for: primary))
                     .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
                     .accessibilityHint(primary.accessibilityHint)
-
-                if !setup.secondary.isEmpty {
-                    Menu {
-                        ForEach(setup.secondary) { action in
-                            Button(action.title, action: handler(for: action))
-                                .accessibilityHint(action.accessibilityHint)
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .font(.posBodyLargeBold)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            .foregroundColor(.posOnSurface)
-                            .padding(POSPadding.small)
-                    }
-                    .menuIndicator(.hidden)
-                }
             }
+        }
+
+        if !setup.secondary.isEmpty {
+            Menu {
+                ForEach(setup.secondary) { action in
+                    Button(action.title, action: handler(for: action))
+                        .accessibilityHint(action.accessibilityHint)
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.posBodyLargeBold)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .foregroundColor(.posOnSurface)
+                    .padding(POSPadding.small)
+            }
+            .menuIndicator(.hidden)
         }
     }
 

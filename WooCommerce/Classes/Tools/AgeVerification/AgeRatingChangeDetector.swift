@@ -34,12 +34,20 @@ final class AgeRatingChangeDetector {
 }
 
 private extension AgeRatingChangeDetector {
+    func cachedAgeRatingCode() -> Int? {
+        defaults.value(forKey: Key.lastSeenAgeRating) as? Int
+    }
+
+    func cacheAgeRatingCode(_ code: Int) {
+        defaults.set(code, forKey: Key.lastSeenAgeRating)
+    }
+
     /// Processes a new age rating code and returns an event if it differs from the last seen value.
     func process(ageRatingCode: Int) -> AgeRatingChangeEvent? {
-        let previous = defaults.value(forKey: Key.lastSeenAgeRating) as? Int
+        let previous = cachedAgeRatingCode()
         guard previous != ageRatingCode else { return nil }
 
-        defaults.set(ageRatingCode, forKey: Key.lastSeenAgeRating)
+        cacheAgeRatingCode(ageRatingCode)
         return .ageRatingChanged(previous: previous, current: ageRatingCode)
     }
 }

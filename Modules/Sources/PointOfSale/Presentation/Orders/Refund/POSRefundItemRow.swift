@@ -57,16 +57,24 @@ struct POSRefundItemRow: View {
 
     private var accessibilityLabel: String {
         let selectionState = item.isSelected ? Localization.selectedState : Localization.unselectedState
-        let attributesText = item.attributes.isEmpty ? nil : item.attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", ")
+        let formattedAttributes: String? = {
+            guard item.attributes.isNotEmpty else { return nil }
+            let attributeStrings = item.attributes.map { String(format: Localization.attributeFormat, $0.name, $0.value) }
+            return ListFormatter.localizedString(byJoining: attributeStrings)
+        }()
 
-        var label = "\(item.name)"
-        if let attributesText {
-            label += ", \(attributesText)"
+        if let formattedAttributes {
+            return String(format: Localization.accessibilityLabelWithAttributesFormat,
+                          item.name,
+                          formattedAttributes,
+                          item.formattedPrice,
+                          selectionState)
+        } else {
+            return String(format: Localization.accessibilityLabelFormat,
+                          item.name,
+                          item.formattedPrice,
+                          selectionState)
         }
-        label += ", \(item.formattedPrice)"
-        label += ", \(selectionState)"
-
-        return label
     }
 }
 
@@ -87,6 +95,31 @@ private extension POSRefundItemRow {
             "pos.refundItemRow.unselectedState",
             value: "Not selected for refund",
             comment: "Accessibility state when item is not selected for refund"
+        )
+
+        static let attributeFormat = NSLocalizedString(
+            "pos.refundItemRow.attributeFormat",
+            value: "%1$@: %2$@",
+            comment: "Format for a single attribute in accessibility label. %1$@ is the attribute name, %2$@ is the attribute value. Example: 'Size: Medium'"
+        )
+
+        static let accessibilityLabelFormat = NSLocalizedString(
+            "pos.refundItemRow.accessibilityLabelFormat",
+            value: "%1$@, %2$@, %3$@",
+            comment: "Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state"
+        )
+
+        static let accessibilityLabelWithAttributesFormat = NSLocalizedString(
+            "pos.refundItemRow.accessibilityLabelWithAttributesFormat",
+            value: "%1$@, %2$@, %3$@, %4$@",
+            comment:
+                """
+                Accessibility label format for refund item with attributes.
+                %1$@ is the product name.
+                %2$@ is the attributes list.
+                %3$@ is the price.
+                %4$@ is the selection state.
+                """
         )
     }
 }

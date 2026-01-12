@@ -28,14 +28,14 @@ final class AgeRatingChangeDetectorTests: XCTestCase {
     func test_checkForChange_whenNoCachedValue_returnsEventAndCaches() async {
         provider.code = 1
 
-        let event = await sut.checkForChange()
+        let result = await sut.checkForChange()
 
-        XCTAssertNotNil(event)
-        if case let .ageRatingChanged(previous, current) = event! {
+        XCTAssertNotNil(result)
+        if case let .ageRatingChanged(previous, current) = result! {
             XCTAssertNil(previous)
             XCTAssertEqual(current, 1)
         } else {
-            XCTFail("Unexpected event \(String(describing: event))")
+            XCTFail("Unexpected result \(String(describing: result))")
         }
         XCTAssertEqual(defaults.integer(forKey: "ageRatingChangeDetector.lastSeenAgeRating"), 1)
     }
@@ -44,9 +44,9 @@ final class AgeRatingChangeDetectorTests: XCTestCase {
         defaults.set(2, forKey: "ageRatingChangeDetector.lastSeenAgeRating")
         provider.code = 2
 
-        let event = await sut.checkForChange()
+        let result = await sut.checkForChange()
 
-        XCTAssertNil(event)
+        XCTAssertNil(result)
         XCTAssertEqual(defaults.integer(forKey: "ageRatingChangeDetector.lastSeenAgeRating"), 2)
     }
 
@@ -54,14 +54,14 @@ final class AgeRatingChangeDetectorTests: XCTestCase {
         defaults.set(1, forKey: "ageRatingChangeDetector.lastSeenAgeRating")
         provider.code = 3
 
-        let event = await sut.checkForChange()
+        let result = await sut.checkForChange()
 
-        XCTAssertNotNil(event)
-        if case let .ageRatingChanged(previous, current) = event! {
+        XCTAssertNotNil(result)
+        if case let .ageRatingChanged(previous, current) = result! {
             XCTAssertEqual(previous, 1)
             XCTAssertEqual(current, 3)
         } else {
-            XCTFail("Unexpected event \(String(describing: event))")
+            XCTFail("Unexpected result \(String(describing: result))")
         }
         XCTAssertEqual(defaults.integer(forKey: "ageRatingChangeDetector.lastSeenAgeRating"), 3)
     }

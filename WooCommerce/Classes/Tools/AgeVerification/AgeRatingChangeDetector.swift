@@ -1,8 +1,8 @@
 import Foundation
 import CocoaLumberjack
 
-/// Event emitted when the app's age rating changes on device.
-enum AgeRatingChangeEvent: Equatable {
+/// Result emitted when the app's age rating changes on device.
+enum AgeRatingChangeCheckResult: Equatable {
     case ageRatingChanged(previous: Int?, current: Int)
 }
 
@@ -25,7 +25,7 @@ final class AgeRatingChangeDetector {
 
     /// Fetches the latest age rating code via the injected provider and reports a change event if detected.
     @discardableResult
-    func checkForChange() async -> AgeRatingChangeEvent? {
+    func checkForChange() async -> AgeRatingChangeCheckResult? {
         guard let ratingCode = await provider.currentAgeRating() else {
             return nil
         }
@@ -42,8 +42,8 @@ private extension AgeRatingChangeDetector {
         defaults.set(code, forKey: Key.lastSeenAgeRating)
     }
 
-    /// Processes a new age rating code and returns an event if it differs from the last seen value.
-    func process(ageRatingCode: Int) -> AgeRatingChangeEvent? {
+    /// Processes a new age rating code and returns a result if it differs from the last seen value.
+    func process(ageRatingCode: Int) -> AgeRatingChangeCheckResult? {
         let previous = cachedAgeRatingCode()
         guard previous != ageRatingCode else { return nil }
 

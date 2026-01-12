@@ -14,8 +14,7 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
          name: String,
          imageSrc: String?,
          formattedPrice: String,
-         attributes: [OrderItemAttribute],
-         isSelected: Bool = true) {
+         attributes: [OrderItemAttribute]) {
         self.id = id
         self.name = name
         self.imageSrc = imageSrc

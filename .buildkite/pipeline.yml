@@ -138,3 +138,16 @@ steps:
     notify:
       - github_commit_status:
           context: UI Tests (iPad)
+
+  #################
+  # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait
+  #################
+  - wait: ~
+    continue_on_failure: true
+
+  - label: ":claude: 🕵️ Check for Build Failures and Run Claude Analysis"
+    command: |
+      source .buildkite/shared-pipeline-vars
+      buildkite-agent pipeline upload .buildkite/claude-analysis.yml
+    agents:
+      queue: upload

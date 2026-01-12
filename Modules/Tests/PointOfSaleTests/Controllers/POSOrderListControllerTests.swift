@@ -587,7 +587,7 @@ final class POSOrderListControllerTests {
 
     // MARK: - Refund Item Selection Tests
 
-    @Test func startRefundFlow_when_order_has_multiple_quantities_then_creates_one_item_per_unit() async throws {
+    @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
         // Given
         let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, name: "Item A", quantity: 3, formattedPrice: "$10.00", formattedTotal: "$30.00"),

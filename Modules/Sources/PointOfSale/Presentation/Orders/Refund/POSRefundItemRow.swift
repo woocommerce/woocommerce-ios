@@ -5,7 +5,11 @@ struct POSRefundItemRow: View {
     let item: POSRefundSelectableItem
     let onToggle: () -> Void
 
-    private let imageSize: CGFloat = 56
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    private var imageSize: CGFloat {
+        min(Constants.imageSize * scale, Constants.maximumImageSize)
+    }
 
     var body: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
@@ -67,6 +71,11 @@ struct POSRefundItemRow: View {
 }
 
 private extension POSRefundItemRow {
+    enum Constants {
+        static let imageSize: CGFloat = 56
+        static let maximumImageSize: CGFloat = imageSize * 2
+    }
+
     enum Localization {
         static let selectedState = NSLocalizedString(
             "pos.refundItemRow.selectedState",

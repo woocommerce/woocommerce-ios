@@ -7,6 +7,7 @@ import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
 @testable import struct Yosemite.POSRefundsResult
@@ -589,24 +590,8 @@ final class POSOrderListControllerTests {
     @Test func startRefundFlow_when_order_has_multiple_quantities_then_creates_one_item_per_unit() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item A",
-                quantity: 3,
-                formattedPrice: "$10.00",
-                formattedTotal: "$30.00",
-                imageSrc: nil,
-                attributes: []
-            ),
-            POSOrderItem(
-                itemID: 2,
-                name: "Item B",
-                quantity: 1,
-                formattedPrice: "$5.00",
-                formattedTotal: "$5.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, name: "Item A", quantity: 3, formattedPrice: "$10.00", formattedTotal: "$30.00"),
+            makePOSOrderItem(itemID: 2, name: "Item B", quantity: 1, formattedPrice: "$5.00")
         ])
 
         // When
@@ -623,15 +608,7 @@ final class POSOrderListControllerTests {
     @Test func startRefundFlow_then_all_items_are_selected_by_default() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item",
-                quantity: 2,
-                formattedPrice: "$10.00",
-                formattedTotal: "$20.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
         ])
 
         // When
@@ -662,15 +639,7 @@ final class POSOrderListControllerTests {
     @Test func toggleRefundItemSelection_then_toggles_item_at_index() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item",
-                quantity: 2,
-                formattedPrice: "$10.00",
-                formattedTotal: "$20.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
         ])
 
         await MainActor.run {
@@ -702,15 +671,7 @@ final class POSOrderListControllerTests {
     @Test func clearRefundSelection_then_removes_all_items() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item",
-                quantity: 2,
-                formattedPrice: "$10.00",
-                formattedTotal: "$20.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
         ])
 
         let initialCount = await MainActor.run {
@@ -733,15 +694,7 @@ final class POSOrderListControllerTests {
     @Test func toggleAllRefundItemsSelection_when_all_selected_then_deselects_all() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item",
-                quantity: 2,
-                formattedPrice: "$10.00",
-                formattedTotal: "$20.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
         ])
 
         await MainActor.run {
@@ -764,15 +717,7 @@ final class POSOrderListControllerTests {
     @Test func toggleAllRefundItemsSelection_when_some_deselected_then_selects_all() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item",
-                quantity: 2,
-                formattedPrice: "$10.00",
-                formattedTotal: "$20.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
         ])
 
         await MainActor.run {
@@ -796,15 +741,7 @@ final class POSOrderListControllerTests {
     @Test func toggleAllRefundItemsSelection_when_none_selected_then_selects_all() async throws {
         // Given
         let order = makeOrder(lineItems: [
-            POSOrderItem(
-                itemID: 1,
-                name: "Item",
-                quantity: 2,
-                formattedPrice: "$10.00",
-                formattedTotal: "$20.00",
-                imageSrc: nil,
-                attributes: []
-            )
+            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
         ])
 
         await MainActor.run {
@@ -827,7 +764,7 @@ final class POSOrderListControllerTests {
 }
 
 private extension POSOrderListControllerTests {
-    private func makeOrder(id: Int64 = 1, lineItems: [POSOrderItem] = []) -> POSOrder {
+    func makeOrder(id: Int64 = 1, lineItems: [POSOrderItem] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",
@@ -843,6 +780,26 @@ private extension POSOrderListControllerTests {
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
             formattedNetAmount: nil
+        )
+    }
+
+    func makePOSOrderItem(
+        itemID: Int64 = 1,
+        name: String = "Test Item",
+        quantity: Decimal = 1,
+        formattedPrice: String = "$10.00",
+        formattedTotal: String? = nil,
+        imageSrc: String? = nil,
+        attributes: [OrderItemAttribute] = []
+    ) -> POSOrderItem {
+        POSOrderItem(
+            itemID: itemID,
+            name: name,
+            quantity: quantity,
+            formattedPrice: formattedPrice,
+            formattedTotal: formattedTotal ?? formattedPrice,
+            imageSrc: imageSrc,
+            attributes: attributes
         )
     }
 }

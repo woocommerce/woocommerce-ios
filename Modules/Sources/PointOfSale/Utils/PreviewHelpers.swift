@@ -463,7 +463,6 @@ struct POSPreviewHelpers {
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
     var refundSelectableItems: [POSRefundSelectableItem]
-    
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {

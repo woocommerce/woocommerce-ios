@@ -596,45 +596,69 @@ private extension PushNotificationsManager {
     }
 
     func registerSelfDrivenPushNotificationFlow(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        guard let siteID else { return }
+        guard let siteID else {
+            DDLogError("⛔️ Unable to register self-driven push token: missing siteID")
+            return
+        }
 
-        // Register Woo token
-        DDLogInfo("📱 Registering self driven push notification token")
+        DDLogInfo("📱 Registering self-driven push notification token")
+
         let device = APNSDevice(deviceToken: deviceToken)
-        let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(siteID: siteID,
-                                                                                     device: device,
-                                                                                     applicationID: WooConstants.pushApplicationID) { result in
-            switch result {
-            case .success(let token):
-                // Persist token locally
-                DDLogInfo("📱 Registering self driven push notification successful token: \(token)")
-                let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: Int64(token)) { result in
-                    switch result {
-                    case .success:
-                        break
-                    case .failure(let error):
-                        DDLogError("⛔️ Unable to set self-driven push token ID: \(error)")
-                    }
-                }
-                self.stores.dispatch(setTokenAction)
+        let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+            siteID: siteID,
+            device: device,
+            applicationID: WooConstants.pushApplicationID
+        ) { [weak self] result in
+            guard let self = self else { return }
 
-                // Unregister WP token if exists if auth with WP com
-                if self.isWPAdminLogin {
-                    self.unregisterDotcomDeviceIfPossible { error in
-                        if let error {
-                            DDLogError("⛔️ Unable to unregister WP token: \(error)")
-                        }
-                        // Remove WP token locally
-                        self.deviceToken = nil
-                    }
-                }
-                onCompletion(.success(token))
+            switch result {
+            case .success(let tokenID):
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, onCompletion: onCompletion)
+
             case .failure(let error):
-                DDLogError("⛔️ Unable register self-driven push token: \(error)")
+                DDLogError("⛔️ Unable to register self-driven push token: \(error)")
                 onCompletion(.failure(error))
             }
         }
+
         stores.dispatch(action)
+    }
+
+    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, siteID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        DDLogInfo("📱 Self-driven push token registration succeeded: \(tokenID)")
+
+        persistSelfDrivenTokenID(tokenID, siteID: siteID)
+        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: { [weak self] in
+            guard let self = self else { return }
+            // If we successfully unregistered the WP.com token (or no cleanup was needed), we are done.
+            onCompletion(.success(tokenID))
+        })
+    }
+
+    func persistSelfDrivenTokenID(_ tokenID: Int64, siteID: Int64) {
+        let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: tokenID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Unable to persist self-driven push token ID: \(error)")
+            }
+        }
+        stores.dispatch(setTokenAction)
+    }
+
+    func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
+        guard isWPAdminLogin else {
+            onCompletion()
+            return
+        }
+
+        unregisterDotcomDeviceIfPossible { [weak self] error in
+            if let error {
+                DDLogError("⛔️ Unable to unregister WP.com push token: \(error)")
+            }
+
+            // Remove the WP.com token locally regardless of unregister success.
+            self?.deviceToken = nil
+            onCompletion()
+        }
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.

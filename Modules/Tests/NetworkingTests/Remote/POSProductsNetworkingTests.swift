@@ -283,4 +283,48 @@ struct POSProductsNetworkingTests {
         #expect(request.parameters["context"] as? String == "edit")
         #expect(request.parameters["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
     }
+
+    @Test func loadProductsForPointOfSale_excludes_posProductsOnly_when_not_specified() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When - call without posProductsOnly parameter
+        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID,
+                                                         productTypes: [.simple],
+                                                         pageNumber: 1)
+
+        // Then - parameter should not be present
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["pos_products_only"] == nil)
+    }
+
+    @Test func loadProductsForPointOfSale_includes_posProductsOnly_true_when_enabled() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID,
+                                                         productTypes: [.simple],
+                                                         pageNumber: 1,
+                                                         posProductsOnly: true)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
+    }
+
+    @Test func loadProductsForPointOfSale_includes_posProductsOnly_false_when_disabled() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID,
+                                                         productTypes: [.simple],
+                                                         pageNumber: 1,
+                                                         posProductsOnly: false)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["pos_products_only"] as? String == "false")
+    }
 }

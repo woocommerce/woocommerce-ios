@@ -98,7 +98,8 @@ public protocol ProductsRemoteProtocol {
                                            posProductsOnly: Bool?) async throws -> PagedItems<POSProduct>
 
     func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
-                                                   globalUniqueID: String) async throws -> POSProduct
+                                                   globalUniqueID: String,
+                                                   posProductsOnly: Bool?) async throws -> POSProduct
 
     func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
 }
@@ -146,6 +147,15 @@ extension ProductsRemoteProtocol {
                                                productTypes: productTypes,
                                                pageNumber: pageNumber,
                                                posProductsOnly: false)
+    }
+
+    // TODO:Remove when we remove the feature flag.
+    // This extension only exist to provide a default value to the protocols.
+    public func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+                                                       globalUniqueID: String) async throws -> POSProduct {
+        try await loadPOSProductByGlobalUniqueIdentifier(for: siteID,
+                                                         globalUniqueID: globalUniqueID,
+                                                         posProductsOnly: false)
     }
 
 }
@@ -355,10 +365,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func searchProductsForPointOfSale(for siteID: Int64,
                                              query: String,
                                              productTypes: [ProductType] = [.simple],
-                                             pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
+                                             pageNumber: Int = 1,
+                                             posProductsOnly: Bool? = nil) async throws -> PagedItems<POSProduct> {
         var parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
-            productTypes: productTypes
+            productTypes: productTypes,
+            posProductsOnly: posProductsOnly
         )
 
         parameters.updateValue(query, forKey: ParameterKey.search)
@@ -389,14 +401,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Throws: Error if the product is not found or if there's a network error
     ///
     public func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
-                                                       globalUniqueID: String) async throws -> POSProduct {
-        let parameters = [
+                                                       globalUniqueID: String,
+                                                       posProductsOnly: Bool? = nil) async throws -> POSProduct {
+        var parameters: [String: Any] = [
             ParameterKey.globalUniqueID: globalUniqueID,
             ParameterKey.page: "1",
             ParameterKey.perPage: "1",
             ParameterKey.contextKey: Default.context,
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+
+        if let posProductsOnly {
+            parameters[ParameterKey.posProductsOnly] = String(posProductsOnly)
+        }
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ListMapper<POSProduct>(siteID: siteID)

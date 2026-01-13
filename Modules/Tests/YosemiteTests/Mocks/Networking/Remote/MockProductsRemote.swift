@@ -476,7 +476,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
+    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String, posProductsOnly: Bool?) async throws -> POSProduct {
             return POSProduct.fake().copy(siteID: siteID,
                                           globalUniqueID: globalUniqueID)
     }

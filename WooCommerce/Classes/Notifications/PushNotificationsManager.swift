@@ -625,12 +625,8 @@ private extension PushNotificationsManager {
     }
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, siteID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        DDLogInfo("📱 Self-driven push token registration succeeded: \(tokenID)")
-
         persistSelfDrivenTokenID(tokenID, siteID: siteID)
-        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: { [weak self] in
-            guard let self = self else { return }
-            // If we successfully unregistered the WP.com token (or no cleanup was needed), we are done.
+        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
             onCompletion(.success(tokenID))
         })
     }

@@ -121,6 +121,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Dashboard View Events
     //
     case dashboardLoaded = "dashboard_loaded"
+    case siteConnectionTypeIdentified = "site_connection_type_identified"
     case dashboardSelected = "main_tab_dashboard_selected"
     case dashboardReselected = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh = "dashboard_pulled_to_refresh"

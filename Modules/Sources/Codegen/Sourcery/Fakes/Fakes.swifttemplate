@@ -51,7 +51,7 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 
     let accessLevel = type.accessLevel == "internal" ? "" : "\(type.accessLevel) "
 
-    /// If we are generating for an `Enum`, return with `.value` for content 
+    /// If we are generating for an `Enum`, return with `.value` for content
     if let enumType = type as? Enum, let firstEnumCase = enumType.cases.first {
         var name = enumType.globalName
         // When passing an Xcode project with synchronized folders or a source from a Swift package, globalName will not include the module name.
@@ -59,7 +59,9 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
             name = "\(moduleName).\(name)"
         }
 
-        return FakeableSpec(name: name, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
+        // If the enum case has associated values, add parentheses to call it as a function
+        let caseName = firstEnumCase.hasAssociatedValue ? "\(firstEnumCase.name)()" : firstEnumCase.name
+        return FakeableSpec(name: name, accessLevelWithSpacePostfix: accessLevel, content: .value(caseName))
     }
 
     /// Make sure we have at least one non throwable-initializer to work with.

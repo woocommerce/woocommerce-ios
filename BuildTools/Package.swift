@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:6.2
 import Foundation
 import PackageDescription
 
@@ -7,7 +7,8 @@ let package = Package(
     platforms: [.macOS(.v10_13)],
     dependencies: [
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: loadSwiftLintVersion()),
-        .package(url: "https://github.com/krzysztofzablocki/Sourcery.git", from: "2.2.6")
+        // version 2.3.0 for Xcode 26 compatibility
+        .package(url: "https://github.com/krzysztofzablocki/Sourcery.git", revision: "b703710aefe52f9e8303bc8afb1bec1f15b540af")
     ],
     targets: [.target(name: "BuildTools", path: "")]
 )

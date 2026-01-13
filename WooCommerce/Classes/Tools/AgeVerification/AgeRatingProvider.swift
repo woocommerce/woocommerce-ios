@@ -1,5 +1,4 @@
 import Foundation
-import CocoaLumberjack
 #if canImport(StoreKit)
 import StoreKit
 #endif

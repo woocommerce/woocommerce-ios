@@ -1,5 +1,4 @@
 import Foundation
-import CocoaLumberjack
 
 /// Result emitted when the app's age rating changes on device.
 enum AgeRatingChangeCheckResult: Equatable {

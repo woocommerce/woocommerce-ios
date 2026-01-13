@@ -463,7 +463,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
-                                      pageNumber: Int) async throws -> PagedItems<POSProduct> {
+                                      pageNumber: Int,
+                                      posProductsOnly: Bool?) async throws -> PagedItems<POSProduct> {
         guard let result = posSearchResultsByQuery[query] else {
             throw NetworkError.notFound()
         }

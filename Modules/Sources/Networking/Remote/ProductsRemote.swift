@@ -88,7 +88,8 @@ public protocol ProductsRemoteProtocol {
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
-                                      pageNumber: Int) async throws -> PagedItems<POSProduct>
+                                      pageNumber: Int,
+                                      posProductsOnly: Bool?) async throws -> PagedItems<POSProduct>
 
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
@@ -132,6 +133,19 @@ extension ProductsRemoteProtocol {
                                                     pageNumber: pageNumber,
                                                     perPage: perPage,
                                                     posProductsOnly: false)
+    }
+
+    // TODO:Remove when we remove the feature flag.
+    // This extension only exist to provide a default value to the protocols.
+    public func searchProductsForPointOfSale(for siteID: Int64,
+                                             query: String,
+                                             productTypes: [ProductType],
+                                             pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        try await searchProductsForPointOfSale(for: siteID,
+                                               query: query,
+                                               productTypes: productTypes,
+                                               pageNumber: pageNumber,
+                                               posProductsOnly: false)
     }
 
 }

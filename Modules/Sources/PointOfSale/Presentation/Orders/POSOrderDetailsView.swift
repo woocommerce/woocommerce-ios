@@ -1,5 +1,5 @@
 import SwiftUI
-import struct WooFoundation.WooAnalyticsEvent
+import WooFoundation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
@@ -15,8 +15,9 @@ struct POSOrderDetailsView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView: Bool = false
-    @State private var isShowingRefundItemsSelection: Bool = false
+    @State private var refundModalState: RefundModalState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -64,16 +65,10 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
-        .posModal(isPresented: $isShowingRefundItemsSelection, onDismiss: {
+        .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
-        }) {
-            POSRefundItemsSelectionView(
-                isPresented: $isShowingRefundItemsSelection,
-                onContinue: { selectedItems in
-                    isShowingRefundItemsSelection = false
-                    // Future: Navigate to refund amount/confirmation screen
-                }
-            )
+        }) { state in
+            refundModalContent(for: state)
         }
         .onAppear {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -426,7 +421,7 @@ private extension POSOrderDetailsView {
         case .issueRefund:
             return {
                 orderListModel.ordersController.startRefundFlow()
-                isShowingRefundItemsSelection = true
+                refundModalState = .itemSelection
             }
         }
     }
@@ -498,6 +493,128 @@ private extension POSOrderDetailsView {
         Divider()
             .overlay(Color.posOutlineVariant.opacity(0.5))
             .padding(.vertical, POSSpacing.small)
+    }
+}
+
+// MARK: - Refund Modal State
+
+enum RefundModalState: Identifiable, Equatable {
+    case itemSelection
+    case review(RefundReviewData)
+
+    var id: String {
+        switch self {
+        case .itemSelection: return "itemSelection"
+        case .review: return "review"
+        }
+    }
+}
+
+struct RefundReviewData: Equatable {
+    let selectedItems: [POSRefundSelectableItem]
+    let itemsCount: Int
+    let formattedItemsSubtotal: String
+    let formattedTax: String
+    let formattedRefundTotal: String
+    let paymentMethodDescription: String
+    var refundReason: String?
+}
+
+// MARK: - Refund Modal Content
+
+private extension POSOrderDetailsView {
+    @ViewBuilder
+    func refundModalContent(for state: RefundModalState) -> some View {
+        switch state {
+        case .itemSelection:
+            POSRefundItemsSelectionView(
+                isPresented: Binding(
+                    get: { refundModalState != nil },
+                    set: { if !$0 { refundModalState = nil } }
+                ),
+                onContinue: { selectedItems in
+                    navigateToRefundReview(with: selectedItems)
+                }
+            )
+        case .review(let reviewData):
+            POSRefundReviewView(
+                isPresented: Binding(
+                    get: { refundModalState != nil },
+                    set: { if !$0 { refundModalState = nil } }
+                ),
+                itemsCount: reviewData.itemsCount,
+                formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
+                formattedTax: reviewData.formattedTax,
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                refundReason: reviewData.refundReason,
+                onAddReason: {
+                    // TODO: Show reason input modal
+                },
+                onContinue: {
+                    // TODO: Process refund
+                    refundModalState = nil
+                },
+                onEditRefund: {
+                    refundModalState = .itemSelection
+                }
+            )
+        }
+    }
+
+    func navigateToRefundReview(with selectedItems: [POSRefundSelectableItem]) {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencyProvider.currencySettings)
+
+        // Calculate subtotal from selected items
+        let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
+
+        // Calculate proportional tax based on selected items vs total order
+        let orderSubtotal = order.lineItems.reduce(Decimal.zero) { $0 + $1.price }
+        let taxRatio: Decimal = orderSubtotal > 0 ? itemsSubtotal / orderSubtotal : 0
+        let estimatedTax = calculateEstimatedTax(ratio: taxRatio, currencyFormatter: currencyFormatter)
+
+        // Calculate refund total
+        let refundTotal = itemsSubtotal + estimatedTax
+
+        // Format amounts
+        let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal) ?? "$0.00"
+        let formattedTax = currencyFormatter.formatAmount(estimatedTax) ?? "$0.00"
+        let formattedTotal = currencyFormatter.formatAmount(refundTotal) ?? "$0.00"
+
+        // Create payment method description
+        let paymentMethodDescription = createPaymentMethodDescription()
+
+        let reviewData = RefundReviewData(
+            selectedItems: selectedItems,
+            itemsCount: selectedItems.count,
+            formattedItemsSubtotal: formattedSubtotal,
+            formattedTax: formattedTax,
+            formattedRefundTotal: formattedTotal,
+            paymentMethodDescription: paymentMethodDescription,
+            refundReason: nil
+        )
+
+        refundModalState = .review(reviewData)
+    }
+
+    func calculateEstimatedTax(ratio: Decimal, currencyFormatter: CurrencyFormatter) -> Decimal {
+        // Parse the formatted tax from order to get the raw value
+        // This is a simplified approach - in production you might want to calculate tax per item
+        guard let rawTax = currencyFormatter.convertToDecimal(order.formattedTotalTax) else {
+            return Decimal.zero
+        }
+        return (rawTax as Decimal) * ratio
+    }
+
+    func createPaymentMethodDescription() -> String {
+        let paymentMethod = order.paymentMethodTitle
+        if paymentMethod.lowercased().contains("card") || paymentMethod.lowercased().contains("in-person") {
+            return Localization.viaPaymentCard
+        } else if paymentMethod.lowercased().contains("cash") {
+            return Localization.viaCash
+        } else {
+            return String(format: Localization.viaPaymentMethodFormat, paymentMethod)
+        }
     }
 }
 
@@ -724,6 +841,26 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
+
+    // MARK: - Refund Review Localization
+
+    static let viaPaymentCard = NSLocalizedString(
+        "pos.orderDetailsView.refundReview.viaPaymentCard",
+        value: "Via payment card",
+        comment: "Payment method description for card payments in refund review"
+    )
+
+    static let viaCash = NSLocalizedString(
+        "pos.orderDetailsView.refundReview.viaCash",
+        value: "Via cash",
+        comment: "Payment method description for cash payments in refund review"
+    )
+
+    static let viaPaymentMethodFormat = NSLocalizedString(
+        "pos.orderDetailsView.refundReview.viaPaymentMethod",
+        value: "Via %1$@",
+        comment: "Payment method description format for other payment methods in refund review. %1$@ is the payment method name."
+    )
 }
 
 #if DEBUG

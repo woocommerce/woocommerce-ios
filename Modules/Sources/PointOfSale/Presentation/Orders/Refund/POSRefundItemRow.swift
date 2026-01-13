@@ -132,6 +132,7 @@ private extension POSRefundItemRow {
                 id: 1,
                 name: "Test Product with Long Name",
                 imageSrc: nil,
+                price: 14.99,
                 formattedPrice: "$14.99",
                 attributes: [],
                 isSelected: true
@@ -146,6 +147,7 @@ private extension POSRefundItemRow {
                 id: 2,
                 name: "Another Product",
                 imageSrc: nil,
+                price: 9.99,
                 formattedPrice: "$9.99",
                 attributes: [],
                 isSelected: false

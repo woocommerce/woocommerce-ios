@@ -21,8 +21,8 @@ struct POSRefundReviewView: View {
             buttonsSection
         }
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-        .frame(width: parentSize.width - (Constants.modalHorizontalPadding * 2))
+        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
     }
 }
 
@@ -136,15 +136,6 @@ private extension POSRefundReviewView {
                 .font(.posBodyMediumRegular())
                 .foregroundColor(valueColor)
         }
-    }
-}
-
-// MARK: - Constants
-
-private extension POSRefundReviewView {
-    enum Constants {
-        static let modalHorizontalPadding: CGFloat = 148
-        static let cornerRadius: CGFloat = 24
     }
 }
 

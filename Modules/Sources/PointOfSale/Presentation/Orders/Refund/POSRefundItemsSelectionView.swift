@@ -37,7 +37,8 @@ struct POSRefundItemsSelectionView: View {
         }
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .frame(width: parentSize.width - (Constants.modalHorizontalPadding * 2))
+        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
     }
 }
 
@@ -119,14 +120,6 @@ private extension POSRefundItemsSelectionView {
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!hasSelectedItems)
         .padding(.top, POSPadding.medium)
-    }
-}
-
-// MARK: - Constants
-
-private extension POSRefundItemsSelectionView {
-    enum Constants {
-        static let modalHorizontalPadding: CGFloat = 148
     }
 }
 

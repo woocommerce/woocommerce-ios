@@ -355,7 +355,6 @@ enum RefundActionAvailability {
         let paymentMethodDescription = createPaymentMethodDescription(for: order)
 
         return POSRefundReviewData(
-            selectedItems: selectedItems,
             itemsCount: selectedItems.count,
             formattedItemsSubtotal: formattedSubtotal,
             formattedTax: formattedTax,

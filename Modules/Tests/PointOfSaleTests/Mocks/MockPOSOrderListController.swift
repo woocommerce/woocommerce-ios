@@ -69,7 +69,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         guard !selectedItems.isEmpty else { return nil }
 
         return POSRefundReviewData(
-            selectedItems: selectedItems,
             itemsCount: selectedItems.count,
             formattedItemsSubtotal: "$0.00",
             formattedTax: "$0.00",

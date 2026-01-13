@@ -553,7 +553,7 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        guard let reviewData = ordersModel.preparePOSRefundReviewData() else { return }
+        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else { return }
         refundModalState = .review(reviewData)
     }
 }

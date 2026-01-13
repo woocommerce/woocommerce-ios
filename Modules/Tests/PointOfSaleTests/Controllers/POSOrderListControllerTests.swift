@@ -766,10 +766,197 @@ final class POSOrderListControllerTests {
             #expect(item.isSelected == true)
         }
     }
+
+    // MARK: - Prepare Refund Review Data Tests
+
+    @Test func preparePOSRefundReviewData_when_no_selected_order_then_returns_nil() async throws {
+        // When
+        let reviewData = await MainActor.run {
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData == nil)
+    }
+
+    @Test func preparePOSRefundReviewData_when_no_items_selected_then_returns_nil() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            sut.toggleAllRefundItemsSelection() // Deselect all
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData == nil)
+    }
+
+    @Test func preparePOSRefundReviewData_then_returns_correct_items_count() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 3, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.itemsCount == 3)
+    }
+
+    @Test func preparePOSRefundReviewData_then_returns_correct_subtotal() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
+            makePOSOrderItem(itemID: 2, quantity: 1, price: 5.50, formattedPrice: "$5.50")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        // 2 × $10.00 + 1 × $5.50 = $25.50
+        #expect(reviewData?.formattedItemsSubtotal == "$25.50")
+    }
+
+    @Test func preparePOSRefundReviewData_when_full_refund_then_uses_original_tax() async throws {
+        // Given - item with quantity 2 and totalTax of $1.50 (for both units)
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, totalTax: 1.50, formattedPrice: "$10.00")
+        ])
+
+        // When - all items selected (full refund)
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then - should use original totalTax directly ($1.50)
+        #expect(reviewData?.formattedTax == "$1.50")
+    }
+
+    @Test func preparePOSRefundReviewData_when_partial_refund_then_calculates_proportional_tax() async throws {
+        // Given - item with quantity 2 and totalTax of $1.50 (for both units)
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, totalTax: 1.50, formattedPrice: "$10.00")
+        ])
+
+        // When - only 1 of 2 items selected (partial refund)
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            sut.toggleRefundItemSelection(at: 0) // Deselect first item, leaving 1 selected
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then - should calculate proportionally: $1.50 / 2 × 1 = $0.75
+        #expect(reviewData?.formattedTax == "$0.75")
+    }
+
+    @Test func preparePOSRefundReviewData_then_returns_correct_total() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, totalTax: 1.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then - $10.00 + $1.00 = $11.00
+        #expect(reviewData?.formattedRefundTotal == "$11.00")
+    }
+
+    @Test func preparePOSRefundReviewData_when_card_payment_then_returns_via_payment_card() async throws {
+        // Given
+        let order = makeOrder(paymentMethodTitle: "WooCommerce In-Person Payments", lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.paymentMethodDescription == "Via payment card")
+    }
+
+    @Test func preparePOSRefundReviewData_when_cash_payment_then_returns_via_cash() async throws {
+        // Given
+        let order = makeOrder(paymentMethodTitle: "Cash on Delivery", lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.paymentMethodDescription == "Via cash")
+    }
+
+    @Test func preparePOSRefundReviewData_when_other_payment_then_returns_via_method_name() async throws {
+        // Given
+        let order = makeOrder(paymentMethodTitle: "PayPal", lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.paymentMethodDescription == "Via PayPal")
+    }
+
+    @Test func preparePOSRefundReviewData_then_refund_reason_is_nil_by_default() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.refundReason == nil)
+    }
 }
 
 private extension POSOrderListControllerTests {
-    func makeOrder(id: Int64 = 1, lineItems: [POSOrderItem] = []) -> POSOrder {
+    func makeOrder(id: Int64 = 1, paymentMethodTitle: String = "Cash", lineItems: [POSOrderItem] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",
@@ -778,7 +965,7 @@ private extension POSOrderListControllerTests {
             formattedTotal: "$25.99",
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
-            paymentMethodTitle: "Cash",
+            paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
             refunds: [],
             formattedDiscountTotal: nil,
@@ -810,19 +997,5 @@ private extension POSOrderListControllerTests {
             imageSrc: imageSrc,
             attributes: attributes
         )
-    }
-}
-
-// MARK: - Mock Currency Settings Provider
-
-private final class MockCurrencySettingsProvider: POSCurrencySettingsProviding {
-    let currencySettings: CurrencySettings
-
-    init(currencySettings: CurrencySettings = CurrencySettings(currencyCode: .USD,
-                                                                currencyPosition: .left,
-                                                                thousandSeparator: ",",
-                                                                decimalSeparator: ".",
-                                                                numberOfDecimals: 2)) {
-        self.currencySettings = currencySettings
     }
 }

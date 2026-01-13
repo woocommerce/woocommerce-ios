@@ -11,13 +11,18 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
 @testable import struct Yosemite.POSRefundsResult
+import class WooFoundation.CurrencySettings
 
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
     private let refundsService = MockPOSRefundsService()
     private lazy var fetchStrategyFactory = MockPOSOrderListFetchStrategyFactory(orderService: orderListService)
     private lazy var featureFlags = MockFeatureFlagService()
-    private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory, refundsService: refundsService, featureFlags: featureFlags)
+    private lazy var currencySettingsProvider = MockCurrencySettingsProvider()
+    private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
+                                                   refundsService: refundsService,
+                                                   featureFlags: featureFlags,
+                                                   currencySettingsProvider: currencySettingsProvider)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
@@ -805,5 +810,19 @@ private extension POSOrderListControllerTests {
             imageSrc: imageSrc,
             attributes: attributes
         )
+    }
+}
+
+// MARK: - Mock Currency Settings Provider
+
+private final class MockCurrencySettingsProvider: POSCurrencySettingsProviding {
+    let currencySettings: CurrencySettings
+
+    init(currencySettings: CurrencySettings = CurrencySettings(currencyCode: .USD,
+                                                                currencyPosition: .left,
+                                                                thousandSeparator: ",",
+                                                                decimalSeparator: ".",
+                                                                numberOfDecimals: 2)) {
+        self.currencySettings = currencySettings
     }
 }

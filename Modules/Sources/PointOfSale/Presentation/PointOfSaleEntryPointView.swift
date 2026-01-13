@@ -135,7 +135,8 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      featureFlags: services.featureFlags)
+                                                      featureFlags: services.featureFlags,
+                                                      currencySettingsProvider: services.currency)
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services

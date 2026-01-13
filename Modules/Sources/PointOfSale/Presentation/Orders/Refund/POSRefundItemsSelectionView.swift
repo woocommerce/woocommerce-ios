@@ -4,7 +4,7 @@ struct POSRefundItemsSelectionView: View {
     @Binding var isPresented: Bool
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
-    let onContinue: ([POSRefundSelectableItem]) -> Void
+    let onContinue: () -> Void
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -114,7 +114,7 @@ private extension POSRefundItemsSelectionView {
 
     var continueButton: some View {
         Button(Localization.continueButton) {
-            onContinue(selectedItems)
+            onContinue()
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!hasSelectedItems)
@@ -176,7 +176,7 @@ private extension POSRefundItemsSelectionView {
 #Preview("POSRefundItemsSelectionView") {
     POSRefundItemsSelectionView(
         isPresented: .constant(true),
-        onContinue: { _ in }
+        onContinue: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
 }

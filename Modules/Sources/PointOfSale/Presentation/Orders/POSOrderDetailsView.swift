@@ -500,7 +500,7 @@ private extension POSOrderDetailsView {
 
 enum RefundModalState: Identifiable, Equatable {
     case itemSelection
-    case review(RefundReviewData)
+    case review(POSRefundReviewData)
 
     var id: String {
         switch self {
@@ -508,16 +508,6 @@ enum RefundModalState: Identifiable, Equatable {
         case .review: return "review"
         }
     }
-}
-
-struct RefundReviewData: Equatable {
-    let selectedItems: [POSRefundSelectableItem]
-    let itemsCount: Int
-    let formattedItemsSubtotal: String
-    let formattedTax: String
-    let formattedRefundTotal: String
-    let paymentMethodDescription: String
-    var refundReason: String?
 }
 
 // MARK: - Refund Modal Content
@@ -532,8 +522,8 @@ private extension POSOrderDetailsView {
                     get: { refundModalState != nil },
                     set: { if !$0 { refundModalState = nil } }
                 ),
-                onContinue: { selectedItems in
-                    navigateToRefundReview(with: selectedItems)
+                onContinue: {
+                    navigateToRefundReview()
                 }
             )
         case .review(let reviewData):
@@ -562,74 +552,9 @@ private extension POSOrderDetailsView {
         }
     }
 
-    func navigateToRefundReview(with selectedItems: [POSRefundSelectableItem]) {
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencyProvider.currencySettings)
-
-        // Calculate subtotal from selected items (sum of prices)
-        let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
-
-        // Calculate tax by grouping items by itemID to handle full vs partial refunds accurately
-        let itemsTax = calculateRefundTax(for: selectedItems)
-
-        // Calculate refund total
-        let refundTotal = itemsSubtotal + itemsTax
-
-        // Format amounts
-        let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal) ?? "$0.00"
-        let formattedTax = currencyFormatter.formatAmount(itemsTax) ?? "$0.00"
-        let formattedTotal = currencyFormatter.formatAmount(refundTotal) ?? "$0.00"
-
-        // Create payment method description
-        let paymentMethodDescription = createPaymentMethodDescription()
-
-        let reviewData = RefundReviewData(
-            selectedItems: selectedItems,
-            itemsCount: selectedItems.count,
-            formattedItemsSubtotal: formattedSubtotal,
-            formattedTax: formattedTax,
-            formattedRefundTotal: formattedTotal,
-            paymentMethodDescription: paymentMethodDescription,
-            refundReason: nil
-        )
-
+    func navigateToRefundReview() {
+        guard let reviewData = ordersModel.preparePOSRefundReviewData() else { return }
         refundModalState = .review(reviewData)
-    }
-
-    /// Calculates refund tax by grouping items by itemID.
-    /// For full refunds (all units selected), uses the original totalTax directly to avoid rounding errors.
-    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) × totalTax
-    func calculateRefundTax(for selectedItems: [POSRefundSelectableItem]) -> Decimal {
-        // Group selected items by itemID
-        let groupedByItemID = Dictionary(grouping: selectedItems, by: { $0.itemID })
-
-        return groupedByItemID.reduce(Decimal.zero) { total, group in
-            let (_, items) = group
-            guard let firstItem = items.first else { return total }
-
-            let selectedCount = Decimal(items.count)
-            let originalQuantity = firstItem.originalQuantity
-            let totalTax = firstItem.totalTax
-
-            // If all units are selected, use the original totalTax directly (no rounding error)
-            if selectedCount == originalQuantity {
-                return total + totalTax
-            } else {
-                // Partial refund: calculate proportionally
-                let proportionalTax = (totalTax / originalQuantity) * selectedCount
-                return total + proportionalTax
-            }
-        }
-    }
-
-    func createPaymentMethodDescription() -> String {
-        let paymentMethod = order.paymentMethodTitle
-        if paymentMethod.lowercased().contains("card") || paymentMethod.lowercased().contains("in-person") {
-            return Localization.viaPaymentCard
-        } else if paymentMethod.lowercased().contains("cash") {
-            return Localization.viaCash
-        } else {
-            return String(format: Localization.viaPaymentMethodFormat, paymentMethod)
-        }
     }
 }
 
@@ -856,26 +781,6 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
-
-    // MARK: - Refund Review Localization
-
-    static let viaPaymentCard = NSLocalizedString(
-        "pos.orderDetailsView.refundReview.viaPaymentCard",
-        value: "Via payment card",
-        comment: "Payment method description for card payments in refund review"
-    )
-
-    static let viaCash = NSLocalizedString(
-        "pos.orderDetailsView.refundReview.viaCash",
-        value: "Via cash",
-        comment: "Payment method description for cash payments in refund review"
-    )
-
-    static let viaPaymentMethodFormat = NSLocalizedString(
-        "pos.orderDetailsView.refundReview.viaPaymentMethod",
-        value: "Via %1$@",
-        comment: "Payment method description format for other payment methods in refund review. %1$@ is the payment method name."
-    )
 }
 
 #if DEBUG

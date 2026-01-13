@@ -55,4 +55,27 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     }
 
     func toggleAllRefundItemsSelection() {}
+
+    // MARK: - Refund Review Data
+
+    var stubPOSRefundReviewData: POSRefundReviewData?
+
+    func preparePOSRefundReviewData() -> POSRefundReviewData? {
+        if let stubData = stubPOSRefundReviewData {
+            return stubData
+        }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else { return nil }
+
+        return POSRefundReviewData(
+            selectedItems: selectedItems,
+            itemsCount: selectedItems.count,
+            formattedItemsSubtotal: "$0.00",
+            formattedTax: "$0.00",
+            formattedRefundTotal: "$0.00",
+            paymentMethodDescription: "Via payment card",
+            refundReason: nil
+        )
+    }
 }

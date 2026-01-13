@@ -61,7 +61,8 @@ struct POSProductOrVariationResolver {
                                    scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
             return try await productsRemote.loadPOSProduct(for: variation.siteID,
-                                                           productID: variation.productID)
+                                                           productID: variation.productID,
+                                                           posProductsOnly: false) //needs testing
         } catch {
             switch ProductLoadError(underlyingError: error) {
             case .notFound:

@@ -15,7 +15,7 @@ public protocol ProductVariationsRemoteProtocol {
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int,
-                                      posProductsOnly: Bool?) async throws -> PagedItems<POSProductVariation>
+                                      posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -38,18 +38,6 @@ public protocol ProductVariationsRemoteProtocol {
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
-extension ProductVariationsRemoteProtocol {
-    // TODO:Remove when we remove the feature flag.
-    // This extension only exist to provide a default value to the protocols.
-    public func loadVariationsForPointOfSale(for siteID: Int64,
-                                             parentProductID: Int64,
-                                             pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        try await loadVariationsForPointOfSale(for: siteID,
-                                               parentProductID: parentProductID,
-                                               pageNumber: pageNumber,
-                                               posProductsOnly: nil)
-    }
-}
 
 /// ProductVariation: Remote Endpoints
 ///
@@ -93,7 +81,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
                                              pageNumber: Int = Default.pageNumber,
-                                             posProductsOnly: Bool? = nil) async throws -> PagedItems<POSProductVariation> {
+                                             posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
@@ -127,7 +115,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                           context: String?,
                                           pageNumber: Int,
                                           pageSize: Int,
-                                          posProductsOnly: Bool? = nil) -> JetpackRequest {
+                                          posProductsOnly: Bool = false) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let stringOfRequiredFields = fields.joined(separator: ",")
@@ -140,13 +128,10 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs,
             ParameterKey.status: status?.rawValue,
             ParameterKey.orderBy: orderBy?.rawValue,
-            ParameterKey.order: order?.rawValue
+            ParameterKey.order: order?.rawValue,
+            ParameterKey.posProductsOnly: String(posProductsOnly)
         ]
             .compactMapValues { $0 }
-
-        if let posProductsOnly {
-            parameters[ParameterKey.posProductsOnly] = String(posProductsOnly)
-        }
 
         let path = "\(Path.products)/\(productID)/variations"
         let request = JetpackRequest(wooApiVersion: .mark3,

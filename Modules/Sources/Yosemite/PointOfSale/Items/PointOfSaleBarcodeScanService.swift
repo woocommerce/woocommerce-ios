@@ -69,7 +69,8 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     private func loadPOSProduct(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
             return try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
-                                                                                   globalUniqueID: barcode)
+                                                                                   globalUniqueID: barcode,
+                                                                                   posProductsOnly: false)//needs testing
         } catch NetworkError.notFound {
             throw .notFound(scannedCode: barcode)
         } catch {

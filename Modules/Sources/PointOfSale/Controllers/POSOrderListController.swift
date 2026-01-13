@@ -337,21 +337,16 @@ enum RefundActionAvailability {
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else { return nil }
 
-        // Calculate subtotal from selected items (sum of prices)
         let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
 
-        // Calculate tax by grouping items by itemID to handle full vs partial refunds accurately
         let itemsTax = calculateRefundTax(for: selectedItems)
 
-        // Calculate refund total
         let refundTotal = itemsSubtotal + itemsTax
 
-        // Format amounts
         let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal) ?? "$0.00"
         let formattedTax = currencyFormatter.formatAmount(itemsTax) ?? "$0.00"
         let formattedTotal = currencyFormatter.formatAmount(refundTotal) ?? "$0.00"
 
-        // Create payment method description
         let paymentMethodDescription = createPaymentMethodDescription(for: order)
 
         return POSRefundReviewData(
@@ -368,7 +363,6 @@ enum RefundActionAvailability {
     /// For full refunds (all units selected), uses the original totalTax directly to avoid rounding errors.
     /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) x totalTax
     private func calculateRefundTax(for selectedItems: [POSRefundSelectableItem]) -> Decimal {
-        // Group selected items by itemID
         let groupedByItemID = Dictionary(grouping: selectedItems, by: { $0.itemID })
 
         return groupedByItemID.reduce(Decimal.zero) { total, group in
@@ -379,11 +373,9 @@ enum RefundActionAvailability {
             let originalQuantity = firstItem.originalQuantity
             let totalTax = firstItem.totalTax
 
-            // If all units are selected, use the original totalTax directly (no rounding error)
             if selectedCount == originalQuantity {
                 return total + totalTax
             } else {
-                // Partial refund: calculate proportionally
                 let proportionalTax = (totalTax / originalQuantity) * selectedCount
                 return total + proportionalTax
             }

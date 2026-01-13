@@ -383,14 +383,7 @@ enum RefundActionAvailability {
     }
 
     private func createPaymentMethodDescription(for order: POSOrder) -> String {
-        let paymentMethod = order.paymentMethodTitle
-        if paymentMethod.lowercased().contains("card") || paymentMethod.lowercased().contains("in-person") {
-            return Localization.viaPaymentCard
-        } else if paymentMethod.lowercased().contains("cash") {
-            return Localization.viaCash
-        } else {
-            return String(format: Localization.viaPaymentMethodFormat, paymentMethod)
-        }
+        String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle)
     }
 }
 
@@ -398,18 +391,6 @@ enum RefundActionAvailability {
 
 private extension POSOrderListController {
     enum Localization {
-        static let viaPaymentCard = NSLocalizedString(
-            "pos.orderListController.refund.viaPaymentCard",
-            value: "Via payment card",
-            comment: "Description for refund via payment card"
-        )
-
-        static let viaCash = NSLocalizedString(
-            "pos.orderListController.refund.viaCash",
-            value: "Via cash",
-            comment: "Description for refund via cash"
-        )
-
         static let viaPaymentMethodFormat = NSLocalizedString(
             "pos.orderListController.refund.viaPaymentMethodFormat",
             value: "Via %@",

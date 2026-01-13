@@ -886,7 +886,7 @@ final class POSOrderListControllerTests {
         #expect(reviewData?.formattedRefundTotal == "$11.00")
     }
 
-    @Test func preparePOSRefundReviewData_when_card_payment_then_returns_via_payment_card() async throws {
+    @Test func preparePOSRefundReviewData_then_returns_via_payment_method_title() async throws {
         // Given
         let order = makeOrder(paymentMethodTitle: "WooCommerce In-Person Payments", lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
@@ -900,41 +900,7 @@ final class POSOrderListControllerTests {
         }
 
         // Then
-        #expect(reviewData?.paymentMethodDescription == "Via payment card")
-    }
-
-    @Test func preparePOSRefundReviewData_when_cash_payment_then_returns_via_cash() async throws {
-        // Given
-        let order = makeOrder(paymentMethodTitle: "Cash on Delivery", lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        let reviewData = await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
-            return sut.preparePOSRefundReviewData()
-        }
-
-        // Then
-        #expect(reviewData?.paymentMethodDescription == "Via cash")
-    }
-
-    @Test func preparePOSRefundReviewData_when_other_payment_then_returns_via_method_name() async throws {
-        // Given
-        let order = makeOrder(paymentMethodTitle: "PayPal", lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        let reviewData = await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
-            return sut.preparePOSRefundReviewData()
-        }
-
-        // Then
-        #expect(reviewData?.paymentMethodDescription == "Via PayPal")
+        #expect(reviewData?.paymentMethodDescription == "Via WooCommerce In-Person Payments")
     }
 
     @Test func preparePOSRefundReviewData_then_refund_reason_is_nil_by_default() async throws {

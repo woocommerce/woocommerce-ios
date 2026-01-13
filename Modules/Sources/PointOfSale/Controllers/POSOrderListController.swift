@@ -17,11 +17,16 @@ protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
     var refundActionAvailability: RefundActionAvailability { get }
+    var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
+    func startRefundFlow()
+    func toggleRefundItemSelection(at index: Int)
+    func clearRefundSelection()
+    func toggleAllRefundItemsSelection()
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -49,6 +54,7 @@ enum RefundActionAvailability {
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
+    private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private var refundsTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
@@ -274,6 +280,42 @@ enum RefundActionAvailability {
                     self.selectedOrderRefundsState = .failed(error)
                 }
             }
+        }
+    }
+
+    // MARK: - Refund Item Selection
+
+    @MainActor
+    func startRefundFlow() {
+        guard let order = selectedOrder else { return }
+
+        refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
+            let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
+            guard intQuantity > 0 else { return [] }
+
+            return (0..<intQuantity).map { _ in
+                POSRefundSelectableItem(from: item, isSelected: true)
+            }
+        }
+    }
+
+    @MainActor
+    func toggleRefundItemSelection(at index: Int) {
+        guard refundSelectableItems.indices.contains(index) else { return }
+        refundSelectableItems[index].isSelected.toggle()
+    }
+
+    @MainActor
+    func clearRefundSelection() {
+        refundSelectableItems = []
+    }
+
+    @MainActor
+    func toggleAllRefundItemsSelection() {
+        let allSelected = !refundSelectableItems.isEmpty && refundSelectableItems.allSatisfy { $0.isSelected }
+        let newSelectionState = !allSelected
+        for index in refundSelectableItems.indices {
+            refundSelectableItems[index].isSelected = newSelectionState
         }
     }
 }

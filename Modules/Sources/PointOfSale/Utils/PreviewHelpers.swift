@@ -462,10 +462,12 @@ struct POSPreviewHelpers {
 
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
+    var refundSelectableItems: [POSRefundSelectableItem]
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
         self.ordersViewState = state
+        self.refundSelectableItems = []
     }
 
     var selectedOrder: POSOrder? {
@@ -482,6 +484,10 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
     func loadRefunds(of order: POSOrder) async throws {}
+    func startRefundFlow() {}
+    func toggleRefundItemSelection(at index: Int) {}
+    func clearRefundSelection() {}
+    func toggleAllRefundItemsSelection() {}
 }
 
 // MARK: - Barcode Scan Service

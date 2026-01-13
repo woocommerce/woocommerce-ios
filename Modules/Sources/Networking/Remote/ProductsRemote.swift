@@ -101,7 +101,7 @@ public protocol ProductsRemoteProtocol {
                                                    globalUniqueID: String,
                                                    posProductsOnly: Bool?) async throws -> POSProduct
 
-    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
+    func loadPOSProduct(for siteID: Int64, productID: Int64, posProductsOnly: Bool?) async throws -> POSProduct
 }
 
 extension ProductsRemoteProtocol {
@@ -156,6 +156,14 @@ extension ProductsRemoteProtocol {
         try await loadPOSProductByGlobalUniqueIdentifier(for: siteID,
                                                          globalUniqueID: globalUniqueID,
                                                          posProductsOnly: false)
+    }
+
+    // TODO:Remove when we remove the feature flag.
+    // This extension only exist to provide a default value to the protocols.
+    public func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+        try await loadPOSProduct(for: siteID,
+                                 productID: productID,
+                                 posProductsOnly: false)
     }
 
 }
@@ -432,10 +440,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Returns: A POSProduct if found
     /// - Throws: Error if the product is not found or if there's a network error
     ///
-    public func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
-        let parameters = [
+    public func loadPOSProduct(for siteID: Int64, productID: Int64, posProductsOnly: Bool? = nil) async throws -> POSProduct {
+        var parameters: [String: Any] = [
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+
+        if let posProductsOnly {
+            parameters[ParameterKey.posProductsOnly] = String(posProductsOnly)
+        }
         let path = "\(Path.products)/\(productID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = SingleItemMapper<POSProduct>(siteID: siteID)

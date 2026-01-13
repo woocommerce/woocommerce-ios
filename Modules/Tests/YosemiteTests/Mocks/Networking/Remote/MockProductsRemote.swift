@@ -498,7 +498,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+    func loadPOSProduct(for siteID: Int64, productID: Int64, posProductsOnly: Bool?) async throws -> POSProduct {
         invocationCountOfLoadPOSProduct += 1
         requestedProductIDsForFetchingPOSProduct.append(productID)
 

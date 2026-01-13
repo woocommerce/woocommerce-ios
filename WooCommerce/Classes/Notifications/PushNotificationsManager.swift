@@ -113,6 +113,7 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
+    private let shouldRegisterSelfDrivenPushNotification: () -> Bool
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -120,10 +121,12 @@ final class PushNotificationsManager: PushNotesManager {
     ///
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         shouldRegisterSelfDrivenPushNotification: @escaping () -> Bool = { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) }) {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
+        self.shouldRegisterSelfDrivenPushNotification = shouldRegisterSelfDrivenPushNotification
     }
 }
 
@@ -230,7 +233,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        if shouldRegisterSelfDrivenPushNotificaiton {
+        if shouldRegisterSelfDrivenPushNotification() {
             DDLogInfo("📱 Self Registering Push Notifications")
             // We will need to remove the old registartion, this is just for the newly registered stores
             registerSelfDrivenPushNotificationFlow(with: newToken) { result in
@@ -255,10 +258,6 @@ extension PushNotificationsManager {
                 self.deviceID = deviceID
             }
         }
-    }
-
-    private var shouldRegisterSelfDrivenPushNotificaiton: Bool {
-        return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
     }
 
     private var isWPAdminLogin: Bool {

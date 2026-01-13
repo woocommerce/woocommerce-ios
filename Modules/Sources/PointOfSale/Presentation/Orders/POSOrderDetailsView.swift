@@ -565,20 +565,18 @@ private extension POSOrderDetailsView {
     func navigateToRefundReview(with selectedItems: [POSRefundSelectableItem]) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencyProvider.currencySettings)
 
-        // Calculate subtotal from selected items
+        // Calculate subtotal from selected items (sum of prices)
         let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
 
-        // Calculate proportional tax based on selected items vs total order
-        let orderSubtotal = order.lineItems.reduce(Decimal.zero) { $0 + $1.price }
-        let taxRatio: Decimal = orderSubtotal > 0 ? itemsSubtotal / orderSubtotal : 0
-        let estimatedTax = calculateEstimatedTax(ratio: taxRatio, currencyFormatter: currencyFormatter)
+        // Calculate tax by grouping items by itemID to handle full vs partial refunds accurately
+        let itemsTax = calculateRefundTax(for: selectedItems)
 
         // Calculate refund total
-        let refundTotal = itemsSubtotal + estimatedTax
+        let refundTotal = itemsSubtotal + itemsTax
 
         // Format amounts
         let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal) ?? "$0.00"
-        let formattedTax = currencyFormatter.formatAmount(estimatedTax) ?? "$0.00"
+        let formattedTax = currencyFormatter.formatAmount(itemsTax) ?? "$0.00"
         let formattedTotal = currencyFormatter.formatAmount(refundTotal) ?? "$0.00"
 
         // Create payment method description
@@ -597,13 +595,30 @@ private extension POSOrderDetailsView {
         refundModalState = .review(reviewData)
     }
 
-    func calculateEstimatedTax(ratio: Decimal, currencyFormatter: CurrencyFormatter) -> Decimal {
-        // Parse the formatted tax from order to get the raw value
-        // This is a simplified approach - in production you might want to calculate tax per item
-        guard let rawTax = currencyFormatter.convertToDecimal(order.formattedTotalTax) else {
-            return Decimal.zero
+    /// Calculates refund tax by grouping items by itemID.
+    /// For full refunds (all units selected), uses the original totalTax directly to avoid rounding errors.
+    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) × totalTax
+    func calculateRefundTax(for selectedItems: [POSRefundSelectableItem]) -> Decimal {
+        // Group selected items by itemID
+        let groupedByItemID = Dictionary(grouping: selectedItems, by: { $0.itemID })
+
+        return groupedByItemID.reduce(Decimal.zero) { total, group in
+            let (_, items) = group
+            guard let firstItem = items.first else { return total }
+
+            let selectedCount = Decimal(items.count)
+            let originalQuantity = firstItem.originalQuantity
+            let totalTax = firstItem.totalTax
+
+            // If all units are selected, use the original totalTax directly (no rounding error)
+            if selectedCount == originalQuantity {
+                return total + totalTax
+            } else {
+                // Partial refund: calculate proportionally
+                let proportionalTax = (totalTax / originalQuantity) * selectedCount
+                return total + proportionalTax
+            }
         }
-        return (rawTax as Decimal) * ratio
     }
 
     func createPaymentMethodDescription() -> String {

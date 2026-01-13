@@ -129,10 +129,12 @@ private extension POSRefundItemRow {
     VStack(spacing: 0) {
         POSRefundItemRow(
             item: POSRefundSelectableItem(
-                id: 1,
+                itemID: 1,
                 name: "Test Product with Long Name",
                 imageSrc: nil,
                 price: 14.99,
+                totalTax: 1.20,
+                originalQuantity: 1,
                 formattedPrice: "$14.99",
                 attributes: [],
                 isSelected: true
@@ -144,10 +146,12 @@ private extension POSRefundItemRow {
 
         POSRefundItemRow(
             item: POSRefundSelectableItem(
-                id: 2,
+                itemID: 2,
                 name: "Another Product",
                 imageSrc: nil,
                 price: 9.99,
+                totalTax: 0.80,
+                originalQuantity: 1,
                 formattedPrice: "$9.99",
                 attributes: [],
                 isSelected: false

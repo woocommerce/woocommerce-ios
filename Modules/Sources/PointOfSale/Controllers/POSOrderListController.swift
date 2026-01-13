@@ -293,8 +293,8 @@ enum RefundActionAvailability {
             let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
             guard intQuantity > 0 else { return [] }
 
-            return (0..<intQuantity).map { _ in
-                POSRefundSelectableItem(from: item, isSelected: true)
+            return (0..<intQuantity).map { index in
+                POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
     }

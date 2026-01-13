@@ -59,11 +59,13 @@ struct POSOrderMapper {
     }
 
     private func map(orderItem: NetworkingCore.OrderItem, currency: String) -> POSOrderItem {
+        let totalTax = Decimal(string: orderItem.totalTax) ?? Decimal.zero
         return POSOrderItem(
             itemID: orderItem.itemID,
             name: orderItem.name,
             quantity: orderItem.quantity,
             price: orderItem.price as Decimal,
+            totalTax: totalTax,
             formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",
             formattedTotal: currencyFormatter.formatAmount(orderItem.total, with: currency) ?? "",
             imageSrc: orderItem.image?.src,

@@ -93,7 +93,8 @@ public protocol ProductsRemoteProtocol {
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,
-                                           perPage: Int) async throws -> PagedItems<POSProduct>
+                                           perPage: Int,
+                                           posProductsOnly: Bool?) async throws -> PagedItems<POSProduct>
 
     func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                    globalUniqueID: String) async throws -> POSProduct
@@ -118,6 +119,19 @@ extension ProductsRemoteProtocol {
                                              productTypes: productTypes,
                                              pageNumber: pageNumber,
                                              posProductsOnly: nil)
+    }
+
+    // TODO:Remove when we remove the feature flag.
+    // This extension only exist to provide a default value to the protocols.
+    public func loadPopularProductsForPointOfSale(for siteID: Int64,
+                                                  productTypes: [ProductType],
+                                                  pageNumber: Int,
+                                                  perPage: Int) async throws -> PagedItems<POSProduct> {
+        try await loadPopularProductsForPointOfSale(for: siteID,
+                                                    productTypes: productTypes,
+                                                    pageNumber: pageNumber,
+                                                    perPage: perPage,
+                                                    posProductsOnly: false)
     }
 
 }
@@ -257,13 +271,15 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func loadPopularProductsForPointOfSale(for siteID: Int64,
                                                   productTypes: [ProductType] = [.simple],
                                                   pageNumber: Int = 1,
-                                                  perPage: Int = Default.pageSize) async throws -> PagedItems<POSProduct> {
+                                                  perPage: Int = Default.pageSize,
+                                                  posProductsOnly: Bool? = nil) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
             productsPerPage: String(perPage),
             productTypes: productTypes,
             orderBy: .popularity,
-            order: .descending
+            order: .descending,
+            posProductsOnly: posProductsOnly
         )
 
         return try await makePagedPointOfSaleProductsRequest(

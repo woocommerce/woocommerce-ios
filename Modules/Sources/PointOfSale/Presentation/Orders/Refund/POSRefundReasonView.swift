@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct POSRefundReasonView: View {
-    @Environment(\.posModalParentSize) private var parentSize
     @State private var reasonText: String
     @FocusState private var isTextFieldFocused: Bool
 
@@ -34,11 +33,15 @@ struct POSRefundReasonView: View {
             textFieldView
 
             Spacer()
-
-            buttonSection
         }
-        .frame(width: parentSize.width, height: parentSize.height)
+        .safeAreaInset(edge: .bottom) {
+            buttonSection
+                .padding(.bottom, POSPadding.xLarge)
+                .background(Color.posSurfaceBright)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
+        .posModalFullScreen()
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
@@ -102,7 +105,7 @@ private extension POSRefundReasonView {
         })
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!isAddButtonEnabled)
-        .padding(POSPadding.xLarge)
+        .padding(.horizontal, POSPadding.xLarge)
     }
 }
 
@@ -160,7 +163,7 @@ private extension POSRefundReasonView {
         onBack: {},
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .environmentObject(POSModalManager())
 }
 
 #Preview("POSRefundReasonView - With Existing Reason") {
@@ -170,6 +173,6 @@ private extension POSRefundReasonView {
         onBack: {},
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .environmentObject(POSModalManager())
 }
 #endif

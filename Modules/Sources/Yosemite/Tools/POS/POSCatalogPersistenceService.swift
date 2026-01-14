@@ -150,6 +150,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             try site?.updateChanges(db) { $0.lastCatalogIncrementalSyncDate = catalog.syncDate }
         }
 
+        // Delete products/variations hidden from POS when detected during incremental sync
+        if !catalog.productsToRemove.isEmpty || !catalog.variationsToRemove.isEmpty {
+            try await deleteProducts(catalog.productsToRemove, variationIDs: catalog.variationsToRemove, siteID: siteID)
+        }
+
         DDLogInfo("✅ Incremental catalog persistence complete")
 
         try await grdbManager.databaseConnection.read { db in

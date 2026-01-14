@@ -34,6 +34,24 @@ public struct POSCatalog {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]
     public let syncDate: Date
+
+    /// Product and variation IDs to remove from local catalog when these should be hidden when performing an incremental sync
+    /// This covers the case where these items are marked as not available for POS by the merchant in wp-admin, and the request passes `posProductsOnly=true`
+    /// In which case these would be simply ommited and not taken into account for the incremental sync.
+    public let productsToRemove: [Int64]
+    public let variationsToRemove: [Int64]
+
+    public init(products: [POSProduct],
+                variations: [POSProductVariation],
+                syncDate: Date,
+                productsToRemove: [Int64] = [],
+                variationsToRemove: [Int64] = []) {
+        self.products = products
+        self.variations = variations
+        self.syncDate = syncDate
+        self.productsToRemove = productsToRemove
+        self.variationsToRemove = variationsToRemove
+    }
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.

@@ -9,6 +9,10 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
     private(set) var trashedProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
+    // Results returned when posProductsOnly=false (used during dual-request hidden product detection)
+    private(set) var allProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
+    private(set) var allVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
+
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
 
@@ -83,6 +87,21 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
+    /* MARK: - Setup Methods for posProductsOnly=false requests
+     Dual-request mode is triggered when the feature flag posProductsOnly=true
+     Within that mode, we make requests with both values:
+        - posProductsOnly=true returns POS-eligible products (uses incrementalProductResults)
+        - posProductsOnly=false returns all products (uses allProductResults)
+     We compare the two to find hidden products (present in "all" but missing from "POS")
+     */
+    func setAllProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
+        allProductResults[pageNumber] = result
+    }
+
+    func setAllVariationResult(pageNumber: Int, result: Result<PagedItems<POSProductVariation>, Error>) {
+        allVariationResults[pageNumber] = result
+    }
+
     // MARK: - Protocol Methods - Incremental Sync
 
     func loadProducts(modifiedAfter: Date,
@@ -92,7 +111,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                       posProductsOnly: Bool) async throws -> PagedItems<POSProduct> {
         await includeStatusTracker.append(includeStatus)
 
-        // Route to appropriate results based on includeStatus
+        // Route to appropriate results based on includeStatus and posProductsOnly
         if includeStatus == "trash" {
             await loadTrashedProductsCallCount.increment()
             lastTrashedProductsModifiedAfter = modifiedAfter
@@ -104,6 +123,17 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                 case .failure(let error):
                     throw error
                 }
+            }
+        } else if !posProductsOnly, let result = allProductResults[pageNumber] {
+            // Use all-products results when posProductsOnly=false and results are configured
+            await loadIncrementalProductsCallCount.increment()
+            lastIncrementalProductsModifiedAfter = modifiedAfter
+
+            switch result {
+            case .success(let pagedItems):
+                return pagedItems
+            case .failure(let error):
+                throw error
             }
         } else {
             await loadIncrementalProductsCallCount.increment()
@@ -127,6 +157,16 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                                 posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation> {
         await loadIncrementalProductVariationsCallCount.increment()
         lastIncrementalVariationsModifiedAfter = modifiedAfter
+
+        // Use all-variations results when posProductsOnly=false and results are configured
+        if !posProductsOnly, let result = allVariationResults[pageNumber] {
+            switch result {
+            case .success(let pagedItems):
+                return pagedItems
+            case .failure(let error):
+                throw error
+            }
+        }
 
         if let result = incrementalVariationResults[pageNumber] {
             switch result {

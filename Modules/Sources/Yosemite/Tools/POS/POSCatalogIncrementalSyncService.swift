@@ -92,6 +92,107 @@ private extension POSCatalogIncrementalSyncService {
                      posProductsOnly: Bool) async throws -> POSCatalog {
         let syncStartDate = Date.now
 
+        if posProductsOnly {
+            // Dual-request: Detect products/variations hidden from POS
+            return try await loadCatalogWithHiddenDetection(for: siteID,
+                                                            modifiedAfter: modifiedAfter,
+                                                            syncRemote: syncRemote,
+                                                            syncStartDate: syncStartDate)
+        } else {
+            // Single-request: No hidden detection needed
+            return try await loadCatalogWithoutFiltering(for: siteID,
+                                                         modifiedAfter: modifiedAfter,
+                                                         syncRemote: syncRemote,
+                                                         syncStartDate: syncStartDate,
+                                                         posProductsOnly: posProductsOnly)
+        }
+    }
+
+    /// Loads catalog with dual requests to detect products hidden from POS.
+    /// Products hidden from POS don't appear in the `posProductsOnly=true` response, they're simply omitted.
+    /// To detect these, we compare against a second request without the flag: items present there but
+    /// missing from the `posProductsOnly=true` response have been hidden and should be removed from the local DB.
+    func loadCatalogWithHiddenDetection(for siteID: Int64,
+                                        modifiedAfter: Date,
+                                        syncRemote: POSCatalogSyncRemoteProtocol,
+                                        syncStartDate: Date) async throws -> POSCatalog {
+        // Fetch POS-filtered products (excluding trash)
+        async let posProductsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: nil,
+                                                  posProductsOnly: true)
+            }
+        )
+
+        // Fetch ALL products (excluding trash) to compare and find hidden ones
+        async let allProductsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: nil,
+                                                  posProductsOnly: false)
+            }
+        )
+
+        // Fetch trashed products (POS-filtered) to detect products moved to trash
+        async let trashedProductsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: ProductStatus.trash.rawValue,
+                                                  posProductsOnly: true)
+            }
+        )
+
+        // Fetch POS-filtered variations
+        async let posVariationsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProductVariations(modifiedAfter: modifiedAfter,
+                                                           siteID: siteID,
+                                                           pageNumber: pageNumber,
+                                                           posProductsOnly: true)
+            }
+        )
+
+        // Fetch ALL variations to compare and find hidden ones
+        async let allVariationsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProductVariations(modifiedAfter: modifiedAfter,
+                                                           siteID: siteID,
+                                                           pageNumber: pageNumber,
+                                                           posProductsOnly: false)
+            }
+        )
+
+        let (posProducts, allProducts, trashedProducts, posVariations, allVariations) = try await (
+            posProductsTask, allProductsTask, trashedProductsTask, posVariationsTask, allVariationsTask
+        )
+
+        // Find products hidden from POS: present in "all" but missing from "POS"
+        let hiddenProductIDs = findHiddenProductIDs(posProducts: posProducts, allProducts: allProducts)
+        let hiddenVariationIDs = findHiddenVariationIDs(posVariations: posVariations, allVariations: allVariations)
+
+        // Aggregate regular and trashed products before persist them
+        let productsToSync = posProducts + trashedProducts
+
+        return POSCatalog(products: productsToSync,
+                          variations: posVariations,
+                          syncDate: syncStartDate,
+                          productsToRemove: hiddenProductIDs,
+                          variationsToRemove: hiddenVariationIDs)
+    }
+
+    /// Loads catalog without hidden detection - single request mode.
+    func loadCatalogWithoutFiltering(for siteID: Int64,
+                                     modifiedAfter: Date,
+                                     syncRemote: POSCatalogSyncRemoteProtocol,
+                                     syncStartDate: Date,
+                                     posProductsOnly: Bool) async throws -> POSCatalog {
         // Fetch regular products (excluding trash)
         async let regularProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
@@ -129,6 +230,26 @@ private extension POSCatalogIncrementalSyncService {
         let allProducts = regularProducts + trashedProducts
 
         return POSCatalog(products: allProducts, variations: variations, syncDate: syncStartDate)
+    }
+}
+
+private extension POSCatalogIncrementalSyncService {
+    /// Finds product IDs that are present in the unfiltered response but missing from the POS-filtered response.
+    /// These products have been hidden from POS and should be removed from the local catalog.
+    func findHiddenProductIDs(posProducts: [POSProduct], allProducts: [POSProduct]) -> [Int64] {
+        let posProductIDs = Set(posProducts.map { $0.productID })
+        return allProducts
+            .filter { !posProductIDs.contains($0.productID) }
+            .map { $0.productID }
+    }
+
+    /// Finds variation IDs that are present in the unfiltered response but missing from the POS-filtered response.
+    /// These variations have been hidden from POS and should be removed from the local catalog.
+    func findHiddenVariationIDs(posVariations: [POSProductVariation], allVariations: [POSProductVariation]) -> [Int64] {
+        let posVariationIDs = Set(posVariations.map { $0.productVariationID })
+        return allVariations
+            .filter { !posVariationIDs.contains($0.productVariationID) }
+            .map { $0.productVariationID }
     }
 }
 

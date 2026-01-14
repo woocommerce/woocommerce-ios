@@ -63,7 +63,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
     public func startIncrementalSync(for siteID: Int64,
                                      lastFullSyncDate: Date,
                                      lastIncrementalSyncDate: Date?,
-                                     posProductsOnly: Bool = true) async throws -> POSCatalog {
+                                     posProductsOnly: Bool = false) async throws -> POSCatalog {
         let modifiedAfter = latestSyncDate(fullSyncDate: lastFullSyncDate, incrementalSyncDate: lastIncrementalSyncDate)
 
         DDLogInfo("🔄 Starting incremental catalog sync for site ID: \(siteID), modifiedAfter: \(modifiedAfter), posProductsOnly: \(posProductsOnly)")

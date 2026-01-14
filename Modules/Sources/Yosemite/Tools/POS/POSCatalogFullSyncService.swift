@@ -80,7 +80,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     public func startFullSync(for siteID: Int64,
                               regenerateCatalog: Bool = false,
                               allowCellular: Bool,
-                              posProductsOnly: Bool = true) async throws -> POSCatalog {
+                              posProductsOnly: Bool = false) async throws -> POSCatalog {
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog), " +
                   "allowCellular: \(allowCellular), posProductsOnly: \(posProductsOnly)")
 

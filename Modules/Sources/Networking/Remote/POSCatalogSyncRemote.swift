@@ -126,7 +126,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                              siteID: Int64,
                              pageNumber: Int,
                              includeStatus: String? = nil,
-                             posProductsOnly: Bool = true)
+                             posProductsOnly: Bool = false)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
         var parameters: [String: String] = [
@@ -167,7 +167,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     public func loadProductVariations(modifiedAfter: Date,
                                       siteID: Int64,
                                       pageNumber: Int,
-                                      posProductsOnly: Bool = true) async throws -> PagedItems<POSProductVariation> {
+                                      posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
@@ -317,7 +317,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     public func loadProducts(siteID: Int64,
                              pageNumber: Int,
                              allowCellular: Bool,
-                             posProductsOnly: Bool = true) async throws -> PagedItems<POSProduct> {
+                             posProductsOnly: Bool = false) async throws -> PagedItems<POSProduct> {
         let path = Path.products
         let parameters = [
             ParameterKey.page: String(pageNumber),
@@ -353,7 +353,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     public func loadProductVariations(siteID: Int64,
                                       pageNumber: Int,
                                       allowCellular: Bool,
-                                      posProductsOnly: Bool = true) async throws -> PagedItems<POSProductVariation> {
+                                      posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
             ParameterKey.page: String(pageNumber),
@@ -385,7 +385,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to get product count for.
     ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: Total number of products.
-    public func getProductCount(siteID: Int64, posProductsOnly: Bool = true) async throws -> Int {
+    public func getProductCount(siteID: Int64, posProductsOnly: Bool = false) async throws -> Int {
         let path = Path.products
         let parameters = [
             ParameterKey.page: String(1),
@@ -413,7 +413,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to get variation count for.
     ///   - posProductsOnly: Whether to filter to POS-eligible variations only.
     /// - Returns: Total number of variations.
-    public func getProductVariationCount(siteID: Int64, posProductsOnly: Bool = true) async throws -> Int {
+    public func getProductVariationCount(siteID: Int64, posProductsOnly: Bool = false) async throws -> Int {
         let path = Path.variations
         let parameters = [
             ParameterKey.page: String(1),

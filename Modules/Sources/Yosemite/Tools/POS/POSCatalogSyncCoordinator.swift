@@ -113,6 +113,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
+    private let posProductsOnlyEnabled: Bool
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
@@ -132,7 +133,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
-                connectivityObserver: ConnectivityObserver? = nil) {
+                connectivityObserver: ConnectivityObserver? = nil,
+                posProductsOnlyEnabled: Bool = false) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -140,6 +142,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
+        self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
@@ -177,7 +180,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             try await fullSyncService.startFullSync(for: siteID,
                                                     regenerateCatalog: regenerateCatalog,
                                                     allowCellular: allowCellular,
-                                                    posProductsOnly: true)
+                                                    posProductsOnly: posProductsOnlyEnabled)
         }
 
         // Store the task for potential cancellation
@@ -355,7 +358,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
                                                                   lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID),
-                                                                  posProductsOnly: true)
+                                                                  posProductsOnly: posProductsOnlyEnabled)
         }
 
         // Store the task for potential cancellation

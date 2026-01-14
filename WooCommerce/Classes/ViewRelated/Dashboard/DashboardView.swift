@@ -85,29 +85,31 @@ struct DashboardView: View {
 
     var body: some View {
         ScrollView {
-            // Store title
-            Text(currentSite?.name ?? Localization.title)
-                .subheadlineStyle()
-                .padding([.horizontal, .bottom], Layout.padding)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .renderedIf(verticalSizeClass == .regular)
+            VStack(spacing: Layout.padding) {
+                // Store title
+                Text(currentSite?.name ?? Localization.title)
+                    .subheadlineStyle()
+                    .padding(Layout.sectionHeadingPadding)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .renderedIf(verticalSizeClass == .regular)
 
-            // Feature announcement if any.
-            featureAnnouncementCard
+                // Feature announcement if any.
+                featureAnnouncementCard
 
-            // Card views
-            Group {
-                if horizontalSizeClass == .regular,
-                   !dynamicTypeSize.isAccessibilitySize,
-                   viewModel.showOnDashboardSecondColumn.isNotEmpty {
-                    // display cards in 2 columns for large screen sizes if there are more than 1 cards.
-                    HStack(alignment: .top, spacing: 0) {
-                        dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
-                        dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+                // Card views
+                Group {
+                    if horizontalSizeClass == .regular,
+                       !dynamicTypeSize.isAccessibilitySize,
+                       viewModel.showOnDashboardSecondColumn.isNotEmpty {
+                        // display cards in 2 columns for large screen sizes if there are more than 1 cards.
+                        HStack(alignment: .top, spacing: 0) {
+                            dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
+                            dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+                        }
+                    } else {
+                        // display all cards in a single column
+                        dashboardCardList(with: viewModel.showOnDashboardCards)
                     }
-                } else {
-                    // display all cards in a single column
-                    dashboardCardList(with: viewModel.showOnDashboardCards)
                 }
             }
             .padding(.bottom, Layout.padding)
@@ -400,6 +402,7 @@ private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let elementPadding: CGFloat = 24
+        static let sectionHeadingPadding = EdgeInsets(top: 0, leading: 20, bottom: 8, trailing: 24)
         static let imagePadding: CGFloat = 40
         static let textPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8

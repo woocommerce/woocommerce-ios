@@ -16,6 +16,10 @@ enum AgeRangeVerificationResult {
     /// User or parent refused from age sharing
     case declinedSharing
 
+    /// DeclaredAgeRange reports the app/account as ineligible for age-based features
+    /// (from `AgeRangeService.isEligibleForAgeFeatures == false`).
+    case ineligibleForAgeFeatures
+
     /// Feature is unavailable in the current environment. I.e. iOS version is below `26.0`.
     case featureUnavailable
 

@@ -5,12 +5,15 @@ import class WooFoundation.CurrencySettings
 struct POSProductOrVariationResolver {
     private let productsRemote: ProductsRemoteProtocol
     private let itemMapper: PointOfSaleItemMapperProtocol
+    private let posProductsOnly: Bool
 
     init (productsRemote: ProductsRemoteProtocol,
           currencySettings: CurrencySettings,
-          itemMapper: PointOfSaleItemMapperProtocol? = nil) {
+          itemMapper: PointOfSaleItemMapperProtocol? = nil,
+          posProductsOnly: Bool = false) {
         self.productsRemote = productsRemote
         self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
+        self.posProductsOnly = posProductsOnly
     }
 
     func itemForProductOrVariation(_ productOrVariation: POSProduct,
@@ -62,7 +65,7 @@ struct POSProductOrVariationResolver {
         do {
             return try await productsRemote.loadPOSProduct(for: variation.siteID,
                                                            productID: variation.productID,
-                                                           posProductsOnly: false) //needs testing
+                                                           posProductsOnly: posProductsOnly)
         } catch {
             switch ProductLoadError(underlyingError: error) {
             case .notFound:

@@ -94,11 +94,13 @@ final class POSTabCoordinator {
                                                      currencySettings: currencySettings)
         } else {
             // Fall back to remote barcode scanning
+            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
             return PointOfSaleBarcodeScanService(siteID: siteID,
                                                 credentials: credentials,
                                                 selectedSite: defaultSitePublisher,
                                                 appPasswordSupportState: isAppPasswordSupported,
-                                                currencySettings: currencySettings)
+                                                currencySettings: currencySettings,
+                                                posProductsOnly: posProductsOnlyEnabled)
         }
     }
 

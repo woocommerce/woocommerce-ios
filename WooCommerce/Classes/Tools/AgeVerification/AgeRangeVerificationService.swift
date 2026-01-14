@@ -6,8 +6,9 @@ import DeclaredAgeRange
 #endif
 
 enum AgeRangeVerificationResult {
-    /// The feature is supported and declared user age is within the required range
-    case eligible
+    /// The feature is supported and declared user age is within the required range.
+    /// Carries the `significantAppChangeApprovalRequired` flag when available.
+    case eligible(significantAppChangeApprovalRequired: Bool)
 
     /// The feature is supported but declared user age is outside of the required range
     case ineligible
@@ -127,7 +128,13 @@ private extension AgeRangeVerificationService {
         switch response {
         case let .sharing(range):
             if let lowerBound = range.lowerBound, lowerBound >= minimumAge {
-                return .eligible
+                let approvalRequired: Bool = {
+                    if #available(iOS 26.2, *) {
+                        return significantChangeApprovalRequired(from: range)
+                    }
+                    return false
+                }()
+                return .eligible(significantAppChangeApprovalRequired: approvalRequired)
             }
             return .ineligible
         case .declinedSharing:
@@ -137,6 +144,16 @@ private extension AgeRangeVerificationService {
         }
     }
 }
+
+@available(iOS 26.2, *)
+private extension AgeRangeVerificationService {
+    func significantChangeApprovalRequired(from ageRange: AgeRangeService.AgeRange) -> Bool {
+        return ageRange.activeParentalControls.contains(
+            .significantAppChangeApprovalRequired
+        )
+    }
+}
+
 #else
 /// Fallback implementation when the DeclaredAgeRange SDK is unavailable (e.g., older Xcode/SDK).
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {

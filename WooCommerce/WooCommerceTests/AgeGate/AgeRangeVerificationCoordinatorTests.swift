@@ -54,7 +54,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
 
     func test_triggerAgeVerificationIfNeeded_when_anchor_missing_then_allows() {
         let window = UIWindow() // no rootViewController
-        ServiceLocator.setAgeRangeVerificationService(FakeAgeRangeService(result: .eligible, delay: 0.01))
+        ServiceLocator.setAgeRangeVerificationService(FakeAgeRangeService(result: .invalidUIState, delay: 0.01))
 
         let sut = AgeRangeVerificationCoordinator()
         let exp = expectation(description: "onResult")
@@ -142,7 +142,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_age_is_eligible_then_allows() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        ServiceLocator.setAgeRangeVerificationService(FakeAgeRangeService(result: .eligible, delay: 0.01))
+        ServiceLocator.setAgeRangeVerificationService(FakeAgeRangeService(result: .eligible(significantAppChangeApprovalRequired: nil), delay: 0.01))
 
         let sut = AgeRangeVerificationCoordinator()
         let exp = expectation(description: "onResult")
@@ -173,5 +173,9 @@ private struct FakeAgeRangeService: AgeRangeVerificationServiceProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             completion(result)
         }
+    }
+
+    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
+        completion(nil)
     }
 }

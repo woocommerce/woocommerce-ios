@@ -106,6 +106,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let analytics: Analytics
 
+    /// Cached self-driven push token ID loaded from AppSettings (per site).
+    /// This keeps `configureSections()` synchronous while still reacting to persistence changes.
+    private var cachedSelfDrivenPushTokenID: Int64?
+
     /// Reference to the Zendesk shared instance
     ///
     private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
@@ -157,6 +161,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadPaymentGatewayAccounts()
         loadWhatsNewOnWooCommerce()
         loadSites()
+        loadSelfDrivenPushTokenIDIfNeeded()
         reloadSettings()
     }
 
@@ -165,6 +170,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
+        loadSelfDrivenPushTokenIDIfNeeded()
         reloadSettings()
     }
 
@@ -186,6 +192,25 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 }
 
 private extension SettingsViewModel {
+
+    func loadSelfDrivenPushTokenIDIfNeeded() {
+        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+            cachedSelfDrivenPushTokenID = nil
+            return
+        }
+
+        stores.dispatch(AppSettingsAction.loadSelfDrivenPushTokenID(siteID: siteID) { [weak self] tokenID in
+            guard let self else { return }
+
+            // Only refresh UI when the stored value actually changes.
+            guard self.cachedSelfDrivenPushTokenID != tokenID else {
+                return
+            }
+
+            self.cachedSelfDrivenPushTokenID = tokenID
+            self.reloadSettings()
+        })
+    }
 
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
@@ -288,7 +313,10 @@ private extension SettingsViewModel {
                 }
                 return site.isJetpackCPConnected == false
             }()
-            if notificationAvailable, featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
+            let isSelfDrivenPushNotificationsRegistered: Bool = {
+                (cachedSelfDrivenPushTokenID != nil) && !stores.isAuthenticatedWithoutWPCom
+            }()
+            if (notificationAvailable && featureFlagService.isFeatureFlagEnabled(.notificationSettings)) && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]

@@ -389,6 +389,8 @@ private extension DashboardView {
                 viewModel.announcementViewModel = nil
             })
             .background(Color(.listForeground(modal: false)))
+            .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+            .padding(.horizontal, Layout.padding)
         }
     }
 }

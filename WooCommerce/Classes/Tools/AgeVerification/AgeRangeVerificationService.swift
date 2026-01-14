@@ -39,6 +39,10 @@ protocol AgeRangeVerificationServiceProtocol {
         minimumAge: Int,
         completion: @escaping (AgeRangeVerificationResult) -> Void
     )
+
+    /// Retrieves whether the account is eligible for age-based features (DeclaredAgeRange).
+    /// Returns nil when unavailable (older OS / SDK or call fails).
+    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void)
 }
 
 #if canImport(DeclaredAgeRange)
@@ -85,6 +89,23 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
             }
         }
     }
+
+    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
+        guard #available(iOS 26.2, *) else {
+            completion(nil)
+            return
+        }
+
+        Task {
+            do {
+                let eligibility = try await AgeRangeService.shared.isEligibleForAgeFeatures
+                completion(eligibility)
+            } catch {
+                DDLogError("Declared Age Range API: Failed to fetch eligibility signals. Error: \(error)")
+                completion(nil)
+            }
+        }
+    }
 }
 
 @available(iOS 26.0, *)
@@ -125,6 +146,10 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
         completion: @escaping (AgeRangeVerificationResult) -> Void
     ) {
         completion(.featureUnavailable)
+    }
+
+    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
+        completion(nil)
     }
 }
 #endif

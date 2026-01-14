@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 
 protocol AgeRangeVerificationCoordinatorProtocol {
     func triggerAgeVerificationIfNeeded(
@@ -14,6 +15,12 @@ extension AgeRangeVerificationCoordinator {
 }
 
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
+    private let featureFlagService: FeatureFlagService
+
+    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.featureFlagService = featureFlagService
+    }
+
     /// Triggers the age range verification flow.
     /// Handles "blocking UI" presenting in case of ineligible age and performs a logout.
     /// - Parameters:
@@ -23,6 +30,11 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         hostingWindow: UIWindow,
         onResult: @escaping (Bool, AgeRangeVerificationResult) -> Void
     ) {
+        guard featureFlagService.isFeatureFlagEnabled(.ageRangeRequirementsCompliance) else {
+            onResult(true, .featureUnavailable)
+            return
+        }
+
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
             // Allow flow to continue if we can't present the dialogue.

@@ -39,16 +39,26 @@ final class OrderNotificationDataService {
     }
 
     @MainActor
-    func loadOrderFrom(notification: PushNotification) async throws -> (Note, Order) {
-        let note: Note = try await {
+    func loadOrderFrom(notification: PushNotification) async throws -> (Note?, Order) {
+        let note: Note? = try await {
             if let notificationNote = notification.note {
                 return notificationNote
-            } else {
-                return try await loadNotification(noteID: notification.noteID)
+            } else if let noteID = notification.noteID {
+                return try await loadNotification(noteID: noteID)
             }
+            return nil
         }()
-        let order = try await loadOrder(from: note)
-        return (note, order)
+
+        if let note {
+            let order = try await loadOrder(from: note)
+            return (note, order)
+        }
+
+        guard let orderID = notification.meta?.identifier(forKey: .order) else {
+            throw Error.unsupportedNotification
+        }
+        let order = try await loadOrder(siteID: Int(notification.siteID), orderID: orderID)
+        return (nil, order)
     }
 
     /// Loads the order associated with the given note id if possible.
@@ -94,7 +104,12 @@ final class OrderNotificationDataService {
 
         /// Load notification from a remote source.
         ///
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await loadOrder(siteID: siteID, orderID: orderID)
+    }
+
+    @MainActor
+    private func loadOrder(siteID: Int, orderID: Int) async throws -> Order {
+        try await withCheckedThrowingContinuation { continuation in
             ordersRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID)) { order, error in
                 switch (order, error) {
                 case (let order?, nil):

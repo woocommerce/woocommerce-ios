@@ -24,7 +24,8 @@ struct OrderDetailLoader: View {
             case .loaded(let order):
                 OrderDetailView(order: order)
                     .task {
-                        await viewModel.markOrderNoteAsReadIfNeeded(noteID: pushNotification.noteID, orderID: Int(order.orderID))
+                        guard let noteID = pushNotification.noteID else { return }
+                        await viewModel.markOrderNoteAsReadIfNeeded(noteID: noteID, orderID: Int(order.orderID))
                     }
             case .error:
                 Text(AppLocalizedString(

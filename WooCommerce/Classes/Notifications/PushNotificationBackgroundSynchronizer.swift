@@ -41,8 +41,7 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
             let startTime = Date.now
             let orderID: Int64
 
-            if let note = pushNotification.note,
-               let noteOrderID = note.meta.identifier(forKey: .order) {
+            if let noteOrderID = pushNotification.meta?.identifier(forKey: .order) {
                 orderID = Int64(noteOrderID)
             } else {
                 // I'm not sure why we need to sync all notifications instead of only the current one.
@@ -50,7 +49,7 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
                 try await synchronizeNotifications()
 
                 // Find the orderID from the previously synced notification.
-                guard let pushNotificationOrderID = getOrderID(noteID: pushNotification.noteID) else {
+                guard let pushNotificationOrderID = getOrderID(from: pushNotification) else {
                     return .newData
                 }
                 orderID = pushNotificationOrderID
@@ -119,12 +118,9 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
     /// Returns `nil` if the note is not stored or of its not an order note.
     ///
     @MainActor
-    private func getOrderID(noteID: Int64) -> Int64? {
-        guard let note = storage.loadNotification(noteID: noteID)?.toReadOnly() else {
-            return nil
-        }
-
-        guard let orderID = note.meta.identifier(forKey: .order), note.kind == .storeOrder else {
+    private func getOrderID(from pushNotification: PushNotification) -> Int64? {
+        guard let orderID = pushNotification.meta?.identifier(forKey: .order),
+              pushNotification.note?.kind == .storeOrder else {
             return nil
         }
 

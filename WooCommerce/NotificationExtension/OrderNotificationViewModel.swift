@@ -17,7 +17,7 @@ final class OrderNotificationViewModel {
     /// Loads a Note object from a given push notification object.
     ///
     @MainActor
-    func loadOrder(from notification: UNNotification) async throws -> (Note, Order) {
+    func loadOrder(from notification: UNNotification) async throws -> (Note?, Order) {
 
         /// Only store order notifications are supported.
         ///
@@ -46,12 +46,12 @@ final class OrderNotificationViewModel {
 
     /// Formats the information from the provided `Note` and `Order` to build a  `OrderNotificationView.Content` object.
     ///
-    func formatContent(note: Note, order: Order) -> OrderNotificationView.Content {
+    func formatContent(note: Note?, order: Order) -> OrderNotificationView.Content {
 
         // Extract the store name from the notification subject using the provided store name indices
         let storeName: String = {
-            guard let subtitle = note.subject.last?.text,
-                  let indices = note.subject.last?.ranges.first?.range else {
+            guard let subtitle = note?.subject.last?.text,
+                  let indices = note?.subject.last?.ranges.first?.range else {
                 return AppLocalizedString("My Store", comment: "Placeholder store name on a notification")
             }
 

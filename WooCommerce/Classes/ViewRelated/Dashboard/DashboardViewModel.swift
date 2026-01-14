@@ -77,7 +77,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
 
-    @Published private(set) var isSelfDrivenPushNotificationRegisteredIfExpected = false
+    @Published private(set) var isSelfDrivenPushNotificationRegistered = false
 
     @Published private var hasOrders = false
 
@@ -190,6 +190,7 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -539,6 +540,18 @@ private extension DashboardViewModel {
             .assign(to: &$isSiteEligibleToInstallJetpack)
     }
 
+    func observeSelfDrivenPushTokenPersistence() {
+        NotificationCenter.default.publisher(for: .selfDrivenPushTokenIDDidPersist)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task { @MainActor in
+                    await self.updateSelfDrivenPushRegistrationStatus()
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     @MainActor
@@ -807,20 +820,7 @@ private extension DashboardViewModel {
             })
         }
 
-        isSelfDrivenPushNotificationRegisteredIfExpected = (tokenID != nil) && !isWPAdminLogin
-    }
-
-
-    private var isWPAdminLogin: Bool {
-        guard let credentials = stores.sessionManager.defaultCredentials else {
-            return false
-        }
-
-        if case .wpcom = credentials {
-            return true
-        }
-
-        return false
+        isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
     }
 }
 

@@ -6,6 +6,10 @@ import AutomatticTracks
 import Yosemite
 import protocol WooFoundation.Analytics
 
+extension Notification.Name {
+    static let selfDrivenPushTokenIDDidPersist = Notification.Name("selfDrivenPushTokenIDDidPersist")
+}
+
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
@@ -113,7 +117,7 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
-    private let shouldRegisterSelfDrivenPushNotification: () -> Bool
+    private let shouldRegisterSelfDrivenPushNotification: Bool
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -122,7 +126,7 @@ final class PushNotificationsManager: PushNotesManager {
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics,
-         shouldRegisterSelfDrivenPushNotification: @escaping () -> Bool = { ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) }) {
+         shouldRegisterSelfDrivenPushNotification: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
@@ -233,7 +237,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        if shouldRegisterSelfDrivenPushNotification() {
+        if shouldRegisterSelfDrivenPushNotification {
             DDLogInfo("📱 Self Registering Push Notifications")
             // We will need to remove the old registartion, this is just for the newly registered stores
             registerSelfDrivenPushNotificationFlow(with: newToken) { result in
@@ -258,18 +262,6 @@ extension PushNotificationsManager {
                 self.deviceID = deviceID
             }
         }
-    }
-
-    private var isWPAdminLogin: Bool {
-        guard let credentials = stores.sessionManager.defaultCredentials else {
-            return false
-        }
-
-        if case .wpcom = credentials {
-            return true
-        }
-
-        return false
     }
 
 
@@ -633,7 +625,12 @@ private extension PushNotificationsManager {
 
     func persistSelfDrivenTokenID(_ tokenID: Int64, siteID: Int64) {
         let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: tokenID) { result in
-            if case let .failure(error) = result {
+            switch result {
+            case .success:
+                NotificationCenter.default.post(
+                    name: .selfDrivenPushTokenIDDidPersist, object: nil
+                )
+            case .failure(let error):
                 DDLogError("⛔️ Unable to persist self-driven push token ID: \(error)")
             }
         }
@@ -641,7 +638,7 @@ private extension PushNotificationsManager {
     }
 
     func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
-        guard isWPAdminLogin else {
+        guard !stores.isAuthenticatedWithoutWPCom else {
             onCompletion()
             return
         }

@@ -76,7 +76,7 @@ struct DashboardView: View {
         return (isJetpackCPSite || isNonJetpackSite) &&
             viewModel.isSiteEligibleToInstallJetpack &&
             viewModel.jetpackBannerVisibleFromAppSettings &&
-            !viewModel.isSelfDrivenPushNotificationRegisteredIfExpected &&
+            !viewModel.isSelfDrivenPushNotificationRegistered &&
             dismissedJetpackBenefitBanner == false
     }
 

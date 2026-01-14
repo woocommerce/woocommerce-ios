@@ -65,7 +65,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
             return PushNotificationsManager(configuration: configuration,
                                             backgroundSynchronizerFactory: backgroundSynchronizerFactory,
-                                            shouldRegisterSelfDrivenPushNotification: { false })
+                                            shouldRegisterSelfDrivenPushNotification: false)
         }()
     }
 
@@ -655,7 +655,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
             return PushNotificationsManager(configuration: configuration,
                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory,
-                                           shouldRegisterSelfDrivenPushNotification: { true })
+                                           shouldRegisterSelfDrivenPushNotification: true)
         }()
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {

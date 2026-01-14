@@ -976,7 +976,7 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegisteredIfExpected)
+        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
     }
 
     @MainActor
@@ -994,7 +994,7 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertTrue(viewModel.isSelfDrivenPushNotificationRegisteredIfExpected)
+        XCTAssertTrue(viewModel.isSelfDrivenPushNotificationRegistered)
     }
 
     @MainActor
@@ -1013,7 +1013,7 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegisteredIfExpected)
+        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
     }
 }
 

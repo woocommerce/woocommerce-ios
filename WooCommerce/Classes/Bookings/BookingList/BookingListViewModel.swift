@@ -4,6 +4,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import class Networking.BookingsRemote
+import protocol WooFoundation.Analytics
 
 protocol BookingListsRefreshCoordinating: AnyObject {
     func refreshAllLists() async
@@ -48,6 +49,7 @@ final class BookingListViewModel: ObservableObject {
 
     /// Tracks if initial load has been triggered.
     private var hasLoadedInitially = false
+    private let analytics: Analytics
 
     /// Supports infinite scroll.
     private let paginationTracker: PaginationTracker
@@ -68,11 +70,13 @@ final class BookingListViewModel: ObservableObject {
          parent: BookingListContainerViewModel? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          currentDate: Date = Date()) {
         self.siteID = siteID
         self.type = type
         self.stores = stores
         self.storage = storage
+        self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         self.filters = {
@@ -191,6 +195,7 @@ extension BookingListViewModel: PaginationTrackerDelegate {
                 onCompletion?(.success(hasNextPage))
 
             case .failure(let error):
+                self?.analytics.track(event: .BookingList.failedToFetchBookings(error))
                 DDLogError("⛔️ Error synchronizing bookings: \(error)")
                 withAnimation {
                     self?.errorFetching = true

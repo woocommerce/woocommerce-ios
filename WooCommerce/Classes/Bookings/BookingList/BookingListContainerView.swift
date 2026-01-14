@@ -38,6 +38,7 @@ struct BookingListContainerView: View {
                         if !isSearching {
                             viewModel.searchQuery = ""
                         }
+                        viewModel.searchTapped()
                     }
                 } label: {
                     Image(systemName: "magnifyingglass")
@@ -50,12 +51,16 @@ struct BookingListContainerView: View {
         }
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterViewModel) { filters in
+                viewModel.applyFiltersTapped()
                 viewModel.updateFilters(filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {
                 // no-op
             }
+        }
+        .onAppear {
+            viewModel.onAppear()
         }
     }
 }
@@ -68,6 +73,7 @@ private extension BookingListContainerView {
             HStack {
                 Button {
                     showingSortOptions = true
+                    viewModel.sortByTapped()
                 } label: {
                     Text(Localization.sortBy)
                         .font(.body)
@@ -76,6 +82,7 @@ private extension BookingListContainerView {
                 Spacer()
                 Button {
                     showingFilters = true
+                    viewModel.filtersTapped()
                 } label: {
                     Text(viewModel.filterText)
                         .font(.body)
@@ -95,7 +102,7 @@ private extension BookingListContainerView {
                 ForEach(BookingListTab.allCases, id: \.rawValue) { tab in
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            viewModel.selectedTab = tab
+                            viewModel.setSelectedTab(to: tab)
                         }
                     } label: {
                         Text(tab.title)
@@ -145,7 +152,7 @@ private extension BookingListContainerView {
 
                 ForEach(BookingListViewModel.SortBy.allCases, id: \.rawValue) { sortBy in
                     Button {
-                        viewModel.sortBy = sortBy
+                        viewModel.sortByOptionSelected(sortBy)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             showingSortOptions = false
                         }

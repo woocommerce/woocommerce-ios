@@ -219,7 +219,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
             switch action {
             case let .fetchAISuggestions(_, _, completion):
                 fetchAISuggestionsTriggers += 1
-                completion(.failure(MockError()))
+                completion(.failure(MockError.anyError))
             default:
                 break
             }
@@ -288,7 +288,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_ad_can_be_edited_if_suggestions_failed_to_load() async throws {
         // Given
         insertProduct(sampleProduct)
-        mockAISuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError.anyError)
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -388,7 +388,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
 
-        mockAISuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError.anyError)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -946,7 +946,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_suggestion_request_failures_is_tracked() async throws {
         // Given
         insertProduct(sampleProduct)
-        mockAISuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError.anyError)
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -964,7 +964,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_suggestions_loading_failed"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
-        XCTAssertEqual(eventProperties["error_code"] as? String, "1")
+        XCTAssertEqual(eventProperties["error_code"] as? String, "0")
     }
 
     // MARK: ToS Checkbox First Line - Evergreen Campaigns
@@ -1141,8 +1141,6 @@ private extension BlazeCampaignCreationFormViewModelTests {
     }
 }
 
-private final class MockError: Error { }
-
 private class MockProductUIImageLoader: ProductUIImageLoader {
     var imageRequestedForProductImage: Yosemite.ProductImage?
     var requestImageStubbedResponse: UIImage?
@@ -1152,7 +1150,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         if let requestImageStubbedResponse {
             return requestImageStubbedResponse
         } else {
-            throw MockError()
+            throw MockError.anyError
         }
     }
 

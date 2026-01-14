@@ -30,8 +30,8 @@ public struct POSCatalogSizeChecker: POSCatalogSizeCheckerProtocol {
 
     public func checkCatalogSize(for siteID: Int64) async throws -> POSCatalogSize {
         // Make concurrent requests to get both counts
-        async let productCount = syncRemote.getProductCount(siteID: siteID)
-        async let variationCount = syncRemote.getProductVariationCount(siteID: siteID)
+        async let productCount = syncRemote.getProductCount(siteID: siteID, posProductsOnly: true)
+        async let variationCount = syncRemote.getProductVariationCount(siteID: siteID, posProductsOnly: true)
 
         do {
             return try await POSCatalogSize(

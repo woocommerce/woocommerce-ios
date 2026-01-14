@@ -176,7 +176,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncTask = Task<POSCatalog, Error> {
             try await fullSyncService.startFullSync(for: siteID,
                                                     regenerateCatalog: regenerateCatalog,
-                                                    allowCellular: allowCellular)
+                                                    allowCellular: allowCellular,
+                                                    posProductsOnly: true)
         }
 
         // Store the task for potential cancellation
@@ -353,7 +354,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncTask = Task<POSCatalog, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
-                                                                  lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID))
+                                                                  lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID),
+                                                                  posProductsOnly: true)
         }
 
         // Store the task for potential cancellation

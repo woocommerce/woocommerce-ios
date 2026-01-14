@@ -13,11 +13,14 @@ public protocol POSCatalogIncrementalSyncServiceProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for.
     ///   - lastFullSyncDate: The date of the last full sync to use if no incremental sync date exists.
+    ///   - lastIncrementalSyncDate: The date of the last incremental sync.
+    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: The synced catalog containing updated products and variations
     @discardableResult
     func startIncrementalSync(for siteID: Int64,
                               lastFullSyncDate: Date,
-                              lastIncrementalSyncDate: Date?) async throws -> POSCatalog
+                              lastIncrementalSyncDate: Date?,
+                              posProductsOnly: Bool) async throws -> POSCatalog
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
@@ -57,13 +60,16 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 
     // MARK: - Protocol Conformance
     @discardableResult
-    public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
+    public func startIncrementalSync(for siteID: Int64,
+                                     lastFullSyncDate: Date,
+                                     lastIncrementalSyncDate: Date?,
+                                     posProductsOnly: Bool = true) async throws -> POSCatalog {
         let modifiedAfter = latestSyncDate(fullSyncDate: lastFullSyncDate, incrementalSyncDate: lastIncrementalSyncDate)
 
-        DDLogInfo("🔄 Starting incremental catalog sync for site ID: \(siteID), modifiedAfter: \(modifiedAfter)")
+        DDLogInfo("🔄 Starting incremental catalog sync for site ID: \(siteID), modifiedAfter: \(modifiedAfter), posProductsOnly: \(posProductsOnly)")
 
         do {
-            let catalog = try await loadCatalog(for: siteID, modifiedAfter: modifiedAfter, syncRemote: syncRemote)
+            let catalog = try await loadCatalog(for: siteID, modifiedAfter: modifiedAfter, syncRemote: syncRemote, posProductsOnly: posProductsOnly)
             DDLogInfo("✅ Loaded \(catalog.products.count) updated products and \(catalog.variations.count) updated variations for siteID \(siteID)")
 
             try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
@@ -80,13 +86,20 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
 // MARK: - Remote Loading
 
 private extension POSCatalogIncrementalSyncService {
-    func loadCatalog(for siteID: Int64, modifiedAfter: Date, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
+    func loadCatalog(for siteID: Int64,
+                     modifiedAfter: Date,
+                     syncRemote: POSCatalogSyncRemoteProtocol,
+                     posProductsOnly: Bool) async throws -> POSCatalog {
         let syncStartDate = Date.now
 
         // Fetch regular products (excluding trash)
         async let regularProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber, includeStatus: nil)
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: nil,
+                                                  posProductsOnly: posProductsOnly)
             }
         )
 
@@ -96,13 +109,17 @@ private extension POSCatalogIncrementalSyncService {
                 try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
                                                   siteID: siteID,
                                                   pageNumber: pageNumber,
-                                                  includeStatus: ProductStatus.trash.rawValue)
+                                                  includeStatus: ProductStatus.trash.rawValue,
+                                                  posProductsOnly: posProductsOnly)
             }
         )
 
         async let variationsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProductVariations(modifiedAfter: modifiedAfter, siteID: siteID, pageNumber: pageNumber)
+                try await syncRemote.loadProductVariations(modifiedAfter: modifiedAfter,
+                                                           siteID: siteID,
+                                                           pageNumber: pageNumber,
+                                                           posProductsOnly: posProductsOnly)
             }
         )
 

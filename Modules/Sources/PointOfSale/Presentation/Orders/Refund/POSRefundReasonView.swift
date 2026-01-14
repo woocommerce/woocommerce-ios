@@ -7,15 +7,18 @@ struct POSRefundReasonView: View {
 
     private let initialReason: String?
     private let onSave: (String) -> Void
-    private let onCancel: () -> Void
+    private let onBack: () -> Void
+    private let onClose: () -> Void
 
     init(initialReason: String?,
          onSave: @escaping (String) -> Void,
-         onCancel: @escaping () -> Void) {
+         onBack: @escaping () -> Void,
+         onClose: @escaping () -> Void) {
         self._reasonText = State(initialValue: initialReason ?? "")
         self.initialReason = initialReason
         self.onSave = onSave
-        self.onCancel = onCancel
+        self.onBack = onBack
+        self.onClose = onClose
     }
 
     private var isAddButtonEnabled: Bool {
@@ -34,7 +37,8 @@ struct POSRefundReasonView: View {
 
             buttonSection
         }
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .frame(width: parentSize.width, height: parentSize.height)
+        .background(Color.posSurfaceBright)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
@@ -49,7 +53,7 @@ private extension POSRefundReasonView {
     var headerView: some View {
         HStack(spacing: POSSpacing.medium) {
             Button {
-                onCancel()
+                onBack()
             } label: {
                 Text(Image(systemName: "chevron.backward"))
                     .font(.posButtonSymbolLarge)
@@ -64,7 +68,7 @@ private extension POSRefundReasonView {
             Spacer()
 
             Button {
-                onCancel()
+                onClose()
             } label: {
                 Text(Image(systemName: "xmark"))
                     .font(.posButtonSymbolLarge)
@@ -153,7 +157,8 @@ private extension POSRefundReasonView {
     POSRefundReasonView(
         initialReason: nil,
         onSave: { _ in },
-        onCancel: {}
+        onBack: {},
+        onClose: {}
     )
     .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
 }
@@ -162,7 +167,8 @@ private extension POSRefundReasonView {
     POSRefundReasonView(
         initialReason: "Customer not happy with the order.",
         onSave: { _ in },
-        onCancel: {}
+        onBack: {},
+        onClose: {}
     )
     .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
 }

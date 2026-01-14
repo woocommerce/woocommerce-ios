@@ -559,8 +559,11 @@ private extension POSOrderDetailsView {
                     updatedReviewData.refundReason = reason
                     refundModalState = .review(updatedReviewData)
                 },
-                onCancel: {
+                onBack: {
                     refundModalState = .review(reviewData)
+                },
+                onClose: {
+                    refundModalState = nil
                 }
             )
         }

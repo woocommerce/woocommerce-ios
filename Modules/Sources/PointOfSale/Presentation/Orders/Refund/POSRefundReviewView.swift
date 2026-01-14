@@ -103,11 +103,11 @@ private extension POSRefundReviewView {
                     .foregroundColor(.posOnSurface)
                 Spacer()
                 Button(action: onAddReason) {
-                    Text(Localization.addReasonButton)
+                    Text(refundReason != nil ? Localization.editReasonButton : Localization.addReasonButton)
                         .font(.posBodyMediumRegular(underline: true))
                         .foregroundColor(.posPrimary)
                 }
-                .accessibilityLabel(Localization.addReasonAccessibilityLabel)
+                .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
             }
             Text(refundReason ?? Localization.reasonPlaceholder)
                 .font(.posBodyMediumRegular())
@@ -185,10 +185,22 @@ private extension POSRefundReviewView {
             comment: "Button to add a reason for the refund"
         )
 
+        static let editReasonButton = NSLocalizedString(
+            "pos.refundReviewView.editReasonButton",
+            value: "Edit reason",
+            comment: "Button to edit an existing refund reason"
+        )
+
         static let addReasonAccessibilityLabel = NSLocalizedString(
             "pos.refundReviewView.addReason.accessibilityLabel",
             value: "Add refund reason",
             comment: "Accessibility label for add reason button in refund review"
+        )
+
+        static let editReasonAccessibilityLabel = NSLocalizedString(
+            "pos.refundReviewView.editReason.accessibilityLabel",
+            value: "Edit refund reason",
+            comment: "Accessibility label for edit reason button in refund review"
         )
 
         static let reasonPlaceholder = NSLocalizedString(

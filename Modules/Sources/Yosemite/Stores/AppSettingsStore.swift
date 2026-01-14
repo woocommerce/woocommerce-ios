@@ -332,6 +332,11 @@ public class AppSettingsStore: Store {
             setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
         case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
             getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
+        case let .setSelfDrivenPushTokenID(siteID, tokenID, onCompletion):
+            setSelfDrivenPushTokenID(siteID: siteID, tokenID: tokenID, onCompletion: onCompletion)
+
+        case let .loadSelfDrivenPushTokenID(siteID, onCompletion):
+            loadSelfDrivenPushTokenID(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1454,6 +1459,21 @@ private extension AppSettingsStore {
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void) {
         let allowed = siteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         onCompletion(allowed)
+    }
+}
+
+private extension AppSettingsStore {
+    func setSelfDrivenPushTokenID(siteID: Int64,
+                                  tokenID: Int64?,
+                                  onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(selfDrivenPushTokenID: tokenID)
+        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    func loadSelfDrivenPushTokenID(siteID: Int64,
+                                   onCompletion: (Int64?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).selfDrivenPushTokenID)
     }
 }
 

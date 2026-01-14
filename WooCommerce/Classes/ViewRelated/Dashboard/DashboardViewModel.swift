@@ -77,6 +77,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
 
+    @Published private(set) var isSelfDrivenPushNotificationRegistered = false
+
     @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
@@ -188,6 +190,7 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -344,6 +347,9 @@ private extension DashboardViewModel {
             }
             group.addTask { [weak self] in
                 await self?.googleAdsDashboardCardViewModel.checkAvailability()
+            }
+            group.addTask { [weak self] in
+                await self?.updateSelfDrivenPushRegistrationStatus()
             }
         }
     }
@@ -532,6 +538,18 @@ private extension DashboardViewModel {
         userDefaults.publisher(for: \.wpcomSiteSuspended)
             .map { !$0 }
             .assign(to: &$isSiteEligibleToInstallJetpack)
+    }
+
+    func observeSelfDrivenPushTokenPersistence() {
+        NotificationCenter.default.publisher(for: .selfDrivenPushTokenIDDidPersist)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task { @MainActor in
+                    await self.updateSelfDrivenPushRegistrationStatus()
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
@@ -792,6 +810,17 @@ private extension DashboardViewModel {
     @MainActor
     func updateJetpackBannerVisibilityFromAppSettings() async {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
+    }
+
+    @MainActor
+    func updateSelfDrivenPushRegistrationStatus() async {
+        let tokenID: Int64? = await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadSelfDrivenPushTokenID(siteID: siteID) { tokenID in
+                continuation.resume(returning: tokenID)
+            })
+        }
+
+        isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
     }
 }
 

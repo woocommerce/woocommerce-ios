@@ -6,6 +6,10 @@ import AutomatticTracks
 import Yosemite
 import protocol WooFoundation.Analytics
 
+extension Notification.Name {
+    static let selfDrivenPushTokenIDDidPersist = Notification.Name("selfDrivenPushTokenIDDidPersist")
+}
+
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
@@ -113,6 +117,7 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
+    private let shouldRegisterSelfDrivenPushNotification: Bool
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -120,10 +125,12 @@ final class PushNotificationsManager: PushNotesManager {
     ///
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         shouldRegisterSelfDrivenPushNotification: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
+        self.shouldRegisterSelfDrivenPushNotification = shouldRegisterSelfDrivenPushNotification
     }
 }
 
@@ -230,15 +237,30 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        // Register in the Dotcom's Infrastructure
-        registerDotcomDevice(with: newToken) { (device, error) in
-            guard let deviceID = device?.deviceID else {
-                DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
-                return
+        if shouldRegisterSelfDrivenPushNotification {
+            DDLogInfo("📱 Self Registering Push Notifications")
+            // We will need to remove the old registartion, this is just for the newly registered stores
+            registerSelfDrivenPushNotificationFlow(with: newToken) { result in
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
+                case .success(let token):
+                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
+                    self.deviceID = "\(token)"
+                }
             }
+        }
+        else {
+            // Register in the Dotcom's Infrastructure
+            registerDotcomDevice(with: newToken) { (device, error) in
+                guard let deviceID = device?.deviceID else {
+                    DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
+                    return
+                }
 
-            DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
-            self.deviceID = deviceID
+                DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
+                self.deviceID = deviceID
+            }
         }
     }
 
@@ -563,6 +585,73 @@ private extension PushNotificationsManager {
                                                        applicationVersion: Bundle.main.version,
                                                        onCompletion: onCompletion)
         stores.dispatch(action)
+    }
+
+    func registerSelfDrivenPushNotificationFlow(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        guard let siteID else {
+            DDLogError("⛔️ Unable to register self-driven push token: missing siteID")
+            return
+        }
+
+        DDLogInfo("📱 Registering self-driven push notification token")
+
+        let device = APNSDevice(deviceToken: deviceToken)
+        let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+            siteID: siteID,
+            device: device,
+            applicationID: WooConstants.pushApplicationID
+        ) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let tokenID):
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, onCompletion: onCompletion)
+
+            case .failure(let error):
+                DDLogError("⛔️ Unable to register self-driven push token: \(error)")
+                onCompletion(.failure(error))
+            }
+        }
+
+        stores.dispatch(action)
+    }
+
+    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, siteID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        persistSelfDrivenTokenID(tokenID, siteID: siteID)
+        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
+            onCompletion(.success(tokenID))
+        })
+    }
+
+    func persistSelfDrivenTokenID(_ tokenID: Int64, siteID: Int64) {
+        let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: tokenID) { result in
+            switch result {
+            case .success:
+                NotificationCenter.default.post(
+                    name: .selfDrivenPushTokenIDDidPersist, object: nil
+                )
+            case .failure(let error):
+                DDLogError("⛔️ Unable to persist self-driven push token ID: \(error)")
+            }
+        }
+        stores.dispatch(setTokenAction)
+    }
+
+    func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
+        guard !stores.isAuthenticatedWithoutWPCom else {
+            onCompletion()
+            return
+        }
+
+        unregisterDotcomDeviceIfPossible { [weak self] error in
+            if let error {
+                DDLogError("⛔️ Unable to unregister WP.com push token: \(error)")
+            }
+
+            // Remove the WP.com token locally regardless of unregister success.
+            self?.deviceToken = nil
+            onCompletion()
+        }
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.

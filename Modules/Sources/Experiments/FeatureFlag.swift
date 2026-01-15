@@ -220,4 +220,9 @@ public enum FeatureFlag: Int {
     /// Enables the refunds functionality within POS
     ///
     case pointOfSaleRefundsi1
+
+    /// Enables age range verification features
+    /// https://developer.apple.com/news/?id=2ezb6jhj
+    ///
+    case ageRangeRequirementsCompliance
 }

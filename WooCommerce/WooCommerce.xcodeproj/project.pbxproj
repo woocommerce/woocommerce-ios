@@ -1002,6 +1002,7 @@
 		2D200F072ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */; };
 		2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */; };
 		2D535DBD2F1924E8006A6618 /* AgeRangeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535DBC2F1924E8006A6618 /* AgeRangeProvider.swift */; };
+		2D535DBF2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535DBE2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
@@ -3898,6 +3899,7 @@
 		2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDateTimeFilterViewTests.swift; sourceTree = "<group>"; };
 		2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinator.swift; sourceTree = "<group>"; };
 		2D535DBC2F1924E8006A6618 /* AgeRangeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeProvider.swift; sourceTree = "<group>"; };
+		2D535DBE2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationServiceTests.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
@@ -7988,6 +7990,7 @@
 		2DB6CCEF2EF9936B00EDB54D /* AgeGate */ = {
 			isa = PBXGroup;
 			children = (
+				2D535DBE2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift */,
 				2DB6CCEE2EF9936B00EDB54D /* AgeRangeVerificationCoordinatorTests.swift */,
 			);
 			path = AgeGate;
@@ -15825,6 +15828,7 @@
 				265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */,
 				03FBDAFD263EE4E800ACE257 /* CouponListViewModelTests.swift in Sources */,
 				036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */,
+				2D535DBF2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
 				682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */,
 				4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */,

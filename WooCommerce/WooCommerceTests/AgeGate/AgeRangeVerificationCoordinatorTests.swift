@@ -1,4 +1,5 @@
 import XCTest
+import Experiments
 @testable import WooCommerce
 
 final class AgeRangeVerificationCoordinatorTests: XCTestCase {
@@ -20,7 +21,10 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .ineligible, delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .ineligible,
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -44,7 +48,10 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .declinedSharing, delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .declinedSharing,
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -67,7 +74,10 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .invalidUIState, delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .invalidUIState,
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -91,7 +101,10 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .featureUnavailable, delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .featureUnavailable,
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -115,7 +128,15 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .sdkError(NSError(domain: "test", code: 1)), delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .sdkError(
+                    NSError(
+                        domain: "test",
+                        code: 1
+                    )
+                ),
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -139,7 +160,10 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .unknown, delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .unknown,
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -163,7 +187,13 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(result: .eligible(significantAppChangeApprovalRequired: false), delay: 0.01, eligibility: true)
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .eligible(
+                    significantAppChangeApprovalRequired: false,
+                    isMinor: false
+                ),
+                delay: 0.01
+            )
         )
         let exp = expectation(description: "onResult")
 
@@ -185,7 +215,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
 private struct FakeAgeRangeService: AgeRangeVerificationServiceProtocol {
     let result: AgeRangeVerificationResult
     let delay: TimeInterval
-    let eligibility: Bool?
     func verifyAgeRange(
         in viewController: UIViewController,
         minimumAge: Int,
@@ -194,10 +223,6 @@ private struct FakeAgeRangeService: AgeRangeVerificationServiceProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             completion(result)
         }
-    }
-
-    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
-        completion(eligibility)
     }
 }
 

@@ -19,7 +19,7 @@ final class SiteConnectionTypeTests: XCTestCase {
 
     func test_init_with_non_jetpack_connected_site_returns_nonJetpack() {
         // Given
-        let site = Site.fake().copy(isJetpackConnected: false, isJetpackThePluginInstalled: false)
+        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: false)
 
         // When
         let siteConnectionType = SiteConnectionType(site: site)
@@ -31,7 +31,7 @@ final class SiteConnectionTypeTests: XCTestCase {
     func test_init_with_jetpack_connected_but_plugin_not_installed_returns_jetpackConnectionPackage() {
         // Given
         // isJetpackCPConnected is computed as: isJetpackConnected && !isJetpackThePluginInstalled
-        let site = Site.fake().copy(isJetpackConnected: true, isJetpackThePluginInstalled: false)
+        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
 
         // When
         let siteConnectionType = SiteConnectionType(site: site)
@@ -42,7 +42,7 @@ final class SiteConnectionTypeTests: XCTestCase {
 
     func test_init_with_jetpack_connected_and_plugin_installed_returns_fullJetpack() {
         // Given
-        let site = Site.fake().copy(isJetpackConnected: true, isJetpackThePluginInstalled: true)
+        let site = Site.fake().copy(isJetpackThePluginInstalled: true, isJetpackConnected: true)
 
         // When
         let siteConnectionType = SiteConnectionType(site: site)

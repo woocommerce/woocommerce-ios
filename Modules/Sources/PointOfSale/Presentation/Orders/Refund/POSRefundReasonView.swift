@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundReasonView: View {
+    @Environment(\.posModalParentSize) private var parentSize
     @State private var reasonText: String
     @FocusState private var isTextFieldFocused: Bool
 

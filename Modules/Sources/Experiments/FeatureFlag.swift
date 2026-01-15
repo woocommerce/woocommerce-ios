@@ -220,4 +220,12 @@ public enum FeatureFlag: Int {
     /// Enables the refunds functionality within POS
     ///
     case pointOfSaleRefundsi1
+
+    /// Enables self driven push token registration
+    ///
+    case selfDrivenPushToken
+
+    /// Enables POS-only products filtering
+    ///
+    case pointOfSaleOnlyProducts
 }

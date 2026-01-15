@@ -98,6 +98,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var syncPOSCatalogOverCellular: Bool
 
+    public var selfDrivenPushTokenID: Int64?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -120,7 +122,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 isPOSTabVisible: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
-                syncPOSCatalogOverCellular: Bool = true) {
+                syncPOSCatalogOverCellular: Bool = true,
+                selfDrivenPushTokenID: Int64? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -144,6 +147,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
+        self.selfDrivenPushTokenID = selfDrivenPushTokenID
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -205,6 +209,7 @@ extension GeneralStoreSettings {
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
+        self.selfDrivenPushTokenID = try container.decodeIfPresent(Int64.self, forKey: .selfDrivenPushTokenID)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

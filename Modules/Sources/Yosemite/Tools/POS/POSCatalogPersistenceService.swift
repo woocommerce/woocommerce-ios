@@ -93,8 +93,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) updated products, " +
                   "\(catalog.variations.count) updated variations, " +
-                  "\(catalog.productsToRemove.count) products to remove, " +
-                  "\(catalog.variationsToRemove.count) variations to remove")
+                  "\(catalog.productsToRemove.count) products to remove")
 
         try await grdbManager.databaseConnection.write { db in
             for product in catalog.products {
@@ -153,9 +152,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             try site?.updateChanges(db) { $0.lastCatalogIncrementalSyncDate = catalog.syncDate }
         }
 
-        // Delete products/variations hidden from POS when detected during incremental sync
-        if !catalog.productsToRemove.isEmpty || !catalog.variationsToRemove.isEmpty {
-            try await deleteProducts(catalog.productsToRemove, variationIDs: catalog.variationsToRemove, siteID: siteID)
+        // Delete products hidden from POS when detected during incremental sync
+        // Variations are not tracked separately, they cascade delete in GRDB when their parent product is removed,
+        // so there is no need to pass their IDs here.
+        if !catalog.productsToRemove.isEmpty {
+            try await deleteProducts(catalog.productsToRemove, variationIDs: [], siteID: siteID)
         }
 
         DDLogInfo("✅ Incremental catalog persistence complete")

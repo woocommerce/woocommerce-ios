@@ -378,7 +378,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 productsSynced: syncedCatalog.products.count + syncedCatalog.productsToRemove.count,
-                variationsSynced: syncedCatalog.variations.count + syncedCatalog.variationsToRemove.count,
+                variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs

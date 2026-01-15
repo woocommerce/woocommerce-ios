@@ -11,7 +11,6 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     // Results returned when posProductsOnly=false (used during dual-request hidden product detection)
     private(set) var allProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
-    private(set) var allVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
 
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
@@ -98,10 +97,6 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         allProductResults[pageNumber] = result
     }
 
-    func setAllVariationResult(pageNumber: Int, result: Result<PagedItems<POSProductVariation>, Error>) {
-        allVariationResults[pageNumber] = result
-    }
-
     // MARK: - Protocol Methods - Incremental Sync
 
     func loadProducts(modifiedAfter: Date,
@@ -157,16 +152,6 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                                 posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation> {
         await loadIncrementalProductVariationsCallCount.increment()
         lastIncrementalVariationsModifiedAfter = modifiedAfter
-
-        // Use all-variations results when posProductsOnly=false and results are configured
-        if !posProductsOnly, let result = allVariationResults[pageNumber] {
-            switch result {
-            case .success(let pagedItems):
-                return pagedItems
-            case .failure(let error):
-                throw error
-            }
-        }
 
         if let result = incrementalVariationResults[pageNumber] {
             switch result {

@@ -89,10 +89,11 @@ extension PushNotification {
 
     static private func metaDataFromCompressedData(_ noteFullData: String?) -> MetaContainer? {
         guard let content = noteContent(from: noteFullData),
-                let metaDict = content["meta"] as? [String: AnyCodable] else {
+                let metaDict = content["meta"] as? [String: Any] else {
             return nil
         }
-        return MetaContainer(payload: metaDict)
+        let anyCodableDict = metaDict.mapValues { AnyCodable($0) }
+        return MetaContainer(payload: anyCodableDict)
     }
 
     static private func noteContent(from noteFullData: String?) -> [String: Any]? {

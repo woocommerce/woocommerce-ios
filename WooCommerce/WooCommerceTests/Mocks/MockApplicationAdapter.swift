@@ -42,7 +42,6 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     func presentNotificationDetails(notification: WooCommerce.PushNotification) {
         guard let note = notification.note else {
-            presentDetailsNoteIDs.append(notification.noteID)
             return
         }
         presentDetailsNoteIDs.append(note.noteID)

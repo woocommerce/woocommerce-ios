@@ -17,7 +17,7 @@ public struct POSCatalogSizeChecker: POSCatalogSizeCheckerProtocol {
     private let posProductsOnlyEnabled: Bool
 
     public init(syncRemote: POSCatalogSyncRemoteProtocol,
-                posProductsOnlyEnabled: Bool = false) {
+                posProductsOnlyEnabled: Bool) {
         self.syncRemote = syncRemote
         self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
@@ -25,7 +25,7 @@ public struct POSCatalogSizeChecker: POSCatalogSizeCheckerProtocol {
     public init(credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
-                posProductsOnlyEnabled: Bool = false) {
+                posProductsOnlyEnabled: Bool) {
         let syncRemote = POSCatalogSyncRemote(network: AlamofireNetwork(credentials: credentials,
                                                                         selectedSite: selectedSite,
                                                                         appPasswordSupportState: appPasswordSupportState))

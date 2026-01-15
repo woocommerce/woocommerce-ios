@@ -41,9 +41,6 @@ protocol AgeRangeVerificationServiceProtocol {
         completion: @escaping (AgeRangeVerificationResult) -> Void
     )
 
-    /// Retrieves whether the account is eligible for age-based features.
-    /// Returns nil when unavailable or if the provider fails.
-    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void)
 }
 
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
@@ -60,6 +57,19 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
         completion: @escaping (AgeRangeVerificationResult) -> Void
     ) {
         Task { @MainActor in
+            let eligibility: Bool?
+            do {
+                eligibility = try await provider.isEligibleForAgeFeatures()
+            } catch {
+                DDLogError("Age Range: Failed to fetch eligibility signals. Error: \(error)")
+                eligibility = nil
+            }
+
+            if eligibility == false {
+                completion(.ineligibleForAgeFeatures)
+                return
+            }
+
             // Use the topmost visible controller as the anchor to ensure UI can be presented.
             let anchor = viewController.topmostPresentedViewController
             guard anchor.view.window != nil else {
@@ -101,17 +111,7 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
         }
     }
 
-    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
-        Task {
-            do {
-                let eligibility = try await provider.isEligibleForAgeFeatures()
-                completion(eligibility)
-            } catch {
-                DDLogError("Age Range: Failed to fetch eligibility signals. Error: \(error)")
-                completion(nil)
-            }
-        }
-    }
+    // Eligibility checks are handled internally as part of verifyAgeRange.
 }
 
 private extension AgeRangeVerificationService {

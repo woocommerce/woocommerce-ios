@@ -40,20 +40,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
-        ageRangeVerificationService.fetchIsEligibleForAgeFeatures { [weak self] eligibility in
-            guard let self else {
-                onResult(true, .unknown)
-                return
-            }
-
-            // Fail open: if not eligible or unavailable, allow without prompting.
-            if eligibility == false {
-                onResult(true, .ineligibleForAgeFeatures)
-                return
-            }
-
-            self.performAgeVerification(hostingWindow: hostingWindow, onResult: onResult)
-        }
+        performAgeVerification(hostingWindow: hostingWindow, onResult: onResult)
     }
 }
 

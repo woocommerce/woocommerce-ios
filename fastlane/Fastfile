@@ -1197,7 +1197,7 @@ platform :ios do
     # screenshot generation tasks close together, we can keep reusing the same source files
     original_screenshot_directory = File.join(Dir.pwd, 'screenshots')
     metadata_directory = File.join(Dir.pwd, 'metadata')
-    output_directory = File.join(Dir.pwd, '/promo_screenshots')
+    output_directory = File.join(Dir.pwd, 'promo_screenshots')
 
     # Run screenshots generator tool
     promo_screenshots(

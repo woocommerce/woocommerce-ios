@@ -44,9 +44,7 @@ struct POSRefundReasonView: View {
         .background(Color.posSurfaceBright)
         .posModalFullScreen()
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                isTextFieldFocused = true
-            }
+            isTextFieldFocused = true
         }
     }
 }

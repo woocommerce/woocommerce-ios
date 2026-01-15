@@ -219,7 +219,6 @@ struct POSModalFullScreenModifier: ViewModifier {
 }
 
 extension View {
-    /// Presents the POS Modal in full-screen mode, covering the entire screen including the status bar.
     func posModalFullScreen(_ enabled: Bool = true) -> some View {
         self.modifier(POSModalFullScreenModifier(enabled: enabled))
     }

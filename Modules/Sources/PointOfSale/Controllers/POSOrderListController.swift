@@ -342,9 +342,11 @@ enum RefundActionAvailability {
 
         let refundTotal = itemsSubtotal + itemsTax
 
-        let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal) ?? "$0.00"
-        let formattedTax = currencyFormatter.formatAmount(itemsTax) ?? "$0.00"
-        let formattedTotal = currencyFormatter.formatAmount(refundTotal) ?? "$0.00"
+        guard let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal),
+              let formattedTax = currencyFormatter.formatAmount(itemsTax),
+              let formattedTotal = currencyFormatter.formatAmount(refundTotal) else {
+            return nil
+        }
 
         let paymentMethodDescription = createPaymentMethodDescription(for: order)
 

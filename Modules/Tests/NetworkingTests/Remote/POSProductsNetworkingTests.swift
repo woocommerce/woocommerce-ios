@@ -284,21 +284,21 @@ struct POSProductsNetworkingTests {
         #expect(request.parameters["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
     }
 
-    @Test func loadProductsForPointOfSale_excludes_posProductsOnly_when_not_specified() async throws {
+    @Test func loadProductsForPointOfSale_includes_posProductsOnly_false_when_default() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
-        // When - call without posProductsOnly parameter
         _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID,
                                                          productTypes: [.simple],
-                                                         pageNumber: 1)
+                                                         pageNumber: 1,
+                                                         posProductsOnly: false)
 
-        // Then - parameter should not be present
+        // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["pos_products_only"] == nil)
+        #expect(queryParametersDictionary["pos_products_only"] as? String == "false")
     }
 
-    @Test func loadProductsForPointOfSale_includes_posProductsOnly_true_when_enabled() async throws {
+    @Test func loadProductsForPointOfSale_includes_posProductsOnly_when_true() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -313,54 +313,7 @@ struct POSProductsNetworkingTests {
         #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
     }
 
-    @Test func loadProductsForPointOfSale_includes_posProductsOnly_false_when_disabled() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-
-        // When
-        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID,
-                                                         productTypes: [.simple],
-                                                         pageNumber: 1,
-                                                         posProductsOnly: false)
-
-        // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["pos_products_only"] as? String == "false")
-    }
-
-    @Test func loadPopularProductsForPointOfSale_excludes_posProductsOnly_when_not_specified() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-
-        // When - call without posProductsOnly parameter
-        _ = try? await remote.loadPopularProductsForPointOfSale(for: sampleSiteID,
-                                                                 productTypes: [.simple],
-                                                                 pageNumber: 1,
-                                                                 perPage: 25,
-                                                                 posProductsOnly: nil)
-
-        // Then - parameter should not be present
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["pos_products_only"] == nil)
-    }
-
-    @Test func loadPopularProductsForPointOfSale_includes_posProductsOnly_true_when_enabled() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-
-        // When
-        _ = try? await remote.loadPopularProductsForPointOfSale(for: sampleSiteID,
-                                                                 productTypes: [.simple],
-                                                                 pageNumber: 1,
-                                                                 perPage: 25,
-                                                                 posProductsOnly: true)
-
-        // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
-    }
-
-    @Test func loadPopularProductsForPointOfSale_includes_posProductsOnly_false_when_disabled() async throws {
+    @Test func loadPopularProductsForPointOfSale_includes_posProductsOnly_false_when_false() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -376,39 +329,23 @@ struct POSProductsNetworkingTests {
         #expect(queryParametersDictionary["pos_products_only"] as? String == "false")
     }
 
-    @Test func searchProductsForPointOfSale_excludes_posProductsOnly_when_not_specified() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-
-        // When - call without posProductsOnly parameter
-        _ = try? await remote.searchProductsForPointOfSale(for: sampleSiteID,
-                                                            query: "test",
-                                                            productTypes: [.simple],
-                                                            pageNumber: 1,
-                                                            posProductsOnly: nil)
-
-        // Then - parameter should not be present
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["pos_products_only"] == nil)
-    }
-
-    @Test func searchProductsForPointOfSale_includes_posProductsOnly_true_when_enabled() async throws {
+    @Test func loadPopularProductsForPointOfSale_includes_posProductsOnly_when_true() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
         // When
-        _ = try? await remote.searchProductsForPointOfSale(for: sampleSiteID,
-                                                            query: "test",
-                                                            productTypes: [.simple],
-                                                            pageNumber: 1,
-                                                            posProductsOnly: true)
+        _ = try? await remote.loadPopularProductsForPointOfSale(for: sampleSiteID,
+                                                                 productTypes: [.simple],
+                                                                 pageNumber: 1,
+                                                                 perPage: 25,
+                                                                 posProductsOnly: true)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
         #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
     }
 
-    @Test func searchProductsForPointOfSale_includes_posProductsOnly_false_when_disabled() async throws {
+    @Test func searchProductsForPointOfSale_includes_posProductsOnly_false_when_default() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -424,37 +361,23 @@ struct POSProductsNetworkingTests {
         #expect(queryParametersDictionary["pos_products_only"] as? String == "false")
     }
 
-    @Test func loadPOSProductByGlobalUniqueIdentifier_excludes_posProductsOnly_when_not_specified() async throws {
+    @Test func searchProductsForPointOfSale_includes_posProductsOnly_when_true() async throws {
         // Given
         let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products", filename: "pos-products")
-
-        // When - call without posProductsOnly parameter
-        _ = try? await remote.loadPOSProductByGlobalUniqueIdentifier(for: sampleSiteID,
-                                                                      globalUniqueID: "123456789",
-                                                                      posProductsOnly: nil)
-
-        // Then - parameter should not be present
-        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
-        #expect(request.parameters["pos_products_only"] == nil)
-    }
-
-    @Test func loadPOSProductByGlobalUniqueIdentifier_includes_posProductsOnly_true_when_enabled() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products", filename: "pos-products")
 
         // When
-        _ = try? await remote.loadPOSProductByGlobalUniqueIdentifier(for: sampleSiteID,
-                                                                      globalUniqueID: "123456789",
-                                                                      posProductsOnly: true)
+        _ = try? await remote.searchProductsForPointOfSale(for: sampleSiteID,
+                                                            query: "test",
+                                                            productTypes: [.simple],
+                                                            pageNumber: 1,
+                                                            posProductsOnly: true)
 
         // Then
-        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
-        #expect(request.parameters["pos_products_only"] as? String == "true")
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
     }
 
-    @Test func loadPOSProductByGlobalUniqueIdentifier_includes_posProductsOnly_false_when_disabled() async throws {
+    @Test func loadPOSProductByGlobalUniqueIdentifier_includes_posProductsOnly_false_when_default() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "pos-products")
@@ -469,35 +392,22 @@ struct POSProductsNetworkingTests {
         #expect(request.parameters["pos_products_only"] as? String == "false")
     }
 
-    @Test func loadPOSProduct_excludes_posProductsOnly_when_not_specified() async throws {
+    @Test func loadPOSProductByGlobalUniqueIdentifier_includes_posProductsOnly_when_true() async throws {
         // Given
         let remote = ProductsRemote(network: network)
-
-        // When - call without posProductsOnly parameter
-        _ = try? await remote.loadPOSProduct(for: sampleSiteID,
-                                              productID: 123,
-                                              posProductsOnly: nil)
-
-        // Then - parameter should not be present
-        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
-        #expect(request.parameters["pos_products_only"] == nil)
-    }
-
-    @Test func loadPOSProduct_includes_posProductsOnly_true_when_enabled() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "pos-products")
 
         // When
-        _ = try? await remote.loadPOSProduct(for: sampleSiteID,
-                                              productID: 123,
-                                              posProductsOnly: true)
+        _ = try? await remote.loadPOSProductByGlobalUniqueIdentifier(for: sampleSiteID,
+                                                                      globalUniqueID: "123456789",
+                                                                      posProductsOnly: true)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         #expect(request.parameters["pos_products_only"] as? String == "true")
     }
 
-    @Test func loadPOSProduct_includes_posProductsOnly_false_when_disabled() async throws {
+    @Test func loadPOSProduct_includes_posProductsOnly_false_when_default() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -509,5 +419,19 @@ struct POSProductsNetworkingTests {
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         #expect(request.parameters["pos_products_only"] as? String == "false")
+    }
+
+    @Test func loadPOSProduct_includes_posProductsOnly_when_true() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadPOSProduct(for: sampleSiteID,
+                                              productID: 123,
+                                              posProductsOnly: true)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        #expect(request.parameters["pos_products_only"] as? String == "true")
     }
 }

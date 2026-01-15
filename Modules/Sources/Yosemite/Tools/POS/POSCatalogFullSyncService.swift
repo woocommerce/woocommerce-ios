@@ -15,8 +15,9 @@ public protocol POSCatalogFullSyncServiceProtocol {
     ///   - siteID: The site ID to sync catalog for
     ///   - regenerateCatalog: Whether to force the catalog generation
     ///   - allowCellular: Should cellular data be used if required.
+    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: The synced catalog containing products and variations
-    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool) async throws -> POSCatalog
+    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, posProductsOnly: Bool) async throws -> POSCatalog
 
     /// Parses and persists a downloaded catalog file from a background download.
     /// - Parameters:
@@ -78,9 +79,10 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 
     public func startFullSync(for siteID: Int64,
                               regenerateCatalog: Bool = false,
-                              allowCellular: Bool) async throws -> POSCatalog {
-        DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog) " +
-                  "and allowCellular: \(allowCellular)")
+                              allowCellular: Bool,
+                              posProductsOnly: Bool = false) async throws -> POSCatalog {
+        DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog), " +
+                  "allowCellular: \(allowCellular), posProductsOnly: \(posProductsOnly)")
 
         do {
             // Sync from network
@@ -91,7 +93,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                                                               regenerateCatalog: regenerateCatalog,
                                                               allowCellular: allowCellular)
             } else {
-                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
+                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular, posProductsOnly: posProductsOnly)
             }
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
@@ -131,17 +133,26 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 // MARK: - Remote Loading
 
 private extension POSCatalogFullSyncService {
-    func loadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol, allowCellular: Bool) async throws -> POSCatalog {
+    func loadCatalog(for siteID: Int64,
+                     syncRemote: POSCatalogSyncRemoteProtocol,
+                     allowCellular: Bool,
+                     posProductsOnly: Bool) async throws -> POSCatalog {
         let syncStartDate = Date.now
         // Loads products and variations in batches in parallel.
         async let productsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProducts(siteID: siteID, pageNumber: pageNumber, allowCellular: allowCellular)
+                try await syncRemote.loadProducts(siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  allowCellular: allowCellular,
+                                                  posProductsOnly: posProductsOnly)
             }
         )
         async let variationsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProductVariations(siteID: siteID, pageNumber: pageNumber, allowCellular: allowCellular)
+                try await syncRemote.loadProductVariations(siteID: siteID,
+                                                           pageNumber: pageNumber,
+                                                           allowCellular: allowCellular,
+                                                           posProductsOnly: posProductsOnly)
             }
         )
 

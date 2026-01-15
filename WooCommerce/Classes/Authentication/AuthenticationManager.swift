@@ -346,7 +346,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error.underlyingError))
+            let challengeType: String? = {
+                if case .basicAuthenticationRequired = error {
+                    return "basic_auth"
+                }
+                return nil
+            }()
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication,
+                                                                    error: error.underlyingError,
+                                                                    challengeType: challengeType))
         })
         self.siteCredentialLoginUseCase = useCase
 
@@ -363,7 +371,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let isAppPasswordAuthError = {
             switch error {
-            case SiteCredentialLoginError.genericFailure, SiteCredentialLoginError.invalidCredentials:
+            case SiteCredentialLoginError.genericFailure,
+                 SiteCredentialLoginError.invalidCredentials,
+                 SiteCredentialLoginError.basicAuthenticationRequired:
                 return false
             case is SiteCredentialLoginError:
                 return true

@@ -15,6 +15,7 @@ enum POSFontStyle {
     case posBodySmallRegular(underline: Bool = false)
     case posCaptionBold
     case posCaptionRegular
+    case posButtonSymbolXSmall
     case posButtonSymbolSmall
     case posButtonSymbolMedium
     case posButtonSymbolLarge
@@ -51,6 +52,8 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.caption, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
         case .posCaptionRegular:
             Font.system(size: scaledValue(FontSize.caption, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
+        case .posButtonSymbolXSmall:
+            Font.system(size: scaledValue(16, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbolSmall:
             Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         case .posButtonSymbolMedium:
@@ -179,6 +182,8 @@ extension UIContentSizeCategory {
                     .font(.posCaptionBold)
                 Text("Caption Regular")
                     .font(.posCaptionRegular)
+                Text("Button Symbol XSmall")
+                    .font(.posButtonSymbolXSmall)
                 Text("Button Symbol Small")
                     .font(.posButtonSymbolSmall)
                 Text("Button Symbol Medium")

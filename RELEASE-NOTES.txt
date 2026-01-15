@@ -3,7 +3,7 @@
 
 24.0
 -----
-
+- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16485]
 
 24.0
 -----

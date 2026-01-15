@@ -108,6 +108,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .selfDrivenPushToken:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleOnlyProducts:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
     private let viewModel: AnnouncementCardViewModelProtocol
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)?
@@ -49,26 +50,11 @@ struct FeatureAnnouncementCardView: View {
                     }
                 }
                 .padding(.bottom, Layout.padding)
+
                 Spacer()
-                if let imageUrl = viewModel.imageUrl {
-                    AdaptiveAsyncImage(anyAppearanceUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
-                        switch imagePhase {
-                        case .failure:
-                            Image(uiImage: viewModel.image)
-                                .accessibilityHidden(true)
-                        case .success(let image):
-                            image.resizable()
-                                .scaledToFit()
-                                .accessibilityHidden(true)
-                        case .empty:
-                            AnimatedPlaceholder()
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                } else {
-                    Image(uiImage: viewModel.image)
-                        .accessibilityHidden(true)
+
+                if !dynamicTypeSize.isAccessibilitySize {
+                    cornerImage
                 }
             }
         }
@@ -92,6 +78,29 @@ struct FeatureAnnouncementCardView: View {
         .padding(.leading, Layout.padding)
         .onAppear {
             viewModel.onAppear()
+        }
+    }
+
+    @ViewBuilder var cornerImage: some View {
+        if let imageUrl = viewModel.imageUrl {
+            AdaptiveAsyncImage(anyAppearanceUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
+                switch imagePhase {
+                case .failure:
+                    Image(uiImage: viewModel.image)
+                        .accessibilityHidden(true)
+                case .success(let image):
+                    image.resizable()
+                        .scaledToFit()
+                        .accessibilityHidden(true)
+                case .empty:
+                    AnimatedPlaceholder()
+                @unknown default:
+                    EmptyView()
+                }
+            }
+        } else {
+            Image(uiImage: viewModel.image)
+                .accessibilityHidden(true)
         }
     }
 }

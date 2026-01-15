@@ -1065,6 +1065,16 @@ public enum WooAnalyticsStat: String {
     case bookingAddNoteTapped = "booking_detail_add_note_tapped"
     case bookingMarkAsPaidTapped = "booking_detail_mark_as_paid_tapped"
     case bookingViewLinkedOrderTapped = "booking_detail_view_linked_order_tapped"
+    case bookingListTabSelected = "booking_list_tab_selected"
+    case bookingListDisplayed = "booking_list_displayed"
+    case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
+    case bookingListFailedToUpdateBookingDetails = "booking_list_failed_to_update_booking_details"
+    case bookingListBookingTapped = "booking_list_booking_tapped"
+    case bookingListFiltersTapped = "booking_list_filters_tapped"
+    case bookingListApplyFilters = "booking_list_apply_filters"
+    case bookingListSearchTapped = "booking_list_search_tapped"
+    case bookingListSortByTapped = "booking_list_sort_by_tapped"
+    case bookingListSortByOptionTapped = "booking_list_sort_by_option_tapped"
 
     // MARK: Hub Menu
     //

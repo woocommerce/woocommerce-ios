@@ -123,6 +123,7 @@ steps:
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
+      - build/logs/wiremock.txt
     notify:
       - github_commit_status:
           context: UI Tests (iPhone)
@@ -135,6 +136,7 @@ steps:
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
+      - build/logs/wiremock.txt
     notify:
       - github_commit_status:
           context: UI Tests (iPad)

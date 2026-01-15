@@ -1,14 +1,11 @@
 import Foundation
 import CocoaLumberjack
 import UIKit
-#if canImport(DeclaredAgeRange)
-import DeclaredAgeRange
-#endif
 
 enum AgeRangeVerificationResult {
     /// The feature is supported and declared user age is within the required range.
     /// Carries the `significantAppChangeApprovalRequired` flag when available.
-    case eligible(significantAppChangeApprovalRequired: Bool)
+    case eligible(significantAppChangeApprovalRequired: Bool, isMinor: Bool)
 
     /// The feature is supported but declared user age is outside of the required range
     case ineligible
@@ -16,17 +13,16 @@ enum AgeRangeVerificationResult {
     /// User or parent refused from age sharing
     case declinedSharing
 
-    /// DeclaredAgeRange reports the app/account as ineligible for age-based features
-    /// (from `AgeRangeService.isEligibleForAgeFeatures == false`).
+    /// The provider reports the app/account as ineligible for age-based features.
     case ineligibleForAgeFeatures
 
-    /// Feature is unavailable in the current environment. I.e. iOS version is below `26.0`.
+    /// The provider indicates the age feature is unavailable in the current environment.
     case featureUnavailable
 
     /// Failed to obtain a view controller suitable for system Age Range dialogue. I.e. the provided view controller is outside of UI stack or not presented.
     case invalidUIState
 
-    /// `DeclaredAgeRange` SDK flow produced an error.
+    /// The age range provider produced an error.
     case sdkError(Error)
 
     case unknown
@@ -45,50 +41,60 @@ protocol AgeRangeVerificationServiceProtocol {
         completion: @escaping (AgeRangeVerificationResult) -> Void
     )
 
-    /// Retrieves whether the account is eligible for age-based features (DeclaredAgeRange).
-    /// Returns nil when unavailable (older OS / SDK or call fails).
+    /// Retrieves whether the account is eligible for age-based features.
+    /// Returns nil when unavailable or if the provider fails.
     func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void)
 }
 
-#if canImport(DeclaredAgeRange)
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
-    /// Requests the user's declared age range using Apple's DeclaredAgeRange API (iOS 26+).
-    /// The system will present its own consent UI if needed.
+    private let provider: AgeRangeProviding
+
+    init(provider: AgeRangeProviding = DeclaredAgeRangeProvider()) {
+        self.provider = provider
+    }
+
+    /// Requests the user's declared age range via the provider.
     func verifyAgeRange(
         in viewController: UIViewController,
         minimumAge: Int,
         completion: @escaping (AgeRangeVerificationResult) -> Void
     ) {
-        guard #available(iOS 26.0, *) else {
-            completion(.featureUnavailable)
-            return
-        }
-
         Task { @MainActor in
             // Use the topmost visible controller as the anchor to ensure UI can be presented.
             let anchor = viewController.topmostPresentedViewController
             guard anchor.view.window != nil else {
-                DDLogWarn("Declared Age Range API: Anchor viewController is not in window; skipping request.")
+                DDLogWarn("Age Range: Anchor viewController is not in window; skipping request.")
                 completion(.invalidUIState)
                 return
             }
 
             do {
-                let response = try await requestAgeRangeResponse(
+                let snapshot = try await provider.requestAgeRange(
                     minimumAge: minimumAge,
-                    viewController: anchor
+                    in: anchor
                 )
-                let result = mapResponseToResult(
-                    response,
+                let result = mapSnapshotToResult(
+                    snapshot,
                     minimumAge: minimumAge
                 )
-                DDLogInfo("Declared Age Range API: Response mapped to \(result)")
+                DDLogInfo("Age Range: Response mapped to \(result)")
                 completion(result)
             } catch {
-                if let ageError = error as? AgeRangeService.Error, ageError == .notAvailable {
-                    DDLogInfo("Declared Age Range API: Not available (simulator or account not eligible); skipping further prompts.")
+                if let providerError = error as? AgeRangeProviderError {
+                    switch providerError {
+                    case .declinedSharing:
+                        completion(.declinedSharing)
+                        return
+                    case .notAvailable:
+                        DDLogInfo("Age Range: Not available (simulator or account not eligible); skipping further prompts.")
+                    case .unknown:
+                        completion(.unknown)
+                        return
+                    case .other(let underlying):
+                        DDLogError("Age Range: Failed to retrieve age range. Error: \(underlying)")
+                    }
                 } else {
-                    DDLogError("Declared Age Range API: Failed to retrieve age range. Error: \(error)")
+                    DDLogError("Age Range: Failed to retrieve age range. Error: \(error)")
                 }
                 completion(.sdkError(error))
             }
@@ -96,81 +102,34 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
     }
 
     func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
-        guard #available(iOS 26.2, *) else {
-            completion(nil)
-            return
-        }
-
         Task {
             do {
-                let eligibility = try await AgeRangeService.shared.isEligibleForAgeFeatures
+                let eligibility = try await provider.isEligibleForAgeFeatures()
                 completion(eligibility)
             } catch {
-                DDLogError("Declared Age Range API: Failed to fetch eligibility signals. Error: \(error)")
+                DDLogError("Age Range: Failed to fetch eligibility signals. Error: \(error)")
                 completion(nil)
             }
         }
     }
 }
 
-@available(iOS 26.0, *)
 private extension AgeRangeVerificationService {
-    func requestAgeRangeResponse(
-        minimumAge: Int,
-        viewController: UIViewController
-    ) async throws -> AgeRangeService.Response {
-        return try await AgeRangeService.shared.requestAgeRange(
-            ageGates: minimumAge,
-            in: viewController
-        )
-    }
-
-    func mapResponseToResult(
-        _ response: AgeRangeService.Response,
+    func mapSnapshotToResult(
+        _ snapshot: AgeRangeSnapshot,
         minimumAge: Int
     ) -> AgeRangeVerificationResult {
-        switch response {
-        case let .sharing(range):
-            if let lowerBound = range.lowerBound, lowerBound >= minimumAge {
-                let approvalRequired: Bool = {
-                    if #available(iOS 26.2, *) {
-                        return significantChangeApprovalRequired(from: range)
-                    }
-                    return false
-                }()
-                return .eligible(significantAppChangeApprovalRequired: approvalRequired)
-            }
-            return .ineligible
-        case .declinedSharing:
-            return .declinedSharing
-        @unknown default:
-            return .unknown
+        if let lowerBound = snapshot.lowerBound, lowerBound >= minimumAge {
+            return .eligible(
+                significantAppChangeApprovalRequired: snapshot.significantAppChangeApprovalRequired,
+                isMinor: isMinor(lowerBound: lowerBound)
+            )
         }
-    }
-}
-
-@available(iOS 26.2, *)
-private extension AgeRangeVerificationService {
-    func significantChangeApprovalRequired(from ageRange: AgeRangeService.AgeRange) -> Bool {
-        return ageRange.activeParentalControls.contains(
-            .significantAppChangeApprovalRequired
-        )
-    }
-}
-
-#else
-/// Fallback implementation when the DeclaredAgeRange SDK is unavailable (e.g., older Xcode/SDK).
-final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
-    func verifyAgeRange(
-        in viewController: UIViewController,
-        minimumAge: Int,
-        completion: @escaping (AgeRangeVerificationResult) -> Void
-    ) {
-        completion(.featureUnavailable)
+        return .ineligible
     }
 
-    func fetchIsEligibleForAgeFeatures(completion: @escaping (Bool?) -> Void) {
-        completion(nil)
+    func isMinor(lowerBound: Int?) -> Bool {
+        guard let lowerBound else { return false }
+        return lowerBound < 18
     }
 }
-#endif

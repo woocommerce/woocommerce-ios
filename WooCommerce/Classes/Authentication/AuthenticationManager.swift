@@ -937,6 +937,10 @@ extension UserDefaults {
     @objc dynamic var wpcomSiteSuspended: Bool {
         bool(forKey: Key.wpcomSiteSuspended.rawValue)
     }
+
+    @objc dynamic var wooPushnotificationToken: String? {
+        string(forKey: Key.wooPushnotificationToken.rawValue)
+    }
 }
 
 // MARK: - Help and support helpers

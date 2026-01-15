@@ -437,10 +437,4 @@ public enum AppSettingsAction: Action {
 
     /// Gets whether we should allow cellular data use downloading POS catalogs for a specific site
     case getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void)
-
-    /// Stores the self-driven push token ID (Woo Core push). Passing nil clears it.
-    case setSelfDrivenPushTokenID(siteID: Int64, tokenID: Int64?, onCompletion: ((Result<Void, Error>) -> Void)?)
-
-    /// Loads the stored self-driven push token ID (Woo Core push). Nil means “not registered”.
-    case loadSelfDrivenPushTokenID(siteID: Int64, onCompletion: (Int64?) -> Void)
 }

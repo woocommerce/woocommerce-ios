@@ -541,8 +541,7 @@ private extension DashboardViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        NotificationCenter.default.publisher(for: .selfDrivenPushTokenIDDidPersist)
-            .receive(on: DispatchQueue.main)
+        userDefaults.publisher(for: \.wooPushnotificationToken)
             .sink { [weak self] _ in
                 guard let self else { return }
                 Task { @MainActor in
@@ -814,11 +813,7 @@ private extension DashboardViewModel {
 
     @MainActor
     func updateSelfDrivenPushRegistrationStatus() async {
-        let tokenID: Int64? = await withCheckedContinuation { continuation in
-            stores.dispatch(AppSettingsAction.loadSelfDrivenPushTokenID(siteID: siteID) { tokenID in
-                continuation.resume(returning: tokenID)
-            })
-        }
+        let tokenID: Int64? = userDefaults.value(forKey: UserDefaults.Key.wooPushnotificationToken.rawValue) as? Int64
 
         isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
     }

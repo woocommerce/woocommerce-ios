@@ -106,6 +106,17 @@ final class PushNotificationsManager: PushNotesManager {
         }
     }
 
+    /// Self driven push notificaiton token
+    ///
+    private var wooPushnotificationToken: Int64? {
+        get {
+            return configuration.defaults.object(forKey: .wooPushnotificationToken)
+        }
+        set {
+            configuration.defaults.set(newValue, forKey: .wooPushnotificationToken)
+        }
+    }
+
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
@@ -617,24 +628,10 @@ private extension PushNotificationsManager {
     }
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, siteID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        persistSelfDrivenTokenID(tokenID, siteID: siteID)
+        wooPushnotificationToken = tokenID
         unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
             onCompletion(.success(tokenID))
         })
-    }
-
-    func persistSelfDrivenTokenID(_ tokenID: Int64, siteID: Int64) {
-        let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: tokenID) { result in
-            switch result {
-            case .success:
-                NotificationCenter.default.post(
-                    name: .selfDrivenPushTokenIDDidPersist, object: nil
-                )
-            case .failure(let error):
-                DDLogError("⛔️ Unable to persist self-driven push token ID: \(error)")
-            }
-        }
-        stores.dispatch(setTokenAction)
     }
 
     func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {

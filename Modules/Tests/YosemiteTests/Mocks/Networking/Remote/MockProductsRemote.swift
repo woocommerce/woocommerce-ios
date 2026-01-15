@@ -463,7 +463,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
-                                      pageNumber: Int) async throws -> PagedItems<POSProduct> {
+                                      pageNumber: Int,
+                                      posProductsOnly: Bool?) async throws -> PagedItems<POSProduct> {
         guard let result = posSearchResultsByQuery[query] else {
             throw NetworkError.notFound()
         }
@@ -475,7 +476,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
+    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String, posProductsOnly: Bool?) async throws -> POSProduct {
             return POSProduct.fake().copy(siteID: siteID,
                                           globalUniqueID: globalUniqueID)
     }
@@ -483,7 +484,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,
-                                           perPage: Int) async throws -> PagedItems<POSProduct> {
+                                           perPage: Int,
+                                           posProductsOnly: Bool?) async throws -> PagedItems<POSProduct> {
         lastRequestedPageSize = perPage
         guard let result = posPopularProductsResultsBySiteID[siteID] else {
             throw NetworkError.notFound()
@@ -496,7 +498,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+    func loadPOSProduct(for siteID: Int64, productID: Int64, posProductsOnly: Bool?) async throws -> POSProduct {
         invocationCountOfLoadPOSProduct += 1
         requestedProductIDsForFetchingPOSProduct.append(productID)
 

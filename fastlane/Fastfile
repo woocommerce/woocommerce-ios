@@ -394,7 +394,7 @@ platform :ios do
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
       release_version: options.fetch(:version, release_version_current),
-      commit_changes: false
+      commit_changes: true
     )
   end
 

@@ -82,7 +82,8 @@ public protocol ProductsRemoteProtocol {
 
     func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
-                                    pageNumber: Int) async throws -> PagedItems<POSProduct>
+                                    pageNumber: Int,
+                                    posProductsOnly: Bool?) async throws -> PagedItems<POSProduct>
 
     func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
@@ -107,6 +108,18 @@ extension ProductsRemoteProtocol {
                                pageNumber: ProductsRemote.Default.pageNumber,
                                pageSize: ProductsRemote.Default.pageSize)
     }
+
+    // TODO:Remove when we remove the feature flag.
+    // This extension only exist to provide a default value to the protocols.
+    public func loadProductsForPointOfSale(for siteID: Int64,
+                                           productTypes: [ProductType],
+                                           pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        try await loadProductsForPointOfSale(for: siteID,
+                                             productTypes: productTypes,
+                                             pageNumber: pageNumber,
+                                             posProductsOnly: nil)
+    }
+
 }
 
 /// Product: Remote Endpoints
@@ -221,10 +234,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
-                                           pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
+                                           pageNumber: Int = 1,
+                                           posProductsOnly: Bool? = nil) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
-            productTypes: productTypes)
+            productTypes: productTypes,
+            posProductsOnly: posProductsOnly)
 
         return try await makePagedPointOfSaleProductsRequest(
             for: siteID,
@@ -261,8 +276,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],
                                                    orderBy: OrderKey = .name,
-                                                   order: Order = .ascending) -> [String: any Hashable] {
-        [
+                                                   order: Order = .ascending,
+                                                   posProductsOnly: Bool? = nil) -> [String: any Hashable] {
+        var parameters: [String: any Hashable] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
@@ -274,6 +290,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.downloadable: String(false),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+
+        if let posProductsOnly {
+            parameters[ParameterKey.posProductsOnly] = String(posProductsOnly)
+        }
+
+        return parameters
     }
 
     private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
@@ -306,7 +328,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                              pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         var parameters = pointOfSaleProductFetchParameters(
             pageNumber: pageNumber,
-            productTypes: productTypes)
+            productTypes: productTypes
+        )
 
         parameters.updateValue(query, forKey: ParameterKey.search)
 
@@ -774,6 +797,7 @@ public extension ProductsRemote {
         static let after = "after"
         static let extendedInfo = "extended_info"
         static let downloadable = "downloadable"
+        static let posProductsOnly = "pos_products_only"
     }
 
     private enum ParameterValues {

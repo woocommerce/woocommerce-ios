@@ -603,6 +603,50 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(queryParametersDictionary["page"] as? String, "1")
         XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
     }
+
+    func test_loadVariationsForPointOfSale_excludes_posProductsOnly_when_not_specified() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When - call without posProductsOnly parameter
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                           parentProductID: sampleProductID,
+                                                           pageNumber: 1)
+
+        // Then - parameter should not be present
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertNil(queryParametersDictionary["pos_products_only"])
+    }
+
+    func test_loadVariationsForPointOfSale_includes_posProductsOnly_true_when_enabled() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                           parentProductID: sampleProductID,
+                                                           pageNumber: 1,
+                                                           posProductsOnly: true)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["pos_products_only"] as? String, "true")
+    }
+
+    func test_loadVariationsForPointOfSale_includes_posProductsOnly_false_when_disabled() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                           parentProductID: sampleProductID,
+                                                           pageNumber: 1,
+                                                           posProductsOnly: false)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["pos_products_only"] as? String, "false")
+    }
 }
 
 private extension ProductVariationsRemoteTests {

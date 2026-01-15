@@ -937,12 +937,6 @@ extension UserDefaults {
     @objc dynamic var wpcomSiteSuspended: Bool {
         bool(forKey: Key.wpcomSiteSuspended.rawValue)
     }
-
-    /// Only use this to get notified of the underlying value being changed and not to read the acutal value.
-    /// We need this as Int64? cannot be represented in objc.
-    @objc dynamic var wooPushnotificationTokenChangeNotifier: String? {
-        string(forKey: Key.wooPushnotificationToken.rawValue)
-    }
 }
 
 // MARK: - Help and support helpers

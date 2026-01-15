@@ -6,10 +6,6 @@ import AutomatticTracks
 import Yosemite
 import protocol WooFoundation.Analytics
 
-extension Notification.Name {
-    static let selfDrivenPushTokenIDDidPersist = Notification.Name("selfDrivenPushTokenIDDidPersist")
-}
-
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
@@ -108,7 +104,7 @@ final class PushNotificationsManager: PushNotesManager {
 
     /// Self driven push notificaiton token
     ///
-    private var wooPushnotificationToken: Int64? {
+    private var wooPushnotificationToken: String? {
         get {
             return configuration.defaults.object(forKey: .wooPushnotificationToken)
         }
@@ -616,7 +612,7 @@ private extension PushNotificationsManager {
 
             switch result {
             case .success(let tokenID):
-                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, onCompletion: onCompletion)
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, onCompletion: onCompletion)
 
             case .failure(let error):
                 DDLogError("⛔️ Unable to register self-driven push token: \(error)")
@@ -627,8 +623,9 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, siteID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        wooPushnotificationToken = tokenID
+    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        wooPushnotificationToken = "\(tokenID)"
+        NotificationCenter.default.post(name: .selfDrivenPushTokenPersisted, object: nil)
         unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
             onCompletion(.success(tokenID))
         })
@@ -769,4 +766,8 @@ private extension PushNotificationsManager {
     enum Localization {
         static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
     }
+}
+
+extension Notification.Name {
+    static let selfDrivenPushTokenPersisted = Notification.Name("selfDrivenPushTokenPersisted")
 }

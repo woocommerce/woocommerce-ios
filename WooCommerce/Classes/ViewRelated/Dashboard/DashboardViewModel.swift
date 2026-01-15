@@ -541,12 +541,11 @@ private extension DashboardViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        userDefaults.publisher(for: \.wooPushnotificationTokenChangeNotifier)
+        NotificationCenter.default.publisher(for: .selfDrivenPushTokenPersisted)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                Task { @MainActor in
-                    await self.updateSelfDrivenPushRegistrationStatus()
-                }
+                self.updateSelfDrivenPushRegistrationStatus()
             }
             .store(in: &subscriptions)
     }
@@ -811,10 +810,8 @@ private extension DashboardViewModel {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 
-    @MainActor
-    func updateSelfDrivenPushRegistrationStatus() async {
+    func updateSelfDrivenPushRegistrationStatus() {
         let tokenID: Int64? = userDefaults.value(forKey: UserDefaults.Key.wooPushnotificationToken.rawValue) as? Int64
-
         isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
     }
 }

@@ -12,6 +12,7 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefundItem
 @testable import struct Yosemite.POSRefundsResult
 import class WooFoundation.CurrencySettings
+import class WooFoundation.CurrencyFormatter
 
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
@@ -19,10 +20,12 @@ final class POSOrderListControllerTests {
     private lazy var fetchStrategyFactory = MockPOSOrderListFetchStrategyFactory(orderService: orderListService)
     private lazy var featureFlags = MockFeatureFlagService()
     private lazy var currencySettingsProvider = MockCurrencySettingsProvider()
+    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
                                                    refundsService: refundsService,
                                                    featureFlags: featureFlags,
-                                                   currencySettingsProvider: currencySettingsProvider)
+                                                   currencySettingsProvider: currencySettingsProvider,
+                                                   currencyFormatter: currencyFormatter)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)

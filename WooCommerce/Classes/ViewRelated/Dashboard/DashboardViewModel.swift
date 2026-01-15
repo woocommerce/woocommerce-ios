@@ -541,7 +541,7 @@ private extension DashboardViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        userDefaults.publisher(for: \.wooPushnotificationToken)
+        userDefaults.publisher(for: \.wooPushnotificationTokenChangeNotifier)
             .sink { [weak self] _ in
                 guard let self else { return }
                 Task { @MainActor in

@@ -305,4 +305,115 @@ struct POSCatalogIncrementalSyncServiceTests {
         let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
         #expect(persistedCatalog.products.count == 1)
     }
+
+    // MARK: - Hidden Product Detection Tests (Dual-Request)
+
+    @Test func startIncrementalSync_detects_products_hidden_from_POS_when_posProductsOnly_is_true() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+
+        // Products visible in POS (posProductsOnly=true response)
+        let posProduct1 = POSProduct.fake().copy(productID: 1)
+        let posProduct2 = POSProduct.fake().copy(productID: 2)
+
+        // All products (posProductsOnly=false response) - includes a product hidden from POS
+        let allProduct1 = POSProduct.fake().copy(productID: 1)
+        let allProduct2 = POSProduct.fake().copy(productID: 2)
+        let hiddenProduct = POSProduct.fake().copy(productID: 3) // Hidden from POS
+
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [posProduct1, posProduct2], hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setAllProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [allProduct1, allProduct2, hiddenProduct], hasMorePages: false, totalItems: 3))
+        )
+        mockSyncRemote.setTrashedProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+        mockSyncRemote.setIncrementalVariationResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+
+        // When - Sync with posProductsOnly=true (enables dual-request)
+        try await sut.startIncrementalSync(for: sampleSiteID,
+                                           lastFullSyncDate: lastFullSyncDate,
+                                           lastIncrementalSyncDate: nil,
+                                           posProductsOnly: true)
+
+        // Then - Hidden product ID should be in productsToRemove
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.products.count == 2)
+        #expect(persistedCatalog.productsToRemove.contains(3))
+        #expect(persistedCatalog.productsToRemove.count == 1)
+    }
+
+    @Test func startIncrementalSync_does_not_detect_hidden_products_when_posProductsOnly_is_false() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+        let products = [POSProduct.fake().copy(productID: 1)]
+
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: products, hasMorePages: false, totalItems: 1))
+        )
+        mockSyncRemote.setTrashedProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+        mockSyncRemote.setIncrementalVariationResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+
+        // When - Sync with posProductsOnly=false (single-request, no hidden product detection)
+        try await sut.startIncrementalSync(for: sampleSiteID,
+                                           lastFullSyncDate: lastFullSyncDate,
+                                           lastIncrementalSyncDate: nil,
+                                           posProductsOnly: false)
+
+        // Then - No products should be marked for removal
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.productsToRemove.isEmpty)
+    }
+
+    @Test func startIncrementalSync_handles_no_hidden_products_when_all_products_are_in_POS() async throws {
+        // Given
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+
+        // Same products in both responses, nothing hidden
+        let product1 = POSProduct.fake().copy(productID: 1)
+        let product2 = POSProduct.fake().copy(productID: 2)
+
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [product1, product2], hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setAllProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [product1, product2], hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setTrashedProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+        mockSyncRemote.setIncrementalVariationResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        )
+
+        // When
+        try await sut.startIncrementalSync(for: sampleSiteID,
+                                           lastFullSyncDate: lastFullSyncDate,
+                                           lastIncrementalSyncDate: nil,
+                                           posProductsOnly: true)
+
+        // Then, no products marked for removal
+        let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
+        #expect(persistedCatalog.products.count == 2)
+        #expect(persistedCatalog.productsToRemove.isEmpty)
+    }
 }

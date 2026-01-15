@@ -377,7 +377,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
                 syncType: POSCatalogSyncType.incremental.rawValue,
-                productsSynced: syncedCatalog.products.count,
+                productsSynced: syncedCatalog.products.count + syncedCatalog.productsToRemove.count,
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,

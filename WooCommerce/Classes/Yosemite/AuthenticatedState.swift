@@ -185,13 +185,15 @@ class AuthenticatedState: StoresManagerState {
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
             grdbManager: ServiceLocator.grdbManager
            ) {
+            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
 
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                    posProductsOnlyEnabled: posProductsOnlyEnabled
                 ),
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
@@ -216,7 +218,8 @@ class AuthenticatedState: StoresManagerState {
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
-                connectivityObserver: ServiceLocator.connectivityObserver
+                connectivityObserver: ServiceLocator.connectivityObserver,
+                posProductsOnlyEnabled: posProductsOnlyEnabled
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility

@@ -100,7 +100,10 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         // no-op
     }
 
-    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
+    func loadVariationsForPointOfSale(for siteID: Int64,
+                                      parentProductID: Int64,
+                                      pageNumber: Int,
+                                      posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation> {
         let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])
         guard let result = variationsForPointOfSaleResults[key] else {
             throw NetworkError.notFound()

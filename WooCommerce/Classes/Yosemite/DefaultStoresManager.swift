@@ -508,6 +508,12 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
+    /// Tracks the site connection type for the default site.
+    private func trackSiteConnectionType() {
+        let siteConnectionType = SiteConnectionType(site: sessionManager.defaultSite)
+        ServiceLocator.analytics.track(event: .Dashboard.siteConnectionTypeIdentified(siteConnectionType: siteConnectionType))
+    }
+
     /// Synchronizes the settings for the specified site, if possible.
     ///
     func synchronizeSettings(with siteID: Int64, onCompletion: @escaping () -> Void) {
@@ -800,6 +806,7 @@ private extension DefaultStoresManager {
                                                     isJetpackConnected: info.isJetpackConnected,
                                                     isWordPressComStore: info.isWPCom)
                         self.sessionManager.defaultSite = updatedSite
+                        trackSiteConnectionType()
                         self.updateAndReloadWidgetInformation(with: site.siteID)
                     case .failure(let error):
                         DDLogError("⛔️ Cannot fetch generic site info: \(error)")
@@ -832,6 +839,7 @@ private extension DefaultStoresManager {
                 case .success(let siteAPI):
                     let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                     sessionManager.defaultSite = updatedSite
+                    trackSiteConnectionType()
                     updateAndReloadWidgetInformation(with: siteID)
                 case .failure(let error):
                     DDLogError("⛔️ Cannot trigger root endpoint: \(error)")

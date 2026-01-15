@@ -221,7 +221,11 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleRefundsi1
 
-    /// Enabels self driven push token registration
+    /// Enables self driven push token registration
     ///
     case selfDrivenPushToken
+
+    /// Enables POS-only products filtering
+    ///
+    case pointOfSaleOnlyProducts
 }

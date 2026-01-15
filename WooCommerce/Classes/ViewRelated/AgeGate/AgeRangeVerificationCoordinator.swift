@@ -75,7 +75,9 @@ private extension AgeRangeVerificationCoordinator {
         ) { result in
             let isEligible: Bool
             switch result {
-            case .eligible:
+            case let .eligible(significantAppChangeApprovalRequired, isMinor):
+                // TODO: if isMinor && significantAppChangeApprovalRequired, trigger app age rating change check
+                // and parental consent flow (separate coordinator) before allowing access.
                 isEligible = true
             case .ineligible:
                 isEligible = false

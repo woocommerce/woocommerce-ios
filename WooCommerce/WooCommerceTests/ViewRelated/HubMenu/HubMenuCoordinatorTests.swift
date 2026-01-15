@@ -43,7 +43,16 @@ final class HubMenuCoordinatorTests: XCTestCase {
     func test_when_receiving_a_non_review_notification_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil, meta: nil)
+        let pushNotification = WooCommerce.PushNotification(
+            noteID: 1_234,
+            siteID: 1,
+            kind: .storeOrder,
+            title: "",
+            subtitle: "",
+            message: "",
+            note: nil,
+            meta: nil
+        )
 
         coordinator.activate(siteID: siteID)
 

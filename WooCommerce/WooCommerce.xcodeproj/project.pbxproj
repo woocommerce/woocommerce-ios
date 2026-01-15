@@ -722,6 +722,7 @@
 		20AE33C52B0510BF00527B60 /* PaymentsMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */; };
 		20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C62B0510D200527B60 /* HubMenuDestination.swift */; };
 		20B0D65E2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */; };
+		20B259352F18DB7A006DF96E /* SiteConnectionTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */; };
 		20BBD62C2B3060A300A903F6 /* AddOrderComponentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */; };
 		20BCF6EE2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6ED2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift */; };
 		20BCF6F02B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */; };
@@ -3646,6 +3647,7 @@
 		20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsMenuDestination.swift; sourceTree = "<group>"; };
 		20AE33C62B0510D200527B60 /* HubMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuDestination.swift; sourceTree = "<group>"; };
 		20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
+		20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteConnectionTypeTests.swift; sourceTree = "<group>"; };
 		20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderComponentsSection.swift; sourceTree = "<group>"; };
 		20BCF6ED2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModel.swift; sourceTree = "<group>"; };
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -7352,6 +7354,14 @@
 			path = Destinations;
 			sourceTree = "<group>";
 		};
+		20B259342F18DB7A006DF96E /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
 		20BBD62A2B30608200A903F6 /* AddOrderComponentsSection */ = {
 			isa = PBXGroup;
 			children = (
@@ -9681,6 +9691,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				20B259342F18DB7A006DF96E /* Analytics */,
 				6489D8522EA667AC00D96802 /* Routing */,
 				DEB387962C2E80060025256E /* GoogleAds */,
 				DABF35242C11B40C006AF826 /* POS */,
@@ -16088,6 +16099,7 @@
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */,
 				DEA64C552E41A2D000791018 /* Product+Helpers.swift in Sources */,
+				20B259352F18DB7A006DF96E /* SiteConnectionTypeTests.swift in Sources */,
 				DEFE1B242DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
 				EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */,

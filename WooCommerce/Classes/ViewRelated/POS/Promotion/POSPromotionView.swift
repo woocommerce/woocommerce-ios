@@ -7,11 +7,17 @@ struct POSPromotionView: View {
     @Binding var isPresented: Bool
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .body) private var descriptionPagesHeight: CGFloat = Layout.baseDescriptionPagesHeight
+    @ScaledMetric(relativeTo: .body) private var scaledDescriptionPagesHeight: CGFloat = Layout.baseDescriptionPagesHeight
+    @ScaledMetric(relativeTo: .body) private var scaledCompactDescriptionPagesHeight: CGFloat = Layout.baseCompactDescriptionPagesHeight
 
     /// Whether to show the decorative image
     private var showImage: Bool {
         verticalSizeClass != .compact && !dynamicTypeSize.isAccessibilitySize
+    }
+
+    /// Height for the description pages, smaller in landscape due to wider text area
+    private var descriptionPagesHeight: CGFloat {
+        verticalSizeClass == .compact ? scaledCompactDescriptionPagesHeight : scaledDescriptionPagesHeight
     }
 
     var body: some View {
@@ -116,6 +122,7 @@ private enum Layout {
     static let modalPadding = EdgeInsets(top: .zero, leading: 16, bottom: 16, trailing: 16)
     static let titleNoImagePadding = EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 64)
     static let baseDescriptionPagesHeight: CGFloat = 96
+    static let baseCompactDescriptionPagesHeight: CGFloat = 48
 }
 
 // MARK: - UIKit Wrapper

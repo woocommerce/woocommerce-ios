@@ -1,4 +1,5 @@
 import Foundation
+import struct NetworkingCore.JetpackConnectionProvisionMapper
 
 /// Handle API requests to the Jetpack REST API.
 ///
@@ -136,15 +137,6 @@ extension JetpackConnectionRemote: URLSessionDataDelegate {
         }
         return request
     }
-}
-
-/// periphery: ignore - used in test module and on the UI layer
-public enum JetpackConnectionError: Error, Equatable {
-    case malformedURL
-    case accountConnectionURLNotFound
-    case invalidAuthorizationURL
-    case alreadyConnected
-    case connectionRequestFailed(message: String)
 }
 
 private extension JetpackConnectionRemote {

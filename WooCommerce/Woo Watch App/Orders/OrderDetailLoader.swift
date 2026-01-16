@@ -79,7 +79,7 @@ final class OrderDetailLoaderViewModel: ObservableObject {
     func fetchOrder() async {
         self.viewState = .loading
         do {
-            let (_, remoteOrder) = try await dataService.loadOrderFrom(notification: pushNotification)
+            let remoteOrder = try await dataService.loadOrderFrom(notification: pushNotification)
             let viewOrders = OrdersListViewModel.viewOrders(from: [remoteOrder], currencySettings: dependencies.currencySettings)
 
             // Should always succeed.

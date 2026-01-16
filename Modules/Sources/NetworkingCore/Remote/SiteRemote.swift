@@ -335,10 +335,10 @@ private struct BlazeStatusResponse: Decodable {
 }
 
 extension SiteRemote {
-    enum SiteParameter {
-        enum Fields {
-            static let key = "fields"
-            static let value = [
+    public enum SiteParameter {
+        public enum Fields {
+            public static let key = "fields"
+            public static let value = [
                 "ID",
                 "name",
                 "description",
@@ -355,9 +355,9 @@ extension SiteRemote {
                 "garden_partner"
             ].joined(separator: ",")
         }
-        enum Options {
-            static let key = "options"
-            static let value = [
+        public enum Options {
+            public static let key = "options"
+            public static let value = [
                 "timezone",
                 "is_wpcom_store",
                 "woocommerce_is_active",
@@ -418,4 +418,12 @@ private extension SiteRemote {
         static let redirectURI = "redirect_uri"
         static let scope = "scope"
     }
+}
+
+public enum JetpackConnectionError: Error, Equatable {
+    case malformedURL
+    case accountConnectionURLNotFound
+    case invalidAuthorizationURL
+    case alreadyConnected
+    case connectionRequestFailed(message: String)
 }

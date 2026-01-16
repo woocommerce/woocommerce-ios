@@ -106,10 +106,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let analytics: Analytics
 
-    /// Cached self-driven push token ID loaded from AppSettings (per site).
-    /// This keeps `configureSections()` synchronous while still reacting to persistence changes.
-    private var cachedSelfDrivenPushTokenID: Int64?
-
     /// Reference to the Zendesk shared instance
     ///
     private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
@@ -194,22 +190,22 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 private extension SettingsViewModel {
 
     func loadSelfDrivenPushTokenIDIfNeeded() {
-        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
-            cachedSelfDrivenPushTokenID = nil
-            return
-        }
-
-        stores.dispatch(AppSettingsAction.loadSelfDrivenPushTokenID(siteID: siteID) { [weak self] tokenID in
-            guard let self else { return }
-
-            // Only refresh UI when the stored value actually changes.
-            guard self.cachedSelfDrivenPushTokenID != tokenID else {
-                return
-            }
-
-            self.cachedSelfDrivenPushTokenID = tokenID
-            self.reloadSettings()
-        })
+//        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+//            cachedSelfDrivenPushTokenID = nil
+//            return
+//        }
+//
+//        stores.dispatch(AppSettingsAction.loadSelfDrivenPushTokenID(siteID: siteID) { [weak self] tokenID in
+//            guard let self else { return }
+//
+//            // Only refresh UI when the stored value actually changes.
+//            guard self.cachedSelfDrivenPushTokenID != tokenID else {
+//                return
+//            }
+//
+//            self.cachedSelfDrivenPushTokenID = tokenID
+//            self.reloadSettings()
+//        })
     }
 
     func loadWhatsNewOnWooCommerce() {
@@ -314,7 +310,9 @@ private extension SettingsViewModel {
                 return site.isJetpackCPConnected == false
             }()
             let isSelfDrivenPushNotificationsRegistered: Bool = {
-                (cachedSelfDrivenPushTokenID != nil) && !stores.isAuthenticatedWithoutWPCom
+                let isWooTokenExists = defaults.wooPushnotificationToken != nil
+                let WPComTokenExists = defaults.deviceToken != nil
+                return (isWooTokenExists && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) && !WPComTokenExists
             }()
             if (notificationAvailable && featureFlagService.isFeatureFlagEnabled(.notificationSettings)) && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]

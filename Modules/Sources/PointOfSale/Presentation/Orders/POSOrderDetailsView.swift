@@ -1,5 +1,5 @@
 import SwiftUI
-import WooFoundation
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund

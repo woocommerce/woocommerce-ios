@@ -373,6 +373,11 @@ public enum WooAnalyticsStat: String {
     case tapToPayEducationDone = "tap_to_pay_education_done"
     case tapToPayEducationSkipped = "tap_to_pay_education_skipped"
 
+    // MARK: POS Promotion Modal
+    case posPromotionModalShown = "pos_promotion_modal_shown"
+    case posPromotionModalDismissed = "pos_promotion_modal_dismissed"
+    case posPromotionModalCTATapped = "pos_promotion_modal_cta_tapped"
+
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
     case enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"

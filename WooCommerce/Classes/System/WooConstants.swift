@@ -331,6 +331,10 @@ extension WooConstants {
         case customFieldsOrderLearnMore = "https://woocommerce.com/document/managing-orders/view-edit-or-add-an-order/#custom-fields"
         case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-35"
 
+        /// URL for POS promotion "Learn More" page
+        ///
+        case posLearnMore = "https://woocommerce.com/mobile/pos/learn-more"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

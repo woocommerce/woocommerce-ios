@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 import WordPressUI
@@ -715,9 +716,17 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case is POSPromotionDestination:
+            presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentPOSPromotionModal() {
+        let viewModel = POSPromotionViewModel()
+        let hostingController = UIHostingController(rootView: POSPromotionView(viewModel: viewModel))
+        present(hostingController, animated: true)
     }
 }
 

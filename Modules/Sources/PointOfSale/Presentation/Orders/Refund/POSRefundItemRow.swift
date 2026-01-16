@@ -137,7 +137,8 @@ private extension POSRefundItemRow {
                 originalQuantity: 1,
                 formattedPrice: "$14.99",
                 attributes: [],
-                isSelected: true
+                isSelected: true,
+                index: 0
             ),
             onToggle: {}
         )
@@ -154,7 +155,8 @@ private extension POSRefundItemRow {
                 originalQuantity: 1,
                 formattedPrice: "$9.99",
                 attributes: [],
-                isSelected: false
+                isSelected: false,
+                index: 0
             ),
             onToggle: {}
         )

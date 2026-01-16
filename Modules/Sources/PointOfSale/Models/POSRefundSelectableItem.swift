@@ -40,7 +40,7 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
 
     /// Creates a selectable item from a POSOrderItem.
     /// Stores the original totalTax and quantity for accurate refund calculations.
-    init(from orderItem: POSOrderItem, isSelected: Bool, index: Int = 0) {
+    init(from orderItem: POSOrderItem, isSelected: Bool, index: Int) {
         self.itemID = orderItem.itemID
         self.name = orderItem.name
         self.imageSrc = orderItem.imageSrc

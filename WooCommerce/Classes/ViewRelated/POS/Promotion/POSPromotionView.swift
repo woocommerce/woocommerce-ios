@@ -3,7 +3,7 @@ import SwiftUI
 /// The content view for the POS Promotion modal, explaining POS benefits.
 ///
 struct POSPromotionView: View {
-    @ObservedObject var viewModel: POSPromotionViewModel
+    @Bindable var viewModel: POSPromotionViewModel
     @Binding var isPresented: Bool
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -132,13 +132,13 @@ private enum Layout {
 ///
 struct POSPromotionModal_UIKit: View {
     @State var isPresented: Bool = true
-    @StateObject private var viewModel: POSPromotionViewModel
+    @State private var viewModel: POSPromotionViewModel
     let onDismiss: (() -> Void)?
 
     init(onDismiss: (() -> Void)? = nil,
          onShowWebView: @escaping (WebViewSheetViewModel) -> Void = { _ in }) {
         self.onDismiss = onDismiss
-        self._viewModel = StateObject(wrappedValue: POSPromotionViewModel(onShowWebView: onShowWebView))
+        self._viewModel = State(wrappedValue: POSPromotionViewModel(onShowWebView: onShowWebView))
     }
 
     var body: some View {

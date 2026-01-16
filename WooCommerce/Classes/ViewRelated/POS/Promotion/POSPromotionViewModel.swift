@@ -1,5 +1,5 @@
-import Combine
 import Foundation
+import Observation
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooCommerceComUTMProvider
 import protocol Yosemite.StoresManager
@@ -7,15 +7,21 @@ import protocol Yosemite.StoresManager
 /// View model for the POS Promotion modal flow.
 ///
 @MainActor
-final class POSPromotionViewModel: ObservableObject {
+@Observable
+final class POSPromotionViewModel {
     /// The currently selected step index (0-indexed).
-    @Published var selectedStep = 0
+    var selectedStep = 0 {
+        didSet {
+            guard selectedStep != oldValue else { return }
+            trackSlideViewed()
+        }
+    }
 
     /// The step descriptions to display in the modal.
-    @Published private(set) var stepDescriptions: [String]
+    private(set) var stepDescriptions: [String]
 
     /// When set to true, the modal should dismiss.
-    @Published var dismiss: Bool = false
+    var dismiss: Bool = false
 
     /// The total number of steps.
     var totalSteps: Int { stepDescriptions.count }
@@ -40,7 +46,6 @@ final class POSPromotionViewModel: ObservableObject {
     private let stores: StoresManager
     private let onDismiss: () -> Void
     private let onShowWebView: (WebViewSheetViewModel) -> Void
-    private var cancellables: Set<AnyCancellable> = []
 
     init(stepDescriptions: [String]? = nil,
          imageName: String = "pos-promotion-header",
@@ -56,18 +61,6 @@ final class POSPromotionViewModel: ObservableObject {
         self.stores = stores
         self.onDismiss = onDismiss
         self.onShowWebView = onShowWebView
-
-        observeSelectedStep()
-    }
-
-    private func observeSelectedStep() {
-        $selectedStep
-            .dropFirst() // Skip initial value (handled in onAppear)
-            .removeDuplicates()
-            .sink { [weak self] step in
-                self?.trackSlideViewed(step: step)
-            }
-            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -123,9 +116,8 @@ final class POSPromotionViewModel: ObservableObject {
 
     // MARK: - Analytics
 
-    private func trackSlideViewed(step: Int? = nil) {
-        let stepToTrack = step ?? selectedStep
-        analytics.track(.posPromoModalSlideViewed, withProperties: ["slide_index": stepToTrack])
+    private func trackSlideViewed() {
+        analytics.track(.posPromoModalSlideViewed, withProperties: ["slide_index": selectedStep])
     }
 }
 

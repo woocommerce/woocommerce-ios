@@ -25,12 +25,6 @@ final class OrderNotificationViewModel {
             throw Error.unsupportedNotification
         }
 
-        /// Error of we can't find `note_id` in the user info object
-        ///
-        guard let noteID = notification.request.content.userInfo["note_id"] as? Int64 else {
-            throw Error.unavailableNote
-        }
-
         /// Error if there are no valid credentials.
         ///
         guard let credentials = Self.fetchCredentials() else {
@@ -40,8 +34,9 @@ final class OrderNotificationViewModel {
         let dataService = OrderNotificationDataService(credentials: credentials)
         if let notificationData = PushNotification.from(userInfo: notification.request.content.userInfo) {
             return try await dataService.loadOrderFrom(notification: notificationData)
+        } else {
+            throw Error.unsupportedNotification
         }
-        return try await dataService.loadOrderFrom(noteID: noteID)
     }
 
     /// Formats the information from the provided `Note` and `Order` to build a  `OrderNotificationView.Content` object.

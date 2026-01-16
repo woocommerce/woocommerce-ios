@@ -47,52 +47,6 @@ final class OrderNotificationDataService {
         return (nil, order)
     }
 
-    /// Loads the order associated with the given note id if possible.
-    ///
-    @MainActor
-    func loadOrderFrom(noteID: Int64) async throws -> (Note, Order) {
-        let note = try await loadNotification(noteID: noteID)
-        let order = try await loadOrder(from: note)
-        return (note, order)
-    }
-
-    /// Loads a Note object from a remote source.
-    ///
-    @MainActor
-    private func loadNotification(noteID: Int64) async throws -> Note {
-        return try await withCheckedThrowingContinuation { continuation in
-            notesRemote.loadNotes(noteIDs: [noteID]) { result in
-                switch result {
-                case .success(let notes):
-                    if let note = notes.first {
-                        continuation.resume(returning: note)
-                    } else {
-                        continuation.resume(throwing: Error.unavailableNote)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
-    /// Loads an Order object from a given Note object.
-    ///
-    @MainActor
-    private func loadOrder(from notification: Note) async throws -> Order {
-
-        /// Notification must contain order and site ID.
-        ///
-        guard let siteID = notification.meta.identifier(forKey: .site),
-              let orderID = notification.meta.identifier(forKey: .order) else {
-            throw Error.unsupportedNotification
-        }
-
-        /// Load notification from a remote source.
-        ///
-        return try await loadOrder(siteID: siteID, orderID: orderID)
-    }
-
     @MainActor
     private func loadOrder(siteID: Int, orderID: Int) async throws -> Order {
         try await withCheckedThrowingContinuation { continuation in

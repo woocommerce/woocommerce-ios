@@ -62,6 +62,7 @@ enum RefundActionAvailability {
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
     private let currencySettingsProvider: POSCurrencySettingsProviding
+    private let currencyFormatter: CurrencyFormatter
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -71,14 +72,11 @@ enum RefundActionAvailability {
          return tracker
     }
 
-    private var currencyFormatter: CurrencyFormatter {
-        CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
-    }
-
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
          featureFlags: POSFeatureFlagProviding,
          currencySettingsProvider: POSCurrencySettingsProviding,
+         currencyFormatter: CurrencyFormatter,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
@@ -86,6 +84,7 @@ enum RefundActionAvailability {
         self.refundsService = refundsService
         self.featureFlags = featureFlags
         self.currencySettingsProvider = currencySettingsProvider
+        self.currencyFormatter = currencyFormatter
     }
 
     @MainActor
@@ -343,9 +342,11 @@ enum RefundActionAvailability {
 
         let refundTotal = itemsSubtotal + itemsTax
 
-        let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal) ?? "$0.00"
-        let formattedTax = currencyFormatter.formatAmount(itemsTax) ?? "$0.00"
-        let formattedTotal = currencyFormatter.formatAmount(refundTotal) ?? "$0.00"
+        guard let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal),
+              let formattedTax = currencyFormatter.formatAmount(itemsTax),
+              let formattedTotal = currencyFormatter.formatAmount(refundTotal) else {
+            return nil
+        }
 
         let paymentMethodDescription = createPaymentMethodDescription(for: order)
 

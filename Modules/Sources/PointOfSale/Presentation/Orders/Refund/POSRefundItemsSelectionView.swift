@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct POSRefundItemsSelectionView: View {
-    @Binding var isPresented: Bool
+    let onClose: () -> Void
+    let onContinue: () -> Void
+
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
-    let onContinue: () -> Void
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -53,7 +54,7 @@ private extension POSRefundItemsSelectionView {
                 .lineLimit(1)
             Spacer()
             Button {
-                isPresented = false
+                onClose()
             } label: {
                 Text(Image(systemName: "xmark"))
                     .font(.posButtonSymbolLarge)
@@ -168,7 +169,7 @@ private extension POSRefundItemsSelectionView {
 #if DEBUG
 #Preview("POSRefundItemsSelectionView") {
     POSRefundItemsSelectionView(
-        isPresented: .constant(true),
+        onClose: { },
         onContinue: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))

@@ -5,6 +5,12 @@ import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderItemAttribute
 import struct NetworkingCore.OrderRefundCondensed
 
+enum POSOrderItemMappingError: Error {
+    case invalidTaxValue(itemID: Int64, value: String)
+    case priceFormattingFailed(itemID: Int64, price: NSDecimalNumber, currency: String)
+    case totalFormattingFailed(itemID: Int64, total: String, currency: String)
+}
+
 struct POSOrderMapper {
     private let currencyFormatter: CurrencyFormatter
 
@@ -12,10 +18,10 @@ struct POSOrderMapper {
         self.currencyFormatter = currencyFormatter
     }
 
-    func map(order: NetworkingCore.Order) -> POSOrder {
+    func map(order: NetworkingCore.Order) throws -> POSOrder {
         let customerEmail = order.billingAddress?.email
 
-        let posLineItems = order.items.map { map(orderItem: $0, currency: order.currency) }
+        let posLineItems = try order.items.map { try map(orderItem: $0, currency: order.currency) }
 
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
 
@@ -58,16 +64,25 @@ struct POSOrderMapper {
         )
     }
 
-    private func map(orderItem: NetworkingCore.OrderItem, currency: String) -> POSOrderItem {
-        let totalTax = Decimal(string: orderItem.totalTax) ?? Decimal.zero
+    private func map(orderItem: NetworkingCore.OrderItem, currency: String) throws -> POSOrderItem {
+        guard let totalTax = Decimal(string: orderItem.totalTax) else {
+            throw POSOrderItemMappingError.invalidTaxValue(itemID: orderItem.itemID, value: orderItem.totalTax)
+        }
+        guard let formattedPrice = currencyFormatter.formatAmount(orderItem.price, with: currency) else {
+            throw POSOrderItemMappingError.priceFormattingFailed(itemID: orderItem.itemID, price: orderItem.price, currency: currency)
+        }
+        guard let formattedTotal = currencyFormatter.formatAmount(orderItem.total, with: currency) else {
+            throw POSOrderItemMappingError.totalFormattingFailed(itemID: orderItem.itemID, total: orderItem.total, currency: currency)
+        }
+
         return POSOrderItem(
             itemID: orderItem.itemID,
             name: orderItem.name,
             quantity: orderItem.quantity,
             price: orderItem.price as Decimal,
             totalTax: totalTax,
-            formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",
-            formattedTotal: currencyFormatter.formatAmount(orderItem.total, with: currency) ?? "",
+            formattedPrice: formattedPrice,
+            formattedTotal: formattedTotal,
             imageSrc: orderItem.image?.src,
             attributes: orderItem.attributes
         )

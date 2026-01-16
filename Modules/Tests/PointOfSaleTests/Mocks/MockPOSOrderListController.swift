@@ -41,7 +41,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     func startRefundFlow() {
         guard let order = selectedOrder else { return }
         refundSelectableItems = order.lineItems.map {
-            POSRefundSelectableItem(from: $0, isSelected: true)
+            POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
         }
     }
 

@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct POSRefundReviewView: View {
-    @Binding var isPresented: Bool
-    @Environment(\.posModalParentSize) private var parentSize
-
+    let onClose: () -> Void
     let itemsCount: Int
     let formattedItemsSubtotal: String
     let formattedTax: String
@@ -13,6 +11,8 @@ struct POSRefundReviewView: View {
     let onAddReason: () -> Void
     let onContinue: () -> Void
     let onEditRefund: () -> Void
+
+    @Environment(\.posModalParentSize) private var parentSize
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -37,7 +37,7 @@ private extension POSRefundReviewView {
                 .lineLimit(1)
             Spacer()
             Button {
-                isPresented = false
+                onClose()
             } label: {
                 Text(Image(systemName: "xmark"))
                     .font(.posButtonSymbolLarge)
@@ -214,7 +214,7 @@ private extension POSRefundReviewView {
 #if DEBUG
 #Preview("POSRefundReviewView") {
     POSRefundReviewView(
-        isPresented: .constant(true),
+        onClose: { },
         itemsCount: 6,
         formattedItemsSubtotal: "$110.50",
         formattedTax: "$22.10",
@@ -230,7 +230,7 @@ private extension POSRefundReviewView {
 
 #Preview("POSRefundReviewView with reason") {
     POSRefundReviewView(
-        isPresented: .constant(true),
+        onClose: { },
         itemsCount: 3,
         formattedItemsSubtotal: "$45.00",
         formattedTax: "$4.50",

@@ -518,20 +518,12 @@ private extension POSOrderDetailsView {
         switch state {
         case .itemSelection:
             POSRefundItemsSelectionView(
-                isPresented: Binding(
-                    get: { refundModalState != nil },
-                    set: { if !$0 { refundModalState = nil } }
-                ),
-                onContinue: {
-                    navigateToRefundReview()
-                }
+                onClose: { refundModalState = nil },
+                onContinue: { navigateToRefundReview() }
             )
         case .review(let reviewData):
             POSRefundReviewView(
-                isPresented: Binding(
-                    get: { refundModalState != nil },
-                    set: { if !$0 { refundModalState = nil } }
-                ),
+                onClose: { refundModalState = nil },
                 itemsCount: reviewData.itemsCount,
                 formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
                 formattedTax: reviewData.formattedTax,

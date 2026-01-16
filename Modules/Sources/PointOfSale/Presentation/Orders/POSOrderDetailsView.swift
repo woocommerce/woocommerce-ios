@@ -501,11 +501,13 @@ private extension POSOrderDetailsView {
 enum RefundModalState: Identifiable, Equatable {
     case itemSelection
     case review(POSRefundReviewData)
+    case reasonInput(POSRefundReviewData)
 
     var id: String {
         switch self {
         case .itemSelection: return "itemSelection"
         case .review: return "review"
+        case .reasonInput: return "reasonInput"
         }
     }
 }
@@ -531,7 +533,7 @@ private extension POSOrderDetailsView {
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 refundReason: reviewData.refundReason,
                 onAddReason: {
-                    // TODO: Show reason input modal
+                    refundModalState = .reasonInput(reviewData)
                 },
                 onContinue: {
                     // TODO: Process refund
@@ -539,6 +541,21 @@ private extension POSOrderDetailsView {
                 },
                 onEditRefund: {
                     refundModalState = .itemSelection
+                }
+            )
+        case .reasonInput(let reviewData):
+            POSRefundReasonView(
+                initialReason: reviewData.refundReason,
+                onSave: { reason in
+                    var updatedReviewData = reviewData
+                    updatedReviewData.refundReason = reason
+                    refundModalState = .review(updatedReviewData)
+                },
+                onBack: {
+                    refundModalState = .review(reviewData)
+                },
+                onClose: {
+                    refundModalState = nil
                 }
             )
         }

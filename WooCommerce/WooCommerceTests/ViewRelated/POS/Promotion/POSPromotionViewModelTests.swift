@@ -1,21 +1,29 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 @MainActor
 final class POSPromotionViewModelTests: XCTestCase {
 
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var sessionManager: SessionManager!
+    private var stores: MockStoresManager!
 
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        sessionManager = SessionManager.testingInstance
+        sessionManager.defaultStoreID = 123
+        stores = MockStoresManager(sessionManager: sessionManager)
     }
 
     override func tearDown() {
         analytics = nil
         analyticsProvider = nil
+        stores = nil
+        sessionManager = nil
         super.tearDown()
     }
 
@@ -67,25 +75,27 @@ final class POSPromotionViewModelTests: XCTestCase {
         XCTAssertEqual(sut.selectedStep, 1)
     }
 
-    func test_primaryActionTapped_opens_URL_and_dismisses_when_on_final_step() {
+    func test_primaryActionTapped_calls_onShowWebView_and_dismisses_when_on_final_step() {
         // Given
-        var openedURL: URL?
-        let urlOpener = MockURLOpener { url in
-            openedURL = url
-        }
-        let sut = makeSUT(urlOpener: urlOpener)
+        var receivedWebViewModel: WebViewSheetViewModel?
+        let sut = makeSUT(onShowWebView: { webViewModel in
+            receivedWebViewModel = webViewModel
+        })
 
         // Navigate to final step
         for _ in 0..<4 {
             sut.primaryActionTapped()
         }
         XCTAssertTrue(sut.isOnFinalStep)
+        XCTAssertNil(receivedWebViewModel)
 
         // When
         sut.primaryActionTapped()
 
         // Then
-        XCTAssertEqual(openedURL, WooConstants.URLs.posLearnMore.asURL())
+        XCTAssertNotNil(receivedWebViewModel)
+        XCTAssertTrue(receivedWebViewModel?.url.absoluteString.contains(WooConstants.URLs.posLearnMore.rawValue) == true)
+        XCTAssertTrue(receivedWebViewModel?.url.absoluteString.contains("utm_") == true)
         XCTAssertTrue(sut.dismiss)
     }
 
@@ -173,12 +183,13 @@ final class POSPromotionViewModelTests: XCTestCase {
 // MARK: - Helpers
 
 private extension POSPromotionViewModelTests {
-    func makeSUT(urlOpener: URLOpener = MockURLOpener(open: { _ in }),
-                 onDismiss: @escaping () -> Void = {}) -> POSPromotionViewModel {
+    func makeSUT(onDismiss: @escaping () -> Void = {},
+                 onShowWebView: @escaping (WebViewSheetViewModel) -> Void = { _ in }) -> POSPromotionViewModel {
         POSPromotionViewModel(
             analytics: analytics,
-            urlOpener: urlOpener,
-            onDismiss: onDismiss
+            stores: stores,
+            onDismiss: onDismiss,
+            onShowWebView: onShowWebView
         )
     }
 }

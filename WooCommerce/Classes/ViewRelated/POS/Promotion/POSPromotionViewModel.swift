@@ -1,5 +1,7 @@
 import Foundation
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooCommerceComUTMProvider
+import protocol Yosemite.StoresManager
 
 /// View model for the POS Promotion modal flow.
 ///
@@ -34,21 +36,24 @@ final class POSPromotionViewModel: ObservableObject {
     }
 
     private let analytics: Analytics
-    private let urlOpener: URLOpener
+    private let stores: StoresManager
     private let onDismiss: () -> Void
+    private let onShowWebView: (WebViewSheetViewModel) -> Void
 
     init(stepDescriptions: [String]? = nil,
          imageName: String = "pos-promotion-header",
          title: String = Localization.title,
          analytics: Analytics = ServiceLocator.analytics,
-         urlOpener: URLOpener = ApplicationURLOpener(),
-         onDismiss: @escaping () -> Void = {}) {
+         stores: StoresManager = ServiceLocator.stores,
+         onDismiss: @escaping () -> Void = {},
+         onShowWebView: @escaping (WebViewSheetViewModel) -> Void = { _ in }) {
         self.stepDescriptions = stepDescriptions ?? POSPromotionStepsFactory.stepDescriptions()
         self.imageName = imageName
         self.title = title
         self.analytics = analytics
-        self.urlOpener = urlOpener
+        self.stores = stores
         self.onDismiss = onDismiss
+        self.onShowWebView = onShowWebView
     }
 
     // MARK: - Actions
@@ -57,11 +62,30 @@ final class POSPromotionViewModel: ObservableObject {
     func primaryActionTapped() {
         if isOnFinalStep {
             analytics.track(.posPromotionModalCTATapped)
-            urlOpener.open(WooConstants.URLs.posLearnMore.asURL())
+            showWebView()
             dismiss = true
         } else {
             selectedStep += 1
         }
+    }
+
+    private func showWebView() {
+        let siteID = stores.sessionManager.defaultStoreID
+        let utmProvider = WooCommerceComUTMProvider(
+            campaign: "pos_promotion_modal",
+            source: "my_store",
+            content: "pos_promotion_cta",
+            siteID: siteID
+        )
+        guard let url = utmProvider.urlWithUtmParams(string: WooConstants.URLs.posLearnMore.rawValue) else {
+            return
+        }
+        let webViewModel = WebViewSheetViewModel(
+            url: url,
+            navigationTitle: Localization.explorePOS,
+            authenticated: true
+        )
+        onShowWebView(webViewModel)
     }
 
     /// Called when the close button is tapped.

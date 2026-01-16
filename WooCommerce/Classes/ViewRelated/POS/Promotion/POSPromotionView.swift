@@ -135,9 +135,10 @@ struct POSPromotionModal_UIKit: View {
     @StateObject private var viewModel: POSPromotionViewModel
     let onDismiss: (() -> Void)?
 
-    init(onDismiss: (() -> Void)? = nil) {
+    init(onDismiss: (() -> Void)? = nil,
+         onShowWebView: @escaping (WebViewSheetViewModel) -> Void = { _ in }) {
         self.onDismiss = onDismiss
-        self._viewModel = StateObject(wrappedValue: POSPromotionViewModel())
+        self._viewModel = StateObject(wrappedValue: POSPromotionViewModel(onShowWebView: onShowWebView))
     }
 
     var body: some View {

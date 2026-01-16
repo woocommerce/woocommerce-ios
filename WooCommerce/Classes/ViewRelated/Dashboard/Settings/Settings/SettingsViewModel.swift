@@ -157,7 +157,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadPaymentGatewayAccounts()
         loadWhatsNewOnWooCommerce()
         loadSites()
-        loadSelfDrivenPushTokenIDIfNeeded()
         reloadSettings()
     }
 
@@ -166,7 +165,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
-        loadSelfDrivenPushTokenIDIfNeeded()
         reloadSettings()
     }
 
@@ -188,26 +186,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 }
 
 private extension SettingsViewModel {
-
-    func loadSelfDrivenPushTokenIDIfNeeded() {
-//        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
-//            cachedSelfDrivenPushTokenID = nil
-//            return
-//        }
-//
-//        stores.dispatch(AppSettingsAction.loadSelfDrivenPushTokenID(siteID: siteID) { [weak self] tokenID in
-//            guard let self else { return }
-//
-//            // Only refresh UI when the stored value actually changes.
-//            guard self.cachedSelfDrivenPushTokenID != tokenID else {
-//                return
-//            }
-//
-//            self.cachedSelfDrivenPushTokenID = tokenID
-//            self.reloadSettings()
-//        })
-    }
-
+    
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }

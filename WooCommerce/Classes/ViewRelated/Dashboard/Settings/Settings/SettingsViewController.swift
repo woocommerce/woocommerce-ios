@@ -530,6 +530,7 @@ private extension SettingsViewController {
     @objc func didInvokeHiddenSettings(_ sender: UITapGestureRecognizer? = nil) {
         let hiddenSettingsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         hiddenSettingsMenu.addAction(resetPrivacyChoicesAction)
+        hiddenSettingsMenu.addAction(featureOverrideAction)
         hiddenSettingsMenu.addAction(crashDebugMenuCrashAction)
         hiddenSettingsMenu.addAction(crashDebugMenuCancelAction)
 
@@ -553,8 +554,21 @@ private extension SettingsViewController {
         }
     }
 
+    var featureOverrideAction: UIAlertAction {
+        return UIAlertAction(title: "Override Feature Flag", style: .default) { [weak self] _ in
+            guard let self else { return }
+
+            let hostingController = UIHostingController(rootView: OverrideFeatureFlagsView())
+            navigationController?.pushViewController(hostingController, animated: true)
+        }
+    }
+
     var crashDebugMenuCancelAction: UIAlertAction {
         return UIAlertAction(title: Localization.HiddenSettingsMenu.cancel, style: .cancel, handler: nil)
+    }
+
+    @objc func dismissPresentedController() {
+        dismiss(animated: true)
     }
 }
 

@@ -31,11 +31,16 @@ final class ServiceLocator {
 
     /// FeatureFlagService
     ///
-    private static var _featureFlagService: FeatureFlagService =
-        OverridableFeatureFlagService(
-            base: DefaultFeatureFlagService(),
-            overrides: _featureFlagOverrideStore
-        )
+    private static var _featureFlagService: FeatureFlagService = {
+        if BuildConfiguration.current == .appStore {
+            return DefaultFeatureFlagService()
+        } else {
+            return OverridableFeatureFlagService(
+                base: DefaultFeatureFlagService(),
+                overrides: _featureFlagOverrideStore
+            )
+        }
+    }()
 
     /// ImageService
     ///
@@ -132,13 +137,14 @@ final class ServiceLocator {
         return _analytics
     }
 
+    /// Provides the access point to the store for overriding FFs.
+    /// - Returns: An implementation of the FeatureFlagOverrideStore protocol. It defaults to UserDefaultsFeatureFlagOverrideStore
     static var featureFlagOverrideStore: FeatureFlagOverrideStore {
         return _featureFlagOverrideStore
     }
 
-
     /// Provides the access point to the feature flag service.
-    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to DefaultFeatureFlagService
+    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to OverridableFeatureFlagService
     static var featureFlagService: FeatureFlagService {
         return _featureFlagService
     }

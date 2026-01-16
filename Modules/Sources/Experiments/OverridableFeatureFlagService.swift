@@ -10,6 +10,8 @@ public struct OverridableFeatureFlagService: FeatureFlagService {
     }
 
     public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
+        // This is just double proofing ourself not to use the
+        // override values in prod.
         let buildConfig = BuildConfiguration.current
         if buildConfig == .localDeveloper || buildConfig == .alpha,
             let override = overrides.overrideValue(for: featureFlag) {

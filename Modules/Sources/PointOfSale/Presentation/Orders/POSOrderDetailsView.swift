@@ -15,8 +15,9 @@ struct POSOrderDetailsView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView: Bool = false
-    @State private var isShowingRefundItemsSelection: Bool = false
+    @State private var refundModalState: RefundModalState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -64,16 +65,10 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
-        .posModal(isPresented: $isShowingRefundItemsSelection, onDismiss: {
+        .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
-        }) {
-            POSRefundItemsSelectionView(
-                isPresented: $isShowingRefundItemsSelection,
-                onContinue: { selectedItems in
-                    isShowingRefundItemsSelection = false
-                    // Future: Navigate to refund amount/confirmation screen
-                }
-            )
+        }) { state in
+            refundModalContent(for: state)
         }
         .onAppear {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -426,7 +421,7 @@ private extension POSOrderDetailsView {
         case .issueRefund:
             return {
                 orderListModel.ordersController.startRefundFlow()
-                isShowingRefundItemsSelection = true
+                refundModalState = .itemSelection
             }
         }
     }
@@ -498,6 +493,60 @@ private extension POSOrderDetailsView {
         Divider()
             .overlay(Color.posOutlineVariant.opacity(0.5))
             .padding(.vertical, POSSpacing.small)
+    }
+}
+
+// MARK: - Refund Modal State
+
+enum RefundModalState: Identifiable, Equatable {
+    case itemSelection
+    case review(POSRefundReviewData)
+
+    var id: String {
+        switch self {
+        case .itemSelection: return "itemSelection"
+        case .review: return "review"
+        }
+    }
+}
+
+// MARK: - Refund Modal Content
+
+private extension POSOrderDetailsView {
+    @ViewBuilder
+    func refundModalContent(for state: RefundModalState) -> some View {
+        switch state {
+        case .itemSelection:
+            POSRefundItemsSelectionView(
+                onClose: { refundModalState = nil },
+                onContinue: { navigateToRefundReview() }
+            )
+        case .review(let reviewData):
+            POSRefundReviewView(
+                onClose: { refundModalState = nil },
+                itemsCount: reviewData.itemsCount,
+                formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
+                formattedTax: reviewData.formattedTax,
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                refundReason: reviewData.refundReason,
+                onAddReason: {
+                    // TODO: Show reason input modal
+                },
+                onContinue: {
+                    // TODO: Process refund
+                    refundModalState = nil
+                },
+                onEditRefund: {
+                    refundModalState = .itemSelection
+                }
+            )
+        }
+    }
+
+    func navigateToRefundReview() {
+        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else { return }
+        refundModalState = .review(reviewData)
     }
 }
 

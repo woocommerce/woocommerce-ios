@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct POSRefundItemsSelectionView: View {
-    @Binding var isPresented: Bool
+    let onClose: () -> Void
+    let onContinue: () -> Void
+
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
-    let onContinue: ([POSRefundSelectableItem]) -> Void
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -37,7 +38,8 @@ struct POSRefundItemsSelectionView: View {
         }
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .frame(width: parentSize.width - (Constants.modalHorizontalPadding * 2))
+        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
+        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
     }
 }
 
@@ -52,7 +54,7 @@ private extension POSRefundItemsSelectionView {
                 .lineLimit(1)
             Spacer()
             Button {
-                isPresented = false
+                onClose()
             } label: {
                 Text(Image(systemName: "xmark"))
                     .font(.posButtonSymbolLarge)
@@ -114,19 +116,11 @@ private extension POSRefundItemsSelectionView {
 
     var continueButton: some View {
         Button(Localization.continueButton) {
-            onContinue(selectedItems)
+            onContinue()
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
         .disabled(!hasSelectedItems)
         .padding(.top, POSPadding.medium)
-    }
-}
-
-// MARK: - Constants
-
-private extension POSRefundItemsSelectionView {
-    enum Constants {
-        static let modalHorizontalPadding: CGFloat = 148
     }
 }
 
@@ -175,8 +169,8 @@ private extension POSRefundItemsSelectionView {
 #if DEBUG
 #Preview("POSRefundItemsSelectionView") {
     POSRefundItemsSelectionView(
-        isPresented: .constant(true),
-        onContinue: { _ in }
+        onClose: { },
+        onContinue: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
 }

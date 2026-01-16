@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.CurrencyFormatter
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
@@ -135,7 +136,9 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      featureFlags: services.featureFlags)
+                                                      featureFlags: services.featureFlags,
+                                                      currencySettingsProvider: services.currency,
+                                                      currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services

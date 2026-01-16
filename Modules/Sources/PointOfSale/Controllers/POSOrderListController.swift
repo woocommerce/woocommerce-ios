@@ -12,6 +12,7 @@ import struct Yosemite.POSOrderItem
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
+import class WooFoundation.CurrencyFormatter
 
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
@@ -27,6 +28,7 @@ protocol POSOrderListControllerProtocol {
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
+    func preparePOSRefundReviewData() -> POSRefundReviewData?
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -59,6 +61,8 @@ enum RefundActionAvailability {
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
+    private let currencySettingsProvider: POSCurrencySettingsProviding
+    private let currencyFormatter: CurrencyFormatter
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -71,12 +75,16 @@ enum RefundActionAvailability {
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
          featureFlags: POSFeatureFlagProviding,
+         currencySettingsProvider: POSCurrencySettingsProviding,
+         currencyFormatter: CurrencyFormatter,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.featureFlags = featureFlags
+        self.currencySettingsProvider = currencySettingsProvider
+        self.currencyFormatter = currencyFormatter
     }
 
     @MainActor
@@ -293,8 +301,8 @@ enum RefundActionAvailability {
             let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
             guard intQuantity > 0 else { return [] }
 
-            return (0..<intQuantity).map { _ in
-                POSRefundSelectableItem(from: item, isSelected: true)
+            return (0..<intQuantity).map { index in
+                POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
     }
@@ -317,5 +325,77 @@ enum RefundActionAvailability {
         for index in refundSelectableItems.indices {
             refundSelectableItems[index].isSelected = newSelectionState
         }
+    }
+
+    // MARK: - Refund Review Data Preparation
+
+    @MainActor
+    func preparePOSRefundReviewData() -> POSRefundReviewData? {
+        guard let order = selectedOrder else { return nil }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else { return nil }
+
+        let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
+
+        let itemsTax = calculateRefundTax(for: selectedItems)
+
+        let refundTotal = itemsSubtotal + itemsTax
+
+        guard let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal),
+              let formattedTax = currencyFormatter.formatAmount(itemsTax),
+              let formattedTotal = currencyFormatter.formatAmount(refundTotal) else {
+            return nil
+        }
+
+        let paymentMethodDescription = createPaymentMethodDescription(for: order)
+
+        return POSRefundReviewData(
+            itemsCount: selectedItems.count,
+            formattedItemsSubtotal: formattedSubtotal,
+            formattedTax: formattedTax,
+            formattedRefundTotal: formattedTotal,
+            paymentMethodDescription: paymentMethodDescription,
+            refundReason: nil
+        )
+    }
+
+    /// Calculates refund tax by grouping items by itemID.
+    /// For full refunds (all units selected), uses the original totalTax directly to avoid rounding errors.
+    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) x totalTax
+    private func calculateRefundTax(for selectedItems: [POSRefundSelectableItem]) -> Decimal {
+        let groupedByItemID = Dictionary(grouping: selectedItems, by: { $0.itemID })
+
+        return groupedByItemID.reduce(Decimal.zero) { total, group in
+            let (_, items) = group
+            guard let firstItem = items.first else { return total }
+
+            let selectedCount = Decimal(items.count)
+            let originalQuantity = firstItem.originalQuantity
+            let totalTax = firstItem.totalTax
+
+            if selectedCount == originalQuantity {
+                return total + totalTax
+            } else {
+                let proportionalTax = (totalTax / originalQuantity) * selectedCount
+                return total + proportionalTax
+            }
+        }
+    }
+
+    private func createPaymentMethodDescription(for order: POSOrder) -> String {
+        String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle)
+    }
+}
+
+// MARK: - Localization
+
+private extension POSOrderListController {
+    enum Localization {
+        static let viaPaymentMethodFormat = NSLocalizedString(
+            "pos.orderListController.refund.viaPaymentMethodFormat",
+            value: "Via %@",
+            comment: "Description for refund via a specific payment method. %@ is the payment method name"
+        )
     }
 }

@@ -284,6 +284,8 @@ struct POSPreviewHelpers {
                 POSOrderItem(itemID: 1,
                              name: "Premium Coffee Beans",
                              quantity: 2.0,
+                             price: 12.50,
+                             totalTax: 2.50,
                              formattedPrice: "$12.50",
                              formattedTotal: "$25.00",
                              imageSrc: nil,
@@ -292,6 +294,8 @@ struct POSPreviewHelpers {
                     itemID: 2,
                     name: "Organic Tea - Earl Grey",
                     quantity: 1.0,
+                    price: 15.99,
+                    totalTax: 1.26,
                     formattedPrice: "$15.99",
                     formattedTotal: "$15.99",
                     imageSrc: nil,
@@ -324,6 +328,8 @@ struct POSPreviewHelpers {
                     itemID: 4,
                     name: "Artisan Chocolate Box",
                     quantity: 3.0,
+                    price: 19.99,
+                    totalTax: 5.99,
                     formattedPrice: "$19.99",
                     formattedTotal: "$59.97",
                     imageSrc: nil,
@@ -333,6 +339,8 @@ struct POSPreviewHelpers {
                     itemID: 5,
                     name: "Gourmet Cookie Set - Mixed",
                     quantity: 1.0,
+                    price: 29.99,
+                    totalTax: 2.96,
                     formattedPrice: "$29.99",
                     formattedTotal: "$29.99",
                     imageSrc: nil,
@@ -371,6 +379,8 @@ struct POSPreviewHelpers {
                     itemID: 3,
                     name: "Wireless Headphones",
                     quantity: 1.0,
+                    price: 120.00,
+                    totalTax: 9.99,
                     formattedPrice: "$120.00",
                     formattedTotal: "$120.00",
                     imageSrc: nil,
@@ -402,6 +412,8 @@ struct POSPreviewHelpers {
                     itemID: 6,
                     name: "Coffee Mug",
                     quantity: 1.0,
+                    price: 22.99,
+                    totalTax: 2.00,
                     formattedPrice: "$22.99",
                     formattedTotal: "$22.99",
                     imageSrc: nil,
@@ -431,6 +443,8 @@ struct POSPreviewHelpers {
                     itemID: 7,
                     name: "Leather Wallet",
                     quantity: 2.0,
+                    price: 45.00,
+                    totalTax: 7.20,
                     formattedPrice: "$45.00",
                     formattedTotal: "$90.00",
                     imageSrc: nil,
@@ -442,6 +456,8 @@ struct POSPreviewHelpers {
                     itemID: 8,
                     name: "Sunglasses",
                     quantity: 1.0,
+                    price: 55.00,
+                    totalTax: 4.27,
                     formattedPrice: "$55.00",
                     formattedTotal: "$55.00",
                     imageSrc: nil,
@@ -488,6 +504,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
+    func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
 }
 
 // MARK: - Barcode Scan Service

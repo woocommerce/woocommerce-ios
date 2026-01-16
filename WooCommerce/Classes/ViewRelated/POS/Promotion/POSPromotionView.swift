@@ -30,6 +30,9 @@ struct POSPromotionView: View {
                     .font(.title2)
                     .bold()
                     .multilineTextAlignment(.center)
+                    .if(!showImage) { title in
+                        title.padding(Layout.titleNoImagePadding)
+                    }
 
                 descriptionPages
 
@@ -58,7 +61,7 @@ private extension POSPromotionView {
             ForEach(0..<viewModel.totalSteps, id: \.self) { index in
                 Text(viewModel.stepDescriptions[index])
                     .font(.body)
-                    .foregroundStyle(Color(.secondaryLabel))
+                    .foregroundStyle(Color(.label))
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .tag(index)
@@ -94,7 +97,7 @@ private extension POSPromotionView {
                 isPresented = false
             } label: {
                 Image(systemName: "xmark")
-                    .foregroundStyle(Color(.secondaryLabel))
+                    .foregroundStyle(Color(showImage ? .white : .label))
                     .padding(Layout.closeButtonPadding)
             }
         }
@@ -107,7 +110,8 @@ private enum Layout {
     static let closeButtonPadding: CGFloat = 16
     static let imageHeight: CGFloat = 210
     static let spacing: CGFloat = 16
-    static let modalPadding: CGFloat = 16
+    static let modalPadding = EdgeInsets(top: .zero, leading: 16, bottom: 16, trailing: 16)
+    static let titleNoImagePadding = EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 64)
     static let modalMinHeight: CGFloat = 534
 }
 

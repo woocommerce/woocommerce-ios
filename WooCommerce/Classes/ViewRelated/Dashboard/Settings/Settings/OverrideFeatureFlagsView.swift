@@ -44,7 +44,6 @@ struct OverrideFeatureFlagsView: View {
 fileprivate struct FeatureFlagRow: View {
     let featureFlag: FeatureFlag
 
-    // Keep local state so the row updates immediately when you toggle/reset.
     @State private var overrideValue: Bool?
 
     private var defaultValue: Bool {
@@ -61,112 +60,54 @@ fileprivate struct FeatureFlagRow: View {
 
     init(featureFlag: FeatureFlag) {
         self.featureFlag = featureFlag
-        // Load the persisted override once for initial rendering.
         _overrideValue = State(initialValue: ServiceLocator.featureFlagOverrideStore.overrideValue(for: featureFlag))
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(featureFlag.title)
-                    .font(.body)
-
-                Spacer()
-
-                Toggle(isOn: Binding(
-                    get: { effectiveValue },
-                    set: { newValue in
-                        // If the user selects the default value, keep things clean and clear the override.
-                        if newValue == defaultValue {
-                            overrideValue = nil
-                            ServiceLocator.featureFlagOverrideStore.setOverrideValue(nil, for: featureFlag)
-                        } else {
-                            overrideValue = newValue
-                            ServiceLocator.featureFlagOverrideStore.setOverrideValue(newValue, for: featureFlag)
-                        }
-                    }
-                )) {
+        HStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(featureFlag.title)
+                        .font(.body)
                 }
-            }
 
-            HStack(spacing: 12) {
                 Text("Default: \(defaultValue ? "Enabled" : "Disabled")")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                Spacer()
-
                 if isOverridden {
                     Button("Reset") {
-                        overrideValue = nil
-                        ServiceLocator.featureFlagOverrideStore.setOverrideValue(nil, for: featureFlag)
+                        resetValue()
                     }
                     .disabled(!isOverridden)
                     .font(.caption)
                 }
             }
+
+            Spacer()
+
+            Toggle(isOn: Binding(
+                get: { effectiveValue },
+                set: { newValue in
+                    if newValue == defaultValue {
+                        resetValue()
+                    } else {
+                        overrideValue = newValue
+                        ServiceLocator.featureFlagOverrideStore.setOverrideValue(newValue, for: featureFlag)
+                    }
+                }
+            )) { EmptyView() }
         }
-        .padding(.vertical, 4)
+    }
+
+    private func resetValue() {
+            overrideValue = nil
+            ServiceLocator.featureFlagOverrideStore.setOverrideValue(nil, for: featureFlag)
     }
 }
 
-extension FeatureFlag {
-
+fileprivate extension FeatureFlag {
     var title: String {
-        switch self {
-        case .null: "null"
-        case .barcodeScanner: "barcodeScanner"
-        case .reviews: "reviews"
-        case .inbox: "inbox"
-        case .showInboxCTA: "showInboxCTA"
-        case .updateOrderOptimistically: "updateOrderOptimistically"
-        case .shippingLabelsOnboardingM1: "shippingLabelsOnboardingM1"
-        case .searchProductsBySKU: "searchProductsBySKU"
-        case .tapToPayOnIPhone: "tapToPayOnIPhone"
-        case .performanceMonitoring: "performanceMonitoring"
-        case .performanceMonitoringCoreData: "performanceMonitoringCoreData"
-        case .performanceMonitoringFileIO: "performanceMonitoringFileIO"
-        case .performanceMonitoringNetworking: "performanceMonitoringNetworking"
-        case .performanceMonitoringUserInteraction: "performanceMonitoringUserInteraction"
-        case .performanceMonitoringViewController: "performanceMonitoringViewController"
-        case .supportRequests: "supportRequests"
-        case .jetpackSetupWithApplicationPassword: "jetpackSetupWithApplicationPassword"
-        case .addProductToOrderViaSKUScanner: "addProductToOrderViaSKUScanner"
-        case .manualErrorHandlingForSiteCredentialLogin: "manualErrorHandlingForSiteCredentialLogin"
-        case .euShippingNotification: "euShippingNotification"
-        case .betterCustomerSelectionInOrder: "betterCustomerSelectionInOrder"
-        case .hazmatShipping: "hazmatShipping"
-        case .giftCardInOrderForm: "giftCardInOrderForm"
-        case .productBundlesInOrderForm: "productBundlesInOrderForm"
-        case .customLoginUIForAccountCreation: "customLoginUIForAccountCreation"
-        case .scanToUpdateInventory: "scanToUpdateInventory"
-        case .splitViewInProductsTab: "splitViewInProductsTab"
-        case .subscriptionsInOrderCreationUI: "subscriptionsInOrderCreationUI"
-        case .subscriptionsInOrderCreationCustomers: "subscriptionsInOrderCreationCustomers"
-        case .pointOfSale: "pointOfSale"
-        case .googleAdsCampaignCreationOnWebView: "googleAdsCampaignCreationOnWebView"
-        case .blazeEvergreenCampaigns: "blazeEvergreenCampaigns"
-        case .revampedShippingLabelCreation: "revampedShippingLabelCreation"
-        case .blazeCampaignObjective: "blazeCampaignObjective"
-        case .hideSitesInStorePicker: "hideSitesInStorePicker"
-        case .filterHistoryOnOrderAndProductLists: "filterHistoryOnOrderAndProductLists"
-        case .backgroundProductImageUpload: "backgroundProductImageUpload"
-        case .notificationSettings: "notificationSettings"
-        case .allowMerchantAIAPIKey: "allowMerchantAIAPIKey"
-        case .productImageOptimizedHandling: "productImageOptimizedHandling"
-        case .inventoryProductLabelsInPOS: "inventoryProductLabelsInPOS"
-        case .pointOfSaleOrdersi1: "pointOfSaleOrdersi1"
-        case .pointOfSaleOrdersi2: "pointOfSaleOrdersi2"
-        case .orderAddressMapSearch: "orderAddressMapSearch"
-        case .pointOfSaleHistoricalOrdersi1: "pointOfSaleHistoricalOrdersi1"
-        case .pointOfSaleLocalCatalogi1: "pointOfSaleLocalCatalogi1"
-        case .ciabBookings: "ciabBookings"
-        case .ciab: "ciab"
-        case .pointOfSaleSurveys: "pointOfSaleSurveys"
-        case .pointOfSaleCatalogAPI: "pointOfSaleCatalogAPI"
-        case .pointOfSaleRefundsi1: "pointOfSaleRefundsi1"
-        case .selfDrivenPushToken: "selfDrivenPushToken"
-        case .pointOfSaleOnlyProducts: "pointOfSaleOnlyProducts"
-        }
+        return String(describing: self)
     }
 }

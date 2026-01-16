@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 import WordPressUI
@@ -715,9 +716,21 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case is POSPromotionDestination:
+            presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentPOSPromotionModal() {
+        let alertController = UIAlertController(
+            title: "POS Promotion",
+            message: "POS Promotion modal placeholder",
+            preferredStyle: .alert
+        )
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alertController, animated: true)
     }
 }
 

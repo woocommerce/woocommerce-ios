@@ -17,6 +17,9 @@ final class POSPromotionViewModel: ObservableObject {
     /// The total number of steps.
     var totalSteps: Int { steps.count }
 
+    /// The image name for the modal (same across all steps).
+    let imageName: String
+
     /// Whether the user is currently on the final step.
     var isOnFinalStep: Bool {
         selectedStep == steps.count - 1
@@ -32,10 +35,12 @@ final class POSPromotionViewModel: ObservableObject {
     private let onDismiss: () -> Void
 
     init(steps: [POSPromotionStepViewModel]? = nil,
+         imageName: String = "pos-promotion-header",
          analytics: Analytics = ServiceLocator.analytics,
          urlOpener: URLOpener = ApplicationURLOpener(),
          onDismiss: @escaping () -> Void = {}) {
         self.steps = steps ?? POSPromotionStepsFactory.steps()
+        self.imageName = imageName
         self.analytics = analytics
         self.urlOpener = urlOpener
         self.onDismiss = onDismiss

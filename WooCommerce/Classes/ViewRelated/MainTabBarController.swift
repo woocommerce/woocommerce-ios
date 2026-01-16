@@ -724,8 +724,13 @@ extension MainTabBarController: DeepLinkNavigator {
     }
 
     private func presentPOSPromotionModal() {
-        let viewModel = POSPromotionViewModel()
-        let hostingController = UIHostingController(rootView: POSPromotionView(viewModel: viewModel))
+        let modalView = POSPromotionModal_UIKit(onDismiss: { [weak self] in
+            self?.dismiss(animated: false)
+        })
+        let hostingController = UIHostingController(rootView: modalView)
+        hostingController.view.backgroundColor = .clear
+        hostingController.modalPresentationStyle = .overFullScreen
+        hostingController.modalTransitionStyle = .crossDissolve
         present(hostingController, animated: true)
     }
 }

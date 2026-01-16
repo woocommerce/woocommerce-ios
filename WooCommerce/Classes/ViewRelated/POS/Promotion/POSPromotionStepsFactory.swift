@@ -6,20 +6,15 @@ struct POSPromotionStepsFactory {
     static func steps() -> [POSPromotionStepViewModel] {
         [
             .init(title: Localization.Step1.title,
-                  description: Localization.Step1.description,
-                  imageName: "pos-promotion-step-1"),
+                  description: Localization.Step1.description),
             .init(title: Localization.Step2.title,
-                  description: Localization.Step2.description,
-                  imageName: "pos-promotion-step-2"),
+                  description: Localization.Step2.description),
             .init(title: Localization.Step3.title,
-                  description: Localization.Step3.description,
-                  imageName: "pos-promotion-step-3"),
+                  description: Localization.Step3.description),
             .init(title: Localization.Step4.title,
-                  description: Localization.Step4.description,
-                  imageName: "pos-promotion-step-4"),
+                  description: Localization.Step4.description),
             .init(title: Localization.Step5.title,
-                  description: Localization.Step5.description,
-                  imageName: "pos-promotion-step-5")
+                  description: Localization.Step5.description)
         ]
     }
 }

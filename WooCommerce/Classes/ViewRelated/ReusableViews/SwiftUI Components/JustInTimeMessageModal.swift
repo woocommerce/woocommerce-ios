@@ -50,8 +50,8 @@ struct JustInTimeMessageModal: View {
                 viewModel.dismissTapped()
                 isPresented = false
             }
-            .padding(.bottom, Layout.padding)
         }
+        .padding(Layout.padding)
     }
 
     enum Layout {

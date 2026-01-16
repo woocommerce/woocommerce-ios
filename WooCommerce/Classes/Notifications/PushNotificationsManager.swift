@@ -625,7 +625,6 @@ private extension PushNotificationsManager {
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         wooPushnotificationToken = "\(tokenID)"
-        NotificationCenter.default.post(name: .selfDrivenPushTokenPersisted, object: nil)
         unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
             onCompletion(.success(tokenID))
         })
@@ -768,6 +767,8 @@ private extension PushNotificationsManager {
     }
 }
 
-extension Notification.Name {
-    static let selfDrivenPushTokenPersisted = Notification.Name("selfDrivenPushTokenPersisted")
+extension UserDefaults {
+    @objc dynamic var wooPushnotificationToken: String? {
+        string(forKey: Key.wooPushnotificationToken.rawValue)
+    }
 }

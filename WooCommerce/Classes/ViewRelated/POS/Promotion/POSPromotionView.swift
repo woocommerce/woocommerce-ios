@@ -7,6 +7,7 @@ struct POSPromotionView: View {
     @Binding var isPresented: Bool
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .body) private var descriptionPagesHeight: CGFloat = Layout.baseDescriptionPagesHeight
 
     /// Whether to show the decorative image
     private var showImage: Bool {
@@ -45,7 +46,6 @@ struct POSPromotionView: View {
             }
             .padding(Layout.modalPadding)
         }
-        .frame(minHeight: Layout.modalMinHeight)
         .overlay(alignment: .top) {
             closeButton
         }
@@ -59,15 +59,18 @@ private extension POSPromotionView {
     @ViewBuilder var descriptionPages: some View {
         TabView(selection: $viewModel.selectedStep) {
             ForEach(0..<viewModel.totalSteps, id: \.self) { index in
-                Text(viewModel.stepDescriptions[index])
-                    .font(.body)
-                    .foregroundStyle(Color(.label))
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .tag(index)
+                ScrollView {
+                    Text(viewModel.stepDescriptions[index])
+                        .font(.body)
+                        .foregroundStyle(Color(.label))
+                        .multilineTextAlignment(.center)
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .tag(index)
             }
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .frame(height: descriptionPagesHeight)
     }
 
     @ViewBuilder var button: some View {
@@ -112,7 +115,7 @@ private enum Layout {
     static let spacing: CGFloat = 16
     static let modalPadding = EdgeInsets(top: .zero, leading: 16, bottom: 16, trailing: 16)
     static let titleNoImagePadding = EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 64)
-    static let modalMinHeight: CGFloat = 534
+    static let baseDescriptionPagesHeight: CGFloat = 96
 }
 
 // MARK: - UIKit Wrapper

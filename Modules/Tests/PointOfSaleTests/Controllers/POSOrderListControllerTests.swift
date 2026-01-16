@@ -922,9 +922,127 @@ final class POSOrderListControllerTests {
         // Then
         #expect(reviewData?.refundReason == nil)
     }
+
+    // MARK: - Currency Formatting Tests
+
+    @Test func preparePOSRefundReviewData_with_EUR_currency_then_formats_with_comma_decimal_separator() async throws {
+        // Given - EUR with comma decimal separator and dot thousand separator
+        let eurSettings = CurrencySettings(
+            currencyCode: .EUR,
+            currencyPosition: .rightSpace,
+            thousandSeparator: ".",
+            decimalSeparator: ",",
+            numberOfDecimals: 2
+        )
+        let controller = makeController(currencySettings: eurSettings)
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 1172.02, totalTax: 234.40, formattedPrice: "1.172,02 €")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            controller.selectOrder(order)
+            controller.startRefundFlow()
+            return controller.preparePOSRefundReviewData()
+        }
+
+        // Then - 2 × €1,172.02 = €2,344.04, tax = €234.40, total = €2,578.44
+        // Note: CurrencyFormatter uses non-breaking space (\u{00A0}) before currency symbol
+        #expect(reviewData?.formattedItemsSubtotal == "2.344,04\u{00A0}€")
+        #expect(reviewData?.formattedTax == "234,40\u{00A0}€")
+        #expect(reviewData?.formattedRefundTotal == "2.578,44\u{00A0}€")
+    }
+
+    @Test func preparePOSRefundReviewData_with_JPY_currency_then_formats_without_decimals() async throws {
+        // Given - JPY with no decimals
+        let jpySettings = CurrencySettings(
+            currencyCode: .JPY,
+            currencyPosition: .left,
+            thousandSeparator: ",",
+            decimalSeparator: ".",
+            numberOfDecimals: 0
+        )
+        let controller = makeController(currencySettings: jpySettings)
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 2344, totalTax: 234, formattedPrice: "¥2,344")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            controller.selectOrder(order)
+            controller.startRefundFlow()
+            return controller.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.formattedItemsSubtotal == "¥2,344")
+        #expect(reviewData?.formattedTax == "¥234")
+        #expect(reviewData?.formattedRefundTotal == "¥2,578")
+    }
+
+    @Test func preparePOSRefundReviewData_with_GBP_and_large_values_then_formats_correctly() async throws {
+        // Given - GBP with large values
+        let gbpSettings = CurrencySettings(
+            currencyCode: .GBP,
+            currencyPosition: .left,
+            thousandSeparator: ",",
+            decimalSeparator: ".",
+            numberOfDecimals: 2
+        )
+        let controller = makeController(currencySettings: gbpSettings)
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 12345.67, totalTax: 2469.13, formattedPrice: "£12,345.67")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            controller.selectOrder(order)
+            controller.startRefundFlow()
+            return controller.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.formattedItemsSubtotal == "£12,345.67")
+        #expect(reviewData?.formattedTax == "£2,469.13")
+        #expect(reviewData?.formattedRefundTotal == "£14,814.80")
+    }
+
+    @Test func preparePOSRefundReviewData_with_USD_and_large_value_from_screenshot_then_formats_correctly() async throws {
+        // Given - USD with value from screenshot: $2,344.04
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 2344.04, totalTax: 234.40, formattedPrice: "$2,344.04")
+        ])
+
+        // When
+        let reviewData = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.preparePOSRefundReviewData()
+        }
+
+        // Then
+        #expect(reviewData?.formattedItemsSubtotal == "$2,344.04")
+        #expect(reviewData?.formattedTax == "$234.40")
+        #expect(reviewData?.formattedRefundTotal == "$2,578.44")
+    }
 }
 
 private extension POSOrderListControllerTests {
+    func makeController(currencySettings: CurrencySettings) -> POSOrderListController {
+        let provider = MockCurrencySettingsProvider(currencySettings: currencySettings)
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
+        return POSOrderListController(
+            orderListFetchStrategyFactory: fetchStrategyFactory,
+            refundsService: refundsService,
+            featureFlags: featureFlags,
+            currencySettingsProvider: provider,
+            currencyFormatter: formatter
+        )
+    }
+
     func makeOrder(id: Int64 = 1, paymentMethodTitle: String = "Cash", lineItems: [POSOrderItem] = []) -> POSOrder {
         POSOrder(
             id: id,

@@ -127,7 +127,7 @@ final class POSPromotionViewModelTests: XCTestCase {
 
     // MARK: - Analytics
 
-    func test_onAppear_tracks_modal_shown_event() {
+    func test_onAppear_tracks_modal_viewed_event() {
         // Given
         let sut = makeSUT()
 
@@ -135,7 +135,48 @@ final class POSPromotionViewModelTests: XCTestCase {
         sut.onAppear()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promotion_modal_shown"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_viewed"))
+    }
+
+    func test_onAppear_tracks_initial_slide_viewed_event_with_index_zero() {
+        // Given
+        let sut = makeSUT()
+
+        // When
+        sut.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_slide_viewed"))
+        // The slide_viewed event is second (after modal_viewed), so its properties are at index 0
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["slide_index"] as? Int, 0)
+    }
+
+    func test_primaryActionTapped_tracks_slide_viewed_event_with_new_index() {
+        // Given
+        let sut = makeSUT()
+        sut.onAppear()
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.primaryActionTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_slide_viewed"))
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["slide_index"] as? Int, 1)
+    }
+
+    func test_swiping_to_new_slide_tracks_slide_viewed_event() {
+        // Given
+        let sut = makeSUT()
+        sut.onAppear()
+        analyticsProvider.clearEvents()
+
+        // When - simulate swiping by directly changing selectedStep
+        sut.selectedStep = 3
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_slide_viewed"))
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["slide_index"] as? Int, 3)
     }
 
     func test_closeButtonTapped_tracks_modal_dismissed_event() {
@@ -146,10 +187,10 @@ final class POSPromotionViewModelTests: XCTestCase {
         sut.closeButtonTapped()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promotion_modal_dismissed"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_dismissed"))
     }
 
-    func test_primaryActionTapped_on_final_step_tracks_cta_tapped_event() {
+    func test_primaryActionTapped_on_final_step_tracks_explore_clicked_event() {
         // Given
         let sut = makeSUT()
 
@@ -162,7 +203,7 @@ final class POSPromotionViewModelTests: XCTestCase {
         sut.primaryActionTapped()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promotion_modal_cta_tapped"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_explore_clicked"))
     }
 
     // MARK: - onDismiss callback

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooCommerceComUTMProvider
@@ -39,6 +40,7 @@ final class POSPromotionViewModel: ObservableObject {
     private let stores: StoresManager
     private let onDismiss: () -> Void
     private let onShowWebView: (WebViewSheetViewModel) -> Void
+    private var cancellables: Set<AnyCancellable> = []
 
     init(stepDescriptions: [String]? = nil,
          imageName: String = "pos-promotion-header",
@@ -54,6 +56,18 @@ final class POSPromotionViewModel: ObservableObject {
         self.stores = stores
         self.onDismiss = onDismiss
         self.onShowWebView = onShowWebView
+
+        observeSelectedStep()
+    }
+
+    private func observeSelectedStep() {
+        $selectedStep
+            .dropFirst() // Skip initial value (handled in onAppear)
+            .removeDuplicates()
+            .sink { [weak self] step in
+                self?.trackSlideViewed(step: step)
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -61,7 +75,7 @@ final class POSPromotionViewModel: ObservableObject {
     /// Called when the primary action button is tapped.
     func primaryActionTapped() {
         if isOnFinalStep {
-            analytics.track(.posPromotionModalCTATapped)
+            analytics.track(.posPromoModalExploreClicked)
             showWebView()
             dismiss = true
         } else {
@@ -90,7 +104,7 @@ final class POSPromotionViewModel: ObservableObject {
 
     /// Called when the close button is tapped.
     func closeButtonTapped() {
-        analytics.track(.posPromotionModalDismissed)
+        analytics.track(.posPromoModalDismissed)
         dismiss = true
     }
 
@@ -98,12 +112,20 @@ final class POSPromotionViewModel: ObservableObject {
 
     /// Called when the view appears.
     func onAppear() {
-        analytics.track(.posPromotionModalShown)
+        analytics.track(.posPromoModalViewed)
+        trackSlideViewed()
     }
 
     /// Called when the view disappears.
     func onDisappear() {
         onDismiss()
+    }
+
+    // MARK: - Analytics
+
+    private func trackSlideViewed(step: Int? = nil) {
+        let stepToTrack = step ?? selectedStep
+        analytics.track(.posPromoModalSlideViewed, withProperties: ["slide_index": stepToTrack])
     }
 }
 

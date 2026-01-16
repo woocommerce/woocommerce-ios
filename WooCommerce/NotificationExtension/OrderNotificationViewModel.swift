@@ -33,9 +33,9 @@ final class OrderNotificationViewModel {
 
         let dataService = OrderNotificationDataService(credentials: credentials)
         if let notificationData = PushNotification.from(userInfo: notification.request.content.userInfo) {
-            let order = try await dataService.loadOrderFrom(notification: notificationData)
-            let storeName = try await dataService.loadStoreName(id: order.siteID)
-            return (order, storeName)
+            async let order = dataService.loadOrderFrom(notification: notificationData)
+            async let storeName = dataService.loadStoreName(id: notificationData.siteID)
+            return (try await order, try await storeName)
         } else {
             throw Error.unsupportedNotification
         }

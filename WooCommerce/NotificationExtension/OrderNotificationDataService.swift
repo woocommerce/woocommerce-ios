@@ -40,20 +40,6 @@ final class OrderNotificationDataService {
 
     @MainActor
     func loadOrderFrom(notification: PushNotification) async throws -> (Note?, Order) {
-        let note: Note? = try await {
-            if let notificationNote = notification.note {
-                return notificationNote
-            } else if let noteID = notification.noteID {
-                return try await loadNotification(noteID: noteID)
-            }
-            return nil
-        }()
-
-        if let note {
-            let order = try await loadOrder(from: note)
-            return (note, order)
-        }
-
         guard let orderID = notification.meta?.identifier(forKey: .order) else {
             throw Error.unsupportedNotification
         }

@@ -33,7 +33,7 @@ struct POSRootModalViewModifier: ViewModifier {
                             .cornerRadius(modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                             .posShadow(modalManager.isFullScreen ? .none : .large,
                                        cornerRadius: modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .padding(modalManager.isFullScreen ? 0 : 16)
+                            .padding(modalManager.isFullScreen ? POSPadding.none : POSPadding.medium)
                             .ignoresSafeArea(.container, edges: modalManager.isFullScreen ? .all : [])
                     }
                     .zIndex(1)

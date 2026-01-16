@@ -555,20 +555,16 @@ private extension SettingsViewController {
     }
 
     var featureOverrideAction: UIAlertAction {
-        return UIAlertAction(title: "Override Feature Flag", style: .default) { [weak self] _ in
+        return UIAlertAction(title: "Override Feature Flags", style: .default) { [weak self] _ in
             guard let self else { return }
 
             let hostingController = UIHostingController(rootView: OverrideFeatureFlagsView())
-            navigationController?.pushViewController(hostingController, animated: true)
+            self.navigationController?.pushViewController(hostingController, animated: true)
         }
     }
 
     var crashDebugMenuCancelAction: UIAlertAction {
         return UIAlertAction(title: Localization.HiddenSettingsMenu.cancel, style: .cancel, handler: nil)
-    }
-
-    @objc func dismissPresentedController() {
-        dismiss(animated: true)
     }
 }
 

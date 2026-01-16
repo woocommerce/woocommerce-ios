@@ -47,6 +47,9 @@ final class POSPromotionViewModel {
     private let onDismiss: () -> Void
     private let onShowWebView: (WebViewSheetViewModel) -> Void
 
+    /// Tracks whether the user tapped "Explore" to avoid double-tracking dismissal.
+    private var didTapExplore = false
+
     init(stepDescriptions: [String]? = nil,
          imageName: String = "pos-promotion-header",
          title: String = Localization.title,
@@ -68,6 +71,7 @@ final class POSPromotionViewModel {
     /// Called when the primary action button is tapped.
     func primaryActionTapped() {
         if isOnFinalStep {
+            didTapExplore = true
             analytics.track(.posPromoModalExploreClicked)
             showWebView()
             dismiss = true
@@ -97,7 +101,6 @@ final class POSPromotionViewModel {
 
     /// Called when the close button is tapped.
     func closeButtonTapped() {
-        analytics.track(.posPromoModalDismissed)
         dismiss = true
     }
 
@@ -111,6 +114,9 @@ final class POSPromotionViewModel {
 
     /// Called when the view disappears.
     func onDisappear() {
+        if !didTapExplore {
+            analytics.track(.posPromoModalDismissed)
+        }
         onDismiss()
     }
 

@@ -58,6 +58,9 @@ struct POSPromotionView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .onDisappear {
+            viewModel.onDisappear()
+        }
     }
 }
 

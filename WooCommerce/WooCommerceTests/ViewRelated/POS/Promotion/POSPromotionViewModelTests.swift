@@ -179,15 +179,33 @@ final class POSPromotionViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["slide_index"] as? Int, 3)
     }
 
-    func test_closeButtonTapped_tracks_modal_dismissed_event() {
+    func test_onDisappear_tracks_dismissed_event() {
         // Given
         let sut = makeSUT()
 
         // When
-        sut.closeButtonTapped()
+        sut.onDisappear()
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("pos_promo_modal_dismissed"))
+    }
+
+    func test_onDisappear_does_not_track_dismissed_event_after_explore_tapped() {
+        // Given
+        let sut = makeSUT()
+
+        // Navigate to final step and tap explore
+        for _ in 0..<4 {
+            sut.primaryActionTapped()
+        }
+        sut.primaryActionTapped()
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.onDisappear()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("pos_promo_modal_dismissed"))
     }
 
     func test_primaryActionTapped_on_final_step_tracks_explore_clicked_event() {

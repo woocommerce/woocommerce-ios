@@ -257,6 +257,11 @@ public struct SiteCreationResponse: Decodable {
     public let site: Site
     public let success: Bool
 
+    public init(site: SiteCreationResponse.Site, success: Bool) {
+        self.site = site
+        self.success = success
+    }
+
     private enum CodingKeys: String, CodingKey {
         case site = "blog_details"
         case success
@@ -275,6 +280,13 @@ public extension SiteCreationResponse {
         public let name: String
         public let url: String
         public let siteSlug: String
+
+        public init(siteID: String, name: String, url: String, siteSlug: String) {
+            self.siteID = siteID
+            self.name = name
+            self.url = url
+            self.siteSlug = siteSlug
+        }
 
         private enum CodingKeys: String, CodingKey {
             case siteID = "blogid"

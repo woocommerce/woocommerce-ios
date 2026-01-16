@@ -724,9 +724,7 @@
 		20B0D65E2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */; };
 		20B259352F18DB7A006DF96E /* SiteConnectionTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */; };
 		20B261212F196333006DF96E /* POSPromotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B2611D2F196333006DF96E /* POSPromotionView.swift */; };
-		20B261222F196333006DF96E /* POSPromotionStepViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B2611C2F196333006DF96E /* POSPromotionStepViewModel.swift */; };
 		20B261232F196333006DF96E /* POSPromotionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B2611E2F196333006DF96E /* POSPromotionViewModel.swift */; };
-		20B261242F196333006DF96E /* POSPromotionStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B2611B2F196333006DF96E /* POSPromotionStepView.swift */; };
 		20B261252F196333006DF96E /* POSPromotionStepsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B2611A2F196333006DF96E /* POSPromotionStepsFactory.swift */; };
 		20B261272F19643F006DF96E /* PageIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B261262F19643F006DF96E /* PageIndicatorView.swift */; };
 		20B261292F196482006DF96E /* POSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B261282F196482006DF96E /* POSRoute.swift */; };
@@ -3661,8 +3659,6 @@
 		20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
 		20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteConnectionTypeTests.swift; sourceTree = "<group>"; };
 		20B2611A2F196333006DF96E /* POSPromotionStepsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionStepsFactory.swift; sourceTree = "<group>"; };
-		20B2611B2F196333006DF96E /* POSPromotionStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionStepView.swift; sourceTree = "<group>"; };
-		20B2611C2F196333006DF96E /* POSPromotionStepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionStepViewModel.swift; sourceTree = "<group>"; };
 		20B2611D2F196333006DF96E /* POSPromotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionView.swift; sourceTree = "<group>"; };
 		20B2611E2F196333006DF96E /* POSPromotionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionViewModel.swift; sourceTree = "<group>"; };
 		20B261262F19643F006DF96E /* PageIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageIndicatorView.swift; sourceTree = "<group>"; };
@@ -7392,8 +7388,6 @@
 			isa = PBXGroup;
 			children = (
 				20B2611A2F196333006DF96E /* POSPromotionStepsFactory.swift */,
-				20B2611B2F196333006DF96E /* POSPromotionStepView.swift */,
-				20B2611C2F196333006DF96E /* POSPromotionStepViewModel.swift */,
 				20B2611D2F196333006DF96E /* POSPromotionView.swift */,
 				20B2611E2F196333006DF96E /* POSPromotionViewModel.swift */,
 			);
@@ -15750,9 +15744,7 @@
 				EE5B5BC42AB83749009BCBD6 /* AddProductWithAIContainerView.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				20B261212F196333006DF96E /* POSPromotionView.swift in Sources */,
-				20B261222F196333006DF96E /* POSPromotionStepViewModel.swift in Sources */,
 				20B261232F196333006DF96E /* POSPromotionViewModel.swift in Sources */,
-				20B261242F196333006DF96E /* POSPromotionStepView.swift in Sources */,
 				20B261252F196333006DF96E /* POSPromotionStepsFactory.swift in Sources */,
 				02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */,
 				B9F148942AD43E1B008FC795 /* AddCustomAmountView.swift in Sources */,

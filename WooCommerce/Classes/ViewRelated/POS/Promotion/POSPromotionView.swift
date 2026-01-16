@@ -26,7 +26,12 @@ struct POSPromotionView: View {
             }
 
             VStack(spacing: Layout.spacing) {
-                textPages
+                Text(viewModel.title)
+                    .font(.title2)
+                    .bold()
+                    .multilineTextAlignment(.center)
+
+                descriptionPages
 
                 PageIndicatorView(
                     currentPage: viewModel.selectedStep,
@@ -48,14 +53,15 @@ struct POSPromotionView: View {
 }
 
 private extension POSPromotionView {
-    @ViewBuilder var textPages: some View {
+    @ViewBuilder var descriptionPages: some View {
         TabView(selection: $viewModel.selectedStep) {
             ForEach(0..<viewModel.totalSteps, id: \.self) { index in
-                POSPromotionStepTextView(
-                    title: viewModel.steps[index].title,
-                    description: viewModel.steps[index].description
-                )
-                .tag(index)
+                Text(viewModel.stepDescriptions[index])
+                    .font(.body)
+                    .foregroundStyle(Color(.secondaryLabel))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .tag(index)
             }
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))

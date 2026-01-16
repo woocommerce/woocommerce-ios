@@ -8,21 +8,24 @@ final class POSPromotionViewModel: ObservableObject {
     /// The currently selected step index (0-indexed).
     @Published var selectedStep = 0
 
-    /// The steps to display in the modal.
-    @Published private(set) var steps: [POSPromotionStepViewModel]
+    /// The step descriptions to display in the modal.
+    @Published private(set) var stepDescriptions: [String]
 
     /// When set to true, the modal should dismiss.
     @Published var dismiss: Bool = false
 
     /// The total number of steps.
-    var totalSteps: Int { steps.count }
+    var totalSteps: Int { stepDescriptions.count }
 
     /// The image name for the modal (same across all steps).
     let imageName: String
 
+    /// The title for the modal (same across all steps).
+    let title: String
+
     /// Whether the user is currently on the final step.
     var isOnFinalStep: Bool {
-        selectedStep == steps.count - 1
+        selectedStep == stepDescriptions.count - 1
     }
 
     /// The title for the primary action button.
@@ -34,13 +37,15 @@ final class POSPromotionViewModel: ObservableObject {
     private let urlOpener: URLOpener
     private let onDismiss: () -> Void
 
-    init(steps: [POSPromotionStepViewModel]? = nil,
+    init(stepDescriptions: [String]? = nil,
          imageName: String = "pos-promotion-header",
+         title: String = Localization.title,
          analytics: Analytics = ServiceLocator.analytics,
          urlOpener: URLOpener = ApplicationURLOpener(),
          onDismiss: @escaping () -> Void = {}) {
-        self.steps = steps ?? POSPromotionStepsFactory.steps()
+        self.stepDescriptions = stepDescriptions ?? POSPromotionStepsFactory.stepDescriptions()
         self.imageName = imageName
+        self.title = title
         self.analytics = analytics
         self.urlOpener = urlOpener
         self.onDismiss = onDismiss
@@ -81,6 +86,12 @@ final class POSPromotionViewModel: ObservableObject {
 // MARK: - Localization
 
 private enum Localization {
+    static let title = NSLocalizedString(
+        "posPromotion.title",
+        value: "Run POS with the WooCommerce mobile app",
+        comment: "Title for the POS promotion modal (shown on all steps)"
+    )
+
     static let next = NSLocalizedString(
         "posPromotion.button.next",
         value: "Next",

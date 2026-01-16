@@ -186,7 +186,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 }
 
 private extension SettingsViewModel {
-    
+
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }

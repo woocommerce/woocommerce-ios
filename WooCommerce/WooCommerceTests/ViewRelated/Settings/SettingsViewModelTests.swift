@@ -306,6 +306,24 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
     }
 
+    func test_sections_contains_does_not_contain_notifications_row_for_selfregisteredtoken() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(notificationSettings: true, selfDrivenPushToken: true)
+        defaults.set("123", forKey: .wooPushnotificationToken)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+
     func test_sections_does_not_contain_connectivity_row_for_wpcom_site() {
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))

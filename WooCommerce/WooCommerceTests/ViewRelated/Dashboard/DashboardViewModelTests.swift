@@ -69,8 +69,6 @@ final class DashboardViewModelTests: XCTestCase {
                 onCompletion(false)
             case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
                 onCompletion(false)
-            case let .loadSelfDrivenPushTokenID(_, onCompletion):
-                onCompletion(nil)
             default:
                 break
             }
@@ -965,10 +963,12 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_is_nil() async {
         // Given
-        mockReloadingData(selfDrivenTokenID: nil)
+        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        mockReloadingData()
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -982,11 +982,13 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_updateSelfDrivenPushRegistrationStatus_sets_true_when_token_id_exists_and_not_wpcom_login() async {
         // Given
-        mockReloadingData(selfDrivenTokenID: 123)
+        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -1000,12 +1002,14 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_exists_and_wpcom_login() async {
         // Given
-        mockReloadingData(selfDrivenTokenID: 123)
+        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -1024,8 +1028,7 @@ private extension DashboardViewModelTests {
                            existingProducts: [Product] = [],
                            existingBlazeCampaigns: [BlazeCampaignListItem] = [],
                            storedDashboardCards: [DashboardCard] = [],
-                           shouldShowInAppFeedback: Bool = false,
-                           selfDrivenTokenID: Int64? = nil) {
+                           shouldShowInAppFeedback: Bool = false) {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
@@ -1057,8 +1060,6 @@ private extension DashboardViewModelTests {
                 onCompletion(false)
             case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
                 onCompletion(false)
-            case let .loadSelfDrivenPushTokenID(_, onCompletion):
-                onCompletion(selfDrivenTokenID)
             default:
                 break
             }

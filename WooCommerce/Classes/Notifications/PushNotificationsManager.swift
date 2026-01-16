@@ -6,10 +6,6 @@ import AutomatticTracks
 import Yosemite
 import protocol WooFoundation.Analytics
 
-extension Notification.Name {
-    static let selfDrivenPushTokenIDDidPersist = Notification.Name("selfDrivenPushTokenIDDidPersist")
-}
-
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
@@ -103,6 +99,17 @@ final class PushNotificationsManager: PushNotesManager {
         }
         set {
             configuration.defaults.set(newValue, forKey: .deviceID)
+        }
+    }
+
+    /// Self driven push notificaiton token
+    ///
+    private var wooPushnotificationToken: String? {
+        get {
+            return configuration.defaults.object(forKey: .wooPushnotificationToken)
+        }
+        set {
+            configuration.defaults.set(newValue, forKey: .wooPushnotificationToken)
         }
     }
 
@@ -605,7 +612,7 @@ private extension PushNotificationsManager {
 
             switch result {
             case .success(let tokenID):
-                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, onCompletion: onCompletion)
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, onCompletion: onCompletion)
 
             case .failure(let error):
                 DDLogError("⛔️ Unable to register self-driven push token: \(error)")
@@ -616,25 +623,11 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, siteID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        persistSelfDrivenTokenID(tokenID, siteID: siteID)
+    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        wooPushnotificationToken = "\(tokenID)"
         unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
             onCompletion(.success(tokenID))
         })
-    }
-
-    func persistSelfDrivenTokenID(_ tokenID: Int64, siteID: Int64) {
-        let setTokenAction = AppSettingsAction.setSelfDrivenPushTokenID(siteID: siteID, tokenID: tokenID) { result in
-            switch result {
-            case .success:
-                NotificationCenter.default.post(
-                    name: .selfDrivenPushTokenIDDidPersist, object: nil
-                )
-            case .failure(let error):
-                DDLogError("⛔️ Unable to persist self-driven push token ID: \(error)")
-            }
-        }
-        stores.dispatch(setTokenAction)
     }
 
     func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
@@ -771,5 +764,11 @@ private enum PushType {
 private extension PushNotificationsManager {
     enum Localization {
         static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
+    }
+}
+
+extension UserDefaults {
+    @objc dynamic var wooPushnotificationToken: String? {
+        string(forKey: Key.wooPushnotificationToken.rawValue)
     }
 }

@@ -123,6 +123,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.connectionImage)
     }
 
+    func test_connectWPCom_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.connectWPComImage)
+    }
+
     func test_create_order_image_is_not_nil() {
         XCTAssertNotNil(UIImage.createOrderImage)
     }

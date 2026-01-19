@@ -277,7 +277,7 @@ private extension DashboardView {
                     case .shareStore:
                         shareStoreCard
                     case .connectWPCom:
-                        EmptyView() // TODO
+                        connectWPComCard
                     }
                 }
             }
@@ -319,6 +319,35 @@ private extension DashboardView {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), lineWidth: 1)
         )
+        .padding(.horizontal, Layout.padding)
+    }
+
+    var connectWPComCard: some View {
+        HStack {
+            Image(uiImage: .connectWPComImage)
+            VStack(alignment: .leading) {
+                Text(Localization.ConnectWPComCard.title)
+                    .font(.body)
+                    .fontWeight(.semibold)
+                Text(Localization.ConnectWPComCard.subtitle)
+                    .font(.callout)
+            }
+            VStack {
+                Menu {
+                    Button(Localization.ConnectWPComCard.hideButton) {
+                        // TODO
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(Color.secondary)
+                        .padding(.leading, Layout.padding)
+                }
+                Spacer()
+            }
+        }
+        .padding(Layout.padding)
+        .background(Color(.listForeground(modal: false)))
+        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
     }
 
@@ -474,6 +503,24 @@ private extension DashboardView {
                 "dashboardView.newCardsNoticeCard.addSectionsButtonText",
                 value: "Add New Sections",
                 comment: "Label of the button to add sections"
+            )
+        }
+
+        enum ConnectWPComCard {
+            static let title = NSLocalizedString(
+                "dashboardView.connectWPComCard.title",
+                value: "Never miss a new order",
+                comment: "Title of the Connect WPCom card on My Store screen"
+            )
+            static let subtitle = NSLocalizedString(
+                "dashboardView.connectWPComCard.subtitle",
+                value: "Connect your store to a WordPress.com account to get alerts for new orders and reviews.",
+                comment: "Subtitle of the Connect WPCom card on My Store screen"
+            )
+            static let hideButton = NSLocalizedString(
+                "dashboardView.connectWPComCard.hideButton",
+                value: "Hide this content",
+                comment: "Button to hide the Connect WPCom card from the My Store screen"
             )
         }
     }

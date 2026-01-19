@@ -16,7 +16,6 @@ protocol AgeRangeVerificationCoordinatorProtocol {
 extension AgeRangeVerificationCoordinator {
     enum Constants {
         static let minimumTOSRequiredAge = 13
-        static let significantAppUpdateDescription = "Significant app update"
     }
 }
 
@@ -78,13 +77,12 @@ private extension AgeRangeVerificationCoordinator {
                     "Age is eligible. significantAppChangeApprovalRequired: \(significantAppChangeApprovalRequired), isMinor: \(isMinor)"
                 )
                 Task { @MainActor in
-                    let isAgeRatingChangeDetected = await self.ageRatingChangeDetector.checkForChange() != nil
+                    let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
                     let outcome = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
                         in: anchor,
                         isMinor: isMinor,
                         significantAppChangeApprovalRequired: significantAppChangeApprovalRequired,
-                        isAgeRatingChangeDetected: isAgeRatingChangeDetected,
-                        significantAppUpdateDescription: Constants.significantAppUpdateDescription
+                        ageRatingChange: ageRatingChange
                     )
                     switch outcome {
                     case .denied:

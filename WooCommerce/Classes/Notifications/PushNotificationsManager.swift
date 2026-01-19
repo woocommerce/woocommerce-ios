@@ -152,11 +152,17 @@ final class PushNotificationsManager: PushNotesManager {
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics,
-         shouldRegisterSelfDrivenPushNotification: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
-        self.selfDrivenPushNotificationEnabled = shouldRegisterSelfDrivenPushNotification
+        self.selfDrivenPushNotificationEnabled = {
+            if configuration.storesManager.isAuthenticatedWithoutWPCom {
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
+            } else {
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom)
+            }
+        }()
     }
 }
 

@@ -737,6 +737,11 @@
 		20D3D4382F197A00004CE6E3 /* POSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4392F197A00004CE6E3 /* POSRoute.swift */; };
 		20D3D43A2F197A00004CE6E3 /* POSPromotionDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D43B2F197A00004CE6E3 /* POSPromotionDestination.swift */; };
 		20D3D43C2F197A00004CE6E3 /* POSRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D43D2F197A00004CE6E3 /* POSRouteTests.swift */; };
+		20D3D43E2F197B00004CE6E3 /* POSPromotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */; };
+		20D3D4402F197B00004CE6E3 /* POSPromotionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */; };
+		20D3D4422F197B00004CE6E3 /* POSPromotionStepsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */; };
+		20D3D4442F197B00004CE6E3 /* PageIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4452F197B00004CE6E3 /* PageIndicatorView.swift */; };
+		20D3D4462F197B00004CE6E3 /* POSPromotionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */; };
 		20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */; };
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
 		20DA45652EF975660007FD3B /* CouponCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA45642EF975660007FD3B /* CouponCellViewModel.swift */; };
@@ -3667,6 +3672,11 @@
 		20D3D4392F197A00004CE6E3 /* POSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSRoute.swift; sourceTree = "<group>"; };
 		20D3D43B2F197A00004CE6E3 /* POSPromotionDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionDestination.swift; sourceTree = "<group>"; };
 		20D3D43D2F197A00004CE6E3 /* POSRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSRouteTests.swift; sourceTree = "<group>"; };
+		20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionView.swift; sourceTree = "<group>"; };
+		20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionViewModel.swift; sourceTree = "<group>"; };
+		20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionStepsFactory.swift; sourceTree = "<group>"; };
+		20D3D4452F197B00004CE6E3 /* PageIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageIndicatorView.swift; sourceTree = "<group>"; };
+		20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionViewModelTests.swift; sourceTree = "<group>"; };
 		20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRow.swift; sourceTree = "<group>"; };
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
 		20DA45642EF975660007FD3B /* CouponCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCellViewModel.swift; sourceTree = "<group>"; };
@@ -7366,6 +7376,24 @@
 			path = Destinations;
 			sourceTree = "<group>";
 		};
+		20D3D4482F197B00004CE6E3 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D4492F197B00004CE6E3 /* Promotion */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
+		20D3D4492F197B00004CE6E3 /* Promotion */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */,
+				20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */,
+				20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */,
+			);
+			path = Promotion;
+			sourceTree = "<group>";
+		};
 		20B259342F18DB7A006DF96E /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -8609,6 +8637,7 @@
 				CEE02AF72C1859B400B0B6AB /* MessageComposeView.swift */,
 				DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */,
 				CE9F60112C09D53500652E0A /* FeedbackBannerPopover.swift */,
+				20D3D4452F197B00004CE6E3 /* PageIndicatorView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -9773,6 +9802,7 @@
 				02817B37242B34260050AD8B /* Toolbar */,
 				02404EE52315272C00FF1170 /* Top Banner */,
 				D449C52726DFBBE000D75B02 /* WhatsNew */,
+				20D3D4482F197B00004CE6E3 /* POS */,
 				CE63023B2BAAEF0800E3325C /* Customers */,
 				3F587020281B9494004F7556 /* LaunchScreen.storyboard */,
 				3F58701E281B947E004F7556 /* Main.storyboard */,
@@ -11886,8 +11916,25 @@
 				02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */,
 				953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */,
 				02B8E4182DFBC218001D01FD /* MainTabBarController+TabsTests.swift */,
+				20D3D44A2F197B00004CE6E3 /* POS */,
 			);
 			path = ViewRelated;
+			sourceTree = "<group>";
+		};
+		20D3D44A2F197B00004CE6E3 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D44B2F197B00004CE6E3 /* Promotion */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
+		20D3D44B2F197B00004CE6E3 /* Promotion */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */,
+			);
+			path = Promotion;
 			sourceTree = "<group>";
 		};
 		D817585C22BB5E6900289CFE /* Order Details */ = {
@@ -14985,6 +15032,10 @@
 				20D3D4332C65E59B004CE6E3 /* OrdersRoute.swift in Sources */,
 				20D3D4382F197A00004CE6E3 /* POSRoute.swift in Sources */,
 				20D3D43A2F197A00004CE6E3 /* POSPromotionDestination.swift in Sources */,
+				20D3D43E2F197B00004CE6E3 /* POSPromotionView.swift in Sources */,
+				20D3D4402F197B00004CE6E3 /* POSPromotionViewModel.swift in Sources */,
+				20D3D4422F197B00004CE6E3 /* POSPromotionStepsFactory.swift in Sources */,
+				20D3D4442F197B00004CE6E3 /* PageIndicatorView.swift in Sources */,
 				2DCB54FA2E6AE8E100621F90 /* CIABEligibilityChecker.swift in Sources */,
 				31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				022266BC2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift in Sources */,
@@ -16411,6 +16462,7 @@
 				B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */,
 				20D3D4372C65EF72004CE6E3 /* OrdersRouteTests.swift in Sources */,
 				20D3D43C2F197A00004CE6E3 /* POSRouteTests.swift in Sources */,
+				20D3D4462F197B00004CE6E3 /* POSPromotionViewModelTests.swift in Sources */,
 				09C6A26227C01166001FAD73 /* BulkUpdateViewModelTests.swift in Sources */,
 				6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */,
 				023D69442588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift in Sources */,

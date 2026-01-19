@@ -724,13 +724,16 @@ extension MainTabBarController: DeepLinkNavigator {
     }
 
     private func presentPOSPromotionModal() {
-        let alertController = UIAlertController(
-            title: "POS Promotion",
-            message: "POS Promotion modal placeholder",
-            preferredStyle: .alert
+        let modalView = POSPromotionModal_UIKit(
+            onDismiss: { [weak self] in
+                self?.dismiss(animated: false)
+            }
         )
-        alertController.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alertController, animated: true)
+        let hostingController = UIHostingController(rootView: modalView)
+        hostingController.view.backgroundColor = .clear
+        hostingController.modalPresentationStyle = .overFullScreen
+        hostingController.modalTransitionStyle = .crossDissolve
+        present(hostingController, animated: true)
     }
 }
 

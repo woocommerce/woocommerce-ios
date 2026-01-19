@@ -1,6 +1,6 @@
 /// FeatureFlag exposes a series of features to be conditionally enabled on different builds.
 ///
-public enum FeatureFlag: Int {
+public enum FeatureFlag: Int, CaseIterable {
 
     /// Throwaway case, to prevent a compiler error:
     /// `An enum with no cases cannot declare a raw type`

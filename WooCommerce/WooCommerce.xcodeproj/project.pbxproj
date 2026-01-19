@@ -1349,6 +1349,7 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */; };
+		643492C42F1A45B30080AEC1 /* OverrideFeatureFlagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */; };
 		646FEDB82EE827DF00352BFF /* ApplicationLogProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646FEDB72EE827DF00352BFF /* ApplicationLogProvider.swift */; };
 		647C05FB2ED5D9E800E5FF3F /* NotesContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */; };
 		647C05FD2ED5E1C000E5FF3F /* BookingNotesRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */; };
@@ -4260,6 +4261,7 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideFeatureFlagsView.swift; sourceTree = "<group>"; };
 		646FEDB72EE827DF00352BFF /* ApplicationLogProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogProvider.swift; sourceTree = "<group>"; };
 		647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesContent.swift; sourceTree = "<group>"; };
 		647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingNotesRowView.swift; sourceTree = "<group>"; };
@@ -10507,6 +10509,7 @@
 		BAF1B3B32736595A00BA11DC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */,
 				027D4A8B2526FD1700108626 /* SettingsViewController.swift */,
 				BAE4F8422734325C00871344 /* SettingsViewModel.swift */,
 				027D4A8C2526FD1700108626 /* SettingsViewController.xib */,
@@ -14880,6 +14883,7 @@
 				DEB06E1F2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift in Sources */,
 				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
 				86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */,
+				643492C42F1A45B30080AEC1 /* OverrideFeatureFlagsView.swift in Sources */,
 				EE19058C2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift in Sources */,
 				68D23B5B2E14FD1C00316BA6 /* SummaryTableViewCellViewModel.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,

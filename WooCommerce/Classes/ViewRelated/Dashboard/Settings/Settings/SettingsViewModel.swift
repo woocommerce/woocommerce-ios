@@ -184,7 +184,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
-        print("self \(#function)")
         configureSections()
         presenter?.refreshViewContent()
     }
@@ -211,8 +210,6 @@ private extension SettingsViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        print("self \(#function)")
-
         let wooTokenChanges = defaults
             .publisher(for: \.wooPushnotificationToken)
             .map { _ in () }

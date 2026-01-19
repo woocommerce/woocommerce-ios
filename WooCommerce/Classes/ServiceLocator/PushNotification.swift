@@ -135,18 +135,6 @@ enum APNSKey {
     static let order = "order"
 }
 
-/// SwiftUI Identifiable conformance
-///
-extension PushNotification: Identifiable {
-    var id: String {
-        if let noteID {
-            String(describing: noteID)
-        } else {
-            UUID().uuidString
-        }
-    }
-}
-
 private extension Note {
     static func createdFrom(_ payload: [String: Any]) throws -> Note? {
         let data = try JSONSerialization.data(withJSONObject: payload)

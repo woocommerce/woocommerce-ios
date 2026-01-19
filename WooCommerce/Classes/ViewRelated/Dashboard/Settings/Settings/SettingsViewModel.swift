@@ -293,7 +293,7 @@ private extension SettingsViewModel {
                 let WPComTokenExists = defaults.deviceToken != nil
                 return (isWooTokenExists && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) && !WPComTokenExists
             }()
-            if (notificationAvailable && featureFlagService.isFeatureFlagEnabled(.notificationSettings)) && !isSelfDrivenPushNotificationsRegistered {
+            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]

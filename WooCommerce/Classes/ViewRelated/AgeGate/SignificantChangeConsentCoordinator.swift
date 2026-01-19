@@ -15,15 +15,9 @@ final class SignificantChangeConsentCoordinator {
 
     func checkConsentIfNeeded(
         in viewController: UIViewController,
-        isMinor: Bool,
-        significantAppChangeApprovalRequired: Bool,
         ageRatingChange: AgeRatingChangeCheckResult?,
         manualChangeIdentifier: SignificantChangeIdentifier? = nil
     ) async -> SignificantChangeConsentOutcome {
-        guard isMinor, significantAppChangeApprovalRequired else {
-            return .granted
-        }
-
         let changeIdentifier: SignificantChangeIdentifier? = {
             if let manualChangeIdentifier { return manualChangeIdentifier }
             guard let ageRatingChange else { return nil }

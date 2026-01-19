@@ -76,12 +76,15 @@ private extension AgeRangeVerificationCoordinator {
                 DDLogInfo(
                     "Age is eligible. significantAppChangeApprovalRequired: \(significantAppChangeApprovalRequired), isMinor: \(isMinor)"
                 )
+                guard isMinor, significantAppChangeApprovalRequired else {
+                    onResult(.allow, result)
+                    return
+                }
+
                 Task { @MainActor in
                     let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
                     let outcome = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
                         in: anchor,
-                        isMinor: isMinor,
-                        significantAppChangeApprovalRequired: significantAppChangeApprovalRequired,
                         ageRatingChange: ageRatingChange
                     )
                     switch outcome {

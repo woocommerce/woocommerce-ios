@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 import Yosemite
 import Storage
 import class Networking.UserAgent
@@ -106,6 +107,8 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let analytics: Analytics
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     /// Reference to the Zendesk shared instance
     ///
     private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
@@ -158,6 +161,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadWhatsNewOnWooCommerce()
         loadSites()
         reloadSettings()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -180,6 +184,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
+        print("self \(#function)")
         configureSections()
         presenter?.refreshViewContent()
     }
@@ -203,6 +208,25 @@ private extension SettingsViewModel {
     ///
     func loadSites() {
         sites = sitesResultsController.fetchedObjects
+    }
+
+    func observeSelfDrivenPushTokenPersistence() {
+        print("self \(#function)")
+
+        let wooTokenChanges = defaults
+            .publisher(for: \.wooPushnotificationToken)
+            .map { _ in () }
+
+        let wpComDeviceTokenChanges = defaults
+            .publisher(for: \.deviceToken)
+            .map { _ in () }
+
+        Publishers.Merge(wooTokenChanges, wpComDeviceTokenChanges)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.reloadSettings()
+            }
+            .store(in: &subscriptions)
     }
 
     func configureSections() {

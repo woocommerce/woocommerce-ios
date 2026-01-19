@@ -397,11 +397,11 @@ private extension DashboardViewModel {
             })
             .store(in: &subscriptions)
 
-        $dashboardCards.combineLatest($isInAppFeedbackCardVisible)
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $isSelfDrivenPushNotificationRegistered)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((cards, showFeedbackCard), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let ((cards, showFeedbackCard, registeredSelfDrivenPN), showNewCardsNotice, hasOrders, isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -419,6 +419,11 @@ private extension DashboardViewModel {
 
                     if !hasOrders && !isReloading {
                         allCards.append(DashboardCard.shareStoreCard)
+                    }
+
+                    /// Insert card for connecting WPCom at the top if needed
+                    if ServiceLocator.stores.isAuthenticatedWithoutWPCom, registeredSelfDrivenPN {
+                        allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
                     return allCards
                 }()
@@ -483,7 +488,7 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
-                case .inAppFeedback, .newCardsNotice, .shareStore:
+                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom:
                     break // do nothing
                 }
             }

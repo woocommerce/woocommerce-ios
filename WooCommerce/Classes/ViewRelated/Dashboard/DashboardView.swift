@@ -276,6 +276,8 @@ private extension DashboardView {
                         newCardsNoticeCard
                     case .shareStore:
                         shareStoreCard
+                    case .connectWPCom:
+                        EmptyView() // TODO
                     }
                 }
             }

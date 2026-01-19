@@ -35,7 +35,7 @@ final class DashboardViewModelTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
         storageManager = MockStorageManager()
 
         stores.updateDefaultStore(storeID: sampleSiteID)
@@ -967,6 +967,29 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_hideWPComConnectionSuggestion_updates_relevant_properties() async {
+        // Given
+        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        viewModel.hideWPComConnectionSuggestion()
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+        XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
 }
 

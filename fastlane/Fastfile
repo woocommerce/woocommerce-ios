@@ -1071,13 +1071,11 @@ platform :ios do
 
   desc 'Downloads localized metadata for App Store Connect from GlotPress'
   lane :download_localized_metadata_from_glotpress do
-    metadata_directory = FASTLANE_METADATA_FOLDER
-
     # FIXME: We should make the `fastlane/metadata/default/release_notes.txt` path be the source of truth for the original copies in the future.
     # (will require changes in the `update_app_store_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
     #
     # In the meantime, just copy the file to the right place for `deliver` to find, i.e. to the `default` pseudo-locale which is used as fallback
-    FileUtils.cp(RELEASE_NOTES_PATH, File.join(metadata_directory, 'default', 'release_notes.txt'))
+    FileUtils.cp(RELEASE_NOTES_PATH, File.join(FASTLANE_METADATA_FOLDER, 'default', 'release_notes.txt'))
 
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
@@ -1093,16 +1091,17 @@ platform :ios do
       project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
       target_files: target_files,
       locales: locales_map,
-      download_path: metadata_directory
+      download_path: FASTLANE_METADATA_FOLDER
     )
-    files_to_commit = [File.join(metadata_directory, '**', '*.txt')]
+    files_to_commit = [File.join(FASTLANE_METADATA_FOLDER, '**', '*.txt')]
 
     # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
     unless ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE
       target_files.values.map { |h| h[:desc] }.each do |file|
-        en_file_path = File.join(metadata_directory, 'en-US', file)
+        en_file_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US', file)
         if File.exist?(en_file_path)
-          UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
+          source_of_truth_subfolder = 'default'
+          UI.user_error!("File `#{en_file_path}` would override the same one in `#{File.join(FASTLANE_METADATA_FOLDER, source_of_truth_subfolder)}`, but `#{source_of_truth_subfolder}/` is the source of truth. " \
                          + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.")
         end
       end
@@ -1110,7 +1109,7 @@ platform :ios do
 
     # Ensure even empty locale folders have an empty `.gitkeep` file (in case we don't have any translation at all ready for some locales)
     locales_map.each_value do |locale|
-      gitkeep = File.join(metadata_directory, locale, '.gitkeep')
+      gitkeep = File.join(FASTLANE_METADATA_FOLDER, locale, '.gitkeep')
       next if File.exist?(gitkeep)
 
       FileUtils.mkdir_p(File.dirname(gitkeep))
@@ -1167,7 +1166,7 @@ platform :ios do
     )
 
     # Copy appstoreres (screenshot-related) txt files into `en-US`
-    en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
+    en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
     FileUtils.mkdir_p(en_us_path)
 
     [
@@ -1182,8 +1181,10 @@ platform :ios do
       FileUtils.cp(source, destination)
     end
 
-    # Never store review information (it contains passwords and PII)
-    review_info_path = File.join(Dir.pwd, 'metadata', 'review_information')
+    # We should **not** store review information, as it may contain passwords and PII.
+    #
+    # For extra security, delete any data Fastlane might have downloaded.
+    review_info_path = File.join(FASTLANE_METADATA_FOLDER, 'review_information')
     FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
   end
 
@@ -1196,13 +1197,12 @@ platform :ios do
     # Create a copy of the files to work with – this ensures that if we're doing multiple
     # screenshot generation tasks close together, we can keep reusing the same source files
     original_screenshot_directory = File.join(Dir.pwd, 'screenshots')
-    metadata_directory = File.join(Dir.pwd, 'metadata')
     output_directory = File.join(Dir.pwd, 'promo_screenshots')
 
     # Run screenshots generator tool
     promo_screenshots(
       orig_folder: original_screenshot_directory,
-      metadata_folder: metadata_directory,
+      metadata_folder: FASTLANE_METADATA_FOLDER,
       output_folder: output_directory,
       force: options[:force]
     )

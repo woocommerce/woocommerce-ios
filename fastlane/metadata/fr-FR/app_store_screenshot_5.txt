@@ -1,2 +1,1 @@
-Recevez des notifications
-lors de chaque vente
+Suivez les commandes et affichez les totaux en temps réel

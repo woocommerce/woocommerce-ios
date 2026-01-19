@@ -1,2 +1,1 @@
-Bli meddelad om
-varje försäljning
+Spåra beställningar och visa totalsummor i realtid

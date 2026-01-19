@@ -1,2 +1,1 @@
-Dapatkan pemberitahuan untuk
-setiap penjualan
+Lacak pesanan dan lihat total secara real-time

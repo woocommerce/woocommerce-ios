@@ -910,7 +910,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     // MARK: Self-driven push registration
     @MainActor
-    func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_is_nil() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_token_id_is_nil() async {
         // Given
         userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
@@ -925,11 +925,11 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
     }
 
     @MainActor
-    func test_updateSelfDrivenPushRegistrationStatus_sets_true_when_token_id_exists_and_not_wpcom_login() async {
+    func test_shouldSuggestWPComConnection_returns_true_when_token_id_exists_and_not_wpcom_login() async {
         // Given
         userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
@@ -945,11 +945,11 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertTrue(viewModel.isSelfDrivenPushNotificationRegistered)
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
     }
 
     @MainActor
-    func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_exists_and_wpcom_login() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_token_id_exists_and_wpcom_login() async {
         // Given
         userDefaults.set("123", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
@@ -966,7 +966,7 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
     }
 }
 

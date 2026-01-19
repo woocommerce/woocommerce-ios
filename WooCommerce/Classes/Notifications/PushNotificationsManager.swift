@@ -207,6 +207,9 @@ extension PushNotificationsManager {
     /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return
+        }
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
         let group = DispatchGroup()

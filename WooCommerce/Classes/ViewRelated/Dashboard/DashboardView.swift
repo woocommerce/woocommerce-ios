@@ -76,7 +76,8 @@ struct DashboardView: View {
         return (isJetpackCPSite || isNonJetpackSite) &&
             viewModel.isSiteEligibleToInstallJetpack &&
             viewModel.jetpackBannerVisibleFromAppSettings &&
-            !viewModel.isSelfDrivenPushNotificationRegistered &&
+            !viewModel.shouldSuggestWPComConnection &&
+            !viewModel.dismissedWPComConnectionSuggestion &&
             dismissedJetpackBenefitBanner == false
     }
 
@@ -335,7 +336,7 @@ private extension DashboardView {
             VStack {
                 Menu {
                     Button(Localization.ConnectWPComCard.hideButton) {
-                        // TODO
+                        viewModel.hideWPComConnectionSuggestion()
                     }
                 } label: {
                     Image(systemName: "ellipsis")

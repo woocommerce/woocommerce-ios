@@ -70,6 +70,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
 
+    @Published private(set) var isSelfDrivenPushNotificationRegistered = false
+
     @Published private(set) var shouldSuggestWPComConnection = false
 
     @Published private(set) var dismissedWPComConnectionSuggestion = false
@@ -819,7 +821,7 @@ private extension DashboardViewModel {
         let registeredSiteIDs = userDefaults.siteIDsRegisteredForWooPushNotifications
         isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
-        shouldSuggestWPComConnection = tokenID != nil && stores.isAuthenticatedWithoutWPCom && !dismissedWPComConnectionSuggestion
+        shouldSuggestWPComConnection = !registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom && !dismissedWPComConnectionSuggestion
     }
 }
 

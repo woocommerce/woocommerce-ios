@@ -350,7 +350,7 @@ private extension DashboardViewModel {
                 await self?.googleAdsDashboardCardViewModel.checkAvailability()
             }
             group.addTask { [weak self] in
-                await self?.updateWPComConnectionSuggestion()
+                await self?.updateSelfDrivenPushRegistrationStatus()
             }
         }
     }
@@ -552,7 +552,7 @@ private extension DashboardViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _, _ in
                 guard let self else { return }
-                updateWPComConnectionSuggestion()
+                updateSelfDrivenPushRegistrationStatus()
             }
             .store(in: &subscriptions)
     }
@@ -817,7 +817,7 @@ private extension DashboardViewModel {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 
-    func updateWPComConnectionSuggestion() {
+    func updateSelfDrivenPushRegistrationStatus() {
         let registeredSiteIDs = userDefaults.siteIDsRegisteredForWooPushNotifications
         isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard

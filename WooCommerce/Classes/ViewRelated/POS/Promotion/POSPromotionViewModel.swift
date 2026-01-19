@@ -1,5 +1,8 @@
 import Foundation
 import Observation
+import protocol WooFoundation.Analytics
+import struct WooFoundation.WooCommerceComUTMProvider
+import protocol Yosemite.StoresManager
 
 /// View model for the POS Promotion modal flow.
 ///
@@ -7,7 +10,12 @@ import Observation
 @Observable
 final class POSPromotionViewModel {
     /// The currently selected step index (0-indexed).
-    var selectedStep = 0
+    var selectedStep = 0 {
+        didSet {
+            guard selectedStep != oldValue else { return }
+            trackSlideViewed()
+        }
+    }
 
     /// The step descriptions to display in the modal.
     private(set) var stepDescriptions: [String]
@@ -34,16 +42,28 @@ final class POSPromotionViewModel {
         isOnFinalStep ? Localization.explorePOS : Localization.next
     }
 
+    private let analytics: Analytics
+    private let stores: StoresManager
     private let onDismiss: () -> Void
+    private let onShowWebView: (WebViewSheetViewModel) -> Void
+
+    /// Tracks whether the user tapped "Explore" to avoid double-tracking dismissal.
+    private var didTapExplore = false
 
     init(stepDescriptions: [String]? = nil,
          imageName: String = "pos-promotion-header",
          title: String = Localization.title,
-         onDismiss: @escaping () -> Void = {}) {
+         analytics: Analytics = ServiceLocator.analytics,
+         stores: StoresManager = ServiceLocator.stores,
+         onDismiss: @escaping () -> Void = {},
+         onShowWebView: @escaping (WebViewSheetViewModel) -> Void = { _ in }) {
         self.stepDescriptions = stepDescriptions ?? POSPromotionStepsFactory.stepDescriptions()
         self.imageName = imageName
         self.title = title
+        self.analytics = analytics
+        self.stores = stores
         self.onDismiss = onDismiss
+        self.onShowWebView = onShowWebView
     }
 
     // MARK: - Actions
@@ -51,10 +71,32 @@ final class POSPromotionViewModel {
     /// Called when the primary action button is tapped.
     func primaryActionTapped() {
         if isOnFinalStep {
+            didTapExplore = true
+            analytics.track(.posPromoModalExploreClicked)
+            showWebView()
             dismiss = true
         } else {
             selectedStep += 1
         }
+    }
+
+    private func showWebView() {
+        let siteID = stores.sessionManager.defaultStoreID
+        let utmProvider = WooCommerceComUTMProvider(
+            campaign: "pos_promotion_modal",
+            source: "my_store",
+            content: "pos_promotion_cta",
+            siteID: siteID
+        )
+        guard let url = utmProvider.urlWithUtmParams(string: WooConstants.URLs.posLearnMore.rawValue) else {
+            return
+        }
+        let webViewModel = WebViewSheetViewModel(
+            url: url,
+            navigationTitle: Localization.explorePOS,
+            authenticated: true
+        )
+        onShowWebView(webViewModel)
     }
 
     /// Called when the close button is tapped.
@@ -66,12 +108,22 @@ final class POSPromotionViewModel {
 
     /// Called when the view appears.
     func onAppear() {
-        // Analytics tracking will be added in the next PR
+        analytics.track(.posPromoModalViewed)
+        trackSlideViewed()
     }
 
     /// Called when the view disappears.
     func onDisappear() {
+        if !didTapExplore {
+            analytics.track(.posPromoModalDismissed)
+        }
         onDismiss()
+    }
+
+    // MARK: - Analytics
+
+    private func trackSlideViewed() {
+        analytics.track(.posPromoModalSlideViewed, withProperties: ["slide_index": selectedStep])
     }
 }
 

@@ -911,6 +911,12 @@ public enum WooAnalyticsStat: String {
     case firstCreatedProductShown = "first_created_product_shown"
     case firstCreatedProductShareTapped = "first_created_product_share_tapped"
 
+    // MARK: POS Promotion Modal
+    case posPromoModalViewed = "pos_promo_modal_viewed"
+    case posPromoModalSlideViewed = "pos_promo_modal_slide_viewed"
+    case posPromoModalDismissed = "pos_promo_modal_dismissed"
+    case posPromoModalExploreClicked = "pos_promo_modal_explore_clicked"
+
     // MARK: Product sharing AI
     //
     case productSharingAIDisplayed = "product_sharing_ai_displayed"

@@ -1131,20 +1131,13 @@ platform :ios do
 
   desc 'Download App Store Translations'
   lane :download_app_store_translations do
-    # FIXME: `download_localized_metadata_from_glotpress` makes this lane almost redundant,
+    # FIXME: `download_localized_metadata_from_glotpress` makes this lane redundant,
     # but we need to carefully adjust the screenshots metadata locations to complete the process.
+    #
     # See https://github.com/woocommerce/woocommerce-ios/issues/6987
+    #
+    # In the meantime, we use this lane to _only_ download screenshots.
     files = {
-
-      # Metadata fields
-      'app_store_name' => { desc: 'name.txt' },
-      'app_store_desc' => { desc: 'description.txt' },
-      'app_store_keywords' => { desc: 'keywords.txt' },
-      'app_store_subtitle' => { desc: 'subtitle.txt' },
-      'app_store_promo_text' => { desc: 'promotional_text.txt' },
-      "v#{release_version_current}-whats-new" => { desc: 'whats_new.txt' },
-
-      # Screenshots
       'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
       'app_store_screenshot-2' => { desc: 'app_store_screenshot_2.txt' },
       'app_store_screenshot-3' => { desc: 'app_store_screenshot_3.txt' },
@@ -1168,24 +1161,31 @@ platform :ios do
     # Copy appstoreres (screenshot-related) txt files into `en-US`
     en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
     FileUtils.mkdir_p(en_us_path)
-
-    [
-      'promo_screenshot_1.txt',
-      'promo_screenshot_2.txt',
-      'promo_screenshot_3.txt',
-      'promo_screenshot_4.txt',
-      'promo_screenshot_5.txt'
-    ].each do |filename|
-      source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-      destination = File.join(en_us_path, filename.gsub('promo_', 'app_store_'))
-      FileUtils.cp(source, destination)
-    end
+    (1..8)
+      .map { |i| "promo_screenshot_#{i}.txt" }
+      .each do |filename|
+        source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
+        destination = File.join(en_us_path, filename.gsub('promo_', 'app_store_'))
+        FileUtils.cp(source, destination)
+      end
 
     # We should **not** store review information, as it may contain passwords and PII.
     #
     # For extra security, delete any data Fastlane might have downloaded.
     review_info_path = File.join(FASTLANE_METADATA_FOLDER, 'review_information')
     FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
+
+    # Commit
+    files_to_commit = [File.join(FASTLANE_METADATA_FOLDER, '**', '*.txt')]
+    git_add(
+      path: files_to_commit,
+      shell_escape: false
+    )
+    git_commit(
+      path: files_to_commit,
+      message: 'Update metadata translations',
+      allow_nothing_to_commit: true
+    )
   end
 
   desc 'Create Promo Screenshots'

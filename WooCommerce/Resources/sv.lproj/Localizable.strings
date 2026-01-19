@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-12-10 13:30:04+0000 */
+/* Translation-Revision-Date: 2026-01-13 11:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1495,9 +1495,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Ansluter till WordPress.com";
 
-/* Title for the WPCom servers connectivity tool card */
-"Connecting to WordPress.com Servers" = "Ansluter till WordPress.com-servrar";
-
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Ansluter till en WordPress.com-webbplats";
 
@@ -1506,9 +1503,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Ansluter till ditt konto";
-
-/* Title for the Your Site connectivity tool card */
-"Connecting to your site" = "Ansluter till din webbplats";
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Ansluter din butik";
@@ -2540,9 +2534,6 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Hämtar variationer...";
 
-/* Title for the Your Site Orders connectivity tool card */
-"Fetching your site orders" = "Hämtar dina webbplatsbeställningar";
-
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
 "File Name" = "Filnamn";
@@ -2918,9 +2909,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text to contact support in the application password tutorial screen */
 "If you run into any issues, please contact our support team." = "Om du stöter på problem, kontakta vårt supportteam.";
 
-/* Info message when there are no connection issues in the connectivity tool screen */
-"If your data still isn’t loading, contact our support team for assistance." = "Om dina data fortfarande inte laddas, kontakta vårt supportteam för att få hjälp.";
-
 /* Accessibility label for image thumbnails in the media collection view. The parameter is the creation date of the image. */
 "Image, %@" = "Bild, %@";
 
@@ -3029,9 +3017,6 @@ which should be translated separately and considered part of this sentence. */
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "Försäkring (upp till %1$@)";
 
-/* Title for the internet connection connectivity tool card */
-"Internet Connection" = "Internetanslutning";
-
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Ogiltig e-postadress";
 
@@ -3113,9 +3098,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Det verkar som att du har inaktiverat analys.";
-
-/* Message when there is no internet connection in the recovery tool */
-"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "Det verkar som att du inte är ansluten till internet.\n\nKontrollera att ditt Wi-Fi är på. Om du använder mobildata, se till att detta är aktiverat i dina enhetsinställningar.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Det verkar som att din användarroll inte tillåter dig att installera Jetpack.\nKontakta din administratör för hjälp.";
@@ -3701,9 +3683,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Ingen anslutning";
-
-/* Title for when there are no connection issues in the connectivity tool screen */
-"No connection issues" = "Inga anslutningsproblem";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Inga rabattkoder hittades";
@@ -4733,9 +4712,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
 
-/* Action button title for a generic error on the connectivity tool */
-"Read more" = "Läs mer";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Läs våra tips på felsökning";
 
@@ -4969,9 +4945,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Försök ansluta igen";
-
-/* Retry connection button in the connectivity tool screen */
-"Retry connection" = "Försök ansluta igen";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Returnera till avsändare om paketet inte kan levereras";
@@ -6063,12 +6036,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Det har uppstått ett problem med din butiks Jetpack-anslutning. Försök att återansluta Jetpack eller kontakta oss så hjälper vi dig gärna.";
 
-/* Message when we there is a jetpack error in the recovery tool */
-"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "Det har uppstått ett problem med din Jetpack-anslutning.\n\nLäs mer om problemet, eller kontakta vårt supportteam så hjälper vi dig.";
-
-/* Message when we there is a generic error in the recovery tool */
-"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Det verkar vara problem med din webbplats.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Det var ett problem att kommunicera med webbplatsen.";
 
@@ -6889,14 +6856,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Vi arbetar på att göra det enklare för dig att se produkttillägg från din enhet! För tillfället kan du endast se tilläggen för dina beställningar. Du kan skapa och redigera dessa tillägg i din webbadminpanel.";
 
-/* Message when we there is a decoding error in the recovery tool */
-"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "Vi kan inte arbeta korrekt med din webbplats svar.\n\nLäs mer om problemet, eller kontakta vårt supportteam så hjälper vi dig.";
-
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "Vi kan inte ladda butiken just nu.";
-
-/* Message when we can't reach WPCom in the recovery tool */
-"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "Vi kan inte ansluta till WordPress.com för tillfället.\n\nFörsök igen om några minuter, eller kontakta vårt supportteam så hjälper vi dig.";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "We couldn't connect to your store" = "Vi kunde inte ansluta till din butik";
@@ -7280,9 +7241,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "Det tar lång tid för din webbplats att svara";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "Det tar för lång tid för din webbplats att svara.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Din butik är live.";
@@ -8803,6 +8761,54 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Felsök anslutning";
 
+/* Action button title for an error on the connectivity tool */
+"connectivityToolViewModel.action.readMore" = "Läs mer";
+
+/* Retry test button in the connectivity tool screen */
+"connectivityToolViewModel.action.retry" = "Gör test igen";
+
+/* Button to view technical error details in the connectivity tool */
+"connectivityToolViewModel.action.viewTechnicalDetails" = "Visa tekniska detaljer";
+
+/* Title for the internet connection connectivity tool card */
+"connectivityToolViewModel.connectivityTest.internetConnection" = "Internetanslutning";
+
+/* Title for the test to load products in connectivity tool */
+"connectivityToolViewModel.connectivityTest.loadingProducts" = "Hämtar produkter i din butik";
+
+/* Title for the Your Site connectivity tool card */
+"connectivityToolViewModel.connectivityTest.site" = "Ansluter till din webbplats";
+
+/* Title for the Your Site Orders connectivity tool card */
+"connectivityToolViewModel.connectivityTest.siteOrders" = "Hämtar dina webbplatsbeställningar";
+
+/* Title for the WPCom servers connectivity tool card */
+"connectivityToolViewModel.connectivityTest.wpComServers" = "Ansluter till WordPress.com-servrar";
+
+/* Message when we there is a decoding error in the recovery tool */
+"connectivityToolViewModel.errorMessage.decodingError" = "Vi kan inte arbeta korrekt med din webbplats svar.\n\nVisa tekniska detaljer nedan eller kontakta vårt supportteam så hjälper vi dig.";
+
+/* Message when we there is a generic error in the recovery tool */
+"connectivityToolViewModel.errorMessage.default" = "Det verkar vara problem med din webbplats.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Det har uppstått ett problem med din Jetpack-anslutning.\n\nLäs mer om problemet, eller kontakta vårt supportteam så hjälper vi dig.";
+
+/* Message when there is no internet connection in the recovery tool */
+"connectivityToolViewModel.errorMessage.noInternet" = "Det verkar som att du inte är ansluten till internet.\n\nKontrollera att ditt Wi-Fi är på. Se till att mobildata är aktiverat i dina enhetsinställningar om du använder detta.";
+
+/* Message when we there is a timeout error in the recovery tool */
+"connectivityToolViewModel.errorMessage.timeout" = "Det tar för lång tid för din webbplats att svara.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"connectivityToolViewModel.errorMessage.wpcomConnection" = "Vi kan inte ansluta till WordPress.com för tillfället.\n\nFörsök igen om några minuter, eller kontakta vårt supportteam så hjälper vi dig.";
+
+/* Title for when there are no connection issues in the connectivity tool screen */
+"connectivityToolViewModel.message.noIssues" = "Inga anslutningsproblem";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"connectivityToolViewModel.message.noIssuesMessage" = "Om dina data fortfarande inte laddas, kontakta vårt supportteam för att få hjälp.";
+
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Upphörde den %@";
 
@@ -9286,6 +9292,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell title on the beta features screen to enable the application passwords feature */
 "experimentalFeatures.applicationPasswords.title" = "Applikationslösenord";
+
+/* Cell description on the beta features screen to enable the POS local catalog feature */
+"experimentalFeatures.posLocalCatalog.description" = "Lagra din produktkatalog lokalt för snabbare åtkomst i Point of Sale";
+
+/* Cell title on the beta features screen to enable the POS local catalog feature */
+"experimentalFeatures.posLocalCatalog.title" = "Lokal katalog för POS";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "OK";
@@ -10177,6 +10189,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Redigera";
+
+/* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
+"pluginDetailsViewModel.updatePluginTitle" = "Uppdatera %1$@";
 
 /* Title for the Close button within the Plugin List view. */
 "pluginListView.button.close" = "Stäng";
@@ -11162,6 +11177,15 @@ which should be translated separately and considered part of this sentence. */
 /* Email portion of order header accessibility label. %1$@ is customer email address. */
 "pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "Kundens e-post: %1$@";
 
+/* Accessibility hint for issue refund button */
+"pos.orderDetailsView.issueRefundAction.accessibilityHint" = "Starta återbetalningsflöde för denna beställning";
+
+/* Primary action button to start issuing a refund on the order details view */
+"pos.orderDetailsView.issueRefundAction.title" = "Utfärda återbetalning";
+
+/* Accessibility label for the overflow actions menu button (three dots) */
+"pos.orderDetailsView.moreActions.label" = "Fler åtgärder";
+
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.orderDetailsView.netPayment.accessibilityLabel" = "Nettobetalning: %1$@";
 
@@ -11879,6 +11903,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Teman";
 
+/* Title of the web view to update WooCommerce plugin */
+"settingsViewController.title.updateWooCommerce" = "Uppdatera WooCommerce";
+
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "dela information";
@@ -12260,6 +12287,21 @@ which should be translated separately and considered part of this sentence. */
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "%1$@ om att ta emot betalningar med Tryck för att betala på iPhone.";
+
+/* Button to close technical details screen */
+"technicalDetailsView.close" = "Stäng";
+
+/* Alert message shown when technical details are copied */
+"technicalDetailsView.copiedAlert.message" = "Tekniska detaljer har kopierats till ditt urklipp.";
+
+/* Button to copy technical details to clipboard */
+"technicalDetailsView.copy" = "Kopiera";
+
+/* OK button for copied confirmation alert */
+"technicalDetailsView.ok" = "OK";
+
+/* Title of technical details screen */
+"technicalDetailsView.title" = "Tekniska detaljer";
 
 /* Button to dismiss the theme settings screen */
 "themeSettingView.cancelButton" = "Avbryt";

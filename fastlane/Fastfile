@@ -1132,16 +1132,19 @@ platform :ios do
       message: 'Update metadata translations',
       allow_nothing_to_commit: true
     )
+
+    # The promo screenshots localizations are not currently aligned with the rest of the localization setup,
+    # as such, we download them via a dedicated lane
+    download_promo_screenshots_localizations
   end
 
-  desc 'Download App Store Translations'
-  lane :download_app_store_translations do
-    # FIXME: `download_localized_metadata_from_glotpress` makes this lane redundant,
-    # but we need to carefully adjust the screenshots metadata locations to complete the process.
-    #
-    # See https://github.com/woocommerce/woocommerce-ios/issues/6987
-    #
-    # In the meantime, we use this lane to _only_ download screenshots.
+  # FIXME: `download_localized_metadata_from_glotpress` makes this lane redundant,
+  # but we need to carefully adjust the screenshots metadata locations to complete the process.
+  #
+  # See https://github.com/woocommerce/woocommerce-ios/issues/6987
+  #
+  # In the meantime, we use this lane to _only_ download screenshots.
+  lane :download_promo_screenshots_localizations do
     files = {
       'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
       'app_store_screenshot-2' => { desc: 'app_store_screenshot_2.txt' },
@@ -1188,7 +1191,7 @@ platform :ios do
     )
     git_commit(
       path: files_to_commit,
-      message: 'Update metadata translations',
+      message: 'Update promo screenshots translations',
       allow_nothing_to_commit: true
     )
   end

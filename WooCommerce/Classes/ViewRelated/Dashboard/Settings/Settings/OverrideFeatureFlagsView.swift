@@ -4,6 +4,7 @@ import Experiments
 struct OverrideFeatureFlagsView: View {
     @State private var refreshID = UUID()
     @State private var searchText = ""
+    private let defaultFeatureFlagService = DefaultFeatureFlagService()
 
     private var filteredFeatureFlags: [FeatureFlag] {
         let allFlags = FeatureFlag.allCases
@@ -18,9 +19,13 @@ struct OverrideFeatureFlagsView: View {
     var body: some View {
         List {
             ForEach(filteredFeatureFlags, id: \.self) { flag in
-                FeatureFlagRow(featureFlag: flag)
+                FeatureFlagRow(
+                    featureFlag: flag,
+                    defaultFeatureFlagService: defaultFeatureFlagService
+                )
             }
         }
+        .contentMargins(20)
         .id(refreshID)
         .searchable(text: $searchText, prompt: "Search feature flags")
         .toolbar {
@@ -43,11 +48,19 @@ struct OverrideFeatureFlagsView: View {
 
 fileprivate struct FeatureFlagRow: View {
     let featureFlag: FeatureFlag
+    private let defaultFeatureFlagService: DefaultFeatureFlagService
+
+    init(featureFlag: FeatureFlag,
+         defaultFeatureFlagService: DefaultFeatureFlagService) {
+        self.featureFlag = featureFlag
+        self.defaultFeatureFlagService = defaultFeatureFlagService
+        _overrideValue = State(initialValue: ServiceLocator.featureFlagOverrideStore.overrideValue(for: featureFlag))
+    }
 
     @State private var overrideValue: Bool?
 
     private var defaultValue: Bool {
-        DefaultFeatureFlagService().isFeatureFlagEnabled(featureFlag)
+        defaultFeatureFlagService.isFeatureFlagEnabled(featureFlag)
     }
 
     private var effectiveValue: Bool {
@@ -56,11 +69,6 @@ fileprivate struct FeatureFlagRow: View {
 
     private var isOverridden: Bool {
         overrideValue != nil
-    }
-
-    init(featureFlag: FeatureFlag) {
-        self.featureFlag = featureFlag
-        _overrideValue = State(initialValue: ServiceLocator.featureFlagOverrideStore.overrideValue(for: featureFlag))
     }
 
     var body: some View {

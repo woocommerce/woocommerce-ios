@@ -1207,7 +1207,19 @@ platform :ios do
       { source: default_file, destination: en_us_file } unless File.exist?(en_us_file)
     end
 
-    files_to_copy.each { |f| FileUtils.cp(f[:source], f[:destination]) }
+    unless files_to_copy.empty?
+      UI.message(<<~MSG)
+        Ensuring en-US sources are available because promo_screenshots does not fallback to default.
+        These should be automatically delete after completion to avoid repo noise...
+      MSG
+
+      files_to_copy.each do |f|
+        UI.message("Copying #{f[:source]} to #{f[:destination]}...")
+        FileUtils.cp(f[:source], f[:destination])
+      end
+
+      UI.message('Done')
+    end
 
     begin
       promo_screenshots(
@@ -1217,7 +1229,11 @@ platform :ios do
         force: options[:force]
       )
     ensure
+      next if files_to_copy.empty?
+
+      UI.message('Deleting any en-US screenshot title previously copied from default folder...')
       files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
+      UI.message('Done')
     end
   end
 

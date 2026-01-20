@@ -349,7 +349,9 @@ extension StripeCardReaderService: CardReaderService {
             .flatMap {
                 self.createPaymentIntent(parameters)
             }.flatMap { intent in
-                self.processPaymentIntent(intent: intent)
+                self.collectPaymentMethod(intent: intent)
+            }.flatMap { intent in
+                self.processPayment(intent: intent)
             }
             .map(PaymentIntent.init(intent:))
             .eraseToAnyPublisher()
@@ -361,8 +363,11 @@ extension StripeCardReaderService: CardReaderService {
                 .eraseToAnyPublisher()
         }
         switch activePaymentIntent.status {
-        case .requiresPaymentMethod, .requiresConfirmation:
-            return processPaymentIntent(intent: activePaymentIntent)
+        case .requiresPaymentMethod:
+            return collectPaymentMethod(intent: activePaymentIntent)
+                .flatMap { intent in
+                    self.processPayment(intent: intent)
+                }
                 .map(PaymentIntent.init(intent:))
                 .mapError { [weak self] error in
                     if case CardReaderServiceError.paymentMethodCollection = error {
@@ -375,6 +380,10 @@ extension StripeCardReaderService: CardReaderService {
                     }
                     return error
                 }
+                .eraseToAnyPublisher()
+        case .requiresConfirmation:
+            return processPayment(intent: activePaymentIntent)
+                .map(PaymentIntent.init(intent:))
                 .eraseToAnyPublisher()
         case .requiresCapture:
             return Just(PaymentIntent(intent: activePaymentIntent))
@@ -671,37 +680,66 @@ private extension StripeCardReaderService {
         }
     }
 
-    func processPaymentIntent(intent: StripeTerminal.PaymentIntent) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
-        let processPaymentIntentFuture = Future<StripeTerminal.PaymentIntent, Error>() { [weak self] promise in
-            // Send event immediately to preserve "Processing..." UI behavior, since the new Stripe API (5.0+) does not have an intermediate callback between
-            // "card read" and "confimation complete"
-            self?.sendReaderEvent(.cardDetailsCollected)
-
-            self?.paymentCancellable = Terminal.shared.processPaymentIntent(
-                intent,
-                collectConfig: nil,
-                confirmConfig: nil
-            ) { (intent, error) in
-                guard let self = self else { return }
-                self.paymentCancellable = nil
-
+    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
+        let collectPaymentMethodFuture = Future<StripeTerminal.PaymentIntent, Error>() { [weak self] promise in
+            /// Collect Payment method returns a cancellable
+            /// Because we are chaining promises, we need to retain a reference
+            /// to this cancellable if we want to cancel
+            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 if let error = error {
                     var underlyingError = Self.logAndDecodeError(error)
-
+                    /// the completion block for collectPaymentMethod will be called
+                    /// with error Canceled when collectPaymentMethod is canceled
+                    /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
                     if case .commandCancelled(let cancellationSource) = underlyingError {
-                        DDLogWarn("💳 Warning: process payment intent cancelled \(error)")
+                        DDLogWarn("💳 Warning: collect payment cancelled \(error)")
                         if case .unknown = cancellationSource {
-                            if self.cancellationStartedInApp != nil {
+                            if self?.cancellationStartedInApp != nil {
                                 underlyingError = .commandCancelled(from: .app)
                             } else {
                                 underlyingError = .commandCancelled(from: .reader)
                             }
                         }
                     } else {
-                        DDLogError("💳 Error: process payment intent \(underlyingError)")
+                        DDLogError("💳 Error: collect payment method \(underlyingError)")
                     }
+                    self?.paymentCancellable = nil
+                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
+                }
 
-                    guard let confirmError = error as? ConfirmPaymentIntentError, let paymentIntent = confirmError.paymentIntent else {
+                if let intent = intent {
+                    self?.paymentCancellable = nil
+                    self?.sendReaderEvent(.cardDetailsCollected)
+                    promise(.success(intent))
+                }
+            }
+        }
+
+        switch connectedReadersSubject.value.first?.readerType {
+        case .tapToPay:
+            // Don't add a timeout to Tap to Pay, because Apple handle it in their UI.
+            return collectPaymentMethodFuture
+                .eraseToAnyPublisher()
+        case .chipper, .stripeM2, .wisepad3, .other, .none:
+            return collectPaymentMethodFuture
+                .timeout(120, scheduler: DispatchQueue.main, customError: { [weak self] in
+                    // Cancel the payment if a card isn't provided to an external reader within two minutes
+                    _ = self?.cancelPaymentIntent()
+                    return CardReaderServiceError.paymentMethodCollection(
+                        underlyingError: .paymentMethodCollectionTimedOut)
+                })
+                .eraseToAnyPublisher()
+        }
+    }
+
+    func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+        return Future() { [weak self] promise in
+            Terminal.shared.confirmPaymentIntent(intent) { (intent, error) in
+                guard let self = self else { return }
+                if let error = error {
+                    let underlyingError = Self.logAndDecodeError(error)
+
+                    guard let paymentIntent = error.paymentIntent else {
                         return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
 
@@ -724,22 +762,6 @@ private extension StripeCardReaderService {
                     return promise(.success(intent))
                 }
             }
-        }
-
-        switch connectedReadersSubject.value.first?.readerType {
-        case .tapToPay:
-            // Don't add a timeout to Tap to Pay, because Apple handles it in their UI.
-            return processPaymentIntentFuture
-                .eraseToAnyPublisher()
-        case .chipper, .stripeM2, .wisepad3, .other, .none:
-            return processPaymentIntentFuture
-                .timeout(120, scheduler: DispatchQueue.main, customError: { [weak self] in
-                    // Cancel the payment if a card isn't provided to an external reader within two minutes
-                    _ = self?.cancelPaymentIntent()
-                    return CardReaderServiceError.paymentMethodCollection(
-                        underlyingError: .paymentMethodCollectionTimedOut)
-                })
-                .eraseToAnyPublisher()
         }
     }
 }
@@ -778,38 +800,50 @@ extension StripeCardReaderService {
         }
     }
 
-    /// Processes a refund using the unified processRefund API (SDK 5.0+).
+    /// Calling any other SDK methods between collectRefundPaymentMethod and processRefund will result in undefined behavior.
+    /// We have a spinlock to prevent other SDK methods being used until processRefund is done. It will need a timeout.
     ///
     func refund(_ parameters: StripeTerminal.RefundParameters) -> Future<StripeTerminal.Refund, Error> {
         return Future() { [weak self] promise in
-            self?.refundCancellable = Terminal.shared.processRefund(parameters, collectConfig: nil) { [weak self] processedRefund, processError in
-                guard let self = self else { return }
-                self.refundCancellable = nil
-
-                if let error = processError {
+            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { [weak self] collectError in
+                if let error = collectError {
+                    self?.refundCancellable = nil
+                    let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.refundPayment(
-                        underlyingError: Self.logAndDecodeError(error),
-                        shouldRetry: self.shouldRetryRefund(after: error)
+                        underlyingError: underlyingError,
+                        shouldRetry: true
                     )))
-                } else if let refund = processedRefund {
-                    switch refund.status {
-                        //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
-                    case .succeeded, .pending, .unknown:
-                        promise(.success(refund))
-                    case .failed:
-                        promise(.failure(CardReaderServiceError.refundPayment(
-                            underlyingError: .internalServiceError,
-                            shouldRetry: self.shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
-                        )))
-                    @unknown default:
-                        break
-                    }
                 } else {
-                    promise(.failure(CardReaderServiceError.refundPayment(
-                        underlyingError: .internalServiceError,
-                        shouldRetry: false
-                    )))
-                    //TODO: check why we might have no refund and no error
+                    // Process refund
+                    Terminal.shared.confirmRefund { [weak self] processedRefund, processError in
+                        guard let self = self else { return }
+                        self.refundCancellable = nil
+                        if let error = processError {
+                            promise(.failure(CardReaderServiceError.refundPayment(
+                                underlyingError: Self.logAndDecodeError(error),
+                                shouldRetry: self.shouldRetryRefund(after: error)
+                            )))
+                        } else if let refund = processedRefund {
+                            switch refund.status {
+                                //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
+                            case .succeeded, .pending, .unknown:
+                                promise(.success(refund))
+                            case .failed:
+                                promise(.failure(CardReaderServiceError.refundPayment(
+                                    underlyingError: .internalServiceError,
+                                    shouldRetry: self.shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
+                                )))
+                            @unknown default:
+                                break
+                            }
+                        } else {
+                            promise(.failure(CardReaderServiceError.refundPayment(
+                                underlyingError: .internalServiceError,
+                                shouldRetry: false
+                            )))
+                            //TODO: check why we might have no refund and no error
+                        }
+                    }
                 }
             }
         }
@@ -817,7 +851,7 @@ extension StripeCardReaderService {
 
     /// Implements refund retry logic as recommended by Stripe
     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)processRefund
-    /// > When `processRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
+    /// > When `confirmRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
     /// > Your app should inspect the `SCPConfirmRefundError` to decide how to proceed.
     /// >
     /// > If the `refund` property is nil, the request to Stripe's servers timed out and the refund's status is unknown.

@@ -96,8 +96,12 @@ final class DashboardViewModel: ObservableObject {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
+    private let clientSideBannerProvider: ClientSideBannerProvider
 
     private var subscriptions: Set<AnyCancellable> = []
+
+    /// Dedicated cancellable for client-side banner site observation to prevent accumulation
+    private var clientSideBannerObservationCancellable: AnyCancellable?
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -130,7 +134,8 @@ final class DashboardViewModel: ObservableObject {
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
-         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
+         clientSideBannerProvider: ClientSideBannerProvider? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -172,6 +177,13 @@ final class DashboardViewModel: ObservableObject {
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
         self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+
+        self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
+            stores: stores,
+            analytics: analytics,
+            featureFlagService: featureFlags
+        )
+
         configureTapToPayAwarnessMomentPresentation()
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
@@ -361,11 +373,49 @@ private extension DashboardViewModel {
         await blazeCampaignDashboardViewModel.reload()
     }
 
-    /// Checks for announcements to show on the dashboard
+    /// Checks for announcements to show on the dashboard.
+    /// For Jetpack-connected stores, attempts to load server-side JITMs.
+    /// For non-Jetpack stores, attempts to load client-side banners.
     ///
     @MainActor
     func syncAnnouncements(for siteID: Int64) async {
-        await syncJustInTimeMessages(for: siteID)
+        let site = stores.sessionManager.defaultSite
+        let connectionType = SiteConnectionType(site: site)
+
+        switch connectionType {
+        case .fullJetpack, .jetpackConnectionPackage:
+            await syncJustInTimeMessages(for: siteID)
+        case .nonJetpack:
+            if let site, let clientBannerVM = await clientSideBannerProvider.loadBanner(for: site) {
+                announcementViewModel = clientBannerVM
+                modalJustInTimeMessageViewModel = nil
+            }
+        case .unknown:
+            observeSiteForClientSideBanner()
+            await syncJustInTimeMessages(for: siteID)
+        }
+    }
+
+    /// Observes the site publisher to load client-side banners when the site becomes non-Jetpack.
+    private func observeSiteForClientSideBanner() {
+        // Cancel any existing observation to prevent accumulation
+        clientSideBannerObservationCancellable?.cancel()
+
+        clientSideBannerObservationCancellable = stores.sessionManager.defaultSitePublisher
+            .compactMap { $0 }
+            .filter { site in
+                SiteConnectionType(site: site) == .nonJetpack
+            }
+            .first()
+            .sink { [weak self] site in
+                guard let self else { return }
+                Task { @MainActor in
+                    if let clientBannerVM = await self.clientSideBannerProvider.loadBanner(for: site) {
+                        self.announcementViewModel = clientBannerVM
+                        self.modalJustInTimeMessageViewModel = nil
+                    }
+                }
+            }
     }
 
     func observeDashboardCardsAndReload() {

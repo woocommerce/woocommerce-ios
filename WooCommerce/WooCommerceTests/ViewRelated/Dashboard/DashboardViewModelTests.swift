@@ -28,7 +28,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     private lazy var site = Site.fake().copy(
-        siteID: sampleSiteID
+        siteID: sampleSiteID,
+        isJetpackThePluginInstalled: true,
+        isJetpackConnected: true
     )
 
     override func setUpWithError() throws {

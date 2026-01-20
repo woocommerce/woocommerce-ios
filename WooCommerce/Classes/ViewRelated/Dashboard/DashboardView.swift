@@ -390,6 +390,11 @@ private extension DashboardView {
            let announcementViewModel = viewModel.announcementViewModel {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
+            }, callToAction: {
+                // For client-side banners, open the CTA URL
+                if announcementViewModel is FeatureAnnouncementCardViewModel {
+                    UIApplication.shared.open(InPersonPaymentsPromoCampaign.ctaURL)
+                }
             })
             .background(Color(.listForeground(modal: false)))
             .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))

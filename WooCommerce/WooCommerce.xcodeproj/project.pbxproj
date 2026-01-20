@@ -745,6 +745,7 @@
 		20D3D4462F197B00004CE6E3 /* POSPromotionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */; };
 		20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */; };
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
+		20D8E3622F1FF8E500AE0FCF /* ClientSideBannerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8E3612F1FF8E500AE0FCF /* ClientSideBannerProvider.swift */; };
 		20DA45652EF975660007FD3B /* CouponCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA45642EF975660007FD3B /* CouponCellViewModel.swift */; };
 		20DA6DDB2B681175002AA0FB /* AdaptiveModalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */; };
 		20E188842AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */; };
@@ -3682,6 +3683,7 @@
 		20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionViewModelTests.swift; sourceTree = "<group>"; };
 		20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRow.swift; sourceTree = "<group>"; };
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
+		20D8E3612F1FF8E500AE0FCF /* ClientSideBannerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSideBannerProvider.swift; sourceTree = "<group>"; };
 		20DA45642EF975660007FD3B /* CouponCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCellViewModel.swift; sourceTree = "<group>"; };
 		20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveModalContainer.swift; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitView.swift; sourceTree = "<group>"; };
@@ -7200,6 +7202,7 @@
 		0371C36C2876E91500277E2C /* Feature Announcement Cards */ = {
 			isa = PBXGroup;
 			children = (
+				20D8E3612F1FF8E500AE0FCF /* ClientSideBannerProvider.swift */,
 				0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */,
 				0366EAE02909A37800B51755 /* JustInTimeMessageViewModel.swift */,
 				2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */,
@@ -14695,6 +14698,7 @@
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
 				4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */,
 				DE4B3B5626A68DD000EEF2D8 /* View+InsetPaddings.swift in Sources */,
+				20D8E3622F1FF8E500AE0FCF /* ClientSideBannerProvider.swift in Sources */,
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
 				01929C342CEF6354006C79ED /* CardPresentModalErrorWithoutEmail.swift in Sources */,
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,

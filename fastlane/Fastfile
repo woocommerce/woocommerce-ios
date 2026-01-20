@@ -356,38 +356,15 @@ platform :ios do
         comment: "translators: Multi-paragraph text used to display in the Apple App Store.\n" \
                  'Limit to 170 characters including spaces and commas.'
       },
-      'app_store_screenshot-1' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_1.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-2' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_2.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-3' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_3.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-4' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_4.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-5' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_5.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-6' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_6.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-7' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_7.txt'),
-        comment: screenshot_comment
-      },
-      'app_store_screenshot-8' => {
-        path: File.join(source_metadata_folder, 'promo_screenshot_8.txt'),
-        comment: screenshot_comment
-      }
+      **(1..8).to_h do |i|
+        [
+          "app_store_screenshot-#{i}",
+          {
+            path: File.join(source_metadata_folder, "promo_screenshot_#{i}.txt"),
+            comment: screenshot_comment
+          }
+        ]
+      end
     }
 
     gp_update_metadata_source(

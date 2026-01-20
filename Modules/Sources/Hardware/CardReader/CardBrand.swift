@@ -30,6 +30,12 @@ import Foundation
     /// Eftpos Australia card
     case eftposAu
 
+    /// Cartes Bancaires card
+    case cartesBancaires
+
+    /// Girocard card
+    case girocard
+
     /// An unknown card brand
     case unknown
 }
@@ -65,7 +71,7 @@ extension CardBrand {
             return "interac"
         case .unionPay:
             return "unionpay"
-        case .unknown, .eftposAu:
+        case .unknown, .eftposAu, .cartesBancaires, .girocard:
             return "unknown"
         }
     }

@@ -60,6 +60,20 @@ final class CardBrandTests: XCTestCase {
         XCTAssertEqual(cardBrand, .unknown)
     }
 
+    func test_card_brand_maps_to_cartes_bancaires() {
+        let terminalCardBrand = StripeTerminal.CardBrand.cartesBancaires
+        let cardBrand = CardBrand(brand: terminalCardBrand)
+
+        XCTAssertEqual(cardBrand, .cartesBancaires)
+    }
+
+    func test_card_brand_maps_to_girocard() {
+        let terminalCardBrand = StripeTerminal.CardBrand.girocard
+        let cardBrand = CardBrand(brand: terminalCardBrand)
+
+        XCTAssertEqual(cardBrand, .girocard)
+    }
+
     func test_card_brand_maps_others_to_unknown() throws {
         let terminalCardBrand = try XCTUnwrap(StripeTerminal.CardBrand(rawValue: 999))
         let cardBrand = CardBrand(brand: terminalCardBrand)

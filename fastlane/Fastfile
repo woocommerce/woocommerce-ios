@@ -1084,7 +1084,14 @@ platform :ios do
       app_store_name: { desc: 'name.txt', max_size: 30 },
       app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
       app_store_desc: { desc: 'description.txt', max_size: 4000 },
-      app_store_keywords: { desc: 'keywords.txt', max_size: 100 }
+      app_store_keywords: { desc: 'keywords.txt', max_size: 100 },
+      **(1..8).to_h do |i|
+        [
+          # Notice the GlotPress key finishes with -#{i} while the file here with _#{i}
+          :"app_store_screenshot-#{i}",
+          { desc: "app_store_screenshot_#{i}.txt" }
+        ]
+      end
     }
 
     gp_downloadmetadata(
@@ -1134,7 +1141,7 @@ platform :ios do
     )
 
     # The promo screenshots localizations are not currently aligned with the rest of the localization setup,
-    # as such, we download them via a dedicated lane
+    # as such, we post-process them in a dedicated lane
     download_promo_screenshots_localizations
   end
 
@@ -1143,29 +1150,8 @@ platform :ios do
   #
   # See https://github.com/woocommerce/woocommerce-ios/issues/6987
   #
-  # In the meantime, we use this lane to _only_ download screenshots.
+  # In the meantime, we use this lane to post-process screenshots strings.
   lane :download_promo_screenshots_localizations do
-    files = {
-      'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
-      'app_store_screenshot-2' => { desc: 'app_store_screenshot_2.txt' },
-      'app_store_screenshot-3' => { desc: 'app_store_screenshot_3.txt' },
-      'app_store_screenshot-4' => { desc: 'app_store_screenshot_4.txt' },
-      'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' },
-      'app_store_screenshot-6' => { desc: 'app_store_screenshot_6.txt' },
-      'app_store_screenshot-7' => { desc: 'app_store_screenshot_7.txt' },
-      'app_store_screenshot-8' => { desc: 'app_store_screenshot_8.txt' }
-    }
-
-    metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
-
-    gp_downloadmetadata(
-      project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      target_files: files,
-      locales: metadata_locales,
-      source_locale: 'en-US',
-      download_path: FASTLANE_METADATA_FOLDER
-    )
-
     # Copy appstoreres (screenshot-related) txt files into `en-US`
     en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
     FileUtils.mkdir_p(en_us_path)

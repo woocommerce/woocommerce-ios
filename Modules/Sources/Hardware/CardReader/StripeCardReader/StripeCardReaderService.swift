@@ -41,8 +41,6 @@ public final class StripeCardReaderService: NSObject {
     /// Stripe don't tell us where a cancellation comes from: if we keep track of when we trigger one,
     /// we can infer when it comes from the cancel button on the reader instead
     private var cancellationStartedInApp: Bool?
-
-    private static var hasInitializedTokenProvider: Bool = false
 }
 
 
@@ -258,7 +256,7 @@ extension StripeCardReaderService: CardReaderService {
             // the SDK has been initialized.
             // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
             // Before accessing the singleton for the first time, you must first call initWithTokenProvider:
-            guard Self.hasInitializedTokenProvider else {
+            guard Terminal.isInitialized() else {
                 promise(.failure(CardReaderServiceError.disconnection()))
                 return
             }
@@ -325,7 +323,7 @@ extension StripeCardReaderService: CardReaderService {
         // the SDK has been initialized.
         // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
         // `Before accessing the singleton for the first time, you must first call initWithTokenProvider:.`
-        guard Self.hasInitializedTokenProvider else {
+        guard Terminal.isInitialized() else {
             return
         }
 
@@ -1052,13 +1050,12 @@ private extension StripeCardReaderService {
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
-        if !Self.hasInitializedTokenProvider {
+        if !Terminal.isInitialized() {
             readerLocationProvider = configProvider
 
             let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
 
             Terminal.initWithTokenProvider(tokenProvider)
-            Self.hasInitializedTokenProvider = true
         }
     }
 

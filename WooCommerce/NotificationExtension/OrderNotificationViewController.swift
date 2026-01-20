@@ -19,8 +19,8 @@ final class OrderNotificationViewController: UIViewController, UNNotificationCon
         Task {
             do {
                 // Load notification, order and render order view.
-                let (note, order) = try await viewModel.loadOrder(from: notification)
-                let content = viewModel.formatContent(note: note, order: order)
+                let (order, storeName) = try await viewModel.loadOrder(from: notification)
+                let content = viewModel.formatContent(order: order, storeName: storeName)
                 addOrderNotificationView(with: content)
                 loadingIndicator?.isHidden = true
             } catch {

@@ -17,18 +17,12 @@ final class OrderNotificationViewModel {
     /// Loads a Note object from a given push notification object.
     ///
     @MainActor
-    func loadOrder(from notification: UNNotification) async throws -> (Note, Order) {
+    func loadOrder(from notification: UNNotification) async throws -> (Order, String) {
 
         /// Only store order notifications are supported.
         ///
         guard notification.request.content.categoryIdentifier == Note.Kind.storeOrder.rawValue else {
             throw Error.unsupportedNotification
-        }
-
-        /// Error of we can't find `note_id` in the user info object
-        ///
-        guard let noteID = notification.request.content.userInfo["note_id"] as? Int64 else {
-            throw Error.unavailableNote
         }
 
         /// Error if there are no valid credentials.
@@ -39,26 +33,17 @@ final class OrderNotificationViewModel {
 
         let dataService = OrderNotificationDataService(credentials: credentials)
         if let notificationData = PushNotification.from(userInfo: notification.request.content.userInfo) {
-            return try await dataService.loadOrderFrom(notification: notificationData)
+            async let order = dataService.loadOrderFrom(notification: notificationData)
+            async let storeName = dataService.loadStoreName(id: notificationData.siteID)
+            return (try await order, try await storeName)
+        } else {
+            throw Error.unsupportedNotification
         }
-        return try await dataService.loadOrderFrom(noteID: noteID)
     }
 
     /// Formats the information from the provided `Note` and `Order` to build a  `OrderNotificationView.Content` object.
     ///
-    func formatContent(note: Note, order: Order) -> OrderNotificationView.Content {
-
-        // Extract the store name from the notification subject using the provided store name indices
-        let storeName: String = {
-            guard let subtitle = note.subject.last?.text,
-                  let indices = note.subject.last?.ranges.first?.range else {
-                return AppLocalizedString("My Store", comment: "Placeholder store name on a notification")
-            }
-
-            let storeIndex = subtitle.index(subtitle.startIndex, offsetBy: indices.lowerBound)
-            return String(subtitle.suffix(from: storeIndex))
-        }()
-
+    func formatContent(order: Order, storeName: String) -> OrderNotificationView.Content {
         // Format order paid or order created date
         let date: String = {
             let date = order.datePaid ?? order.dateCreated

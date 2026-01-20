@@ -257,6 +257,11 @@ public struct SiteCreationResponse: Decodable {
     public let site: Site
     public let success: Bool
 
+    public init(site: SiteCreationResponse.Site, success: Bool) {
+        self.site = site
+        self.success = success
+    }
+
     private enum CodingKeys: String, CodingKey {
         case site = "blog_details"
         case success
@@ -275,6 +280,13 @@ public extension SiteCreationResponse {
         public let name: String
         public let url: String
         public let siteSlug: String
+
+        public init(siteID: String, name: String, url: String, siteSlug: String) {
+            self.siteID = siteID
+            self.name = name
+            self.url = url
+            self.siteSlug = siteSlug
+        }
 
         private enum CodingKeys: String, CodingKey {
             case siteID = "blogid"
@@ -335,10 +347,10 @@ private struct BlazeStatusResponse: Decodable {
 }
 
 extension SiteRemote {
-    enum SiteParameter {
-        enum Fields {
-            static let key = "fields"
-            static let value = [
+    public enum SiteParameter {
+        public enum Fields {
+            public static let key = "fields"
+            public static let value = [
                 "ID",
                 "name",
                 "description",
@@ -355,9 +367,9 @@ extension SiteRemote {
                 "garden_partner"
             ].joined(separator: ",")
         }
-        enum Options {
-            static let key = "options"
-            static let value = [
+        public enum Options {
+            public static let key = "options"
+            public static let value = [
                 "timezone",
                 "is_wpcom_store",
                 "woocommerce_is_active",
@@ -418,4 +430,12 @@ private extension SiteRemote {
         static let redirectURI = "redirect_uri"
         static let scope = "scope"
     }
+}
+
+public enum JetpackConnectionError: Error, Equatable {
+    case malformedURL
+    case accountConnectionURLNotFound
+    case invalidAuthorizationURL
+    case alreadyConnected
+    case connectionRequestFailed(message: String)
 }

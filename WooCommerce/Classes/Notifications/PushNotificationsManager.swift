@@ -771,4 +771,8 @@ extension UserDefaults {
     @objc dynamic var wooPushnotificationToken: String? {
         string(forKey: Key.wooPushnotificationToken.rawValue)
     }
+
+    @objc dynamic var deviceToken: String? {
+        string(forKey: Key.deviceToken.rawValue)
+    }
 }

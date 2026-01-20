@@ -132,7 +132,7 @@ final class POSPromotionViewModel {
 private enum Localization {
     static let title = NSLocalizedString(
         "posPromotion.title",
-        value: "Run POS with the WooCommerce mobile app",
+        value: "Point of Sale from WooCommerce",
         comment: "Title for the POS promotion modal (shown on all steps)"
     )
 

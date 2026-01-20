@@ -334,7 +334,7 @@ extension StripeCardReaderService: CardReaderService {
         }
 
         if case .failure(let error) = Terminal.shared.clearCachedCredentials() {
-            DDLogError("[StripeCardReaderService] Failed to clear cached credentials: \(error)")
+            _ = Self.logAndDecodeError(error)
         }
     }
 

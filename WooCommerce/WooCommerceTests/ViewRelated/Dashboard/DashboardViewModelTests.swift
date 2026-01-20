@@ -970,15 +970,40 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_true_when_token_id_does_not_exist_and_not_wpcom_login() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_token_id_does_not_exist_and_not_wpcom_login_and_feature_flag_disabled() async {
         // Given
         userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_true_when_token_id_does_not_exist_and_not_wpcom_login_and_feature_flag_enabled() async {
+        // Given
+        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)

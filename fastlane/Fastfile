@@ -1141,43 +1141,6 @@ platform :ios do
     )
   end
 
-  # FIXME: `download_localized_metadata_from_glotpress` makes this lane redundant,
-  # but we need to carefully adjust the screenshots metadata locations to complete the process.
-  #
-  # See https://github.com/woocommerce/woocommerce-ios/issues/6987
-  #
-  # In the meantime, we use this lane to post-process screenshots strings.
-  lane :download_promo_screenshots_localizations do
-    # Copy appstoreres (screenshot-related) txt files into `en-US`
-    en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
-    FileUtils.mkdir_p(en_us_path)
-    (1..8)
-      .map { |i| "promo_screenshot_#{i}.txt" }
-      .each do |filename|
-        source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-        destination = File.join(en_us_path, filename.gsub('promo_', 'app_store_'))
-        FileUtils.cp(source, destination)
-      end
-
-    # We should **not** store review information, as it may contain passwords and PII.
-    #
-    # For extra security, delete any data Fastlane might have downloaded.
-    review_info_path = File.join(FASTLANE_METADATA_FOLDER, 'review_information')
-    FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
-
-    # Commit
-    files_to_commit = [File.join(FASTLANE_METADATA_FOLDER, '**', '*.txt')]
-    git_add(
-      path: files_to_commit,
-      shell_escape: false
-    )
-    git_commit(
-      path: files_to_commit,
-      message: 'Update promo screenshots translations',
-      allow_nothing_to_commit: true
-    )
-  end
-
   desc 'Create Promo Screenshots'
   lane :create_promo_screenshots do |options|
     unless Fastlane::Helper::GitHelper.has_git_lfs?

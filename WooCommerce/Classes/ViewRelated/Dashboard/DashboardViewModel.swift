@@ -6,6 +6,7 @@ import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooCommerceComUTMProvider
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 @MainActor
@@ -103,6 +104,20 @@ final class DashboardViewModel: ObservableObject {
     /// Dedicated cancellable for client-side banner site observation to prevent accumulation
     private var clientSideBannerObservationCancellable: AnyCancellable?
 
+    /// Subject to receive web view sheet requests from the URL router
+    private let showWebViewSheetSubject = PassthroughSubject<WebViewSheetViewModel?, Never>()
+
+    /// URL router for client-side banners that tries deep links first, then falls back to web view
+    private lazy var clientSideBannerURLRouter: UniversalLinkRouter = {
+        UniversalLinkRouter.justInTimeMessagesUniversalLinkRouter(
+            tabBarController: AppDelegate.shared.tabBarController,
+            urlOpener: JustInTimeMessagesURLOpener(
+                navigationTitle: POSPromoOnPhonesCampaign.Localization.cardButtonTitle,
+                showWebViewSheetSubject: showWebViewSheetSubject
+            )
+        )
+    }()
+
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
            !site.isWordPressComStore || (site.visibility == .publicSite), // only show share button if it's a .org site or a public .com site
@@ -196,6 +211,7 @@ final class DashboardViewModel: ObservableObject {
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
         observeSelfDrivenPushTokenPersistence()
+        bindClientSideBannerWebViewSheet()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -272,6 +288,31 @@ final class DashboardViewModel: ObservableObject {
                 await syncAnnouncements(for: siteID)
             }
         }
+    }
+
+    /// Handles the CTA tap for client-side promotional banners.
+    /// Uses `UniversalLinkRouter` to first try handling the URL as a deep link,
+    /// falling back to showing a web view if no deep link route matches.
+    func handleClientSideBannerCTATapped() {
+        let utmProvider = WooCommerceComUTMProvider(
+            campaign: "client_side_banner",
+            source: "my_store",
+            content: "pos_promo_on_phones",
+            siteID: siteID
+        )
+        guard let url = utmProvider.urlWithUtmParams(string: POSPromoOnPhonesCampaign.ctaURLString) else {
+            return
+        }
+        clientSideBannerURLRouter.handle(url: url)
+    }
+
+    /// Binds the client-side banner web view sheet subject to the published property
+    private func bindClientSideBannerWebViewSheet() {
+        showWebViewSheetSubject
+            .sink { [weak self] webViewSheetViewModel in
+                self?.justInTimeMessagesWebViewModel = webViewSheetViewModel
+            }
+            .store(in: &subscriptions)
     }
 
     func showCustomizationScreen() {

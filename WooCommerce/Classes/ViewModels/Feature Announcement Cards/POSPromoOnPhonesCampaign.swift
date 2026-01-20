@@ -2,7 +2,10 @@ import Foundation
 
 struct POSPromoOnPhonesCampaign {
 
-    static let ctaURL = URL(string: "https://woocommerce.com/in-person-payments/")!
+    /// The base URL for the CTA (without UTM params)
+    static var ctaURLString: String {
+        WooConstants.URLs.posLearnMore.rawValue
+    }
 
     var configuration: FeatureAnnouncementCardViewModel.Configuration {
         .init(source: .myStore,

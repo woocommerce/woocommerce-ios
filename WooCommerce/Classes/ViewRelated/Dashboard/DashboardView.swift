@@ -391,9 +391,10 @@ private extension DashboardView {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
             }, callToAction: {
-                // For client-side banners, open the CTA URL
+                // For client-side banners, use the universal link router to handle the URL
+                // (tries deep links first, falls back to web view)
                 if announcementViewModel is FeatureAnnouncementCardViewModel {
-                    UIApplication.shared.open(InPersonPaymentsPromoCampaign.ctaURL)
+                    viewModel.handleClientSideBannerCTATapped()
                 }
             })
             .background(Color(.listForeground(modal: false)))

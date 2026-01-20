@@ -1,10 +1,15 @@
 import UIKit
 import Experiments
 
+enum AppAccessDescision: Equatable {
+    case allow
+    case denyAndLogout
+}
+
 protocol AgeRangeVerificationCoordinatorProtocol {
     func triggerAgeVerificationIfNeeded(
         hostingWindow: UIWindow,
-        onResult: @escaping (Bool, AgeRangeVerificationResult) -> Void
+        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
     )
 }
 
@@ -28,17 +33,17 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     ///   - onResult: Called on when a result is obtained. Passes if the age is eligible + verification result value.
     func triggerAgeVerificationIfNeeded(
         hostingWindow: UIWindow,
-        onResult: @escaping (Bool, AgeRangeVerificationResult) -> Void
+        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
     ) {
         guard featureFlagService.isFeatureFlagEnabled(.ageRangeRequirementsCompliance) else {
-            onResult(true, .featureUnavailable)
+            onResult(.allow, .featureUnavailable)
             return
         }
 
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
             // Allow flow to continue if we can't present the dialogue.
-            onResult(true, .invalidUIState)
+            onResult(.allow, .invalidUIState)
             return
         }
 
@@ -46,22 +51,22 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             in: anchor,
             minimumAge: Constants.minimumTOSRequiredAge
         ) { result in
-            let isEligible: Bool
+            let decision: AppAccessDescision
             switch result {
             case .eligible:
-                isEligible = true
+                decision = .allow
             case .ineligible:
-                isEligible = false
+                decision = .denyAndLogout
             case .declinedSharing,
                  .featureUnavailable,
                  .invalidUIState,
                  .sdkError,
                  .unknown:
                 // Non-deterministic/unavailable results are treated as allowed.
-                isEligible = true
+                decision = .allow
             }
 
-            onResult(isEligible, result)
+            onResult(decision, result)
         }
     }
 }

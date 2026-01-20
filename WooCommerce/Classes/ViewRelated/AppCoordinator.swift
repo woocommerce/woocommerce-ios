@@ -440,9 +440,9 @@ private extension AppCoordinator {
     func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window
-        ) { [weak self] isEligible, _ in
+        ) { [weak self] appAccessDescision, _ in
             guard let self else { return }
-            if isEligible {
+            if appAccessDescision == .allow {
                 onAllowed()
             } else {
                 self.forceLogoutAndShowAgeAlert()

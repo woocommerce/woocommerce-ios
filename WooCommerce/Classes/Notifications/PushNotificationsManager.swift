@@ -102,6 +102,17 @@ final class PushNotificationsManager: PushNotesManager {
         }
     }
 
+    /// Self driven push notificaiton token
+    ///
+    private var wooPushnotificationToken: String? {
+        get {
+            return configuration.defaults.object(forKey: .wooPushnotificationToken)
+        }
+        set {
+            configuration.defaults.set(newValue, forKey: .wooPushnotificationToken)
+        }
+    }
+
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
@@ -113,6 +124,7 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
+    private let shouldRegisterSelfDrivenPushNotification: Bool
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -120,10 +132,12 @@ final class PushNotificationsManager: PushNotesManager {
     ///
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         shouldRegisterSelfDrivenPushNotification: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
+        self.shouldRegisterSelfDrivenPushNotification = shouldRegisterSelfDrivenPushNotification
     }
 }
 
@@ -230,15 +244,30 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        // Register in the Dotcom's Infrastructure
-        registerDotcomDevice(with: newToken) { (device, error) in
-            guard let deviceID = device?.deviceID else {
-                DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
-                return
+        if shouldRegisterSelfDrivenPushNotification {
+            DDLogInfo("📱 Self Registering Push Notifications")
+            // We will need to remove the old registartion, this is just for the newly registered stores
+            registerSelfDrivenPushNotificationFlow(with: newToken) { result in
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
+                case .success(let token):
+                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
+                    self.deviceID = "\(token)"
+                }
             }
+        }
+        else {
+            // Register in the Dotcom's Infrastructure
+            registerDotcomDevice(with: newToken) { (device, error) in
+                guard let deviceID = device?.deviceID else {
+                    DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
+                    return
+                }
 
-            DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
-            self.deviceID = deviceID
+                DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
+                self.deviceID = deviceID
+            }
         }
     }
 
@@ -565,6 +594,59 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
+    func registerSelfDrivenPushNotificationFlow(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        guard let siteID else {
+            DDLogError("⛔️ Unable to register self-driven push token: missing siteID")
+            return
+        }
+
+        DDLogInfo("📱 Registering self-driven push notification token")
+
+        let device = APNSDevice(deviceToken: deviceToken)
+        let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+            siteID: siteID,
+            device: device,
+            applicationID: WooConstants.pushApplicationID
+        ) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let tokenID):
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, onCompletion: onCompletion)
+
+            case .failure(let error):
+                DDLogError("⛔️ Unable to register self-driven push token: \(error)")
+                onCompletion(.failure(error))
+            }
+        }
+
+        stores.dispatch(action)
+    }
+
+    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        wooPushnotificationToken = "\(tokenID)"
+        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
+            onCompletion(.success(tokenID))
+        })
+    }
+
+    func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
+        guard !stores.isAuthenticatedWithoutWPCom else {
+            onCompletion()
+            return
+        }
+
+        unregisterDotcomDeviceIfPossible { [weak self] error in
+            if let error {
+                DDLogError("⛔️ Unable to unregister WP.com push token: \(error)")
+            }
+
+            // Remove the WP.com token locally regardless of unregister success.
+            self?.deviceToken = nil
+            onCompletion()
+        }
+    }
+
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.
     ///
     func unregisterDotcomDeviceIfPossible(onCompletion: @escaping (Error?) -> Void) {
@@ -682,5 +764,11 @@ private enum PushType {
 private extension PushNotificationsManager {
     enum Localization {
         static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
+    }
+}
+
+extension UserDefaults {
+    @objc dynamic var wooPushnotificationToken: String? {
+        string(forKey: Key.wooPushnotificationToken.rawValue)
     }
 }

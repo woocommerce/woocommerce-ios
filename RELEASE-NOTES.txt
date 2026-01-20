@@ -4,6 +4,10 @@
 24.0
 -----
 - [Internal]: Update Stripe SDK to 5.0 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
+- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16485]
+- [internal] Track WPCom connection type [https://github.com/woocommerce/woocommerce-ios/pull/16509]
+- [*] Add POS learn more modal flow [https://github.com/woocommerce/woocommerce-ios/pull/16528]
+
 
 23.9
 -----

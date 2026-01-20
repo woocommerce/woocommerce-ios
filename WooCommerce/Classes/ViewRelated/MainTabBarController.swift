@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 import WordPressUI
@@ -715,9 +716,41 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case is POSPromotionDestination:
+            presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentPOSPromotionModal() {
+        var pendingWebViewModel: WebViewSheetViewModel?
+
+        let modalView = POSPromotionModal_UIKit(
+            onDismiss: { [weak self] in
+                self?.dismiss(animated: false) {
+                    if let webViewModel = pendingWebViewModel {
+                        self?.presentWebViewSheet(webViewModel)
+                    }
+                }
+            },
+            onShowWebView: { webViewModel in
+                pendingWebViewModel = webViewModel
+            }
+        )
+        let hostingController = UIHostingController(rootView: modalView)
+        hostingController.view.backgroundColor = .clear
+        hostingController.modalPresentationStyle = .overFullScreen
+        hostingController.modalTransitionStyle = .crossDissolve
+        present(hostingController, animated: true)
+    }
+
+    private func presentWebViewSheet(_ webViewModel: WebViewSheetViewModel) {
+        let webViewSheet = WebViewSheet(viewModel: webViewModel, done: { [weak self] in
+            self?.dismiss(animated: true)
+        })
+        let hostingController = UIHostingController(rootView: webViewSheet)
+        present(hostingController, animated: true)
     }
 }
 

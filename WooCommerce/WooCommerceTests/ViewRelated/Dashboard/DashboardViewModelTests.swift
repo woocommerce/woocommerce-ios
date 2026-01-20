@@ -889,10 +889,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldShowAnnouncementBanner_returns_true_when_announcement_exists_and_onboarding_not_enabled() async throws {
+    func test_shouldShowAnnouncementBanner_returns_true_when_announcement_exists() async throws {
         // Given - announcement exists and onboarding card is not enabled (all tasks completed)
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
-        userDefaults[.completedAllStoreOnboardingTasks] = true
         mockReloadingData(jitmResult: .success([message]))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -905,58 +904,69 @@ final class DashboardViewModelTests: XCTestCase {
         // When
         await viewModel.reloadAllData()
 
-        // Then - onboarding card should be disabled
-        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .onboarding }))
-        XCTAssertFalse(onboardingCard.enabled)
-        // And banner should be visible
+        // Then - banner should be visible
         XCTAssertTrue(viewModel.shouldShowAnnouncementBanner)
     }
 
+    // MARK: Self-driven push registration
     @MainActor
-    func test_shouldShowAnnouncementBanner_returns_true_when_announcement_exists_and_onboarding_disabled() async throws {
-        // Given - announcement exists and onboarding card is disabled via stored dashboard cards
-        let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
-        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: false)]
-        mockReloadingData(jitmResult: .success([message]), storedDashboardCards: storedCards)
-
+    func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_is_nil() async {
+        // Given
+        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        mockReloadingData()
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
 
-        // Then - onboarding card should be disabled
-        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .onboarding }))
-        XCTAssertFalse(onboardingCard.enabled)
-        // And banner should be visible
-        XCTAssertTrue(viewModel.shouldShowAnnouncementBanner)
+        // Then
+        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
     }
 
     @MainActor
-    func test_shouldShowAnnouncementBanner_returns_false_when_onboarding_card_enabled_and_shown() async throws {
-        // Given - announcement exists but onboarding is enabled and visible
-        let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
-        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true)]
-        mockReloadingData(jitmResult: .success([message]), storedDashboardCards: storedCards)
-
+    func test_updateSelfDrivenPushRegistrationStatus_sets_true_when_token_id_exists_and_not_wpcom_login() async {
+        // Given
+        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
 
-        // Then - onboarding card should be enabled and shown
-        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: { $0.type == .onboarding }))
-        XCTAssertTrue(onboardingCard.enabled)
-        XCTAssertEqual(onboardingCard.availability, .show)
-        // And banner should be hidden (onboarding takes priority)
-        XCTAssertFalse(viewModel.shouldShowAnnouncementBanner)
+        // Then
+        XCTAssertTrue(viewModel.isSelfDrivenPushNotificationRegistered)
+    }
+
+    @MainActor
+    func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_exists_and_wpcom_login() async {
+        // Given
+        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
     }
 }
 

@@ -63,7 +63,9 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                storesManager: self.storesManager,
                                                                userNotificationsCenter: self.userNotificationCenter)
 
-            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
+            return PushNotificationsManager(configuration: configuration,
+                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                            shouldRegisterSelfDrivenPushNotification: false)
         }()
     }
 
@@ -637,6 +639,49 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(application.presentInAppMessages.isEmpty)
     }
+
+    func testRegisterDeviceToken_whenSelfDrivenGateEnabled_registersSelfDrivenToken_andPersistsDeviceID() {
+        // Given
+        mockSelfDrivenRegistrationActions(token: 123)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                           shouldRegisterSelfDrivenPushNotification: true)
+        }()
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            XCTFail("Invalid sample token")
+            return
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        // 1) It dispatches the self-driven registration action
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssertTrue(notificationActions.contains(where: {
+            if case .registerDeviceForSelfDrivenPushNotifications = $0 { return true }
+            return false
+        }))
+
+        // 2) It persists the resulting deviceID
+        XCTAssertEqual(defaults.object(forKey: .deviceID), "123")
+
+        // 3) It clears WPcom token
+        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
+
+        // 4) It dispatches the token persistence action
+        XCTAssertTrue(defaults.containsObject(forKey: .wooPushnotificationToken))
+    }
 }
 
 
@@ -672,6 +717,26 @@ private extension PushNotificationsManagerTests {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case .synchronizeNotifications(let completion) = action {
                 completion(error)
+            }
+        }
+    }
+
+    func mockSelfDrivenRegistrationActions(token: Int64 = 42, error: Error? = nil) {
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .registerDeviceForSelfDrivenPushNotifications(_, _, _, let completion):
+                if let error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(token))
+                }
+
+            case .unregisterDevice(let deviceID, let onCompletion):
+                XCTAssertEqual(deviceID, "wpcom-device-id")
+                onCompletion(nil)
+
+            default:
+                break
             }
         }
     }

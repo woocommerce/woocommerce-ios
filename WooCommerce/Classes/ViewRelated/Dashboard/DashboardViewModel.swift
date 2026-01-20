@@ -18,15 +18,8 @@ final class DashboardViewModel: ObservableObject {
     @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
 
     /// Whether the announcement banner should be shown.
-    /// Returns true if there's an announcement AND the onboarding card is not visible.
     var shouldShowAnnouncementBanner: Bool {
-        guard announcementViewModel != nil else {
-            return false
-        }
-        let onboardingCardIsVisible = dashboardCards.contains { card in
-            card.type == .onboarding && card.enabled && card.availability != .hide
-        }
-        return !onboardingCardIsVisible
+        return announcementViewModel != nil
     }
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
@@ -76,6 +69,8 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
     @Published private(set) var isSiteEligibleToInstallJetpack = true
+
+    @Published private(set) var isSelfDrivenPushNotificationRegistered = false
 
     @Published private var hasOrders = false
 
@@ -188,6 +183,7 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -344,6 +340,9 @@ private extension DashboardViewModel {
             }
             group.addTask { [weak self] in
                 await self?.googleAdsDashboardCardViewModel.checkAvailability()
+            }
+            group.addTask { [weak self] in
+                await self?.updateSelfDrivenPushRegistrationStatus()
             }
         }
     }
@@ -532,6 +531,16 @@ private extension DashboardViewModel {
         userDefaults.publisher(for: \.wpcomSiteSuspended)
             .map { !$0 }
             .assign(to: &$isSiteEligibleToInstallJetpack)
+    }
+
+    func observeSelfDrivenPushTokenPersistence() {
+        userDefaults.publisher(for: \.wooPushnotificationToken)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                updateSelfDrivenPushRegistrationStatus()
+            }
+            .store(in: &subscriptions)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
@@ -792,6 +801,11 @@ private extension DashboardViewModel {
     @MainActor
     func updateJetpackBannerVisibilityFromAppSettings() async {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
+    }
+
+    func updateSelfDrivenPushRegistrationStatus() {
+        let tokenID = userDefaults.wooPushnotificationToken
+        isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
     }
 }
 

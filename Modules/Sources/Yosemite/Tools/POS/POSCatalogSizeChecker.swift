@@ -14,24 +14,28 @@ public protocol POSCatalogSizeCheckerProtocol {
 /// Implementation of catalog size checker that uses the sync remote to get counts
 public struct POSCatalogSizeChecker: POSCatalogSizeCheckerProtocol {
     private let syncRemote: POSCatalogSyncRemoteProtocol
+    private let posProductsOnlyEnabled: Bool
 
-    public init(syncRemote: POSCatalogSyncRemoteProtocol) {
+    public init(syncRemote: POSCatalogSyncRemoteProtocol,
+                posProductsOnlyEnabled: Bool) {
         self.syncRemote = syncRemote
+        self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
     public init(credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
-                appPasswordSupportState: AnyPublisher<Bool, Never>) {
+                appPasswordSupportState: AnyPublisher<Bool, Never>,
+                posProductsOnlyEnabled: Bool) {
         let syncRemote = POSCatalogSyncRemote(network: AlamofireNetwork(credentials: credentials,
                                                                         selectedSite: selectedSite,
                                                                         appPasswordSupportState: appPasswordSupportState))
-        self.init(syncRemote: syncRemote)
+        self.init(syncRemote: syncRemote, posProductsOnlyEnabled: posProductsOnlyEnabled)
     }
 
     public func checkCatalogSize(for siteID: Int64) async throws -> POSCatalogSize {
         // Make concurrent requests to get both counts
-        async let productCount = syncRemote.getProductCount(siteID: siteID)
-        async let variationCount = syncRemote.getProductVariationCount(siteID: siteID)
+        async let productCount = syncRemote.getProductCount(siteID: siteID, posProductsOnly: posProductsOnlyEnabled)
+        async let variationCount = syncRemote.getProductVariationCount(siteID: siteID, posProductsOnly: posProductsOnlyEnabled)
 
         do {
             return try await POSCatalogSize(

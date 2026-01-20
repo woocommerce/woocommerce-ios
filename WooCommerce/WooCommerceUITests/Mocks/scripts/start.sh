@@ -3,14 +3,15 @@
 set -eu
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-VENDOR_DIR="$(pwd)/vendor/wiremock"
+VENDOR_DIR="$(pwd)/WooCommerce/WooCommerceUITests/Mocks/vendor/wiremock"
+BUILD_ARTIFACTS_DIR="$(pwd)/build/logs"
 
-WIREMOCK_VERSION="2.26.0"
-WIREMOCK_JAR="${VENDOR_DIR}/wiremock-standalone-${WIREMOCK_VERSION}.jar"
+WIREMOCK_VERSION="2.35.2"
+WIREMOCK_JAR="${VENDOR_DIR}/wiremock-jre8-standalone-${WIREMOCK_VERSION}.jar"
 
 if [ ! -f "$WIREMOCK_JAR" ]; then
     mkdir -p "${VENDOR_DIR}" && cd "${VENDOR_DIR}"
-    curl -O -J "https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${WIREMOCK_VERSION}/wiremock-standalone-${WIREMOCK_VERSION}.jar"
+    curl -O -J "https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-jre8-standalone/${WIREMOCK_VERSION}/wiremock-jre8-standalone-${WIREMOCK_VERSION}.jar"
     cd ..
 fi
 
@@ -18,6 +19,12 @@ fi
 PORT="${1:-8282}"
 
 # Start WireMock server. See http://wiremock.org/docs/running-standalone/
+# Redirect output to a log file on CI to reduce log noise
+OUTPUT_REDIRECT="/dev/stdout"
+if [ -n "${CI:-}" ]; then
+    OUTPUT_REDIRECT="${BUILD_ARTIFACTS_DIR}/wiremock.txt"
+    mkdir -p "$BUILD_ARTIFACTS_DIR"
+fi
 java -jar "${WIREMOCK_JAR}" --root-dir "${SCRIPT_DIR}/.." \
                             --port "$PORT" \
-                            --global-response-templating
+                            --global-response-templating > "$OUTPUT_REDIRECT" 2>&1

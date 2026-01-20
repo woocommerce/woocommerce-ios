@@ -3,6 +3,7 @@ import SwiftUI
 class POSModalManager: ObservableObject {
     @Published private(set) var isPresented: Bool = false
     @Published private(set) var allowsInteractiveDismissal: Bool = true
+    @Published private(set) var isFullScreen: Bool = false
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
 
@@ -26,6 +27,10 @@ class POSModalManager: ObservableObject {
         allowsInteractiveDismissal = allowed
     }
 
+    func setFullScreen(_ fullScreen: Bool) {
+        isFullScreen = fullScreen
+    }
+
     func onDisappear() {
         reset()
     }
@@ -33,6 +38,7 @@ class POSModalManager: ObservableObject {
     private func reset() {
         onDismiss = nil
         allowsInteractiveDismissal = true
+        isFullScreen = false
         contentBuilder = nil
     }
 }

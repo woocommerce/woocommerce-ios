@@ -247,6 +247,7 @@ extension BookingDetailsViewModel {
             status: newStatus
         ) { [weak self] error in
             if let error, let self {
+                self.analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .updateAttendance, error: error))
                 DDLogError("⛔️ Error updating booking attendance status: \(error)")
                 displayErrorNotice(
                     messageFormat: Localization.bookingAttendanceStatusUpdateFailedMessage
@@ -321,6 +322,7 @@ extension BookingDetailsViewModel {
             stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
                 if let error {
                     continuation.resume(throwing: error)
+                    analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .cancelBooking, error: error))
                 } else {
                     continuation.resume(returning: ())
                     analytics.track(event: .BookingsDetail.bookingCancelled())
@@ -352,8 +354,9 @@ extension BookingDetailsViewModel {
     func markBookingAsPaid() async throws {
         analytics.track(event: .BookingsDetail.bookingMarkAsPaidTapped())
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { error in
+            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
                 if let error {
+                    analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .markAsPaid, error: error))
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: ())

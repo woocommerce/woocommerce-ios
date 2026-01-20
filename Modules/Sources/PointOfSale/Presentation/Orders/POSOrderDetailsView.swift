@@ -15,7 +15,9 @@ struct POSOrderDetailsView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView: Bool = false
+    @State private var refundModalState: RefundModalState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -62,6 +64,11 @@ struct POSOrderDetailsView: View {
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .posModal(item: $refundModalState, onDismiss: {
+            orderListModel.ordersController.clearRefundSelection()
+        }) { state in
+            refundModalContent(for: state)
         }
         .onAppear {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -412,7 +419,10 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { }
+            return {
+                orderListModel.ordersController.startRefundFlow()
+                refundModalState = .itemSelection
+            }
         }
     }
 
@@ -483,6 +493,77 @@ private extension POSOrderDetailsView {
         Divider()
             .overlay(Color.posOutlineVariant.opacity(0.5))
             .padding(.vertical, POSSpacing.small)
+    }
+}
+
+// MARK: - Refund Modal State
+
+enum RefundModalState: Identifiable, Equatable {
+    case itemSelection
+    case review(POSRefundReviewData)
+    case reasonInput(POSRefundReviewData)
+
+    var id: String {
+        switch self {
+        case .itemSelection: return "itemSelection"
+        case .review: return "review"
+        case .reasonInput: return "reasonInput"
+        }
+    }
+}
+
+// MARK: - Refund Modal Content
+
+private extension POSOrderDetailsView {
+    @ViewBuilder
+    func refundModalContent(for state: RefundModalState) -> some View {
+        switch state {
+        case .itemSelection:
+            POSRefundItemsSelectionView(
+                onClose: { refundModalState = nil },
+                onContinue: { navigateToRefundReview() }
+            )
+        case .review(let reviewData):
+            POSRefundReviewView(
+                onClose: { refundModalState = nil },
+                itemsCount: reviewData.itemsCount,
+                formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
+                formattedTax: reviewData.formattedTax,
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                refundReason: reviewData.refundReason,
+                onAddReason: {
+                    refundModalState = .reasonInput(reviewData)
+                },
+                onContinue: {
+                    // TODO: Process refund
+                    refundModalState = nil
+                },
+                onEditRefund: {
+                    refundModalState = .itemSelection
+                }
+            )
+        case .reasonInput(let reviewData):
+            POSRefundReasonView(
+                initialReason: reviewData.refundReason,
+                onSave: { reason in
+                    var updatedReviewData = reviewData
+                    updatedReviewData.refundReason = reason
+                    refundModalState = .review(updatedReviewData)
+                },
+                onBack: {
+                    refundModalState = .review(reviewData)
+                },
+                onClose: {
+                    refundModalState = nil
+                }
+            )
+        }
+    }
+
+    func navigateToRefundReview() {
+        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else { return }
+        refundModalState = .review(reviewData)
     }
 }
 

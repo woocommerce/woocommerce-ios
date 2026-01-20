@@ -100,8 +100,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ciab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .pointOfSaleSurveys:
-            return true
         case .pointOfSaleCatalogAPI:
             return false
         case .pointOfSaleRefundsi1:

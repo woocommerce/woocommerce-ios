@@ -1139,10 +1139,6 @@ platform :ios do
       message: 'Update metadata translations',
       allow_nothing_to_commit: true
     )
-
-    # The promo screenshots localizations are not currently aligned with the rest of the localization setup,
-    # as such, we post-process them in a dedicated lane
-    download_promo_screenshots_localizations
   end
 
   # FIXME: `download_localized_metadata_from_glotpress` makes this lane redundant,
@@ -1193,13 +1189,36 @@ platform :ios do
     original_screenshot_directory = File.join(Dir.pwd, 'screenshots')
     output_directory = File.join(Dir.pwd, 'promo_screenshots')
 
-    # Run screenshots generator tool
-    promo_screenshots(
-      orig_folder: original_screenshot_directory,
-      metadata_folder: FASTLANE_METADATA_FOLDER,
-      output_folder: output_directory,
-      force: options[:force]
-    )
+    # The promo_screenshots action computes the languages to process based on the given orig_folder and metadata_folder.
+    #
+    # This creates a problem for the en-US language with our Fastlane setup.
+    # That's because we use the fastlane/metadata/default folder as the source of truth for en-US.
+    # We only add files to fastlane/metadata/en-US if the copy should differ from the baseline for localizations.
+    #
+    # However, promo_screenshots cannot read from default and instead expects values in en-US.
+    #
+    # To work around this, we copy any app_store_screenshot_*.txt file that is in default but not in en-US.
+    # Once the promo screenshots have been composed, we clean up.
+    default_path = File.join(FASTLANE_METADATA_FOLDER, 'default')
+    en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
+
+    files_to_copy = Dir.glob(File.join(default_path, 'app_store_screenshot_*.txt')).filter_map do |default_file|
+      en_us_file = File.join(en_us_path, File.basename(default_file))
+      { source: default_file, destination: en_us_file } unless File.exist?(en_us_file)
+    end
+
+    files_to_copy.each { |f| FileUtils.cp(f[:source], f[:destination]) }
+
+    begin
+      promo_screenshots(
+        orig_folder: original_screenshot_directory,
+        metadata_folder: FASTLANE_METADATA_FOLDER,
+        output_folder: output_directory,
+        force: options[:force]
+      )
+    ensure
+      files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
+    end
   end
 
   ########################################################################

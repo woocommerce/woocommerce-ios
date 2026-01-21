@@ -138,19 +138,31 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     }
 
     private func trackAnnouncementShown() {
-        analytics.track(event: FeatureCardEvent.shown(source: config.source,
-                                                      campaign: config.campaign))
+        if config.campaign == .posPromoOnPhones {
+            analytics.track(.posPromotionBannerDisplayed)
+        } else {
+            analytics.track(event: FeatureCardEvent.shown(source: config.source,
+                                                          campaign: config.campaign))
+        }
     }
 
     private func trackAnnouncementDismissed(remindLater: Bool) {
-        analytics.track(event: FeatureCardEvent.dismissed(source: config.source,
-                                                          campaign: config.campaign,
-                                                          remindLater: remindLater))
+        if config.campaign == .posPromoOnPhones {
+            analytics.track(.posPromotionBannerDismissed)
+        } else {
+            analytics.track(event: FeatureCardEvent.dismissed(source: config.source,
+                                                              campaign: config.campaign,
+                                                              remindLater: remindLater))
+        }
     }
 
     private func trackAnnouncementCtaTapped() {
-        analytics.track(event: FeatureCardEvent.ctaTapped(source: config.source,
-                                                          campaign: config.campaign))
+        if config.campaign == .posPromoOnPhones {
+            analytics.track(.posPromotionBannerCtaTapped)
+        } else {
+            analytics.track(event: FeatureCardEvent.ctaTapped(source: config.source,
+                                                              campaign: config.campaign))
+        }
     }
 
     struct Configuration: Equatable {

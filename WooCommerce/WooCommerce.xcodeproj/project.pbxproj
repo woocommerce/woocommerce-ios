@@ -712,6 +712,7 @@
 		203AB2A82D01B988001D989C /* OrderCustomAmountsSectionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203AB2A72D01B97D001D989C /* OrderCustomAmountsSectionViewModelTests.swift */; };
 		204C9C742B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */; };
 		204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */; };
+		2062D1162F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */; };
 		209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */; };
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
@@ -3647,6 +3648,7 @@
 		203AB2A72D01B97D001D989C /* OrderCustomAmountsSectionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomAmountsSectionViewModelTests.swift; sourceTree = "<group>"; };
 		204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserInterfaceSizeClass+Helpers.swift"; sourceTree = "<group>"; };
 		204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockViewControllerPresenting.swift; sourceTree = "<group>"; };
+		2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromoOnPhonesCampaign.swift; sourceTree = "<group>"; };
 		20716F332D9DA289008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSalePurchasableItemFetchStrategy.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
@@ -7200,6 +7202,7 @@
 			children = (
 				0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */,
 				0366EAE02909A37800B51755 /* JustInTimeMessageViewModel.swift */,
+				2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */,
 				AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */,
 			);
 			path = "Feature Announcement Cards";
@@ -7378,24 +7381,6 @@
 			path = Destinations;
 			sourceTree = "<group>";
 		};
-		20D3D4482F197B00004CE6E3 /* POS */ = {
-			isa = PBXGroup;
-			children = (
-				20D3D4492F197B00004CE6E3 /* Promotion */,
-			);
-			path = POS;
-			sourceTree = "<group>";
-		};
-		20D3D4492F197B00004CE6E3 /* Promotion */ = {
-			isa = PBXGroup;
-			children = (
-				20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */,
-				20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */,
-				20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */,
-			);
-			path = Promotion;
-			sourceTree = "<group>";
-		};
 		20B259342F18DB7A006DF96E /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -7419,6 +7404,40 @@
 				20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */,
 			);
 			path = "Deposits Overview";
+			sourceTree = "<group>";
+		};
+		20D3D4482F197B00004CE6E3 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D4492F197B00004CE6E3 /* Promotion */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
+		20D3D4492F197B00004CE6E3 /* Promotion */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */,
+				20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */,
+				20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */,
+			);
+			path = Promotion;
+			sourceTree = "<group>";
+		};
+		20D3D44A2F197B00004CE6E3 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D44B2F197B00004CE6E3 /* Promotion */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
+		20D3D44B2F197B00004CE6E3 /* Promotion */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */,
+			);
+			path = Promotion;
 			sourceTree = "<group>";
 		};
 		20D5CB4F2AFCF82D009A39C3 /* Payments Menu */ = {
@@ -11924,22 +11943,6 @@
 			path = ViewRelated;
 			sourceTree = "<group>";
 		};
-		20D3D44A2F197B00004CE6E3 /* POS */ = {
-			isa = PBXGroup;
-			children = (
-				20D3D44B2F197B00004CE6E3 /* Promotion */,
-			);
-			path = POS;
-			sourceTree = "<group>";
-		};
-		20D3D44B2F197B00004CE6E3 /* Promotion */ = {
-			isa = PBXGroup;
-			children = (
-				20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */,
-			);
-			path = Promotion;
-			sourceTree = "<group>";
-		};
 		D817585C22BB5E6900289CFE /* Order Details */ = {
 			isa = PBXGroup;
 			children = (
@@ -15389,6 +15392,7 @@
 				2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */,
 				B6C838DE28793B3A003AB786 /* CustomFieldViewModel.swift in Sources */,
 				95B6C60E2D9DA99200E1A661 /* WPComMagicLinkRequestViewModel.swift in Sources */,
+				2062D1162F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift in Sources */,
 				20D210BE2B14C9B90099E517 /* WooPaymentsPayoutStatusDisplayDetails.swift in Sources */,
 				E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */,
 				B998DF4A2A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift in Sources */,

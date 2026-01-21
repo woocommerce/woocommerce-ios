@@ -338,6 +338,29 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
+    func test_handleNotification_does_not_display_inApp_notice_if_no_noteID_in_payload_and_site_registered_with_Woo() async throws {
+        // Given
+        let siteID: Int64 = 132
+        let payload = notificationPayload(noteID: nil, siteID: siteID, title: Sample.defaultTitle, message: nil)
+        defaults.set("\(siteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
+        }()
+
+        // When
+        application.applicationState = .active
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertNil(application.presentInAppMessages.first)
+    }
+
     // MARK: - Foreground Notification Observable
 
     func test_it_emits_foreground_notifications_when_it_receives_a_notification_while_app_is_active() async throws {
@@ -680,6 +703,19 @@ final class PushNotificationsManagerTests: XCTestCase {
         // It persists Woo token and registered site ID
         XCTAssertTrue(defaults.containsObject(forKey: .wooPushNotificationToken))
         XCTAssertTrue(defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications))
+
+        // It dispatches the WPCom PN setting update to disable mobile PNs from WPCom for the current siteID and deviceID
+        let accountActions = storesManager.receivedActions.compactMap { $0 as? AccountAction }
+        XCTAssertTrue(accountActions.contains(where: {
+            if case let .updateNotificationSettings(settings, _) = $0,
+               let blog = settings.blogs.first(where: { $0.blogID == 99 }),
+               let device = blog.devices.first(where: { $0.deviceID == 456 }),
+               device.newComment == false,
+               device.storeOrder == false {
+                return true
+            }
+            return false
+        }))
     }
 }
 
@@ -691,13 +727,13 @@ private extension PushNotificationsManagerTests {
     /// Returns a Sample Notification Payload
     ///
     func notificationPayload(badgeCount: Int = 0,
-                             noteID: Int64 = 1234,
+                             noteID: Int64? = 1234,
                              type: Note.Kind = .comment,
                              siteID: Int64 = 134,
                              title: String = Sample.defaultTitle,
                              subtitle: String? = nil,
                              message: String? = nil) -> [String: Any] {
-        [
+        var payload: [String: Any] = [
             "aps": [
                 "badge": badgeCount,
                 "alert": [
@@ -706,10 +742,13 @@ private extension PushNotificationsManagerTests {
                     "body": message
                 ]
             ] as [String: Any],
-            "note_id": noteID,
             "type": type.rawValue,
             "blog": siteID
         ]
+        if let noteID {
+            payload["note_id"] = noteID
+        }
+        return payload
     }
 
     func mockSynchronizeNotificationsAction(error: Error? = nil) {

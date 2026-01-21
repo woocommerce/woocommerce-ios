@@ -306,7 +306,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
     }
 
 

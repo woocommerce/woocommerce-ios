@@ -678,7 +678,7 @@ private extension PushNotificationsManager {
 
         disableWPComPushNotificationsIfPossible(siteID: siteID) { result in
             if let error = result.failure {
-                // TODO: add tracking, save site ID and device ID
+                // TODO: add tracking, save site ID and device ID to retry later
             }
             onCompletion(.success(tokenID))
         }

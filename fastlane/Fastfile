@@ -366,7 +366,7 @@ platform :ios do
         [
           "app_store_screenshot-#{i}",
           {
-            path: File.join(source_metadata_folder, "promo_screenshot_#{i}.txt"),
+            path: File.join(source_metadata_folder, "app_store_screenshot_#{i}.txt"),
             comment: screenshot_comment
           }
         ]

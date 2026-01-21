@@ -329,7 +329,7 @@ platform :ios do
   #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_app_store_strings do |options|
-    source_metadata_folder = File.join(FASTLANE_DIR, 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(FASTLANE_METADATA_FOLDER, 'default')
 
     # Translator comments for App Store metadata
     screenshot_comment = <<~COMMENT.chomp
@@ -356,7 +356,7 @@ platform :ios do
         COMMENT
       },
       'app_store_promo_text' => {
-        path: File.join(source_metadata_folder, 'app_store_promo_text.txt'),
+        path: File.join(source_metadata_folder, 'promotional_text.txt'),
         comment: <<~COMMENT.chomp
           translators: Multi-paragraph text used to display in the Apple App Store.
           Limit to 170 characters including spaces and commas.
@@ -1085,6 +1085,7 @@ platform :ios do
       app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
       app_store_desc: { desc: 'description.txt', max_size: 4000 },
       app_store_keywords: { desc: 'keywords.txt', max_size: 100 },
+      app_store_promo_text: { desc: 'promotional_text.txt', max_size: 170 },
       **(1..8).to_h do |i|
         [
           # Notice the GlotPress key finishes with -#{i} while the file here with _#{i}

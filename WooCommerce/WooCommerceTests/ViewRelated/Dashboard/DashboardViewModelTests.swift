@@ -912,7 +912,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_is_nil() async {
         // Given
-        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        userDefaults.set([], forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
@@ -931,7 +931,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_updateSelfDrivenPushRegistrationStatus_sets_true_when_token_id_exists_and_not_wpcom_login() async {
         // Given
-        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        userDefaults.set([Int64(123)], forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -951,7 +951,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_exists_and_wpcom_login() async {
         // Given
-        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        userDefaults.set([Int64(123)], forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
 

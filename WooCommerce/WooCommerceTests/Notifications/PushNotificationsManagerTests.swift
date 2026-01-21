@@ -642,6 +642,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     func testRegisterDeviceToken_whenSelfDrivenGateEnabled_registersSelfDrivenToken_andPersistsDeviceID() {
         // Given
+        defaults.set("456", forKey: .deviceID)
         mockSelfDrivenRegistrationActions(token: 123)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
@@ -666,21 +667,19 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.registerDeviceToken(with: tokenAsData)
 
         // Then
-        // 1) It dispatches the self-driven registration action
+        // It dispatches the self-driven registration action
         let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
         XCTAssertTrue(notificationActions.contains(where: {
             if case .registerDeviceForSelfDrivenPushNotifications = $0 { return true }
             return false
         }))
 
-        // 2) It persists the resulting deviceID
-        XCTAssertEqual(defaults.object(forKey: .deviceID), "123")
+        // It does not clear WPcom token
+        XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
 
-        // 3) It clears WPcom token
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
-
-        // 4) It dispatches the token persistence action
-        XCTAssertTrue(defaults.containsObject(forKey: .wooPushnotificationToken))
+        // It persists Woo token and registered site ID
+        XCTAssertTrue(defaults.containsObject(forKey: .wooPushNotificationToken))
+        XCTAssertTrue(defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications))
     }
 }
 

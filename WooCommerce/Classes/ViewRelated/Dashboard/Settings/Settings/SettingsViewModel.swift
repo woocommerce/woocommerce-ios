@@ -210,15 +210,7 @@ private extension SettingsViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        let wooTokenChanges = defaults
-            .publisher(for: \.wooPushnotificationToken)
-            .map { _ in () }
-
-        let wpComDeviceTokenChanges = defaults
-            .publisher(for: \.deviceToken)
-            .map { _ in () }
-
-        Publishers.Merge(wooTokenChanges, wpComDeviceTokenChanges)
+        defaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.reloadSettings()

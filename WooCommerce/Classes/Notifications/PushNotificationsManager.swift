@@ -195,7 +195,7 @@ extension PushNotificationsManager {
     }
 
 
-    /// Unregisters the Application from WordPress.com Push Notifications Service.
+    /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
@@ -290,7 +290,6 @@ extension PushNotificationsManager {
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
                 case .success(let token):
                     DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
-                    self.deviceID = "\(token)"
                 }
             }
         }
@@ -663,20 +662,16 @@ private extension PushNotificationsManager {
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         wooPushNotificationToken = "\(tokenID)"
 
-        guard let siteID,
-              let deviceID,
-              let deviceIDInt = Int64(deviceID),
-              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+        guard let siteID else {
             return onCompletion(.success(tokenID))
         }
-
         var registeredIDs = siteIDsRegisteredForWooPNs
         if registeredIDs.contains(siteID) == false {
             registeredIDs.append(siteID)
             siteIDsRegisteredForWooPNs = registeredIDs
         }
 
-        disableWPComPushNotifications(siteID: siteID, deviceID: deviceIDInt) { result in
+        disableWPComPushNotificationsIfPossible(siteID: siteID) { result in
             if let error = result.failure {
                 // TODO: add tracking, save site ID and device ID
             }
@@ -704,9 +699,14 @@ private extension PushNotificationsManager {
 
     /// Disables mobile push notifications for a site ID.
     ///
-    func disableWPComPushNotifications(siteID: Int64, deviceID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func disableWPComPushNotificationsIfPossible(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        guard let deviceID,
+              let deviceIDInt = Int64(deviceID),
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return onCompletion(.success(()))
+        }
         let updatedBlog = NotificationSettings.Blog(blogID: siteID, devices: [
-            .init(deviceID: deviceID, newComment: false, storeOrder: false)
+            .init(deviceID: deviceIDInt, newComment: false, storeOrder: false)
         ])
         let siteSettings = NotificationSettings(blogs: [updatedBlog])
         stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: onCompletion))

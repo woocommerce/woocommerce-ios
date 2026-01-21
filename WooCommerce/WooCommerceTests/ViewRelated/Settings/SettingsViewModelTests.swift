@@ -295,7 +295,7 @@ final class SettingsViewModelTests: XCTestCase {
     func test_sections_contains_does_not_contain_notifications_row_for_selfregisteredtoken() {
         // Given
         let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
-        defaults.set("123", forKey: .wooPushnotificationToken)
+        defaults.set("123", forKey: .siteIDsRegisteredForWooPushNotifications)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
         let viewModel = SettingsViewModel(stores: stores,

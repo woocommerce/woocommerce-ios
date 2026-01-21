@@ -310,9 +310,11 @@ private extension SettingsViewModel {
                 return site.isJetpackCPConnected == false
             }()
             let isSelfDrivenPushNotificationsRegistered: Bool = {
-                let isWooTokenExists = defaults.wooPushnotificationToken != nil
-                let WPComTokenExists = defaults.deviceToken != nil
-                return (isWooTokenExists && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) && !WPComTokenExists
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) &&
+                defaults.siteIDsRegisteredForWooPushNotifications.contains(siteID)
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]

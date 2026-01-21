@@ -113,6 +113,22 @@ final class PushNotificationsManager: PushNotesManager {
         }
     }
 
+    /// Site IDs registered to Woo PN system, separated by commas
+    ///
+    private var siteIDsRegisteredForWooPNs: [Int64] {
+        get {
+            let ids: String? = configuration.defaults.object(forKey: .siteIDsRegisteredForWooPushNotifications)
+            return ids?.components(separatedBy: ",")
+                .compactMap { Int64($0) } ?? []
+        }
+        set {
+            configuration.defaults.set(
+                newValue.map { "\($0)" }.joined(separator: ","),
+                forKey: .siteIDsRegisteredForWooPushNotifications
+            )
+        }
+    }
+
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
@@ -625,25 +641,25 @@ private extension PushNotificationsManager {
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         wooPushnotificationToken = "\(tokenID)"
-        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
-            onCompletion(.success(tokenID))
-        })
-    }
 
-    func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
-        guard !stores.isAuthenticatedWithoutWPCom else {
-            onCompletion()
-            return
+        guard let siteID,
+              let deviceID,
+              let deviceIDInt = Int64(deviceID),
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return onCompletion(.success(tokenID))
         }
 
-        unregisterDotcomDeviceIfPossible { [weak self] error in
-            if let error {
-                DDLogError("⛔️ Unable to unregister WP.com push token: \(error)")
-            }
+        var registeredIDs = siteIDsRegisteredForWooPNs
+        if registeredIDs.contains(siteID) == false {
+            registeredIDs.append(siteID)
+            siteIDsRegisteredForWooPNs = registeredIDs
+        }
 
-            // Remove the WP.com token locally regardless of unregister success.
-            self?.deviceToken = nil
-            onCompletion()
+        disableWPComPushNotifications(siteID: siteID, deviceID: deviceIDInt) { result in
+            if let error = result.failure {
+                // TODO: add tracking, save site ID and device ID
+            }
+            onCompletion(.success(tokenID))
         }
     }
 
@@ -663,6 +679,16 @@ private extension PushNotificationsManager {
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         configuration.storesManager.dispatch(action)
+    }
+
+    /// Disables mobile push notifications for a site ID.
+    ///
+    func disableWPComPushNotifications(siteID: Int64, deviceID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let updatedBlog = NotificationSettings.Blog(blogID: siteID, devices: [
+            .init(deviceID: deviceID, newComment: false, storeOrder: false)
+        ])
+        let siteSettings = NotificationSettings(blogs: [updatedBlog])
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: onCompletion))
     }
 }
 
@@ -774,5 +800,11 @@ extension UserDefaults {
 
     @objc dynamic var deviceToken: String? {
         string(forKey: Key.deviceToken.rawValue)
+    }
+
+    @objc dynamic var siteIDsRegisteredForWooPushNotifications: [Int64] {
+        string(forKey: Key.siteIDsRegisteredForWooPushNotifications.rawValue)?
+            .components(separatedBy: ",")
+            .compactMap { Int64($0) } ?? []
     }
 }

@@ -77,6 +77,9 @@ extension UserDefaults {
 
         // CIAB Bookings tab availability
         case ciabBookingsTabAvailable
+
+        /// Registered site IDs separated by commas
+        case siteIDsRegisteredForWooPushNotifications
     }
 }
 

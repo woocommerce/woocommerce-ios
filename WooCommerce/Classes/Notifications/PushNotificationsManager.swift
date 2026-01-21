@@ -345,6 +345,11 @@ extension PushNotificationsManager {
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
+            if siteIDsRegisteredForWooPNs.contains(foregroundNotification.siteID),
+               foregroundNotification.noteID == nil {
+                // Ignore WPCom PNs if site is registered for Woo PNs
+                return UNNotificationPresentationOptions(rawValue: 0)
+            }
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
                                           subtitle: foregroundNotification.subtitle,

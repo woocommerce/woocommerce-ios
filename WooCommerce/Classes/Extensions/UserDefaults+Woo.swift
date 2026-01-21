@@ -18,7 +18,7 @@ extension UserDefaults {
         case defaultRoles
         case deviceID
         case deviceToken
-        case wooPushnotificationToken
+        case wooPushNotificationToken
         case errorLoginSiteAddress
         case hasFinishedOnboarding
         case installationDate

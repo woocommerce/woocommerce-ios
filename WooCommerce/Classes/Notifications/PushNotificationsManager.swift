@@ -104,12 +104,12 @@ final class PushNotificationsManager: PushNotesManager {
 
     /// Self driven push notificaiton token
     ///
-    private var wooPushnotificationToken: String? {
+    private var wooPushNotificationToken: String? {
         get {
-            return configuration.defaults.object(forKey: .wooPushnotificationToken)
+            return configuration.defaults.object(forKey: .wooPushNotificationToken)
         }
         set {
-            configuration.defaults.set(newValue, forKey: .wooPushnotificationToken)
+            configuration.defaults.set(newValue, forKey: .wooPushNotificationToken)
         }
     }
 
@@ -200,15 +200,33 @@ extension PushNotificationsManager {
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
+        let group = DispatchGroup()
+        group.enter()
+        unregisterFromWooPushNotificationsIfPossible { result in
+            switch result {
+            case .success:
+                DDLogInfo("📱 Successfully unregistered from Woo Push Notifications!")
+            case .failure(let error):
+                DDLogError("⛔️ Unable to unregister from Woo Push Notifications: \(error)")
+            }
+            self.wooPushNotificationToken = nil
+            self.siteIDsRegisteredForWooPNs = []
+            group.leave()
+        }
+
+        group.enter()
         unregisterDotcomDeviceIfPossible() { error in
             if let error = error {
                 DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
             } else {
                 DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
-                self.deviceID = nil
-                self.deviceToken = nil
             }
-            // Always call completion, even on error
+            self.deviceID = nil
+            self.deviceToken = nil
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
             onCompletion()
         }
     }
@@ -640,7 +658,7 @@ private extension PushNotificationsManager {
     }
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        wooPushnotificationToken = "\(tokenID)"
+        wooPushNotificationToken = "\(tokenID)"
 
         guard let siteID,
               let deviceID,
@@ -689,6 +707,19 @@ private extension PushNotificationsManager {
         ])
         let siteSettings = NotificationSettings(blogs: [updatedBlog])
         stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: onCompletion))
+    }
+
+    func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let siteID,
+              let tokenID = wooPushNotificationToken,
+              let tokenIDInt = Int64(tokenID) else {
+            return completion(.success(()))
+        }
+        stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+            siteID: siteID,
+            tokenID: tokenIDInt,
+            onCompletion: completion
+        ))
     }
 }
 
@@ -794,8 +825,8 @@ private extension PushNotificationsManager {
 }
 
 extension UserDefaults {
-    @objc dynamic var wooPushnotificationToken: String? {
-        string(forKey: Key.wooPushnotificationToken.rawValue)
+    @objc dynamic var wooPushNotificationToken: String? {
+        string(forKey: Key.wooPushNotificationToken.rawValue)
     }
 
     @objc dynamic var deviceToken: String? {

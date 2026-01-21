@@ -310,7 +310,12 @@ extension PushNotificationsManager {
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
-                    // Fall back to dotcom PNs if authenticated with WPCom
+                    // Removes site from registered list if exists.
+                    if let siteID, siteIDsRegisteredForWooPNs.contains(siteID) {
+                        let updatedList = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
+                        siteIDsRegisteredForWooPNs = updatedList
+                    }
+                    // Falls back to dotcom PNs if authenticated with WPCom
                     if !stores.isAuthenticatedWithoutWPCom {
                         registerForWPComPushNotifications()
                     }

@@ -367,7 +367,7 @@ extension PushNotificationsManager {
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
             if siteIDsRegisteredForWooPNs.contains(foregroundNotification.siteID),
-               foregroundNotification.noteID == nil {
+               foregroundNotification.noteID != nil {
                 // Ignore WPCom PNs if site is registered for Woo PNs
                 return UNNotificationPresentationOptions(rawValue: 0)
             }

@@ -341,7 +341,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     func test_handleNotification_does_not_display_inApp_notice_if_no_noteID_in_payload_and_site_registered_with_Woo() async throws {
         // Given
         let siteID: Int64 = 132
-        let payload = notificationPayload(noteID: nil, siteID: siteID, title: Sample.defaultTitle, message: nil)
+        let payload = notificationPayload(siteID: siteID, title: Sample.defaultTitle, message: nil)
         defaults.set("\(siteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,

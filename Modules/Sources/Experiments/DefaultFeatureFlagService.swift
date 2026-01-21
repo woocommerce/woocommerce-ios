@@ -78,8 +78,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .allowMerchantAIAPIKey:
-            return false
         case .inventoryProductLabelsInPOS:
             return false
         case .productImageOptimizedHandling:

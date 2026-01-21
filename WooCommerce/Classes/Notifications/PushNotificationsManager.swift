@@ -281,19 +281,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        if selfDrivenPushNotificationEnabled {
-            DDLogInfo("📱 Self Registering Push Notifications")
-            // We will need to remove the old registartion, this is just for the newly registered stores
-            registerSelfDrivenPushNotificationFlow(with: newToken) { result in
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
-                case .success(let token):
-                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
-                }
-            }
-        }
-        else {
+        func registerForWPComPushNotifications() {
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { (device, error) in
                 guard let deviceID = device?.deviceID else {
@@ -304,6 +292,26 @@ extension PushNotificationsManager {
                 DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
                 self.deviceID = deviceID
             }
+        }
+
+        if selfDrivenPushNotificationEnabled {
+            DDLogInfo("📱 Self Registering Push Notifications")
+            // We will need to remove the old registartion, this is just for the newly registered stores
+            registerSelfDrivenPushNotificationFlow(with: newToken) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
+                    // Fall back to dotcom PNs if authenticated with WPCom
+                    if !stores.isAuthenticatedWithoutWPCom {
+                        registerForWPComPushNotifications()
+                    }
+                case .success(let token):
+                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
+                }
+            }
+        } else {
+            registerForWPComPushNotifications()
         }
     }
 

@@ -140,7 +140,7 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
-    private let shouldRegisterSelfDrivenPushNotification: Bool
+    private let selfDrivenPushNotificationEnabled: Bool
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -153,7 +153,7 @@ final class PushNotificationsManager: PushNotesManager {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
-        self.shouldRegisterSelfDrivenPushNotification = shouldRegisterSelfDrivenPushNotification
+        self.selfDrivenPushNotificationEnabled = shouldRegisterSelfDrivenPushNotification
     }
 }
 
@@ -201,17 +201,20 @@ extension PushNotificationsManager {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
         let group = DispatchGroup()
-        group.enter()
-        unregisterFromWooPushNotificationsIfPossible { result in
-            switch result {
-            case .success:
-                DDLogInfo("📱 Successfully unregistered from Woo Push Notifications!")
-            case .failure(let error):
-                DDLogError("⛔️ Unable to unregister from Woo Push Notifications: \(error)")
+
+        if selfDrivenPushNotificationEnabled {
+            group.enter()
+            unregisterFromWooPushNotificationsIfPossible { result in
+                switch result {
+                case .success:
+                    DDLogInfo("📱 Successfully unregistered from Woo Push Notifications!")
+                case .failure(let error):
+                    DDLogError("⛔️ Unable to unregister from Woo Push Notifications: \(error)")
+                }
+                self.wooPushNotificationToken = nil
+                self.siteIDsRegisteredForWooPNs = []
+                group.leave()
             }
-            self.wooPushNotificationToken = nil
-            self.siteIDsRegisteredForWooPNs = []
-            group.leave()
         }
 
         group.enter()
@@ -278,7 +281,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        if shouldRegisterSelfDrivenPushNotification {
+        if selfDrivenPushNotificationEnabled {
             DDLogInfo("📱 Self Registering Push Notifications")
             // We will need to remove the old registartion, this is just for the newly registered stores
             registerSelfDrivenPushNotificationFlow(with: newToken) { result in

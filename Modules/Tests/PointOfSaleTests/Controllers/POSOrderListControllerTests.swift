@@ -11,6 +11,7 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
 @testable import struct Yosemite.POSRefundsResult
+@testable import struct Yosemite.POSRefundableItem
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
@@ -1027,6 +1028,163 @@ final class POSOrderListControllerTests {
         #expect(reviewData?.formattedItemsSubtotal == "$2,344.04")
         #expect(reviewData?.formattedTax == "$234.40")
         #expect(reviewData?.formattedRefundTotal == "$2,578.44")
+    }
+
+    // MARK: - Process Refund Tests
+
+    @Test func processRefund_when_no_selected_order_then_does_not_call_service() async throws {
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(refundsService.createRefundCalled == false)
+    }
+
+    @Test func processRefund_when_no_items_selected_then_does_not_call_service() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            sut.toggleAllRefundItemsSelection() // Deselect all
+        }
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(refundsService.createRefundCalled == false)
+    }
+
+    @Test func processRefund_then_calls_service_with_correct_order_id() async throws {
+        // Given
+        let order = makeOrder(id: 123, lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+        }
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(refundsService.createRefundCalled == true)
+        #expect(refundsService.spyCreateRefundOrderID == 123)
+    }
+
+    @Test func processRefund_then_calls_service_with_selected_items() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
+            makePOSOrderItem(itemID: 2, quantity: 1, price: 5.00, formattedPrice: "$5.00")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
+        }
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(refundsService.spyCreateRefundItems?.count == 2) // 1 from itemID 1, 1 from itemID 2
+    }
+
+    @Test func processRefund_then_calls_service_with_reason() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+        }
+
+        // When
+        try await sut.processRefund(reason: "Customer changed their mind")
+
+        // Then
+        #expect(refundsService.spyCreateRefundReason == "Customer changed their mind")
+    }
+
+    @Test func processRefund_when_successful_then_clears_selection() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        let initialCount = await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+            return sut.refundSelectableItems.count
+        }
+        try #require(initialCount == 2)
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        let finalCount = await MainActor.run { sut.refundSelectableItems.count }
+        #expect(finalCount == 0)
+    }
+
+    @Test func processRefund_when_service_throws_then_propagates_error() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+        }
+
+        struct TestError: Error {}
+        refundsService.createRefundErrorToThrow = TestError()
+
+        // When / Then
+        var thrownError: Error?
+        do {
+            try await sut.processRefund(reason: .none)
+        } catch {
+            thrownError = error
+        }
+
+        #expect(thrownError is TestError)
+    }
+
+    @Test func processRefund_then_converts_items_with_correct_properties() async throws {
+        // Given
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 42, quantity: 3, price: 15.50, totalTax: 1.55, formattedPrice: "$15.50")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+        }
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        let items = try #require(refundsService.spyCreateRefundItems)
+        #expect(items.count == 3)
+
+        let firstItem = items[0]
+        #expect(firstItem.itemID == 42)
+        #expect(firstItem.price == 15.50)
+        #expect(firstItem.totalTax == 1.55)
+        #expect(firstItem.originalQuantity == 3)
     }
 }
 

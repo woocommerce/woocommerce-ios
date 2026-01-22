@@ -21,7 +21,6 @@ final class MockPOSRefundCalculator: POSRefundCalculating {
             return stub
         }
 
-        // Return a default request if no stub is provided
         return POSRefundRequest(
             orderID: orderID,
             amount: selectedItems.reduce(Decimal.zero) { $0 + $1.price },

@@ -57,7 +57,6 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
     }
 
-    /// Builds a Refund model from a POSRefundRequest for API submission.
     private func buildRefund(from request: POSRefundRequest) -> Refund {
         let items = request.items.map { item in
             OrderItemRefund(
@@ -93,7 +92,6 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         )
     }
 
-    /// Formats a Decimal value as a string for the API (e.g., "132.60").
     private func formatDecimalForAPI(_ value: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

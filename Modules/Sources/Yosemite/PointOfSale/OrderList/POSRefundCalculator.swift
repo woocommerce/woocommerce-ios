@@ -1,13 +1,6 @@
 import Foundation
 
-/// Protocol for calculating refund amounts and building refund requests.
 public protocol POSRefundCalculating {
-    /// Builds a refund request from selected items.
-    /// - Parameters:
-    ///   - orderID: The order ID for the refund
-    ///   - selectedItems: The items selected for refund
-    ///   - reason: Optional reason for the refund
-    /// - Returns: A POSRefundRequest ready for submission
     func buildRefundRequest(
         orderID: Int64,
         selectedItems: [POSRefundableItem],
@@ -15,7 +8,6 @@ public protocol POSRefundCalculating {
     ) -> POSRefundRequest
 }
 
-/// Represents an item that can be refunded, with the necessary data for calculations.
 public struct POSRefundableItem {
     public let itemID: Int64
     public let price: Decimal
@@ -30,8 +22,6 @@ public struct POSRefundableItem {
     }
 }
 
-/// Calculator for POS refund amounts and request building.
-/// Handles grouping items, calculating totals, and proportional tax calculations.
 public final class POSRefundCalculator: POSRefundCalculating {
 
     public init() {}
@@ -57,13 +47,10 @@ public final class POSRefundCalculator: POSRefundCalculating {
 // MARK: - Private Helpers
 
 private extension POSRefundCalculator {
-
-    /// Groups selected items by their itemID for consolidated calculations.
     func groupItemsByID(_ items: [POSRefundableItem]) -> [Int64: [POSRefundableItem]] {
         Dictionary(grouping: items, by: { $0.itemID })
     }
 
-    /// Builds refund request items from grouped items.
     func buildRefundRequestItems(from groupedItems: [Int64: [POSRefundableItem]]) -> [POSRefundRequestItem] {
         groupedItems.compactMap { itemID, items -> POSRefundRequestItem? in
             guard let firstItem = items.first else { return nil }
@@ -81,14 +68,12 @@ private extension POSRefundCalculator {
         }
     }
 
-    /// Calculates the total refund amount (subtotal + tax) for all selected items.
     func calculateTotalAmount(from items: [POSRefundableItem]) -> Decimal {
         let subtotal = items.reduce(Decimal.zero) { $0 + $1.price }
         let tax = calculateTotalTax(for: items)
         return subtotal + tax
     }
 
-    /// Calculates the refund subtotal for a group of items (sum of prices).
     func calculateRefundTotal(for items: [POSRefundableItem]) -> Decimal {
         items.reduce(Decimal.zero) { $0 + $1.price }
     }
@@ -116,7 +101,6 @@ private extension POSRefundCalculator {
         return (totalTax / originalQuantity) * selectedCount
     }
 
-    /// Calculates the total tax for all selected items, grouping by itemID first.
     func calculateTotalTax(for items: [POSRefundableItem]) -> Decimal {
         let groupedItems = groupItemsByID(items)
         return groupedItems.reduce(Decimal.zero) { total, group in

@@ -10,7 +10,6 @@ public struct POSRefundsResult {
     }
 }
 
-/// Data structure for creating a refund request in POS context.
 public struct POSRefundRequest {
     public let orderID: Int64
     public let amount: Decimal
@@ -25,7 +24,6 @@ public struct POSRefundRequest {
     }
 }
 
-/// Represents a line item to be refunded in a POS refund request.
 public struct POSRefundRequestItem {
     public let itemID: Int64
     public let quantity: Int

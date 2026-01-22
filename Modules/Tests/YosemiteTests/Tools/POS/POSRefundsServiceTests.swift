@@ -89,7 +89,7 @@ struct POSRefundsServiceTests {
 
     // MARK: - createRefund Tests
 
-    @Test func createRefund_then_callsCalculatorWithCorrectParameters() async throws {
+    @Test func createRefund_then_calls_calculator_with_correct_parameters() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let calculator = MockPOSRefundCalculator()
@@ -112,7 +112,7 @@ struct POSRefundsServiceTests {
         #expect(calculator.spyReason == reason)
     }
 
-    @Test func createRefund_then_callsRemoteWithCorrectSiteIDAndOrderID() async throws {
+    @Test func createRefund_then_calls_remote_with_correct_site_id_and_order_id() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let calculator = MockPOSRefundCalculator()
@@ -130,7 +130,7 @@ struct POSRefundsServiceTests {
         #expect(remote.spyCreateRefundOrderID == orderID)
     }
 
-    @Test func createRefund_then_buildsRefundWithCorrectAmountFromCalculator() async throws {
+    @Test func createRefund_then_builds_refund_with_correct_amount_from_calculator() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let calculator = MockPOSRefundCalculator()
@@ -150,7 +150,7 @@ struct POSRefundsServiceTests {
         #expect(remote.spyCreateRefund?.reason == "Test reason")
     }
 
-    @Test func createRefund_then_setsCreateAutomatedToTrue() async throws {
+    @Test func createRefund_then_sets_create_automated_to_true() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let sut = POSRefundsService(siteID: 123, refundsRemote: remote)
@@ -162,7 +162,7 @@ struct POSRefundsServiceTests {
         #expect(remote.spyCreateRefund?.createAutomated == true)
     }
 
-    @Test func createRefund_when_remoteFails_then_propagatesError() async throws {
+    @Test func createRefund_when_remote_fails_then_propagates_error() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         struct TestError: Error {}

@@ -7,7 +7,7 @@ struct POSRefundCalculatorTests {
 
     // MARK: - Amount Calculation
 
-    @Test func buildRefundRequest_when_multipleItems_then_calculatesCorrectTotalAmount() {
+    @Test func buildRefundRequest_when_multiple_items_then_calculates_correct_total_amount() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1),
@@ -21,7 +21,7 @@ struct POSRefundCalculatorTests {
         #expect(request.amount == Decimal(33))
     }
 
-    @Test func buildRefundRequest_when_itemHasTax_then_includesTaxInAmount() {
+    @Test func buildRefundRequest_when_item_has_tax_then_includes_tax_in_amount() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(100), totalTax: Decimal(10), originalQuantity: 1)
@@ -34,7 +34,7 @@ struct POSRefundCalculatorTests {
         #expect(request.amount == Decimal(110))
     }
 
-    @Test func buildRefundRequest_when_emptyItems_then_returnsZeroAmount() {
+    @Test func buildRefundRequest_when_empty_items_then_returns_zero_amount() {
         // When
         let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: nil)
 
@@ -44,7 +44,7 @@ struct POSRefundCalculatorTests {
 
     // MARK: - Order ID and Reason
 
-    @Test func buildRefundRequest_then_setsOrderIDCorrectly() {
+    @Test func buildRefundRequest_then_sets_order_id_correctly() {
         // Given
         let orderID: Int64 = 456
 
@@ -55,7 +55,7 @@ struct POSRefundCalculatorTests {
         #expect(request.orderID == orderID)
     }
 
-    @Test func buildRefundRequest_when_reasonProvided_then_setsReasonCorrectly() {
+    @Test func buildRefundRequest_when_reason_provided_then_sets_reason_correctly() {
         // Given
         let reason = "Customer changed their mind"
 
@@ -66,7 +66,7 @@ struct POSRefundCalculatorTests {
         #expect(request.reason == reason)
     }
 
-    @Test func buildRefundRequest_when_reasonIsNil_then_returnsNilReason() {
+    @Test func buildRefundRequest_when_reason_is_nil_then_returns_nil_reason() {
         // When
         let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: nil)
 
@@ -76,7 +76,7 @@ struct POSRefundCalculatorTests {
 
     // MARK: - Request Items
 
-    @Test func buildRefundRequest_when_sameItemIDMultipleTimes_then_groupsIntoSingleItem() {
+    @Test func buildRefundRequest_when_same_item_id_multiple_times_then_groups_into_single_item() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(2), originalQuantity: 3),
@@ -92,7 +92,7 @@ struct POSRefundCalculatorTests {
         #expect(request.items[0].itemID == 1)
     }
 
-    @Test func buildRefundRequest_when_differentItemIDs_then_createsSeparateItems() {
+    @Test func buildRefundRequest_when_different_item_ids_then_creates_separate_items() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1),
@@ -106,7 +106,7 @@ struct POSRefundCalculatorTests {
         #expect(request.items.count == 2)
     }
 
-    @Test func buildRefundRequest_when_multipleUnitsSelected_then_calculatesRefundTotalAsPriceTimesQuantity() {
+    @Test func buildRefundRequest_when_multiple_units_selected_then_calculates_refund_total_as_price_times_quantity() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(3), originalQuantity: 5),
@@ -123,7 +123,7 @@ struct POSRefundCalculatorTests {
 
     // MARK: - Tax Calculation
 
-    @Test func buildRefundRequest_when_partialUnitsSelected_then_calculatesProportionalTax() {
+    @Test func buildRefundRequest_when_partial_units_selected_then_calculates_proportional_tax() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(4), originalQuantity: 4),
@@ -137,7 +137,7 @@ struct POSRefundCalculatorTests {
         #expect(request.items[0].refundTax == Decimal(2))
     }
 
-    @Test func buildRefundRequest_when_allUnitsSelected_then_usesFullTax() {
+    @Test func buildRefundRequest_when_all_units_selected_then_uses_full_tax() {
         // Given
         let items = [
             POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(5), originalQuantity: 2),

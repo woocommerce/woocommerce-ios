@@ -534,7 +534,7 @@ private extension DashboardViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        userDefaults.publisher(for: \.wooPushnotificationToken)
+        userDefaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
@@ -804,8 +804,8 @@ private extension DashboardViewModel {
     }
 
     func updateSelfDrivenPushRegistrationStatus() {
-        let tokenID = userDefaults.wooPushnotificationToken
-        isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
+        let registeredSiteIDs = userDefaults.siteIDsRegisteredForWooPushNotifications
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
     }
 }
 

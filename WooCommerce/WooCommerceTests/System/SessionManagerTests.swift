@@ -422,6 +422,28 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.ciabBookingsTabAvailable])
     }
 
+    /// Verifies that image cache is cleared upon reset
+    ///
+    func test_siteIDsRegisteredForWooPushNotifications_is_cleared_upon_reset() throws {
+        // Given
+        let siteID: Int64 = 13
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.siteIDsRegisteredForWooPushNotifications] = siteID.description
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.siteIDsRegisteredForWooPushNotifications] as? String), siteID.description)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.siteIDsRegisteredForWooPushNotifications])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

@@ -10,6 +10,37 @@ public struct POSRefundsResult {
     }
 }
 
+/// Data structure for creating a refund request in POS context.
+public struct POSRefundRequest {
+    public let orderID: Int64
+    public let amount: Decimal
+    public let reason: String?
+    public let items: [POSRefundRequestItem]
+
+    public init(orderID: Int64, amount: Decimal, reason: String?, items: [POSRefundRequestItem]) {
+        self.orderID = orderID
+        self.amount = amount
+        self.reason = reason
+        self.items = items
+    }
+}
+
+/// Represents a line item to be refunded in a POS refund request.
+public struct POSRefundRequestItem {
+    public let itemID: Int64
+    public let quantity: Int
+    public let refundTotal: Decimal
+    public let refundTax: Decimal
+
+    public init(itemID: Int64, quantity: Int, refundTotal: Decimal, refundTax: Decimal) {
+        self.itemID = itemID
+        self.quantity = quantity
+        self.refundTotal = refundTotal
+        self.refundTax = refundTax
+    }
+}
+
 public protocol POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult
+    func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?) async throws
 }

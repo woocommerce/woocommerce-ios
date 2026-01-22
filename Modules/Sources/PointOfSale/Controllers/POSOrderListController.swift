@@ -8,6 +8,7 @@ import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
 import struct Yosemite.POSRefundsResult
+import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSOrderItem
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
@@ -29,6 +30,7 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
+    func processRefund(reason: String?) async throws
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -385,6 +387,33 @@ enum RefundActionAvailability {
 
     private func createPaymentMethodDescription(for order: POSOrder) -> String {
         String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle)
+    }
+
+    // MARK: - Refund Processing
+
+    @MainActor
+    func processRefund(reason: String?) async throws {
+        guard let order = selectedOrder else { return }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else { return }
+
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                price: item.price,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity
+            )
+        }
+
+        try await refundsService.createRefund(
+            orderID: order.id,
+            items: refundableItems,
+            reason: reason
+        )
+
+        clearRefundSelection()
     }
 }
 

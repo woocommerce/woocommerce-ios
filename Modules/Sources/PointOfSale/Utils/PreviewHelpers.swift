@@ -506,6 +506,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    func processRefund(reason: String?) async throws {}
 }
 
 // MARK: - Barcode Scan Service

@@ -77,4 +77,19 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             refundReason: nil
         )
     }
+
+    // MARK: - Refund Processing
+
+    var processRefundCalled = false
+    var spyProcessRefundReason: String?
+    var shouldThrowProcessRefundError = false
+
+    func processRefund(reason: String?) async throws {
+        processRefundCalled = true
+        spyProcessRefundReason = reason
+
+        if shouldThrowProcessRefundError {
+            throw TestError.updateOrderFailed
+        }
+    }
 }

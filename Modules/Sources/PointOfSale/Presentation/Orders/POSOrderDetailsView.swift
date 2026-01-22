@@ -503,6 +503,7 @@ enum RefundModalState: Identifiable, Equatable {
     case review(POSRefundReviewData)
     case reasonInput(POSRefundReviewData)
     case confirmation(POSRefundReviewData)
+    case processing(POSRefundReviewData)
 
     var id: String {
         switch self {
@@ -510,6 +511,7 @@ enum RefundModalState: Identifiable, Equatable {
         case .review: return "review"
         case .reasonInput: return "reasonInput"
         case .confirmation: return "confirmation"
+        case .processing: return "processing"
         }
     }
 }
@@ -563,16 +565,28 @@ private extension POSOrderDetailsView {
             POSRefundConfirmationView(
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
+                isProcessing: false,
                 onClose: {
                     refundModalState = nil
                 },
                 onConfirm: {
-                    // TODO: Process refund
-                    refundModalState = nil
+                    refundModalState = .processing(reviewData)
+                    Task { @MainActor in
+                        await processRefund(reviewData: reviewData)
+                    }
                 },
                 onBack: {
                     refundModalState = .review(reviewData)
                 }
+            )
+        case .processing(let reviewData):
+            POSRefundConfirmationView(
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                isProcessing: true,
+                onClose: {},
+                onConfirm: {},
+                onBack: {}
             )
         }
     }
@@ -580,6 +594,17 @@ private extension POSOrderDetailsView {
     func navigateToRefundReview() {
         guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else { return }
         refundModalState = .review(reviewData)
+    }
+
+    @MainActor
+    func processRefund(reviewData: POSRefundReviewData) async {
+        do {
+            try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
+            refundModalState = nil
+        } catch {
+            // TODO: Handle error - show error state
+            refundModalState = .confirmation(reviewData)
+        }
     }
 }
 

@@ -99,16 +99,8 @@ final class PushNotificationsManager: PushNotesManager {
         }
         set {
             configuration.defaults.set(newValue, forKey: .deviceID)
-            if let newValue,
-               let deviceID = Int64(newValue),
-               siteIDsRegisteredForWooPNs.isNotEmpty {
-                disableWPComPushNotifications(
-                    siteIDs: siteIDsRegisteredForWooPNs,
-                    deviceID: deviceID,
-                    onCompletion: { result in
-                        // TODO: add tracking for failure
-                    }
-                )
+            disableWPComPushNotificationsIfNeeded(siteIDs: siteIDsRegisteredForWooPNs, deviceID: newValue) { result in
+                // TODO: track error
             }
         }
     }
@@ -700,12 +692,7 @@ private extension PushNotificationsManager {
             siteIDsRegisteredForWooPNs = registeredIDs
         }
 
-        guard let deviceID,
-              let deviceIDInt = Int64(deviceID),
-              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
-            return onCompletion(.success(tokenID))
-        }
-        disableWPComPushNotifications(siteIDs: [siteID], deviceID: deviceIDInt) { result in
+        disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: deviceID) { result in
             if let error = result.failure {
                 // TODO: add tracking for failure
             }
@@ -733,10 +720,15 @@ private extension PushNotificationsManager {
 
     /// Disables mobile push notifications for given site IDs.
     ///
-    func disableWPComPushNotifications(siteIDs: [Int64], deviceID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func disableWPComPushNotificationsIfNeeded(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        guard let deviceID, let deviceIDInt = Int64(deviceID),
+              siteIDs.isNotEmpty,
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return onCompletion(.success(()))
+        }
         let updatedBlogs = siteIDs.map {
             NotificationSettings.Blog(blogID: $0, devices: [
-                .init(deviceID: deviceID, newComment: false, storeOrder: false)
+                .init(deviceID: deviceIDInt, newComment: false, storeOrder: false)
             ])
         }
         let siteSettings = NotificationSettings(blogs: updatedBlogs)

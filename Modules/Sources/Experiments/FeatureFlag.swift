@@ -224,4 +224,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables POS-only products filtering
     ///
     case pointOfSaleOnlyProducts
+
+    /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
+    ///
+    case clientSideDashboardBanner
 }

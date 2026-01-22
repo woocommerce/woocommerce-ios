@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import enum Networking.DotcomError
+import enum Networking.WooConstants
 import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
@@ -425,27 +426,43 @@ private extension DashboardViewModel {
         let site = stores.sessionManager.defaultSite
         let connectionType = SiteConnectionType(site: site)
 
+        // For placeholder sites, always observe for updates since Jetpack status
+        // may not be confirmed yet (see restoreWordPressSite flow).
+        let isPlaceholderSite = site?.siteID == Networking.WooConstants.placeholderSiteID
+
         switch connectionType {
         case .fullJetpack, .jetpackConnectionPackage:
             await syncJustInTimeMessages(for: siteID)
         case .nonJetpack:
-            if let site, let clientBannerVM = await clientSideBannerProvider.loadBanner(for: site) {
+            if isPlaceholderSite {
+                // Wait for site update to confirm Jetpack status
+                observeSiteForClientSideBanner(skipFirst: true)
+            } else if let site, let clientBannerVM = await clientSideBannerProvider.loadBanner(for: site) {
                 announcementViewModel = clientBannerVM
                 modalJustInTimeMessageViewModel = nil
             }
         case .unknown:
-            observeSiteForClientSideBanner()
+            observeSiteForClientSideBanner(skipFirst: false)
             await syncJustInTimeMessages(for: siteID)
         }
     }
 
     /// Observes the site publisher to load client-side banners when the site becomes non-Jetpack.
-    private func observeSiteForClientSideBanner() {
-        // Cancel any existing observation to prevent accumulation
+    /// - Parameter skipFirst: If true, skips the first emission (used when current site data may be incomplete).
+    private func observeSiteForClientSideBanner(skipFirst: Bool = false) {
         clientSideBannerObservationCancellable?.cancel()
 
-        clientSideBannerObservationCancellable = stores.sessionManager.defaultSitePublisher
+        var publisher = stores.sessionManager.defaultSitePublisher
             .compactMap { $0 }
+            .eraseToAnyPublisher()
+
+        if skipFirst {
+            publisher = publisher
+                .dropFirst()
+                .eraseToAnyPublisher()
+        }
+
+        clientSideBannerObservationCancellable = publisher
             .filter { site in
                 SiteConnectionType(site: site) == .nonJetpack
             }

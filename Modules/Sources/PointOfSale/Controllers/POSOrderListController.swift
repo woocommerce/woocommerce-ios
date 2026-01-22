@@ -393,10 +393,16 @@ enum RefundActionAvailability {
 
     @MainActor
     func processRefund(reason: String?) async throws {
-        guard let order = selectedOrder else { return }
+        guard let order = selectedOrder else {
+            assertionFailure("processRefund called without selected order")
+            return
+        }
 
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
-        guard !selectedItems.isEmpty else { return }
+        guard !selectedItems.isEmpty else {
+            assertionFailure("processRefund called without selected items")
+            return
+        }
 
         let refundableItems = selectedItems.map { item in
             POSRefundableItem(

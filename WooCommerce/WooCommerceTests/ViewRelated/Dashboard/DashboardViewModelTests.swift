@@ -910,7 +910,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     // MARK: Self-driven push registration
     @MainActor
-    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_token_id_is_nil() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_not_registered_with_Woo_PN() async {
         // Given
         userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
@@ -929,7 +929,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_isSelfDrivenPushNotificationRegistered_returns_true_when_token_id_exists_and_not_wpcom_login() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_true_when_site_is_registered_and_not_wpcom_login() async {
         // Given
         userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
@@ -949,9 +949,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_token_id_exists_and_wpcom_login() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_registered_and_wpcom_login() async {
         // Given
-        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
 
@@ -970,9 +970,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_false_when_token_id_does_not_exist_and_not_wpcom_login_and_feature_flag_disabled() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_disabled() async {
         // Given
-        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
@@ -993,9 +993,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_true_when_token_id_does_not_exist_and_not_wpcom_login_and_feature_flag_enabled() async {
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_enabled() async {
         // Given
-        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
@@ -1016,9 +1016,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_false_when_token_id_exists_and_not_wpcom_login() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_registered_with_Woo_PN_and_not_wpcom_login() async {
         // Given
-        userDefaults.set("123", forKey: .siteIDsRegisteredForWooPushNotifications)
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
 
@@ -1037,9 +1037,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldSuggestWPComConnection_returns_false_when_token_id_does_not_exist_and_wpcom_login() async {
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_wpcom_login() async {
         // Given
-        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
 
@@ -1060,7 +1060,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_hideWPComConnectionSuggestion_updates_relevant_properties() async {
         // Given
-        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
 

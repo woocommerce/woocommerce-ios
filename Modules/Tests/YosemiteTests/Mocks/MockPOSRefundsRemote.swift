@@ -15,4 +15,19 @@ final class MockPOSRefundsRemote: POSRefundsRemoteProtocol {
         spyRefundIDs = refundIDs
         return try result.get()
     }
+
+    private(set) var spyCreateRefundSiteID: Int64?
+    private(set) var spyCreateRefundOrderID: Int64?
+    private(set) var spyCreateRefund: Refund?
+    var createRefundResult: Result<Refund, Error>?
+
+    func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund) async throws -> Refund {
+        spyCreateRefundSiteID = siteID
+        spyCreateRefundOrderID = orderID
+        spyCreateRefund = refund
+        if let result = createRefundResult {
+            return try result.get()
+        }
+        return refund
+    }
 }

@@ -295,9 +295,9 @@ final class DashboardViewModel: ObservableObject {
     /// falling back to showing a web view if no deep link route matches.
     func handleClientSideBannerCTATapped() {
         let utmProvider = WooCommerceComUTMProvider(
-            campaign: "client_side_banner",
+            campaign: "client_side_woo_pos_tablet_promo",
             source: "my_store",
-            content: "pos_promo_on_phones",
+            content: "woo_pos_tablet_promo_run_on_tablets",
             siteID: siteID
         )
         guard let url = utmProvider.urlWithUtmParams(string: POSPromoOnPhonesCampaign.ctaURLString) else {

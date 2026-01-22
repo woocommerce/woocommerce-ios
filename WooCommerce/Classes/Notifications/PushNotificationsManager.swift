@@ -155,6 +155,7 @@ final class PushNotificationsManager: PushNotesManager {
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
         self.selfDrivenPushNotificationEnabled = shouldRegisterSelfDrivenPushNotification
+        disableWPComPushNotificationsIfNeeded(siteIDs: siteIDsRegisteredForWooPNs, deviceID: deviceID)
     }
 }
 

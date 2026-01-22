@@ -364,7 +364,7 @@ extension PushNotificationsManager {
             if siteIDsRegisteredForWooPNs.contains(foregroundNotification.siteID),
                foregroundNotification.noteID != nil {
                 // Ignore WPCom PNs if site is registered for Woo PNs
-                return UNNotificationPresentationOptions(rawValue: 0)
+                return []
             }
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
@@ -813,7 +813,7 @@ private extension PushNotificationsManager {
 
 private extension UNNotificationContent {
     var isRemoteNotification: Bool {
-        userInfo[APNSKey.identifier] != nil
+        userInfo[APNSKey.type] != nil
     }
 }
 

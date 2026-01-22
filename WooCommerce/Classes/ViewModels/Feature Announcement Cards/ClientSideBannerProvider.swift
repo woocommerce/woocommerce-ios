@@ -20,7 +20,7 @@ final class ClientSideBannerProvider {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom) {
+         userInterfaceIdiom: UIUserInterfaceIdiom) {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService

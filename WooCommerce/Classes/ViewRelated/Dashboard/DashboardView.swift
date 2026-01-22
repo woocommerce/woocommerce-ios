@@ -390,6 +390,12 @@ private extension DashboardView {
            let announcementViewModel = viewModel.announcementViewModel {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
+            }, callToAction: {
+                // For client-side banners, use the universal link router to handle the URL
+                // (tries deep links first, falls back to web view)
+                if announcementViewModel is FeatureAnnouncementCardViewModel {
+                    viewModel.handleClientSideBannerCTATapped()
+                }
             })
             .background(Color(.listForeground(modal: false)))
             .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))

@@ -59,9 +59,9 @@ final class POSPromoOnPhonesCampaignTests: XCTestCase {
         XCTAssertFalse(configuration.buttonTitle?.isEmpty ?? true)
     }
 
-    func test_ctaURL_is_valid() {
+    func test_ctaURLString_matches_posLearnMore() {
         // Then
-        XCTAssertEqual(POSPromoOnPhonesCampaign.ctaURL.absoluteString, "https://woocommerce.com/in-person-payments/")
+        XCTAssertEqual(POSPromoOnPhonesCampaign.ctaURLString, WooConstants.URLs.posLearnMore.rawValue)
     }
 
     func test_configuration_does_not_show_dividers() {

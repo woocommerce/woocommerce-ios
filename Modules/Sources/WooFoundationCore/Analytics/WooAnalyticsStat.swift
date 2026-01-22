@@ -917,6 +917,11 @@ public enum WooAnalyticsStat: String {
     case posPromoModalDismissed = "pos_promo_modal_dismissed"
     case posPromoModalExploreClicked = "pos_promo_modal_explore_clicked"
 
+    // MARK: POS Promotion Banner
+    case posPromotionBannerDisplayed = "pos_promotion_banner_displayed"
+    case posPromotionBannerCtaTapped = "pos_promotion_banner_cta_tapped"
+    case posPromotionBannerDismissed = "pos_promotion_banner_dismissed"
+
     // MARK: Product sharing AI
     //
     case productSharingAIDisplayed = "product_sharing_ai_displayed"

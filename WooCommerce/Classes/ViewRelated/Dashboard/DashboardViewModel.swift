@@ -7,6 +7,7 @@ import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooCommerceComUTMProvider
+import class UIKit.UIDevice
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 @MainActor
@@ -196,7 +197,8 @@ final class DashboardViewModel: ObservableObject {
         self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
             stores: stores,
             analytics: analytics,
-            featureFlagService: featureFlags
+            featureFlagService: featureFlags,
+            userInterfaceIdiom: UIDevice.current.userInterfaceIdiom
         )
 
         configureTapToPayAwarnessMomentPresentation()

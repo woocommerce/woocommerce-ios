@@ -5,6 +5,7 @@ import SafariServices
 import AutomatticAbout
 import Yosemite
 import SwiftUI
+import WooFoundationCore
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -523,7 +524,8 @@ private extension SettingsViewController {
 
     var hiddenSettingsGestureRecognizer: UITapGestureRecognizer {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeHiddenSettings))
-        gestureRecognizer.numberOfTapsRequired = 4
+        gestureRecognizer.numberOfTapsRequired = 2
+        gestureRecognizer.isEnabled = !BuildConfiguration.current.isProduction
         return gestureRecognizer
     }
 

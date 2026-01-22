@@ -102,9 +102,12 @@ final class PushNotificationsManager: PushNotesManager {
             if let newValue,
                let deviceID = Int64(newValue),
                siteIDsRegisteredForWooPNs.isNotEmpty {
-                disableWPComPushNotificationsForRelevantSites(
+                disableWPComPushNotifications(
                     siteIDs: siteIDsRegisteredForWooPNs,
-                    deviceID: deviceID
+                    deviceID: deviceID,
+                    onCompletion: { result in
+                        // TODO: add tracking for failure
+                    }
                 )
             }
         }
@@ -702,7 +705,7 @@ private extension PushNotificationsManager {
               !configuration.storesManager.isAuthenticatedWithoutWPCom else {
             return onCompletion(.success(tokenID))
         }
-        disableWPComPushNotifications(siteID: siteID, deviceID: deviceIDInt) { result in
+        disableWPComPushNotifications(siteIDs: [siteID], deviceID: deviceIDInt) { result in
             if let error = result.failure {
                 // TODO: add tracking for failure
             }
@@ -728,26 +731,16 @@ private extension PushNotificationsManager {
         configuration.storesManager.dispatch(action)
     }
 
-    /// Disables mobile push notifications for a site ID.
+    /// Disables mobile push notifications for given site IDs.
     ///
-    func disableWPComPushNotifications(siteID: Int64, deviceID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let updatedBlog = NotificationSettings.Blog(blogID: siteID, devices: [
-            .init(deviceID: deviceID, newComment: false, storeOrder: false)
-        ])
-        let siteSettings = NotificationSettings(blogs: [updatedBlog])
-        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: onCompletion))
-    }
-
-    func disableWPComPushNotificationsForRelevantSites(siteIDs: [Int64], deviceID: Int64) {
+    func disableWPComPushNotifications(siteIDs: [Int64], deviceID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let updatedBlogs = siteIDs.map {
             NotificationSettings.Blog(blogID: $0, devices: [
                 .init(deviceID: deviceID, newComment: false, storeOrder: false)
             ])
         }
         let siteSettings = NotificationSettings(blogs: updatedBlogs)
-        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings) { result in
-            // TODO: add tracking for failure
-        })
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: onCompletion))
     }
 
     func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {

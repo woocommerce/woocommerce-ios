@@ -8,7 +8,7 @@ end
 
 gem 'danger-dangermattic', '~> 1.2'
 gem 'dotenv'
-gem 'fastlane', '~> 2.228'
+gem 'fastlane', '~> 2.230'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 0.10'
 gem 'fastlane-plugin-sentry', '~> 1.0'
 # gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''

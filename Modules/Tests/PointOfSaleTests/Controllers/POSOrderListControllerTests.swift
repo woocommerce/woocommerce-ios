@@ -1296,7 +1296,10 @@ private extension POSOrderListControllerTests {
         )
     }
 
-    func makeOrder(id: Int64 = 1, paymentMethodID: String = "woocommerce_payments", paymentMethodTitle: String = "Cash", lineItems: [POSOrderItem] = []) -> POSOrder {
+    func makeOrder(id: Int64 = 1,
+                   paymentMethodID: String = "woocommerce_payments",
+                   paymentMethodTitle: String = "cod",
+                   lineItems: [POSOrderItem] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",

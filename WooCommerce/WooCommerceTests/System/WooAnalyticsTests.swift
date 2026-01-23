@@ -167,7 +167,9 @@ class WooAnalyticsTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
-                                                                    url: sampleSiteURL),
+                                                                    url: sampleSiteURL,
+                                                                    isJetpackThePluginInstalled: true,
+                                                                    isJetpackConnected: true),
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
@@ -184,7 +186,9 @@ class WooAnalyticsTests: XCTestCase {
         let expectedProperties: [String: AnyHashable] = [
             "blog_id": sampleSiteID,
             "is_wpcom_store": false,
-            "was_ecommerce_trial": false,
+            "is_jetpack_installed": true,
+            "is_jetpack_connected": true,
+            "is_jetpack_cp_connected": false,
             "plan": "",
             "site_url": sampleSiteURL,
             "prop-key1": "prop-value1",

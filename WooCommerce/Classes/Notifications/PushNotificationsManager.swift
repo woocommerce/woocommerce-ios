@@ -693,9 +693,8 @@ private extension PushNotificationsManager {
             siteIDsRegisteredForWooPNs = registeredIDs
         }
 
-        disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: deviceID) { result in
-            onCompletion(.success(tokenID))
-        }
+        disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: deviceID)
+        onCompletion(.success(tokenID))
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.
@@ -718,11 +717,11 @@ private extension PushNotificationsManager {
 
     /// Disables mobile push notifications for given site IDs.
     ///
-    func disableWPComPushNotificationsIfNeeded(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping (Result<Void, Error>) -> Void = { _ in }) {
+    func disableWPComPushNotificationsIfNeeded(siteIDs: [Int64], deviceID: String?) {
         guard let deviceID, let deviceIDInt = Int64(deviceID),
               siteIDs.isNotEmpty,
               !configuration.storesManager.isAuthenticatedWithoutWPCom else {
-            return onCompletion(.success(()))
+            return
         }
         let updatedBlogs = siteIDs.map {
             NotificationSettings.Blog(blogID: $0, devices: [
@@ -738,7 +737,6 @@ private extension PushNotificationsManager {
             case .failure(let error):
                 analytics.track(.wpcomDeviceDisablePushNotificationsError, withError: error)
             }
-            onCompletion(result)
         }))
     }
 

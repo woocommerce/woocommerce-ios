@@ -104,7 +104,7 @@ struct POSRefundsServiceTests {
         let reason = "Customer request"
 
         // When
-        try await sut.createRefund(orderID: orderID, items: items, reason: reason)
+        try await sut.createRefund(orderID: orderID, items: items, reason: reason, paymentMethodID: "woocommerce_payments")
 
         // Then
         #expect(calculator.spyOrderID == orderID)
@@ -123,7 +123,7 @@ struct POSRefundsServiceTests {
         let items = [POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
 
         // When
-        try await sut.createRefund(orderID: orderID, items: items, reason: nil)
+        try await sut.createRefund(orderID: orderID, items: items, reason: nil, paymentMethodID: "woocommerce_payments")
 
         // Then
         #expect(remote.spyCreateRefundSiteID == siteID)
@@ -143,23 +143,35 @@ struct POSRefundsServiceTests {
         let sut = POSRefundsService(siteID: 123, refundsRemote: remote, refundCalculator: calculator)
 
         // When
-        try await sut.createRefund(orderID: 456, items: [], reason: "Test reason")
+        try await sut.createRefund(orderID: 456, items: [], reason: "Test reason", paymentMethodID: "woocommerce_payments")
 
         // Then
         #expect(remote.spyCreateRefund?.amount == "132.60")
         #expect(remote.spyCreateRefund?.reason == "Test reason")
     }
 
-    @Test func createRefund_then_sets_create_automated_to_true() async throws {
+    @Test func createRefund_when_card_payment_then_sets_create_automated_to_true() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let sut = POSRefundsService(siteID: 123, refundsRemote: remote)
 
         // When
-        try await sut.createRefund(orderID: 456, items: [], reason: nil)
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, paymentMethodID: "woocommerce_payments")
 
         // Then
         #expect(remote.spyCreateRefund?.createAutomated == true)
+    }
+
+    @Test func createRefund_when_cash_payment_then_sets_create_automated_to_false() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = POSRefundsService(siteID: 123, refundsRemote: remote)
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, paymentMethodID: "cod")
+
+        // Then
+        #expect(remote.spyCreateRefund?.createAutomated == false)
     }
 
     @Test func createRefund_when_remote_fails_then_propagates_error() async throws {
@@ -171,7 +183,7 @@ struct POSRefundsServiceTests {
 
         // Then
         do {
-            try await sut.createRefund(orderID: 456, items: [], reason: nil)
+            try await sut.createRefund(orderID: 456, items: [], reason: nil, paymentMethodID: "woocommerce_payments")
             Issue.record("Expected error to be thrown")
         } catch {
             #expect(error is TestError)
@@ -187,6 +199,7 @@ struct POSRefundsServiceTests {
             formattedTotal: "$10.00",
             formattedSubtotal: "$10.00",
             customerEmail: "test1@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Credit Card",
             lineItems: [],
             refunds: refunds,

@@ -149,6 +149,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$25.99",
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(
@@ -189,6 +190,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$15.50",
             formattedSubtotal: "$15.50",
             customerEmail: "customer2@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Card",
             lineItems: [
                 POSOrderItem(
@@ -224,6 +226,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$42.75",
             formattedSubtotal: "$42.75",
             customerEmail: "customer3@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(
@@ -264,6 +267,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$12.00",
             formattedSubtotal: "$12.00",
             customerEmail: "customer4@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Card",
             lineItems: [
                 POSOrderItem(
@@ -301,6 +305,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$18.50",
             formattedSubtotal: "$18.50",
             customerEmail: "search@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(

@@ -1159,6 +1159,24 @@ final class POSOrderListControllerTests {
         #expect(firstItem.totalTax == 1.55)
         #expect(firstItem.originalQuantity == 3)
     }
+
+    @Test func processRefund_then_calls_service_with_payment_method_id() async throws {
+        // Given
+        let order = makeOrder(paymentMethodID: "cod", lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        await MainActor.run {
+            sut.selectOrder(order)
+            sut.startRefundFlow()
+        }
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(refundsService.spyCreateRefundPaymentMethodID == "cod")
+    }
 }
 
 private extension POSOrderListControllerTests {
@@ -1174,7 +1192,7 @@ private extension POSOrderListControllerTests {
         )
     }
 
-    func makeOrder(id: Int64 = 1, paymentMethodTitle: String = "Cash", lineItems: [POSOrderItem] = []) -> POSOrder {
+    func makeOrder(id: Int64 = 1, paymentMethodID: String = "woocommerce_payments", paymentMethodTitle: String = "Cash", lineItems: [POSOrderItem] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",
@@ -1183,6 +1201,7 @@ private extension POSOrderListControllerTests {
             formattedTotal: "$25.99",
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
+            paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
             refunds: [],

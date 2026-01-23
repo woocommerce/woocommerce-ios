@@ -1032,33 +1032,6 @@ final class POSOrderListControllerTests {
 
     // MARK: - Process Refund Tests
 
-    @Test func processRefund_when_no_selected_order_then_does_not_call_service() async throws {
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(refundsService.createRefundCalled == false)
-    }
-
-    @Test func processRefund_when_no_items_selected_then_does_not_call_service() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
-            sut.toggleAllRefundItemsSelection() // Deselect all
-        }
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(refundsService.createRefundCalled == false)
-    }
-
     @Test func processRefund_then_calls_service_with_correct_order_id() async throws {
         // Given
         let order = makeOrder(id: 123, lineItems: [

@@ -40,5 +40,5 @@ public struct POSRefundRequestItem {
 
 public protocol POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult
-    func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?) async throws
+    func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, paymentMethodID: String) async throws
 }

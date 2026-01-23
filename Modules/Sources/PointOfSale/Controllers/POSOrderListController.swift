@@ -416,7 +416,8 @@ enum RefundActionAvailability {
         try await refundsService.createRefund(
             orderID: order.id,
             items: refundableItems,
-            reason: reason
+            reason: reason,
+            paymentMethodID: order.paymentMethodID
         )
 
         clearRefundSelection()

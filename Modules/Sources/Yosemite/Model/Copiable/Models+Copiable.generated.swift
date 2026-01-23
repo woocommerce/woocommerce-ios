@@ -82,13 +82,15 @@ extension Yosemite.POSOrder {
         formattedTotal: CopiableProp<String> = .copy,
         formattedSubtotal: CopiableProp<String> = .copy,
         customerEmail: NullableCopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
         lineItems: CopiableProp<[POSOrderItem]> = .copy,
         refunds: CopiableProp<[POSOrderRefund]> = .copy,
         formattedDiscountTotal: NullableCopiableProp<String> = .copy,
         formattedTotalTax: CopiableProp<String> = .copy,
         formattedPaymentTotal: CopiableProp<String> = .copy,
-        formattedNetAmount: NullableCopiableProp<String> = .copy
+        formattedNetAmount: NullableCopiableProp<String> = .copy,
+        lineItemQuantitiesByProductOrVariationID: CopiableProp<[Int64: Decimal]> = .copy
     ) -> Yosemite.POSOrder {
         let id = id ?? self.id
         let number = number ?? self.number
@@ -97,6 +99,7 @@ extension Yosemite.POSOrder {
         let formattedTotal = formattedTotal ?? self.formattedTotal
         let formattedSubtotal = formattedSubtotal ?? self.formattedSubtotal
         let customerEmail = customerEmail ?? self.customerEmail
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
         let lineItems = lineItems ?? self.lineItems
         let refunds = refunds ?? self.refunds
@@ -104,6 +107,7 @@ extension Yosemite.POSOrder {
         let formattedTotalTax = formattedTotalTax ?? self.formattedTotalTax
         let formattedPaymentTotal = formattedPaymentTotal ?? self.formattedPaymentTotal
         let formattedNetAmount = formattedNetAmount ?? self.formattedNetAmount
+        let lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID ?? self.lineItemQuantitiesByProductOrVariationID
 
         return Yosemite.POSOrder(
             id: id,
@@ -113,13 +117,15 @@ extension Yosemite.POSOrder {
             formattedTotal: formattedTotal,
             formattedSubtotal: formattedSubtotal,
             customerEmail: customerEmail,
+            paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
             refunds: refunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: formattedTotalTax,
             formattedPaymentTotal: formattedPaymentTotal,
-            formattedNetAmount: formattedNetAmount
+            formattedNetAmount: formattedNetAmount,
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 }

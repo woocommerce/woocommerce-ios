@@ -47,17 +47,22 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         return POSRefundsResult(refunds: mappedRefunds, isFullyRefunded: isFullyRefunded)
     }
 
-    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?) async throws {
+    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, paymentMethodID: String) async throws {
         let request = refundCalculator.buildRefundRequest(
             orderID: orderID,
             selectedItems: items,
             reason: reason
         )
-        let refund = buildRefund(from: request)
+        let automaticRefundSupported = supportsAutomaticRefund(paymentMethodID: paymentMethodID)
+        let refund = buildRefund(from: request, createAutomated: automaticRefundSupported)
         _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
     }
 
-    private func buildRefund(from request: POSRefundRequest) -> Refund {
+    private func supportsAutomaticRefund(paymentMethodID: String) -> Bool {
+        paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+    }
+
+    private func buildRefund(from request: POSRefundRequest, createAutomated: Bool) -> Refund {
         let items = request.items.map { item in
             OrderItemRefund(
                 itemID: item.itemID,
@@ -86,7 +91,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             reason: request.reason ?? "",
             refundedByUserID: 0,
             isAutomated: nil,
-            createAutomated: true,
+            createAutomated: createAutomated,
             items: items,
             shippingLines: nil
         )

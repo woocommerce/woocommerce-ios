@@ -75,6 +75,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isSelfDrivenPushNotificationRegistered = false
 
+    @Published private(set) var shouldSuggestWPComConnection = false
+
+    @Published private(set) var dismissedWPComConnectionSuggestion = false
+
     @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
@@ -245,6 +249,10 @@ final class DashboardViewModel: ObservableObject {
 
     func handleCustomizationDismissal() {
         configureNewCardsNotice(hasOrders: hasOrders)
+    }
+
+    func hideWPComConnectionSuggestion() {
+        userDefaults.set(true, forKey: .hideWPComConnectionOnDashboard)
     }
 
     @MainActor
@@ -507,11 +515,11 @@ private extension DashboardViewModel {
             })
             .store(in: &subscriptions)
 
-        $dashboardCards.combineLatest($isInAppFeedbackCardVisible)
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((cards, showFeedbackCard), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let ((cards, showFeedbackCard, suggestWPComConnection), showNewCardsNotice, hasOrders, isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -529,6 +537,11 @@ private extension DashboardViewModel {
 
                     if !hasOrders && !isReloading {
                         allCards.append(DashboardCard.shareStoreCard)
+                    }
+
+                    /// Insert card for connecting WPCom at the top if needed
+                    if suggestWPComConnection {
+                        allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
                     return allCards
                 }()
@@ -593,7 +606,7 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
-                case .inAppFeedback, .newCardsNotice, .shareStore:
+                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom:
                     break // do nothing
                 }
             }
@@ -645,8 +658,9 @@ private extension DashboardViewModel {
 
     func observeSelfDrivenPushTokenPersistence() {
         userDefaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
+            .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard))
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] _, _ in
                 guard let self else { return }
                 updateSelfDrivenPushRegistrationStatus()
             }
@@ -915,7 +929,13 @@ private extension DashboardViewModel {
 
     func updateSelfDrivenPushRegistrationStatus() {
         let registeredSiteIDs = userDefaults.siteIDsRegisteredForWooPushNotifications
-        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs?.contains(siteID) == true && stores.isAuthenticatedWithoutWPCom
+        dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
+        shouldSuggestWPComConnection = registeredSiteIDs != nil &&
+            registeredSiteIDs?.contains(siteID) == false &&
+            stores.isAuthenticatedWithoutWPCom &&
+            !dismissedWPComConnectionSuggestion &&
+            featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
     }
 }
 
@@ -995,5 +1015,11 @@ private extension DashboardViewModel {
         static let orderPageSize = 1
 
         static let m2CardSet: Set<DashboardCard.CardType> = [.inbox, .reviews, .coupons, .stock, .lastOrders]
+    }
+}
+
+extension UserDefaults {
+    @objc dynamic var hideWPComConnectionOnDashboard: Bool {
+        bool(forKey: Key.hideWPComConnectionOnDashboard.rawValue)
     }
 }

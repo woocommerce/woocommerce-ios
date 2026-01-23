@@ -241,6 +241,12 @@ extension UIImage {
         return UIImage(named: "icon-connection")!
     }
 
+    /// Connect WPCom Icon
+    ///
+    static var connectWPComImage: UIImage {
+        return UIImage(named: "connect-wpcom")!
+    }
+
     /// Create order image
     ///
     static var createOrderImage: UIImage {

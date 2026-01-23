@@ -819,9 +819,10 @@ private extension DashboardViewModel {
 
     func updateSelfDrivenPushRegistrationStatus() {
         let registeredSiteIDs = userDefaults.siteIDsRegisteredForWooPushNotifications
-        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs?.contains(siteID) == true && stores.isAuthenticatedWithoutWPCom
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
-        shouldSuggestWPComConnection = !registeredSiteIDs.contains(siteID) &&
+        shouldSuggestWPComConnection = registeredSiteIDs != nil &&
+            registeredSiteIDs?.contains(siteID) == false &&
             stores.isAuthenticatedWithoutWPCom &&
             !dismissedWPComConnectionSuggestion &&
             featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)

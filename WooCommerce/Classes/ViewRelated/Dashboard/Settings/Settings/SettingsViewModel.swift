@@ -306,7 +306,7 @@ private extension SettingsViewModel {
                     return false
                 }
                 return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
-                defaults.siteIDsRegisteredForWooPushNotifications.contains(siteID)
+                defaults.siteIDsRegisteredForWooPushNotifications?.contains(siteID) == true
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]

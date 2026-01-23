@@ -318,6 +318,8 @@ extension PushNotificationsManager {
                     if let siteID, siteIDsRegisteredForWooPNs.contains(siteID) {
                         let updatedList = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
                         siteIDsRegisteredForWooPNs = updatedList
+                    } else {
+                        siteIDsRegisteredForWooPNs = []
                     }
                     // Falls back to dotcom PNs if authenticated with WPCom
                     if !stores.isAuthenticatedWithoutWPCom {
@@ -868,9 +870,9 @@ extension UserDefaults {
         string(forKey: Key.deviceToken.rawValue)
     }
 
-    @objc dynamic var siteIDsRegisteredForWooPushNotifications: [Int64] {
+    @objc dynamic var siteIDsRegisteredForWooPushNotifications: [Int64]? {
         string(forKey: Key.siteIDsRegisteredForWooPushNotifications.rawValue)?
             .components(separatedBy: ",")
-            .compactMap { Int64($0) } ?? []
+            .compactMap { Int64($0) }
     }
 }

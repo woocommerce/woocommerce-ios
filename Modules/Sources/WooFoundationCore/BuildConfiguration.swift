@@ -26,6 +26,15 @@ public enum BuildConfiguration: String {
         }
     }
 
+    public var isProduction: Bool {
+        switch self {
+        case .localDeveloper, .alpha:
+            return false
+        case .appStore:
+            return true
+        }
+    }
+
     static func ~=(a: BuildConfiguration, b: Set<BuildConfiguration>) -> Bool {
         return b.contains(a)
     }

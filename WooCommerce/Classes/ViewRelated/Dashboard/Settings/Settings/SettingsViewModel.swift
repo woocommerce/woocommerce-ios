@@ -210,15 +210,7 @@ private extension SettingsViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        let wooTokenChanges = defaults
-            .publisher(for: \.wooPushnotificationToken)
-            .map { _ in () }
-
-        let wpComDeviceTokenChanges = defaults
-            .publisher(for: \.deviceToken)
-            .map { _ in () }
-
-        Publishers.Merge(wooTokenChanges, wpComDeviceTokenChanges)
+        defaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.reloadSettings()
@@ -310,9 +302,11 @@ private extension SettingsViewModel {
                 return site.isJetpackCPConnected == false
             }()
             let isSelfDrivenPushNotificationsRegistered: Bool = {
-                let isWooTokenExists = defaults.wooPushnotificationToken != nil
-                let WPComTokenExists = defaults.deviceToken != nil
-                return (isWooTokenExists && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) && !WPComTokenExists
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) &&
+                defaults.siteIDsRegisteredForWooPushNotifications.contains(siteID)
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]

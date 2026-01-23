@@ -41,11 +41,10 @@ final class MockApplicationAdapter: ApplicationAdapter {
     /// Innocuous `displayNotificationDetails`
     ///
     func presentNotificationDetails(notification: WooCommerce.PushNotification) {
-        guard let note = notification.note else {
-            presentDetailsNoteIDs.append(notification.noteID)
+        guard let noteID = notification.noteID else {
             return
         }
-        presentDetailsNoteIDs.append(note.noteID)
+        presentDetailsNoteIDs.append(noteID)
     }
 
     /// Restores the initial state

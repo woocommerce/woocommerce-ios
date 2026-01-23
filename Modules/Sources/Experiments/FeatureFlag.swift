@@ -163,10 +163,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case backgroundProductImageUpload
 
-    /// Supports managing notification settings from the app settings
-    ///
-    case notificationSettings
-
     /// Allows merchants to use their own API keys for AI-powered features
     ///
     case allowMerchantAIAPIKey
@@ -224,4 +220,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables POS-only products filtering
     ///
     case pointOfSaleOnlyProducts
+
+    /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
+    ///
+    case clientSideDashboardBanner
 }

@@ -21,11 +21,11 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var revampedShippingLabelCreation: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
-    var notificationSettings: Bool
     var allowMerchantAIAPIKey: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
+    var selfDrivenPushToken: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -45,10 +45,10 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
-         notificationSettings: Bool = false,
          allowMerchantAIAPIKey: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
-         isCIABBookingsEnabled: Bool = false) {
+         isCIABBookingsEnabled: Bool = false,
+         selfDrivenPushToken: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -67,10 +67,10 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
-        self.notificationSettings = notificationSettings
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
+        self.selfDrivenPushToken = selfDrivenPushToken
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -117,14 +117,14 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:
             return backgroundProductImageUpload
-        case .notificationSettings:
-            return notificationSettings
         case .allowMerchantAIAPIKey:
             return allowMerchantAIAPIKey
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return isCIABBookingsEnabled
+        case .selfDrivenPushToken:
+            return selfDrivenPushToken
         default:
             return false
         }

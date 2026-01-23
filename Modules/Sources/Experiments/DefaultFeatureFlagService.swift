@@ -78,8 +78,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .notificationSettings:
-            return true
         case .allowMerchantAIAPIKey:
             return false
         case .inventoryProductLabelsInPOS:
@@ -107,6 +105,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .selfDrivenPushToken:
             return false
         case .pointOfSaleOnlyProducts:
+            return true
+        case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

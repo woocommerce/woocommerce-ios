@@ -1370,6 +1370,10 @@ extension UIImage {
     static var cardReaderLocationImage: UIImage {
         SharedImageAsset.location.uiImage!
     }
+
+    static var posOnPhonesPromotionBannerCorner: UIImage {
+        UIImage(named: "pos-on-phones-promotion-banner-corner")!
+    }
 }
 
 private extension UIImage {

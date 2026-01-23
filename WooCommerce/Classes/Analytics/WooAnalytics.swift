@@ -197,6 +197,9 @@ private extension Analytics {
         updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
         updatedProperties[PropertyKeys.planKey] = site?.plan
         updatedProperties[PropertyKeys.siteURL] = site?.url
+        updatedProperties[PropertyKeys.isJetpackInstalled] = site?.isJetpackThePluginInstalled
+        updatedProperties[PropertyKeys.isJetpackConnected] = site?.isJetpackConnected
+        updatedProperties[PropertyKeys.isJetpackCPConnected] = site?.isJetpackCPConnected
         updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
         updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
         if let site {
@@ -347,4 +350,7 @@ private enum PropertyKeys {
     static let cachedWooCommerceVersionKey = "cached_woo_core_version"
     static let isCIAB               = "is_ciab"
     static let gardenPartner        = "garden_partner"
+    static let isJetpackInstalled   = "is_jetpack_installed"
+    static let isJetpackConnected   = "is_jetpack_connected"
+    static let isJetpackCPConnected = "is_jetpack_cp_connected"
 }

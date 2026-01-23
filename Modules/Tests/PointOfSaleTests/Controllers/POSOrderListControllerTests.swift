@@ -422,7 +422,7 @@ final class POSOrderListControllerTests {
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = MockPOSOrderListService.makeInitialOrders()[0]
 
-        let expectedResult = POSRefundsResult(refunds: [POSRefund(items: [])], isFullyRefunded: false)
+        let expectedResult = POSRefundsResult(refunds: [POSRefund(items: [])], isFullyRefunded: false, supportsAutomaticRefund: true)
         refundsService.providePointOfSaleRefundsResultToReturn = expectedResult
 
         // When
@@ -549,7 +549,8 @@ final class POSOrderListControllerTests {
         // Service returns isFullyRefunded = false (not fully refunded)
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
-            isFullyRefunded: false
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
         )
 
         // When
@@ -576,7 +577,8 @@ final class POSOrderListControllerTests {
         // Service returns isFullyRefunded = true (fully refunded)
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
-            isFullyRefunded: true
+            isFullyRefunded: true,
+            supportsAutomaticRefund: true
         )
 
         // When
@@ -1034,14 +1036,24 @@ final class POSOrderListControllerTests {
 
     @Test func processRefund_then_calls_service_with_correct_order_id() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
         let order = makeOrder(id: 123, lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
 
-        await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
         }
+        await MainActor.run { sut.startRefundFlow() }
 
         // When
         try await sut.processRefund(reason: .none)
@@ -1053,13 +1065,25 @@ final class POSOrderListControllerTests {
 
     @Test func processRefund_then_calls_service_with_selected_items() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
         let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
             makePOSOrderItem(itemID: 2, quantity: 1, price: 5.00, formattedPrice: "$5.00")
         ])
 
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
+        }
         await MainActor.run {
-            sut.selectOrder(order)
             sut.startRefundFlow()
             sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
         }
@@ -1073,14 +1097,24 @@ final class POSOrderListControllerTests {
 
     @Test func processRefund_then_calls_service_with_reason() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
         let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
 
-        await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
         }
+        await MainActor.run { sut.startRefundFlow() }
 
         // When
         try await sut.processRefund(reason: "Customer changed their mind")
@@ -1091,12 +1125,24 @@ final class POSOrderListControllerTests {
 
     @Test func processRefund_when_successful_then_clears_selection() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
         let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
         ])
 
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
+        }
         let initialCount = await MainActor.run {
-            sut.selectOrder(order)
             sut.startRefundFlow()
             return sut.refundSelectableItems.count
         }
@@ -1112,14 +1158,24 @@ final class POSOrderListControllerTests {
 
     @Test func processRefund_when_service_throws_then_propagates_error() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
         let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
 
-        await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
         }
+        await MainActor.run { sut.startRefundFlow() }
 
         struct TestError: Error {}
         refundsService.createRefundErrorToThrow = TestError()
@@ -1137,14 +1193,24 @@ final class POSOrderListControllerTests {
 
     @Test func processRefund_then_converts_items_with_correct_properties() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
         let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 42, quantity: 3, price: 15.50, totalTax: 1.55, formattedPrice: "$15.50")
         ])
 
-        await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
         }
+        await MainActor.run { sut.startRefundFlow() }
 
         // When
         try await sut.processRefund(reason: .none)
@@ -1160,22 +1226,60 @@ final class POSOrderListControllerTests {
         #expect(firstItem.originalQuantity == 3)
     }
 
-    @Test func processRefund_then_calls_service_with_payment_method_id() async throws {
+    @Test func processRefund_when_supportsAutomaticRefund_is_true_then_calls_service_with_automatic_refund_true() async throws {
         // Given
-        let order = makeOrder(paymentMethodID: "cod", lineItems: [
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
+        let order = makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
 
-        await MainActor.run {
-            sut.selectOrder(order)
-            sut.startRefundFlow()
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
         }
+        await MainActor.run { sut.startRefundFlow() }
 
         // When
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.spyCreateRefundPaymentMethodID == "cod")
+        #expect(refundsService.spyCreateRefundAutomaticRefund == true)
+    }
+
+    @Test func processRefund_when_supportsAutomaticRefund_is_false_then_calls_service_with_automatic_refund_false() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: false
+        )
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+
+        await sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
+        }
+        await MainActor.run { sut.startRefundFlow() }
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(refundsService.spyCreateRefundAutomaticRefund == false)
     }
 }
 

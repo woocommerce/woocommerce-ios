@@ -556,10 +556,10 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
-        POSRefundsResult(refunds: [], isFullyRefunded: false)
+        POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     }
 
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, paymentMethodID: String) async throws {}
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, automaticRefund: Bool) async throws {}
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

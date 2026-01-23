@@ -2,7 +2,7 @@
 
 final class MockPOSRefundsService: POSRefundsServiceProtocol {
     var spyProvidePointOfSaleRefundsOrder: Yosemite.POSOrder?
-    var providePointOfSaleRefundsResultToReturn: Yosemite.POSRefundsResult = POSRefundsResult(refunds: [], isFullyRefunded: false)
+    var providePointOfSaleRefundsResultToReturn: Yosemite.POSRefundsResult = POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     var errorToThrow: Error?
 
     private var continuation: CheckedContinuation<Yosemite.POSOrder, Never>?
@@ -42,15 +42,15 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
     var spyCreateRefundOrderID: Int64?
     var spyCreateRefundItems: [Yosemite.POSRefundableItem]?
     var spyCreateRefundReason: String?
-    var spyCreateRefundPaymentMethodID: String?
+    var spyCreateRefundAutomaticRefund: Bool?
     var createRefundErrorToThrow: Error?
 
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, paymentMethodID: String) async throws {
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, automaticRefund: Bool) async throws {
         createRefundCalled = true
         spyCreateRefundOrderID = orderID
         spyCreateRefundItems = items
         spyCreateRefundReason = reason
-        spyCreateRefundPaymentMethodID = paymentMethodID
+        spyCreateRefundAutomaticRefund = automaticRefund
 
         if let error = createRefundErrorToThrow {
             throw error

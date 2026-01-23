@@ -398,6 +398,11 @@ enum RefundActionAvailability {
             return
         }
 
+        guard case .loaded(let refundsResult) = selectedOrderRefundsState else {
+            assertionFailure("processRefund called without loaded refunds state")
+            return
+        }
+
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else {
             assertionFailure("processRefund called without selected items")
@@ -417,7 +422,7 @@ enum RefundActionAvailability {
             orderID: order.id,
             items: refundableItems,
             reason: reason,
-            paymentMethodID: order.paymentMethodID
+            automaticRefund: refundsResult.supportsAutomaticRefund
         )
 
         clearRefundSelection()

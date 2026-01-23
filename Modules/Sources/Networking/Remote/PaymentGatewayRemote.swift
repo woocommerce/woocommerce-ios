@@ -57,3 +57,6 @@ private extension PaymentGatewayRemote {
         static let path = "payment_gateways"
     }
 }
+
+// MARK: - POSPaymentGatewayRemoteProtocol
+extension PaymentGatewayRemote: POSPaymentGatewayRemoteProtocol {}

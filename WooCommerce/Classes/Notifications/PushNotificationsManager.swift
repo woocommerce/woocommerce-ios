@@ -318,7 +318,8 @@ extension PushNotificationsManager {
                     if let siteID, siteIDsRegisteredForWooPNs.contains(siteID) {
                         let updatedList = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
                         siteIDsRegisteredForWooPNs = updatedList
-                    } else {
+                    } else if configuration.defaults.siteIDsRegisteredForWooPushNotifications == nil {
+                        // workaround to give the default an initial value.
                         siteIDsRegisteredForWooPNs = []
                     }
                     // Falls back to dotcom PNs if authenticated with WPCom

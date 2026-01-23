@@ -194,7 +194,6 @@ private extension Analytics {
         let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
-        updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
         updatedProperties[PropertyKeys.planKey] = site?.plan
         updatedProperties[PropertyKeys.siteURL] = site?.url
         updatedProperties[PropertyKeys.isJetpackInstalled] = site?.isJetpackThePluginInstalled
@@ -343,7 +342,6 @@ private enum PropertyKeys {
     static let propertyKeyTimeInApp = "time_in_app"
     static let blogIDKey            = "blog_id"
     static let wpcomStoreKey        = "is_wpcom_store"
-    static let ecommerceTrialKey    = "was_ecommerce_trial"
     static let planKey              = "plan"
     static let siteURL              = "site_url"
     static let storeID              = "store_id"

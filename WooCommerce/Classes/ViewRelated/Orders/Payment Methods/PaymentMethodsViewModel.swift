@@ -34,6 +34,11 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     let paymentLink: URL?
 
+    /// Callback invoked when a note is added to the order (ie: Scan to Pay note).
+    /// Used to immediately update the UI without requiring a remote fetch.
+    ///
+    var onNoteAdded: ((OrderNote) -> Void)?
+
     /// Defines if the view should be disabled to prevent any further action.
     /// Useful to prevent any double tap while a network operation is being performed.
     ///
@@ -331,7 +336,6 @@ final class PaymentMethodsViewModel: ObservableObject {
     @MainActor
     func performScanToPayFinishedTasks() async {
         await addScanToPayNoteToOrder()
-        updateOrderAsynchronously()
         presentNoticeSubject.send(.created)
         trackFlowCompleted(method: .scanToPay, cardReaderType: .none)
     }
@@ -427,7 +431,10 @@ private extension PaymentMethodsViewModel {
                 siteID: siteID,
                 orderID: orderID,
                 isCustomerNote: false,
-                note: Localization.scanToPayNoteText) { _, _ in
+                note: Localization.scanToPayNoteText) { [weak self] orderNote, _ in
+                    if let orderNote = orderNote {
+                        self?.onNoteAdded?(orderNote)
+                    }
                     continuation.resume(returning: ())
                 })
         }

@@ -172,12 +172,12 @@ private extension ProductListSelectorViewController {
     enum Localization {
         static let noResultsPlaceholder = NSLocalizedString("No products yet",
                                                                 comment: "Placeholder text when there are no products on the product list selector")
-        static let titleWithoutSelectedProducts = NSLocalizedString("Add Products", comment: "Navigation bar title for selecting multiple products.")
+        static let titleWithoutSelectedProducts = NSLocalizedString("Add Products", comment: "Button text that appears in multiple screens to add products - in the order creation/editing form to add products to an order, and in the linked products settings to add upsell/cross-sell products to a product listing.")
         static let titleWithOneSelectedProduct =
             NSLocalizedString("1 Product Selected",
-                              comment: "Navigation bar title for selecting multiple products when one product has been selected.")
+                              comment: "Text displayed on an action button and navigation bar title when exactly one product has been selected in product selection screens, specifically when adding products to orders or selecting products for linked product lists.")
         static let titleWithMultipleSelectedProductsFormat =
             NSLocalizedString("%ld Products Selected",
-                              comment: "Navigation bar title for selecting multiple products when more multiple products have been selected.")
+                              comment: "This text appears as the navigation bar title in the product selection screen when multiple products (2 or more) have been selected. The %ld placeholder will be replaced with the actual number of selected products.")
     }
 }

@@ -524,7 +524,7 @@ private extension ReviewOrderViewController {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
-        static let addTrackingTitle = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        static let addTrackingTitle = NSLocalizedString("Add Tracking", comment: "This text appears as the navigation bar title on the screen where users manually add shipment tracking information to orders, and also as a button label in the order details screen that opens this tracking creation flow.")
         static let addTrackingAccessibilityHint = NSLocalizedString(
             "Adds tracking to an order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
@@ -545,7 +545,7 @@ private extension ReviewOrderViewController {
     ///
     enum TrackingAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
-        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
+        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "This text appears as a button title in a shipment tracking action sheet on order details screens, allowing users to copy a tracking number to their device's clipboard.")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }

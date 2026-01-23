@@ -109,7 +109,7 @@ extension CameraCaptureError: LocalizedError {
                                      comment: "Error message when capturing a unknown media type")
         case .unsupportedMediaType(let mediaType):
             let format = NSLocalizedString("Camera capture should not support media type: %@",
-                                           comment: "Error message format when capturing a unsupported media type with device camera")
+                                           comment: "This is an error message that appears when the camera capture functionality encounters an unsupported media type. The %@ placeholder will be replaced with the specific media type name that caused the error.")
             return String.localizedStringWithFormat(format, mediaType)
         case .photoLibraryPermissionNotAuthorized:
             return NSLocalizedString("Please make sure the app can access Photos in device settings",

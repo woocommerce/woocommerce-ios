@@ -143,14 +143,14 @@ private extension JetpackSetupRequiredViewModel {
 
 extension JetpackSetupRequiredViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Connect Store", comment: "Title of the Jetpack setup required screen")
+        static let title = NSLocalizedString("Connect Store", comment: "This text appears as the title of a screen that is displayed when Jetpack setup is required to connect a WooCommerce store to the mobile app. It serves as the main heading that explains the purpose of the screen to users who need to install or connect Jetpack.")
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",
             comment: "Button to install Jetpack from the Jetpack setup required screen"
         )
         static let connectJetpack = NSLocalizedString(
             "Connect Jetpack",
-            comment: "Button to authorize Jetpack connection from the Jetpack setup required screen"
+            comment: "Button text that appears on the site credential login screen to initiate connecting Jetpack to a WooCommerce store, and also used as a navigation title for the Jetpack connection web view and as an action button when resolving account connection issues."
         )
         static let setupErrorMessage = NSLocalizedString(
             "Please install the free Jetpack plugin to access your store on this app.",

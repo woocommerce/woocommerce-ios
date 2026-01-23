@@ -516,16 +516,16 @@ private extension AppCoordinator {
         enum StoreReadyAlert {
             static let title = NSLocalizedString("appCoordinator.storeReadyAlert.title",
                                                  value: "Your new store is ready.",
-                                                 comment: "Title of the alert to ask confirmation to switch to the newly created store.")
+                                                 comment: "This text appears as the title of an alert dialog that notifies users when their newly created WooCommerce store setup is complete and ready to use. The alert asks for confirmation before switching the user to manage the new store.")
             static let message = NSLocalizedString("appCoordinator.storeReadyAlert.message",
                                                    value: "Do you want to start managing it now?",
-                                                   comment: "Message of the alert to ask confirmation to switch to the newly created store.")
+                                                   comment: "This text appears as the message body in an alert dialog that asks users if they want to start managing a newly created store that is now ready. The alert is displayed when a new WooCommerce store setup is complete and prompts the user to confirm switching to manage the new store immediately.")
             static let switchStoreButton = NSLocalizedString("appCoordinator.storeReadyAlert.switchStoreButton",
                                                              value: "Switch Store",
-                                                             comment: "Button to switch to the new store.")
+                                                             comment: "Button text in an alert dialog that appears after a new WooCommerce store is created, allowing the user to immediately switch to managing the newly created store.")
             static let cancelButton = NSLocalizedString("appCoordinator.storeReadyAlert.cancelButton",
                                                         value: "Cancel",
-                                                        comment: "Button to dismiss the alert asking for confirmation to switch store.")
+                                                        comment: "This text appears on a cancel button in an alert dialog that asks users if they want to switch to their newly created store. When tapped, it dismisses the alert without switching stores.")
         }
     }
 }

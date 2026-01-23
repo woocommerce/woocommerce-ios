@@ -36,7 +36,7 @@ open class HTTPAuthenticationAlertController {
     }
 
     private static func controllerForServerTrustChallenge(_ challenge: URLAuthenticationChallenge) -> UIAlertController {
-        let title = NSLocalizedString("Certificate error", comment: "Popup title for wrong SSL certificate.")
+        let title = NSLocalizedString("Certificate error", comment: "This text appears as the title of an alert dialog that is shown when there's an SSL certificate validation error while connecting to a server. The alert warns users about potential security risks and asks if they want to trust the invalid certificate anyway.")
         let localizedMessage = NSLocalizedString(
             "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?",
             comment: "Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API."
@@ -44,7 +44,7 @@ open class HTTPAuthenticationAlertController {
         let message = String(format: localizedMessage, challenge.protectionSpace.host)
         let controller =  UIAlertController(title: title, message: message, preferredStyle: .alert)
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button label"),
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."),
                                          style: .default,
                                          handler: { (_) in
                                             executeHandlerForChallenge(challenge, disposition: .cancelAuthenticationChallenge, credential: nil)
@@ -63,7 +63,7 @@ open class HTTPAuthenticationAlertController {
     }
 
     private static func controllerForUserAuthenticationChallenge(_ challenge: URLAuthenticationChallenge) -> UIAlertController {
-        let title = String(format: NSLocalizedString("Authentication required for host: %@", comment: "Popup title to ask for user credentials."), challenge.protectionSpace.host)
+        let title = String(format: NSLocalizedString("Authentication required for host: %@", comment: "This text appears as the title of an authentication alert dialog that prompts users to enter their username and password when accessing a protected server. The %@ placeholder is replaced with the specific host/server name that requires authentication."), challenge.protectionSpace.host)
         let message = NSLocalizedString("Please enter your credentials", comment: "Popup message to ask for user credentials (fields shown below).")
         let controller =  UIAlertController(title: title,
                                             message: message,
@@ -78,7 +78,7 @@ open class HTTPAuthenticationAlertController {
             textField.isSecureTextEntry = true
         })
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button label"),
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."),
                                          style: .default,
                                          handler: { (_) in
                                             executeHandlerForChallenge(challenge, disposition: .cancelAuthenticationChallenge, credential: nil)

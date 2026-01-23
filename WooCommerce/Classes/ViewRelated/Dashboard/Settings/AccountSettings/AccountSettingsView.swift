@@ -49,8 +49,8 @@ private extension AccountSettingsView {
     }
 
     enum Localization {
-        static let closeAccount = NSLocalizedString("Close Account", comment: "Button to close account on the Account Settings screen")
-        static let title = NSLocalizedString("Account Settings", comment: "Title of the Account Settings screen")
+        static let closeAccount = NSLocalizedString("Close Account", comment: "This text appears as a button label on the Account Settings screen that allows users to close their account. The button is likely styled as a prominent action button with specific padding and corner radius styling.")
+        static let title = NSLocalizedString("Account Settings", comment: "This text appears as the navigation title at the top of the Account Settings screen in the WooCommerce iOS app. It displays in the navigation bar when users access their account configuration options.")
     }
 }
 

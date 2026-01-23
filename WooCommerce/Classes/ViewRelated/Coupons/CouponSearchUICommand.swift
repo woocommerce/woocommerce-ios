@@ -94,6 +94,6 @@ private extension CouponSearchUICommand {
         static let emptyResultMessage = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
                                                           comment: "Message for empty Coupons search results. The %@ is a " +
                                                           "placeholder for the text entered by the user.")
-        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "This is a confirmation notice message that appears after a user successfully deletes a coupon from the Coupon Details screen. It serves as feedback to confirm the deletion action was completed.")
     }
 }

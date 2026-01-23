@@ -224,7 +224,7 @@ private extension HelpAndSupportViewController {
     func configureContactSupport(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")
+        cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
         cell.detailTextLabel?.text = NSLocalizedString(
             "Reach our happiness engineers who can help answer tough questions",
             comment: "Subtitle for Contact Support"
@@ -236,7 +236,7 @@ private extension HelpAndSupportViewController {
     func configureMyContactEmail(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Contact Email", comment: "Contact Email title")
+        cell.textLabel?.text = NSLocalizedString("Contact Email", comment: "This is a cell label in the Help and Support settings screen that displays the user's contact email address. When tapped, it allows users to view or modify their contact email information.")
         cell.detailTextLabel?.text = accountEmail
     }
 

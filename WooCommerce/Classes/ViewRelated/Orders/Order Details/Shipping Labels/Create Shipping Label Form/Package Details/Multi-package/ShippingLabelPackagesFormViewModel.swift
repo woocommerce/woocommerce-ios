@@ -442,7 +442,7 @@ private extension ShippingLabelPackagesFormViewModel {
                                                              comment: "Option to ship in original packaging on action sheet when an order item is about to " +
                                                                 "be moved on Package Details screen of Shipping Label flow.")
         static let addToNewPackage = NSLocalizedString("Add to new package",
-                                                       comment: "Option to add item to new package on Package Details screen of Shipping Label flow.")
+                                                       comment: "This text appears as an action option in an action sheet on the Package Details screen during the shipping label creation flow, allowing users to move an order item to a new package.")
     }
 }
 

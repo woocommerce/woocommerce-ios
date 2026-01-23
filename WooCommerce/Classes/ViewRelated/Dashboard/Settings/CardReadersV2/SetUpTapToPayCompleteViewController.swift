@@ -130,7 +130,7 @@ private extension SetUpTapToPayCompleteView {
 
         static let continueButton = NSLocalizedString(
             "Continue",
-            comment: "Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the " +
+            comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content." +
             "next for testing Tap to Pay on iPhone"
         )
 

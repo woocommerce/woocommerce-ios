@@ -175,9 +175,9 @@ extension View {
 // MARK: Constants
 private enum Localization {
     static let message = NSLocalizedString("Are you sure you want to discard these changes?",
-                                           comment: "Message title for Discard Changes Action Sheet")
+                                           comment: "This text appears as the confirmation message in an alert dialog that prompts users when they attempt to close or exit a screen with unsaved changes, asking them to confirm whether they want to discard their modifications.")
     static let discard = NSLocalizedString("Discard changes",
                                           comment: "Button title Discard Changes in Discard Changes Action Sheet")
     static let cancel = NSLocalizedString("Cancel",
-                                          comment: "Button title Cancel in Discard Changes Action Sheet")
+                                          comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 }

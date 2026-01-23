@@ -85,21 +85,21 @@ private extension GoogleAdsCampaignReportCard {
     enum Localization {
         static let title = NSLocalizedString("analyticsHub.googleCampaigns.title",
                                              value: "Google Campaigns",
-                                             comment: "Title for the Google campaigns card on the analytics hub screen.").localizedUppercase
+                                             comment: "This text appears as the title of a card component on the analytics hub screen that displays Google Ads campaign performance data and statistics. The title is displayed in uppercase and helps users identify the Google Campaigns analytics section within the dashboard.").localizedUppercase
         static let campaignsTitle = NSLocalizedString("analyticsHub.googleCampaigns.campaignsList.title",
                                                       value: "Campaigns",
-                                                      comment: "Title for the list of campaigns on the Google campaigns card on the analytics hub screen.")
+                                                      comment: "This text appears as a section title for the list of campaigns within the Google Ads campaign analytics card on the Analytics Hub screen. It serves as a header to identify the campaigns data section below it.")
         static let errorMessage = NSLocalizedString("analyticsHub.googleCampaigns.noCampaignStats",
                                                     value: "Unable to load Google campaigns analytics",
-                                                    comment: "Text displayed when there is an error loading Google Ads campaigns stats data.")
+                                                    comment: "Error message displayed on the Google Campaigns analytics card when the app fails to load campaign statistics data from Google Ads.")
 
         enum CallToAction {
             static let message = NSLocalizedString("analyticsHub.googleCampaignsCTA.message",
                                                    value: "Drive sales and generate more traffic with Google Ads.",
-                                                   comment: "Text displayed in the Analytics Hub when there are no Google Ads campaign analytics.")
+                                                   comment: "This message appears on the Analytics Hub screen when there are no Google Ads campaign analytics to display, encouraging users to create paid campaigns to drive sales and traffic.")
             static let button = NSLocalizedString("analyticsHub.googleCampaignCTA.button",
                                                   value: "Add paid campaign",
-                                                  comment: "Label for button to create a paid Google Ads campaign.")
+                                                  comment: "This is a button label that appears in the Google Campaigns analytics card on the Analytics Hub screen when no campaign data is available. The button allows users to create a new Google Ads paid campaign to drive sales and traffic.")
         }
     }
 }

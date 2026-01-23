@@ -39,7 +39,7 @@ private extension AnalyticsReportLink {
     enum Localization {
         static let seeReport = NSLocalizedString("analyticsHub.reportCard.webReport",
                                                  value: "See report",
-                                                 comment: "Button label to show an analytics report in the Analytics Hub")
+                                                 comment: "Button label in the Analytics Hub that allows users to open a detailed analytics report in a web view. The button appears on analytics report cards and launches a modal sheet containing the full report when tapped.")
     }
 }
 

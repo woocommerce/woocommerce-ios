@@ -191,12 +191,12 @@ private extension SessionsReportCardViewModel {
     enum Localization {
         static let title = NSLocalizedString("SESSIONS", comment: "Title for sessions section in the Analytics Hub")
         static let leadingTitle = NSLocalizedString("Views", comment: "Label for total store views in the Analytics Hub")
-        static let trailingTitle = NSLocalizedString("Conversion Rate", comment: "Label for the conversion rate (orders per visitor) in the Analytics Hub")
+        static let trailingTitle = NSLocalizedString("Conversion Rate", comment: "This text appears as a label in the Analytics Hub sessions report card, specifically describing the trailing metric that shows the conversion rate (orders per visitor) statistic.")
         static let noSessions = NSLocalizedString("Unable to load session analytics",
                                                   comment: "Text displayed when there is an error loading session stats data.")
         static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
                                                      value: "We couldn't enable Jetpack Stats on your store",
-                                                     comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
+                                                     comment: "Error message displayed in the Analytics Hub when the app fails to enable Jetpack Stats functionality for the user's store. This appears as an error notice to inform users that the stats feature activation was unsuccessful.")
     }
 }
 

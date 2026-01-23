@@ -160,7 +160,7 @@ private extension LoginJetpackSetupCoordinator {
         static let tryAgain = NSLocalizedString("Try Again", comment: "Title of the button to attempt loading the store again after Jetpack setup")
         static let contactSupport = NSLocalizedString(
             "Contact Support",
-            comment: "Title of the button to contact support for help accessing a store after Jetpack setup"
+            comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures."
         )
         static let syncingStore = NSLocalizedString(
             "loginJetpackSetupCoordinator.syncingStore",

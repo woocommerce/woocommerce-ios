@@ -157,15 +157,15 @@ private enum Localization {
 
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",
-                                                              comment: "Title of the alert when a user is changing the product type")
+                                                              comment: "This text appears as the title of a confirmation alert dialog that displays when a user attempts to change the type of a product they are editing (e.g., from simple product to variable product). The alert warns the user about the consequences of this action and requires confirmation before proceeding.")
         static let productTypeChangeMessage = NSLocalizedString("Changing the product type will modify some of the product data",
-                                                                comment: "Body of the alert when a user is changing the product type")
+                                                                comment: "This text appears as the body message in an alert dialog that warns users when they attempt to change a product's type in the product editing screen, explaining that some product data will be modified as a result of this change.")
         static let productVariableTypeChangeMessage =
             NSLocalizedString("Changing the product type will modify some of the product data and delete all your attributes and variations",
-                              comment: "Body of the alert when a user is changing the product type")
+                              comment: "This text appears as the body message of a confirmation alert dialog that warns users when they are changing a product type from variable to another type in the product editor. It explains the consequences of the action - that some product data will be modified and all attributes and variations will be permanently deleted.")
 
         static let productTypeChangeCancelButton =
-            NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on changing product type")
+            NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let productTypeChangeConfirmButton = NSLocalizedString("Yes, change",
                                                                       comment: "Confirmation button on the alert when the user is changing product type")
 
@@ -175,7 +175,7 @@ private enum Localization {
         static let productDeleteConfirmationMessage = NSLocalizedString("Do you want to move this product to the Trash?",
                                                                         comment: "Body of the alert when a user is moving a product to the trash")
         static let productDeleteConfirmationCancelButton =
-            NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on moving a product to the trash")
+            NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let productDeleteConfirmationConfirmButton =
             NSLocalizedString("Move to Trash", comment: "Confirmation button on the alert when the user is moving a product to the trash")
 
@@ -183,9 +183,9 @@ private enum Localization {
         static let variationDeleteConfirmationTitle = NSLocalizedString("Remove variation",
                                                                         comment: "Title of the alert when a user is deleting a variation")
         static let variationDeleteConfirmationMessage = NSLocalizedString("Are you sure you want to remove this variation?",
-                                                                          comment: "Body of the alert when a user is deleting a variation")
+                                                                          comment: "This text appears as the body message in a confirmation alert dialog when a user attempts to delete a product variation in the WooCommerce store management app. The alert asks the user to confirm their intention before permanently removing the variation from their product.")
         static let variationDeleteConfirmationCancelButton =
-            NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on deleting a variation")
+            NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let variationDeleteConfirmationConfirmButton =
             NSLocalizedString("Remove", comment: "Confirmation button on the alert when the user is deleting a variation")
     }

@@ -138,7 +138,7 @@ enum ReviewReplyNotice: Equatable {
 private enum Localization {
     static let title = NSLocalizedString("Reply to Product Review", comment: "Title for the product review reply screen")
     static let send = NSLocalizedString("Send", comment: "Text for the send button in the product review reply screen")
-    static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the product review reply screen")
+    static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 
     // Notice strings
     static let success = NSLocalizedString("Reply sent!", comment: "Notice text after sending a reply to a product review successfully")

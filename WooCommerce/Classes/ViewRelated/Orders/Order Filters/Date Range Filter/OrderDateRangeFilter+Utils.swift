@@ -56,7 +56,7 @@ extension OrderDateRangeFilter: FilterType {
     var description: String {
         switch filter {
         case .any:
-            return NSLocalizedString("Any", comment: "Label for one of the filters in order date range")
+            return NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items).")
         case .today:
             return NSLocalizedString("Today", comment: "Label for one of the filters in order date range")
         case .last2Days:

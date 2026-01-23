@@ -126,7 +126,7 @@ private extension MediaPickingCoordinator {
     @MainActor
     func photoLibraryAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("Choose from device",
-                                      comment: "Menu option for selecting media from the device's photo library.")
+                                      comment: "This text appears as a menu option in an action sheet that allows users to select media for products. It's one of several options (alongside camera and WordPress media library) that lets users choose images or videos from their device's photo library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
             self?.showMediaPicker(source: .photoLibrary, from: origin)
         }

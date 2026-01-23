@@ -92,11 +92,11 @@ struct GiftCardInputView: View {
 
 private extension GiftCardInputView {
     enum Localization {
-        static let title = NSLocalizedString("Add Gift Card", comment: "Title of the add gift card screen in the order form.")
+        static let title = NSLocalizedString("Add Gift Card", comment: "This text appears as the navigation title of a screen where users can add a gift card to an order by entering a gift card code.")
         static let header = NSLocalizedString("Gift card code", comment: "Header of the gift card code text field in the order form.")
         static let placeholder = NSLocalizedString("XXXX-XXXX-XXXX-XXXX", comment: "Placeholder of the gift card code text field in the order form.")
-        static let apply = NSLocalizedString("Apply", comment: "Button to apply the gift card code to the order form.")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to cancel entering the gift card code from the order form.")
+        static let apply = NSLocalizedString("Apply", comment: "Button label used to confirm and apply user selections or inputs in various forms, including applying gift card codes to orders, confirming order status changes, and inserting AI-generated product descriptions.")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let remove = NSLocalizedString("Remove Gift Card", comment: "Button to remove the gift card code from the order form.")
     }
 

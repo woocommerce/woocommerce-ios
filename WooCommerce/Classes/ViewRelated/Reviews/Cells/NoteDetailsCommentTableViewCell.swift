@@ -356,9 +356,9 @@ private struct Trash {
 // MARK: - Approve Button: Strings!
 //
 private struct Approve {
-    static let normalTitle      = NSLocalizedString("Approve", comment: "Approve a comment")
-    static let selectedTitle    = NSLocalizedString("Approved", comment: "Unapprove a comment")
-    static let normalLabel      = NSLocalizedString("Approves the comment", comment: "Approves a comment. Spoken Hint.")
+    static let normalTitle      = NSLocalizedString("Approve", comment: "This text appears as a button label in the product reviews section that allows store owners to approve pending customer comments or reviews. The button is part of a set of comment moderation actions alongside Spam, Trash, and Reply options.")
+    static let selectedTitle    = NSLocalizedString("Approved", comment: "This text appears as the label on an approve button when a comment is already in the approved state, allowing users to unapprove it. It's used in the review/comment management interface where store owners can moderate customer comments.")
+    static let normalLabel      = NSLocalizedString("Approves the comment", comment: "This is an accessibility spoken hint for the approve button in the comment review section of a WooCommerce store management app. It describes what will happen when a user taps the approve button to help screen reader users understand the button's function.")
     static let selectedLabel    = NSLocalizedString("Unapproves the comment", comment: "Unapproves a comment. Spoken Hint.")
 }
 

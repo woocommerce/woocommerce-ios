@@ -282,7 +282,7 @@ private extension NewNoteViewController {
 
     func configureRightButtonItemAsAdd() {
         let addButtonTitle = NSLocalizedString("Add",
-                                               comment: "Add a note screen - button title to send the note")
+                                               comment: "Button label that appears in shipment tracking screens and order note screens. When tapped, it adds a new tracking entry or saves a new order note respectively.")
         let rightBarButton = UIBarButtonItem(title: addButtonTitle,
                                              style: .done,
                                              target: self,

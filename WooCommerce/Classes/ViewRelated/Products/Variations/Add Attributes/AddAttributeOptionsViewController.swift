@@ -480,11 +480,11 @@ private extension AddAttributeOptionsViewController {
 
         static let renameAction = NSLocalizedString("Rename", comment: "Title for renaming an attribute in the edit attribute action sheet.")
         static let removeAction = NSLocalizedString("Remove", comment: "Title for removing an attribute in the edit attribute action sheet.")
-        static let cancelAction = NSLocalizedString("Cancel", comment: "Title for canceling the edit attribute action sheet.")
+        static let cancelAction = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 
         static let removeConfirmationTitle = NSLocalizedString("Remove Attribute",
                                                                comment: "Confirmation title before removing an attribute from a variation.")
         static let removeConfirmationInfo = NSLocalizedString("Are you sure you want to remove this attribute?",
-                                                              comment: "Confirmation text before removing an attribute from a variation.")
+                                                              comment: "This text appears as a confirmation message in an alert dialog when a user attempts to remove a product attribute from a variation, asking them to confirm the destructive action before proceeding.")
     }
 }

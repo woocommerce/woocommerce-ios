@@ -101,7 +101,7 @@ private extension CustomerNoteSectionContent {
     enum Localization {
         static let notes = NSLocalizedString("Customer Note", comment: "Title text of the section that shows the Order customer note when creating a new order")
         static let addNotes = NSLocalizedString("Add Note",
-                                                          comment: "Title text of the button that adds customer note data when creating a new order")
+                                                          comment: "Button label that appears in two contexts: when creating a new order to add a customer note, and when creating a simple payment to add a note. The button allows users to add a note when none exists yet.")
         static let editButtonAccessibilityLabel = NSLocalizedString(
             "Edit customer note",
             comment: "Accessibility label for the button to edit customer note on the New Order screen"

@@ -74,7 +74,7 @@ private extension CardPresentModalFoundReader {
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Label for a button that when tapped, cancels the process of connecting to a card reader "
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
     }
 }

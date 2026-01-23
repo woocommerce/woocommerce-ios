@@ -462,11 +462,11 @@ private extension ProductTagsViewController {
         static let saveButton = NSLocalizedString("Save",
                                                   comment: "Add Product Tags. Save button title in navbar.")
         static let accessibilityLabel = NSLocalizedString("Add new tags, separated by commas.",
-                                                          comment: "Voiceover accessibility label for the tags field in product tags.")
+                                                          comment: "This text serves as a VoiceOver accessibility label for the tags input field in the product tags editing screen, providing instructions to visually impaired users on how to add multiple tags using comma separation.")
         static let errorLoadingTags = NSLocalizedString("Couldn't load tags.",
-                                                        comment: "Error message when tag loading failed")
+                                                        comment: "Error message displayed to users when the app fails to load product tags in the product tags management screen. This appears as an error notification when there's a network or server issue preventing tag data from being retrieved.")
         static let errorAlertTitle = NSLocalizedString("Cannot Add Tags",
-                                                       comment: "Title of the alert when there is an error adding new product tags.")
+                                                       comment: "This text appears as the title of an error alert dialog that is displayed to users when there is a problem adding new product tags in the WooCommerce product editing screen.")
         static let okErrorAlertButton = NSLocalizedString("OK",
                                                           comment: "Dismiss button on the alert when there is an error creating new product tags.")
     }

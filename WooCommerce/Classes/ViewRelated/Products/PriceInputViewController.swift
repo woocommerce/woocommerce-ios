@@ -151,7 +151,7 @@ extension PriceInputViewController: UITableViewDataSource {
 
 private extension PriceInputViewController {
     enum Localization {
-        static let bulkEditingApply = NSLocalizedString("Apply", comment: "Title for the button to apply bulk editing changes to selected products.")
+        static let bulkEditingApply = NSLocalizedString("Apply", comment: "Button label used to confirm and apply user selections or inputs in various forms, including applying gift card codes to orders, confirming order status changes, and inserting AI-generated product descriptions.")
 
         static let salePriceWithoutRegularPriceError = NSLocalizedString("The sale price can't be added without the regular price.",
                                                                          comment: "Bulk price update error message, when the sale price is added but the"

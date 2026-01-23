@@ -914,7 +914,7 @@ private extension SettingsViewController {
 
         static let accountSettings = NSLocalizedString(
             "Account Settings",
-            comment: "Navigates to the Account Settings screen"
+            comment: "This text appears as the navigation title at the top of the Account Settings screen in the WooCommerce iOS app. It displays in the navigation bar when users access their account configuration options."
         )
 
         static let logout = NSLocalizedString(
@@ -938,7 +938,7 @@ private extension SettingsViewController {
             )
             static let cancelButtonTitle = NSLocalizedString(
                 "Back",
-                comment: "Alert button title - dismisses alert, which cancels the log out attempt"
+                comment: "This text appears as the accessibility label for back navigation buttons in various screens throughout the WooCommerce app, including web view navigation, shipping label package creation, and product variation selection screens. It helps screen readers identify the back button functionality for visually impaired users."
             )
 
             static let logoutButtonTitle = NSLocalizedString(

@@ -341,7 +341,7 @@ private extension ProductReviewsViewController {
         static let reviewsTitle = NSLocalizedString("Reviews", comment: "Title that appears on top of the Product Reviews screen.")
         static let emptyStateMessage = NSLocalizedString("Get your first reviews", comment: "Message shown on the Product Reviews screen if the list is empty")
         static let emptyStateDetail = NSLocalizedString("Capture high-quality product reviews for your store.",
-                                                         comment: "Detailed message shown on the Product Reviews screen if the list is empty")
+                                                         comment: "This text appears as a detailed explanation in the empty state screen when no product reviews are available, displayed below the main 'Get your first reviews' message to encourage merchants to start collecting reviews.")
         static let emptyStateAction = NSLocalizedString("Learn more", comment: "Title of button shown on the Product Reviews screen if the list is empty")
     }
 }

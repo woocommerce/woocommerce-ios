@@ -86,14 +86,14 @@ private extension ProductImageViewController {
         let title = NSLocalizedString("Remove Image",
                                       comment: "Title on the alert when the user taps to delete a Product image")
         let message = NSLocalizedString("Are you sure you want to remove this image?",
-                                        comment: "Message on the alert when the user taps to delete a Product image")
+                                        comment: "This text appears as the message body in a confirmation alert dialog when users tap the delete/trash button to remove a product image. The alert gives users a chance to confirm or cancel the destructive action of permanently removing the image from their product.")
         let alert = UIAlertController(title: title,
                                       message: message,
                                       preferredStyle: .alert)
         alert.view.tintColor = .text
         let cancel = UIAlertAction(title: NSLocalizedString(
             "Cancel",
-            comment: "Dismiss button on the alert when the user taps to delete a Product image"
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         ), style: .cancel, handler: nil)
 
         let delete = UIAlertAction(title: NSLocalizedString(

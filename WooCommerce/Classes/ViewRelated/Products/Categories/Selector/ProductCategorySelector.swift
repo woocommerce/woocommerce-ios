@@ -74,7 +74,7 @@ extension ProductCategorySelector {
 private extension ProductCategorySelector {
     enum Localization {
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit selection on Select Categories screen")
-        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to dismiss Select Categories screen")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 }
 

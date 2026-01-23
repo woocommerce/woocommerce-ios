@@ -136,7 +136,7 @@ struct AddressMapPickerView: View {
 
 private extension AddressMapPickerView {
     enum Localization {
-        static let close = NSLocalizedString("addressMapPicker.button.close", value: "Close", comment: "Text for the close button in the Edit Address Form.")
+        static let close = NSLocalizedString("addressMapPicker.button.close", value: "Close", comment: "This text appears as a close button label in the Address Map Picker interface, which is part of the Edit Address Form in order details. Users tap this button to dismiss the map picker view and return to the previous screen.")
         static let useThisAddress = NSLocalizedString(
             "addressMapPicker.button.useThisAddress",
             value: "Use This Address",

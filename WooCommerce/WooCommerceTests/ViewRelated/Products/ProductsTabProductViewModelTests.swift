@@ -30,7 +30,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
         // Assert
         let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let format = NSLocalizedString("%1$@ in stock", comment: "A label that displays the current stock quantity for products during order creation, showing how many units are available for purchase (e.g., '15 in stock').")
         let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
@@ -73,7 +73,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let singularFormat = NSLocalizedString("%ld variation", comment: "Label about one product variation shown on Products tab")
+        let singularFormat = NSLocalizedString("%ld variation", comment: "This text appears as a label in product details to indicate when a variable product has exactly one variation available. It's displayed alongside product information to show the number of product variants, using singular form when there's only one variation.")
         let expectedStockDetail = String.localizedStringWithFormat(singularFormat, variations.count)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
@@ -88,7 +88,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let pluralFormat = NSLocalizedString("%ld variations", comment: "Label about number of variations shown on Products tab")
+        let pluralFormat = NSLocalizedString("%ld variations", comment: "A label showing the number of product variations for variable products, displayed in product details and product lists when a product has multiple variations (e.g., '5 variations').")
         let expectedStockDetail = String.localizedStringWithFormat(pluralFormat, variations.count)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
@@ -174,7 +174,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
         // Assert
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let format = NSLocalizedString("%1$@ in stock", comment: "A label that displays the current stock quantity for products during order creation, showing how many units are available for purchase (e.g., '15 in stock').")
         let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
@@ -194,7 +194,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
         // Assert
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let format = NSLocalizedString("%1$@ in stock", comment: "A label that displays the current stock quantity for products during order creation, showing how many units are available for purchase (e.g., '15 in stock').")
         let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }

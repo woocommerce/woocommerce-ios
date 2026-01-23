@@ -21,7 +21,7 @@ struct LinkedProductsPromoCampaign {
 
 extension LinkedProductsPromoCampaign {
     enum Localization {
-        static let cardTitle = NSLocalizedString("Boost your sales with linked products", comment: "Title for the Linked Products announcement banner")
+        static let cardTitle = NSLocalizedString("Boost your sales with linked products", comment: "This text appears as the title of a promotional announcement card/banner displayed on the product detail screen to promote the linked products feature to store owners. The card is designed as a tip to encourage merchants to use upsells and cross-sells functionality.")
 
         static let cardMessage = NSLocalizedString(
             "Give your customers helpful and relevant product recommendations by adding upsells and cross-sells.",

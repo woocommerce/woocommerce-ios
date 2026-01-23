@@ -145,14 +145,14 @@ private extension JetpackBenefitsView {
         static let pushNotificationsBenefitSubtitle =
         NSLocalizedString("Get push notifications for new orders, reviews, etc. delivered to your device.",
                           comment: "Subtitle of push notifications as part of Jetpack benefits.")
-        static let analyticsBenefitTitle = NSLocalizedString("Analytics", comment: "Title of analytics as part of Jetpack benefits.")
+        static let analyticsBenefitTitle = NSLocalizedString("Analytics", comment: "Used as a screen title for the Analytics Hub dashboard and as a feature benefit title in the Jetpack benefits screen, referring to the store analytics and reporting functionality.")
         static let analyticsBenefitSubtitle =
         NSLocalizedString("New analytics views, let you see visitors, reports and more.",
                           comment: "Subtitle of analytics as part of Jetpack benefits.")
         static let userProfilesBenefitTitle = NSLocalizedString("User Profiles", comment: "Title of user profiles as part of Jetpack benefits.")
         static let userProfilesBenefitSubtitle =
         NSLocalizedString("Allow multiple users to access WooCommerce Mobile.",
-                          comment: "Subtitle of user profiles as part of Jetpack benefits.")
+                          comment: "This text appears as a subtitle in the Jetpack benefits view, explaining the User Profiles feature that allows multiple users to access the WooCommerce Mobile app when Jetpack is installed.")
         static let multiStoresBenefitTitle = NSLocalizedString("Multiple Stores", comment: "Title of multiple stores as part of Jetpack benefits.")
         static let multiStoresBenefitSubtitle =
         NSLocalizedString("Get access to all of your WooCommerce stores.",

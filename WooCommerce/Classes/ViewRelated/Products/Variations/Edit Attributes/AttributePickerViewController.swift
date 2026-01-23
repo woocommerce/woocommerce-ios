@@ -203,8 +203,8 @@ private extension AttributePickerViewController {
 
 private extension AttributePickerViewController {
     enum Localization {
-        static let titleView = NSLocalizedString("Attributes", comment: "Edit Product Attributes screen navigation title")
+        static let titleView = NSLocalizedString("Attributes", comment: "This text appears as a navigation title for the Edit Product Attributes screen and as a row title on the Product Variation main screen, allowing users to view and edit product variation attributes.")
         static let headerAttributes = NSLocalizedString("Options", comment: "Header of attributes section in Edit Product Attributes screen")
-        static let anyOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
+        static let anyOption = NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items).")
     }
 }

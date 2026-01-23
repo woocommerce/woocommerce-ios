@@ -254,7 +254,7 @@ private extension SupportFormViewModel {
 
     enum Localization {
         static let mobileApp = NSLocalizedString("Mobile App", comment: "Title of the mobile app support area option")
-        static let ipp = NSLocalizedString("Card Reader / In-Person Payments", comment: "Title of the card reader support area option")
+        static let ipp = NSLocalizedString("Card Reader / In-Person Payments", comment: "This text appears as a selectable option title in the support form when users need to choose what area they need help with. It represents the category for getting support related to card readers and in-person payment processing features.")
         static let wcPayments = NSLocalizedString("WooCommerce Payments", comment: "Title of the WooCommerce Payments support area option")
         static let wcPlugin = NSLocalizedString("WooCommerce Plugin", comment: "Title of the WooCommerce Plugin support area option")
         static let otherPlugin = NSLocalizedString("Other Extension / Plugin", comment: "Title of the Other Plugin support area option")

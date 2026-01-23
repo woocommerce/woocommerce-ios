@@ -185,6 +185,6 @@ private extension WooNavigationControllerDelegate {
         static let offlineAnnouncement = NSLocalizedString("Offline - using cached data",
                                                            comment: "Accessibility announcement message when device goes offline")
         static let onlineAnnouncement = NSLocalizedString("Back online",
-                                                          comment: "Accessibility announcement message when device goes back online")
+                                                          comment: "This is an accessibility announcement message that is automatically spoken by screen readers when the device regains internet connectivity after being offline. It appears as an audio announcement to inform visually impaired users that the app is now back online and no longer using cached data.")
     }
 }

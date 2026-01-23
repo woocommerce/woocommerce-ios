@@ -21,7 +21,7 @@ final class RefundItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productTitle, refundable.item.name)
         XCTAssertEqual(viewModel.quantityToRefund, "3")
 
-        let localizedFormat = NSLocalizedString("%d x %@ each", comment: "")
+        let localizedFormat = NSLocalizedString("%d x %@ each", comment: "This text appears in the refund items screen when processing order refunds, displaying the quantity and individual price of each item being refunded (e.g., '2 x $10.00 each'). It's used as a label format to show product quantity and unit price information in the refund item list.")
         XCTAssertEqual(viewModel.productQuantityAndPrice, String(format: localizedFormat, refundable.quantity, "$\(refundable.item.price)"))
     }
 }

@@ -136,7 +136,7 @@ private extension WPComMagicLinkView {
         )
         static let checkYourEmail = NSLocalizedString(
             "Check your email on this device!",
-            comment: "Message on the magic link screen of the WPCom login flow during Jetpack setup"
+            comment: "This text appears as the main title on the magic link authentication screen, displayed after a user requests a magic link for login and needs to check their email on their device to complete the sign-in process."
         )
         static let emailConfirmationHint = NSLocalizedString(
             "wpComMagicLinkView.emailConfirmationHint",

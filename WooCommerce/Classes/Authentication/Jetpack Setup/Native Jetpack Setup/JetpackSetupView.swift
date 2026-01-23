@@ -117,7 +117,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
 private extension JetpackSetupHostingController {
     enum Localization {
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 }
 
@@ -316,10 +316,10 @@ struct JetpackSetupView: View {
 private extension JetpackSetupView {
     enum Localization {
         static let goToStore = NSLocalizedString("Go to Store", comment: "Title for the button to navigate to the home screen after Jetpack setup completes")
-        static let authorizing = NSLocalizedString("Connect store to Jetpack", comment: "Name of the connection step on the Jetpack setup screen")
+        static let authorizing = NSLocalizedString("Connect store to Jetpack", comment: "This text appears as a step label in the Jetpack setup flow, specifically describing the connection/authorization step where the WooCommerce store is being connected to Jetpack services.")
         static let errorCode = NSLocalizedString("Error code %1$d", comment: "Error code displayed when the Jetpack setup fails. %1$d is the code.")
         static let getSupport = NSLocalizedString("Get support", comment: "Button to contact support when Jetpack setup fails")
-        static let cancelInstallation = NSLocalizedString("Cancel Installation", comment: "Action button to cancel Jetpack installation.")
+        static let cancelInstallation = NSLocalizedString("Cancel Installation", comment: "This is a button label that appears during the Jetpack setup process, allowing users to cancel the installation of Jetpack for their WooCommerce store.")
         static let error = NSLocalizedString("Error", comment: "Title indicating a failed step in Jetpack installation.")
     }
 

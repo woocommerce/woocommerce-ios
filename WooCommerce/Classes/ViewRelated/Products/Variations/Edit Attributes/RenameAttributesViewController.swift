@@ -219,7 +219,7 @@ private extension RenameAttributesViewController {
 
     enum Localization {
         static let title = NSLocalizedString("Rename Attribute", comment: "Navigation title for the Rename Attributes screen")
-        static let placeholder = NSLocalizedString("Attribute name", comment: "Placeholder in the Attribute Name row on Rename Attributes screen.")
+        static let placeholder = NSLocalizedString("Attribute name", comment: "This text appears as a placeholder in a text input field on the Rename Attributes screen where users can edit the name of a product attribute (like 'size' or 'color'). It guides users on what information to enter in the field.")
         static let footerText = NSLocalizedString("This is the type of variation like size or color",
         comment: "Footer text in Rename Attributes screen")
     }

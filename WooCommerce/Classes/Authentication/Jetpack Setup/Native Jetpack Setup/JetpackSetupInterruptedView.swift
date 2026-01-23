@@ -105,7 +105,7 @@ extension JetpackSetupInterruptedView {
         )
         static let continueConnection = NSLocalizedString(
             "Connect Jetpack",
-            comment: "Button on the Jetpack setup interrupted screen to continue the setup"
+            comment: "Button text that appears on the site credential login screen to initiate connecting Jetpack to a WooCommerce store, and also used as a navigation title for the Jetpack connection web view and as an action button when resolving account connection issues."
         )
         static let cancelInstallation = NSLocalizedString(
             "Exit Without Connecting",

@@ -93,7 +93,7 @@ private extension StoreNameSetupView {
 
     enum Localization {
         static let title = NSLocalizedString("Store name", comment: "Title for the store name screen")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the store name screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let save = NSLocalizedString("Save", comment: "Button to save the name in the store name screen")
         static let placeholder = NSLocalizedString("Enter your store name", comment: "Placeholder for the text field on the store name screen")
     }

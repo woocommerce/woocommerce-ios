@@ -134,8 +134,8 @@ private extension SurveySubmittedViewController {
         static let info = NSLocalizedString("Keep in mind that this is not a support ticket and we won’t be able to address individual feedback",
                                             comment: "Information text when the survey is completed")
         static let needHelp = NSLocalizedString("Need some help?", comment: "Text preceding the Contact Us button in the survey completed screen")
-        static let contactUs = NSLocalizedString("Contact us here", comment: "Title of a button to contact support in the survey complete screen")
-        static let backToStore = NSLocalizedString("Back to store", comment: "Title of a button to dismiss the survey complete screen")
+        static let contactUs = NSLocalizedString("Contact us here", comment: "This text appears as the label for a button on the survey completion screen that allows users to contact customer support after submitting feedback. The button is displayed alongside other options like returning to the store after the user has successfully sent their survey response.")
+        static let backToStore = NSLocalizedString("Back to store", comment: "This text appears as the title of a button on the survey completion screen that allows users to dismiss the screen and return to the main store interface after submitting feedback.")
         static let surveyAttributtion = NSLocalizedString("Powered by Automattic", comment: "Info text saying that crowdsignal in an Automattic product")
     }
 }

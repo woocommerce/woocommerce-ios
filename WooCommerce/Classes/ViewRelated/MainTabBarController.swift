@@ -1102,7 +1102,7 @@ extension MainTabBarController {
     enum Localization {
         static let imageUploadFailureNoticeTitle =
         NSLocalizedString("An image failed to upload",
-                          comment: "Title of the notice about an image upload failure in the background.")
+                          comment: "This text appears as the title of a notification/notice message that informs users when an image upload has failed in the background while they continue using the app. It's displayed as part of an error notification system that allows users to view more details about the failed upload.")
         static let productImagesSavingFailureNoticeTitle =
         NSLocalizedString("Error saving product images",
                           comment: "Title of the notice about an error saving images uploaded in the background to a product.")

@@ -810,14 +810,14 @@ private extension ProductVariationsViewController {
         static let emptyStateSubtitle = NSLocalizedString("To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first.",
                                                           comment: "Subtitle on the variations list screen when there are no variations and attributes")
         static let addAttributesAction = NSLocalizedString("Add Attributes",
-                                                           comment: "Title on empty state button when the product has no attributes and variations")
+                                                           comment: "Button text that appears in the empty state screen for product variations when a product has no attributes set up yet. Tapping this button allows users to add product attributes (like Color, Size) which are required before creating product variations.")
         static let addVariationAction = NSLocalizedString("Add Variation",
-                                                          comment: "Title on empty state button when the product has attributes but no variations")
+                                                          comment: "Button label that appears in two contexts within the product variations feature: as a title on a bottom sheet selector for choosing variation creation options, and as an action button on the empty state screen when a product has attributes but no variations yet.")
         static let generateVariationAction = NSLocalizedString("Generate New Variation", comment: "Action to add new variation on the variations list")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")
 
         static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
-        static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel button in the More Options action sheet")
+        static let cancelAction = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
         static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",
@@ -830,7 +830,7 @@ private extension ProductVariationsViewController {
     /// Localizated strings for the  action sheet options
     ///
     private enum ActionSheetStrings {
-        static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")
+        static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "This text appears as both a navigation screen title and an action sheet button in the WooCommerce product variations interface. It allows merchants to update multiple product variation prices simultaneously rather than editing them individually.")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 }

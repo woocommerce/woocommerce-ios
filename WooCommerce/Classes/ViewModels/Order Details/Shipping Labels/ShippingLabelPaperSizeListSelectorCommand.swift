@@ -40,6 +40,6 @@ final class ShippingLabelPaperSizeListSelectorCommand: ListSelectorCommand {
 // MARK: Constants
 private extension ShippingLabelPaperSizeListSelectorCommand {
     enum Localization {
-        static let navigationBarTitle = NSLocalizedString("Choose Paper Size", comment: "Navigation title on the shipping label paper size selector screen")
+        static let navigationBarTitle = NSLocalizedString("Choose Paper Size", comment: "This text appears as the navigation bar title on a screen where users select paper size options for shipping labels in the WooCommerce app.")
     }
 }

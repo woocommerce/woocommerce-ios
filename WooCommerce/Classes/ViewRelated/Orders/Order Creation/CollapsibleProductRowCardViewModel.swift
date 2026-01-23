@@ -354,10 +354,10 @@ private extension CollapsibleProductRowCardViewModel {
     enum Localization {
         static let stockFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.stockFormat",
                                                    value: "%1$@ in stock",
-                                                   comment: "Label about product's inventory stock status shown during order creation")
+                                                   comment: "A label that displays product inventory information during order creation, showing the quantity available in stock (e.g., '5 units in stock'). This appears in the collapsible product row card when merchants are creating orders and need to see stock availability.")
         static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
                                                  value: "SKU: %1$@",
-                                                 comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
+                                                 comment: "A label that displays the SKU (Stock Keeping Unit) identifier for products shown in the order creation screen, formatted with a 'SKU:' prefix followed by the actual product SKU code.")
         enum Subscription {
             static let formattedBillingDetails = NSLocalizedString(
                 "CollapsibleProductRowCardViewModel.formattedBillingDetails",

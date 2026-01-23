@@ -868,9 +868,9 @@ private enum CollectOrderPaymentUseCaseDefinitions {
         }
 
         private static let collectPaymentWithoutName = NSLocalizedString("Collect payment",
-                                                                 comment: "Alert title when starting the collect payment flow without a user name.")
+                                                                 comment: "This text appears as a title in iOS Shortcuts integration and as an alert title when initiating the payment collection flow for orders, either with or without a customer name.")
         private static let collectPaymentWithName = NSLocalizedString("Collect payment from %1$@",
-                                                                 comment: "Alert title when starting the collect payment flow with a user name.")
+                                                                 comment: "This text appears as an alert dialog title when initiating the payment collection process for a card present payment, displayed when the customer's name is available to personalize the message.")
         static func collectPaymentTitle(username: String?) -> String {
             guard let username = username, username.isNotEmpty else {
                 return collectPaymentWithoutName

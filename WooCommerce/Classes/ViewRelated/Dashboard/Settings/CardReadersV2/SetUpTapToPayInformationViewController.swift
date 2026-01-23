@@ -200,7 +200,7 @@ private enum Localization {
 
     static let cancelButton = NSLocalizedString(
         "Cancel",
-        comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
+        comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 }
 
 

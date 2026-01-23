@@ -12,7 +12,7 @@ extension ShippingLabelPaperSize {
         case .letter:
             return NSLocalizedString("Letter (8.5 x 11 in)", comment: "Title of letter paper size option for printing a shipping label")
         case .a4:
-            return NSLocalizedString("A4", comment: "Title of a4 paper size option for printing a shipping label")
+            return NSLocalizedString("A4", comment: "This text appears as a selectable option in the shipping label printing paper size selection screen, representing the A4 paper size standard. It's displayed alongside other paper size options like Letter and Legal when users need to choose their printer's paper format.")
         }
     }
 }

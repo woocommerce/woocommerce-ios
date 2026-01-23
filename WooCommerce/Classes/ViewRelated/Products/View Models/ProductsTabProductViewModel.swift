@@ -127,9 +127,9 @@ private extension EditableProductModel {
     enum Localization {
         enum VariationCount {
             static let singular = NSLocalizedString("%1$ld variation",
-                                                    comment: "Label about one product variation shown on Products tab. Reads, `1 variation`")
+                                                    comment: "This text appears as a detail label showing the count of product variations in singular form (e.g., '1 variation') on product listing screens and product edit forms in a WooCommerce mobile app.")
             static let plural = NSLocalizedString("%1$ld variations",
-                                                  comment: "Label about number of variations shown on Products tab. Reads, `2 variations`")
+                                                  comment: "This text appears as a label in product variation detail rows and product listings to show the count of variations for variable products, such as '2 variations' or '5 variations'.")
         }
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
     }
@@ -138,11 +138,11 @@ private extension EditableProductModel {
 private extension ProductsTabProductViewModel {
     enum Localization {
         static let noTitle = NSLocalizedString("(No Title)",
-                                               comment: "Product title in Products list when there is no title")
+                                               comment: "This text appears as a placeholder label for products that don't have a title in the product list view of a WooCommerce store management app.")
 
         static func variationID(variationID: String) -> String {
             let titleFormat = NSLocalizedString("#%1$@",
-                                                comment: "Variation ID. Parameters: %1$@ - Product variation ID")
+                                                comment: "A label that displays a product variation ID in the WooCommerce app's product list, formatted with a hashtag prefix followed by the variation identifier (e.g., '#12345').")
             return String.localizedStringWithFormat(titleFormat, variationID)
         }
     }

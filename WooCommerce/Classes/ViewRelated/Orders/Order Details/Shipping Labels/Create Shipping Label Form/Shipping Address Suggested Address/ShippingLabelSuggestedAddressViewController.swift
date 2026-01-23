@@ -294,8 +294,8 @@ private extension ShippingLabelSuggestedAddressViewController {
         static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Suggested Address navigation title")
         static let useAddressEnteredButton = NSLocalizedString("Use Address Entered",
                                                                comment: "Action to use the address in Shipping Label Suggested screen as entered placeholder")
-        static let addressEntered = NSLocalizedString("Address Entered", comment: "Shipping Label Suggested Address entered placeholder")
-        static let addressSuggested = NSLocalizedString("Address Suggested", comment: "Shipping Label Suggested address entered placeholder")
+        static let addressEntered = NSLocalizedString("Address Entered", comment: "A label that appears in the shipping label creation flow when the app suggests address corrections, identifying the original address as entered by the user. This text serves as a section header or identifier to distinguish the user's original input from the system's suggested address correction.")
+        static let addressSuggested = NSLocalizedString("Address Suggested", comment: "This text appears as a label in the shipping address validation screen, identifying the address option that was automatically suggested by the system when creating a shipping label for an order.")
         static let useAddressSuggestedButton = NSLocalizedString("Use Suggested Address",
                                                                  comment: "Action to use the address in Shipping Label Suggested screen as suggested")
         static let editAddressButton = NSLocalizedString("Edit Address", comment: "Action to edit the address in Shipping Label Suggested screen")

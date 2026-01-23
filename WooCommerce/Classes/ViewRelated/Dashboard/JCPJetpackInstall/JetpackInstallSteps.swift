@@ -112,9 +112,9 @@ extension JetpackInstallStep {
 
     private enum Localization {
         static let installationStep = NSLocalizedString("Installing Jetpack", comment: "Name of installing Jetpack plugin step")
-        static let activationStep = NSLocalizedString("Activating", comment: "Name of the activation Jetpack plugin step")
-        static let connectionStep = NSLocalizedString("Connecting your store", comment: "Name of the step to connect the store to Jetpack")
-        static let finalStep = NSLocalizedString("All done", comment: "Name of final step in Install Jetpack flow.")
+        static let activationStep = NSLocalizedString("Activating", comment: "This text appears as a step label in the Jetpack plugin installation flow, specifically during the activation phase when the app is in the process of activating the Jetpack plugin on the user's WooCommerce store.")
+        static let connectionStep = NSLocalizedString("Connecting your store", comment: "This text appears as a step name in the Jetpack installation flow, specifically labeling the third step where the user's WooCommerce store is being connected to Jetpack services after the plugin has been installed and activated.")
+        static let finalStep = NSLocalizedString("All done", comment: "This text appears as a step label in the Jetpack installation flow, indicating the final step when the installation, activation, and connection process has been completed successfully.")
         static let installErrorTitle = NSLocalizedString("Error installing Jetpack",
                                                          comment: "Error title when Jetpack install fails")
         static let activationErrorTitle = NSLocalizedString("Error activating Jetpack",
@@ -130,7 +130,7 @@ extension JetpackInstallStep {
         static let wpAdminInstallAction = NSLocalizedString("Install Jetpack in WP-Admin",
                                                             comment: "Action button to install Jetpack on WP-Admin instead of on app")
         static let wpAdminActivateAction = NSLocalizedString("Activate Jetpack in WP-Admin",
-                                                             comment: "Action button to activate Jetpack on WP-Admin instead of on app")
+                                                             comment: "This text appears as a button label in the Jetpack installation flow when the automatic activation of the Jetpack plugin fails, offering users an alternative way to activate Jetpack through their WordPress admin dashboard instead of through the mobile app.")
         static let checkConnectionAction = NSLocalizedString("Retry Connection", comment: "Action button to check site's connection again.")
         static let tryInstallingAgain = NSLocalizedString("Try Installing Again", comment: "Action button to retry Jetpack installation.")
         static let tryActivatingAgain = NSLocalizedString("Try Activating Again", comment: "Action button to retry Jetpack activation.")

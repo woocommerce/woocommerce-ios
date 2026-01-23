@@ -155,7 +155,7 @@ extension Coupon {
         }
 
         private enum Localization {
-            static let active = NSLocalizedString("Active", comment: "Status of coupons that are active")
+            static let active = NSLocalizedString("Active", comment: "This text appears as a status label in three different contexts: indicating that coupons are currently valid and usable, showing that subscriptions are currently active and ongoing, and displaying the application's active state for debugging purposes.")
             static let expired = NSLocalizedString("Expired", comment: "Status of coupons that are expired")
         }
     }

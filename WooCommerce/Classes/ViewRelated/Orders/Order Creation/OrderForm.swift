@@ -819,7 +819,7 @@ private extension OrderForm {
     enum Localization {
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the Order screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
-        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let collectPaymentButton = NSLocalizedString(
             "orderForm.payment.collect.button.title",
             value: "Collect Payment",
@@ -832,22 +832,22 @@ private extension OrderForm {
             "Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate.")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
-                                                   comment: "Title text of the button that allows to add multiple products when creating or editing an order")
+                                                   comment: "Button text that appears in multiple screens to add products - in the order creation/editing form to add products to an order, and in the linked products settings to add upsell/cross-sell products to a product listing.")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
-        NSLocalizedString("Camera permissions", comment: "Title of the action sheet button that links to settings for camera access")
+        NSLocalizedString("Camera permissions", comment: "This text appears as the title of an action sheet that prompts users to grant camera permissions when they try to use the barcode scanning feature while creating or editing an order. It's displayed when camera access is denied and the user needs to enable permissions in device settings to scan product SKUs.")
         static let permissionsMessage = NSLocalizedString("Camera access is required for SKU scanning. " +
                                                           "Please enable camera permissions in your device settings",
                                                           comment: "Message of the action sheet button that links to settings for camera access")
         static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
         static let storedTaxRateBottomSheetTitle = NSLocalizedString("Automatically adding tax rate",
-                                                                     comment: "Title for the bottom sheet when there is a tax rate stored")
+                                                                     comment: "This text appears as the title of a bottom sheet that displays when the app automatically applies a previously stored tax rate to a new order. It informs the merchant that a tax rate is being added automatically based on stored preferences.")
         static let storedTaxRateBottomSheetNewTaxRateButtonTitle = NSLocalizedString("Set a new tax rate for this order",
                                                                                      comment: "Title for the button to add a new tax rate" +
                                                                                      "when there is a tax rate stored")
         static let storedTaxRateBottomSheetClearTaxRateButtonTitle = NSLocalizedString("Clear address and stop using this rate",
-                                                                                       comment: "Title for the button to clear the stored tax rate")
+                                                                                       comment: "This text appears as a button title in a bottom sheet dialog that shows when there's a stored tax rate for order creation. The button allows users to clear the stored address and stop using the current tax rate when creating or editing an order.")
         static let scanProductButtonAccessibilityLabel = NSLocalizedString(
             "orderForm.products.add.scan.button.accessibilityLabel",
             value: "Scan barcode",
@@ -938,16 +938,16 @@ private extension ProductSelectorView.Configuration {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
+        static let title = NSLocalizedString("Add Product", comment: "This text appears as a navigation title on screens where users can select and add products to orders, and also as a button label in the empty state when a store has no products yet.")
+        static let close = NSLocalizedString("Close", comment: "This text appears as a button label used to dismiss or close modal screens and dialogs throughout the app, including screens like the coupon creation success view and Jetpack installation flow. It provides users with a way to exit or return to the previous screen without performing any additional actions.")
         static let doneButtonSingular = NSLocalizedString("1 Product Selected",
-                                                          comment: "Title of the action button at the bottom of the Select Products screen " +
+                                                          comment: "Text displayed on an action button and navigation bar title when exactly one product has been selected in product selection screens, specifically when adding products to orders or selecting products for linked product lists." +
                                                           "when one product is selected")
         static let doneButtonPlural = NSLocalizedString("%1$d Products Selected",
-                                                        comment: "Title of the action button at the bottom of the Select Products screen " +
+                                                        comment: "This text appears as the label on an action button at the bottom of the 'Add Product' screen when multiple products are selected to be added to an order. The %1$d placeholder is replaced with the actual number of selected products (e.g., '3 Products Selected')." +
                                                         "when more than 1 item is selected, reads like: 5 Products Selected")
         static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
-                                                                   comment: "Accessibility hint for selecting a product in the Add Product screen")
+                                                                   comment: "Accessibility hint text that is read by screen readers when users focus on a product row in the Add Product screen, explaining what happens when the product is selected.")
         static let variableProductRowAccessibilityHint = NSLocalizedString(
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Add Product screen"

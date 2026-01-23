@@ -89,10 +89,10 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
     let order: Order
 
     let title = NSLocalizedString("Add Tracking",
-                                 comment: "Add tracking screen - title.")
+                                 comment: "This text appears as the navigation bar title on the screen where users manually add shipment tracking information to orders, and also as a button label in the order details screen that opens this tracking creation flow.")
 
     let primaryActionTitle = NSLocalizedString("Add",
-                                               comment: "Add tracking screen - button title to add a tracking")
+                                               comment: "Button label that appears in shipment tracking screens and order note screens. When tapped, it adds a new tracking entry or saves a new order note respectively.")
     let secondaryActionTitle: String? = nil
 
     let shipmentTracking: ShipmentTracking? = nil
@@ -194,10 +194,10 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     let order: Order
 
     let title = NSLocalizedString("Add Tracking",
-                                  comment: "Add tracking screen - title.")
+                                  comment: "This text appears as the navigation bar title on the screen where users manually add shipment tracking information to orders, and also as a button label in the order details screen that opens this tracking creation flow.")
 
     let primaryActionTitle = NSLocalizedString("Add",
-                                               comment: "Add tracking screen - button title to add a tracking")
+                                               comment: "Button label that appears in shipment tracking screens and order note screens. When tapped, it adds a new tracking entry or saves a new order note respectively.")
     let secondaryActionTitle: String? = nil
 
     let shipmentTracking: ShipmentTracking? = nil

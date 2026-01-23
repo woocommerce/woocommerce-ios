@@ -80,17 +80,17 @@ private extension AddCustomAmountView {
 
 private extension AddCustomAmountView {
     enum Localization {
-        static let amountTitle = NSLocalizedString("Amount", comment: "Title above the amount field on the add custom amount view in orders.")
+        static let amountTitle = NSLocalizedString("Amount", comment: "Label text that appears on coupon details screens and custom amount input forms to identify monetary value fields or sections.")
         static let nameTitle = NSLocalizedString("Name", comment: "Title above the name field on the add custom amount view in orders.")
         static let deleteButtonTitle = NSLocalizedString("addCustomAmount.deleteButton",
                                                          value: "Delete Custom Amount",
-                                                         comment: "Button title to delete the custom amount on the edit custom amount view in orders.")
+                                                         comment: "This is a button label that appears on the custom amount editing screen in the order creation flow, allowing users to delete a previously added custom amount from an order.")
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
-                                                                   comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
+                                                                   comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let chargeTaxesToggleTitle = NSLocalizedString("addCustomAmountView.chargeTaxesToggle.title",
                                                               value: "Charge Taxes",
-                                                              comment: "Title for the charge taxes toggle in the custom amounts screen.")
+                                                              comment: "This is the title text for a toggle switch control that allows users to enable or disable tax charges when adding a custom amount to an order in the WooCommerce app.")
     }
 
     enum AccessibilityIdentifiers {

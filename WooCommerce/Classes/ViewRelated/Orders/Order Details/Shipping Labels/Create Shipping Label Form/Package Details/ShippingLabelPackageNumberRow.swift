@@ -36,9 +36,9 @@ private extension ShippingLabelPackageNumberRow {
     enum Localization {
         static let package = NSLocalizedString("Package %1$d", comment: "Package term in Shipping Labels. Reads like Package 1")
         static let numberOfItems = NSLocalizedString("- %1$d items",
-                                                     comment: "Number of items in packages in Shipping Labels in plural form. Reads like - 10 items")
+                                                     comment: "This text appears as a label in the shipping label creation flow, specifically showing the number of items contained in a package when there are multiple items (2 or more). It displays below the package number as part of a package details row.")
         static let numberOfItem = NSLocalizedString("- %1$d item",
-                                                    comment: "Number of item in packages in Shipping Labels in singular form. Reads like - 1 items")
+                                                    comment: "This text appears as a label in the shipping label creation flow, specifically showing the number of items in a package when there is exactly one item. It displays below the package number (e.g., 'Package 1') and uses a dash prefix to indicate it's supplementary information about the package contents.")
     }
 }
 

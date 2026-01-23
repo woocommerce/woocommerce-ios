@@ -544,12 +544,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
 private extension ProductRowViewModel {
     enum Localization {
-        static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
+        static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "A label that displays the current stock quantity for products during order creation, showing how many units are available for purchase (e.g., '15 in stock').")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let singleVariation = NSLocalizedString("%ld variation",
-                                                       comment: "Label for one product variation when showing details about a variable product")
+                                                       comment: "This text appears as a label in product details to indicate when a variable product has exactly one variation available. It's displayed alongside product information to show the number of product variants, using singular form when there's only one variation.")
         static let pluralVariations = NSLocalizedString("%ld variations",
-                                                        comment: "Label for multiple product variations when showing details about a variable product")
+                                                        comment: "A label showing the number of product variations for variable products, displayed in product details and product lists when a product has multiple variations (e.g., '5 variations').")
 
         enum Subscription {
             static let formattedBilling = NSLocalizedString(

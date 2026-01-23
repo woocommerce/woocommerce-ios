@@ -121,7 +121,7 @@ extension WPStyleGuide {
         } else {
             let nuxButtonTitleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
             let googleTitle = NSLocalizedString("Continue with Google",
-                                                comment: "Button title. Tapping begins log in using Google.")
+                                                comment: "Button label that initiates Google sign-in authentication flow in the login screen. The text appears alongside the Google logo icon on a styled authentication button.")
             return attributedStringwithLogo(googleIcon,
                                             imageSize: .init(width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize),
                                             title: googleTitle,
@@ -146,7 +146,7 @@ extension WPStyleGuide {
         let space = "\u{00a0}\u{00a0}"
         attributedString.append(NSAttributedString(string: space))
 
-        let title = NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
+        let title = NSLocalizedString("Continue with Apple", comment: "This text appears on a button in the authentication/login screen that allows users to sign in using their Apple ID. The button includes the Apple logo symbol followed by this text, and tapping it initiates the Apple Sign-In flow.")
         attributedString.append(NSAttributedString(string: title))
 
         return NSAttributedString(attributedString: attributedString)
@@ -221,7 +221,7 @@ extension WPStyleGuide {
     class func termsButton() -> UIButton {
         let style = WordPressAuthenticator.shared.style
 
-        let baseString =  NSLocalizedString("By signing up, you agree to our _Terms of Service_.", comment: "Legal disclaimer for signup buttons, the underscores _..._ denote underline")
+        let baseString =  NSLocalizedString("By signing up, you agree to our _Terms of Service_.", comment: "This text appears as a clickable button or link during the user signup process, where 'Terms of Service' is underlined to indicate it's interactive and will open the terms when tapped.")
 
         let attrStrNormal = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonColor)
         let attrStrHighlight = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonHighlightColor)

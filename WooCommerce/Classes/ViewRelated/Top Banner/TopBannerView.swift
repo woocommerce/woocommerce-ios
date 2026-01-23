@@ -342,7 +342,7 @@ private extension TopBannerView {
 private extension TopBannerView {
     enum Localization {
         static let expanded = NSLocalizedString("Expanded", comment: "Accessibility value when a banner is expanded")
-        static let collapsed = NSLocalizedString("Collapsed", comment: "Accessibility value when a banner is collapsed")
+        static let collapsed = NSLocalizedString("Collapsed", comment: "This is an accessibility value that screen readers announce to indicate that a top banner notification is currently in a collapsed state. Users can double-tap to expand the banner and see more information or actions.")
         static let expandHint = NSLocalizedString("Double-tap for more information", comment: "Accessibility hint to expand a banner")
         static let collapseHint = NSLocalizedString("Double-tap to collapse", comment: "Accessibility hint to collapse a banner")
         static let dismissHint = NSLocalizedString("Double-tap to dismiss", comment: "Accessibility hint to dismiss a banner")

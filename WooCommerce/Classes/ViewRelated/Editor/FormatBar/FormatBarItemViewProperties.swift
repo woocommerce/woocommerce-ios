@@ -69,7 +69,7 @@ extension FormattingIdentifier: FormatBarItemViewProperties {
         case .p:
             return NSLocalizedString("Select paragraph style", comment: "Accessibility label for selecting paragraph style button on formatting toolbar.")
         case .bold:
-            return NSLocalizedString("Bold", comment: "Accessibility label for bold button on formatting toolbar.")
+            return NSLocalizedString("Bold", comment: "This is an accessibility label for a bold text formatting button in a rich text editor toolbar, used by screen readers to announce the button's purpose to visually impaired users.")
         case .italic:
             return NSLocalizedString("Italic", comment: "Accessibility label for italic button on formatting toolbar.")
         case .underline:
@@ -77,7 +77,7 @@ extension FormattingIdentifier: FormatBarItemViewProperties {
         case .strikethrough:
             return NSLocalizedString("Strike Through", comment: "Accessibility label for strikethrough button on formatting toolbar.")
         case .blockquote:
-            return NSLocalizedString("Block Quote", comment: "Accessibility label for block quote button on formatting toolbar.")
+            return NSLocalizedString("Block Quote", comment: "This text appears as an accessibility label for a block quote formatting button in the text editor's formatting toolbar. It helps screen readers announce the purpose of the button when users navigate the formatting options.")
         case .orderedlist:
             return NSLocalizedString("Ordered List", comment: "Accessibility label for Ordered list button on formatting toolbar.")
         case .unorderedlist:

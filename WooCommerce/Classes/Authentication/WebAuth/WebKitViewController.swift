@@ -17,7 +17,7 @@ class WebKitViewController: UIViewController {
                                style: .plain,
                                target: self,
                                action: #selector(goBack))
-        button.title = NSLocalizedString("Back", comment: "Previous web page")
+        button.title = NSLocalizedString("Back", comment: "This text appears as the accessibility label for back navigation buttons in various screens throughout the WooCommerce app, including web view navigation, shipping label package creation, and product variation selection screens. It helps screen readers identify the back button functionality for visually impaired users.")
         return button
     }()
     @objc lazy var forwardButton: UIBarButtonItem = {

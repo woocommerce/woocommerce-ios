@@ -300,18 +300,18 @@ private extension GoogleAdsCampaignReportCardViewModel {
     enum Localization {
         static let reportTitle = NSLocalizedString("analyticsHub.googleCampaigns.reportTitle",
                                                    value: "Programs Report",
-                                                   comment: "Title for the Google Programs report linked in the Analytics Hub")
+                                                   comment: "This text appears as the title for a Google Ads campaigns report card in the Analytics Hub section of the app. It's displayed as a heading that users can tap to view detailed Google advertising campaign statistics including spend and sales data.")
         static func spend(value: String) -> String {
             String.localizedStringWithFormat(NSLocalizedString("analyticsHub.googleCampaigns.spendSubtitle",
                                                                value: "Spend: %@",
-                                                               comment: "Label for the total spend amount on a Google Ads campaign in the Analytics Hub."
+                                                               comment: "This text appears as a label in the Google Ads campaign report card within the Analytics Hub dashboard, displaying the total amount spent on advertising campaigns with a formatted monetary value."
                                                                + "The placeholder is a formatted monetary amount, e.g. Spend: $123."),
                                              value)
         }
         static func sales(value: String) -> String {
             String.localizedStringWithFormat(NSLocalizedString("analyticsHub.googleCampaigns.salesSubtitle",
                                                                value: "Sales: %@",
-                                                               comment: "Label for the total sales amount on a Google Ads campaign in the Analytics Hub."
+                                                               comment: "A label that displays the total sales amount generated from a Google Ads campaign in the Analytics Hub dashboard. The %@ placeholder will be replaced with a formatted monetary amount like '$123.45'."
                                                                + "The placeholder is a formatted monetary amount, e.g. Sales: $123."),
                                              value)
         }

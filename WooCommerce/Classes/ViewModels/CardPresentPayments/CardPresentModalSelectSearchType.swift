@@ -70,7 +70,7 @@ private extension CardPresentModalSelectSearchType {
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Cancel button title")
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 }
 

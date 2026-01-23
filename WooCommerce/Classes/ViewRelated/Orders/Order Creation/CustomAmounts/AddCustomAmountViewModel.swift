@@ -186,10 +186,10 @@ private extension AddCustomAmountViewModel {
     enum Localization {
         static let addButtonTitle = NSLocalizedString("addCustomAmount.doneButton",
                                                        value: "Add Custom Amount",
-                                                       comment: "Button title to confirm the custom amount on the add custom amount view in orders.")
+                                                       comment: "Button label that appears on the add custom amount screen in order creation, allowing users to confirm and add a custom amount item to an order.")
         static let editButtonTitle = NSLocalizedString("addCustomAmount.editButton",
                                                        value: "Edit Custom Amount",
-                                                       comment: "Button title to confirm the custom amount on the edit custom amount view in orders.")
+                                                       comment: "This is a button title that appears when editing an existing custom amount in the order creation flow, allowing users to confirm their changes to the custom amount entry.")
         static let customAmountPlaceholder = NSLocalizedString("Custom amount",
                                                                comment: "Placeholder for the name field on the add custom amount view in orders.")
     }

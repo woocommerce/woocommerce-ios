@@ -192,9 +192,9 @@ private extension ShippingLabelCustomsFormInput {
         static let returnPolicyTitle = NSLocalizedString("Return to sender if package is unable to be delivered",
                                                          comment: "Title for the return policy in Customs screen of Shipping Label flow")
         static let contentTypeTitle = NSLocalizedString("Content Type",
-                                                        comment: "Title for the Content Type row in Customs screen of Shipping Label flow")
+                                                        comment: "This text appears as a row title in the Customs screen during the shipping label creation flow, where users select what type of contents their package contains for international shipping.")
         static let contentExplanationTitle = NSLocalizedString("Content Details",
-                                                               comment: "Title for the Content Details row in Customs screen of Shipping Label flow")
+                                                               comment: "This text appears as a row title in the Customs screen during the shipping label creation flow, where users must provide details about the contents of their package for international shipping requirements.")
         static let contentExplanationPlaceholder = NSLocalizedString("Type of contents",
                                                                      comment: "Placeholder for the Content Details row " +
                                                                         "in Customs screen of Shipping Label flow")

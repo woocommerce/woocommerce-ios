@@ -262,7 +262,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         // Then
         let format = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
                                        value: "SKU: %1$@",
-                                       comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
+                                       comment: "A label that displays the SKU (Stock Keeping Unit) identifier for products shown in the order creation screen, formatted with a 'SKU:' prefix followed by the actual product SKU code.")
         let expectedSKULabel = String.localizedStringWithFormat(format, sku)
         assertEqual(expectedSKULabel, viewModel.skuLabel)
     }

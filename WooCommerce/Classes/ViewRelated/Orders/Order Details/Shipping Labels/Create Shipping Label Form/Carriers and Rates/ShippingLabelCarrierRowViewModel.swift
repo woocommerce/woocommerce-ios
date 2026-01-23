@@ -138,9 +138,9 @@ extension ShippingLabelCarrierRowViewModel: Equatable {
 private extension ShippingLabelCarrierRowViewModel {
     enum Localization {
         static let businessDaySingular =
-            NSLocalizedString("%1$d business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
+            NSLocalizedString("%1$d business day", comment: "This text appears in the shipping label creation flow to display the delivery time estimate for a selected shipping carrier rate, specifically when the delivery time is exactly 1 business day. It's used as part of the carrier and rates selection interface where users can see shipping options and their delivery timeframes.")
         static let businessDaysPlural =
-            NSLocalizedString("%1$d business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
+            NSLocalizedString("%1$d business days", comment: "This text displays the estimated delivery time for shipping options in the shipping label creation form, showing the number of business days (plural form) it will take for a package to be delivered when selecting carrier rates.")
         static let tracking = NSLocalizedString("Includes %1$@ tracking",
                                                 comment: "Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates")
         static let insuranceLiteral = NSLocalizedString("Insurance (%1$@)",
@@ -154,7 +154,7 @@ private extension ShippingLabelCarrierRowViewModel {
         static let signatureRequired = NSLocalizedString("Signature required (+%1$@)",
                                                          comment: "Signature required in Shipping Labels > Carrier and Rates")
         static let adultSignatureRequired = NSLocalizedString("Adult signature required (+%1$@)",
-                                                              comment: "Adult signature required in Shipping Labels > Carrier and Rates")
+                                                              comment: "This text appears as an informational label in the shipping carrier selection screen when creating shipping labels, indicating that adult signature is required for delivery with an additional cost shown in the placeholder.")
     }
 
     enum CarrierLogo: String {

@@ -403,14 +403,14 @@ private extension CouponDetails {
         )
 
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
-        static let copyCode = NSLocalizedString("Copy Code", comment: "Action title for copying coupon code from the Coupon Details screen")
-        static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is " +
+        static let copyCode = NSLocalizedString("Copy Code", comment: "This text appears as an action button title in an action sheet on the Coupon Details screen, allowing users to copy the coupon code to their device's clipboard for sharing or using elsewhere.")
+        static let couponCopied = NSLocalizedString("Coupon copied", comment: "A brief confirmation message that appears when a user successfully copies a coupon code from the Coupon Details screen, likely displayed as a temporary notification to confirm the action was completed." +
                                                     "copied from the Coupon Details screen")
         static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Action title for sharing coupon from the Coupon Details screen")
         static let editCoupon = NSLocalizedString("Edit Coupon", comment: "Action title for editing a coupon from the Coupon Details screen")
         static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
-        static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
+        static let amount = NSLocalizedString("Amount", comment: "Label text that appears on coupon details screens and custom amount input forms to identify monetary value fields or sections.")
         static let usageDetails = NSLocalizedString("Usage details", comment: "Title of the Usage details row in Coupon Details screen")
         static let errorLoadingData = NSLocalizedString(
             "Error loading data",

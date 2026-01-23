@@ -218,7 +218,7 @@ struct SupportForm: View {
 // MARK: Constants
 private extension SupportForm {
     enum Localization {
-        static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
+        static let title = NSLocalizedString("Contact Support", comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
         static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
         static let letsGetItSorted = NSLocalizedString("Let’s get this sorted", comment: "Title to let the user know what do we want on the support screen.")
         static let tellUsInfo = NSLocalizedString(

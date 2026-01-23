@@ -470,7 +470,7 @@ private enum Constants {
 }
 
 private enum Localization {
-    static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
+    static let close = NSLocalizedString("Close", comment: "This text appears as a button label used to dismiss or close modal screens and dialogs throughout the app, including screens like the coupon creation success view and Jetpack installation flow. It provides users with a way to exit or return to the previous screen without performing any additional actions.")
     static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
 
     static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
@@ -486,15 +486,15 @@ private enum Localization {
     static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address Form")
     static let phoneHint = NSLocalizedString("Enter Phone", comment: "Phone field placeholder in Edit Address Form")
 
-    static let companyField = NSLocalizedString("Company", comment: "Text field company in Edit Address Form")
-    static let address1Field = NSLocalizedString("Address 1", comment: "Text field address 1 in Edit Address Form")
+    static let companyField = NSLocalizedString("Company", comment: "Label for a company name input field in address forms, appearing in both order address editing and shipping label address validation screens where users can optionally enter a business or organization name.")
+    static let address1Field = NSLocalizedString("Address 1", comment: "This text appears as a field label in the Edit Address Form for order details, specifically labeling the first address line input field where users enter their primary street address information.")
     static let address1Hint = NSLocalizedString("Enter Address", comment: "Address field placeholder in Edit Address Form")
-    static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Edit Address Form")
-    static let cityField = NSLocalizedString("City", comment: "Text field city in Edit Address Form")
+    static let address2Field = NSLocalizedString("Address 2", comment: "Label for the second address line field in forms where users edit order addresses or create shipping labels, used as an optional field for additional address information like apartment numbers or suite details.")
+    static let cityField = NSLocalizedString("City", comment: "Label for the city input field in address forms, used when editing order addresses and validating shipping label addresses.")
     static let cityHint = NSLocalizedString("Enter City", comment: "City field placeholder in Edit Address Form")
     static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Edit Address Form")
     static let postcodeHint = NSLocalizedString("Enter Postcode", comment: "Postcode field placeholder in Edit Address Form")
-    static let countryField = NSLocalizedString("Country", comment: "Text field country in Edit Address Form")
+    static let countryField = NSLocalizedString("Country", comment: "Label for the country field in address forms throughout the WooCommerce app, including order address editing, shipping address validation, and country selection screens.")
     static let stateField = NSLocalizedString("State", comment: "Text field state in Edit Address Form")
     static let stateHint = NSLocalizedString("Enter State", comment: "State field placeholder in Edit Address Form")
 

@@ -243,7 +243,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
 
     private func configureProviderName(cell: TitleAndEditableValueTableViewCell) {
         let cellViewModel = TitleAndEditableValueTableViewCellViewModel(
-            title: NSLocalizedString("Carrier name", comment: "Add Custom shipping carrier. Title of cell presenting the carrier name"),
+            title: NSLocalizedString("Carrier name", comment: "This text appears as a field label in the manual shipment tracking form when adding a custom shipping carrier, allowing users to enter the name of their shipping company."),
             placeholder: NSLocalizedString("Enter carrier name", comment: "Add custom shipping carrier. Placeholder of cell presenting carrier name"),
             initialValue: viewModel.providerName
         )

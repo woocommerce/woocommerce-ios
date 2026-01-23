@@ -37,6 +37,6 @@ final class ShippingLabelCountryListSelectorCommand: ListSelectorCommand {
 
 private extension ShippingLabelCountryListSelectorCommand {
     enum Localization {
-        static var navigationBarTitle = NSLocalizedString("Choose a Country", comment: "Navigation title on the shipping label country selector screen")
+        static var navigationBarTitle = NSLocalizedString("Choose a Country", comment: "This text appears as the navigation bar title on a screen where users select a country for shipping label addresses in the WooCommerce app. It displays at the top of a country selection list during the shipping label creation process.")
     }
 }

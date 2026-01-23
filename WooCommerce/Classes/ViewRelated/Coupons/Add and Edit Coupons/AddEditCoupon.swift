@@ -342,7 +342,7 @@ private extension AddEditCoupon {
     enum Localization {
         static let cancelButton = NSLocalizedString(
             "Cancel",
-            comment: "Cancel button in the navigation bar of the view for adding or editing a coupon.")
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let headerCouponDetails = NSLocalizedString(
             "Coupon details",
             comment: "Header of the coupon details in the view for adding or editing a coupon.")
@@ -373,7 +373,7 @@ private extension AddEditCoupon {
             "for adding or editing a coupon's product and category restrictions.")
         static let allProductsButton = NSLocalizedString(
             "All Products",
-            comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")
+            comment: "This text appears as a filter option title in a product search interface, allowing users to search across all products rather than limiting the search to specific criteria like SKU.")
         static let selectCategoriesButton = NSLocalizedString(
             "Select Product Categories",
             comment: "Button to select specific categories applicable for a coupon in the view for adding or editing a coupon.")
@@ -384,7 +384,7 @@ private extension AddEditCoupon {
             "Usage Restrictions",
             comment: "Field in the view for adding or editing a coupon.")
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
-                                                                 comment: "Placeholder text that will be shown in the view" +
+                                                                 comment: "This text appears as placeholder text in a description field on the Add/Edit Coupon screen, guiding users to enter a description for their coupon when the field is empty." +
                                                                  " for adding the description of a coupon.")
         static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
                                                                 comment: "Title of the view for editing the coupon description.")
@@ -418,7 +418,7 @@ private extension ProductSelectorView.Configuration {
 
     enum Localization {
         static let title = NSLocalizedString("Select products", comment: "Title for the screen to select products for a coupon")
-        static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the Select Products screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let productRowAccessibilityHint = NSLocalizedString("Toggles selection for this product in a coupon.",
                                                                    comment: "Accessibility hint for selecting a product in the Select Products screen")
         static let variableProductRowAccessibilityHint = NSLocalizedString(

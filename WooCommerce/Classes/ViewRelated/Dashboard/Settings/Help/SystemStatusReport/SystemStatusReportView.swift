@@ -103,7 +103,7 @@ private extension SystemStatusReportView {
         )
         static let cancelButton = NSLocalizedString(
             "Cancel",
-            comment: "Cancel button on the error alert when fetching system status report fails"
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
         static let copiedToClipboard = NSLocalizedString(
             "System status report copied to clipboard",

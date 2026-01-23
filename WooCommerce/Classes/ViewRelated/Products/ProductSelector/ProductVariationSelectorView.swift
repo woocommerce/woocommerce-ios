@@ -119,12 +119,12 @@ private extension ProductVariationSelectorView {
         static let emptyStateMessage = NSLocalizedString("No product variations found",
                                                          comment: "Message displayed if there are no product variations for a product.")
 
-        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
+        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "This text appears as the accessibility label for back navigation buttons in various screens throughout the WooCommerce app, including web view navigation, shipping label package creation, and product variation selection screens. It helps screen readers identify the back button functionality for visually impaired users.")
         static let productRowAccessibilityHint = NSLocalizedString("Adds variation to order.",
-                                                                   comment: "Accessibility hint for selecting a variation in a list of product variations")
+                                                                   comment: "This is an accessibility hint that screen readers announce when a user focuses on a product variation row in the variation selector screen, explaining that tapping the row will add that variation to their order.")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading product variations",
                                                                      comment: "Accessibility label for placeholder rows while product variations are loading")
-        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Product Variations screen")
+        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button label that appears on product selection screens (both main product selector and product variation selector) allowing users to clear their current selection of products or variations when building orders.")
     }
 }
 

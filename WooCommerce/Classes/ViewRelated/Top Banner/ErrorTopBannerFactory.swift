@@ -118,6 +118,6 @@ extension ErrorTopBannerFactory {
         static let troubleshoot = NSLocalizedString("Troubleshoot",
                                                     comment: "The title of the button to get troubleshooting information in the Error Loading Data banner")
         static let contactSupport = NSLocalizedString("Contact support",
-                                                      comment: "The title of the button to contact support in the Error Loading Data banner")
+                                                      comment: "Button label that allows users to contact customer support when they need help enabling WooCommerce Analytics or when experiencing data loading errors in the app.")
     }
 }

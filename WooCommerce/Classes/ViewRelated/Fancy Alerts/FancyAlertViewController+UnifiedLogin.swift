@@ -102,7 +102,7 @@ private extension FancyAlertViewController {
 
         static let dismissButton = NSLocalizedString(
             "Continue",
-            comment: "Title of dismiss button presented when users attempt to log in without Jetpack installed or connected"
+            comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content."
         )
 
         static let whatEmailDoIUse = NSLocalizedString(
@@ -136,7 +136,7 @@ private extension FancyAlertViewController {
 
         static let cancelButton = NSLocalizedString(
             "Cancel",
-            comment: "Title of dismiss button presented when site credential login fails"
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
 
         static let loginWithWebViewButton = NSLocalizedString(

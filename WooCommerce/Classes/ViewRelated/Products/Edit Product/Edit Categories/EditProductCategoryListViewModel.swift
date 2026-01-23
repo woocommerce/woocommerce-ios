@@ -53,9 +53,9 @@ final class EditProductCategoryListViewModel {
 // MARK: - Localization
 
 private extension String {
-    static let addCategoryButtonTitle = NSLocalizedString("Add Category", comment: "Action to add category on the Product Categories screen")
+    static let addCategoryButtonTitle = NSLocalizedString("Add Category", comment: "This text appears as the navigation bar title when users are adding a new product category, and also as a button label that allows users to create a new category from the product categories screen.")
 
-    static let screenTitle = NSLocalizedString("Categories", comment: "Edit product categories screen - Screen title")
+    static let screenTitle = NSLocalizedString("Categories", comment: "This text appears as a title/label for the Categories section in the product editing interface, allowing merchants to assign product categories. It's used in bottom sheet actions, composite product component options, and as a row title in the main product form.")
 
     static let doneButtonTitle = NSLocalizedString("Done",
                                                    comment: "Edit product categories screen - button title to apply categories selection")

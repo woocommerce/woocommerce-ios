@@ -120,35 +120,35 @@ extension BlazeCampaignListItem.Status {
     private enum Localization {
         static let inModeration = NSLocalizedString("blazeCampaignListItem.status.inModeration",
                                                     value: "In Moderation",
-                                                    comment: "Status name of a pending Blaze campaign"
+                                                    comment: "This text appears as a status label for Blaze advertising campaigns that are currently awaiting approval or review. It is displayed in a campaign list item to indicate the campaign's pending moderation state."
         )
         static let scheduled = NSLocalizedString("blazeCampaignListItem.status.scheduled",
                                                  value: "Scheduled",
-                                                 comment: "Status name of a scheduled Blaze campaign"
+                                                 comment: "A status label that appears in the Blaze campaign list to indicate that a marketing campaign has been scheduled but is not yet active. This status text is displayed alongside other campaign information and is color-coded with blue styling."
         )
         static let active = NSLocalizedString("blazeCampaignListItem.status.active",
                                               value: "Active",
-                                              comment: "Status name of an approved Blaze campaign"
+                                              comment: "This text appears as a status label for Blaze advertising campaigns that are currently running and approved. It's displayed in a campaign list view to indicate the campaign's operational state."
         )
         static let rejected = NSLocalizedString("blazeCampaignListItem.status.rejected",
                                                 value: "Rejected",
-                                                comment: "Status name of a rejected Blaze campaign"
+                                                comment: "Status label displayed in the Blaze campaign list to indicate that an advertising campaign has been rejected and will not run."
         )
         static let canceled = NSLocalizedString("blazeCampaignListItem.status.canceled",
                                                 value: "Canceled",
-                                                comment: "Status name of a canceled Blaze campaign"
+                                                comment: "This text appears as a status label for Blaze advertising campaigns that have been canceled by the user or system. It's displayed in a campaign list item to indicate the current state of the campaign."
         )
         static let completed = NSLocalizedString("blazeCampaignListItem.status.completed",
                                                  value: "Completed",
-                                                 comment: "Status name of a completed Blaze campaign"
+                                                 comment: "This text appears as a status label in the Blaze campaign list to indicate that an advertising campaign has finished running. It's one of several possible campaign states displayed to help users understand the current status of their marketing campaigns."
         )
         static let suspended = NSLocalizedString("blazeCampaignListItem.status.suspended",
                                                  value: "Suspended",
-                                                 comment: "Status name of a suspended Blaze campaign"
+                                                 comment: "This text appears as a status label in the Blaze campaign list view, indicating that a promotional campaign has been temporarily suspended and is not currently running."
         )
         static let unknown = NSLocalizedString("blazeCampaignListItem.status.unknown",
                                                value: "Unknown",
-                                               comment: "Status name of a Blaze campaign without specified state"
+                                               comment: "This text appears as a status label for Blaze advertising campaigns when the campaign's current state cannot be determined or is not recognized by the system. It displays in a campaign list view alongside other possible statuses like Active, Rejected, Canceled, Completed, and Suspended."
         )
     }
 }

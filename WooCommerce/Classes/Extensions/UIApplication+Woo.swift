@@ -10,11 +10,11 @@ extension UIApplication.State {
     var description: String {
         switch self {
         case .active:
-            return NSLocalizedString("Active", comment: "Application's Active State")
+            return NSLocalizedString("Active", comment: "This text appears as a status label in three different contexts: indicating that coupons are currently valid and usable, showing that subscriptions are currently active and ongoing, and displaying the application's active state for debugging purposes.")
         case .inactive:
             return NSLocalizedString("Inactive", comment: "Application's Inactive State")
         case .background:
-            return NSLocalizedString("Background", comment: "Application's Background State")
+            return NSLocalizedString("Background", comment: "This text appears as a debug or diagnostic label indicating when the WooCommerce app is running in the background state (not actively visible to the user). It's likely used in developer tools, logs, or technical status displays within the app.")
         default:
             return NSLocalizedString("Unknown", comment: "Unknown Application State")
         }

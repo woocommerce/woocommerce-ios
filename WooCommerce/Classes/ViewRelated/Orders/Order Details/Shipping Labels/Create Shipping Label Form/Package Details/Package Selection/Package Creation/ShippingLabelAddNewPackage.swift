@@ -90,14 +90,14 @@ struct ShippingLabelAddNewPackage: View {
 
 private extension ShippingLabelAddNewPackage {
     enum Localization {
-        static let title = NSLocalizedString("Add New Package", comment: "Add New Package screen title in Shipping Label flow")
+        static let title = NSLocalizedString("Add New Package", comment: "This text appears as the screen title in the navigation bar when users are adding a new package during the shipping label creation process in WooCommerce.")
         static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
         static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Add New Package screen in Shipping Label flow")
-        static let errorAlertTitle = NSLocalizedString("Cannot add package", comment: "The title of the alert when there is a generic error adding the package")
+        static let errorAlertTitle = NSLocalizedString("Cannot add package", comment: "This text appears as the title of an error alert dialog that is shown when there is a generic failure while trying to add a new shipping package in the shipping label creation flow.")
         static let errorAlertMessage = NSLocalizedString("Unexpected error",
                                                          comment: "The message of the alert when there is an unexpected error adding the package")
-        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
+        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "This text appears as the accessibility label for back navigation buttons in various screens throughout the WooCommerce app, including web view navigation, shipping label package creation, and product variation selection screens. It helps screen readers identify the back button functionality for visually impaired users.")
     }
 }
 

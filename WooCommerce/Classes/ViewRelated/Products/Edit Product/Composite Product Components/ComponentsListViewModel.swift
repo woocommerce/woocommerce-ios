@@ -80,7 +80,7 @@ extension ComponentsListViewModel {
 // MARK: Constants
 private extension ComponentsListViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Components", comment: "Title for the list of components in a composite product")
+        static let title = NSLocalizedString("Components", comment: "This text appears as a navigation title for screens displaying components in composite products, and as a row title in the product editing form to show the components section.")
         static let infoNotice = NSLocalizedString("You can edit components in the web dashboard.",
                                                   comment: "Info notice at the bottom of the components screen")
     }

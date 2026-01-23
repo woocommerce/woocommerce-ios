@@ -15,7 +15,7 @@ extension NumberFormatter {
     private enum Constants {
         static let ninetyNinePlus = NSLocalizedString(
             "99+",
-            comment: "Please limit to 3 characters if possible. This is used if " +
+            comment: "This text appears as a label to indicate when a count or number exceeds 99, commonly used in badges, notifications, or counters to show '99+' instead of displaying the exact number." +
                 "there are more than 99 items in a tab, like Orders."
         )
     }

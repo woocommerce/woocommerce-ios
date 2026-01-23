@@ -33,7 +33,7 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
 // MARK: Constants
 private extension CountrySelectorViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Country", comment: "Title to select country from the edit address screen")
+        static let title = NSLocalizedString("Country", comment: "Label for the country field in address forms throughout the WooCommerce app, including order address editing, shipping address validation, and country selection screens.")
         static let placeholder = NSLocalizedString("Filter Countries", comment: "Placeholder on the search field to search for a specific country")
     }
 }

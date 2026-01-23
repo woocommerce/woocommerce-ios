@@ -322,12 +322,12 @@ private extension ProductDetailsCellViewModelTests {
     enum Localization {
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let subtitleFormat =
-            NSLocalizedString("%1$@ × %2$@", comment: "In Order Details,"
+            NSLocalizedString("%1$@ × %2$@", comment: "This format string displays product quantity and price information in Order Details screens, showing as 'quantity × price' (e.g., '23 × $400.00'). It appears as a subtitle or secondary text under product names in order item lists."
                               + " the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”."
                               + " The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00)."
                               + " Please take care to use the multiplication symbol ×, not a letter x, where appropriate.")
         static let subtitleWithAttributesFormat =
-            NSLocalizedString("%1$@・%2$@ × %3$@", comment: "In Order Details > product details: if the product has attributes,"
+            NSLocalizedString("%1$@・%2$@ × %3$@", comment: "This format string displays product details in Order Details screens, showing product attributes (like color, size) followed by quantity and price (e.g., 'purple, has logo・23 × $400.00'). It uses a middle dot separator (・) and multiplication symbol (×) to format the information in a single line."
                               + " the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”."
                               + " The %1$@ is the list of attributes (e.g. from variation)."
                               + " The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00)."

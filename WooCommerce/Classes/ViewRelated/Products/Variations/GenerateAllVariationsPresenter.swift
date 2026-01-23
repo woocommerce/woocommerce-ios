@@ -138,7 +138,7 @@ private extension GenerateAllVariationsPresenter {
             return String.localizedStringWithFormat(format, variationCount)
         }
         static let ok = NSLocalizedString("OK", comment: "Button text to confirm that we want to generate all variations")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button text to confirm that we don't want to generate all variations")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let fetchingVariations = NSLocalizedString("Fetching Variations...",
                                                           comment: "Blocking indicator text when fetching existing variations prior generating them.")
         static let creatingVariations = NSLocalizedString("Creating Variations...",
@@ -146,7 +146,7 @@ private extension GenerateAllVariationsPresenter {
         static let noVariationsCreatedTitle = NSLocalizedString("No variations to generate",
                                                                 comment: "Title for the notice when there were no variations to generate")
         static let noVariationsCreatedDescription = NSLocalizedString("All variations are already generated.",
-                                                                      comment: "Message for the notice when there were no variations to generate")
+                                                                      comment: "This message appears as a notice or alert description when a user attempts to generate product variations but all possible variations have already been created. It's displayed as part of an informational notice with the title 'No variations to generate' to explain why the generation process didn't create any new variations.")
         static let variationsCreatedTitle = NSLocalizedString("Variations created successfully",
                                                               comment: "Title for the notice when after variations were created")
     }

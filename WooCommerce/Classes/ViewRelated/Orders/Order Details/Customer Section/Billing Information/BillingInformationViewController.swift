@@ -102,7 +102,7 @@ private extension BillingInformationViewController {
     /// Setup: Navigation Item
     ///
     func setupNavigationItem() {
-        title = NSLocalizedString("Billing Information", comment: "Billing Information view Title")
+        title = NSLocalizedString("Billing Information", comment: "This text appears as the navigation title for a screen that displays customer billing information details in an order management section of the app.")
     }
 
     /// Setup: Main View
@@ -536,7 +536,7 @@ private extension BillingInformationViewController {
 private extension BillingInformationViewController {
     func reloadSections() {
         let billingAddress: Section = {
-            let title = NSLocalizedString("Billing Address", comment: "Section header title for billing address in billing information")
+            let title = NSLocalizedString("Billing Address", comment: "This text appears as a section header title on order-related screens in a WooCommerce app, specifically labeling the billing address section when viewing or editing customer information during order creation and in order details.")
             return Section(title: title, secondaryTitle: nil, rows: [.billingAddress])
         }()
 
@@ -554,7 +554,7 @@ private extension BillingInformationViewController {
                 rows.append(.billingEmail)
             }
 
-            let title = NSLocalizedString("Contact Details", comment: "Section header title for contact details in billing information")
+            let title = NSLocalizedString("Contact Details", comment: "This text appears as a section header in the billing information screen of an order details view, grouping together contact information like phone numbers and email addresses when available.")
             guard rows.count != 0 else {
                 return nil
             }
@@ -666,14 +666,14 @@ private enum Row: CaseIterable {
 private extension BillingInformationViewController {
     enum ContactAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let call = NSLocalizedString("Call", comment: "Call phone number button title")
+        static let call = NSLocalizedString("Call", comment: "Button label that appears in action sheets on customer contact screens, allowing users to initiate a phone call to the customer. Appears in both billing information and shipping address validation contexts when users need to contact customers directly.")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
         static let copyPhoneNumber = NSLocalizedString(
             "billingInformationViewController.action.copyPhoneNumber",
             value: "Copy number",
             comment: "Button to copy phone number to clipboard"
         )
-        static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")
+        static let copyEmail = NSLocalizedString("Copy email address", comment: "Button label that appears in an action sheet on the billing information screen in order details, allowing users to copy a customer's email address to their device clipboard.")
         static let email = NSLocalizedString("Email", comment: "Title of Email accessibility action, opens a compose view")
         static let copied = NSLocalizedString(
             "billingInformationViewController.action.copied",

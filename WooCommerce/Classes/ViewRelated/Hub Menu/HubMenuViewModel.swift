@@ -628,7 +628,7 @@ extension HubMenuViewModel {
 
         static let blaze = NSLocalizedString(
             "Blaze",
-            comment: "Title of the hub menu Blaze button")
+            comment: "This text appears as a label next to the Blaze logo icon in the campaign creation introduction screen, serving as the product name identifier for the Blaze advertising feature.")
 
         static let blazeDescription = NSLocalizedString(
             "Promote products with Blaze",

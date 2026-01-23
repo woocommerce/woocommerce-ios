@@ -68,7 +68,7 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.setLocalizedDateFormatFromTemplate("MMM d")
         formatter.timeZone = timezone
         // "Jul 28 – Aug 3" in en-US locale.
-        let expectedText = String.localizedStringWithFormat(NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval"),
+        let expectedText = String.localizedStringWithFormat(NSLocalizedString("%1$@ – %2$@", comment: "This format string displays a date range (start date – end date) in the WooCommerce store statistics dashboard, used to show time periods like 'Jul 28 – Aug 3' for weekly stats and custom date ranges."),
                                                             formatter.string(from: startDate),
                                                             formatter.string(from: endDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)

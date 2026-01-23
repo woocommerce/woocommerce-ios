@@ -150,10 +150,10 @@ private extension EnableAnalyticsView {
             "Need some help? %1$@",
             comment: "Message format on enable analytics screen for support. The %@ placeholder is a URL with more information."
         )
-        static let contactSupport = NSLocalizedString("Contact support", comment: "Action button to contact support on enable analytics screen")
+        static let contactSupport = NSLocalizedString("Contact support", comment: "Button label that allows users to contact customer support when they need help enabling WooCommerce Analytics or when experiencing data loading errors in the app.")
         static let enableAction = NSLocalizedString("Enable analytics", comment: "Action title to enable Analytics for a store")
         static let dismissAction = NSLocalizedString("Not now", comment: "Action title to dismiss enabling Analytics for a store")
-        static let analyticsEnabled = NSLocalizedString("Analytics enabled successfully.", comment: "Message when enabling analytics succeeds")
+        static let analyticsEnabled = NSLocalizedString("Analytics enabled successfully.", comment: "A success message displayed to the user after they successfully enable WooCommerce Analytics for their store from the Enable Analytics screen. This appears as a confirmation message indicating the analytics feature has been turned on.")
         static let errorEnablingAnalytics = NSLocalizedString(
             "Error enabling analytics. Please try again.",
             comment: "Error message when enabling analytics fails"

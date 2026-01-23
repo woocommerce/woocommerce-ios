@@ -463,11 +463,11 @@ private extension AddAttributeOptionsViewModel {
 private extension AddAttributeOptionsViewModel {
     enum Localization {
         static let footerTextField = NSLocalizedString("Add each option and press return",
-                                                       comment: "Footer of text field section in Add Attribute Options screen")
+                                                       comment: "This text appears as footer text below a text input field on the Add Attribute Options screen, instructing users how to add multiple product attribute options by typing each one and pressing the return key.")
         static let headerSelectedOptions = NSLocalizedString("OPTIONS OFFERED",
                                                            comment: "Header of selected attribute options section in Add Attribute Options screen")
         static let headerExistingOptions = NSLocalizedString("ADD OPTIONS",
-                                                           comment: "Header of existing attribute options section in Add Attribute Options screen")
+                                                           comment: "This text appears as a section header in the Add Attribute Options screen for product variations, specifically labeling the section containing existing attribute options that can be added to a product.")
     }
 }
 

@@ -19,7 +19,7 @@ struct PromotableProductType: Equatable {
 
 extension Optional: FilterType where Wrapped: FilterType {
     var description: String {
-        return self?.description ?? NSLocalizedString("Any", comment: "Title when there is no filter set.")
+        return self?.description ?? NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items).")
     }
 
     var isActive: Bool {

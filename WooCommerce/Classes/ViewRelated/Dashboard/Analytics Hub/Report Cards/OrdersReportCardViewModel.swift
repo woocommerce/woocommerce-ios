@@ -112,11 +112,11 @@ private extension OrdersReportCardViewModel {
     enum Localization {
         static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")
         static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
-        static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
+        static let trailingTitle = NSLocalizedString("Average Order Value", comment: "This text appears as a label in the Analytics Hub on the Dashboard screen, specifically describing one of the key metrics displayed in the Orders report card section that shows the average monetary value of customer orders.")
         static let noOrders = NSLocalizedString("Unable to load order analytics",
                                                 comment: "Text displayed when there is an error loading order stats data.")
         static let reportTitle = NSLocalizedString("analyticsHub.orderCard.reportTitle",
                                                    value: "Orders Report",
-                                                   comment: "Title for the orders analytics report linked in the Analytics Hub")
+                                                   comment: "This text appears as the title of a web view that displays a detailed orders analytics report when users tap to view more information from the orders report card in the Analytics Hub dashboard.")
     }
 }

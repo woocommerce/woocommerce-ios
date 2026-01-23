@@ -269,7 +269,7 @@ private extension StorePickerViewController {
     }
 
     func setupNavigationForListOfConnectedStores() {
-        title = NSLocalizedString("Connected Stores", comment: "Page title for the list of connected stores")
+        title = NSLocalizedString("Connected Stores", comment: "This text appears as the navigation bar title on a screen that displays a list of all stores connected to the user's account in the WooCommerce app.")
     }
 
     func setupViewForCurrentConfiguration() {
@@ -836,11 +836,11 @@ private extension StorePickerViewController {
 
 private extension StorePickerViewController {
     enum Localization {
-        static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
+        static let continueButton = NSLocalizedString("Continue", comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content.")
         static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
         static let cancel = NSLocalizedString("Cancel",
-                                              comment: "Button to dismiss the action sheet on the store picker")
+                                              comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let addStoreButton = NSLocalizedString("storePickerViewController.addStoreButton",
                                                       value: "Connect existing store",
                                                       comment: "Button title on the store picker for store connection")

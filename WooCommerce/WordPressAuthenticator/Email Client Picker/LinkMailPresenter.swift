@@ -33,7 +33,7 @@ public class LinkMailPresenter {
 
     private func showAlertToCheckEmail(on viewController: UIViewController) {
         let title = NSLocalizedString("Check your email!",
-                                      comment: "Alert title for check your email during logIn/signUp.")
+                                      comment: "This text appears as the title of an alert dialog that is shown when no email client apps are installed on the device during the login/signup process. The alert informs users to check their email after a login link has been sent to them.")
 
         let message = String.localizedStringWithFormat(NSLocalizedString("We just emailed a link to %@. Please check your mail app and tap the link to log in.",
                                                                          comment: "message to ask a user to check their email for a WordPress.com email"), emailAddress)

@@ -220,14 +220,14 @@ private extension ProductDescriptionGenerationView {
         )
         static let copyGeneratedText = NSLocalizedString(
             "Copy",
-            comment: "Button title to copy generated text in the product description AI generator view."
+            comment: "Button text for a swipe action that allows users to copy address information from order details. This appears as a swipe-left action button on address rows in the order details screen."
         )
         static let textCopiedNotice = NSLocalizedString(
             "Copied!",
             comment: "Text in the notice after copying the generated text in the product description AI generator view."
         )
         static let insertGeneratedText = NSLocalizedString("Apply",
-                                                           comment: "Button title to insert AI-generated product description.")
+                                                           comment: "Button label used to confirm and apply user selections or inputs in various forms, including applying gift card codes to orders, confirming order status changes, and inserting AI-generated product descriptions.")
         static let generateText = NSLocalizedString("Write with AI",
                                                     comment: "Button title to generate product description with Jetpack AI.")
         static let regenerateText = NSLocalizedString("Regenerate",

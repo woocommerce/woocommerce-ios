@@ -111,10 +111,10 @@ private extension ProductDiscountView {
     enum Localization {
         static let addButton = NSLocalizedString(
             "Add",
-            comment: "Text for the add button in the discounts details screen")
+            comment: "Button label that appears in shipment tracking screens and order note screens. When tapped, it adds a new tracking entry or saves a new order note respectively.")
         static let cancelButton = NSLocalizedString(
             "Cancel",
-            comment: "Text for the cancel button in the discounts details screen")
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let removeDiscountButton = NSLocalizedString(
             "Remove Discount",
             comment: "Text for button to remove a discount in the discounts details screen")
@@ -123,7 +123,7 @@ private extension ProductDiscountView {
             comment: "The label that points to the updated price of a product after a discount has been applied")
         static let addDiscountLabel = NSLocalizedString(
             "Add Discount",
-            comment: "Text for the button to add a discount to a product in the order screen")
+            comment: "This text appears as a navigation title on the discount configuration screen during order creation, displayed at the top of the view when users are adding a new discount to an order.")
         static let editDiscountLabel = NSLocalizedString(
             "Edit Discount",
             comment: "Text for the button to edit an existing discount to a product in the order screen")

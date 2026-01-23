@@ -40,6 +40,6 @@ final class WhatsNewViewModel: ReportListPresentable {
 private extension WhatsNewViewModel {
     enum Localization {
         static let title = NSLocalizedString("What’s New in WooCommerce", comment: "Title of Whats New Component")
-        static let ctaTitle = NSLocalizedString("Continue", comment: "Title of continue button")
+        static let ctaTitle = NSLocalizedString("Continue", comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content.")
     }
 }

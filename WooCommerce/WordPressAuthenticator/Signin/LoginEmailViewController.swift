@@ -123,7 +123,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         emailTextField.placeholder = NSLocalizedString("Email address", comment: "Placeholder for a textfield. The user may enter their email address.")
         emailTextField.accessibilityIdentifier = "Login Email Address"
 
-        alternativeLoginLabel?.text = NSLocalizedString("Alternatively:", comment: "String displayed before offering alternative login methods")
+        alternativeLoginLabel?.text = NSLocalizedString("Alternatively:", comment: "This text appears as a label on the email login screen, positioned before alternative login method buttons (like Google sign-in) to introduce other ways users can log into their account besides entering an email address.")
 
         let submitButtonTitle = NSLocalizedString("Next", comment: "Title of a button. The text should be capitalized.").localizedCapitalized
         submitButton?.setTitle(submitButtonTitle, for: .normal)

@@ -111,9 +111,9 @@ private extension OrderSubscriptionTableViewCellViewModel {
         static func statusLabel(for status: SubscriptionStatus) -> String {
             switch status {
             case .active:
-                return NSLocalizedString("Active", comment: "Display label for the subscription status type")
+                return NSLocalizedString("Active", comment: "This text appears as a status label in three different contexts: indicating that coupons are currently valid and usable, showing that subscriptions are currently active and ongoing, and displaying the application's active state for debugging purposes.")
             case .cancelled:
-                return NSLocalizedString("Cancelled", comment: "Display label for the subscription status type")
+                return NSLocalizedString("Cancelled", comment: "This text appears as a status label in the Order Details screen to indicate that a subscription has been cancelled. It's displayed alongside other subscription information to show the current state of the subscription.")
             case .expired:
                 return NSLocalizedString("Expired", comment: "Display label for the subscription status type")
             case .onHold:

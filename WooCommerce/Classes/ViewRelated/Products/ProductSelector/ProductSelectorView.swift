@@ -404,7 +404,7 @@ private extension ProductSelectorView {
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
-        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
+        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button label that appears on product selection screens (both main product selector and product variation selector) allowing users to clear their current selection of products or variations when building orders.")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
         static let addProductsText = NSLocalizedString(
             "productselectorview.doneButtonTitle.addProductsText",

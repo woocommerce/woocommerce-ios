@@ -45,7 +45,7 @@ struct StatSelectionBar<Stat: Hashable>: View {
 private enum Localization {
     static let metric = NSLocalizedString("analyticsHub.statSelectionBar.metricLabel",
                                           value: "Metric",
-                                          comment: "Label for the selected metric on an analytics card in the Analytics Hub.")
+                                          comment: "This text appears as a label identifying the currently selected metric on analytics cards within the Analytics Hub dashboard, helping users understand what data measurement they are viewing.")
 }
 
 #Preview {

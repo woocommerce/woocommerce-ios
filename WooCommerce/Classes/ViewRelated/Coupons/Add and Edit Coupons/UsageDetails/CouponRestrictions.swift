@@ -213,7 +213,7 @@ private extension CouponRestrictions {
         )
         static let allowedEmails = NSLocalizedString(
             "Allowed Emails",
-            comment: "Title for the allowed email row in coupon usage restrictions screen."
+            comment: "This text appears as the navigation bar title for a screen where users can configure allowed email addresses for coupon usage in a WooCommerce store."
         )
         static let individualUseOnly = NSLocalizedString(
             "Individual Use Only",
@@ -269,7 +269,7 @@ private extension ProductSelectorView.Configuration {
 
     enum Localization {
         static let title = NSLocalizedString("Exclude products", comment: "Title for the screen to exclude products for a coupon")
-        static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the Exclude Products screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let productRowAccessibilityHint = NSLocalizedString("Toggles selection to exclude this product in a coupon.",
                                                                    comment: "Accessibility hint for excluding a product in the Exclude Products screen")
         static let variableProductRowAccessibilityHint = NSLocalizedString(

@@ -337,14 +337,14 @@ private extension ProductExternalLinkViewController {
         static let enterURLPlaceholder = NSLocalizedString("Enter URL",
                                          comment: "Placeholder of the text field for editing the external URL for an external/affiliate product")
         static let errorMalformedURL = NSLocalizedString("Check that the URL entered is valid",
-                                                         comment: "The message of the alert when there is an error in the URL of an external product")
+                                                         comment: "Error message displayed to the user when they enter an invalid or malformed URL in the external product link field on the Product Link editing screen.")
         static let externalURLFooter = NSLocalizedString("Enter the external URL to the product.",
                                                   comment: "Footer text for editing product external URL")
         static let buttonTextTitle = NSLocalizedString("Button Text",
-                                                       comment: "Title of the text field for editing the button text for an external/affiliate product")
+                                                       comment: "This is a section title/label that appears above a text field in the external product editing screen, where users can customize the text that will appear on the button linking to the external product.")
         static let buttonTextFooter = NSLocalizedString("This text will be shown on the button linking to the external product.",
                                                  comment: "Footer text for editing external product button text")
         static let buyProductPlaceholder = NSLocalizedString("Buy Product",
-        comment: "Placeholder of the text field for editing the button text for an external/affiliate product")
+        comment: "This text appears as placeholder text in a text field where users can customize the button label for external/affiliate products, with 'Buy Product' being the default suggestion.")
     }
 }

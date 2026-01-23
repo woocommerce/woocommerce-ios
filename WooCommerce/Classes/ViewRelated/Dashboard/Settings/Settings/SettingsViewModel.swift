@@ -489,7 +489,7 @@ private extension SettingsViewModel {
 
         static let accountSettings = NSLocalizedString(
             "Account Settings",
-            comment: "My Store > Settings > Account Settings section"
+            comment: "This text appears as the navigation title at the top of the Account Settings screen in the WooCommerce iOS app. It displays in the navigation bar when users access their account configuration options."
         ).uppercased()
     }
 }

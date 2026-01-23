@@ -26,7 +26,7 @@ final class ProductPurchaseNoteViewController: UIViewController {
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
         let footerText = NSLocalizedString("An optional note to send the customer after purchase",
-                                           comment: "Footer text in Product Purchase Note screen")
+                                           comment: "This text appears as footer text on the Product Purchase Note screen, explaining to users that they can optionally add a note that will be sent to customers after they complete a purchase.")
         sections = [Section(footer: footerText, rows: [.purchaseNote])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -147,7 +147,7 @@ private extension ProductPurchaseNoteViewController {
 
     func configurePurchaseNote(cell: TextViewTableViewCell) {
         let placeholder = NSLocalizedString("Add a purchase note...",
-                                            comment: "Placeholder text in Product Purchase Note screen")
+                                            comment: "This text appears as placeholder text in a text input field on the Product Purchase Note screen, prompting merchants to add a note that will be sent to customers after they purchase a product.")
 
         let cellViewModel = TextViewTableViewCell.ViewModel(text: productSettings.purchaseNote?.strippedHTML,
                                                             placeholder: placeholder,

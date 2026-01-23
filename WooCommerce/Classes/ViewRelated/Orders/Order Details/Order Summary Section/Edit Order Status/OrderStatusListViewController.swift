@@ -70,7 +70,7 @@ extension OrderStatusListViewController {
 
     func configureLeftButton() {
         let dismissButtonTitle = NSLocalizedString("Cancel",
-                                                   comment: "Change order status screen - button title for closing the view")
+                                                   comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
                                             style: .plain,
                                             target: self,
@@ -84,7 +84,7 @@ extension OrderStatusListViewController {
         }
 
         let applyButtonTitle = NSLocalizedString("Apply",
-                                               comment: "Change order status screen - button title to apply selection")
+                                               comment: "Button label used to confirm and apply user selections or inputs in various forms, including applying gift card codes to orders, confirming order status changes, and inserting AI-generated product descriptions.")
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
                                              style: .done,
                                              target: self,

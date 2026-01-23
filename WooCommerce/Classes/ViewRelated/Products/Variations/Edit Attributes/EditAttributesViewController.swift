@@ -222,12 +222,12 @@ extension EditAttributesViewController: UITableViewDataSource, UITableViewDelega
 // MARK: Constants
 private extension EditAttributesViewController {
     enum Localization {
-        static let addNewAttribute = NSLocalizedString("Add New Attribute", comment: "Action to add new attribute on the Product Attributes screen")
+        static let addNewAttribute = NSLocalizedString("Add New Attribute", comment: "This text appears as a button or action label on the Product Attributes screen in a WooCommerce mobile app, allowing users to add a new attribute to a product. It's part of the product editing workflow where merchants can manage product variations and their attributes.")
         static let title = NSLocalizedString("Edit Attributes", comment: "Navigation title for the Product Attributes screen")
         static let next = NSLocalizedString("Next", comment: "Action navigate to the variation creation screen")
 
         static let generateTitle = NSLocalizedString("Variations", comment: "Title for the generate first variation screen")
-        static let attributesAddedTitle = NSLocalizedString("Attributes added!", comment: "Primary text for the generate first variation screen")
+        static let attributesAddedTitle = NSLocalizedString("Attributes added!", comment: "This text appears as a primary title/header on a success screen shown after users have successfully added product attributes, encouraging them to proceed with creating their first product variation in the WooCommerce app.")
         static let attributesAddedInfo = NSLocalizedString("Now that you’ve added attributes, you can create your first variation!",
                                                            comment: "Info text for the generate first variation screen")
         static let generateButtonTitle = NSLocalizedString("Generate Variation", comment: "Title of the action to generate the first variation")

@@ -211,7 +211,7 @@ private extension PostSiteCredentialLoginChecker {
             "The request to generate application password is not authorized.",
             comment: "Message to display when the generating application password fails with unauthorized error"
         )
-        static let contactSupport = NSLocalizedString("Contact Support", comment: "Button to contact support for login")
+        static let contactSupport = NSLocalizedString("Contact Support", comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to refetch application password for the current site")
         static let restartLoginButton = NSLocalizedString("Log In With Another Account", comment: "Button to restart the login flow.")
     }

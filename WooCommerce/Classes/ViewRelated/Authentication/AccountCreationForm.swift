@@ -168,11 +168,11 @@ private extension AccountCreationForm {
         static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let emailFieldTitle = NSLocalizedString("Your email address", comment: "Title of the email field on the account creation form.")
         static let emailFieldPlaceholder = NSLocalizedString("Email address", comment: "Placeholder of the email field on the account creation form.")
-        static let passwordFieldTitle = NSLocalizedString("Choose a password", comment: "Title of the password field on the account creation form.")
+        static let passwordFieldTitle = NSLocalizedString("Choose a password", comment: "This text appears as a field label above the password input field on the account creation form, instructing users to enter a new password when creating their WooCommerce account.")
         static let passwordFieldPlaceholder = NSLocalizedString("Password", comment: "Placeholder of the password field on the account creation form.")
-        static let tosFormat = NSLocalizedString("By continuing, you agree to our %1$@.", comment: "Terms of service format on the account creation form.")
+        static let tosFormat = NSLocalizedString("By continuing, you agree to our %1$@.", comment: "This text appears on the account creation form as a terms of service agreement statement, where %1$@ is replaced with a clickable 'Terms of Service' link. It's displayed below the form fields to inform users that proceeding with account creation means they accept the terms.")
         static let tos = NSLocalizedString("Terms of Service", comment: "Terms of service link on the account creation form.")
-        static let submitButtonTitle = NSLocalizedString("Continue", comment: "Title of the submit button on the account creation form.")
+        static let submitButtonTitle = NSLocalizedString("Continue", comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content.")
     }
 
     enum Layout {

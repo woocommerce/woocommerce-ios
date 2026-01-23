@@ -503,7 +503,7 @@ private extension OrdersRootViewController {
                                      target: self,
                                      action: #selector(presentOrderCreationFlow))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
+        button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "This text serves as the accessibility label for a plus (+) button in the Orders screen that opens an action sheet allowing users to choose what type of new order to create.")
         button.accessibilityIdentifier = "new-order-type-sheet-button"
         return button
     }

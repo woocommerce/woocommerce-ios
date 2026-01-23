@@ -30,7 +30,7 @@ final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCr
     private func configureNavigationBarAppearance() {
         configureTransparentNavigationBar()
 
-        let title = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+        let title = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(dismissView))
     }
 
@@ -169,7 +169,7 @@ private extension SiteCredentialLoginView {
             comment: "Message on the site credential login screen for connecting Jetpack. The %1$@ is the site address."
         )
         static let installJetpack = NSLocalizedString("Install Jetpack", comment: "Button title on the site credential login screen")
-        static let connectJetpack = NSLocalizedString("Connect Jetpack", comment: "Button title on the site credential login screen")
+        static let connectJetpack = NSLocalizedString("Connect Jetpack", comment: "Button text that appears on the site credential login screen to initiate connecting Jetpack to a WooCommerce store, and also used as a navigation title for the Jetpack connection web view and as an action button when resolving account connection issues.")
         static let enterUsername = NSLocalizedString("Enter username", comment: "Placeholder for the username field on the site credential login screen")
         static let enterPassword = NSLocalizedString("Enter password", comment: "Placeholder for the password field on the site credential login screen")
         static let resetPassword = NSLocalizedString("Reset your password", comment: "Button to reset password on the site credential login screen")

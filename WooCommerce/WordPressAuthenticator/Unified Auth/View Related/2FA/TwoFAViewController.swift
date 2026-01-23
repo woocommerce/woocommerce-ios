@@ -651,7 +651,7 @@ private extension TwoFAViewController {
 
     enum LocalizedText {
         static let bad2FAMessage = NSLocalizedString("Whoops, that's not a valid two-factor verification code. Double-check your code and try again!", comment: "Error message shown when an incorrect two factor code is provided.")
-        static let numericalCode = NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field.")
+        static let numericalCode = NSLocalizedString("A verification code will only contain numbers.", comment: "Error message displayed when a user enters non-numeric characters into the two-factor authentication verification code input field during login. This validation message appears immediately as the user types invalid characters to guide them toward entering only numbers.")
         static let invalidCode = NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length")
         static let smsSent = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
         static let invalidKey = NSLocalizedString("Whoops, that security key does not seem valid. Please try again with another one",

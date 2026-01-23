@@ -236,7 +236,7 @@ private extension OrderStatusFilterViewController {
 private extension OrderStatusFilterViewController {
     enum Localization {
         static let anyStatusCase = NSLocalizedString("Any",
-                                                     comment: "Case Any in Order Filters for Order Statuses")
+                                                     comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items).")
         static let navigationBarTitle = NSLocalizedString("Order Status",
                                                           comment: "Navigation title of the orders filter selector screen for order statuses")
     }

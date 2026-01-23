@@ -89,19 +89,19 @@ private extension OrderNoteTableViewCell {
             iconButton.backgroundColor = .primary
             let template =
                 NSLocalizedString("%1$@ - %2$@ (To Customer)",
-                                  comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
+                                  comment: "This text appears as a label in the order details screen to identify order notes that are visible to the customer. It displays in the format of timestamp - author name (To Customer) to help merchants distinguish customer-facing notes from private or system notes.")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else if isSystemAuthor {
             iconButton.backgroundColor = .listSmallIcon
             let template =
                 NSLocalizedString("%1$@ - %2$@ (System)",
-                                  comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
+                                  comment: "This text appears as a label for order notes in the order details screen, specifically identifying system-generated status messages. The format displays the timestamp and author followed by \"(System)\" to indicate the note was automatically created by the system rather than manually added.")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else {
             iconButton.backgroundColor = .textSubtle
             let template =
                 NSLocalizedString("%1$@ - %2$@ (Private)",
-                                  comment: "Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private)")
+                                  comment: "This text appears as a status label in order note cells within the order details screen, indicating that the note is private and not visible to customers. It displays in the format 'time - author (Private)' to help merchants distinguish between different types of order notes.")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         }
     }

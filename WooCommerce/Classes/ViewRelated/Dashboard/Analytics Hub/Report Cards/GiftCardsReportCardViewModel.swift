@@ -112,18 +112,18 @@ private extension GiftCardsReportCardViewModel {
     enum Localization {
         static let title = NSLocalizedString("analyticsHub.giftCardsCard.title",
                                              value: "GIFT CARDS",
-                                             comment: "Title for gift cards analytics section in the Analytics Hub")
+                                             comment: "This text appears as the main title/heading for the Gift Cards analytics section within the Analytics Hub dashboard, identifying the specific report card that displays gift card usage statistics and metrics.")
         static let leadingTitle = NSLocalizedString("analyticsHub.giftCardsCard.leadingTitle",
                                                     value: "Used",
-                                                    comment: "Label for used gift cards in the Analytics Hub")
+                                                    comment: "This text appears as a label in the Analytics Hub's Gift Cards report card, indicating the number of gift cards that have been used by customers during the selected time period.")
         static let trailingTitle = NSLocalizedString("analyticsHub.giftCardsCard.trailingTitle",
                                                      value: "Net Amount",
-                                                     comment: "Label for net amount used for gift cards in the Analytics Hub")
+                                                     comment: "This text appears as a label in the Analytics Hub's Gift Cards report card, specifically labeling the metric that shows the net monetary amount from gift card usage.")
         static let noGiftCards = NSLocalizedString("analyticsHub.giftCardsCard.syncErrorMessage",
                                                    value: "Unable to load gift card analytics",
-                                                   comment: "Text displayed when there is an error loading gift card stats data.")
+                                                   comment: "Error message displayed in the gift cards analytics card on the Analytics Hub screen when the app fails to load gift card statistics data.")
         static let reportTitle = NSLocalizedString("analyticsHub.giftCardsCard.reportTitle",
                                                    value: "Gift Cards Report",
-                                                   comment: "Title for the gift cards analytics report linked in the Analytics Hub")
+                                                   comment: "This text appears as the title of a detailed gift cards analytics report that users can access from the Analytics Hub dashboard in a WooCommerce mobile app.")
     }
 }

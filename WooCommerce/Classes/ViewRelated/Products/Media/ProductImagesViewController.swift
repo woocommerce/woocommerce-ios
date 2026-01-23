@@ -373,7 +373,7 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func displayErrorAlert(error: Error?) {
-        let title = NSLocalizedString("Cannot upload image", comment: "Title of the alert when there is an error uploading image(s)")
+        let title = NSLocalizedString("Cannot upload image", comment: "This text appears as the title of an error alert dialog that is displayed when there is a failure uploading product images in the WooCommerce app. The alert shows this title along with a specific error message and an 'OK' button to dismiss it.")
         let alertController = UIAlertController(title: title,
                                                 message: error?.localizedDescription,
                                                 preferredStyle: .alert)
@@ -388,8 +388,8 @@ private extension ProductImagesViewController {
 
 private extension ProductImagesViewController {
     enum Localization {
-        static let addPhotos = NSLocalizedString("Add Photos", comment: "Action to add photos on the Product images screen")
-        static let addPhoto = NSLocalizedString("Add Photo", comment: "Action to add one photo on the Product images screen")
+        static let addPhotos = NSLocalizedString("Add Photos", comment: "Button label on the Product images screen that allows users to add multiple photos to a product. This appears as an action button for uploading or selecting multiple images when managing product photos.")
+        static let addPhoto = NSLocalizedString("Add Photo", comment: "Button label that appears on the Product images screen, allowing users to add a single photo to a product listing. This is likely displayed when no photos are present or as an alternative to the 'Add Photos' action for adding multiple images.")
         static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
         static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed by variation",
                                                                  comment: "Helper text above photo list in Product images screen")

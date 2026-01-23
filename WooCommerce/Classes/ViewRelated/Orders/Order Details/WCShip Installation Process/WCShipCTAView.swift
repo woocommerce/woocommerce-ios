@@ -96,7 +96,7 @@ private extension WCShipCTAView {
         static let viewSubtitle = NSLocalizedString("Save time and money",
                                                     comment: "Title of the CTA view for installing WCShip extension")
         static let firstIconTitle = NSLocalizedString("Buy postage when you need it",
-                                                      comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+                                                      comment: "This text appears as the title of the first feature highlight in a call-to-action view that promotes installing the WooCommerce Shipping extension, displayed within the order details section of the app.")
         static let firstIconSubtitle = NSLocalizedString("No need to wonder where that stampbook went",
                                                          comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
         static let secondIconTitle = NSLocalizedString("Print from your phone",
@@ -106,11 +106,11 @@ private extension WCShipCTAView {
         static let thirdIconTitle = NSLocalizedString("Discounted rates",
                                                       comment: "Title of one of the elements in the CTA View for installing WCShip extension")
         static let thirdIconSubtitle = NSLocalizedString("Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!",
-                                                         comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+                                                         comment: "This text appears as a subtitle under the 'Discounted rates' feature in a promotional view that encourages users to install the WooCommerce Shipping extension. It explains the shipping discount benefit and lists specific carriers (DHL and USPS) available through the service.")
         static let buttonWhatIsWCShip = NSLocalizedString("What is WooCommerce Shipping?",
                                                           comment: "Button in the CTA View about what is the WCShip extension")
         static let buttonAddExtension = NSLocalizedString("Add Extension To Store",
-                                                          comment: "Button in the CTA View for installing WCShip extension")
+                                                          comment: "This text appears on a button in the WooCommerce Shipping installation call-to-action view, which is displayed in the order details screen to encourage users to install the WCShip extension for order fulfillment.")
         static let buttonDismiss = NSLocalizedString("Not now",
                                                      comment: "Button in the CTA View for installing WCShip extension for dismissing the view")
     }

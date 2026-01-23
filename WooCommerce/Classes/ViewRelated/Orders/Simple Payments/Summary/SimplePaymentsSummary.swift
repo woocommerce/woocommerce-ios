@@ -326,13 +326,13 @@ private extension SimplePaymentsSummary {
         static let subtotal = NSLocalizedString("Subtotal",
                                                comment: "Title text of the row that shows the subtotal when creating a simple payment")
         static let chargeTaxes = NSLocalizedString("Charge Taxes",
-                                               comment: "Title text of the row that has a switch when creating a simple payment")
+                                               comment: "This text appears as a label for a toggle switch on the simple payments summary screen that allows merchants to enable or disable tax calculation when creating a payment order.")
         static let total = NSLocalizedString("Order Total",
                                                comment: "Title text of the row that shows the total to charge when creating a simple payment")
         static let orderNote = NSLocalizedString("Customer Provided Note",
                                                comment: "Title text of the row that holds the order note when creating a simple payment")
         static let addNote = NSLocalizedString("Add Note",
-                                               comment: "Title text of the button that adds a note when creating a simple payment")
+                                               comment: "Button label that appears in two contexts: when creating a new order to add a customer note, and when creating a simple payment to add a note. The button allows users to add a note when none exists yet.")
         static let editNote = NSLocalizedString("Edit",
                                                comment: "Title text of the button that edits a note when creating a simple payment")
         static let taxesDisclaimer = NSLocalizedString("Taxes are automatically calculated based on your store address.",

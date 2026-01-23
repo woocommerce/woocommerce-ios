@@ -5,13 +5,13 @@ import Yosemite
 
 final class BarcodeScannerErrorNoticeFactoryTests: XCTestCase {
     let barcode = ScannedBarcode(payloadStringValue: "test-sku", symbology: .ean13)
-    let noticeTitle = NSLocalizedString("Cannot add Product to Order.", comment: "")
+    let noticeTitle = NSLocalizedString("Cannot add Product to Order.", comment: "This is an error message displayed as a notice title when a barcode scanner fails to add a scanned product to an order due to various reasons (product not found, not purchasable, or other generic errors).")
 
     func test_notice_when_a_generic_error_is_passed_then_returns_generic_notice() {
         let error = NSError(domain: "disconnect", code: 134)
         let result = BarcodeScannerErrorNoticeFactory.notice(for: error, code: barcode, actionHandler: {})
 
-        XCTAssertEqual(result.title, NSLocalizedString("Cannot add Product to Order.", comment: ""))
+        XCTAssertEqual(result.title, NSLocalizedString("Cannot add Product to Order.", comment: "This is an error message displayed as a notice title when a barcode scanner fails to add a scanned product to an order due to various reasons (product not found, not purchasable, or other generic errors)."))
     }
 
     func test_notice_when_a_product_not_found_error_is_passed_then_returns_right_notice() {

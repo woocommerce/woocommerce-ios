@@ -948,7 +948,7 @@ private extension ShippingLabelFormViewModel {
                                                                  comment: "Placeholder in Shipping Label form for the Package Details row.")
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
-        static let packageItemCount = NSLocalizedString("%1$d items in %2$d packages", comment: "Total number of items and packages in Shipping Label form.")
+        static let packageItemCount = NSLocalizedString("%1$d items in %2$d packages", comment: "This text appears in the Shipping Label form to display a summary of the total number of items being shipped across multiple packages. It's shown as an informational label that helps users understand the distribution of their order items across the selected packaging.")
         static let fillCustomsForm = NSLocalizedString("Fill out customs form", comment: "Subtitle of the cell Customs inside Create Shipping Label form")
         static let customsFormCompleted = NSLocalizedString("Customs form completed",
                                                             comment: "Subtitle of the cell Customs inside " +
@@ -956,15 +956,15 @@ private extension ShippingLabelFormViewModel {
         static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
                                                                   comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
         static let businessDaySingular = NSLocalizedString("%1$d business day",
-                                                           comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
+                                                           comment: "This text appears in the shipping label creation flow to display the delivery time estimate for a selected shipping carrier rate, specifically when the delivery time is exactly 1 business day. It's used as part of the carrier and rates selection interface where users can see shipping options and their delivery timeframes.")
         static let businessDaysPlural = NSLocalizedString("%1$d business days",
-                                                          comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
+                                                          comment: "This text displays the estimated delivery time for shipping options in the shipping label creation form, showing the number of business days (plural form) it will take for a package to be delivered when selecting carrier rates.")
         static let selectedRatesCount = NSLocalizedString("%1$d rates selected",
-                                                          comment: "Number of rates selected in Shipping Labels > Carrier and Rates")
+                                                          comment: "This text appears as a status label in the Shipping Label creation form's Carrier and Rates section, showing how many shipping rate options the user has currently selected from the available carriers.")
         static let totalRate = NSLocalizedString("%1$@ total",
-                                                 comment: "Total value for the selected rates in Shipping Labels > Carrier and Rates")
+                                                 comment: "This text displays the total cost of selected shipping rates in the shipping label creation form. The %1$@ placeholder is replaced with a formatted currency amount (e.g., '$15.99 total') and appears as a summary label after the user selects shipping carrier rates.")
         static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
-                                                                comment: "Placeholder in Shipping Label form for the Payment Method row.")
+                                                                comment: "This text appears as a placeholder in the Payment Method section of the shipping label creation form, prompting users to add a credit card for payment when no payment method is currently selected.")
         static let paymentMethodLabel =
             NSLocalizedString("Credit card ending in %1$@",
                               comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")

@@ -205,7 +205,7 @@ private extension BlazeCampaignListView {
         static let contentSpacing: CGFloat = 16
     }
     enum Localization {
-        static let title = NSLocalizedString("Blaze Campaigns", comment: "Title of the Blaze campaign list view")
+        static let title = NSLocalizedString("Blaze Campaigns", comment: "This text appears as the navigation title at the top of the Blaze campaign list screen, which displays a user's marketing campaigns. It serves as the main heading that identifies the screen's purpose to users browsing their Blaze advertising campaigns.")
         static let create = NSLocalizedString("Create", comment: "Title of the button to create a new campaign on the Blaze campaign list view")
         static let emptyStateTitle = NSLocalizedString("No campaigns yet", comment: "Title of the empty state of the Blaze campaign list view")
         static let emptyStateMessage = NSLocalizedString(
@@ -213,7 +213,7 @@ private extension BlazeCampaignListView {
             comment: "Subtitle of the empty state of the Blaze campaign list view"
         )
         static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
-        static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
+        static let detailTitle = NSLocalizedString("Campaign Details", comment: "This text appears as the navigation title for a screen that displays detailed information about a specific Blaze advertising campaign in the WooCommerce app. It serves as the header text when users tap to view the details of an individual campaign from the campaign list.")
     }
 }
 

@@ -309,7 +309,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         static let login = NSLocalizedString("Log In", comment: "Title for the application password authorization web view")
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Button to dismiss the view or error alerts of the application password authorization web view"
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
         static let tryAgain = NSLocalizedString("Retry", comment: "Button to retry fetching application password authorization URL during login")
         static let authorizationRejected = NSLocalizedString(

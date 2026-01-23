@@ -50,7 +50,7 @@ final class ProductCatalogVisibilityViewController: UIViewController {
 private extension ProductCatalogVisibilityViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Catalog Visibility", comment: "Product Catalog Visibility navigation title")
+        title = NSLocalizedString("Catalog Visibility", comment: "This text appears as a navigation title for the Catalog Visibility settings screen in the WooCommerce product management feature, and also as a label in the product settings menu that users tap to access catalog visibility options.")
     }
 
     func configureMainView() {

@@ -81,7 +81,7 @@ final class CouponWooTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
 
         // Then
-        XCTAssertTrue(sampleCoupon.summary().contains(NSLocalizedString("All Products", comment: "")))
+        XCTAssertTrue(sampleCoupon.summary().contains(NSLocalizedString("All Products", comment: "This text appears as a filter option title in a product search interface, allowing users to search across all products rather than limiting the search to specific criteria like SKU.")))
     }
 
     func test_coupon_apply_rule_with_one_productId() {

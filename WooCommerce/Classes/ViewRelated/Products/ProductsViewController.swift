@@ -71,7 +71,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                                      target: self,
                                      action: #selector(addProduct(_:)))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+        button.accessibilityLabel = NSLocalizedString("Add a product", comment: "This text appears as the accessibility label for a plus button in the navigation bar of the products list screen, which allows store owners to add new products to their inventory.")
         button.accessibilityIdentifier = "product-add-button"
         return button
     }()
@@ -1324,7 +1324,7 @@ private extension ProductsViewController {
         let details = NSLocalizedString("Start selling today by adding your first product to the store.",
                                         comment: "The details on the placeholder overlay when there are no products on the Products tab")
         let buttonTitle = NSLocalizedString("Add Product",
-                                            comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
+                                            comment: "This text appears as a navigation title on screens where users can select and add products to orders, and also as a button label in the empty state when a store has no products yet.")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .productBlouseImage,
@@ -1344,7 +1344,7 @@ private extension ProductsViewController {
         let message = NSLocalizedString("No matching products found",
                                         comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
         let buttonTitle = NSLocalizedString("Clear Filters",
-                                            comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
+                                            comment: "A button label that appears on empty state screens when filtered search results show no matching orders or products. When tapped, it removes all applied filters to show the full list again.")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .productBlouseImage,
@@ -1665,7 +1665,7 @@ private extension ProductsViewController {
         )
         static let bulkEditingStatusOption = NSLocalizedString("Update status", comment: "Title of an option that opens bulk products status update flow")
         static let bulkEditingPriceOption = NSLocalizedString("Update price", comment: "Title of an option that opens bulk products price update flow")
-        static let cancel = NSLocalizedString("Cancel", comment: "Title of an option to dismiss the bulk edit action sheet")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 
         static let bulkEditingTitle = NSLocalizedString(
             "Select items",
@@ -1676,7 +1676,7 @@ private extension ProductsViewController {
             comment: "Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected"
         )
 
-        static let bulkEditingApply = NSLocalizedString("Apply", comment: "Title for the button to apply bulk editing changes to selected products.")
+        static let bulkEditingApply = NSLocalizedString("Apply", comment: "Button label used to confirm and apply user selections or inputs in various forms, including applying gift card codes to orders, confirming order status changes, and inserting AI-generated product descriptions.")
 
         static let productsSavingTitle = NSLocalizedString("Updating your products...",
                                                           comment: "Title of the in-progress UI while bulk updating selected products remotely")
@@ -1688,7 +1688,7 @@ private extension ProductsViewController {
         static let priceUpdatedNotice = NSLocalizedString("Price updated",
                                                            comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
-                                                         comment: "Title of the notice when there is an error updating selected products")
+                                                         comment: "Error message displayed as a notice/toast notification when bulk updating selected products fails in the Products list screen. This appears after a user attempts to apply bulk changes (like status or price updates) to multiple products and the operation encounters an error.")
         static let updateInventoryNotice = NSLocalizedString(
             "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem",
             value: "Quantity updated: %@",

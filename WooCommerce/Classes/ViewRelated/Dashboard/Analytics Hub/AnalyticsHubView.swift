@@ -198,10 +198,10 @@ private extension AnalyticsHubView {
 ///
 private extension AnalyticsHubView {
     struct Localization {
-        static let title = NSLocalizedString("Analytics", comment: "Title for the Analytics Hub screen.")
+        static let title = NSLocalizedString("Analytics", comment: "Used as a screen title for the Analytics Hub dashboard and as a feature benefit title in the Jetpack benefits screen, referring to the store analytics and reporting functionality.")
         static let editButton = NSLocalizedString("analyticsHub.editButton.label",
                                                   value: "Edit",
-                                                  comment: "Label for button that opens a screen to customize the Analytics Hub")
+                                                  comment: "Label for a button in the Analytics Hub screen that allows users to customize and edit their analytics dashboard layout and content.")
     }
 
     struct Layout {

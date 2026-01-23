@@ -16,7 +16,7 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
-            let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval")
+            let format = NSLocalizedString("%1$@ – %2$@", comment: "This format string displays a date range (start date – end date) in the WooCommerce store statistics dashboard, used to show time periods like 'Jul 28 – Aug 3' for weekly stats and custom date ranges.")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         case let .custom(customStartDate, customEndDate):
             let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: customStartDate, endDate: customEndDate)
@@ -27,7 +27,7 @@ private extension StatsTimeRangeV4 {
             // Always display the exact dates for custom range otherwise.
             let startDateString = dateFormatter.string(from: customStartDate)
             let endDateString = dateFormatter.string(from: customEndDate)
-            let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a custom stats interval")
+            let format = NSLocalizedString("%1$@ – %2$@", comment: "This format string displays a date range (start date – end date) in the WooCommerce store statistics dashboard, used to show time periods like 'Jul 28 – Aug 3' for weekly stats and custom date ranges.")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }

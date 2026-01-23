@@ -266,10 +266,10 @@ private extension LinkedProductsViewController {
             let format: String = {
                 if count <= 1 {
                     return NSLocalizedString("%ld product",
-                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`")
+                           comment: "This text displays the count of products in singular form (1 product) in various product management screens, including grouped products, bundled products, and linked products (upsells/cross-sells). It appears as a descriptive label showing how many products are associated with the current product being edited.")
                 } else {
                     return NSLocalizedString("%ld products",
-                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`")
+                           comment: "This text displays the count of products in various product relationship contexts within the product editing screen, including grouped products, bundled products, cross-sell products, and upsell products. It appears as a descriptive label showing how many related products are associated with the current product being edited.")
                 }
             }()
 
@@ -280,7 +280,7 @@ private extension LinkedProductsViewController {
             return {
                 if count == 0 {
                     return NSLocalizedString("Add Products",
-                           comment: "Add Products button inside the Linked Products screen.")
+                           comment: "Button text that appears in multiple screens to add products - in the order creation/editing form to add products to an order, and in the linked products settings to add upsell/cross-sell products to a product listing.")
                 } else {
                     return NSLocalizedString("Edit Products",
                            comment: "Edit Products button inside the Linked Products screen.")

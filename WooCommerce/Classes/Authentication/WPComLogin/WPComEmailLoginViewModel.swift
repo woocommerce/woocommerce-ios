@@ -204,7 +204,7 @@ extension WPComEmailLoginViewModel {
         )
         static let connectJetpack = NSLocalizedString(
             "Connect Jetpack",
-            comment: "Title for the WPCom email login screen when Jetpack is not connected yet"
+            comment: "Button text that appears on the site credential login screen to initiate connecting Jetpack to a WooCommerce store, and also used as a navigation title for the Jetpack connection web view and as an action button when resolving account connection issues."
         )
         static let loginToConnect = NSLocalizedString(
             "Log in with your WordPress.com account to connect Jetpack",

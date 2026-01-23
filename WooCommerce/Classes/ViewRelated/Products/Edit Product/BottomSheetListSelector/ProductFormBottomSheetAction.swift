@@ -53,7 +53,7 @@ extension ProductFormBottomSheetAction {
                                      comment: "Title of the product form bottom sheet action for editing shipping settings.")
         case .editCategories:
             return NSLocalizedString("Categories",
-                                     comment: "Title of the product form bottom sheet action for editing categories.")
+                                     comment: "This text appears as a title/label for the Categories section in the product editing interface, allowing merchants to assign product categories. It's used in bottom sheet actions, composite product component options, and as a row title in the main product form.")
         case .editTags:
             return NSLocalizedString("Tags",
                                      comment: "Title of the product form bottom sheet action for editing tags.")
@@ -87,7 +87,7 @@ extension ProductFormBottomSheetAction {
                                      comment: "Subtitle of the product form bottom sheet action for editing inventory settings.")
         case .editShippingSettings:
             return NSLocalizedString("Add weight and dimensions",
-                                     comment: "Subtitle of the product form bottom sheet action for editing shipping settings.")
+                                     comment: "This text appears as a subtitle in a product form bottom sheet action for editing shipping settings, helping users understand they can add weight and dimensions to their product.")
         case .editCategories:
             return NSLocalizedString("Organise your products into related groups",
                                      comment: "Subtitle of the product form bottom sheet action for editing categories.")
@@ -96,7 +96,7 @@ extension ProductFormBottomSheetAction {
                                      comment: "Subtitle of the product form bottom sheet action for editing tags.")
         case .editShortDescription:
             return NSLocalizedString("A brief excerpt about your product",
-                                     comment: "Subtitle of the product form bottom sheet action for editing short description.")
+                                     comment: "This text appears as a subtitle in a bottom sheet action menu for editing product short descriptions in the WooCommerce product management interface. It serves as explanatory text that describes what a short description is when merchants are configuring their product details.")
         case .editSimplifiedInventory:
             return NSLocalizedString("Easily identify your products with unique codes",
                                      comment: "Subtitle of the product form bottom sheet action for editing SKU.")

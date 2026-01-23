@@ -184,7 +184,7 @@ private extension AnalyticsProductsStatsCardViewModel {
     enum Localization {
         static let reportTitle = NSLocalizedString("analyticsHub.productCard.reportTitle",
                                                    value: "Products Report",
-                                                   comment: "Title for the products analytics report linked in the Analytics Hub")
+                                                   comment: "This text appears as a title for the products analytics report that users can access from the Analytics Hub dashboard in a WooCommerce iOS app. It serves as a navigation or section title that identifies the detailed products performance report.")
         static let title = NSLocalizedString("Products", comment: "Title for the products card on the analytics hub screen.").localizedUppercase
         static let itemsSold = NSLocalizedString("Items Sold", comment: "Title for the items sold column on the products card on the analytics hub screen.")
         static let noProducts = NSLocalizedString("Unable to load product analytics",

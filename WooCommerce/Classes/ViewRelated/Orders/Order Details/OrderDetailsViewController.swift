@@ -770,7 +770,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             return UISwipeActionsConfiguration(actions: [])
         }
 
-        let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
+        let copyActionTitle = NSLocalizedString("Copy", comment: "Button text for a swipe action that allows users to copy address information from order details. This appears as a swipe-left action button on address rows in the order details screen.")
         let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
@@ -966,7 +966,7 @@ private extension OrderDetailsViewController {
 
     enum TrackingAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
-        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
+        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "This text appears as a button title in a shipment tracking action sheet on order details screens, allowing users to copy a tracking number to their device's clipboard.")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }
@@ -982,14 +982,14 @@ private extension OrderDetailsViewController {
         }
 
         enum ProductsMoreMenu {
-            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the more menu action sheet on Products section")
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
             static let createShippingLabelAction = NSLocalizedString("Create Shipping Label",
                                                                      comment: "Option to create new shipping label from the action " +
                                                                      "sheet on Products section of Order Details screen")
         }
 
         enum ShippingLabelMoreMenu {
-            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
             static let requestRefundAction = NSLocalizedString("Request a Refund",
                                                                comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
             static let printCustomsFormAction = NSLocalizedString("Print Customs Form",
@@ -998,10 +998,10 @@ private extension OrderDetailsViewController {
         }
 
         enum ShippingLabelTrackingMoreMenu {
-            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label tracking more menu action sheet")
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
             static let copyTrackingNumberAction =
                 NSLocalizedString("Copy tracking number",
-                                  comment: "Copy tracking number of a shipping label from the shipping label tracking more menu action sheet")
+                                  comment: "This text appears as an action item in a context menu for shipping label tracking on the Order Details screen. When selected, it copies the tracking number to the device clipboard for easy sharing or reference.")
             static let trackShipmentAction =
                 NSLocalizedString("Track shipment",
                                   comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
@@ -1009,7 +1009,7 @@ private extension OrderDetailsViewController {
 
         enum ActionsMenu {
             static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
-            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         }
 
         enum Alert {

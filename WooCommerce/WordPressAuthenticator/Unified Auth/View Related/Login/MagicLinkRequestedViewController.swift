@@ -151,7 +151,7 @@ private extension MagicLinkRequestedViewController {
         static let cannotFindMailLoginInstructions = NSLocalizedString("If you can’t find the email, please check your junk or spam email folder",
                                                                        comment: "The instructions text about not being able to find the magic link email.")
         static let title = NSLocalizedString("Check your email on this device!",
-                                             comment: "The title text on the magic link requested screen.")
+                                             comment: "This text appears as the main title on the magic link authentication screen, displayed after a user requests a magic link for login and needs to check their email on their device to complete the sign-in process.")
         static let subtitle = NSLocalizedString("We just sent a magic link to",
                                                 comment: "The subtitle text on the magic link requested screen followed by the email address.")
         static let loginWithPasswordAction = NSLocalizedString("Use password to sign in",

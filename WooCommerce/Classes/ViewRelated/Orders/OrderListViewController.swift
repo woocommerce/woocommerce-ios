@@ -1003,7 +1003,7 @@ private extension OrderListViewController {
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",
-                                 comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+                                 comment: "A button label that appears on empty state screens when filtered search results show no matching orders or products. When tapped, it removes all applied filters to show the full list again.")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
 

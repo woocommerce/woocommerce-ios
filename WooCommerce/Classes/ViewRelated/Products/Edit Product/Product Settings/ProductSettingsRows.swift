@@ -368,7 +368,7 @@ extension ProductSettingsRows {
     enum Localization {
         static let status = NSLocalizedString("Status", comment: "Status label in Product Settings")
         static let visibility = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
-        static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+        static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "This text appears as a navigation title for the Catalog Visibility settings screen in the WooCommerce product management feature, and also as a label in the product settings menu that users tap to access catalog visibility options.")
         static let virtualProduct = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
         static let downloadableProduct = NSLocalizedString("Downloadable Product", comment: "Downloadable Product label in Product Settings")
         static let downloadableProductAlertTitle = NSLocalizedString(

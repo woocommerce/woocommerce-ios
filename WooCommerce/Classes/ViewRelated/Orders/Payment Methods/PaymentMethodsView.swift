@@ -220,15 +220,15 @@ private struct MethodRow: View {
 // MARK: Constants
 extension PaymentMethodsView {
     enum Localization {
-        static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen")
-        static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen")
+        static let header = NSLocalizedString("Choose your payment method", comment: "This text appears as a heading on the payment method selection screen in a WooCommerce iOS app, displayed above a list of available payment options like cash, card reader, and tap to pay.")
+        static let cash = NSLocalizedString("Cash", comment: "This text appears as a payment method option on the payment method selection screen, allowing users to choose cash as their payment method when processing orders.")
         static let card = NSLocalizedString("Card Reader",
-                                            comment: "(External) card reader payment method title on the select payment method screen")
+                                            comment: "This text appears as a payment method option on the payment selection screen, representing an external card reader device that can be used to accept card payments for orders.")
         static let tapToPay = NSLocalizedString("Tap to Pay on iPhone",
                                                 comment: "Tap to Pay on iPhone method title on the select payment method screen")
         static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
         static let scanToPay = NSLocalizedString("Scan to Pay", comment: "Scan to Pay method title on the select payment method screen")
-        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 
     enum Layout {

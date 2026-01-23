@@ -194,6 +194,6 @@ private extension LinkedProductsListSelectorViewController {
     enum Localization {
         static let noResultsPlaceholder = NSLocalizedString("No products yet", comment: "Placeholder for the linked products list selector screen")
         static let addButton = NSLocalizedString("Add Products",
-                                                 comment: "Action to add linked products to a product in the Linked Products List Selector screen")
+                                                 comment: "Button text that appears in multiple screens to add products - in the order creation/editing form to add products to an order, and in the linked products settings to add upsell/cross-sell products to a product listing.")
     }
 }

@@ -125,7 +125,7 @@ private extension BundledProductsListViewModel {
 // MARK: Constants
 extension BundledProductsListViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Bundled Products", comment: "Title for the bundled products screen")
+        static let title = NSLocalizedString("Bundled Products", comment: "This text appears as the navigation title on a screen that displays a list of products that are bundled together as part of a product bundle in the WooCommerce app.")
         static let infoNotice = NSLocalizedString("You can edit bundled products in the web dashboard.",
                                                   comment: "Info notice at the bottom of the bundled products screen")
         static let skuFormat = NSLocalizedString("SKU: %1$@",

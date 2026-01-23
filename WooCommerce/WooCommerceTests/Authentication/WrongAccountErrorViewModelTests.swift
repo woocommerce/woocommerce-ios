@@ -244,7 +244,7 @@ private extension WrongAccountErrorViewModelTests {
         static let image = UIImage.productErrorImage
 
         static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
-                                                          comment: "Action button to handle connecting the logged-in account to a given site."
+                                                          comment: "Button text that appears on the site credential login screen to initiate connecting Jetpack to a WooCommerce store, and also used as a navigation title for the Jetpack connection web view and as an action button when resolving account connection issues."
                                                           + "Presented when logging in with a store address that does not match the account entered")
 
         static let secondaryButtonTitle = NSLocalizedString("See Connected Stores",

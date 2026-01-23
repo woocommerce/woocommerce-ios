@@ -164,7 +164,7 @@ private extension PrivacySettingsViewController {
         // text
         cell.title = NSLocalizedString(
             "Analytics",
-            comment: "Analytics toggle title in the privacy screen."
+            comment: "Used as a screen title for the Analytics Hub dashboard and as a feature benefit title in the Jetpack benefits screen, referring to the store analytics and reporting functionality."
         )
 
         // switch
@@ -443,7 +443,7 @@ extension PrivacySettingsViewController {
                                                                 "enhance your experience, and deliver relevant marketing, " +
                                                                 "please review our Privacy Policy and Cookie Policy." + "\n",
                                                                 comment: "Footer of the more privacy options section on the privacy screen")
-        static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
+        static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "This text appears as a clickable link or button label on the privacy settings screen, allowing users to access the app's Cookie Policy document.")
         static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
 
         static let errorFetchingAnalyticsState = NSLocalizedString("There was an error fetching your privacy settings",

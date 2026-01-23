@@ -75,13 +75,13 @@ private extension AnalyticsHubCustomizeView {
     enum Localization {
         static let title = NSLocalizedString("analyticsHub.customizeAnalytics.title",
                                              value: "Customize Analytics",
-                                             comment: "Title for the screen to customize the analytics cards in the Analytics Hub")
+                                             comment: "This is the screen title displayed in the navigation bar of the Analytics Hub customization screen, where users can configure which analytics cards appear in their dashboard.")
         static let saveButton = NSLocalizedString("analyticsHub.customizeAnalytics.saveButton",
                                                   value: "Save",
-                                                  comment: "Button to save changes on the Customize Analytics screen")
+                                                  comment: "Button label that appears on the Customize Analytics screen, allowing users to save their changes to the analytics cards configuration in the Analytics Hub.")
         static let explore = NSLocalizedString("analyticsHub.customizeAnalytics.exploreButton",
                                                value: "Explore",
-                                               comment: "Button title to explore an extension that isn't installed")
+                                               comment: "Button label on the Analytics Hub Customize screen that allows users to explore and potentially install an analytics extension that isn't currently installed on their WooCommerce store.")
     }
 }
 

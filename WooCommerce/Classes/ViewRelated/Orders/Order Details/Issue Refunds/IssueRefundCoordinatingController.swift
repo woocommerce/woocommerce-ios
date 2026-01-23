@@ -184,12 +184,12 @@ extension IssueRefundCoordinatingController: UIAdaptivePresentationControllerDel
 private extension IssueRefundCoordinatingController {
     enum Localization {
         static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
-        static let cancel = NSLocalizedString("Cancel", comment: "The title of the button to cancel issuing a refund.")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let issuingRefund = NSLocalizedString("Issuing Refund...", comment: "Text of the screen that is displayed while the refund is being created.")
         static let refundSuccess = NSLocalizedString("🎉 Products successfully refunded",
                                                      comment: "Text of the notice that is displayed after the refund is created.")
         static let confirmationBody = NSLocalizedString("Are you sure you want to issue a refund? This can't be undone.",
-                                                        comment: "The text on the confirmation alert before issuing a refund.")
+                                                        comment: "This text appears as the body message in a confirmation alert dialog that is shown when a user attempts to issue a refund for an order. It warns the user that the refund action is irreversible and requires confirmation before proceeding.")
         static func confirmationTitle(amount: String) -> String {
             "\(refund) \(amount)"
         }

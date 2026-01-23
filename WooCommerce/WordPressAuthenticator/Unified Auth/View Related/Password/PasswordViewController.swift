@@ -551,9 +551,9 @@ private extension PasswordViewController {
     ///
     func buildInvalidEmailAlert() -> UIAlertController {
         let title = NSLocalizedString("Can Not Request Link",
-                                      comment: "Title of an alert letting the user know")
+                                      comment: "This text appears as the title of an error alert dialog that is shown when a user tries to request a magic authentication link but has entered an invalid email address during the login process.")
         let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
-                                        comment: "An error message.")
+                                        comment: "This text appears as an alert message in the WordPress authentication flow when a user attempts to request a magic login link but has entered an invalid email address. The alert includes 'Need help?' and 'OK' action buttons and instructs the user to go back and enter a valid email.")
         let helpActionTitle = NSLocalizedString("Need help?",
                                                 comment: "Takes the user to get help")
         let okActionTitle = NSLocalizedString("OK",

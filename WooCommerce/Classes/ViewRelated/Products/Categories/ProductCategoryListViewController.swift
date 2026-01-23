@@ -319,10 +319,10 @@ private extension ProductCategoryListViewController {
         static let searchBarPlaceholder = NSLocalizedString("Search Categories", comment: "Placeholder text on the search bar on the category list")
         static let syncErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
         static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
-        static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
+        static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button label that appears on the product categories list screen to deselect all currently selected categories. This button allows users to clear their multi-selection when managing product categories in the WooCommerce app.")
         static let emptyStateMessage = NSLocalizedString("No product categories found",
                                                          comment: "Message on the empty view when the category list or its search result is empty.")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss an alert on the product category list screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let delete = NSLocalizedString("Delete", comment: "Button to delete a product category")
         static let edit = NSLocalizedString("Edit", comment: "Button to edit a product category")
 

@@ -747,7 +747,7 @@ extension DefaultProductFormTableViewModel {
 
 private extension DefaultProductFormTableViewModel.Localization {
         static let addPriceSettingsTitle = NSLocalizedString("Add Price",
-                                                             comment: "Title for adding the price settings row on Product main screen")
+                                                             comment: "This text appears as a row title on the Product main screen in a WooCommerce app, displayed when no price has been set for a product yet. It serves as a call-to-action that allows users to tap and add pricing information to their product.")
         static let priceSettingsTitle = NSLocalizedString("Price",
                                                           comment: "Title for editing the price settings row on Product main screen")
         static let reviewsTitle = NSLocalizedString("Reviews",
@@ -759,19 +759,19 @@ private extension DefaultProductFormTableViewModel.Localization {
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
                                                              comment: "Title of the Shipping Settings row on Product main screen")
         static let categoriesTitle = NSLocalizedString("Categories",
-                                                       comment: "Title of the Categories row on Product main screen")
+                                                       comment: "This text appears as a title/label for the Categories section in the product editing interface, allowing merchants to assign product categories. It's used in bottom sheet actions, composite product component options, and as a row title in the main product form.")
         static let tagsTitle = NSLocalizedString("Tags",
                                                  comment: "Title of the Tags row on Product main screen")
         static let shortDescriptionTitle = NSLocalizedString("Short description",
                                                              comment: "Title of the Short Description row on Product main screen")
         static let addExternalURLTitle =
             NSLocalizedString("Add product link",
-                              comment: "Title for adding an external URL row on Product main screen for an external/affiliate product")
+                              comment: "This text appears as a row title on the product editing screen for external/affiliate products, specifically when no product link has been added yet. It prompts the user to add an external URL that customers will be redirected to when purchasing the product.")
         static let externalURLTitle = NSLocalizedString("Product link",
                                                         comment: "Title of the external URL row on Product main screen for an external/affiliate product")
         static let addGroupedProductsTitle =
             NSLocalizedString("Add products to the group",
-                              comment: "Title for adding grouped products row on Product main screen for a grouped product")
+                              comment: "This text appears as a clickable row title on the Product main screen for grouped products, allowing users to add individual products to a product group. It displays when no products have been added to the group yet, and tapping it opens a screen to select and add products.")
         static let groupedProductsTitle = NSLocalizedString("Grouped products",
                                                             comment: "Title for editing grouped products row on Product main screen for a grouped product")
 
@@ -848,7 +848,7 @@ private extension DefaultProductFormTableViewModel.Localization {
 
         // Short description
         static let shortDescriptionPlaceholder = NSLocalizedString("A brief excerpt about the product",
-                                                                   comment: "Placeholder of the Product Short Description row on Product main screen")
+                                                                   comment: "This text appears as placeholder text in the Short Description field on the Product editing screen, guiding users on what type of content to enter for their product's brief summary.")
 
         // Categories
         static let categoriesPlaceholder = NSLocalizedString("No category selected",
@@ -859,13 +859,13 @@ private extension DefaultProductFormTableViewModel.Localization {
 
         // Grouped products
         static let singularGroupedProductFormat = NSLocalizedString("%ld product",
-                                                                    comment: "Format of the number of grouped products in singular form")
+                                                                    comment: "This text displays the count of products in singular form (1 product) in various product management screens, including grouped products, bundled products, and linked products (upsells/cross-sells). It appears as a descriptive label showing how many products are associated with the current product being edited.")
         static let pluralGroupedProductsFormat = NSLocalizedString("%ld products",
-                                                                   comment: "Format of the number of grouped products in plural form")
+                                                                   comment: "This text displays the count of products in various product relationship contexts within the product editing screen, including grouped products, bundled products, cross-sell products, and upsell products. It appears as a descriptive label showing how many related products are associated with the current product being edited.")
 
         // Variations
         static let addVariationsTitle = NSLocalizedString("Add variations",
-                                                          comment: "Title for adding variations row on Product main screen for a variable product")
+                                                          comment: "This text appears as a title or label for a row on the Product main screen in a WooCommerce app, specifically for variable products that need variations added. It likely appears as an actionable row that users can tap to start adding product variations.")
         static let variationsTitle =
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
@@ -877,10 +877,10 @@ private extension DefaultProductFormTableViewModel.Localization {
                     return ""
                 case 1:
                     return NSLocalizedString("%1$ld variation",
-                                             comment: "Format for the variations detail row in singular form. Reads, `1 variation`")
+                                             comment: "This text appears as a detail label showing the count of product variations in singular form (e.g., '1 variation') on product listing screens and product edit forms in a WooCommerce mobile app.")
                 default:
                     return NSLocalizedString("%1$ld variations",
-                                             comment: "Format for the variations detail row in plural form. Reads, `2 variations`")
+                                             comment: "This text appears as a label in product variation detail rows and product listings to show the count of variations for variable products, such as '2 variations' or '5 variations'.")
                 }
             }()
 
@@ -897,23 +897,23 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                                        comment: "Title of the variations attributes row on Product screen")
 
         // Variation attributes
-        static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")
+        static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "This text appears as a navigation title for the Edit Product Attributes screen and as a row title on the Product Variation main screen, allowing users to view and edit product variation attributes.")
 
         static func variationAttributesDetailFormat(optionCount: Int) -> String {
             switch optionCount {
             case 0:
                 return ""
             case 1:
-                return NSLocalizedString("%1$@ (%2$ld option)", comment: "Format for each Product attribute in singular form")
+                return NSLocalizedString("%1$@ (%2$ld option)", comment: "This text appears in the product variations section of a WooCommerce product editing screen, showing a product attribute name followed by the number of available options in singular form (e.g., 'Color (1 option)'). It helps merchants understand how many choices are available for each product attribute when configuring product variations.")
             default:
-                return NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute in plural form")
+                return NSLocalizedString("%1$@ (%2$ld options)", comment: "This text appears as a label format for product attributes in the WooCommerce product editing interface, showing the attribute name followed by the number of available options in parentheses (e.g., 'Color (5 options)'). It's specifically used for the plural form when there are 2 or more attribute options.")
             }
         }
 
         // No price warning row
         static let noPriceWarningTitle =
             NSLocalizedString("Add a price to your variation to make it visible on your store",
-                              comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
+                              comment: "This warning message appears on the Product Variation main screen when a product variation is enabled but doesn't have a price set, alerting store owners that the variation won't be visible to customers without pricing.")
 
         // Downloadable files
         static let downloadsTitle =
@@ -923,9 +923,9 @@ private extension DefaultProductFormTableViewModel.Localization {
         static let emptyDownloads = NSLocalizedString("No files yet",
                                                       comment: "Placeholder for empty Downloadable Files row on Product main screen")
         static let singularDownloadsFormat = NSLocalizedString("%ld file",
-                                                               comment: "Format of the number of Downloadable Files row in the singular form. Reads, `1 file`")
+                                                               comment: "This text displays the count of downloadable files for a product in singular form (e.g., '1 file') on the Product edit screen in a WooCommerce store management app.")
         static let pluralDownloadsFormat = NSLocalizedString("%ld files",
-                                                           comment: "Format of the number of Downloadable Files row in the plural form. Reads, `5 files`")
+                                                           comment: "This text appears in the product editing screen to display the count of downloadable files attached to a product when there are multiple files (2 or more). It shows as a summary label indicating how many downloadable files are associated with the product.")
 
         // Linked Products
         static let linkedProductsTitle = NSLocalizedString("Linked products",
@@ -934,10 +934,10 @@ private extension DefaultProductFormTableViewModel.Localization {
             let format: String = {
                 if count <= 1 {
                     return NSLocalizedString("%ld upsell product",
-                                             comment: "Format of upsell linked products row in the singular form. Reads, `1 upsell product`")
+                                             comment: "This text appears as a label in the Product edit screen showing the count of upsell products linked to the current product, displayed in singular form when there is 1 upsell product (e.g., '1 upsell product').")
                 } else {
                     return NSLocalizedString("%ld upsell products",
-                                             comment: "Format of upsell linked products row in the plural form. Reads, `5 upsell products`")
+                                             comment: "This text appears as a row label in the Product editing screen showing the count of upsell products (items suggested to customers as upgrades or add-ons). It displays in the Linked Products section and uses plural form when there are 2 or more upsell products configured.")
                 }
             }()
 
@@ -947,10 +947,10 @@ private extension DefaultProductFormTableViewModel.Localization {
             let format: String = {
                 if count <= 1 {
                     return NSLocalizedString("%ld cross-sell product",
-                                             comment: "Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product`")
+                                             comment: "This text appears as a row label in the product edit screen showing the count of cross-sell products linked to the current product. It displays in singular form when there is exactly 1 cross-sell product (e.g., '1 cross-sell product').")
                 } else {
                     return NSLocalizedString("%ld cross-sell products",
-                                             comment: "Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products`")
+                                             comment: "This text appears as a row label in the product editing form, showing the count of cross-sell products (products suggested to customers alongside the current product). It displays in plural form when there are 2 or more cross-sell products linked to the product being edited.")
                 }
             }()
 
@@ -961,18 +961,18 @@ private extension DefaultProductFormTableViewModel.Localization {
         static let addOnsTitle = NSLocalizedString("Product Add-ons", comment: "Title for Add-ons row in the product form screen.")
 
         // Bundled products
-        static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "Title for Bundled Products row in the product form screen.")
+        static let bundledProductsTitle = NSLocalizedString("Bundled products", comment: "This text appears as a row title in the product form screen, specifically for managing bundled products associated with a WooCommerce product. It serves as a section header that users can tap to configure which products are bundled together.")
         static let singularBundledProductFormat = NSLocalizedString("%ld product",
-                                                                    comment: "Format of the number of bundled products in singular form")
+                                                                    comment: "This text displays the count of products in singular form (1 product) in various product management screens, including grouped products, bundled products, and linked products (upsells/cross-sells). It appears as a descriptive label showing how many products are associated with the current product being edited.")
         static let pluralBundledProductsFormat = NSLocalizedString("%ld products",
-                                                                   comment: "Format of the number of bundled products in plural form")
+                                                                   comment: "This text displays the count of products in various product relationship contexts within the product editing screen, including grouped products, bundled products, cross-sell products, and upsell products. It appears as a descriptive label showing how many related products are associated with the current product being edited.")
 
         // Components
-        static let componentsTitle = NSLocalizedString("Components", comment: "Title for Components row in the product form screen.")
+        static let componentsTitle = NSLocalizedString("Components", comment: "This text appears as a navigation title for screens displaying components in composite products, and as a row title in the product editing form to show the components section.")
         static let singularComponentFormat = NSLocalizedString("%ld component",
-                                                               comment: "Format of the number of components in singular form")
+                                                               comment: "This text appears as a label in the product form screen showing the count of product components in singular form (e.g., '1 component'). It's displayed in a row that shows how many components are associated with a product being edited.")
         static let pluralComponentsFormat = NSLocalizedString("%ld components",
-                                                              comment: "Format of the number of components in plural form")
+                                                              comment: "This text displays the count of product components in plural form on the product editing screen, showing how many components are associated with a composite product (e.g., '3 components').")
 
         // Subscription
         static func subscriptionPriceDescription(price: String,

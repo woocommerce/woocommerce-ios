@@ -53,7 +53,7 @@ private extension EmptyStoresTableViewCell {
     enum Localization {
         static let legend =
             NSLocalizedString("Add your first store",
-                              comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
+                              comment: "This text appears as a label or call-to-action message in an empty state screen during the login flow, shown to users who have successfully logged in but don't have any WooCommerce stores associated with their account yet.")
         static let subtitle = NSLocalizedString("Quickly get up and selling with a beautiful online store.",
                                                 comment: "Subtitle displayed during the Login flow, whenever the user has no woo stores associated.")
     }

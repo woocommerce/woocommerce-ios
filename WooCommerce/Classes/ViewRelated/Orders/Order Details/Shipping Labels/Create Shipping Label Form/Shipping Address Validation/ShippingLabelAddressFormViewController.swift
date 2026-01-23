@@ -583,18 +583,18 @@ private extension ShippingLabelAddressFormViewController {
         static let optionalNameFieldPlaceholder = NSLocalizedString("Optional",
                                                                     comment: "Name text field placeholder in Shipping Label "
                                                                     + "Address Validation when it's optional")
-        static let companyField = NSLocalizedString("Company", comment: "Text field company in Shipping Label Address Validation")
+        static let companyField = NSLocalizedString("Company", comment: "Label for a company name input field in address forms, appearing in both order address editing and shipping label address validation screens where users can optionally enter a business or organization name.")
         static let companyFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Shipping Label Address Validation")
         static let phoneFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let phoneFieldPlaceholderRequired = NSLocalizedString("Required",
                                                                      comment: "Text field placeholder in Shipping Label Address Validation " +
                                                                      "when phone number is required")
-        static let addressField = NSLocalizedString("Address", comment: "Text field address in Shipping Label Address Validation")
+        static let addressField = NSLocalizedString("Address", comment: "This is a text field label that appears in the shipping label address validation screen, identifying the main address input field where users enter the street address for shipping purposes.")
         static let addressFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
-        static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Shipping Label Address Validation")
+        static let address2Field = NSLocalizedString("Address 2", comment: "Label for the second address line field in forms where users edit order addresses or create shipping labels, used as an optional field for additional address information like apartment numbers or suite details.")
         static let address2FieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
-        static let cityField = NSLocalizedString("City", comment: "Text field city in Shipping Label Address Validation")
+        static let cityField = NSLocalizedString("City", comment: "Label for the city input field in address forms, used when editing order addresses and validating shipping label addresses.")
         static let cityFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Shipping Label Address Validation")
         static let postcodeFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
@@ -604,7 +604,7 @@ private extension ShippingLabelAddressFormViewController {
             "Optional",
             comment: "Text field placeholder in Shipping Label Address Validation when specified country has no state"
         )
-        static let countryField = NSLocalizedString("Country", comment: "Text field country in Shipping Label Address Validation")
+        static let countryField = NSLocalizedString("Country", comment: "Label for the country field in address forms throughout the WooCommerce app, including order address editing, shipping address validation, and country selection screens.")
         static let countryFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
 
         static let confirmButtonTitle = NSLocalizedString("Use Address as Entered",
@@ -612,17 +612,17 @@ private extension ShippingLabelAddressFormViewController {
         static let missingName = NSLocalizedString("Name missing",
                                                    comment: "Error showed in Shipping Label Address Validation for the name field")
         static let missingAddress = NSLocalizedString("Address missing",
-                                                      comment: "Error showed in Shipping Label Address Validation for the address field")
+                                                      comment: "This is an error message displayed in the Shipping Label Address Validation screen when the user tries to proceed without filling in the required address field. It appears as part of form validation to inform users that they must enter an address before continuing.")
         static let missingCity = NSLocalizedString("City missing",
-                                                   comment: "Error showed in Shipping Label Address Validation for the city field")
+                                                   comment: "Error message displayed during shipping label address validation when the user has not filled in the required city field. This appears as part of form validation to prompt the user to complete the missing information before proceeding.")
         static let missingPostcode = NSLocalizedString("Postcode missing",
                                                        comment: "Error showed in Shipping Label Address Validation for the postcode field")
         static let missingState = NSLocalizedString("State missing",
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")
         static let missingCountry = NSLocalizedString("Country missing",
-                                                      comment: "Error showed in Shipping Label Address Validation for the country field")
+                                                      comment: "An error message displayed in the shipping label address validation form when the user hasn't filled in the required country field. This appears as a validation error to guide the user to complete the missing address information before they can proceed with creating a shipping label.")
         static let missingPhoneNumber = NSLocalizedString("A phone number is required",
-                                                          comment: "Error shown in Shipping Label Origin Address validation for phone number field")
+                                                          comment: "Error message displayed in the Shipping Label Address Validation screen when the phone number field is empty or missing. This validation error appears when users are creating shipping labels and haven't provided a required phone number in the origin address form.")
         static let invalidPhoneNumber = NSLocalizedString("Custom forms require a 10-digit phone number",
                                                           comment: "Error shown in Shipping Label Origin Address validation for " +
                                                             "phone number when the it doesn't have expected length for international shipment.")
@@ -631,11 +631,11 @@ private extension ShippingLabelAddressFormViewController {
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
         static let addressLocalValidationErrorNotice = NSLocalizedString("Certain required fields need attention.",
-                comment: "Error message when local validation fails in Shipping Label Address Validation")
-        static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
-        static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
+                comment: "Error message displayed when local address validation fails in the shipping label creation flow, alerting users that some required address fields are incomplete or invalid.")
+        static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "This text appears as a button label in the Shipping Label Address Validation screen when the app cannot verify a shipping address, allowing users to contact the customer to confirm address details. It triggers an action sheet with contact options like call, email, or message.")
+        static let contactActionCancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")
-        static let contactActionCall = NSLocalizedString("Call", comment: "Call phone number button title")
+        static let contactActionCall = NSLocalizedString("Call", comment: "Button label that appears in action sheets on customer contact screens, allowing users to initiate a phone call to the customer. Appears in both billing information and shipping address validation contexts when users need to contact customers directly.")
         static let contactActionMessage = NSLocalizedString("Message", comment: "Message phone number button title")
         static let contactActionError = NSLocalizedString("No supported contact method on this device.",
                                                           comment: "Error in identifying supported contact methods in the Shipping Label Address Validation")

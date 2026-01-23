@@ -181,9 +181,9 @@ private extension ShippingLabelPaymentMethods {
                                 + " %2$@ is a placeholder for the username."
                                 + " %3$@ is a placeholder for the WordPress.com email address.")
         static let addCreditCardButton = NSLocalizedString("Add credit card",
-                                                           comment: "Button title in the Shipping Label Payment Method screen")
+                                                           comment: "This text appears as a button label in the Shipping Label Payment Methods screen, allowing users to add their first credit card for purchasing shipping labels when no payment methods are currently available.")
         static let addAnotherCreditCardButton = NSLocalizedString("Add another credit card",
-                                                                  comment: "Button title in the Shipping Label Payment Method" +
+                                                                  comment: "Button text displayed on the shipping label payment methods screen when at least one credit card is already saved, allowing users to add an additional payment method." +
                                                                     " screen if there is an existing payment method")
         static let paymentMethodWebviewTitle = NSLocalizedString("Payment method",
                                                             comment: "Title of the webview of adding a payment method in Shipping Labels")

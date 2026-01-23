@@ -155,7 +155,7 @@ struct RangedDatePicker: View {
 private extension RangedDatePicker {
     enum Localization {
         static let title = NSLocalizedString("Custom Date Range", comment: "Title in custom range date picker")
-        static let apply = NSLocalizedString("Apply", comment: "Apply navigation button in custom range date picker")
+        static let apply = NSLocalizedString("Apply", comment: "Button label used to confirm and apply user selections or inputs in various forms, including applying gift card codes to orders, confirming order status changes, and inserting AI-generated product descriptions.")
         static let startDate = NSLocalizedString("Start Date", comment: "Start Date label in custom range date picker")
         static let endDate = NSLocalizedString("End Date", comment: "End Date label in custom range date picker")
 

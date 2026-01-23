@@ -151,7 +151,7 @@ private extension ProductListMultiSelectorSearchUICommand {
 
 private extension ProductListMultiSelectorSearchUICommand {
     enum Strings {
-        static let cancel = NSLocalizedString("Cancel", comment: "Action title to cancel selecting products to add to a grouped product from search results")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let done = NSLocalizedString("Done", comment: "Action title to select products to add to a grouped product from search results")
         static let emptySearchResultsFormat =
             NSLocalizedString("We're sorry, we couldn't find results for “%@”",

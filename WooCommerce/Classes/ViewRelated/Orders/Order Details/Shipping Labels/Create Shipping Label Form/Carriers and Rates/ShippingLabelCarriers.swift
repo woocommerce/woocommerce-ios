@@ -113,7 +113,7 @@ private extension ShippingLabelCarriers {
     enum Localization {
         static let titleView = NSLocalizedString("Carrier and Rates",
 
-                                                 comment: "Navigation bar title of shipping label carrier and rates screen")
+                                                 comment: "This text appears as the navigation bar title for the shipping label carrier and rates screen, where users can view and select different shipping carriers and their pricing options for packages.")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
         static let emptyStateTitle = NSLocalizedString("No shipping rates available",
                                                        comment: "Error state title in shipping label carrier and rates screen")

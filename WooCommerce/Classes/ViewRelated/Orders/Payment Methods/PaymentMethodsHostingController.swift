@@ -119,7 +119,7 @@ extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDeleg
 
 private extension PaymentMethodsHostingController {
     enum Localization {
-        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 
         static let dismissOrder = NSLocalizedString("Dismiss Order", comment: "Title for dismiss the action when dragging the screen down.")
     }

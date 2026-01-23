@@ -141,7 +141,7 @@ private enum Layout {
 private extension ComponentSettings {
     enum Localization {
         static let description = NSLocalizedString("Description", comment: "Title for the component description field in the Component Settings view")
-        static let componentOptions = NSLocalizedString("Component Options", comment: "Title for the list of component options in the Component Settings view")
+        static let componentOptions = NSLocalizedString("Component Options", comment: "A section title that appears in the Component Settings view for composite products, labeling the list of available product options that can be selected for a specific component (e.g., different camera body options for a camera kit).")
         static let noOptions = NSLocalizedString("No options selected",
                                                  comment: "Placeholder when there are no component options to show in the Component Settings view")
         static let defaultOption = NSLocalizedString("Default Option", comment: "Title for the default component option field in the Component Settings view")

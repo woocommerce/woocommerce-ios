@@ -75,7 +75,7 @@ private extension CardPresentModalTapToPayConfigurationProgress {
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Label for a cancel button"
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
     }
 }

@@ -139,10 +139,10 @@ private extension WooAboutScreenConfiguration {
             static let instagram        = NSLocalizedString("Instagram", comment: "Title of a button linking to the app's Instagram profile")
             static let xCom          = NSLocalizedString("X", comment: "Title of a button linking to the app's X profile")
             static let website          = NSLocalizedString("Website", comment: "Title of a button linking to the app's website")
-            static let blog             = NSLocalizedString("Blog", comment: "Title of a button linking to the app's blog")
+            static let blog             = NSLocalizedString("Blog", comment: "This text appears as a button label in the About screen settings that links to the WooCommerce blog website (woocommerce.com/blog). When tapped, it opens the company's blog in a web browser.")
             static let legalAndMore     = NSLocalizedString("Legal and more", comment: "Title of a button linking to a list of legal documents "
                                                             + "like privacy policy,terms of service, etc")
-            static let automatticFamily = NSLocalizedString("Automattic family", comment: "Title of a button linking to the Automattic website")
+            static let automatticFamily = NSLocalizedString("Automattic family", comment: "This text appears as a button label in the app's About/Settings screen that links to the Automattic company website. When tapped, it opens the Automattic corporate website to show information about the company behind WooCommerce.")
             static let workWithUs       = NSLocalizedString("Work with us", comment: "Title of a button linking to the Automattic Work With Us web page")
         }
 

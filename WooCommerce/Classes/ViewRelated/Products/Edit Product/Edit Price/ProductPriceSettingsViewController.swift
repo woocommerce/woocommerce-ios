@@ -425,7 +425,7 @@ private extension ProductPriceSettingsViewController {
     func configureScheduleSale(cell: SwitchTableViewCell) {
         cell.selectionStyle = .none
         cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
-        cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
+        cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "This text appears as a subtitle in the Product Price Settings screen, specifically under a 'Schedule sale' toggle switch that allows merchants to automatically set start and end dates for product sales.")
         cell.isOn = (viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil) ? true : false
         cell.onChange = { [weak self] isOn in
             guard let self = self else {

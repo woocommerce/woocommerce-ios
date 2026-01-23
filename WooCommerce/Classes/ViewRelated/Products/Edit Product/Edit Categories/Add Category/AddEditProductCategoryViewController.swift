@@ -287,17 +287,17 @@ private extension AddEditProductCategoryViewController {
 //
 private extension AddEditProductCategoryViewController {
     enum Strings {
-        static let addCategory = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
+        static let addCategory = NSLocalizedString("Add Category", comment: "This text appears as the navigation bar title when users are adding a new product category, and also as a button label that allows users to create a new category from the product categories screen.")
         static let updateCategory = NSLocalizedString("Update Category", comment: "Product Update Category navigation title")
-        static let cancelButton = NSLocalizedString("Cancel", comment: "Add Product Category. Cancel button title in navbar.")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let saveButton = NSLocalizedString("Save", comment: "Add Product Category. Save button title in navbar.")
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")
         static let parentCellTitle = NSLocalizedString("Parent Category", comment: "Add Product Category. Title of cell presenting the parent category.")
         static let parentCellPlaceholder = NSLocalizedString("Optional", comment: "Add Product Category. Placeholder of cell presenting the parent category.")
         static let errorAddingTitle = NSLocalizedString("Cannot Add Category",
-                                                        comment: "Title of the alert when there is an error creating a new product category")
+                                                        comment: "This text appears as the title of an error alert dialog that is displayed when the app fails to create a new product category. The alert appears on the Add Product Category screen and includes an OK button to dismiss it.")
         static let errorUpdatingTitle = NSLocalizedString("Cannot Update Category",
-                                                          comment: "Title of the alert when there is an error creating a new product category")
+                                                          comment: "This text appears as the title of an error alert dialog that is shown when updating an existing product category fails in the WooCommerce app's category editing screen.")
         static let okErrorAlertButton = NSLocalizedString("OK",
                                                           comment: "Dismiss button on the alert when there is an error creating a new product category")
     }

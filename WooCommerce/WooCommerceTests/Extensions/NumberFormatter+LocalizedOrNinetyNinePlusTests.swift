@@ -8,7 +8,7 @@ final class NumberFormatterLocalizedOrNinetyNinePlusTests: XCTestCase {
     func testItReturnsNinetyNinePlusIfTheNumberIsGreaterThanNinetyNine() {
         let localized = NumberFormatter.localizedOrNinetyNinePlus(100)
 
-        XCTAssertEqual(localized, NSLocalizedString("99+", comment: ""))
+        XCTAssertEqual(localized, NSLocalizedString("99+", comment: "This text appears as a label to indicate when a count or number exceeds 99, commonly used in badges, notifications, or counters to show '99+' instead of displaying the exact number."))
     }
 
     func testItReturnsTheLocalizedNumberIfTheNumberIsLessThanNinetyNine() {

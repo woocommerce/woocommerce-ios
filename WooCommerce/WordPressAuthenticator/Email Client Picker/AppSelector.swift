@@ -118,7 +118,7 @@ enum AppSelectorTitles: String {
         case .gmail:
             return NSLocalizedString("Gmail", comment: "Option to select the Gmail app when logging in with magic links")
         case .airmail:
-            return NSLocalizedString("Airmail", comment: "Option to select the Airmail app when logging in with magic links")
+            return NSLocalizedString("Airmail", comment: "This text appears as a selectable option in an email app picker dialog that allows users to choose which email client to use for opening magic login links in the WooCommerce app.")
         case .msOutlook:
             return NSLocalizedString("Microsoft Outlook", comment: "Option to select the Microsft Outlook app when logging in with magic links")
         case .spark:
@@ -128,7 +128,7 @@ enum AppSelectorTitles: String {
         case .fastmail:
             return NSLocalizedString("Fastmail", comment: "Option to select the Fastmail app when logging in with magic links")
         case .cancel:
-            return NSLocalizedString("Cancel", comment: "Option to cancel the email app selection when logging in with magic links")
+            return NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         }
     }
 }

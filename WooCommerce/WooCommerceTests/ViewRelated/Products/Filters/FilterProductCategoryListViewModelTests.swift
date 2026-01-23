@@ -32,7 +32,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
     func test_enrichCategoryViewModels_then_it_adds_the_any_category_view_model_with_the_right_selected_state() {
         // Given
         let categoryViewModel = ProductCategoryCellViewModel(categoryID: 1,
-                                                              name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
+                                                              name: NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items)."),
                                                               isSelected: true,
                                                               indentationLevel: 0)
 
@@ -41,7 +41,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
 
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
-                                                                        name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
+                                                                        name: NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items)."),
                                                                         isSelected: anyCategoryIsSelectedDefaultValue,
                                                                         indentationLevel: 0)
         XCTAssertEqual(enrichedViewModels.count, 2)
@@ -55,7 +55,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
 
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
-                                                                        name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
+                                                                        name: NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items)."),
                                                                         isSelected: anyCategoryIsSelectedDefaultValue,
                                                                         indentationLevel: 0)
         let enrichedViewModels = filterProductCategoryListViewModel.enrichCategoryViewModels([])
@@ -68,7 +68,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
 
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
-                                                                        name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
+                                                                        name: NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items)."),
                                                                         isSelected: true,
                                                                         indentationLevel: 0)
         let enrichedViewModels = filterProductCategoryListViewModel.enrichCategoryViewModels([])
@@ -96,7 +96,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
 
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
-                                                                        name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
+                                                                        name: NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items)."),
                                                                         isSelected: anyCategoryIsSelectedDefaultValue,
                                                                         indentationLevel: 0)
         XCTAssertEqual(categoryViewModels.first, expectedAnyCategoryViewModel)

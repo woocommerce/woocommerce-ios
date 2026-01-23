@@ -376,10 +376,10 @@ private extension ShippingLabelSinglePackageViewModel {
 private extension ShippingLabelSinglePackageViewModel {
     enum Localization {
         static let subtitleFormat =
-            NSLocalizedString("%1$@", comment: "In Shipping Labels Package Details,"
+            NSLocalizedString("%1$@", comment: "This format string displays the weight of a product in shipping label package details, showing just the weight value with unit (e.g., '1lbs'). It appears as a subtitle text under product items when they have no additional attributes like color or size variations."
                                 + " the pattern used to show the weight of a product. For example, “1lbs”.")
         static let subtitleWithAttributesFormat =
-            NSLocalizedString("%1$@・%2$@", comment: "In Shipping Labels Package Details if the product has attributes,"
+            NSLocalizedString("%1$@・%2$@", comment: "A subtitle format displayed in the Shipping Labels Package Details screen that shows product attributes (like color, size) and weight separated by a bullet point (・). This appears when a product has variation attributes and displays information like 'purple, has logo・1lbs'."
                                 + " the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”."
                                 + " The %1$@ is the list of attributes (e.g. from variation)."
                                 + " The %2$@ is the weight with the unit.")

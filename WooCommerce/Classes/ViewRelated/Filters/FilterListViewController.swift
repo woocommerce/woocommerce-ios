@@ -251,7 +251,7 @@ private extension FilterListViewController {
                                                                         target: self,
                                                                         action: #selector(dismissButtonTapped))
 
-        let clearAllButtonTitle = NSLocalizedString("Clear all", comment: "Button title for clearing all filters for the list.")
+        let clearAllButtonTitle = NSLocalizedString("Clear all", comment: "This is a button label that appears in the navigation bar of a filter screen, allowing users to clear all active filters that have been applied to a list.")
         clearAllBarButtonItem = UIBarButtonItem(title: clearAllButtonTitle, style: .plain, target: self, action: #selector(clearAllButtonTapped))
 
         if viewModel.shouldShowHistory {

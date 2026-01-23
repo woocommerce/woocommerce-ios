@@ -59,7 +59,7 @@ final class GenerateVariationsSelectorCommand: BottomSheetListSelectorCommand {
 
 private extension GenerateVariationsSelectorCommand {
     enum Localization {
-        static let singleTitle = NSLocalizedString("Add new variation", comment: "Title for the option to generate just one variation")
+        static let singleTitle = NSLocalizedString("Add new variation", comment: "This text appears as a selectable option title in a product variations screen where users can choose how to create new product variations. It's displayed as the title for the option to manually create a single variation, contrasted with generating all possible variations automatically.")
         static let singleDescription = NSLocalizedString("Create one new variation. Manually set which attributes belong to the variable product.",
                                                          comment: "Description for the option to generate just one variation")
         static let allTitle = NSLocalizedString("Generate all variations", comment: "Title for the option to generate all possible variations")

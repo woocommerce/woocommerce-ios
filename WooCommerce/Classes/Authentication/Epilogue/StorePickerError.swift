@@ -119,9 +119,9 @@ private extension StorePickerError {
         static let troubleshoot = NSLocalizedString("Read our Troubleshooting Tips",
                                                     comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
         static let contact = NSLocalizedString("Contact Support",
-                                               comment: "Text for the button to contact support from the store picker error screen")
+                                               comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
         static let back = NSLocalizedString("Back to sites",
-                                            comment: "Text for the button to dismiss the store picker error screen")
+                                            comment: "Button text that appears on an error screen when the app fails to load the user's WooCommerce sites, allowing users to return to the main site selection screen.")
     }
 
     enum Layout {

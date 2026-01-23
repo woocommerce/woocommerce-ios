@@ -21,7 +21,7 @@ extension InPersonPaymentsMenuViewController: SearchableActivityConvertible {
 
     var activityDescription: String? {
         return NSLocalizedString("Collect payments, setup Tap to Pay, order card readers and more.",
-                                 comment: "Description of the 'Payments' screen - used for spotlight indexing on iOS.")
+                                 comment: "This text serves as a description for the Payments screen in iOS Spotlight search results, helping users find the payments functionality when searching their device. It appears in system search results outside the app and summarizes the key payment features available in the WooCommerce app.")
     }
 
     var activityKeywords: Set<String>? {

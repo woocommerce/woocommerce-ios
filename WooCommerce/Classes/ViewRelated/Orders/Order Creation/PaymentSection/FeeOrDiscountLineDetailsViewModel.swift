@@ -51,7 +51,7 @@ private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
     }
 
     private enum Localization {
-        static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
+        static let addDiscount = NSLocalizedString("Add Discount", comment: "This text appears as a navigation title on the discount configuration screen during order creation, displayed at the top of the view when users are adding a new discount to an order.")
         static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
         static let remove = NSLocalizedString("Remove Discount", comment: "Title for the Remove button in Details screen during order creation")
     }
@@ -85,7 +85,7 @@ private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
     }
 
     private enum Localization {
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
+        static let addFee = NSLocalizedString("Add Fee", comment: "Title displayed on the screen where users can add a fee to an order during the order creation process in the WooCommerce app.")
         static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
         static let remove = NSLocalizedString("Remove Fee from Order",
                                               comment: "Text for the button to remove a fee from the order during order creation")

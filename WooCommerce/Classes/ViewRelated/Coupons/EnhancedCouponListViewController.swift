@@ -165,7 +165,7 @@ extension EnhancedCouponListViewController {
             "Retrieves a list of coupons that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search coupons."
         )
-        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "This is a confirmation notice message that appears after a user successfully deletes a coupon from the Coupon Details screen. It serves as feedback to confirm the deletion action was completed.")
         static let createCouponAction = NSLocalizedString("Create Coupon",
                                                           comment: "Title of the create coupon button on the coupon list screen when it's empty")
     }

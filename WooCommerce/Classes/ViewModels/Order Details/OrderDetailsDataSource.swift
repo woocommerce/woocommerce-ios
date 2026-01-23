@@ -562,7 +562,7 @@ private extension OrderDetailsDataSource {
             }
         }
 
-        cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
+        cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "This text appears as a button title in the Order Details screen when there is no existing customer note, allowing users to add a customer-provided note to the order.")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
             comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")
@@ -611,7 +611,7 @@ private extension OrderDetailsDataSource {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
             "Add a note",
-            comment: "Accessibility label for the 'Add a note' button"
+            comment: "Button text that allows users to add a note to an order on the Order Details screen in a WooCommerce mobile app. This action button appears in the order management interface where users can document additional information about a specific order."
         )
 
         cell.accessibilityHint = NSLocalizedString(
@@ -754,9 +754,9 @@ private extension OrderDetailsDataSource {
 
         let orderItems = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)
         let singular = NSLocalizedString("%1$d item",
-                                         comment: "For example: `1 item` in Shipping Label package row")
+                                         comment: "This text displays the count of items in a shipping label package on the order details screen. It appears as a label in a table row that users can tap to view the specific items included in that shipping package.")
         let plural = NSLocalizedString("%1$d items",
-                                       comment: "For example: `5 items` in Shipping Label package row")
+                                       comment: "This text displays the total quantity of items in a shipping label package on the order details screen, appearing as a clickable row that users can tap to view the specific items included in that package.")
         let itemsText = String.pluralize(orderItems.map { $0.quantity.intValue }.reduce(0, +), singular: singular, plural: plural)
 
         cell.bodyLabel?.text = itemsText
@@ -897,9 +897,9 @@ private extension OrderDetailsDataSource {
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
         let singular = NSLocalizedString("%@ Item",
-                                         comment: "1 Item")
+                                         comment: "This text appears in the order details screen to show the singular form when displaying the count of refunded items (e.g., '1 Item'). It's used in a tappable cell that allows users to view the list of refunded products for that order.")
         let plural = NSLocalizedString("%@ Items",
-                                       comment: "For example, '5 Items'")
+                                       comment: "This text appears as a label on the order details screen showing the count of refunded products, displayed as a tappable cell that leads to a detailed list of refunded items (e.g., '5 Items').")
         let productText = String.pluralize(refundedProductsCount, singular: singular, plural: plural)
 
         cell.bodyLabel?.text = productText
@@ -980,7 +980,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNewTracking(cell: LargeHeightLeftImageTableViewCell) {
-        let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        let cellTextContent = NSLocalizedString("Add Tracking", comment: "This text appears as the navigation bar title on the screen where users manually add shipment tracking information to orders, and also as a button label in the order details screen that opens this tracking creation flow.")
         cell.imageView?.tintColor = .accent
         cell.configure(image: Icons.plusImage, text: cellTextContent, textColor: .textLink)
 
@@ -1015,7 +1015,7 @@ private extension OrderDetailsDataSource {
             }
         }
 
-        cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
+        cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Button text that appears in the Order Details screen when no shipping address is present, allowing users to add a shipping address to an existing order.")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
             comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
@@ -1789,13 +1789,13 @@ extension OrderDetailsDataSource {
     enum Titles {
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
-                                                   comment: "Button text for adding a new order note")
+                                                   comment: "Button text that allows users to add a note to an order on the Order Details screen in a WooCommerce mobile app. This action button appears in the order management interface where users can document additional information about a specific order.")
         static let paidByCustomer = NSLocalizedString("Paid",
                                                       comment: "The title for the customer payment cell")
         static let refunded = NSLocalizedString("Refunded",
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
-        static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
+        static let collectPayment = NSLocalizedString("Collect Payment", comment: "This text appears as a button label on the Order Details screen that allows merchants to initiate a card present payment collection process for an order.")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString(
             "OrderDetailsDataSource.configureSeeReceipt.button.title",
@@ -1834,11 +1834,11 @@ extension OrderDetailsDataSource {
         static let shippingLabelTrackingNumberTitle = NSLocalizedString("Tracking number", comment: "Order shipping label tracking number row title.")
         static let shippingLabelRefundedDetailsFormat =
             NSLocalizedString("%1$@ • %2$@",
-                              comment: "Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). " +
+                              comment: "This text displays refund details for shipping labels in the Order Details screen, showing the refunded amount and the date when the refund was requested, separated by a bullet point." +
                                 "The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM).")
         static let shippingLabelRefundedTitleFormat =
             NSLocalizedString("%@ label refund requested",
-                              comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
+                              comment: "This text appears as a section title in the Order Details screen when displaying information about a refunded shipping label, where %@ is replaced with the shipping service name (e.g. 'USPS label refund requested').")
         static let shippingLabelPrintingInfoAction =
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +

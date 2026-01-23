@@ -131,7 +131,7 @@ private extension StoreOnboardingPaymentsSetupView {
         )
         static let dismiss = NSLocalizedString(
             "Cancel",
-            comment: "Title of the dismiss button on the store onboarding payments setup screen."
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
     }
 }

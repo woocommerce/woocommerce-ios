@@ -122,7 +122,7 @@ struct SinglePackageHazmatDeclaration: View {
 private extension SinglePackageHazmatDeclaration {
     enum Localization {
         static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials",
-                                                               comment: "Toggle to declare when a package contains hazardous materials")
+                                                               comment: "This text appears as a toggle label in the shipping label creation form, allowing users to declare that a package contains hazardous materials when preparing shipments.")
         static let hazmatTooltip = NSLocalizedString("Select this if your package contains dangerous goods or hazardous materials",
                                                      comment: "Tooltip below the hazmat toggle detailing when to select it")
         static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category",

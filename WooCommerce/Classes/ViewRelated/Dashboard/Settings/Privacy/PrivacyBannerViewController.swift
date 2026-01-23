@@ -130,7 +130,7 @@ struct PrivacyBanner: View {
 private extension PrivacyBanner {
     enum Localization {
         static let bannerTitle = NSLocalizedString("Manage Privacy", comment: "Title for the privacy banner")
-        static let analytics = NSLocalizedString("Analytics", comment: "Title for the analytics toggle in the privacy banner")
+        static let analytics = NSLocalizedString("Analytics", comment: "Used as a screen title for the Analytics Hub dashboard and as a feature benefit title in the Jetpack benefits screen, referring to the store analytics and reporting functionality.")
         static let goToSettings = NSLocalizedString("Go to Settings", comment: "Title for the 'Go To Settings' button in the privacy banner")
         static let save = NSLocalizedString("Save", comment: "Title for the 'Save' button in the privacy banner")
         static let bannerSubtitle = NSLocalizedString(

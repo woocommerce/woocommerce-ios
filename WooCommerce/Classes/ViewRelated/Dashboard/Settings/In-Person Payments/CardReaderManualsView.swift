@@ -34,6 +34,6 @@ struct CardReadersView_Previews: PreviewProvider {
 private extension CardReaderManualsView {
     enum Localization {
         static let navigationTitle = NSLocalizedString( "Card reader manuals",
-                                                        comment: "Navigation title at the top of the Card reader manuals screen")
+                                                        comment: "This text appears as the navigation title at the top of a screen that displays card reader manuals for in-person payments functionality. It serves as the main heading that identifies the screen's purpose to users browsing payment hardware documentation.")
     }
 }

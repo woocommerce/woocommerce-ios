@@ -117,6 +117,6 @@ private extension RevenueReportCardViewModel {
                                                  comment: "Text displayed when there is an error loading revenue stats data.")
         static let reportTitle = NSLocalizedString("analyticsHub.revenueCard.reportTitle",
                                                    value: "Revenue Report",
-                                                   comment: "Title for the revenue analytics report linked in the Analytics Hub")
+                                                   comment: "This text appears as the title of a web view screen that displays a detailed revenue analytics report when users tap on a link from the Analytics Hub dashboard.")
     }
 }

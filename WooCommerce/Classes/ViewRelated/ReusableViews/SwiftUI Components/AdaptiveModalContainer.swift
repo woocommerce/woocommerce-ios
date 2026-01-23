@@ -104,7 +104,7 @@ private extension AdaptiveModalContainer {
         static var cancelButtonText: String {
             NSLocalizedString("adaptiveModalContainer.views.cancelButtonText",
                               value: "Cancel",
-                              comment: "Text for the 'Cancel' button that appears in the navigation bar, and closes the view")
+                              comment: "This text appears on a cancel button in the navigation bar of modal views that use the AdaptiveModalContainer component, allowing users to dismiss the modal and return to the previous screen.")
         }
     }
 }

@@ -637,7 +637,7 @@ private extension ReviewsViewController {
                                                             comment: "Option to mark all reviews as read from the action sheet in Reviews screen.")
 
             static let cancelAction = NSLocalizedString("Cancel",
-                                                        comment: "Cancel the more menu action sheet in Reviews screen.")
+                                                        comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         }
 
         enum MarkAllAsReadAlert {
@@ -645,10 +645,10 @@ private extension ReviewsViewController {
                                                  comment: "Title of Alert which asks user for confirmation before marking all reviews as read.")
 
             static let message = NSLocalizedString("Are you sure you want to mark all reviews as read?",
-                                                   comment: "Alert message to confirm a user meant to mark all reviews as read.")
+                                                   comment: "This text appears as the message body in a confirmation alert dialog that displays when users attempt to mark all reviews as read in the Reviews screen. It asks for user confirmation before performing the bulk action of marking all product reviews as read.")
 
             static let cancelButtonTitle = NSLocalizedString("Cancel",
-                                                             comment: "Alert button title - dismisses alert, which cancels marking all as read attempt.")
+                                                             comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 
             static let markAllButtonTitle = NSLocalizedString("Mark all",
                                                               comment: "Alert button title - confirms and marks all reviews as read")
@@ -656,14 +656,14 @@ private extension ReviewsViewController {
 
         enum Notice {
             static let allReviewsMarkedAsRead = NSLocalizedString("All reviews marked as read",
-                                                                  comment: "Mark all reviews as read notice")
+                                                                  comment: "This text appears as a confirmation notice/toast message shown to users after they successfully mark all reviews as read in the Reviews screen, confirming the bulk action has been completed.")
         }
 
         enum EmptyState {
             static let message = NSLocalizedString("Get your first reviews",
                                                              comment: "Message shown in the Reviews tab if the list is empty")
             static let detail = NSLocalizedString("Capture high-quality product reviews for your store.",
-                                                            comment: "Detailed message shown in the Reviews tab if the list is empty")
+                                                            comment: "This text appears as a detailed explanation in the empty state screen when no product reviews are available, displayed below the main 'Get your first reviews' message to encourage merchants to start collecting reviews.")
             static let action = NSLocalizedString("Learn more",
                                                             comment: "Title of button shown in the Reviews tab if the list is empty")
         }

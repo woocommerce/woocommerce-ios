@@ -50,6 +50,6 @@ final class GenerateVariationsOptionsPresenter {
 private extension GenerateVariationsOptionsPresenter {
     enum Localization {
         static let addVariationAction = NSLocalizedString("Add Variation",
-                                                          comment: "Title on the bottom sheet to choose what variation process to start")
+                                                          comment: "Button label that appears in two contexts within the product variations feature: as a title on a bottom sheet selector for choosing variation creation options, and as an action button on the empty state screen when a product has attributes but no variations yet.")
     }
 }

@@ -645,10 +645,10 @@ private extension AddEditCouponViewModel {
 
     enum Localization {
         static let amountPercent = NSLocalizedString("Amount (%)",
-                                                     comment: "Title of the Amount field in the Coupon Edit" +
+                                                     comment: "This text appears as a field label on the coupon creation/editing screen when setting up a percentage discount coupon, indicating where users should enter the discount percentage value." +
                                                      " or Creation screen for a percentage discount coupon.")
         static let amountFixedDiscount = NSLocalizedString("Amount (%@)",
-                                                           comment: "Title of the Amount field on the Coupon Edit" +
+                                                           comment: "This is a field label that appears on the coupon creation/editing screen for fixed discount coupons, where %@ is replaced with the store's currency symbol (e.g., 'Amount ($)', 'Amount (€)'). It labels the input field where users enter the monetary discount amount." +
                                                            " or Creation screen for a fixed amount discount coupon." +
                                                            "Reads like: Amount ($)")
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
@@ -662,7 +662,7 @@ private extension AddEditCouponViewModel {
                                                                    comment: "Subtitle of the Amount field on the Coupon Edit" +
                                                                    " or Creation screen for a fixed amount discount coupon.")
         static let addDescriptionButton = NSLocalizedString("Add Description (Optional)",
-                                                            comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
+                                                            comment: "This text appears as a button label in the coupon creation/editing screen that allows users to add an optional description to their coupon. When tapped, it opens an interface for entering descriptive text about the coupon.")
         static let editDescriptionButton = NSLocalizedString("Edit Description",
                                                              comment: "Button for editing the description of a coupon in the" +
                                                              " view for adding or editing a coupon.")

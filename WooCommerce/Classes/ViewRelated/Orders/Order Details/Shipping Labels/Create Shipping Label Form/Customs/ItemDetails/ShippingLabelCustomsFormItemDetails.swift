@@ -213,7 +213,7 @@ private extension ShippingLabelCustomsFormItemDetails {
         static let originTitle = NSLocalizedString("Origin Country",
                                                    comment: "Title for the Origin Country row in Customs screen of Shipping Label flow")
         static let originDescription = NSLocalizedString("Country where the product was manufactured or assembled",
-                                                         comment: "Description for the Origin Country row in Customs screen of Shipping Label flow")
+                                                         comment: "This text appears as a description or help text below the Origin Country field in the shipping label customs form, explaining to users what country information they need to provide for the product being shipped.")
         static let originError = NSLocalizedString("Origin Country is required",
                                                    comment: "Error message for missing value in Origin Country row in Customs screen of Shipping Label flow")
     }

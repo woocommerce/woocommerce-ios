@@ -129,7 +129,7 @@ private extension FilteredOrdersHeaderBar {
 
     enum Localization {
         static let noFiltersApplied = NSLocalizedString("All Orders",
-                                                        comment: "Header bar label on top of order list when no filters are applied")
+                                                        comment: "This text appears as a header bar label above the orders list when no filters are currently applied, indicating that all orders are being displayed.")
         static let filtersApplied = NSLocalizedString("Filtered Orders",
                                                       comment: "Header bar label on top of order list when filters are applied")
         static let filters = NSLocalizedString("Filters",

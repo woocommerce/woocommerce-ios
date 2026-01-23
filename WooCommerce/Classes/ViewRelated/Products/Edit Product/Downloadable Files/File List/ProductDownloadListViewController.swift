@@ -489,7 +489,7 @@ private extension ProductDownloadListViewController {
     enum Localization {
         static let loadingMessage = NSLocalizedString("Please wait...",
                                                       comment: "Text on the loading view of the product downloadable file screen indicating the user to wait")
-        static let addFileButton = NSLocalizedString("Add File", comment: "Action to add downloadable file on the Product Downloadable Files screen")
+        static let addFileButton = NSLocalizedString("Add File", comment: "Button label on the Product Downloadable Files screen that allows merchants to add a new downloadable file to their product. When tapped, it opens options for uploading a file to make available for customer download after purchase.")
         static let title = NSLocalizedString("Downloadable Files",
                                              comment: "Edit product downloadable files screen - Screen title")
         static let moreBarButtonAccessibilityLabel = NSLocalizedString("View downloadable file settings",
@@ -501,7 +501,7 @@ private extension ProductDownloadListViewController {
         static let downloadSettingsAction = NSLocalizedString("Download Settings",
                                                               comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
-                                                    comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+                                                    comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let unsupportedFileType = NSLocalizedString(
             "productDownloadListViewController.notice.unsupportedFileType",
             value: "The selected file type is not supported.",

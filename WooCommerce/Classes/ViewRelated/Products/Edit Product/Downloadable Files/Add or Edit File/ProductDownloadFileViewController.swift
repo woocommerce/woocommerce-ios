@@ -316,13 +316,13 @@ extension ProductDownloadFileViewController {
 private extension ProductDownloadFileViewController {
     enum Localization {
         static let navigationBarTitle = NSLocalizedString("Add Downloadable File",
-                                                          comment: "Downloadable file screen navigation title")
+                                                          comment: "This text appears as the navigation bar title on a screen where users can add downloadable files to their products in a WooCommerce store management app.")
         static let moreButtonAccessibilityLabel = NSLocalizedString("Show bottom action sheet options for a downloadable file",
                                                                     comment: "Accessibility label to show bottom action sheet options for a downloadable file")
         static let addButton = NSLocalizedString("Add",
-                                                 comment: "Action for adding a Products' downloadable files' info remotely")
+                                                 comment: "Button label that appears in shipment tracking screens and order note screens. When tapped, it adds a new tracking entry or saves a new order note respectively.")
         static let addButtonAccessibilityLabel = NSLocalizedString("Add products' downloadable files' info remotely",
-                                                                   comment: "Accessibility label to add products' downloadable files' info remotely")
+                                                                   comment: "This is an accessibility label for a button that allows users to add downloadable file information to products in a WooCommerce store. It appears on the downloadable files management screen and helps screen readers describe the button's function to visually impaired users.")
         static let updateButton = NSLocalizedString("Update",
                                                     comment: "Action for updating a Products' downloadable files' info remotely")
         static let updateButtonAccessibilityLabel = NSLocalizedString("Update products' downloadable files' info remotely",
@@ -330,6 +330,6 @@ private extension ProductDownloadFileViewController {
         static let actionSheetDeleteTitle = NSLocalizedString("Delete",
                                                               comment: "Button title Delete in Downloadable File Options Action Sheet")
         static let actionSheetCancelTitle = NSLocalizedString("Cancel",
-                                                              comment: "Button title Cancel in Downloadable File More Options Action Sheet")
+                                                              comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 }

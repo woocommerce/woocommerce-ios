@@ -145,13 +145,13 @@ private extension OrderCustomerSectionContent {
     enum Localization {
         static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
         static let addCustomerDetails = NSLocalizedString("Add Customer Details",
-                                                          comment: "Title text of the button that adds customer data when creating a new order")
+                                                          comment: "This text appears as a button label in the customer section when creating a new order, allowing users to add customer information such as billing and shipping addresses to the order.")
         static let editButtonAccessibilityLabel = NSLocalizedString(
             "Edit Customer Details",
             comment: "Accessibility label for the button to edit customer details on the New Order screen"
         )
 
-        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")
+        static let billingTitle = NSLocalizedString("Billing Address", comment: "This text appears as a section header title on order-related screens in a WooCommerce app, specifically labeling the billing address section when viewing or editing customer information during order creation and in order details.")
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address section in order customer data")
 
         static let noAddress = NSLocalizedString("No address specified.", comment: "Placeholder for empty address in order customer data")

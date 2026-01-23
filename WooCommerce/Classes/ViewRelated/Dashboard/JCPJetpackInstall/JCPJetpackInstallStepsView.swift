@@ -184,13 +184,13 @@ private extension JCPJetpackInstallStepsView {
     }
 
     enum Localization {
-        static let closeButton = NSLocalizedString("Close", comment: "Title of the Close action on the Jetpack Install view")
+        static let closeButton = NSLocalizedString("Close", comment: "This text appears as a button label used to dismiss or close modal screens and dialogs throughout the app, including screens like the coupon creation success view and Jetpack installation flow. It provides users with a way to exit or return to the previous screen without performing any additional actions.")
         static let installTitle = NSLocalizedString("Install Jetpack", comment: "Title of the Install Jetpack view")
         static let installDescription = NSLocalizedString("Please wait while we connect your site %1$@ with Jetpack.",
                                                           comment: "Message on the Jetpack Install Progress screen. The %1$@ is the site address.")
         static let doneButton = NSLocalizedString("Done", comment: "Done button on the Jetpack Install Progress screen.")
         static let errorTitle = NSLocalizedString("Sorry, something went wrong during install", comment: "Error title when Jetpack install fails")
-        static let supportAction = NSLocalizedString("Contact Support", comment: "Action button to contact support when Jetpack install fails")
+        static let supportAction = NSLocalizedString("Contact Support", comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
         static let errorOpeningWPAdmin = NSLocalizedString(
             "Cannot find information about your site's WP-Admin. Please try again.",
             comment: "Error message when no URL to WP-Admin page is found during Jetpack install flow"

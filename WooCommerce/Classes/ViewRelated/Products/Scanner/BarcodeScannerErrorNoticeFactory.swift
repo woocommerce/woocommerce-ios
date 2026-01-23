@@ -33,7 +33,7 @@ struct BarcodeScannerErrorNoticeFactory {
 private extension BarcodeScannerErrorNoticeFactory {
     enum Localization {
         static let defaultTitle = NSLocalizedString("Cannot add Product to Order.",
-                                                    comment: "Generic error when a product can't be added to an order after being scanned.")
+                                                    comment: "This is an error message displayed as a notice title when a barcode scanner fails to add a scanned product to an order due to various reasons (product not found, not purchasable, or other generic errors).")
         static let invalidIdentifier = NSLocalizedString("Invalid Identifier",
                                                     comment: "Error when an empty Identifier is returned from the barcode scanner")
         static let productNotFoundMessage = NSLocalizedString("Product with Identifier \"%@\" not found.",

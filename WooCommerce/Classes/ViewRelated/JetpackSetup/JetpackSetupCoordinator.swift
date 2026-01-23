@@ -501,7 +501,7 @@ private extension JetpackSetupCoordinator {
 
     enum Localization {
         static let retryButton = NSLocalizedString("Try Again", comment: "Button to retry a failed action in the Jetpack setup flow")
-        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to dismiss an error alert in the Jetpack setup flow")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let errorCheckingJetpack = NSLocalizedString(
             "Error checking the Jetpack connection on your site",
             comment: "Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow."

@@ -281,8 +281,8 @@ extension BulkUpdateViewController {
 
 private extension BulkUpdateViewController {
     enum Localization {
-        static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Button title that closes the presented screen")
-        static let screenTitle = NSLocalizedString("Bulk Update", comment: "Title that appears on top of the bulk update of product variations screen")
+        static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
+        static let screenTitle = NSLocalizedString("Bulk Update", comment: "This text appears as both a navigation screen title and an action sheet button in the WooCommerce product variations interface. It allows merchants to update multiple product variation prices simultaneously rather than editing them individually.")
         static let noticeUnableToSyncVariations = NSLocalizedString("Unable to retrieve variations",
                                                                     comment: "Unable to retrieve variations for bulk update screen")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")

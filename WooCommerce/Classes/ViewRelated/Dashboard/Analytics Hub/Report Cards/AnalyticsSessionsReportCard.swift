@@ -34,10 +34,10 @@ private extension AnalyticsSessionsReportCard {
         static let title = NSLocalizedString("SESSIONS", comment: "Title for sessions section in the Analytics Hub")
         static let sessionsCTAMessage = NSLocalizedString("analyticsHub.jetpackStatsCTA.message",
                                                           value: "Enable Jetpack Stats to see your store's session analytics.",
-                                                          comment: "Text displayed in the Analytics Hub when the Jetpack Stats module is disabled")
+                                                          comment: "This message appears in the Analytics Hub's Sessions section when Jetpack Stats is disabled, informing users they need to enable it to view session analytics data for their store.")
         static let sessionsCTAButton = NSLocalizedString("analyticsHub.jetpackStatsCTA.buttonLabel",
                                                          value: "Enable Jetpack Stats",
-                                                         comment: "Label for button to enable Jetpack Stats")
+                                                         comment: "This is the label for a button that appears in the Analytics Hub's Sessions report card when Jetpack Stats is disabled. When tapped, it enables Jetpack Stats functionality to allow users to view their store's session analytics data.")
     }
 }
 

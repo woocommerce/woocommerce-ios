@@ -680,7 +680,7 @@ private extension ProductFormViewController {
     }
 
     func configureMoreDetailsContainerView() {
-        let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+        let title = NSLocalizedString("Add more details", comment: "This text appears as the title of a button at the bottom of the product editing form and as the subtitle of a bottom sheet modal that opens when the button is tapped, allowing users to add additional product details like inventory, shipping, categories, and tags.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
                                                             image: .plusImage) { [weak self] button in
@@ -972,7 +972,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func moreDetailsButtonTapped(button: UIButton) {
         let title = NSLocalizedString("Add more details",
-                                      comment: "Title of the bottom sheet from the product form to add more product details.")
+                                      comment: "This text appears as the title of a button at the bottom of the product editing form and as the subtitle of a bottom sheet modal that opens when the button is tapped, allowing users to add additional product details like inventory, shipping, categories, and tags.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
@@ -1626,7 +1626,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editProductType(cell: UITableViewCell?) {
         let title = NSLocalizedString("Change product type",
-                                      comment: "Message title of bottom sheet for selecting a product type")
+                                      comment: "This text appears as the title of a bottom sheet modal that allows users to select and change the type of a product they are editing (e.g., simple product, variable product, etc.). It serves as the header text for a list selector interface that appears when users tap to modify their product's type in the product editing form.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(
@@ -2191,7 +2191,7 @@ private enum Localization {
         let titleFormat = NSLocalizedString("Variation #%1$@", comment: "Navigation bar title for variation. Parameters: %1$@ - Product variation ID")
         return String.localizedStringWithFormat(titleFormat, variationID)
     }
-    static let updateProductError = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
+    static let updateProductError = NSLocalizedString("Cannot update product", comment: "This text appears as the title of an error alert dialog that is displayed to users when the app fails to save changes to a product they were editing. It serves as the main heading of the error message that informs users that their product update was unsuccessful.")
     static let duplicateProductError = NSLocalizedString(
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
@@ -2273,6 +2273,6 @@ private enum ActionSheetStrings {
                                                 value: "Trash product",
                                                 comment: "Button title Trash product in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
-    static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
+    static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")
 }

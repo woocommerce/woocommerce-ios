@@ -92,7 +92,7 @@ private extension JCPJetpackInstallIntroView {
     }
 
     enum Localization {
-        static let closeButton = NSLocalizedString("Close", comment: "Title of the Close action on the Jetpack Install view")
+        static let closeButton = NSLocalizedString("Close", comment: "This text appears as a button label used to dismiss or close modal screens and dialogs throughout the app, including screens like the coupon creation success view and Jetpack installation flow. It provides users with a way to exit or return to the previous screen without performing any additional actions.")
         static let installAction = NSLocalizedString("Get Started", comment: "Title of install action in the Jetpack Install view.")
         static let installTitle = NSLocalizedString("Install Jetpack", comment: "Title of the Install Jetpack intro view")
         static let installDescription = NSLocalizedString("Install the free Jetpack plugin to %1$@ and experience the best mobile experience.",

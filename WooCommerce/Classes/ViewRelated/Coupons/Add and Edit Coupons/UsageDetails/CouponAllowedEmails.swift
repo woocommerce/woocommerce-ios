@@ -51,7 +51,7 @@ private extension CouponAllowedEmails {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Allowed Emails", comment: "Title for the Allowed Emails screen")
+        static let title = NSLocalizedString("Allowed Emails", comment: "This text appears as the navigation bar title for a screen where users can configure allowed email addresses for coupon usage in a WooCommerce store.")
         static let description = NSLocalizedString(
             "List of allowed billing emails to check against when an order is placed. " +
             "Separate email addresses with commas. You can also use an asterisk (*) " +

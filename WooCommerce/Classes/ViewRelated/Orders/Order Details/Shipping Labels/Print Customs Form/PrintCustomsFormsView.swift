@@ -133,7 +133,7 @@ private extension PrintCustomsFormsView {
         static let customsFormTitle = NSLocalizedString("Customs form",
                                                         comment: "Title on the Print Customs Invoice screen of Shipping Label flow")
         static let singlePrintingMessage = NSLocalizedString("A customs form must be printed and included on this international shipment",
-                                                       comment: "Main message on the Print Customs Invoice screen of Shipping Label flow")
+                                                       comment: "This is an informational message displayed on the Print Customs Invoice screen that explains to users why they need to print a customs form for a single international shipment.")
         static let printingMessage = NSLocalizedString("Customs forms must be printed and included on these international shipments",
                                                        comment: "Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices")
         static let singlePrintButton = NSLocalizedString("Print customs form",

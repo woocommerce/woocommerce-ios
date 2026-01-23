@@ -66,6 +66,6 @@ private extension ShippingLabelAddressTopBannerFactory {
                 "when the destination address can't be verified and no customer phone number is found."
         )
         static let openMapAction = NSLocalizedString("Open Map", comment: "Open Map action in Shipping Label Address Validation.")
-        static let contactCustomerAction = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
+        static let contactCustomerAction = NSLocalizedString("Contact Customer", comment: "This text appears as a button label in the Shipping Label Address Validation screen when the app cannot verify a shipping address, allowing users to contact the customer to confirm address details. It triggers an action sheet with contact options like call, email, or message.")
     }
 }

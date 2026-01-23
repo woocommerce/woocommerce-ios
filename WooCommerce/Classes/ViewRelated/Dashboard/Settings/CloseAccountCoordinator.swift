@@ -131,7 +131,7 @@ private extension CloseAccountCoordinator {
                                      comment: "Error message displayed when unable to close user account due to having active purchases.")
         default:
             return NSLocalizedString("An error occured while closing account.",
-                                     comment: "Default error message displayed when unable to close user account.")
+                                     comment: "This is a default error message displayed when account closure fails for unspecified reasons, shown after a user attempts to close their account but encounters an unexpected error.")
         }
     }
 
@@ -162,7 +162,7 @@ private extension CloseAccountCoordinator {
             )
             static let cancelButtonTitle = NSLocalizedString(
                 "Cancel",
-                comment: "Close Account button title - dismisses alert, which cancels the Close Account attempt."
+                comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
             )
 
             static let removeButtonTitle = NSLocalizedString(
@@ -178,11 +178,11 @@ private extension CloseAccountCoordinator {
             )
             static let contactSupportButtonTitle = NSLocalizedString(
                 "Contact Support",
-                comment: "Close Account error alert button title - navigates the user to contact support."
+                comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures."
             )
             static let dismissButtonTitle = NSLocalizedString(
                 "Cancel",
-                comment: "Close Account error alert button title - dismisses error alert."
+                comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
             )
         }
     }

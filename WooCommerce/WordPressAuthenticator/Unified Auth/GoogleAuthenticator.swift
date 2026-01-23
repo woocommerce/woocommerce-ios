@@ -238,7 +238,7 @@ private extension GoogleAuthenticator {
     }
 
     enum LocalizedText {
-        static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleConnected = NSLocalizedString("Connected But…", comment: "This text appears as a title in the Google authentication flow when a user successfully connects with Google but no matching WordPress.com account is found. It's displayed as a heading above an error message explaining the account mismatch issue.")
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
     }

@@ -255,7 +255,7 @@ private extension ComponentSettingsViewModel {
 // MARK: Constants
 private extension ComponentSettingsViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Component Settings", comment: "Title for the settings of a component in a composite product")
+        static let title = NSLocalizedString("Component Settings", comment: "This text appears as the navigation title of a screen that displays settings for individual components within a composite product. It serves as the main heading that identifies the current screen's purpose when users are viewing component configuration options.")
         static let infoNotice = NSLocalizedString("You can edit component settings in the web dashboard.",
                                                   comment: "Info notice at the bottom of the component settings screen")
         static let noDefaultOption = NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product")

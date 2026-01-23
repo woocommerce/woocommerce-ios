@@ -717,7 +717,7 @@ private extension ShippingLabelFormViewController {
         static let paymentMethodCellTitle = NSLocalizedString("Payment Method",
                                                               comment: "Title of the cell Payment Method inside Create Shipping Label form")
         static let continueButtonInCells = NSLocalizedString("Continue",
-                                                             comment: "Continue button inside every cell inside Create Shipping Label form")
+                                                             comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content.")
         static let customsCellTitle = NSLocalizedString("Customs", comment: "Title of the cell Customs inside Create Shipping Label form")
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")

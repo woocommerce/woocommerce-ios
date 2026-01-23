@@ -221,7 +221,7 @@ extension TextFieldTableViewCell {
         static let password = NSLocalizedString("Password",
                                                 comment: "Accessibility label for the password text field in the self-hosted login page.")
         static let otp = NSLocalizedString("Authentication code",
-                                           comment: "Accessibility label for the 2FA text field.")
+                                           comment: "This text appears as a placeholder in the two-factor authentication (2FA) code input field during the login process, guiding users to enter their authentication code from their authenticator app or SMS.")
         static let email = NSLocalizedString("Email address",
                                              comment: "Accessibility label for the email address text field.")
         static let siteAddressID = "Site address"

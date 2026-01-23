@@ -32,6 +32,6 @@ extension RefundItemViewModel {
 // MARK: Constant
 private extension RefundItemViewModel {
     enum Localization {
-        static let quantityAndPriceFormat = NSLocalizedString("%d x %@ each", comment: "Refund item price and quantity format. EG: 2 x $10.00 each")
+        static let quantityAndPriceFormat = NSLocalizedString("%d x %@ each", comment: "This text appears in the refund items screen when processing order refunds, displaying the quantity and individual price of each item being refunded (e.g., '2 x $10.00 each'). It's used as a label format to show product quantity and unit price information in the refund item list.")
     }
 }

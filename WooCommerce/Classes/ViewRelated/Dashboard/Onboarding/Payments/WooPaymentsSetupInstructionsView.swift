@@ -183,11 +183,11 @@ private extension WooPaymentsSetupInstructionsView {
                                                  comment: "Estimated setup time title text shown on the Woo payments setup instructions screen.")
 
             static let value = NSLocalizedString("4-6 minutes",
-                                                 comment: "Estimated setup time text shown on the Woo payments setup instructions screen.")
+                                                 comment: "This text appears as a value label on the WooPayments setup instructions screen, showing users the estimated time required to complete the payment setup process.")
         }
 
         static let beforeYouStartSetup = NSLocalizedString("Before you start setup",
-                                                           comment: "Title for the instructions on the Woo payments setup instructions screen.")
+                                                           comment: "This text appears as a section title on the WooPayments setup instructions screen, introducing a list of important information users should know before beginning the payment setup process.")
 
         enum Instruction {
             enum Instruction1 {
@@ -207,11 +207,11 @@ private extension WooPaymentsSetupInstructionsView {
 
 
         static let startAction = NSLocalizedString("Begin Setup",
-                                                   comment: "Title on the action button on the Woo payments setup instructions screen.")
+                                                   comment: "This text appears as the label on an action button in the WooPayments setup instructions screen, which users tap to begin the payment setup process after reading the preliminary instructions.")
 
         enum Footer {
             static let learnMoreFormat = NSLocalizedString("%1$@ about verifying your information with WooPayments.",
-                                                           comment: "%1$@ is a tappable link like \"Learn more\" " +
+                                                           comment: "This text appears in the footer section of the WooPayments setup instructions screen, where %1$@ is replaced with tappable link text like 'Learn more' that opens a webview with additional information about payment verification requirements."Learn more\" " +
                                                            "that opens a webview for the user to learn more about verifying information for WooPayments.")
 
             static let learnMore = NSLocalizedString("Learn more",
@@ -219,7 +219,7 @@ private extension WooPaymentsSetupInstructionsView {
         }
 
         static let cancel = NSLocalizedString("Cancel",
-                                              comment: "Title of the dismiss button on the store onboarding payments setup screen.")
+                                              comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
     }
 
     enum URLs {

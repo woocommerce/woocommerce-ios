@@ -75,7 +75,7 @@ private extension CardPresentModalUpdateFailedLowBattery {
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Button to dismiss the alert presented whenan update fails because the reader is low on battery."
+            comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens."
         )
     }
 }

@@ -5,7 +5,7 @@ import Foundation
 fileprivate extension ProductCategoryCellViewModel {
     static func anyCategoryCellViewModel(isSelected: Bool) -> ProductCategoryCellViewModel {
         ProductCategoryCellViewModel(categoryID: nil,
-                                     name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
+                                     name: NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items)."),
                                      isSelected: isSelected,
                                      indentationLevel: 0)
     }
@@ -46,6 +46,6 @@ final class FilterProductCategoryListViewModel: ProductCategoryListViewModelEnri
 
 private extension FilterProductCategoryListViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Categories", comment: "Filter product categories screen - Screen title")
+        static let title = NSLocalizedString("Categories", comment: "This text appears as a title/label for the Categories section in the product editing interface, allowing merchants to assign product categories. It's used in bottom sheet actions, composite product component options, and as a row title in the main product form.")
     }
 }

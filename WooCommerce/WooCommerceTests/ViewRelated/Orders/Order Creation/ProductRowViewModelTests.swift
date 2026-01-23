@@ -67,7 +67,7 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
+        let format = NSLocalizedString("%1$@ in stock", comment: "A label that displays the current stock quantity for products during order creation, showing how many units are available for purchase (e.g., '15 in stock').")
         let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
@@ -319,7 +319,7 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSDecimalNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
+        let format = NSLocalizedString("%1$@ in stock", comment: "A label that displays the current stock quantity for products during order creation, showing how many units are available for purchase (e.g., '15 in stock').")
         let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")

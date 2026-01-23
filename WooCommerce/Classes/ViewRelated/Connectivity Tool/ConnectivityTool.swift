@@ -124,7 +124,7 @@ private extension ConnectivityTool {
         static let subtitle = NSLocalizedString("Please wait while we attempt to identify your connection issue.",
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
-                                                      comment: "Contact support button in the connectivity tool screen")
+                                                      comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
         static let title = NSLocalizedString(
             "connectivityTool.title",
             value: "Troubleshoot Connection",

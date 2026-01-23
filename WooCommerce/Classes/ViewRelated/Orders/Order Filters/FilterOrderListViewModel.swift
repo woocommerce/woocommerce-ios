@@ -296,7 +296,7 @@ extension Array: FilterType where Element == OrderStatusEnum {
     ///
     var description: String {
         if self.count == 0 {
-            return NSLocalizedString("Any", comment: "Display label for all order statuses selected in Order Filters")
+            return NSLocalizedString("Any", comment: "This text appears as a filter option label in the WooCommerce order filtering screens, specifically for date range and order status filters, indicating that no specific filter is applied (showing all items).")
         }
         else if self.count == 1 {
             return self.first?.description ?? ""

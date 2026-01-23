@@ -243,7 +243,7 @@ private extension OrderCustomAmountsSection {
     }
     enum Localization {
         static let addCustomAmount = NSLocalizedString("Add Custom Amount",
-                                                       comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
+                                                       comment: "This text appears as a button label in the order creation/editing screen that allows users to add custom amounts (like fees or discounts) to an order.")
         static let customAmounts = NSLocalizedString("orderForm.customAmounts",
                                                      value: "Custom Amounts",
                                                      comment: "Title text of the section that shows the Custom Amounts when creating or editing an order")

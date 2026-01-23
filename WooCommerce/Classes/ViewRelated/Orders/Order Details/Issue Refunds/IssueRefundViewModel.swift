@@ -334,8 +334,8 @@ extension IssueRefundViewModel {
         static let refundCustomAmountsTitle = NSLocalizedString("refundIssue.customAmounts.title",
                                                                 value: "Refund Custom Amounts",
                                                                 comment: "Title of the switch in the IssueRefund screen to refund customAmounts")
-        static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
-        static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
+        static let itemSingular = NSLocalizedString("1 item selected", comment: "This label appears in the Issue Refund screen to indicate exactly one item has been selected for refund, working together with a plural version for multiple items.")
+        static let itemsPlural = NSLocalizedString("%d items selected", comment: "This text appears as a label in the refund screen showing how many order items are currently selected for refund when multiple items (2 or more) are chosen. It's used as part of the refund flow where users can select specific items from an order to process a partial refund.")
     }
 }
 

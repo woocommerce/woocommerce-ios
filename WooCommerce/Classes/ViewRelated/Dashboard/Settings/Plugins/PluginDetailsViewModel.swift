@@ -128,7 +128,7 @@ private extension PluginDetailsViewModel {
 private enum Localization {
     static let pluginDetailTitle = NSLocalizedString(
         "%1$@",
-        comment: "Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. " +
+        comment: "This format string displays the weight of a product in shipping label package details, showing just the weight value with unit (e.g., '1lbs'). It appears as a subtitle text under product items when they have no additional attributes like color or size variations." +
         "This is displayed with the current version number, and whether an update is available.")
 
     static let updatePluginTitle = NSLocalizedString(

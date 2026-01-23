@@ -207,7 +207,7 @@ extension ShippingLabelCustomPackageFormViewModel {
         }
 
         enum Localization {
-            static let packageTypeBox = NSLocalizedString("Box", comment: "Box package type, used to create a custom package in the Shipping Label flow")
+            static let packageTypeBox = NSLocalizedString("Box", comment: "This text appears as a selectable package type option in the shipping label creation flow, allowing users to choose 'Box' when creating custom shipping packages for orders.")
             static let packageTypeLetter = NSLocalizedString("Envelope",
                                                              comment: "Envelope package type, used to create a custom package in the Shipping Label flow")
         }

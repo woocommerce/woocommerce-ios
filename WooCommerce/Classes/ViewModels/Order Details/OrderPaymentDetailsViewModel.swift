@@ -115,11 +115,11 @@ final class OrderPaymentDetailsViewModel {
     private var awaitingPaymentTitle: String? {
         if order.paymentMethodTitle.isEmpty {
             return String.localizedStringWithFormat(
-                NSLocalizedString("Awaiting payment", comment: "The title on the payment row of the Order Details screen when the payment is still pending"))
+                NSLocalizedString("Awaiting payment", comment: "This text appears as a label on the payment row of the Order Details screen when an order's payment is still pending and no specific payment method is available."))
         }
         return String.localizedStringWithFormat(
             NSLocalizedString("Awaiting payment via %@",
-                              comment: "The title on the payment row of the Order Details screen" +
+                              comment: "This text appears as a status label on the Order Details screen's payment row when an order payment is still pending and a specific payment method has been selected. The %@ placeholder is replaced with the payment method name (e.g., 'Awaiting payment via Stripe')." +
                               "when the payment for a specific payment method is still pending." +
                               "Reads like: Awaiting payment via Stripe."),
             order.paymentMethodTitle)
@@ -152,7 +152,7 @@ final class OrderPaymentDetailsViewModel {
         )
 
         let template = NSLocalizedString("%@ via %@",
-                                         comment: "Label for a refund on an order, which reads \"<date> via <refund method type>\", " +
+                                         comment: "A label displayed in the order details screen showing when a refund was processed and which payment method was used, appearing in a cell with the title 'Refunded' (e.g., '25 Apr 2022 via WooCommerce In-Person Payments')."<date> via <refund method type>\", " +
                                          "e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". " +
                                          "Shown in a cell with a title \"Refunded\" for context")
         let refundText = String.localizedStringWithFormat(template, dateCreated, refundType)

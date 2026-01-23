@@ -356,7 +356,7 @@ private extension CustomerSearchUICommand {
         static let emptyDefaultStateMessage = NSLocalizedString("Search for an existing customer or",
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",
-                                                                comment: "Button title for adding customer details manually on the customer search screen")
+                                                                comment: "This text appears as a button label on the customer search screen in the order creation flow, allowing users to manually enter customer details instead of searching for existing customers.")
         static let emptyDefaultStateNoCreationMessage = NSLocalizedString(
             "customerSearchUICommand.emptyDefaultStateNoCreationMessage",
             value: "Search for an existing customer",

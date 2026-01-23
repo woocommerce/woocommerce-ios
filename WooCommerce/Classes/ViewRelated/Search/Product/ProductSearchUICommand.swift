@@ -204,7 +204,7 @@ extension ProductSearchFilter {
     var title: String {
         switch self {
         case .all:
-            return NSLocalizedString("All Products", comment: "Title of the product search filter to search for all products.")
+            return NSLocalizedString("All Products", comment: "This text appears as a filter option title in a product search interface, allowing users to search across all products rather than limiting the search to specific criteria like SKU.")
         case .sku:
             return NSLocalizedString("SKU", comment: "Title of the product search filter to search for products that match the SKU.")
         case .name:

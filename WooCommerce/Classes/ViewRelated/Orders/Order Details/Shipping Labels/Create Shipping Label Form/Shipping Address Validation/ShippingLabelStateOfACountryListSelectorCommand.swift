@@ -41,6 +41,6 @@ final class ShippingLabelStateOfACountryListSelectorCommand: ListSelectorCommand
 private extension ShippingLabelStateOfACountryListSelectorCommand {
     enum Localization {
         static let navigationBarTitle = NSLocalizedString("Choose a State",
-                                                          comment: "Navigation title on the shipping label states of a country selector screen")
+                                                          comment: "This text appears as the navigation bar title on a screen where users select a state/province when creating shipping labels for orders. It's displayed at the top of a list selector interface that allows users to choose from available states within a selected country.")
     }
 }

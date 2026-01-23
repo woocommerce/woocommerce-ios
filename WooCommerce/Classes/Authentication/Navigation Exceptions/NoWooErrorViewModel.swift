@@ -177,7 +177,7 @@ private extension NoWooErrorViewModel {
         static let verifyingInstallation = NSLocalizedString("Verifying installation...",
                                                              comment: "Message displayed when checking whether a site has successfully installed WooCommerce")
         static let setupErrorMessage = NSLocalizedString("Cannot verify your site's WooCommerce installation.",
-                                                         comment: "Error message displayed when failed to check for WooCommerce in a site.")
+                                                         comment: "Error message displayed to users when the app fails to verify that WooCommerce is properly installed on their website during the login/setup process. This appears on the authentication screen when there are technical issues confirming the WooCommerce installation status.")
 
         static let helpBarButtonItemTitle = NSLocalizedString("Help",
                                                               comment: "Action button for opening Help."

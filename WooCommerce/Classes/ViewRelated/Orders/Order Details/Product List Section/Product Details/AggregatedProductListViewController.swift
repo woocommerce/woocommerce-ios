@@ -142,9 +142,9 @@ private extension AggregatedProductListViewController {
 //
 private extension AggregatedProductListViewController {
     struct Localization {
-        static let titleSingular = NSLocalizedString("%d item", comment: "For example: `1 item` in Aggregated Product List")
+        static let titleSingular = NSLocalizedString("%d item", comment: "This text appears as a navigation title in the Aggregated Product List screen showing the count of a single item. It's used specifically when there is exactly 1 item to display, with %d being replaced by the number 1.")
         static let titlePlural = NSLocalizedString("%d items",
-                                       comment: "For example: `5 items` in Aggregated Product List")
+                                       comment: "This text appears as a navigation title in the Aggregated Product List view, showing the total count of items when there are multiple items (e.g., '5 items'). It's displayed at the top of the screen when users are viewing a list of products in an order.")
     }
 
     struct Constants {

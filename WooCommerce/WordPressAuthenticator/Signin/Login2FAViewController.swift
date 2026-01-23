@@ -81,7 +81,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
     @objc func localizeControls() {
-        instructionLabel?.text = NSLocalizedString("Almost there! Please enter the verification code from your authenticator app.", comment: "Instructions for users with two-factor authentication enabled.")
+        instructionLabel?.text = NSLocalizedString("Almost there! Please enter the verification code from your authenticator app.", comment: "This instructional text appears as a label on the two-factor authentication screen during the login process, guiding users to enter their verification code from their authenticator app to complete sign-in.")
 
         verificationCodeField.placeholder = NSLocalizedString("Verification code", comment: "two factor code placeholder")
 
@@ -190,7 +190,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
             textField.text = cleanedCode
             handleTextFieldDidChange(textField)
         case .invalid(nonNumbers: true):
-            displayError(message: NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field."))
+            displayError(message: NSLocalizedString("A verification code will only contain numbers.", comment: "Error message displayed when a user enters non-numeric characters into the two-factor authentication verification code input field during login. This validation message appears immediately as the user types invalid characters to guide them toward entering only numbers."))
         default:
             if let pasteString = UIPasteboard.general.string, pasteString == replacementString {
                 displayError(message: NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length"))

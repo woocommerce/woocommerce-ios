@@ -284,7 +284,7 @@ extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
 private extension IssueRefundViewController {
     enum Localization {
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
-        static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
         static let selectAllTitle = NSLocalizedString("Select All", comment: "Select all button title in the issue refund screen")
         static let retryFetchChargeNoticeTitle = NSLocalizedString(
             "Failed to fetch your charge details. Please try again.",

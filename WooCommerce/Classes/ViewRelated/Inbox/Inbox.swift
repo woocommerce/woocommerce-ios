@@ -102,15 +102,15 @@ private extension Inbox {
     enum Localization {
         static let title = NSLocalizedString("Inbox", comment: "Title for the screen that shows inbox notes.")
         static let emptyStateTitle = NSLocalizedString("Congrats, you’ve read everything!",
-                                                         comment: "Title displayed if there are no inbox notes in the inbox screen.")
+                                                         comment: "This text appears as an empty state title in the Inbox screen when there are no inbox notes/messages to display, congratulating the user for having read all available content.")
         static let emptyStateMessage = NSLocalizedString("Come back soon for more tips and insights on growing your store.",
-                                                         comment: "Message displayed if there are no inbox notes to display in the inbox screen.")
+                                                         comment: "This message appears in the Inbox screen when there are no inbox notes to display, shown below the empty state title 'Congrats, you've read everything!' to encourage users to return later for new content.")
         static let dismissAllNotes = NSLocalizedString("Dismiss All",
                                                               comment: "Dismiss All button in Inbox Notes for dismissing all the notes.")
         static let dismissAllNotesAlertTitle = NSLocalizedString("Dismiss all messages",
                                                          comment: "Title of the alert for dismissing all the inbox notes.")
         static let dismissAllNotesAlertMessage = NSLocalizedString("Are you sure? Inbox messages will be dismissed forever.",
-                                                           comment: "Message displayed in the alert for dismissing all the inbox notes.")
+                                                           comment: "This text appears as the message body in a confirmation alert dialog that shows when the user taps 'Dismiss All' in the Inbox screen, asking them to confirm they want to permanently remove all inbox messages.")
         static let cancel = NSLocalizedString(
             "inbox.alert.cancel",
             value: "Cancel",

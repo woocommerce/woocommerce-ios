@@ -317,7 +317,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // Then
-        let selectedItemsTitle = String(format: NSLocalizedString("%d items selected", comment: ""), 0)
+        let selectedItemsTitle = String(format: NSLocalizedString("%d items selected", comment: "This text appears as a label in the refund screen showing how many order items are currently selected for refund when multiple items (2 or more) are chosen. It's used as part of the refund flow where users can select specific items from an order to process a partial refund."), 0)
         XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
     }
 
@@ -336,7 +336,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 2)
 
         // Then
-        let selectedItemsTitle = NSLocalizedString("1 item selected", comment: "")
+        let selectedItemsTitle = NSLocalizedString("1 item selected", comment: "This label appears in the Issue Refund screen to indicate exactly one item has been selected for refund, working together with a plural version for multiple items.")
         XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
     }
 
@@ -355,7 +355,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         viewModel.selectAllOrderItems()
 
         // Then
-        let selectedItemsTitle = String(format: NSLocalizedString("%d items selected", comment: ""), 6)
+        let selectedItemsTitle = String(format: NSLocalizedString("%d items selected", comment: "This text appears as a label in the refund screen showing how many order items are currently selected for refund when multiple items (2 or more) are chosen. It's used as part of the refund flow where users can select specific items from an order to process a partial refund."), 6)
         XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
     }
 

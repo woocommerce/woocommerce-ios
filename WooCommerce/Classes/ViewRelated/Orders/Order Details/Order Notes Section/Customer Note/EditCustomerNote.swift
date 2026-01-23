@@ -100,5 +100,5 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
 private enum Localization {
     static let title = NSLocalizedString("Customer Provided Note", comment: "Title for the edit customer provided note screen")
     static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
-    static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
+    static let cancel = NSLocalizedString("Cancel", comment: "Button text used to dismiss action sheets, web views, and modal screens in authentication flows, including the store picker screen, Jetpack setup, and site credential login screens.")
 }

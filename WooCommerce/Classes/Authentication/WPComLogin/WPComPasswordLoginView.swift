@@ -149,7 +149,7 @@ private extension WPComPasswordLoginView {
         )
         static let primaryAction = NSLocalizedString(
             "Continue",
-            comment: "Button to submit password on the WPCom password login screen of the Jetpack setup flow."
+            comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content."
         )
         static let secondaryAction = NSLocalizedString(
             "wpcomPasswordLoginView.secondaryAction",

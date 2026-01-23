@@ -171,10 +171,10 @@ private extension AnalyticsBundlesReportCardViewModel {
     enum Localization {
         static let reportTitle = NSLocalizedString("analyticsHub.bundlesCard.reportTitle",
                                                    value: "Product Bundles Report",
-                                                   comment: "Title for the product bundles analytics report linked in the Analytics Hub")
-        static let title = NSLocalizedString("Bundles", comment: "Title for the product bundles card on the analytics hub screen.").localizedUppercase
+                                                   comment: "This text appears as the title of a detailed analytics report screen that users navigate to from the Product Bundles card in the Analytics Hub dashboard. It serves as the main heading for a comprehensive report showing product bundle sales data and performance metrics.")
+        static let title = NSLocalizedString("Bundles", comment: "This text appears as a card title in the Analytics Hub screen of a WooCommerce mobile app, specifically for the product bundles analytics section. It's displayed in uppercase as a header for analytics data showing bundle performance metrics.").localizedUppercase
         static let bundlesSold = NSLocalizedString("Bundles Sold",
-                                                   comment: "Title for the bundles sold column on the product bundles card on the analytics hub screen.")
+                                                   comment: "This text appears as a column header in the product bundles analytics card on the Analytics Hub screen, displaying data about the number of product bundles that were sold.")
         static let noBundles = NSLocalizedString("Unable to load product bundle analytics",
                                                  comment: "Text displayed when there is an error loading product bundles stats data.")
         static let noBundlesSold = NSLocalizedString("Unable to load product bundles sold analytics",

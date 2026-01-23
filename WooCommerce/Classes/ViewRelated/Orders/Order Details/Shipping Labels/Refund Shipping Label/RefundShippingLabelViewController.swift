@@ -163,10 +163,10 @@ private extension RefundShippingLabelViewController {
         static let purchaseDateTitle = NSLocalizedString("Purchase Date",
                                                          comment: "Title of shipping label purchase date in Refund Shipping Label screen")
         static let refundableAmountTitle = NSLocalizedString("Amount Eligible For Refund",
-                                                             comment: "Title of shipping label eligible refund amount in Refund Shipping Label screen")
+                                                             comment: "A label title displayed on the refund shipping label screen that identifies the refundable amount field. It appears in a table view cell to describe the monetary value that can be refunded for an unused shipping label.")
         static let refundSuccessNoticeFormat =
             NSLocalizedString("%1$@ refund requested (%2$@)",
-                              comment: "Notice format when a shipping label refund request is successful. " +
+                              comment: "This text appears as a success notification message when a user successfully requests a refund for a shipping label. It displays the shipping service name (like 'USPS Priority Mail') and the refund amount (like '$7.50') to confirm the refund request was processed." +
                                 "The first variable shows the shipping label service name (e.g. USPS Priority Mail). " +
                                 "The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50).")
         static let refundErrorNotice = NSLocalizedString("Something went wrong with the refund. Please try again.",

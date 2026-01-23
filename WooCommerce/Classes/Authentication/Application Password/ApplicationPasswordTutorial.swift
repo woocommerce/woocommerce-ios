@@ -139,8 +139,8 @@ private extension ApplicationPasswordTutorial {
                                                 """, comment: "Tutorial steps on the application password tutorial screen")
         static let contactSupport = NSLocalizedString("If you run into any issues, please contact our support team.",
                                                       comment: "Text to contact support in the application password tutorial screen")
-        static let continueTitle = NSLocalizedString("Continue", comment: "Continue button in the application password tutorial screen")
-        static let contactSupportTitle = NSLocalizedString("Contact Support", comment: "Contact Support button in the application password tutorial screen")
+        static let continueTitle = NSLocalizedString("Continue", comment: "A button label that appears on multiple authentication and onboarding screens, allowing users to proceed to the next step after reviewing tutorial information, selecting a store, or viewing what's new content.")
+        static let contactSupportTitle = NSLocalizedString("Contact Support", comment: "Button label that appears on authentication-related error screens to allow users to contact customer support when they encounter login issues, application password problems, or site connection failures.")
     }
 
     enum Layout {

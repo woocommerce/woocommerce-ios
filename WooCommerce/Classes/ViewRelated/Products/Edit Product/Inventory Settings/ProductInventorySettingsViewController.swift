@@ -361,7 +361,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureBackordersSetting(cell: TitleAndValueTableViewCell) {
-        let title = NSLocalizedString("Backorders", comment: "Title of the cell in Product Inventory Settings > Backorders")
+        let title = NSLocalizedString("Backorders", comment: "This text appears as a cell title in the Product Inventory Settings screen and as the navigation bar title when users select backorder settings for a product. It allows merchants to configure whether customers can order items that are currently out of stock.")
         cell.updateUI(title: title, value: viewModel.backordersSetting?.description)
         cell.accessoryType = .disclosureIndicator
     }

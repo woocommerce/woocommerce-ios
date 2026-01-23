@@ -7,7 +7,7 @@ final class ProductBackordersSettingListSelectorCommand: ListSelectorCommand {
     typealias Model = ProductBackordersSetting
     typealias Cell = BasicTableViewCell
 
-    let navigationBarTitle: String? = NSLocalizedString("Backorders", comment: "Product backorders setting list selector navigation title")
+    let navigationBarTitle: String? = NSLocalizedString("Backorders", comment: "This text appears as a cell title in the Product Inventory Settings screen and as the navigation bar title when users select backorder settings for a product. It allows merchants to configure whether customers can order items that are currently out of stock.")
 
     let data: [ProductBackordersSetting] = [
         .notAllowed,

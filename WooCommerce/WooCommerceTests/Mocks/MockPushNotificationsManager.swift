@@ -43,6 +43,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
+    let siteIDsRegisteredForWooPNs: [Int64]
 
     var deviceID: String? {
         mockedDeviceID
@@ -58,8 +59,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var resetBadgeCountKinds: [Note.Kind] = []
     var onRequestLocalNotificationCalled: (() -> Void)?
 
-    init(mockedDeviceID: String? = nil) {
+    init(mockedDeviceID: String? = nil, siteIDsRegisteredForWooPNs: [Int64] = []) {
         self.mockedDeviceID = mockedDeviceID
+        self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
     }
 
     func resetBadgeCount(type: Note.Kind) {

@@ -118,7 +118,7 @@ final class PushNotificationsManager: PushNotesManager {
 
     /// Site IDs registered to Woo PN system, separated by commas
     ///
-    private var siteIDsRegisteredForWooPNs: [Int64] {
+    var siteIDsRegisteredForWooPNs: [Int64] {
         get {
             let ids: String? = configuration.defaults.object(forKey: .siteIDsRegisteredForWooPushNotifications)
             return ids?.components(separatedBy: ",")

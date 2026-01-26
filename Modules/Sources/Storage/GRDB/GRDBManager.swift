@@ -63,6 +63,10 @@ private extension GRDBManager {
             try V001InitialSchema.migrate(db)
         }
 
+        migrator.registerMigration("V002FTSSearch") { db in
+            try V002FTSSearch.migrate(db)
+        }
+
         try migrator.migrate(databaseConnection)
     }
 }

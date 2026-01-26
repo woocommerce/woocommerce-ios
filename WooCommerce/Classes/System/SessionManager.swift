@@ -249,6 +249,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
         defaults[.ciabBookingsTabAvailable] = nil
         defaults[.siteIDsRegisteredForWooPushNotifications] = nil
+        defaults[.hideWPComConnectionOnDashboard] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }

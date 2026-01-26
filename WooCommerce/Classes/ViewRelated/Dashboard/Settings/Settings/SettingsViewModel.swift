@@ -305,8 +305,8 @@ private extension SettingsViewModel {
                 guard let siteID = stores.sessionManager.defaultSite?.siteID else {
                     return false
                 }
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) &&
-                defaults.siteIDsRegisteredForWooPushNotifications.contains(siteID)
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                defaults.siteIDsRegisteredForWooPushNotifications?.contains(siteID) == true
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]

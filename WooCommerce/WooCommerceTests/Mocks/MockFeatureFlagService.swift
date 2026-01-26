@@ -25,7 +25,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
-    var selfDrivenPushToken: Bool
+    var selfDrivenPushTokenWPCom: Bool
+    var selfDrivenPushTokenAppPasswords: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -48,7 +49,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          allowMerchantAIAPIKey: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
          isCIABBookingsEnabled: Bool = false,
-         selfDrivenPushToken: Bool = false) {
+         selfDrivenPushTokenWPCom: Bool = false,
+         selfDrivenPushTokenAppPasswords: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -70,7 +72,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
-        self.selfDrivenPushToken = selfDrivenPushToken
+        self.selfDrivenPushTokenWPCom = selfDrivenPushTokenWPCom
+        self.selfDrivenPushTokenAppPasswords = selfDrivenPushTokenAppPasswords
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -123,8 +126,10 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return isCIABBookingsEnabled
-        case .selfDrivenPushToken:
-            return selfDrivenPushToken
+        case .selfDrivenPushTokenWPCom:
+            return selfDrivenPushTokenWPCom
+        case .selfDrivenPushTokenAppPasswords:
+            return selfDrivenPushTokenAppPasswords
         default:
             return false
         }

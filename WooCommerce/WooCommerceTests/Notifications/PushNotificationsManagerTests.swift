@@ -64,8 +64,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                userNotificationsCenter: self.userNotificationCenter)
 
             return PushNotificationsManager(configuration: configuration,
-                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory,
-                                            shouldRegisterSelfDrivenPushNotification: false)
+                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory)
         }()
     }
 
@@ -669,6 +668,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockSelfDrivenRegistrationActions(token: 123)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
 
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
@@ -678,7 +678,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
             return PushNotificationsManager(configuration: configuration,
                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory,
-                                           shouldRegisterSelfDrivenPushNotification: true)
+                                            featureFlagService: featureFlagService)
         }()
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
@@ -723,6 +723,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockSelfDrivenRegistrationActions(token: 123)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
 
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
@@ -732,7 +733,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
             return PushNotificationsManager(configuration: configuration,
                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory,
-                                           shouldRegisterSelfDrivenPushNotification: true)
+                                           featureFlagService: featureFlagService)
         }()
 
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {

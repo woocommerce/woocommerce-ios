@@ -241,6 +241,12 @@ extension UIImage {
         return UIImage(named: "icon-connection")!
     }
 
+    /// Connect WPCom Icon
+    ///
+    static var connectWPComImage: UIImage {
+        return UIImage(named: "connect-wpcom")!
+    }
+
     /// Create order image
     ///
     static var createOrderImage: UIImage {
@@ -1369,6 +1375,10 @@ extension UIImage {
 
     static var cardReaderLocationImage: UIImage {
         SharedImageAsset.location.uiImage!
+    }
+
+    static var posOnPhonesPromotionBannerCorner: UIImage {
+        UIImage(named: "pos-on-phones-promotion-banner-corner")!
     }
 }
 

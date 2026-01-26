@@ -116,7 +116,7 @@ final class PushNotificationsManager: PushNotesManager {
 
     /// Site IDs registered to Woo PN system, separated by commas
     ///
-    private var siteIDsRegisteredForWooPNs: [Int64] {
+    var siteIDsRegisteredForWooPNs: [Int64] {
         get {
             let ids: String? = configuration.defaults.object(forKey: .siteIDsRegisteredForWooPushNotifications)
             return ids?.components(separatedBy: ",")
@@ -150,11 +150,17 @@ final class PushNotificationsManager: PushNotesManager {
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics,
-         shouldRegisterSelfDrivenPushNotification: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
-        self.selfDrivenPushNotificationEnabled = shouldRegisterSelfDrivenPushNotification
+        self.selfDrivenPushNotificationEnabled = {
+            if configuration.storesManager.isAuthenticatedWithoutWPCom {
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
+            } else {
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom)
+            }
+        }()
     }
 }
 
@@ -199,6 +205,9 @@ extension PushNotificationsManager {
     /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return
+        }
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
         let group = DispatchGroup()
@@ -308,6 +317,9 @@ extension PushNotificationsManager {
                     if let siteID, siteIDsRegisteredForWooPNs.contains(siteID) {
                         let updatedList = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
                         siteIDsRegisteredForWooPNs = updatedList
+                    } else if configuration.defaults.siteIDsRegisteredForWooPushNotifications == nil {
+                        // workaround to give the default an initial value.
+                        siteIDsRegisteredForWooPNs = []
                     }
                     // Falls back to dotcom PNs if authenticated with WPCom
                     if !stores.isAuthenticatedWithoutWPCom {
@@ -863,9 +875,9 @@ extension UserDefaults {
         string(forKey: Key.deviceToken.rawValue)
     }
 
-    @objc dynamic var siteIDsRegisteredForWooPushNotifications: [Int64] {
+    @objc dynamic var siteIDsRegisteredForWooPushNotifications: [Int64]? {
         string(forKey: Key.siteIDsRegisteredForWooPushNotifications.rawValue)?
             .components(separatedBy: ",")
-            .compactMap { Int64($0) } ?? []
+            .compactMap { Int64($0) }
     }
 }

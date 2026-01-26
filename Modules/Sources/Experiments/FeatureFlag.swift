@@ -217,11 +217,19 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
-    /// Enables self driven push token registration
+    /// Enables self driven push token registration for users authenticated with WPCom
     ///
-    case selfDrivenPushToken
+    case selfDrivenPushTokenWPCom
+
+    /// Enables self driven push token registration for users authenticated with app passwords
+    ///
+    case selfDrivenPushTokenAppPasswords
 
     /// Enables POS-only products filtering
     ///
     case pointOfSaleOnlyProducts
+
+    /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
+    ///
+    case clientSideDashboardBanner
 }

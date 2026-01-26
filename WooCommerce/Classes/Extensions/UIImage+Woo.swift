@@ -41,7 +41,7 @@ extension UIImage {
     /// App icon (iPhone size)
     ///
     static var appIconDefault: UIImage {
-        return UIImage(named: "AppIcon60x60")!
+        return UIImage(named: "AppIcon-Default60x60")!
     }
 
     /// Blaze icon

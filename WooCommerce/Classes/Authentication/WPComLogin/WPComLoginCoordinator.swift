@@ -134,7 +134,7 @@ private extension WPComLoginCoordinator {
                                                         authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: title,
-                                                            isJetpackSetup: isJetpackSetup,
+                                                            flow: flow,
                                                             viewModel: viewModel)
         navigationController.show(viewController, sender: self)
     }

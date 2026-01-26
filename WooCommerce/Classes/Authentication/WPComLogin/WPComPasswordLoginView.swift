@@ -66,6 +66,7 @@ struct WPComPasswordLoginView: View {
                 // Title
                 Text(title)
                     .largeTitleStyle()
+                    .bold()
 
                 // Avatar and email
                 WPComLoginGravatarView(email: viewModel.email, gravatarURL: viewModel.avatarURL)
@@ -138,7 +139,8 @@ private extension WPComPasswordLoginView {
             comment: "Label for the password field on the WPCom password login screen of the Jetpack setup flow."
         )
         static let passwordPlaceholder = NSLocalizedString(
-            "Enter password",
+            "wpcomPasswordLoginView.passwordPlaceholder",
+            value: "Enter the password for your account",
             comment: "Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow."
         )
         static let resetPassword = NSLocalizedString(

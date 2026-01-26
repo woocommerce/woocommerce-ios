@@ -443,7 +443,7 @@ private extension JetpackSetupCoordinator {
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
-                                                            isJetpackSetup: true,
+                                                            flow: loginFlow,
                                                             viewModel: viewModel)
         loginNavigationController.pushViewController(viewController, animated: true)
     }

@@ -149,6 +149,8 @@ private extension SettingsViewController {
             configureThemes(cell: cell)
         case let cell as BasicTableViewCell where row == .storeName:
             configureStoreName(cell: cell)
+        case let cell as BasicTableViewCell where row == .enablePushNotifications:
+            configureEnablePushNotifications(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -228,6 +230,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.storeName
+    }
+
+    func configureEnablePushNotifications(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.enablePushNotifications
     }
 
     func configureNotificationSettings(cell: BasicTableViewCell) {
@@ -420,6 +428,10 @@ private extension SettingsViewController {
         })
         let controller = StoreNameSetupHostingController(viewModel: viewModel)
         present(controller, animated: true)
+    }
+
+    func enablePushNotificationsWasPressed() {
+        // TODO: Launch native Woo push notifications enablement flow once UI is available.
     }
 
     func showThemeSettings() {
@@ -653,6 +665,8 @@ extension SettingsViewController: UITableViewDelegate {
             installJetpackWasPressed()
         case .storeName:
             storeNameWasPressed()
+        case .enablePushNotifications:
+            enablePushNotificationsWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -736,6 +750,7 @@ extension SettingsViewController {
         case storeName
         case themes
         case connectivity
+        case enablePushNotifications
 
         // Help & Feedback
         case support
@@ -788,6 +803,8 @@ extension SettingsViewController {
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
             case .privacy, .notifications:
+                return BasicTableViewCell.self
+            case .enablePushNotifications:
                 return BasicTableViewCell.self
             case .betaFeatures:
                 return BasicTableViewCell.self
@@ -872,6 +889,12 @@ private extension SettingsViewController {
         static let storeName = NSLocalizedString(
             "Store Name",
             comment: "Navigates to the Store name setup screen"
+        )
+
+        static let enablePushNotifications = NSLocalizedString(
+            "settings.enablePushNotifications",
+            value: "Enable Push Notifications",
+            comment: "Settings > Store Settings row that starts the flow to enable push notifications."
         )
 
         static let privacySettings = NSLocalizedString(

@@ -156,13 +156,10 @@ final class PushNotificationsManager: PushNotesManager {
         self.configuration = configuration
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
-        self.selfDrivenPushNotificationEnabled = {
-            if configuration.storesManager.isAuthenticatedWithoutWPCom {
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
-            } else {
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom)
-            }
-        }()
+        self.selfDrivenPushNotificationEnabled = SelfDrivenPushEligibility(
+            stores: configuration.storesManager,
+            featureFlagService: featureFlagService
+        ).isEnabled()
     }
 }
 

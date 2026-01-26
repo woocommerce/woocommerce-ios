@@ -106,3 +106,4 @@ Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 
 # Periphery install
 vendor/Periphery/
+.worktrees/

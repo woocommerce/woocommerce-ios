@@ -2500,6 +2500,7 @@
 		DE972D422E3C7238008C2EAE /* Product+ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE972D412E3C7231008C2EAE /* Product+ListItem.swift */; };
 		DE9734B42E3CA163008C2EAE /* String+ProductStock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9734B32E3CA155008C2EAE /* String+ProductStock.swift */; };
 		DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */; };
+		DE9AA88F2F27625E00125F08 /* ConnectWPComHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9AA88E2F27625E00125F08 /* ConnectWPComHeaderView.swift */; };
 		DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */; };
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
@@ -5453,6 +5454,7 @@
 		DE972D412E3C7231008C2EAE /* Product+ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ListItem.swift"; sourceTree = "<group>"; };
 		DE9734B32E3CA155008C2EAE /* String+ProductStock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ProductStock.swift"; sourceTree = "<group>"; };
 		DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequirementsCheckerTests.swift; sourceTree = "<group>"; };
+		DE9AA88E2F27625E00125F08 /* ConnectWPComHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectWPComHeaderView.swift; sourceTree = "<group>"; };
 		DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedView.swift; sourceTree = "<group>"; };
 		DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsGranularityV4+UI.swift"; sourceTree = "<group>"; };
 		DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModelTests.swift; sourceTree = "<group>"; };
@@ -8644,6 +8646,7 @@
 				03076D35290C162E008EE839 /* WebViewSheet.swift */,
 				03076D37290C223D008EE839 /* WooNavigationSheet.swift */,
 				DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */,
+				DE9AA88E2F27625E00125F08 /* ConnectWPComHeaderView.swift */,
 				26E7EE6F29300F6200793045 /* DeltaTag.swift */,
 				AEE9A87F293A3E5500227C92 /* RefreshablePlainList.swift */,
 				26B71DB5293FE490004D8052 /* RangedDatePicker.swift */,
@@ -15640,6 +15643,7 @@
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */,
 				D8EE9698264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift in Sources */,
+				DE9AA88F2F27625E00125F08 /* ConnectWPComHeaderView.swift in Sources */,
 				26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
 				269098B827D68CCD001FEB07 /* FeesInputTransformer.swift in Sources */,

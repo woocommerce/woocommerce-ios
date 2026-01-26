@@ -13,6 +13,13 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var allProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+    var catalogCreationResult: Result<POSCatalogCreationResponse, Error> = .success(.init(status: .complete,
+                                                                                          downloadURL: "https://example.com/catalog.json",
+                                                                                          scheduledAt: nil,
+                                                                                          completedAt: nil,
+                                                                                          progress: nil,
+                                                                                          processed: nil,
+                                                                                          total: nil))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
 
     let loadProductsCallCount = Counter()
@@ -206,6 +213,17 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         lastCatalogRequestForceGeneration = forceGeneration
         lastCatalogDownloadAllowCellular = allowCellular
         switch catalogRequestResult {
+        case .success(let response):
+            return response
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func requestCatalogCreation(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogCreationResponse {
+        lastCatalogRequestForceGeneration = forceGeneration
+        lastCatalogDownloadAllowCellular = allowCellular
+        switch catalogCreationResult {
         case .success(let response):
             return response
         case .failure(let error):

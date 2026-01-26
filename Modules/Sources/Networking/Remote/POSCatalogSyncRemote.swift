@@ -40,6 +40,16 @@ public protocol POSCatalogSyncRemoteProtocol {
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse
 
+    /// Requests catalog creation via the POS V1 API (i2).
+    /// Uses `wc/pos/v1/catalog/create` endpoint.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site ID to create catalog for.
+    ///   - forceGeneration: Whether to force regeneration of the catalog.
+    ///   - allowCellular: Should cellular data be used if required.
+    /// - Returns: Catalog creation response with status and optional download URL.
+    func requestCatalogCreation(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogCreationResponse
+
     /// Downloads the generated catalog at the specified download URL.
     /// - Parameters:
     ///   - siteID: Site ID to download catalog for.
@@ -219,6 +229,26 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             allowsCellularAccess: allowCellular
         )
         let mapper = SingleItemMapper<POSCatalogRequestResponse>(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Requests catalog creation via the POS V1 API (i2).
+    /// Uses `wc/pos/v1/catalog/create` endpoint available from WC 10.5+.
+    public func requestCatalogCreation(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogCreationResponse {
+        let path = "catalog/create"
+        let parameters: [String: Any] = [
+            ParameterKey.forceGenerate: forceGeneration
+        ]
+        let request = JetpackRequest(
+            wooApiVersion: .wcPosV1,
+            method: .post,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true,
+            allowsCellularAccess: allowCellular
+        )
+        let mapper = SingleItemMapper<POSCatalogCreationResponse>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -476,9 +506,38 @@ public struct POSCatalogRequestResponse: Decodable {
     }
 }
 
-/// Catalog generation status.
+/// Catalog generation status (i1).
 public enum POSCatalogStatus: String, Decodable {
     case pending
+    case processing
+    case complete
+    case failed
+}
+
+/// Response from catalog creation request (i2, WC 10.5+).
+public struct POSCatalogCreationResponse: Decodable {
+    public let status: POSCatalogCreationStatus
+    public let downloadURL: String?
+    public let scheduledAt: Date?
+    public let completedAt: Date?
+    public let progress: Int?
+    public let processed: Int?
+    public let total: Int?
+
+    private enum CodingKeys: String, CodingKey {
+        case status = "state"
+        case downloadURL = "url"
+        case scheduledAt = "scheduled_at"
+        case completedAt = "completed_at"
+        case progress
+        case processed
+        case total
+    }
+}
+
+/// Catalog creation status (i2, WC 10.5+).
+public enum POSCatalogCreationStatus: String, Decodable {
+    case scheduled
     case processing
     case complete
     case failed

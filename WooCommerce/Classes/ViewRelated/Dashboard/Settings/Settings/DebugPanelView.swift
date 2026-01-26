@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct DebugPanelView: View {
-    @State private var showUnlockPushNotificationsModal: Bool = false
 
     var body: some View {
         List {
@@ -21,8 +20,9 @@ struct DebugPanelView: View {
                 Text("Override Feature Flags")
             }
 
-            DebugSheetPresenter("Force show \"Unlock push notifications WP.com modal\"") {
-                WPComPushNotificationsBenefitsView()
+            DebugSheetPresenter("Force show \"Unlock push notifications WP.com modal\"") { dismiss in
+                let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: dismiss)
+                WPComPushNotificationsBenefitsView(viewModel: viewModel)
             }
         }
         .contentMargins(20)
@@ -31,12 +31,12 @@ struct DebugPanelView: View {
 }
 
 fileprivate struct DebugSheetPresenter<Content: View>: View {
-    private let content: () -> Content
+    private let content: (@escaping () -> Void) -> Content
     private let label: String
     @State private var isPresented = false
 
     init(_ label: String,
-        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder content: @escaping (@escaping () -> Void) -> Content
     ) {
         self.label = label
         self.content = content
@@ -49,7 +49,7 @@ fileprivate struct DebugSheetPresenter<Content: View>: View {
             Text(label)
         }
         .sheet(isPresented: $isPresented) {
-            content()
+            content { isPresented = false }
         }
     }
 }

@@ -1,18 +1,37 @@
 import SwiftUI
 
 struct WPComPushNotificationsBenefitsView: View {
+    private let viewModel: WPComPushNotificationsBenefitsViewModel
+
+    init(viewModel: WPComPushNotificationsBenefitsViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            Spacer()
+        NavigationStack {
             VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                stackedImages
-                title
-                detail
+                Spacer()
+                VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                    stackedImages
+                    title
+                    detail
+                }
+                Spacer()
+                footer
             }
-            Spacer()
-            footer
+            .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        viewModel.notNowTapped()
+                    }
+                }
+            }
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
-        .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 
     private var stackedImages: some View {
@@ -34,21 +53,23 @@ struct WPComPushNotificationsBenefitsView: View {
                 .font(.body)
             Text(Localization.subdescription)
                 .font(.body)
-            Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
-                .font(.body)
-                .foregroundColor(Color(UIColor.accent))
+            Button(Localization.whatIsWPCom) {
+                viewModel.whatIsWPComTapped()
+            }
+            .font(.body)
+            .foregroundColor(Color(UIColor.accent))
         }
     }
 
     private var footer: some View {
         VStack {
             Button(Localization.continueButton) {
-
+                viewModel.continueTapped()
             }
             .buttonStyle(PrimaryButtonStyle())
 
             Button(Localization.notNowButton) {
-
+                viewModel.notNowTapped()
             }
             .buttonStyle(SecondaryButtonStyle())
         }
@@ -96,9 +117,19 @@ fileprivate extension WPComPushNotificationsBenefitsView {
             value: "Not now",
             comment: "Not now button title in the WordPress.com Push Notifications Benefits View"
         )
+
+        static let cancelButton = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.cancelButton",
+            value: "Cancel",
+            comment: "Cancel button title in the WordPress.com Push Notifications Benefits View toolbar"
+        )
     }
 }
 
 #Preview {
-    WPComPushNotificationsBenefitsView()
+    WPComPushNotificationsBenefitsView(
+        viewModel: WPComPushNotificationsBenefitsViewModel(
+            onDismiss: {}
+        )
+    )
 }

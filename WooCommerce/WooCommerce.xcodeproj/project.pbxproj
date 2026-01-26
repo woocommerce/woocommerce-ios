@@ -1356,6 +1356,8 @@
 		643492C42F1A45B30080AEC1 /* OverrideFeatureFlagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */; };
 		644EA1542F20CC5C00511C2A /* DebugPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644EA1532F20CC4F00511C2A /* DebugPanelView.swift */; };
 		644EA9382F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */; };
+		6460A3672F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6460A3662F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift */; };
+		6460A36B2F27A132005D3A3E /* ConnectWPComCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6460A36A2F27A132005D3A3E /* ConnectWPComCard.swift */; };
 		646FEDB82EE827DF00352BFF /* ApplicationLogProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646FEDB72EE827DF00352BFF /* ApplicationLogProvider.swift */; };
 		647C05FB2ED5D9E800E5FF3F /* NotesContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */; };
 		647C05FD2ED5E1C000E5FF3F /* BookingNotesRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */; };
@@ -4275,6 +4277,8 @@
 		643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideFeatureFlagsView.swift; sourceTree = "<group>"; };
 		644EA1532F20CC4F00511C2A /* DebugPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPanelView.swift; sourceTree = "<group>"; };
 		644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPushNotificationsBenefitsView.swift; sourceTree = "<group>"; };
+		6460A3662F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPushNotificationsBenefitsViewModel.swift; sourceTree = "<group>"; };
+		6460A36A2F27A132005D3A3E /* ConnectWPComCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectWPComCard.swift; sourceTree = "<group>"; };
 		646FEDB72EE827DF00352BFF /* ApplicationLogProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogProvider.swift; sourceTree = "<group>"; };
 		647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesContent.swift; sourceTree = "<group>"; };
 		647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingNotesRowView.swift; sourceTree = "<group>"; };
@@ -8932,6 +8936,16 @@
 			path = TitleAndEditableValueTableViewCell;
 			sourceTree = "<group>";
 		};
+		6460A3692F279B1A005D3A3E /* WPComPushNotificationsBenefits */ = {
+			isa = PBXGroup;
+			children = (
+				6460A36A2F27A132005D3A3E /* ConnectWPComCard.swift */,
+				644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */,
+				6460A3662F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift */,
+			);
+			path = WPComPushNotificationsBenefits;
+			sourceTree = "<group>";
+		};
 		682210EB2909664800814E14 /* Customer */ = {
 			isa = PBXGroup;
 			children = (
@@ -11477,7 +11491,6 @@
 		CE85FD5120F677460080B73E /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */,
 				DEB387A12C3647300025256E /* GoogleAds */,
 				EE8B420A2BF9A1E40077C4E7 /* Orders */,
 				DE20045E2BF7090700660A72 /* ProductStock */,
@@ -11501,6 +11514,7 @@
 				DE74A4502BCF86F60009C415 /* TopPerformers */,
 				DEA6BCAD2BC6A9A50017D671 /* StoreStats */,
 				DEC75CC02BC4E4E600763801 /* DashboardCustomization */,
+				6460A3692F279B1A005D3A3E /* WPComPushNotificationsBenefits */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -14539,6 +14553,7 @@
 				20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */,
+				6460A3672F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift in Sources */,
 				68D1BEDD2900E4180074A29E /* CustomerSearchUICommand.swift in Sources */,
 				316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */,
 				FE28F6F4268477C1004465C7 /* RoleEligibilityUseCase.swift in Sources */,
@@ -14724,6 +14739,7 @@
 				45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
+				6460A36B2F27A132005D3A3E /* ConnectWPComCard.swift in Sources */,
 				AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */,
 				DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */,
 				CE4FE7DA2B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift in Sources */,

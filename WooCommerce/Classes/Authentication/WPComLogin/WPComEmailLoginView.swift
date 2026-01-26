@@ -67,6 +67,7 @@ struct WPComEmailLoginView: View {
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
                     Text(viewModel.titleString)
                         .largeTitleStyle()
+                        .bold()
                     Text(viewModel.subtitleString)
                         .bodyStyle()
                 }
@@ -150,7 +151,8 @@ private extension WPComEmailLoginView {
             comment: "Label for the username field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let enterEmail = NSLocalizedString(
-            "Enter email or username",
+            "wpComEmailLoginView.enterEmail",
+            value: "Enter email address or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let enterUsername = NSLocalizedString(

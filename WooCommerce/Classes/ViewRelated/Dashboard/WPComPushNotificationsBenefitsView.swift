@@ -2,9 +2,9 @@ import SwiftUI
 
 struct WPComPushNotificationsBenefitsView: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
+        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
             Spacer()
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
                 stackedImages
                 title
                 detail
@@ -12,11 +12,14 @@ struct WPComPushNotificationsBenefitsView: View {
             Spacer()
             footer
         }
-        .padding([.leading, .bottom, .trailing], 16)
+        .padding([.leading, .bottom, .trailing], Layout.contentPadding)
     }
 
     private var stackedImages: some View {
-        Text(Localization.stackedImagesPlaceholder)
+        Image(uiImage: .connectWPComImage)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(height: Layout.logoHeight)
     }
 
     private var title: some View {
@@ -26,12 +29,12 @@ struct WPComPushNotificationsBenefitsView: View {
     }
 
     private var detail: some View {
-        VStack(alignment: .leading, spacing: 24) {
+        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
             Text(Localization.description)
                 .font(.body)
             Text(Localization.subdescription)
                 .font(.body)
-            Link(Localization.whatIsWPCom, destination: URL(string: "http://wordpress.com")!)
+            Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
                 .font(.body)
                 .foregroundColor(Color(UIColor.accent))
         }
@@ -53,16 +56,16 @@ struct WPComPushNotificationsBenefitsView: View {
 }
 
 fileprivate extension WPComPushNotificationsBenefitsView {
+    enum Layout {
+        static let logoHeight: CGFloat = 64
+        static let contentSpacing: CGFloat = 24
+        static let contentPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let title = NSLocalizedString("wpcomPushNotificationsBenefitsView.title",
                                              value: "Unlock push notifications with WordPress.com",
                                              comment: "Title of the WordPress.com Push Notifications Benefits View")
-
-        static let stackedImagesPlaceholder = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsView.stackedImagesPlaceholder",
-            value: "stackedImages",
-            comment: "Placeholder text for stacked images in the WordPress.com Push Notifications Benefits View"
-        )
 
         static let description = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.description",

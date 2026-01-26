@@ -14,6 +14,7 @@ struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric private var scale = 1
 
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
@@ -327,6 +328,9 @@ private extension DashboardView {
     var connectWPComCard: some View {
         HStack {
             Image(uiImage: .connectWPComImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Layout.wpcomIconHeight * scale)
             VStack(alignment: .leading) {
                 Text(Localization.ConnectWPComCard.title)
                     .font(.body)
@@ -450,6 +454,7 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
+        static let wpcomIconHeight: CGFloat = 35
 
     }
     enum Localization {

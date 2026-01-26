@@ -3,20 +3,12 @@ import UIKit
 import protocol WooFoundation.Analytics
 
 final class WPComPushNotificationsBenefitsViewModel {
-    // MARK: - Callbacks
     private let onDismiss: () -> Void
 
-    // MARK: - Dependencies
-    private let analytics: Analytics
-
-    // MARK: - Init
-    init(onDismiss: @escaping () -> Void,
-         analytics: Analytics = ServiceLocator.analytics) {
+    init(onDismiss: @escaping () -> Void) {
         self.onDismiss = onDismiss
-        self.analytics = analytics
     }
 
-    // MARK: - Actions
     func onAppear() {
         // TODO: Track modal shown event
     }

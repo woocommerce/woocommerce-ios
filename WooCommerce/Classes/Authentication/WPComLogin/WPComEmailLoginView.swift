@@ -53,6 +53,7 @@ struct WPComEmailLoginView: View {
     @ObservedObject private var viewModel: WPComEmailLoginViewModel
     @FocusState private var isEmailFieldFocused: Bool
     @State private var isPrimaryButtonLoading = false
+    @ScaledMetric private var scale = 1
 
     init(viewModel: WPComEmailLoginViewModel) {
         self.viewModel = viewModel
@@ -61,14 +62,14 @@ struct WPComEmailLoginView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                JetpackInstallHeaderView()
+                headerView
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
                     Text(viewModel.titleString)
                         .largeTitleStyle()
                     Text(viewModel.subtitleString)
-                        .subheadlineStyle()
+                        .bodyStyle()
                 }
 
                 // Email field
@@ -119,10 +120,26 @@ struct WPComEmailLoginView: View {
 }
 
 private extension WPComEmailLoginView {
+    @ViewBuilder
+    var headerView: some View {
+        switch viewModel.flow {
+        case .jetpackSetup:
+            JetpackInstallHeaderView()
+        case .notificationSetup:
+            Image(uiImage: .connectWPComImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: Constants.wpcomIconHeight * scale)
+        }
+    }
+}
+
+private extension WPComEmailLoginView {
     enum Constants {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
+        static let wpcomIconHeight: CGFloat = 48
     }
 
     enum Localization {
@@ -152,15 +169,32 @@ private extension WPComEmailLoginView {
     }
 }
 
+#Preview("WPComEmailLoginView - notification setup") {
+    WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
+                                         flow: .notificationSetup,
+                                         allowAccountCreation: false,
+                                         onPasswordUIRequest: { _ in },
+                                         onMagicLinkRequest: { _ in },
+                                         onMagicLinkSent: { _, _ in },
+                                         onError: { _ in }))
+}
 
-struct WPComEmailLoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
-                                             requiresConnectionOnly: true,
-                                             allowAccountCreation: false,
-                                             onPasswordUIRequest: { _ in },
-                                             onMagicLinkRequest: { _ in },
-                                             onMagicLinkSent: { _, _ in },
-                                             onError: { _ in }))
-    }
+#Preview("WPComEmailLoginView - Jetpack setup connection only") {
+    WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
+                                         flow: .jetpackSetup(requiresConnectionOnly: true),
+                                         allowAccountCreation: false,
+                                         onPasswordUIRequest: { _ in },
+                                         onMagicLinkRequest: { _ in },
+                                         onMagicLinkSent: { _, _ in },
+                                         onError: { _ in }))
+}
+
+#Preview("WPComEmailLoginView - Jetpack setup") {
+    WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
+                                         flow: .jetpackSetup(requiresConnectionOnly: false),
+                                         allowAccountCreation: false,
+                                         onPasswordUIRequest: { _ in },
+                                         onMagicLinkRequest: { _ in },
+                                         onMagicLinkSent: { _, _ in },
+                                         onError: { _ in }))
 }

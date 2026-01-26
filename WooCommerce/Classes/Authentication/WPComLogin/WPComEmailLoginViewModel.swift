@@ -18,8 +18,25 @@ extension WordPressComAccountService: WordPressComAccountServiceProtocol {}
 
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
-    let titleString: String
-    let subtitleString: String
+    var titleString: String {
+        switch flow {
+        case .notificationSetup:
+            Localization.ConnectWPCom.title
+        case .jetpackSetup(let requiresConnectionOnly):
+            requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        }
+    }
+
+    var subtitleString: String {
+        switch flow {
+        case .notificationSetup:
+            Localization.ConnectWPCom.subtitle
+        case .jetpackSetup(let requiresConnectionOnly):
+            requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        }
+    }
+
+    let flow: WPComLoginFlow
 
     @Published var emailOrUsername: String = ""
     @Published var usernameOnly: Bool = false
@@ -37,7 +54,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     private var emailFieldSubscription: AnyCancellable?
 
     init(siteURL: String,
-         requiresConnectionOnly: Bool,
+         flow: WPComLoginFlow,
          allowAccountCreation: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
@@ -53,9 +70,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
         self.onMagicLinkRequest = onMagicLinkRequest
         self.onMagicLinkSent = onMagicLinkSent
         self.onError = onError
-
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
-        self.subtitleString = requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        self.flow = flow
         self.termsAttributedString = {
             let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
             let paragraph = NSMutableParagraphStyle()
@@ -183,6 +198,18 @@ extension WPComEmailLoginViewModel {
             "Log in with your WordPress.com account to connect Jetpack",
             comment: "Subtitle for the WPCom email login screen when Jetpack is not connected yet"
         )
+        enum ConnectWPCom {
+            static let title = NSLocalizedString(
+                "wpcomEmailLoginViewModel.connectWPCom.title",
+                value: "Connect to WordPress.com",
+                comment: "Title for the WPCom email login screen for push notification setup"
+            )
+            static let subtitle = NSLocalizedString(
+                "wpcomEmailLoginViewModel.connectWPCom.subtitle",
+                value: "Log in with your WordPress.com account to connect your store.",
+                comment: "Subtitle for the WPCom email login screen for push notification setup"
+            )
+        }
         static let termsContent = NSLocalizedString(
             "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.",
             comment: "Content of the label at the end of the Wrong Account screen. " +

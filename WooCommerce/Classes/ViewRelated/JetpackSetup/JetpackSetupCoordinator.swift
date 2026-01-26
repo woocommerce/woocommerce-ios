@@ -6,6 +6,11 @@ import class Networking.AlamofireNetwork
 import WordPressAuthenticator
 import WooFoundation
 
+enum WPComLoginFlow {
+    case notificationSetup
+    case jetpackSetup(requiresConnectionOnly: Bool)
+}
+
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
 final class JetpackSetupCoordinator {
@@ -14,6 +19,9 @@ final class JetpackSetupCoordinator {
     private let site: Site
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private var requiresConnectionOnly: Bool
+    private var loginFlow: WPComLoginFlow {
+        .jetpackSetup(requiresConnectionOnly: requiresConnectionOnly)
+    }
     private var jetpackConnectedEmail: String?
     private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
@@ -25,7 +33,7 @@ final class JetpackSetupCoordinator {
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
-              requiresConnectionOnly: requiresConnectionOnly,
+              flow: loginFlow,
               allowAccountCreation: true,
               accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),

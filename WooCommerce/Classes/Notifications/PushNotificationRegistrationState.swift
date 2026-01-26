@@ -38,7 +38,7 @@ final class PushNotificationRegistrationState {
     }
 
     /// Site IDs registered to Woo PN system, separated by commas
-    var siteIDsRegisteredForWooPNs: [Int64] {
+    private(set) var siteIDsRegisteredForWooPNs: [Int64] {
         get {
             let ids: String? = defaults.object(forKey: .siteIDsRegisteredForWooPushNotifications)
             return ids?.components(separatedBy: ",")
@@ -50,6 +50,64 @@ final class PushNotificationRegistrationState {
                 forKey: .siteIDsRegisteredForWooPushNotifications
             )
         }
+    }
+
+    func isSiteRegisteredForWooPNs(_ siteID: Int64) -> Bool {
+        siteIDsRegisteredForWooPNs.contains(siteID)
+    }
+
+    func markSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        guard isSiteRegisteredForWooPNs(siteID) == false else {
+            return
+        }
+        var updatedIDs = siteIDsRegisteredForWooPNs
+        updatedIDs.append(siteID)
+        siteIDsRegisteredForWooPNs = updatedIDs
+    }
+
+    func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        let updatedIDs = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
+        guard updatedIDs.count != siteIDsRegisteredForWooPNs.count else {
+            instantiateRegisteredSiteIDsCollectionIfAbsent()
+            return
+        }
+        siteIDsRegisteredForWooPNs = updatedIDs
+    }
+
+    func setWooPushNotificationTokenID(_ tokenID: Int64) {
+        wooPushNotificationToken = "\(tokenID)"
+    }
+
+    func applyNewDeviceToken(_ newToken: String) {
+        if let existingDeviceToken = deviceToken, existingDeviceToken != newToken {
+            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: existingDeviceToken))] NEW: [\(newToken)]")
+        } else {
+            DDLogInfo("📱 Device Token Received: [\(newToken)]")
+        }
+
+        deviceToken = newToken
+    }
+}
+
+/// Clean-up
+extension PushNotificationRegistrationState {
+    func clearWooRegistration() {
+        wooPushNotificationToken = nil
+        siteIDsRegisteredForWooPNs = []
+    }
+
+    func clearWPComRegistration() {
+        deviceID = nil
+        deviceToken = nil
+    }
+}
+
+private extension PushNotificationRegistrationState {
+    func instantiateRegisteredSiteIDsCollectionIfAbsent() {
+        guard defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications) == false else {
+            return
+        }
+        siteIDsRegisteredForWooPNs = []
     }
 }
 

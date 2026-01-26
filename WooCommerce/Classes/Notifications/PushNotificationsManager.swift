@@ -186,8 +186,7 @@ extension PushNotificationsManager {
                 case .failure(let error):
                     DDLogError("⛔️ Unable to unregister from Woo Push Notifications: \(error)")
                 }
-                self.registrationState.wooPushNotificationToken = nil
-                self.registrationState.siteIDsRegisteredForWooPNs = []
+                self.registrationState.clearWooRegistration()
                 group.leave()
             }
         }
@@ -199,8 +198,7 @@ extension PushNotificationsManager {
             } else {
                 DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
             }
-            self.registrationState.deviceID = nil
-            self.registrationState.deviceToken = nil
+            self.registrationState.clearWPComRegistration()
             group.leave()
         }
 
@@ -248,13 +246,7 @@ extension PushNotificationsManager {
     func registerDeviceToken(with tokenData: Data) {
         let newToken = tokenData.hexString
 
-        if let existingDeviceToken = registrationState.deviceToken, existingDeviceToken != newToken {
-            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: existingDeviceToken))] NEW: [\(newToken)]")
-        } else {
-            DDLogInfo("📱 Device Token Received: [\(newToken)]")
-        }
-
-        registrationState.deviceToken = newToken
+        registrationState.applyNewDeviceToken(newToken)
 
         func registerForWPComPushNotifications() {
             // Register in the Dotcom's Infrastructure
@@ -279,13 +271,8 @@ extension PushNotificationsManager {
                 case .failure(let error):
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
                     analytics.track(.wooPushTokenRegisterError, withError: error)
-                    // Removes site from registered list if exists.
-                    if let siteID, registrationState.siteIDsRegisteredForWooPNs.contains(siteID) {
-                        let updatedList = registrationState.siteIDsRegisteredForWooPNs.filter { $0 != siteID }
-                        registrationState.siteIDsRegisteredForWooPNs = updatedList
-                    } else if configuration.defaults.siteIDsRegisteredForWooPushNotifications == nil {
-                        // workaround to give the default an initial value.
-                        registrationState.siteIDsRegisteredForWooPNs = []
+                    if let siteID {
+                        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
                     }
                     // Falls back to dotcom PNs if authenticated with WPCom
                     if !stores.isAuthenticatedWithoutWPCom {
@@ -339,7 +326,7 @@ extension PushNotificationsManager {
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
-            if registrationState.siteIDsRegisteredForWooPNs.contains(foregroundNotification.siteID),
+            if registrationState.isSiteRegisteredForWooPNs(foregroundNotification.siteID),
                foregroundNotification.noteID != nil {
                 // Ignore WPCom PNs if site is registered for Woo PNs
                 return []
@@ -659,16 +646,12 @@ private extension PushNotificationsManager {
     }
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        registrationState.wooPushNotificationToken = "\(tokenID)"
+        registrationState.setWooPushNotificationTokenID(tokenID)
 
         guard let siteID else {
             return onCompletion(.success(tokenID))
         }
-        var registeredIDs = registrationState.siteIDsRegisteredForWooPNs
-        if registeredIDs.contains(siteID) == false {
-            registeredIDs.append(siteID)
-            registrationState.siteIDsRegisteredForWooPNs = registeredIDs
-        }
+        registrationState.markSiteAsRegisteredForWooPNs(siteID)
 
         disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: registrationState.deviceID)
         onCompletion(.success(tokenID))

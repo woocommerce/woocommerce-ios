@@ -14,14 +14,6 @@ final class WPComLoginCoordinator {
     /// Title to display on top of the login views
     private let title: String
 
-    /// Whether the view is part of the login step of the Jetpack setup flow.
-    private var isJetpackSetup: Bool {
-        if case .jetpackSetup = flow {
-            return true
-        }
-        return false
-    }
-
     private let flow: WPComLoginFlow
     private let navigationController: UINavigationController
     private let stores: StoresManager

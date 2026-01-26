@@ -431,6 +431,7 @@ private extension SettingsViewController {
     }
 
     func enablePushNotificationsWasPressed() {
+        DDLogInfo("🔔 Settings: Enable Push Notifications tapped")
         // TODO: Launch native Woo push notifications enablement flow once UI is available.
     }
 

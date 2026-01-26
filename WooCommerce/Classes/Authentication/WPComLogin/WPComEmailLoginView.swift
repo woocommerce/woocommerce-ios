@@ -73,23 +73,25 @@ struct WPComEmailLoginView: View {
                 }
 
                 // Email field
-                AuthenticationFormFieldView(viewModel: .init(
-                    header: viewModel.usernameOnly ? Localization.usernameLabel : Localization.emailLabel,
-                    placeholder: viewModel.usernameOnly ? Localization.enterUsername : Localization.enterEmail,
-                    keyboardType: viewModel.usernameOnly ? .default : .emailAddress,
-                    text: $viewModel.emailOrUsername,
-                    isSecure: false,
-                    errorMessage: nil,
-                    isFocused: isEmailFieldFocused,
-                    autocapitalization: .none
-                ))
-                .focused($isEmailFieldFocused)
+                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                    AuthenticationFormFieldView(viewModel: .init(
+                        header: viewModel.usernameOnly ? Localization.usernameLabel : Localization.emailLabel,
+                        placeholder: viewModel.usernameOnly ? Localization.enterUsername : Localization.enterEmail,
+                        keyboardType: viewModel.usernameOnly ? .default : .emailAddress,
+                        text: $viewModel.emailOrUsername,
+                        isSecure: false,
+                        errorMessage: nil,
+                        isFocused: isEmailFieldFocused,
+                        autocapitalization: .none
+                    ))
+                    .focused($isEmailFieldFocused)
 
-                if viewModel.allowAccountCreation,
-                   !viewModel.usernameOnly {
-                    // Account creation hint
-                    Text(Localization.accountCreationHint)
-                        .footnoteStyle()
+                    if viewModel.allowAccountCreation,
+                       !viewModel.usernameOnly {
+                        // Account creation hint
+                        Text(Localization.accountCreationHint)
+                            .footnoteStyle()
+                    }
                 }
 
                 Spacer()
@@ -99,7 +101,7 @@ struct WPComEmailLoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(viewModel.titleString) {
+                Button(viewModel.primaryButtonTitle) {
                     ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
@@ -172,7 +174,7 @@ private extension WPComEmailLoginView {
 #Preview("WPComEmailLoginView - notification setup") {
     WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
                                          flow: .notificationSetup,
-                                         allowAccountCreation: false,
+                                         allowAccountCreation: true,
                                          onPasswordUIRequest: { _ in },
                                          onMagicLinkRequest: { _ in },
                                          onMagicLinkSent: { _, _ in },
@@ -182,7 +184,7 @@ private extension WPComEmailLoginView {
 #Preview("WPComEmailLoginView - Jetpack setup connection only") {
     WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
                                          flow: .jetpackSetup(requiresConnectionOnly: true),
-                                         allowAccountCreation: false,
+                                         allowAccountCreation: true,
                                          onPasswordUIRequest: { _ in },
                                          onMagicLinkRequest: { _ in },
                                          onMagicLinkSent: { _, _ in },
@@ -192,7 +194,7 @@ private extension WPComEmailLoginView {
 #Preview("WPComEmailLoginView - Jetpack setup") {
     WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
                                          flow: .jetpackSetup(requiresConnectionOnly: false),
-                                         allowAccountCreation: false,
+                                         allowAccountCreation: true,
                                          onPasswordUIRequest: { _ in },
                                          onMagicLinkRequest: { _ in },
                                          onMagicLinkSent: { _, _ in },

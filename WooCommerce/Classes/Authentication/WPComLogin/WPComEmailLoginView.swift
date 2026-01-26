@@ -53,7 +53,6 @@ struct WPComEmailLoginView: View {
     @ObservedObject private var viewModel: WPComEmailLoginViewModel
     @FocusState private var isEmailFieldFocused: Bool
     @State private var isPrimaryButtonLoading = false
-    @ScaledMetric private var scale = 1
 
     init(viewModel: WPComEmailLoginViewModel) {
         self.viewModel = viewModel
@@ -128,10 +127,7 @@ private extension WPComEmailLoginView {
         case .jetpackSetup:
             JetpackInstallHeaderView()
         case .notificationSetup:
-            Image(uiImage: .connectWPComImage)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: Constants.wpcomIconHeight * scale)
+            ConnectWPComHeaderView()
         }
     }
 }
@@ -141,7 +137,6 @@ private extension WPComEmailLoginView {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
-        static let wpcomIconHeight: CGFloat = 48
     }
 
     enum Localization {

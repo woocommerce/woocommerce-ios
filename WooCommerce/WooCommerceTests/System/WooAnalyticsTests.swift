@@ -189,7 +189,6 @@ class WooAnalyticsTests: XCTestCase {
             "is_jetpack_installed": true,
             "is_jetpack_connected": true,
             "is_jetpack_cp_connected": false,
-            "plan": "",
             "site_url": sampleSiteURL,
             "prop-key1": "prop-value1",
             "store_id": "sample_store_uuid",
@@ -225,8 +224,9 @@ class WooAnalyticsTests: XCTestCase {
         let expectedToBeAbsentProperties = [
             "blog_id",
             "is_wpcom_store",
-            "was_ecommerce_trial",
-            "plan",
+            "is_jetpack_installed",
+            "is_jetpack_connected",
+            "is_jetpack_cp_connected",
             "site_url",
             "store_id",
             "cached_woo_core_version"

@@ -8,8 +8,10 @@ final class WPComMagicLinkRequestHostingController: UIHostingController<WPComMag
     }
 
     init(title: String,
+         flow: WPComLoginFlow,
          viewModel: WPComMagicLinkRequestViewModel) {
         let view = WPComMagicLinkRequestView(title: title,
+                                             flow: flow,
                                              viewModel: viewModel)
         super.init(rootView: view)
     }
@@ -26,20 +28,30 @@ struct WPComMagicLinkRequestView: View {
     /// Title to display at the top of the view.
     private let title: String
 
+    let flow: WPComLoginFlow
+
     init(title: String,
+         flow: WPComLoginFlow,
          viewModel: WPComMagicLinkRequestViewModel) {
         self.title = title
+        self.flow = flow
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                JetpackInstallHeaderView()
+                switch flow {
+                case .jetpackSetup:
+                    JetpackInstallHeaderView()
+                case .notificationSetup:
+                    ConnectWPComHeaderView()
+                }
 
                 // Title
                 Text(title)
                     .largeTitleStyle()
+                    .bold()
 
                 // Avatar and email
                 WPComLoginGravatarView(email: viewModel.email, gravatarURL: viewModel.avatarURL)
@@ -100,7 +112,8 @@ private extension WPComMagicLinkRequestView {
 
 
 #Preview {
-    WPComMagicLinkRequestView(title: "Connect Jetpack",
+    WPComMagicLinkRequestView(title: "Connect to WordPress.com",
+                              flow: .notificationSetup,
                               viewModel: WPComMagicLinkRequestViewModel(email: "test@example.com",
                                                                         onMagicLinkSent: { _ in },
                                                                         onUseUsernamePassword: {},

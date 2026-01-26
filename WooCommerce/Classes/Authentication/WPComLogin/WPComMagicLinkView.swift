@@ -79,6 +79,7 @@ struct WPComMagicLinkView: View {
                 HStack {
                     Text(title)
                         .largeTitleStyle()
+                        .bold()
                     Spacer()
                 }
 

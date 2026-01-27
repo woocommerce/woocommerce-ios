@@ -198,10 +198,10 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        let isLocalCatalogi1FeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
         state = AuthenticatedState(credentials: credentials,
                                    sessionManager: sessionManager,
-                                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
+                                   isLocalCatalogi1FeatureFlagEnabled: isLocalCatalogi1FeatureFlagEnabled)
         sessionManager.defaultCredentials = credentials
 
         if case .wpcom = credentials {

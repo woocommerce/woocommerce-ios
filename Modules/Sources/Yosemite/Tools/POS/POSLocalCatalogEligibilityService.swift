@@ -6,7 +6,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let catalogSizeLimit: Int
-    private let isLocalCatalogFeatureFlagEnabled: Bool
+    private let isLocalCatalogi1FeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
     private let betaFeatureToggleProvider: @Sendable () async -> Bool
     private let usesCatalogAPI: Bool
@@ -24,7 +24,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     /// - Parameters:
     ///   - catalogSizeChecker: Service to check catalog size for sites
     ///   - systemStatusService: Service to check WooCommerce plugin version
-    ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
+    ///   - isLocalCatalogi1FeatureFlagEnabled: Whether the local catalog feature flag i1 is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
     ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations). Only applies when `usesCatalogAPI` is `false`.
@@ -32,7 +32,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     public init(
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         systemStatusService: POSSystemStatusServiceProtocol,
-        isLocalCatalogFeatureFlagEnabled: Bool,
+        isLocalCatalogi1FeatureFlagEnabled: Bool,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
         catalogSizeLimit: Int? = nil,
@@ -40,7 +40,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     ) {
         self.catalogSizeChecker = catalogSizeChecker
         self.systemStatusService = systemStatusService
-        self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
+        self.isLocalCatalogi1FeatureFlagEnabled = isLocalCatalogi1FeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
@@ -111,12 +111,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        let (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
-        guard isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled else {
+        let (isLocalCatalogi1FeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        guard isLocalCatalogi1FeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled else {
             let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
             eligibilityStates[siteID] = state
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flags disabled for site \(siteID) " +
-                      "(local: \(isLocalCatalogFeatureFlagEnabled), remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
+                      "(local (i1): \(isLocalCatalogi1FeatureFlagEnabled), remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
             return state
         }
 
@@ -201,7 +201,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         // Check feature flags - local, remote, and beta toggle must all be enabled
         let isRemoteEnabled = await isRemoteCatalogFeatureFlagEnabled()
         let isBetaToggleEnabled = await betaFeatureToggleProvider()
-        return (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled)
+        return (isLocalCatalogi1FeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled)
     }
 }
 

@@ -88,6 +88,9 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }
+
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+        DDLogInfo("✅ FTS search index rebuilt")
     }
 
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
@@ -173,6 +176,9 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }
+
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+        DDLogInfo("✅ FTS search index rebuilt after incremental sync")
     }
 
     func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {

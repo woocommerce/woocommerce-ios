@@ -1,11 +1,26 @@
 import XCTest
+import Experiments
 @testable import WooCommerce
 
 final class AgeRangeVerificationCoordinatorTests: XCTestCase {
+    private var originalFeatureFlagService: FeatureFlagService?
+
+    override func setUp() {
+        super.setUp()
+        originalFeatureFlagService = ServiceLocator.featureFlagService
+
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.ageRangeRequirementsCompliance] = true
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+    }
+
     override func tearDown() {
         super.tearDown()
         // Reset to the real service after each test.
         ServiceLocator.setAgeRangeVerificationService(AgeRangeVerificationService())
+        if let originalFeatureFlagService {
+            ServiceLocator.setFeatureFlagService(originalFeatureFlagService)
+        }
     }
 
     func test_triggerAgeVerificationIfNeeded_when_age_is_ineligible_then_blocks() {

@@ -91,7 +91,10 @@ struct WPComMagicLinkView: View {
                         .padding(.bottom)
                     Text(Localization.checkYourEmail)
                         .font(.title3.bold())
-                    AttributedText(viewModel.instructionString)
+
+                    Text(viewModel.instructionString)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
 
                     Text(Localization.emailConfirmationHint)
                         .multilineTextAlignment(.center)

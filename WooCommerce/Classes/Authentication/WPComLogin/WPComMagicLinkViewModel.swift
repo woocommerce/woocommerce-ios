@@ -1,30 +1,23 @@
-import UIKit
+import SwiftUI
 
 /// View model for `WPComMagicLinkView`
 ///
 final class WPComMagicLinkViewModel {
 
     /// Text for the instruction
-    let instructionString: NSAttributedString
+    let instructionString: AttributedString
 
     init(email: String) {
         self.instructionString = {
-            let font: UIFont = .body
-            let boldFont: UIFont = font.bold
+            let content = String.localizedStringWithFormat(Localization.sentLink, email)
+            var attributedText = AttributedString(content)
+            attributedText.font = .body
+            attributedText.foregroundColor = Color(.text)
 
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.alignment = .center
-
-            let boldSiteAddress = NSAttributedString(string: email, attributes: [.font: boldFont, .foregroundColor: UIColor.text.cgColor])
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: font,
-                .paragraphStyle: paragraph,
-                .foregroundColor: UIColor.text.cgColor
-            ]
-            let message = NSMutableAttributedString(string: Localization.sentLink, attributes: attributes)
-            message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
-
-            return message
+            if let range = attributedText.range(of: email) {
+                attributedText[range].font = .body.bold()
+            }
+            return attributedText
         }()
     }
 }

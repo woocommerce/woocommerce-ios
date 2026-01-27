@@ -149,6 +149,8 @@ private extension SettingsViewController {
             configureThemes(cell: cell)
         case let cell as BasicTableViewCell where row == .storeName:
             configureStoreName(cell: cell)
+        case let cell as BasicTableViewCell where row == .enablePushNotifications:
+            configureEnablePushNotifications(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -228,6 +230,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.storeName
+    }
+
+    func configureEnablePushNotifications(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.enablePushNotifications
     }
 
     func configureNotificationSettings(cell: BasicTableViewCell) {
@@ -422,6 +430,11 @@ private extension SettingsViewController {
         present(controller, animated: true)
     }
 
+    func enablePushNotificationsWasPressed() {
+        DDLogInfo("🔔 Settings: Enable Push Notifications tapped")
+        // TODO: Launch native Woo push notifications enablement flow once UI is available.
+    }
+
     func showThemeSettings() {
         guard let site = stores.sessionManager.defaultSite else {
             return
@@ -530,43 +543,8 @@ private extension SettingsViewController {
     }
 
     @objc func didInvokeHiddenSettings(_ sender: UITapGestureRecognizer? = nil) {
-        let hiddenSettingsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        hiddenSettingsMenu.addAction(resetPrivacyChoicesAction)
-        hiddenSettingsMenu.addAction(featureOverrideAction)
-        hiddenSettingsMenu.addAction(crashDebugMenuCrashAction)
-        hiddenSettingsMenu.addAction(crashDebugMenuCancelAction)
-
-        if let popoverController = hiddenSettingsMenu.popoverPresentationController {
-            popoverController.sourceView = sender?.view
-            popoverController.sourceRect = sender?.view?.bounds ?? .zero
-        }
-
-        present(hiddenSettingsMenu, animated: true, completion: nil)
-    }
-
-    var resetPrivacyChoicesAction: UIAlertAction {
-        return UIAlertAction(title: Localization.HiddenSettingsMenu.resetPrivacyChoices, style: .default) { _ in
-            UserDefaults.standard[.hasSavedPrivacyBannerSettings] = false
-        }
-    }
-
-    var crashDebugMenuCrashAction: UIAlertAction {
-        return UIAlertAction(title: Localization.HiddenSettingsMenu.crashImmediately, style: .destructive) { _ in
-            ServiceLocator.crashLogging.crash()
-        }
-    }
-
-    var featureOverrideAction: UIAlertAction {
-        return UIAlertAction(title: "Override Feature Flags", style: .default) { [weak self] _ in
-            guard let self else { return }
-
-            let hostingController = UIHostingController(rootView: OverrideFeatureFlagsView())
-            self.navigationController?.pushViewController(hostingController, animated: true)
-        }
-    }
-
-    var crashDebugMenuCancelAction: UIAlertAction {
-        return UIAlertAction(title: Localization.HiddenSettingsMenu.cancel, style: .cancel, handler: nil)
+        let hostingController = UIHostingController(rootView: DebugPanelView())
+        self.navigationController?.pushViewController(hostingController, animated: true)
     }
 }
 
@@ -653,6 +631,8 @@ extension SettingsViewController: UITableViewDelegate {
             installJetpackWasPressed()
         case .storeName:
             storeNameWasPressed()
+        case .enablePushNotifications:
+            enablePushNotificationsWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -736,6 +716,7 @@ extension SettingsViewController {
         case storeName
         case themes
         case connectivity
+        case enablePushNotifications
 
         // Help & Feedback
         case support
@@ -788,6 +769,8 @@ extension SettingsViewController {
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
             case .privacy, .notifications:
+                return BasicTableViewCell.self
+            case .enablePushNotifications:
                 return BasicTableViewCell.self
             case .betaFeatures:
                 return BasicTableViewCell.self
@@ -874,6 +857,12 @@ private extension SettingsViewController {
             comment: "Navigates to the Store name setup screen"
         )
 
+        static let enablePushNotifications = NSLocalizedString(
+            "settings.enablePushNotifications",
+            value: "Enable Push Notifications",
+            comment: "Settings > Store Settings row that starts the flow to enable push notifications."
+        )
+
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",
             comment: "Navigates to Privacy Settings screen"
@@ -930,23 +919,6 @@ private extension SettingsViewController {
             "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
             comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
-
-        enum HiddenSettingsMenu {
-            static let resetPrivacyChoices = NSLocalizedString(
-                "Reset Privacy Choice Banner State",
-                comment: "The title for a menu to reset the privacy choice banner presentation"
-            )
-
-            static let crashImmediately = NSLocalizedString(
-                "Crash Immediately",
-                comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
-            )
-
-            static let cancel = NSLocalizedString(
-                "Cancel",
-                comment: "The title for a button that dismisses the crash debug menu"
-            )
-        }
 
         enum LogoutAlert {
             static let alertMessage = NSLocalizedString(

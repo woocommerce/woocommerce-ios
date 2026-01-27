@@ -307,15 +307,13 @@ extension PushNotificationsManager {
     @MainActor
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
         let content = notification.request.content
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) {
-            // Check if this is a local notification
-            if !content.isRemoteNotification {
-                // Display local notifications with banner and sound when app is in foreground
-                let identifier = notification.request.identifier
-                analytics.track(event: .LocalNotification.displayed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
-                                                                     userInfo: content.userInfo))
-                return [.banner, .sound, .list]
-            }
+        // Check if this is a local notification
+        if !content.isRemoteNotification {
+            // Display local notifications with banner and sound when app is in foreground
+            let identifier = notification.request.identifier
+            analytics.track(event: .LocalNotification.displayed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                                userInfo: content.userInfo))
+            return [.banner, .sound, .list]
         }
 
         guard applicationState == .active, content.isRemoteNotification, inAppNotices == true else {

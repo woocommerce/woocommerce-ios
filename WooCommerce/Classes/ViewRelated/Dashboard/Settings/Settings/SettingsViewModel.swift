@@ -255,6 +255,10 @@ private extension SettingsViewModel {
             }
             var rows: [Row] = [.storeName]
 
+            if shouldShowEnablePushNotificationsRow(siteID: site.siteID) {
+                rows.append(.enablePushNotifications)
+            }
+
             if defaults.wpcomSiteSuspended == false,
                site.isJetpackCPConnected == true ||
                 (site.isNonJetpackSite == true &&
@@ -374,6 +378,18 @@ private extension SettingsViewModel {
             logoutSection
         ]
         .compactMap { $0 }
+    }
+
+    func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom else {
+            return false
+        }
+
+        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
+            return false
+        }
+
+        return defaults.siteIDsRegisteredForWooPushNotifications?.contains(siteID) != true
     }
 
     /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage

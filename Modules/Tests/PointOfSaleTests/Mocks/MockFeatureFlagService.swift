@@ -20,7 +20,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var revampedShippingLabelCreation: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
-    var allowMerchantAIAPIKey: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
@@ -45,7 +44,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
-         allowMerchantAIAPIKey: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
          isCIABBookingsEnabled: Bool = false,
          isPointOfSaleRefundsi1Enabled: Bool = false,
@@ -68,7 +66,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
-        self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
         self.isPointOfSaleRefundsi1Enabled = isPointOfSaleRefundsi1Enabled
@@ -119,8 +116,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:
             return backgroundProductImageUpload
-        case .allowMerchantAIAPIKey:
-            return allowMerchantAIAPIKey
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:

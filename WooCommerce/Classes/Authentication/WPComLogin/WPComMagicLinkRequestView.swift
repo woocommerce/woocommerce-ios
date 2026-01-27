@@ -24,6 +24,7 @@ final class WPComMagicLinkRequestHostingController: UIHostingController<WPComMag
 
 struct WPComMagicLinkRequestView: View {
     @StateObject private var viewModel: WPComMagicLinkRequestViewModel
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// Title to display at the top of the view.
     private let title: String
@@ -60,24 +61,33 @@ struct WPComMagicLinkRequestView: View {
                     .bodyStyle()
 
                 Spacer()
+
+                if dynamicTypeSize.isAccessibilitySize {
+                    footer
+                }
             }
             .padding(Constants.contentPadding)
         }.safeAreaInset(edge: .bottom) {
-            VStack {
-                Button(Localization.sendLinkButton) {
-                    Task {
-                        await viewModel.sendMagicLink()
-                    }
-                }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+            footer
+                .padding(Constants.contentPadding)
+                .background(Color(uiColor: .systemBackground))
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+        }
+    }
 
-                Button(Localization.fallbackButton) {
-                    viewModel.useUsernamePassword()
+    private var footer: some View {
+        VStack {
+            Button(Localization.sendLinkButton) {
+                Task {
+                    await viewModel.sendMagicLink()
                 }
-                .buttonStyle(SecondaryButtonStyle())
             }
-            .padding(Constants.contentPadding)
-            .background(Color(uiColor: .systemBackground))
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+
+            Button(Localization.fallbackButton) {
+                viewModel.useUsernamePassword()
+            }
+            .buttonStyle(SecondaryButtonStyle())
         }
     }
 }

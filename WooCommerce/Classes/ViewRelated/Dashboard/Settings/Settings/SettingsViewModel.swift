@@ -381,16 +381,11 @@ private extension SettingsViewModel {
     }
 
     func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
-        guard stores.isAuthenticated else {
+        guard stores.isAuthenticatedWithoutWPCom else {
             return false
         }
 
-        let isSelfDrivenPushEnabled = SelfDrivenPushEligibility(
-            stores: stores,
-            featureFlagService: featureFlagService
-        ).isEnabled()
-
-        guard isSelfDrivenPushEnabled else {
+        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
             return false
         }
 

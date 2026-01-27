@@ -9,6 +9,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     private let isLocalCatalogFeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
     private let betaFeatureToggleProvider: @Sendable () async -> Bool
+    private let usesCatalogAPI: Bool
 
     // Eligibility states cached per site
     private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
@@ -26,14 +27,16 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
-    ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
+    ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations). Only applies when `usesCatalogAPI` is `false`.
+    ///   - usesCatalogAPI: Whether the catalog API endpoint is used for full sync (i2). When `true`, skips catalog size check and requires WC 10.5.0+.
     public init(
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         systemStatusService: POSSystemStatusServiceProtocol,
         isLocalCatalogFeatureFlagEnabled: Bool,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
-        catalogSizeLimit: Int? = nil
+        catalogSizeLimit: Int? = nil,
+        usesCatalogAPI: Bool = false
     ) {
         self.catalogSizeChecker = catalogSizeChecker
         self.systemStatusService = systemStatusService
@@ -41,6 +44,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
+        self.usesCatalogAPI = usesCatalogAPI
         // Eagerly start fetching the remote flag in the background
         Task {
             await self.fetchRemoteFlag()
@@ -116,7 +120,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        // Check WooCommerce version - local catalog requires 10.3.0 or higher
+        // Check WooCommerce version -
+        // Paginated API (i1) requires 10.3.0-beta or higher
+        // Catalog API (i2) requires 10.5.0 or higher
+        let minimumVersion = usesCatalogAPI
+            ? Constants.wcPluginMinimumVersionForCatalogAPI
+            : Constants.wcPluginMinimumVersionForLocalCatalog
         do {
             let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
 
@@ -128,13 +137,13 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             }
 
             guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                    minimumRequired: Constants.wcPluginMinimumVersionForLocalCatalog) else {
+                                                    minimumRequired: minimumVersion) else {
                 let state = POSLocalCatalogEligibilityState.ineligible(
-                    reason: .unsupportedWooCommerceVersion(minimumVersion: Constants.wcPluginMinimumVersionForLocalCatalog)
+                    reason: .unsupportedWooCommerceVersion(minimumVersion: minimumVersion)
                 )
                 eligibilityStates[siteID] = state
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) below minimum" +
-                          "\(Constants.wcPluginMinimumVersionForLocalCatalog) for site \(siteID)")
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) below minimum " +
+                          "\(minimumVersion) for site \(siteID)")
                 return state
             }
 
@@ -151,7 +160,14 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        // Fetch remote catalog size and check against limit
+        // When using catalog API (i2), no size limit applies — skip size check
+        if usesCatalogAPI {
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: Using catalog API, skipping size check for site \(siteID)")
+            eligibilityStates[siteID] = .eligible
+            return .eligible
+        }
+
+        // Fetch remote catalog size and check against limit (paginated API only)
         do {
             let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
 
@@ -215,5 +231,6 @@ private extension POSLocalCatalogEligibilityService {
     enum Constants {
         static let defaultCatalogSizeLimit = 1000
         static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
+        static let wcPluginMinimumVersionForCatalogAPI = "10.5.0"
     }
 }

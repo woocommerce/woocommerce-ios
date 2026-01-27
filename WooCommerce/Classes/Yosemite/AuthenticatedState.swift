@@ -173,8 +173,6 @@ class AuthenticatedState: StoresManagerState {
         self.services = services
 
         // Initialize POS catalog sync coordinator and eligibility service if feature flag is enabled
-        // TODO:
-        // This also requires a version check, if ,<10.5 we'll be passing usesCatalogAPI = false no matter the flag
         let usesCatalogAPI = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         if isLocalCatalogFeatureFlagEnabled,
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
@@ -210,7 +208,8 @@ class AuthenticatedState: StoresManagerState {
                     await MainActor.run {
                         ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
                     }
-                }
+                },
+                usesCatalogAPI: usesCatalogAPI
             )
             posCatalogEligibilityChecker = eligibilityService
 

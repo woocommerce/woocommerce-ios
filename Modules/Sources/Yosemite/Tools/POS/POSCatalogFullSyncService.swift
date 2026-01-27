@@ -243,7 +243,7 @@ private extension POSCatalogFullSyncService {
             switch response.status {
                 /* TODO: Handle expected statuses and responses
                  - States: scheduled → in_progress → completed
-                 
+
                  1. Response (job scheduled/in progress):
                  {
                    "scheduled_at": "2026-01-23T08:30:25",
@@ -257,7 +257,7 @@ private extension POSCatalogFullSyncService {
                      "_variation_fields": "id,name,sku,price,..."
                    }
                  }
-                 
+
                  2. Response (job completed):
                  {
                    "scheduled_at": "2026-01-23T08:30:55",
@@ -273,12 +273,12 @@ private extension POSCatalogFullSyncService {
                    "url": "https://example.com/wp-content/uploads/product-feeds/pos-catalog-feed-2026-01-23-d4ca092459de.json"
                  }
                  */
-            case .complete:
+            case .completed:
                 guard let downloadURL = response.downloadURL else {
                     throw POSCatalogSyncError.invalidData
                 }
                 return downloadURL
-            case .pending, .processing:
+            case .scheduled, .processing:
                 // Only logs every 10th attempt to avoid flooding logs for large catalogs.
                 // TODO: Poll details TBD, for now Start: 3s, Multiplier: 1.3x , Max interval: 30s
                 if attempts % 10 == 0 {

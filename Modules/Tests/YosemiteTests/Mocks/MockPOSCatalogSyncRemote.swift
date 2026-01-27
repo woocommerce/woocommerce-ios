@@ -12,7 +12,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // Results returned when posProductsOnly=false (used during dual-request hidden product detection)
     private(set) var allProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
-    var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+    var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
 
     let loadProductsCallCount = Counter()

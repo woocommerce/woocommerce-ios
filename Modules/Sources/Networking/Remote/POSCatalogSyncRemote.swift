@@ -28,14 +28,14 @@ public protocol POSCatalogSyncRemoteProtocol {
     // periphery:ignore
     func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int, posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation>
 
-    /// Starts generation of a POS catalog.
-    /// The catalog is generated asynchronously and a download URL may be returned when the file is ready.
+    /// Requests creation of a POS catalog file via `POST /wc/pos/v1/catalog/create`.
+    /// Poll the same endpoint (with `forceGeneration=false`) until the response state is `.completed`.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
-    ///   - forceGeneration: Whether to always generate a catalog.
+    ///   - forceGeneration: Whether to force creation of a new catalog file.
     ///   - allowCellular: Should cellular data be used if required.
-    /// - Returns: Catalog job response with job ID.
+    /// - Returns: Catalog creation response with state and optional download URL.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse
@@ -193,27 +193,27 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
 
     // MARK: - Full Sync Endpoints
 
-    /// Starts generation of a POS catalog.
-    /// The catalog is generated asynchronously and a download URL may be returned immediately or via the status response endpoint associated with a job ID.
+    /// Requests creation of a POS catalog file via `POST /wc/pos/v1/catalog/create`.
+    /// The catalog is generated asynchronously on the server. Poll the same endpoint (with `force=false`)
+    /// until the response state is `.completed` and a download URL is available.
     ///
     /// - Parameters:
     ///   - siteID: Site ID to generate catalog for.
-    ///   - forceGeneration: Whether to always generate a catalog.
+    ///   - forceGeneration: Whether to force creation of a new catalog file. Only use on the first request; polling should pass `false`.
     ///   - allowCellular: Should cellular data be used if required.
-    /// - Returns: Catalog job response with job ID.
+    /// - Returns: Catalog creation response with state and optional download URL.
     ///
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
-        // TODO: products/catalog is no longer the correct endpoint, but "wc/pos/v1/catalog/create"
-        let path = "products/catalog"
-        // TODO: Verify all parameters we need are set
-        // POST /wp-json/wc/pos/v1/catalog/create?_product_fields=id,name,sku,price,...&_variation_fields=id,name,sku,price,...
-        let parameters: [String: Any] = [
-            ParameterKey.fullSyncFields: POSProduct.requestFields,
-            ParameterKey.fullSyncVariationFields: POSProductVariation.requestFields,
-            ParameterKey.forceGenerate: forceGeneration
+        let path = "catalog/create"
+        var parameters: [String: Any] = [
+            ParameterKey.catalogProductFields: POSProduct.requestFields.joined(separator: ","),
+            ParameterKey.catalogVariationFields: POSProductVariation.requestFields.joined(separator: ",")
         ]
+        if forceGeneration {
+            parameters[ParameterKey.force] = true
+        }
         let request = JetpackRequest(
-            wooApiVersion: .mark3,
+            wooApiVersion: .wcPosV1,
             method: .post,
             siteID: siteID,
             path: path,
@@ -451,9 +451,11 @@ private extension POSCatalogSyncRemote {
         static let page = "page"
         static let perPage = "per_page"
         static let fields = "_fields"
-        static let fullSyncFields = "fields"
-        static let fullSyncVariationFields = "variation_fields"
-        static let forceGenerate = "force_generate"
+        static let catalogProductFields = "_product_fields"
+        static let catalogVariationFields = "_variation_fields"
+        // no longer force_regenerate
+        // https://github.com/woocommerce/woocommerce/blob/b36d3a2660d033285b224a81152b04e36d9c3dcf/plugins/woocommerce/src/Internal/ProductFeed/Integrations/POSCatalog/ApiController.php#L57
+        static let force = "force"
         static let includeStatus = "include_status"
         static let posProductsOnly = "pos_products_only"
     }
@@ -466,24 +468,55 @@ private extension POSCatalogSyncRemote {
 
 // MARK: - Response Models
 
-/// Response from catalog generation request.
+/// Response from catalog generation request (`POST /wc/pos/v1/catalog/create`).
 public struct POSCatalogRequestResponse: Decodable {
-    /// Current status of the catalog generation job.
+    /// Current state of the catalog generation job.
     public let status: POSCatalogStatus
-    /// Download URL when it is already available.
+    /// Download URL when the catalog file is ready.
     public let downloadURL: String?
+    /// When the job was scheduled.
+    public let scheduledAt: Date?
+    /// When the job completed.
+    public let completedAt: Date?
+    /// Generation progress percentage (0–100).
+    public let progress: Int?
+    /// Number of items processed so far.
+    public let processed: Int?
+    /// Total number of items to process.
+    public let total: Int?
+
+    public init(status: POSCatalogStatus,
+                downloadURL: String? = nil,
+                scheduledAt: Date? = nil,
+                completedAt: Date? = nil,
+                progress: Int? = nil,
+                processed: Int? = nil,
+                total: Int? = nil) {
+        self.status = status
+        self.downloadURL = downloadURL
+        self.scheduledAt = scheduledAt
+        self.completedAt = completedAt
+        self.progress = progress
+        self.processed = processed
+        self.total = total
+    }
 
     private enum CodingKeys: String, CodingKey {
-        case status
-        case downloadURL = "download_url"
+        case status = "state"
+        case downloadURL = "url"
+        case scheduledAt = "scheduled_at"
+        case completedAt = "completed_at"
+        case progress
+        case processed
+        case total
     }
 }
 
-/// Catalog generation status.
+/// Catalog generation status returned by the `catalog/create` endpoint.
 public enum POSCatalogStatus: String, Decodable {
-    case pending
+    case scheduled
     case processing
-    case complete
+    case completed
     case failed
 }
 

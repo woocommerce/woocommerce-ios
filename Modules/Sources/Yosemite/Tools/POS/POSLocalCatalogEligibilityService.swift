@@ -231,6 +231,12 @@ private extension POSLocalCatalogEligibilityService {
     enum Constants {
         static let defaultCatalogSizeLimit = 1000
         static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
-        static let wcPluginMinimumVersionForCatalogAPI = "10.5.0"
+        static let wcPluginMinimumVersionForCatalogAPI = "10.5.0-dev"
+        /*
+         Temporarily set to -dev version, as the version checker considers 10.5-dev < 10.5
+         We should see:
+         📋 POSLocalCatalogEligibilityService: WooCommerce version 10.5.0-dev meets minimum requirement for site 215063064
+         📋 POSLocalCatalogEligibilityService: Using catalog API, skipping size check for site 215063064
+         */
     }
 }

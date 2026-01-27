@@ -163,10 +163,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case backgroundProductImageUpload
 
-    /// Allows merchants to use their own API keys for AI-powered features
-    ///
-    case allowMerchantAIAPIKey
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling

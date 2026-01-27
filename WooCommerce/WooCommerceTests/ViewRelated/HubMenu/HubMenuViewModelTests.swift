@@ -264,13 +264,11 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
-        let featureFlagService = MockFeatureFlagService(allowMerchantAIAPIKey: false)
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
 
@@ -327,13 +325,11 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
-        let featureFlagService = MockFeatureFlagService(allowMerchantAIAPIKey: false)
         let checker = MockGoogleAdsEligibilityChecker(isEligible: true)
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
                                          stores: stores,
                                          googleAdsEligibilityChecker: checker)
         waitUntil {
@@ -575,7 +571,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
-        let featureFlagService = MockFeatureFlagService(allowMerchantAIAPIKey: false)
         inboxEligibilityChecker.isEligible = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -586,7 +581,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let navigationPath = NavigationPath(["testPath1", "testPath2"])
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
                                          stores: stores,
                                          generalAppSettings: generalAppSettings,
                                          inboxEligibilityChecker: inboxEligibilityChecker,

@@ -224,4 +224,9 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner
+
+    /// Enables age range verification features
+    /// https://developer.apple.com/news/?id=2ezb6jhj
+    ///
+    case ageRangeRequirementsCompliance
 }

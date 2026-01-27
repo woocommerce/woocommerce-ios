@@ -113,7 +113,7 @@ struct WPComEmailLoginView: View {
                 .disabled(viewModel.emailOrUsername.isEmpty)
 
                 // Terms label
-                AttributedText(viewModel.termsAttributedString)
+                Text(viewModel.termsAttributedString)
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))

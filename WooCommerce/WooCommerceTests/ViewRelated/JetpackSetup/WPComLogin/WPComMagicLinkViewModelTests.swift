@@ -9,7 +9,7 @@ final class WPComMagicLinkViewModelTests: XCTestCase {
         let viewModel = WPComMagicLinkViewModel(email: email)
 
         // When
-        let text = viewModel.instructionString.string
+        let text = String(viewModel.instructionString.characters)
 
         // Then
         let expectedText = WPComMagicLinkViewModel.Localization.sentLink.replacingOccurrences(of: "%@", with: email)

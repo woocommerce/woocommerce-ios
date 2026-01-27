@@ -88,7 +88,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onError: { _ in })
 
         // When
-        let text = viewModel.termsAttributedString.string
+        let text = String(viewModel.termsAttributedString.characters)
 
         // Then
         let expectedString = String(format: WPComEmailLoginViewModel.Localization.termsContent,

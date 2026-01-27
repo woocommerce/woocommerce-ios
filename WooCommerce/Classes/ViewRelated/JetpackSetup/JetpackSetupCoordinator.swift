@@ -6,11 +6,6 @@ import class Networking.AlamofireNetwork
 import WordPressAuthenticator
 import WooFoundation
 
-enum WPComLoginFlow {
-    case notificationSetup
-    case jetpackSetup(requiresConnectionOnly: Bool)
-}
-
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
 final class JetpackSetupCoordinator {
@@ -377,6 +372,7 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkRequestUI(email: String) {
         let magicLinkRequestController = WPComMagicLinkRequestHostingController(title: loginViewTitle,
+                                                                                flow: loginFlow,
                                                                                 viewModel: .init(email: email,
                                                                                                  onMagicLinkSent: { [weak self] email in
             self?.showMagicLinkSentUI(email: email, isSignup: false)
@@ -392,7 +388,7 @@ private extension JetpackSetupCoordinator {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
-                                                             isJetpackSetup: true,
+                                                             flow: loginFlow,
                                                              isSignup: isSignup)
         pushOrInitLoginViewController(viewController)
     }
@@ -421,7 +417,7 @@ private extension JetpackSetupCoordinator {
             })
         let viewController = WPComPasswordLoginHostingController(
             title: loginViewTitle,
-            isJetpackSetup: true,
+            flow: loginFlow,
             viewModel: viewModel)
 
         pushOrInitLoginViewController(viewController)
@@ -448,7 +444,7 @@ private extension JetpackSetupCoordinator {
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
-                                                            isJetpackSetup: true,
+                                                            flow: loginFlow,
                                                             viewModel: viewModel)
         loginNavigationController.pushViewController(viewController, animated: true)
     }

@@ -1,5 +1,5 @@
 import Combine
-import UIKit
+import SwiftUI
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
 
@@ -50,7 +50,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     @Published var emailOrUsername: String = ""
     @Published var usernameOnly: Bool = false
 
-    let termsAttributedString: NSAttributedString
+    let termsAttributedString: AttributedString
 
     let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
@@ -89,21 +89,17 @@ final class WPComEmailLoginViewModel: ObservableObject {
                     String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
                 }
             }()
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.alignment = .center
 
-            let mutableAttributedText = NSMutableAttributedString(
-                string: content,
-                attributes: [.font: UIFont.footnote,
-                             .foregroundColor: UIColor.secondaryLabel,
-                             .paragraphStyle: paragraph]
+            let attributedText = AttributedString.withEmbeddedLinks(
+                content: content,
+                links: [
+                    Localization.termsOfService: Constants.jetpackTermsURL + siteURL,
+                    Localization.shareDetails: Constants.jetpackShareDetailsURL + siteURL
+                ],
+                font: .footnote,
+                foregroundColor: .secondary
             )
-
-            mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
-                                            linkURL: Constants.jetpackTermsURL + siteURL)
-            mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
-                                            linkURL: Constants.jetpackShareDetailsURL + siteURL)
-            return mutableAttributedText
+            return attributedText
         }()
     }
 

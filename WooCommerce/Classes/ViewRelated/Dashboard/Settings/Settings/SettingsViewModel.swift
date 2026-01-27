@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 import Yosemite
 import Storage
 import class Networking.UserAgent
@@ -106,6 +107,8 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let analytics: Analytics
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     /// Reference to the Zendesk shared instance
     ///
     private let zendeskShared: ZendeskManagerProtocol = ZendeskProvider.shared
@@ -158,6 +161,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadWhatsNewOnWooCommerce()
         loadSites()
         reloadSettings()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -203,6 +207,15 @@ private extension SettingsViewModel {
     ///
     func loadSites() {
         sites = sitesResultsController.fetchedObjects
+    }
+
+    func observeSelfDrivenPushTokenPersistence() {
+        defaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.reloadSettings()
+            }
+            .store(in: &subscriptions)
     }
 
     func configureSections() {
@@ -288,7 +301,14 @@ private extension SettingsViewModel {
                 }
                 return site.isJetpackCPConnected == false
             }()
-            if notificationAvailable, featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
+            let isSelfDrivenPushNotificationsRegistered: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                defaults.siteIDsRegisteredForWooPushNotifications?.contains(siteID) == true
+            }()
+            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]

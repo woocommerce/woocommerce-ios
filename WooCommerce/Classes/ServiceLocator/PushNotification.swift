@@ -1,5 +1,7 @@
 import Foundation
+import struct NetworkingCore.AnyCodable
 import struct NetworkingCore.Note
+import struct NetworkingCore.MetaContainer
 
 #if DEBUG
 import UserNotifications
@@ -11,7 +13,7 @@ import UserNotifications
 struct PushNotification {
     /// The `note_id` value received from the Remote Notification's `userInfo`.
     ///
-    let noteID: Int64
+    let noteID: Int64?
     /// The `blog` value received from the Remote Notification's `userInfo`.
     ///
     let siteID: Int64
@@ -30,6 +32,9 @@ struct PushNotification {
     /// The `note` value received from the Remote Notification's `userInfo` and parsed from `note_full_data`.
     ///
     let note: Note?
+
+    /// The meta value parsed from `note_full_data` in `userInfo`
+    let meta: MetaContainer?
 }
 
 extension PushNotification {
@@ -48,24 +53,53 @@ extension PushNotification {
             }
         }()
 
-        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
-              let siteID = userInfo.integer(forKey: APNSKey.siteID),
+        guard let siteID = userInfo.integer(forKey: APNSKey.siteID),
               let title,
               let type = userInfo.string(forKey: APNSKey.type),
               let noteKind = Note.Kind(rawValue: type) else {
             return nil
         }
 
+        let noteID = userInfo.integer(forKey: APNSKey.identifier)
         let subtitle = alert?.string(forKey: APNSKey.alertSubtitle)
         let message = alert?.string(forKey: APNSKey.alertMessage)
-        let note: Note? = noteFromCompressedData(userInfo.string(forKey: APNSKey.noteFullData))
-        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message, note: note)
+
+        let noteFullData = userInfo.string(forKey: APNSKey.noteFullData)
+        let note: Note? = noteFromCompressedData(noteFullData)
+        let meta = metaDataFromCompressedData(noteFullData)
+        return PushNotification(noteID: noteID,
+                                siteID: siteID,
+                                kind: noteKind,
+                                title: title,
+                                subtitle: subtitle,
+                                message: message,
+                                note: note,
+                                meta: meta)
     }
 
     /// Optional `String` passed parameter holds (base64 encoded and zlib compressed) data for the note.
     /// That data is used to create `Note` object which is returned
     static private func noteFromCompressedData(_ noteFulldata: String?) -> Note? {
-        guard let noteFulldata, !noteFulldata.isEmpty, var data = Data(base64Encoded: noteFulldata) else {
+        guard let content = noteContent(from: noteFulldata),
+              let note = try? Note.createdFrom(content) else {
+            return nil
+        }
+        return note
+    }
+
+    static private func metaDataFromCompressedData(_ noteFullData: String?) -> MetaContainer? {
+        guard let content = noteContent(from: noteFullData),
+                let metaDict = content["meta"] as? [String: Any] else {
+            return nil
+        }
+        let anyCodableDict = metaDict.mapValues { AnyCodable($0) }
+        return MetaContainer(payload: anyCodableDict)
+    }
+
+    static private func noteContent(from noteFullData: String?) -> [String: Any]? {
+        guard let noteFullData,
+                !noteFullData.isEmpty,
+                var data = Data(base64Encoded: noteFullData) else {
             return nil
         }
         if data.count > 1 {
@@ -80,10 +114,7 @@ extension PushNotification {
               let firstNote = notes.first else {
             return nil
         }
-        guard let note = try? Note.createdFrom(firstNote) else {
-            return nil
-        }
-        return note
+        return firstNote
     }
 }
 
@@ -102,14 +133,6 @@ enum APNSKey {
     static let meta = "meta"
     static let ids = "ids"
     static let order = "order"
-}
-
-/// SwiftUI Identifiable conformance
-///
-extension PushNotification: Identifiable {
-    var id: Int64 {
-        noteID
-    }
 }
 
 private extension Note {

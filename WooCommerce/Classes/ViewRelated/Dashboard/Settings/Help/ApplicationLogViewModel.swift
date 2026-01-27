@@ -10,6 +10,7 @@ struct ApplicationLogLine: Identifiable {
 
     private static let parsingFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
         dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss:SSS"
         return dateFormatter
     }()

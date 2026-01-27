@@ -21,10 +21,8 @@ struct ApplicationPasswordTutorialViewModel {
         case .inaccessibleLoginPage, .inaccessibleAdminPage, .unacceptableStatusCode:
             return NSLocalizedString("This could be because your store has some extra security steps in place.",
                                      comment: "Reason for why the user could not login tin the application password tutorial screen")
-        case .invalidCredentials:
+        case .invalidCredentials, .basicAuthenticationRequired:
             return error.localizedDescription
-        case .failedAuthenticationChallenge:
-            fatalError("Failure to handle authentication challenge is not eligible for application password flow.")
         }
     }
 }

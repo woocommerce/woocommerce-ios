@@ -2867,6 +2867,7 @@ extension WooAnalyticsEvent {
             case isJetpackActive = "is_jetpack_active"
             case isJetpackConnected = "is_jetpack_connected"
             case urlAfterRedirects = "url_after_redirects"
+            case requiredAuthChallenge = "required_auth_challenge"
         }
 
         enum LoginSiteCredentialStep: String {
@@ -2886,10 +2887,16 @@ extension WooAnalyticsEvent {
 
         /// Tracks when the login with site credentials failed.
         ///
-        static func siteCredentialFailed(step: LoginSiteCredentialStep, error: Error?) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
-                              properties: [Key.step.rawValue: step.rawValue],
-                              error: error)
+        static func siteCredentialFailed(step: LoginSiteCredentialStep,
+                                         error: Error?,
+                                         challengeType: String? = nil) -> WooAnalyticsEvent {
+            var properties: [String: String] = [Key.step.rawValue: step.rawValue]
+            if let challengeType {
+                properties[Key.requiredAuthChallenge.rawValue] = challengeType
+            }
+            return WooAnalyticsEvent(statName: .loginSiteCredentialsFailed,
+                                     properties: properties,
+                                     error: error)
         }
 
         /// Tracks when site info is fetched during site address login.

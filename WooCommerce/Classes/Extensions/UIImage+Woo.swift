@@ -41,7 +41,7 @@ extension UIImage {
     /// App icon (iPhone size)
     ///
     static var appIconDefault: UIImage {
-        return UIImage(named: "AppIcon60x60")!
+        return UIImage(named: "AppIcon-Default60x60")!
     }
 
     /// Blaze icon
@@ -239,6 +239,12 @@ extension UIImage {
     ///
     static var connectionImage: UIImage {
         return UIImage(named: "icon-connection")!
+    }
+
+    /// Connect WPCom Icon
+    ///
+    static var connectWPComImage: UIImage {
+        return UIImage(named: "connect-wpcom")!
     }
 
     /// Create order image
@@ -1369,6 +1375,10 @@ extension UIImage {
 
     static var cardReaderLocationImage: UIImage {
         SharedImageAsset.location.uiImage!
+    }
+
+    static var posOnPhonesPromotionBannerCorner: UIImage {
+        UIImage(named: "pos-on-phones-promotion-banner-corner")!
     }
 }
 

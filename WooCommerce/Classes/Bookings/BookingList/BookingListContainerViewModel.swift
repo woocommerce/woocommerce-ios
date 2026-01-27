@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `BookingListContainerView`
 final class BookingListContainerViewModel: ObservableObject {
@@ -15,7 +16,8 @@ final class BookingListContainerViewModel: ObservableObject {
     private let upcomingSearchViewModel: BookingSearchViewModel
     private let allSearchViewModel: BookingSearchViewModel
 
-    @Published var selectedTab: BookingListTab = .today
+    private static let defaultTab: BookingListTab = .today
+    @Published private(set) var selectedTab: BookingListTab = BookingListContainerViewModel.defaultTab
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
     @Published var numberOfActiveFilters: Int = 0
@@ -23,6 +25,7 @@ final class BookingListContainerViewModel: ObservableObject {
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
     private var sortBySubscription: AnyCancellable?
+    private let analytics: Analytics
 
     private lazy var allTabViewModels: [BookingListViewModel] = [
         todayListViewModel,
@@ -40,9 +43,12 @@ final class BookingListContainerViewModel: ObservableObject {
         BookingFiltersViewModel(filter: filters, siteID: siteID)
     }
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
+        self.analytics = analytics
 
         let searchQueryPublisher = searchQuerySubject.eraseToAnyPublisher()
         self.todayListViewModel = BookingListViewModel(
@@ -135,6 +141,55 @@ final class BookingListContainerViewModel: ObservableObject {
         guard selectedTab == .all else { return }
         let filters = BookingFiltersViewModel.Filters()
         updateFilters(filters)
+    }
+
+    func setSelectedTab(to newTab: BookingListTab) {
+        selectedTab = newTab
+        analytics.track(event: .BookingList.tabSelected(newTab))
+        // Manually trigger onAppear as we are programaticcaly
+        // changing the tab which will not trigger
+        // onAppear on the View.
+        onAppear()
+    }
+
+    func onAppear() {
+        let tabViewModel = listViewModel(for: selectedTab)
+        analytics.track(event: .BookingList.bookingListDisplayed(
+            tab: selectedTab,
+            isDefaultTab: selectedTab == BookingListContainerViewModel.defaultTab,
+            isListEmpty: tabViewModel.bookings.isEmpty,
+            isFiltered: tabViewModel.hasFilters
+        ))
+    }
+
+    func selectedBookingChanged() {
+        let tabViewModel = listViewModel(for: selectedTab)
+        let searchViewModel = searchViewModel(for: selectedTab)
+        analytics.track(event: .BookingList.bookingTapped(
+            selectedTab: selectedTab,
+            isSearchActive: !searchViewModel.currentSearchQuery.isEmpty,
+            isFilteringActive: tabViewModel.hasFilters))
+    }
+
+    func filtersTapped() {
+        analytics.track(event: .BookingList.filtersTapped())
+    }
+
+    func applyFiltersTapped() {
+        analytics.track(event: .BookingList.applyFilters(filters))
+    }
+
+    func searchTapped() {
+        analytics.track(event: .BookingList.searchTapped())
+    }
+
+    func sortByTapped() {
+        analytics.track(event: .BookingList.sortByTapped())
+    }
+
+    func sortByOptionSelected(_ option: BookingListViewModel.SortBy) {
+        sortBy = option
+        analytics.track(event: .BookingList.sortByOptionTapped(option))
     }
 }
 

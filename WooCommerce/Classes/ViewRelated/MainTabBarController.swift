@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 import WordPressUI
@@ -517,49 +518,30 @@ extension MainTabBarController {
 //
 extension MainTabBarController {
 
-    /// Syncs the notification given the ID, and handles the notification based on its notification kind.
-    ///
-    static func presentNotificationDetails(for noteID: Int64) {
-        let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
-            guard let note = note,
-                  let siteID = note.meta.identifier(forKey: .site) else {
-                return
-            }
-            showStore(with: Int64(siteID), onCompletion: { _ in
-                presentNotificationDetails(for: note)
-            })
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     /// Presents the details  of a push notification.
     static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
-        guard let note = notification.note,
-              let siteID = note.meta.identifier(forKey: .site) else {
-            presentNotificationDetails(for: notification.noteID)
-            return
-        }
+        let siteID = notification.siteID
         showStore(with: Int64(siteID), onCompletion: { _ in
-            presentNotificationDetails(for: note)
+            presentNotificationDetails(for: notification)
         })
     }
 
     /// Presents the order details if the `note` is for an order push notification.
     ///
-    private static func presentNotificationDetails(for note: Note) {
-        switch note.kind {
+    private static func presentNotificationDetails(for notification: PushNotification) {
+        switch notification.kind {
         case .storeOrder:
             switchToOrdersTab {
-                ordersTabSplitViewWrapper()?.presentDetails(for: note)
+                ordersTabSplitViewWrapper()?.presentDetails(for: notification)
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
-           navigateToBlazeCampaignDetails(using: note)
+           navigateToBlazeCampaignDetails(using: notification)
         default:
             break
         }
 
-        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
-                                                                              "already_read": note.read ])
+        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": notification.kind.rawValue,
+                                                                              "already_read": notification.note?.read ?? false ])
     }
 
     private static func showStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
@@ -611,18 +593,18 @@ extension MainTabBarController {
         })
     }
 
-    static func navigateToBlazeCampaignDetails(using note: Note) {
-        guard note.kind.isBlaze else {
+    static func navigateToBlazeCampaignDetails(using notification: PushNotification) {
+        guard notification.kind.isBlaze else {
             return
         }
 
-        guard let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its site ID!")
+        guard let siteID = notification.meta?.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its site ID!")
             return
         }
 
-        guard let campaignID = note.meta.identifier(forKey: .campaignID) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its campaign ID!")
+        guard let campaignID = notification.meta?.identifier(forKey: .campaignID) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its campaign ID!")
             return
         }
 
@@ -715,9 +697,41 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case is POSPromotionDestination:
+            presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentPOSPromotionModal() {
+        var pendingWebViewModel: WebViewSheetViewModel?
+
+        let modalView = POSPromotionModal_UIKit(
+            onDismiss: { [weak self] in
+                self?.dismiss(animated: false) {
+                    if let webViewModel = pendingWebViewModel {
+                        self?.presentWebViewSheet(webViewModel)
+                    }
+                }
+            },
+            onShowWebView: { webViewModel in
+                pendingWebViewModel = webViewModel
+            }
+        )
+        let hostingController = UIHostingController(rootView: modalView)
+        hostingController.view.backgroundColor = .clear
+        hostingController.modalPresentationStyle = .overFullScreen
+        hostingController.modalTransitionStyle = .crossDissolve
+        present(hostingController, animated: true)
+    }
+
+    private func presentWebViewSheet(_ webViewModel: WebViewSheetViewModel) {
+        let webViewSheet = WebViewSheet(viewModel: webViewModel, done: { [weak self] in
+            self?.dismiss(animated: true)
+        })
+        let hostingController = UIHostingController(rootView: webViewSheet)
+        present(hostingController, animated: true)
     }
 }
 

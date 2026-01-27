@@ -116,25 +116,40 @@ steps:
   # UI Tests
   #################
   - label: ":microscope: UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 16"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
     if: build.branch == "trunk" || build.branch =~ /^release\//
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
+      - build/logs/wiremock.txt
     notify:
       - github_commit_status:
           context: UI Tests (iPhone)
 
   - label: ":microscope: UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M4)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
     if: build.branch == "trunk" || build.branch =~ /^release\//
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
+      - build/logs/wiremock.txt
     notify:
       - github_commit_status:
           context: UI Tests (iPad)
+
+  #################
+  # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait
+  #################
+  - wait: ~
+    continue_on_failure: true
+
+  - label: ":claude: 🕵️ Check for Build Failures and Run Claude Analysis"
+    command: |
+      source .buildkite/shared-pipeline-vars
+      buildkite-agent pipeline upload .buildkite/claude-analysis.yml
+    agents:
+      queue: upload

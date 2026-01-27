@@ -27,16 +27,15 @@ final class OrdersSplitViewWrapperController: UIViewController {
 
     /// Presents the Details for the Notification with the specified Identifier.
     ///
-    func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order),
-              let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
+    func presentDetails(for notification: PushNotification) {
+        guard let orderID = notification.meta?.identifier(forKey: .order) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its OrderID!")
             return
         }
 
         // workaround - delay to ensure the transition to the secondary column works after switching stores
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
-            presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
+            presentDetails(for: Int64(orderID), siteID: notification.siteID, note: notification.note)
         }
     }
 

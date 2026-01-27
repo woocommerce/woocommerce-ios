@@ -1,6 +1,6 @@
 /// FeatureFlag exposes a series of features to be conditionally enabled on different builds.
 ///
-public enum FeatureFlag: Int {
+public enum FeatureFlag: Int, CaseIterable {
 
     /// Throwaway case, to prevent a compiler error:
     /// `An enum with no cases cannot declare a raw type`
@@ -163,14 +163,6 @@ public enum FeatureFlag: Int {
     ///
     case backgroundProductImageUpload
 
-    /// Supports managing notification settings from the app settings
-    ///
-    case notificationSettings
-
-    /// Allows merchants to use their own API keys for AI-powered features
-    ///
-    case allowMerchantAIAPIKey
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
@@ -209,10 +201,6 @@ public enum FeatureFlag: Int {
     ///
     case ciab
 
-    /// Enables surveys for potential and current POS merchants
-    ///
-    case pointOfSaleSurveys
-
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
     case pointOfSaleCatalogAPI
@@ -220,6 +208,22 @@ public enum FeatureFlag: Int {
     /// Enables the refunds functionality within POS
     ///
     case pointOfSaleRefundsi1
+
+    /// Enables self driven push token registration for users authenticated with WPCom
+    ///
+    case selfDrivenPushTokenWPCom
+
+    /// Enables self driven push token registration for users authenticated with app passwords
+    ///
+    case selfDrivenPushTokenAppPasswords
+
+    /// Enables POS-only products filtering
+    ///
+    case pointOfSaleOnlyProducts
+
+    /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
+    ///
+    case clientSideDashboardBanner
 
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj

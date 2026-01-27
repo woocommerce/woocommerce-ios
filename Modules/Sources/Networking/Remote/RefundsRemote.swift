@@ -145,3 +145,27 @@ public extension RefundsRemote {
         static let include: String    = "include"
     }
 }
+
+extension RefundsRemote: POSRefundsRemoteProtocol {
+    public func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
+        return try await withCheckedThrowingContinuation { continuation in
+            loadRefunds(for: siteID, by: orderID, with: refundIDs) { refunds, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: refunds ?? [])
+
+                }
+            }
+        }
+    }
+}
+
+
+struct POSRefundsRemote {
+    let refundsRemote: RefundsRemote
+
+    func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
+        try await refundsRemote.loadRefunds(for: siteID, by: orderID, with: refundIDs)
+    }
+}

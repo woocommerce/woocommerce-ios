@@ -60,7 +60,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
 
         let parcel = try XCTUnwrap(result.get())
-        XCTAssertEqual(parcel.note.noteID, note.noteID)
+        XCTAssertEqual(parcel.note?.noteID, note.noteID)
         XCTAssertEqual(parcel.review, productReview)
         XCTAssertEqual(parcel.product, product)
     }
@@ -74,7 +74,6 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
         let storageNote = viewStorage.insertNewObject(ofType: StorageNote.self)
         storageNote.update(with: note)
-        viewStorage.saveIfNeeded()
 
         productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
                                                       reviewID: productReview.reviewID,
@@ -91,7 +90,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 0)
 
         let parcel = try XCTUnwrap(result.get())
-        XCTAssertEqual(parcel.note.noteID, note.noteID)
+        XCTAssertEqual(parcel.note?.noteID, note.noteID)
     }
 
     func test_it_uses_the_existing_Product_in_Storage_if_it_is_available() throws {
@@ -103,7 +102,6 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
         let storageProduct = viewStorage.insertNewObject(ofType: StorageProduct.self)
         storageProduct.update(with: product)
-        viewStorage.saveIfNeeded()
 
         notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
         productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
@@ -130,7 +128,6 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
         let storageProductReview = viewStorage.insertNewObject(ofType: StorageProductReview.self)
         storageProductReview.update(with: productReview)
-        viewStorage.saveIfNeeded()
 
         notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
         productsRemote.whenLoadingProduct(siteID: product.siteID,

@@ -24,24 +24,28 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let analytics: POSItemFetchAnalyticsTracking
+    private let posProductsOnly: Bool
 
     static var defaultProductTypes: [ProductType] { [.simple, .variable] }
 
     init(siteID: Int64,
          productsRemote: ProductsRemoteProtocol,
          variationsRemote: ProductVariationsRemoteProtocol,
-         analytics: POSItemFetchAnalyticsTracking) {
+         analytics: POSItemFetchAnalyticsTracking,
+         posProductsOnly: Bool = false) {
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
         self.analytics = analytics
+        self.posProductsOnly = posProductsOnly
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         let pagedProducts = try await productsRemote.loadProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
-            pageNumber: pageNumber
+            pageNumber: pageNumber,
+            posProductsOnly: posProductsOnly
         )
 
         if pageNumber == 1 {
@@ -55,7 +59,8 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
         try await variationsRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProductID,
-                                          pageNumber: pageNumber)
+                                          pageNumber: pageNumber,
+                                          posProductsOnly: posProductsOnly)
     }
 }
 
@@ -67,17 +72,20 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let analytics: POSItemFetchAnalyticsTracking
+    private let posProductsOnly: Bool
 
     init(siteID: Int64,
          searchTerm: String,
          productsRemote: ProductsRemoteProtocol,
          variationsRemote: ProductVariationsRemoteProtocol,
-         analytics: POSItemFetchAnalyticsTracking) {
+         analytics: POSItemFetchAnalyticsTracking,
+         posProductsOnly: Bool = false) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
         self.analytics = analytics
+        self.posProductsOnly = posProductsOnly
     }
 
     // periphery:ignore - Protocol requirement, used via protocol
@@ -94,7 +102,8 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
             for: siteID,
             query: searchTerm,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
-            pageNumber: pageNumber
+            pageNumber: pageNumber,
+            posProductsOnly: posProductsOnly
         )
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
@@ -108,7 +117,8 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
         try await variationsRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProductID,
-                                          pageNumber: pageNumber)
+                                          pageNumber: pageNumber,
+                                          posProductsOnly: posProductsOnly)
     }
 }
 
@@ -117,15 +127,18 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let pageSize: Int
+    private let posProductsOnly: Bool
 
     init(siteID: Int64,
          pageSize: Int,
          productsRemote: ProductsRemoteProtocol,
-         variationsRemote: ProductVariationsRemoteProtocol) {
+         variationsRemote: ProductVariationsRemoteProtocol,
+         posProductsOnly: Bool = false) {
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
         self.pageSize = pageSize
+        self.posProductsOnly = posProductsOnly
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
@@ -133,7 +146,8 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
             pageNumber: pageNumber,
-            perPage: pageSize
+            perPage: pageSize,
+            posProductsOnly: posProductsOnly
         )
         let modifiedItems = PagedItems<POSProduct>(items: receivedItems.items,
                                                    hasMorePages: false,
@@ -145,6 +159,7 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
         try await variationsRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProductID,
-                                          pageNumber: pageNumber)
+                                          pageNumber: pageNumber,
+                                          posProductsOnly: posProductsOnly)
     }
 }

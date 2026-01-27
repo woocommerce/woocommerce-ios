@@ -24,7 +24,7 @@ extension DashboardCard.CardType {
             Localization.coupons
         case .googleAds:
             Localization.googleAds
-        case .shareStore, .newCardsNotice, .inAppFeedback:
+        case .shareStore, .newCardsNotice, .inAppFeedback, .connectWPCom:
             "" // these cards don't have title
         }
     }

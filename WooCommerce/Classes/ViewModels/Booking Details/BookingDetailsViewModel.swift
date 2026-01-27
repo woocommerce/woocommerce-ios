@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 import SwiftUI
 
 final class BookingDetailsViewModel: ObservableObject {
@@ -19,6 +20,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let attendanceContent = AttendanceContent()
     private let paymentContent = PaymentContent()
     private let notesContent = NotesContent()
+    private let analytics: Analytics
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -37,9 +39,11 @@ final class BookingDetailsViewModel: ObservableObject {
 
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.booking = booking
         self.stores = stores
+        self.analytics = analytics
         self.bookingResource = storage.viewStorage.loadBookingResource(
             siteID: booking.siteID,
             resourceID: booking.resourceID
@@ -243,6 +247,7 @@ extension BookingDetailsViewModel {
             status: newStatus
         ) { [weak self] error in
             if let error, let self {
+                self.analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .updateAttendance, error: error))
                 DDLogError("⛔️ Error updating booking attendance status: \(error)")
                 displayErrorNotice(
                     messageFormat: Localization.bookingAttendanceStatusUpdateFailedMessage
@@ -252,6 +257,11 @@ extension BookingDetailsViewModel {
             }
         }
         stores.dispatch(action)
+        analytics.track(event: .BookingsDetail.bookingAttenceStatusUpdated(status: newStatus))
+    }
+
+    func notesTapped() {
+        analytics.track(event: .BookingsDetail.bookingAddNoteTapped())
     }
 
     @MainActor
@@ -309,11 +319,13 @@ extension BookingDetailsViewModel {
     @MainActor
     func cancelBooking() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { error in
+            stores.dispatch(BookingAction.cancelBooking(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
                 if let error {
                     continuation.resume(throwing: error)
+                    analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .cancelBooking, error: error))
                 } else {
                     continuation.resume(returning: ())
+                    analytics.track(event: .BookingsDetail.bookingCancelled())
                 }
             })
         }
@@ -340,9 +352,11 @@ extension BookingDetailsViewModel {
 
     @MainActor
     func markBookingAsPaid() async throws {
+        analytics.track(event: .BookingsDetail.bookingMarkAsPaidTapped())
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { error in
+            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
                 if let error {
+                    analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .markAsPaid, error: error))
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: ())
@@ -428,6 +442,7 @@ extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func navigateToOrderDetails() {
+        analytics.track(event: .BookingsDetail.bookingViewLinkedOrderTapped())
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
 }

@@ -10,12 +10,12 @@ protocol SiteCredentialLoginProtocol {
 enum SiteCredentialLoginError: LocalizedError {
     static let errorDomain = "SiteCredentialLogin"
     case invalidCredentials
+    case basicAuthenticationRequired
     case loginFailed(message: String)
     case invalidLoginResponse
     case inaccessibleLoginPage
     case inaccessibleAdminPage
     case unacceptableStatusCode(code: Int)
-    case failedAuthenticationChallenge
     case genericFailure(underlyingError: Error)
 
     /// Used for tracking error code
@@ -25,10 +25,10 @@ enum SiteCredentialLoginError: LocalizedError {
         case .inaccessibleLoginPage,
              .inaccessibleAdminPage,
              .invalidLoginResponse,
+             .basicAuthenticationRequired,
              .invalidCredentials,
              .loginFailed,
-             .unacceptableStatusCode,
-             .failedAuthenticationChallenge:
+             .unacceptableStatusCode:
             return NSError(domain: Self.errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
         case .genericFailure(let underlyingError):
             return underlyingError as NSError
@@ -45,10 +45,10 @@ enum SiteCredentialLoginError: LocalizedError {
             return 403
         case .invalidCredentials:
             return 401
+        case .basicAuthenticationRequired:
+            return -2
         case .unacceptableStatusCode(let code):
             return code
-        case .failedAuthenticationChallenge:
-            return -2
         case .genericFailure(let underlyingError):
             return (underlyingError as NSError).code
         }
@@ -60,6 +60,8 @@ enum SiteCredentialLoginError: LocalizedError {
             return Localization.inaccessibleLoginPage
         case .inaccessibleAdminPage:
             return Localization.inaccessibleAdminPage
+        case .basicAuthenticationRequired:
+            return Localization.failedAuthenticationChallenge
         case .invalidLoginResponse:
             return Localization.invalidLoginResponse
         case .invalidCredentials:
@@ -68,8 +70,6 @@ enum SiteCredentialLoginError: LocalizedError {
             return message
         case .unacceptableStatusCode(let code):
             return String(format: Localization.unacceptableStatusCode, code)
-        case .failedAuthenticationChallenge:
-            return Localization.failedAuthenticationChallenge
         case .genericFailure:
             return ""
         }
@@ -116,19 +116,12 @@ enum SiteCredentialLoginError: LocalizedError {
 /// - If the request does not redirect or the redirect fails, login fails.
 /// Ref: pe5sF9-1iQ-p2
 ///
-final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, URLSessionTaskDelegate {
+final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
     private let cookieJar: HTTPCookieStorage
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
-
-    private var receivedAuthChallengeMethod: String?
-
-    private lazy var session = {
-        var configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForResource = 60
-        return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-    }()
+    private lazy var session = URLSession(configuration: .default)
 
     init(siteURL: String,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
@@ -147,14 +140,10 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, U
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-
-        receivedAuthChallengeMethod = nil
-
         guard let loginRequest = buildLoginRequest(username: username, password: password) else {
             DDLogError("⛔️ Error constructing login requests")
             return
         }
-
         Task { @MainActor in
             do {
                 try await startLogin(with: loginRequest)
@@ -162,12 +151,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol, U
             } catch let error as SiteCredentialLoginError {
                 errorHandler?(error)
             } catch {
-                if let receivedAuthChallengeMethod {
-                    errorHandler?(.failedAuthenticationChallenge)
-                    DDLogError("⛔️ Authentication Error: Nonce retrieval blocked by authentication challenge \(receivedAuthChallengeMethod)")
-                } else {
-                    errorHandler?(.genericFailure(underlyingError: error as NSError))
-                }
+                errorHandler?(.genericFailure(underlyingError: error as NSError))
             }
         }
     }
@@ -183,9 +167,16 @@ private extension SiteCredentialLoginUseCase {
     }
 
     func startLogin(with loginRequest: URLRequest) async throws {
-        let (data, response) = try await session.data(for: loginRequest)
+        try await detectBasicAuthProbe()
+
+        let (data, response): (Data, URLResponse) = try await session.data(for: loginRequest)
+
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.invalidLoginResponse
+        }
+
+        if response.containsHTTPBasicAuthenticationChallenge {
+            throw SiteCredentialLoginError.basicAuthenticationRequired
         }
 
         /// The login request comes with a redirect header to nonce retrieval URL.
@@ -251,6 +242,25 @@ private extension SiteCredentialLoginUseCase {
         request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
         return request
     }
+
+    /// Issues a lightweight GET to detect Basic Auth without engaging URLSession auth challenge flow.
+    func detectBasicAuthProbe() async throws {
+        guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
+            return
+        }
+        var request = URLRequest(
+            url: loginURL,
+            cachePolicy: .reloadIgnoringLocalCacheData,
+            timeoutInterval: 8
+        )
+        request.httpMethod = "GET"
+
+        let (_, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { return }
+        if http.containsHTTPBasicAuthenticationChallenge {
+            throw SiteCredentialLoginError.basicAuthenticationRequired
+        }
+    }
 }
 
 extension SiteCredentialLoginUseCase {
@@ -259,6 +269,20 @@ extension SiteCredentialLoginUseCase {
         static let adminPath = "/wp-admin"
         static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
         static let captchaText = "captcha"
+    }
+}
+
+extension HTTPURLResponse {
+    /// Detects whether the server requires HTTP Basic authentication.
+    ///
+    /// When a site is behind basic auth it responds with a 401 and a `WWW-Authenticate` header containing `Basic`.
+    /// That reliably distinguishes it from a normal WordPress login failure, which returns 200.
+    var containsHTTPBasicAuthenticationChallenge: Bool {
+        guard statusCode == 401 else {
+            return false
+        }
+        return value(forHTTPHeaderField: "WWW-Authenticate")?
+            .localizedCaseInsensitiveContains("basic") == true
     }
 }
 
@@ -323,16 +347,5 @@ private extension String {
             return false
         }
         return wholeMatch(of: regex) != nil
-    }
-}
-
-// MARK: - URLSessionTaskDelegate
-extension SiteCredentialLoginUseCase {
-    func urlSession(_ session: URLSession,
-                    didReceive challenge: URLAuthenticationChallenge,
-                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        let authMethod = challenge.protectionSpace.authenticationMethod
-        receivedAuthChallengeMethod = authMethod
-        completionHandler(.cancelAuthenticationChallenge, nil)
     }
 }

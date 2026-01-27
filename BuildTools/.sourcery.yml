@@ -1,4 +1,4 @@
-# At the time of writing and with Sourcery 2.2.6, running the tool via `swift
+# At the time of writing and with Sourcery 2.3.0, running the tool via `swift
 # package plugin` ignores the --config parameter, looking instead for the
 # .sourcery.yml configuration file.
 #

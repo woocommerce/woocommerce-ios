@@ -3,11 +3,13 @@ import Foundation
 /// Mapper: Jetpack connection registration
 ///
 /// periphery: ignore - used in `JetpackConnectionRemote`
-struct JetpackConnectionProvisionMapper: Mapper {
+public struct JetpackConnectionProvisionMapper: Mapper {
+
+    public init() {}
 
     /// (Attempts) to extract the updated `currentUser` field from a given JSON Encoded response.
     ///
-    func map(response: Data) throws -> JetpackConnectionProvisionResponse {
+    public func map(response: Data) throws -> JetpackConnectionProvisionResponse {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(JetpackConnectionProvisionResponse.self, from: response)

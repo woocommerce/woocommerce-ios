@@ -589,6 +589,8 @@ final class MockSessionManager: SessionManagerProtocol {
 
     var anonymousUserID: String? = nil
 
+    var cachedWooCommerceVersion: String? = nil
+
     var defaultCredentials: Yosemite.Credentials? = nil
 
     func reset() {

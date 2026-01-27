@@ -15,7 +15,9 @@ struct POSOrderDetailsView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView: Bool = false
+    @State private var refundModalState: RefundModalState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -62,6 +64,11 @@ struct POSOrderDetailsView: View {
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .posModal(item: $refundModalState, onDismiss: {
+            orderListModel.ordersController.clearRefundSelection()
+        }) { state in
+            refundModalContent(for: state)
         }
         .onAppear {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -402,16 +409,6 @@ private extension POSOrderDetailsView {
             case .emailReceipt: 50
             }
         }
-
-        func isAvailable(for order: POSOrder, flags: POSFeatureFlagProviding) -> Bool {
-            guard order.status == .completed else { return false }
-            switch self {
-            case .issueRefund:
-                return flags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
-            case .emailReceipt:
-                return true
-            }
-        }
     }
 
     func handler(for action: OrderDetailsAction) -> @MainActor () -> Void {
@@ -422,7 +419,10 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { }
+            return {
+                orderListModel.ordersController.startRefundFlow()
+                refundModalState = .itemSelection
+            }
         }
     }
 
@@ -432,14 +432,26 @@ private extension POSOrderDetailsView {
     }
 
     var availableActionsSetup: OrderDetailsActionsSetup {
-        let available = OrderDetailsAction.allCases
-            .filter { $0.isAvailable(for: order, flags: featureFlags) }
-            .sorted { $0.priority > $1.priority }
+        guard order.status == .completed else {
+            return .init(primary: nil, secondary: [])
+        }
 
-        let primary = available.first
-        let secondary = Array(available.dropFirst())
+        let email: OrderDetailsAction = .emailReceipt
 
-        return OrderDetailsActionsSetup(primary: primary, secondary: secondary)
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
+            return .init(primary: email, secondary: [])
+        }
+
+        switch orderListModel.ordersController.refundActionAvailability {
+        case .available:
+            return .init(primary: .issueRefund, secondary: [email])
+
+        case .unavailable:
+            return .init(primary: email, secondary: [])
+
+        case .unknown:
+            return .init(primary: nil, secondary: [email])
+        }
     }
 
     @ViewBuilder
@@ -449,23 +461,23 @@ private extension POSOrderDetailsView {
                 Button(primary.title, action: handler(for: primary))
                     .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
                     .accessibilityHint(primary.accessibilityHint)
-
-                if !setup.secondary.isEmpty {
-                    Menu {
-                        ForEach(setup.secondary) { action in
-                            Button(action.title, action: handler(for: action))
-                                .accessibilityHint(action.accessibilityHint)
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .font(.posBodyLargeBold)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            .foregroundColor(.posOnSurface)
-                            .padding(POSPadding.small)
-                    }
-                    .menuIndicator(.hidden)
-                }
             }
+        }
+
+        if !setup.secondary.isEmpty {
+            Menu {
+                ForEach(setup.secondary) { action in
+                    Button(action.title, action: handler(for: action))
+                        .accessibilityHint(action.accessibilityHint)
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.posBodyLargeBold)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .foregroundColor(.posOnSurface)
+                    .padding(POSPadding.small)
+            }
+            .menuIndicator(.hidden)
         }
     }
 
@@ -481,6 +493,93 @@ private extension POSOrderDetailsView {
         Divider()
             .overlay(Color.posOutlineVariant.opacity(0.5))
             .padding(.vertical, POSSpacing.small)
+    }
+}
+
+// MARK: - Refund Modal State
+
+enum RefundModalState: Identifiable, Equatable {
+    case itemSelection
+    case review(POSRefundReviewData)
+    case reasonInput(POSRefundReviewData)
+    case confirmation(POSRefundReviewData)
+
+    var id: String {
+        switch self {
+        case .itemSelection: return "itemSelection"
+        case .review: return "review"
+        case .reasonInput: return "reasonInput"
+        case .confirmation: return "confirmation"
+        }
+    }
+}
+
+// MARK: - Refund Modal Content
+
+private extension POSOrderDetailsView {
+    @ViewBuilder
+    func refundModalContent(for state: RefundModalState) -> some View {
+        switch state {
+        case .itemSelection:
+            POSRefundItemsSelectionView(
+                onClose: { refundModalState = nil },
+                onContinue: { navigateToRefundReview() }
+            )
+        case .review(let reviewData):
+            POSRefundReviewView(
+                onClose: { refundModalState = nil },
+                itemsCount: reviewData.itemsCount,
+                formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
+                formattedTax: reviewData.formattedTax,
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                refundReason: reviewData.refundReason,
+                onAddReason: {
+                    refundModalState = .reasonInput(reviewData)
+                },
+                onContinue: {
+                    refundModalState = .confirmation(reviewData)
+                },
+                onEditRefund: {
+                    refundModalState = .itemSelection
+                }
+            )
+        case .reasonInput(let reviewData):
+            POSRefundReasonView(
+                initialReason: reviewData.refundReason,
+                onSave: { reason in
+                    var updatedReviewData = reviewData
+                    updatedReviewData.refundReason = reason
+                    refundModalState = .review(updatedReviewData)
+                },
+                onBack: {
+                    refundModalState = .review(reviewData)
+                },
+                onClose: {
+                    refundModalState = nil
+                }
+            )
+        case .confirmation(let reviewData):
+            POSRefundConfirmationView(
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                onClose: {
+                    refundModalState = nil
+                },
+                onConfirm: {
+                    // TODO: Process refund
+                    refundModalState = nil
+                },
+                onBack: {
+                    refundModalState = .review(reviewData)
+                }
+            )
+        }
+    }
+
+    func navigateToRefundReview() {
+        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else { return }
+        refundModalState = .review(reviewData)
     }
 }
 

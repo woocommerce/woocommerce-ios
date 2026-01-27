@@ -712,6 +712,8 @@
 		203AB2A82D01B988001D989C /* OrderCustomAmountsSectionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203AB2A72D01B97D001D989C /* OrderCustomAmountsSectionViewModelTests.swift */; };
 		204C9C742B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */; };
 		204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */; };
+		2062D1162F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */; };
+		2062DCEB2F20F83600D05E28 /* POSPromoOnPhonesCampaignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2062DCEA2F20F83600D05E28 /* POSPromoOnPhonesCampaignTests.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */; };
 		209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */; };
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
@@ -722,6 +724,7 @@
 		20AE33C52B0510BF00527B60 /* PaymentsMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */; };
 		20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C62B0510D200527B60 /* HubMenuDestination.swift */; };
 		20B0D65E2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */; };
+		20B259352F18DB7A006DF96E /* SiteConnectionTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */; };
 		20BBD62C2B3060A300A903F6 /* AddOrderComponentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */; };
 		20BCF6EE2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6ED2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift */; };
 		20BCF6F02B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */; };
@@ -733,8 +736,19 @@
 		20D3D4332C65E59B004CE6E3 /* OrdersRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4322C65E59B004CE6E3 /* OrdersRoute.swift */; };
 		20D3D4352C65E640004CE6E3 /* OrdersDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4342C65E640004CE6E3 /* OrdersDestination.swift */; };
 		20D3D4372C65EF72004CE6E3 /* OrdersRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */; };
+		20D3D4382F197A00004CE6E3 /* POSRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4392F197A00004CE6E3 /* POSRoute.swift */; };
+		20D3D43A2F197A00004CE6E3 /* POSPromotionDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D43B2F197A00004CE6E3 /* POSPromotionDestination.swift */; };
+		20D3D43C2F197A00004CE6E3 /* POSRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D43D2F197A00004CE6E3 /* POSRouteTests.swift */; };
+		20D3D43E2F197B00004CE6E3 /* POSPromotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */; };
+		20D3D4402F197B00004CE6E3 /* POSPromotionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */; };
+		20D3D4422F197B00004CE6E3 /* POSPromotionStepsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */; };
+		20D3D4442F197B00004CE6E3 /* PageIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4452F197B00004CE6E3 /* PageIndicatorView.swift */; };
+		20D3D4462F197B00004CE6E3 /* POSPromotionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */; };
 		20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */; };
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
+		20D8E3622F1FF8E500AE0FCF /* ClientSideBannerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8E3612F1FF8E500AE0FCF /* ClientSideBannerProvider.swift */; };
+		20D8E7572F1FF96A00AE0FCF /* ClientSideBannerProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8E7542F1FF96A00AE0FCF /* ClientSideBannerProviderTests.swift */; };
+		20DA45652EF975660007FD3B /* CouponCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA45642EF975660007FD3B /* CouponCellViewModel.swift */; };
 		20DA6DDB2B681175002AA0FB /* AdaptiveModalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */; };
 		20E188842AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */; };
 		20FA73882CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */; };
@@ -1342,11 +1356,19 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */; };
+		643492C42F1A45B30080AEC1 /* OverrideFeatureFlagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */; };
+		644EA1542F20CC5C00511C2A /* DebugPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644EA1532F20CC4F00511C2A /* DebugPanelView.swift */; };
+		644EA9382F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */; };
+		6460A3672F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6460A3662F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift */; };
+		6460A36B2F27A132005D3A3E /* ConnectWPComCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6460A36A2F27A132005D3A3E /* ConnectWPComCard.swift */; };
 		646FEDB82EE827DF00352BFF /* ApplicationLogProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646FEDB72EE827DF00352BFF /* ApplicationLogProvider.swift */; };
 		647C05FB2ED5D9E800E5FF3F /* NotesContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */; };
 		647C05FD2ED5E1C000E5FF3F /* BookingNotesRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */; };
+		6489B8152EF3EB62001E0343 /* MockError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6489B8142EF3EB5D001E0343 /* MockError.swift */; };
 		6489DFFF2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6489DFFE2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift */; };
 		6489E0012EA78E2D00D96802 /* MockProductDetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6489E0002EA78E2D00D96802 /* MockProductDetailCoordinator.swift */; };
+		6497C0D42EF14F1F00DA63F1 /* BookingDetailsViewModel+Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6497C0D32EF14F1300DA63F1 /* BookingDetailsViewModel+Analytics.swift */; };
+		6497CCA62EF19EC100DA63F1 /* BookingListContainerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6497CCA52EF19EBB00DA63F1 /* BookingListContainerViewModelTests.swift */; };
 		64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */; };
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
@@ -1377,7 +1399,6 @@
 		68A38DF52B293B030090C263 /* MockProductListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A38DF42B293B030090C263 /* MockProductListViewModel.swift */; };
 		68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */; };
 		68A905012ACCFC13004C71D3 /* CollapsibleProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */; };
-		68B3BA262D9147480000B2F2 /* AISettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B3BA252D9147440000B2F2 /* AISettingsView.swift */; };
 		68B6F22B2ADE7ED500D171FC /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6F22A2ADE7ED500D171FC /* TooltipView.swift */; };
 		68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */; };
 		68D1BEDB28FFEDC20074A29E /* OrderCustomerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */; };
@@ -2485,6 +2506,7 @@
 		DE972D422E3C7238008C2EAE /* Product+ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE972D412E3C7231008C2EAE /* Product+ListItem.swift */; };
 		DE9734B42E3CA163008C2EAE /* String+ProductStock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9734B32E3CA155008C2EAE /* String+ProductStock.swift */; };
 		DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */; };
+		DE9AA88F2F27625E00125F08 /* ConnectWPComHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9AA88E2F27625E00125F08 /* ConnectWPComHeaderView.swift */; };
 		DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */; };
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
@@ -3636,6 +3658,8 @@
 		203AB2A72D01B97D001D989C /* OrderCustomAmountsSectionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomAmountsSectionViewModelTests.swift; sourceTree = "<group>"; };
 		204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserInterfaceSizeClass+Helpers.swift"; sourceTree = "<group>"; };
 		204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockViewControllerPresenting.swift; sourceTree = "<group>"; };
+		2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromoOnPhonesCampaign.swift; sourceTree = "<group>"; };
+		2062DCEA2F20F83600D05E28 /* POSPromoOnPhonesCampaignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromoOnPhonesCampaignTests.swift; sourceTree = "<group>"; };
 		20716F332D9DA289008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSalePurchasableItemFetchStrategy.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
@@ -3647,6 +3671,7 @@
 		20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsMenuDestination.swift; sourceTree = "<group>"; };
 		20AE33C62B0510D200527B60 /* HubMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuDestination.swift; sourceTree = "<group>"; };
 		20B0D65D2AD45BDE0059735A /* TapToPayEducationContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
+		20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteConnectionTypeTests.swift; sourceTree = "<group>"; };
 		20BBD62B2B3060A300A903F6 /* AddOrderComponentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderComponentsSection.swift; sourceTree = "<group>"; };
 		20BCF6ED2B0E478B00954840 /* WooPaymentsPayoutsOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModel.swift; sourceTree = "<group>"; };
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -3658,8 +3683,19 @@
 		20D3D4322C65E59B004CE6E3 /* OrdersRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRoute.swift; sourceTree = "<group>"; };
 		20D3D4342C65E640004CE6E3 /* OrdersDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersDestination.swift; sourceTree = "<group>"; };
 		20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRouteTests.swift; sourceTree = "<group>"; };
+		20D3D4392F197A00004CE6E3 /* POSRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSRoute.swift; sourceTree = "<group>"; };
+		20D3D43B2F197A00004CE6E3 /* POSPromotionDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionDestination.swift; sourceTree = "<group>"; };
+		20D3D43D2F197A00004CE6E3 /* POSRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSRouteTests.swift; sourceTree = "<group>"; };
+		20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionView.swift; sourceTree = "<group>"; };
+		20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionViewModel.swift; sourceTree = "<group>"; };
+		20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionStepsFactory.swift; sourceTree = "<group>"; };
+		20D3D4452F197B00004CE6E3 /* PageIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageIndicatorView.swift; sourceTree = "<group>"; };
+		20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPromotionViewModelTests.swift; sourceTree = "<group>"; };
 		20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRow.swift; sourceTree = "<group>"; };
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
+		20D8E3612F1FF8E500AE0FCF /* ClientSideBannerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSideBannerProvider.swift; sourceTree = "<group>"; };
+		20D8E7542F1FF96A00AE0FCF /* ClientSideBannerProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSideBannerProviderTests.swift; sourceTree = "<group>"; };
+		20DA45642EF975660007FD3B /* CouponCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCellViewModel.swift; sourceTree = "<group>"; };
 		20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveModalContainer.swift; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitView.swift; sourceTree = "<group>"; };
 		20FA73872CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsSyncStateController.swift; sourceTree = "<group>"; };
@@ -4243,11 +4279,19 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideFeatureFlagsView.swift; sourceTree = "<group>"; };
+		644EA1532F20CC4F00511C2A /* DebugPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPanelView.swift; sourceTree = "<group>"; };
+		644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPushNotificationsBenefitsView.swift; sourceTree = "<group>"; };
+		6460A3662F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPushNotificationsBenefitsViewModel.swift; sourceTree = "<group>"; };
+		6460A36A2F27A132005D3A3E /* ConnectWPComCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectWPComCard.swift; sourceTree = "<group>"; };
 		646FEDB72EE827DF00352BFF /* ApplicationLogProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogProvider.swift; sourceTree = "<group>"; };
 		647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesContent.swift; sourceTree = "<group>"; };
 		647C05FC2ED5E1C000E5FF3F /* BookingNotesRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingNotesRowView.swift; sourceTree = "<group>"; };
+		6489B8142EF3EB5D001E0343 /* MockError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockError.swift; sourceTree = "<group>"; };
 		6489DFFE2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductDetailCoordinatorFactory.swift; sourceTree = "<group>"; };
 		6489E0002EA78E2D00D96802 /* MockProductDetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductDetailCoordinator.swift; sourceTree = "<group>"; };
+		6497C0D32EF14F1300DA63F1 /* BookingDetailsViewModel+Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Analytics.swift"; sourceTree = "<group>"; };
+		6497CCA52EF19EBB00DA63F1 /* BookingListContainerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingListContainerViewModelTests.swift; sourceTree = "<group>"; };
 		64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingSceneDelegate.swift; sourceTree = "<group>"; };
 		68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSNotificationSchedulerTests.swift; sourceTree = "<group>"; };
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
@@ -4281,7 +4325,6 @@
 		68A38DF42B293B030090C263 /* MockProductListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductListViewModel.swift; sourceTree = "<group>"; };
 		68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCard.swift; sourceTree = "<group>"; };
-		68B3BA252D9147440000B2F2 /* AISettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISettingsView.swift; sourceTree = "<group>"; };
 		68B6F22A2ADE7ED500D171FC /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
 		68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewModel.swift; sourceTree = "<group>"; };
 		68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerListView.swift; sourceTree = "<group>"; };
@@ -5423,6 +5466,7 @@
 		DE972D412E3C7231008C2EAE /* Product+ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ListItem.swift"; sourceTree = "<group>"; };
 		DE9734B32E3CA155008C2EAE /* String+ProductStock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ProductStock.swift"; sourceTree = "<group>"; };
 		DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequirementsCheckerTests.swift; sourceTree = "<group>"; };
+		DE9AA88E2F27625E00125F08 /* ConnectWPComHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectWPComHeaderView.swift; sourceTree = "<group>"; };
 		DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedView.swift; sourceTree = "<group>"; };
 		DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsGranularityV4+UI.swift"; sourceTree = "<group>"; };
 		DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModelTests.swift; sourceTree = "<group>"; };
@@ -7176,8 +7220,10 @@
 		0371C36C2876E91500277E2C /* Feature Announcement Cards */ = {
 			isa = PBXGroup;
 			children = (
+				20D8E3612F1FF8E500AE0FCF /* ClientSideBannerProvider.swift */,
 				0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */,
 				0366EAE02909A37800B51755 /* JustInTimeMessageViewModel.swift */,
+				2062D1152F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift */,
 				AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */,
 			);
 			path = "Feature Announcement Cards";
@@ -7186,7 +7232,9 @@
 		0371C36F2876ED3A00277E2C /* Feature Announcement Cards */ = {
 			isa = PBXGroup;
 			children = (
+				20D8E7542F1FF96A00AE0FCF /* ClientSideBannerProviderTests.swift */,
 				0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */,
+				2062DCEA2F20F83600D05E28 /* POSPromoOnPhonesCampaignTests.swift */,
 				035BA3A7291000E90056F0AD /* JustInTimeMessageViewModelTests.swift */,
 			);
 			path = "Feature Announcement Cards";
@@ -7208,6 +7256,7 @@
 			children = (
 				0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */,
 				20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */,
+				20D3D43D2F197A00004CE6E3 /* POSRouteTests.swift */,
 			);
 			path = Routes;
 			sourceTree = "<group>";
@@ -7256,6 +7305,7 @@
 				03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */,
 				03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */,
 				DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */,
+				20DA45642EF975660007FD3B /* CouponCellViewModel.swift */,
 				B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */,
 				B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */,
 				B958640B2A66847B002C4C6E /* CouponListView.swift */,
@@ -7349,8 +7399,17 @@
 				20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */,
 				20AE33C62B0510D200527B60 /* HubMenuDestination.swift */,
 				20D3D4342C65E640004CE6E3 /* OrdersDestination.swift */,
+				20D3D43B2F197A00004CE6E3 /* POSPromotionDestination.swift */,
 			);
 			path = Destinations;
+			sourceTree = "<group>";
+		};
+		20B259342F18DB7A006DF96E /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				20B259332F18DB7A006DF96E /* SiteConnectionTypeTests.swift */,
+			);
+			path = Analytics;
 			sourceTree = "<group>";
 		};
 		20BBD62A2B30608200A903F6 /* AddOrderComponentsSection */ = {
@@ -7368,6 +7427,40 @@
 				20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */,
 			);
 			path = "Deposits Overview";
+			sourceTree = "<group>";
+		};
+		20D3D4482F197B00004CE6E3 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D4492F197B00004CE6E3 /* Promotion */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
+		20D3D4492F197B00004CE6E3 /* Promotion */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D43F2F197B00004CE6E3 /* POSPromotionView.swift */,
+				20D3D4412F197B00004CE6E3 /* POSPromotionViewModel.swift */,
+				20D3D4432F197B00004CE6E3 /* POSPromotionStepsFactory.swift */,
+			);
+			path = Promotion;
+			sourceTree = "<group>";
+		};
+		20D3D44A2F197B00004CE6E3 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D44B2F197B00004CE6E3 /* Promotion */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
+		20D3D44B2F197B00004CE6E3 /* Promotion */ = {
+			isa = PBXGroup;
+			children = (
+				20D3D4472F197B00004CE6E3 /* POSPromotionViewModelTests.swift */,
+			);
+			path = Promotion;
 			sourceTree = "<group>";
 		};
 		20D5CB4F2AFCF82D009A39C3 /* Payments Menu */ = {
@@ -7946,6 +8039,7 @@
 		2DAC251E2E829FF9008521AF /* Booking Details */ = {
 			isa = PBXGroup;
 			children = (
+				6497C0D32EF14F1300DA63F1 /* BookingDetailsViewModel+Analytics.swift */,
 				647C05FA2ED5D9E200E5FF3F /* NotesContent.swift */,
 				2D05E8122E8AADB2004111FD /* PaymentContent.swift */,
 				2D05E8102E8A98FE004111FD /* CustomerContent.swift */,
@@ -8588,6 +8682,7 @@
 				03076D35290C162E008EE839 /* WebViewSheet.swift */,
 				03076D37290C223D008EE839 /* WooNavigationSheet.swift */,
 				DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */,
+				DE9AA88E2F27625E00125F08 /* ConnectWPComHeaderView.swift */,
 				26E7EE6F29300F6200793045 /* DeltaTag.swift */,
 				AEE9A87F293A3E5500227C92 /* RefreshablePlainList.swift */,
 				26B71DB5293FE490004D8052 /* RangedDatePicker.swift */,
@@ -8611,6 +8706,7 @@
 				CEE02AF72C1859B400B0B6AB /* MessageComposeView.swift */,
 				DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */,
 				CE9F60112C09D53500652E0A /* FeedbackBannerPopover.swift */,
+				20D3D4452F197B00004CE6E3 /* PageIndicatorView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -8868,6 +8964,16 @@
 			path = TitleAndEditableValueTableViewCell;
 			sourceTree = "<group>";
 		};
+		6460A3692F279B1A005D3A3E /* WPComPushNotificationsBenefits */ = {
+			isa = PBXGroup;
+			children = (
+				6460A36A2F27A132005D3A3E /* ConnectWPComCard.swift */,
+				644EA9372F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift */,
+				6460A3662F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift */,
+			);
+			path = WPComPushNotificationsBenefits;
+			sourceTree = "<group>";
+		};
 		682210EB2909664800814E14 /* Customer */ = {
 			isa = PBXGroup;
 			children = (
@@ -8933,14 +9039,6 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
-		68B3BA242D91473D0000B2F2 /* AI Settings */ = {
-			isa = PBXGroup;
-			children = (
-				68B3BA252D9147440000B2F2 /* AISettingsView.swift */,
-			);
-			path = "AI Settings";
-			sourceTree = "<group>";
-		};
 		68C1813A2EA23D62002AE846 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -8995,6 +9093,7 @@
 		746791642108D853007CF1DC /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				6489B8142EF3EB5D001E0343 /* MockError.swift */,
 				6489E0002EA78E2D00D96802 /* MockProductDetailCoordinator.swift */,
 				6489DFFE2EA78E0D00D96802 /* MockProductDetailCoordinatorFactory.swift */,
 				02F5DE602E852909002DEE24 /* MockPOSTabVisibilityChecker.swift */,
@@ -9707,6 +9806,7 @@
 			isa = PBXGroup;
 			children = (
 				2DB6CCEF2EF9936B00EDB54D /* AgeGate */,
+				20B259342F18DB7A006DF96E /* Analytics */,
 				6489D8522EA667AC00D96802 /* Routing */,
 				DEB387962C2E80060025256E /* GoogleAds */,
 				DABF35242C11B40C006AF826 /* POS */,
@@ -9741,7 +9841,6 @@
 			children = (
 				2D0490532EEAF5E90014B255 /* AgeGate */,
 				2DAC2C952E82A15C008521AF /* Bookings */,
-				68B3BA242D91473D0000B2F2 /* AI Settings */,
 				B626C7192876599B0083820C /* Custom Fields */,
 				86023FA82B15CA8D00A28F07 /* Themes */,
 				DED91DF72AD78A0C00CDCC53 /* Blaze */,
@@ -9776,6 +9875,7 @@
 				02817B37242B34260050AD8B /* Toolbar */,
 				02404EE52315272C00FF1170 /* Top Banner */,
 				D449C52726DFBBE000D75B02 /* WhatsNew */,
+				20D3D4482F197B00004CE6E3 /* POS */,
 				CE63023B2BAAEF0800E3325C /* Customers */,
 				3F587020281B9494004F7556 /* LaunchScreen.storyboard */,
 				3F58701E281B947E004F7556 /* Main.storyboard */,
@@ -10285,6 +10385,7 @@
 				B958A7C828B3D47B00823EEF /* Route.swift */,
 				B95112D928BF79CA00D9578D /* PaymentsRoute.swift */,
 				20D3D4322C65E59B004CE6E3 /* OrdersRoute.swift */,
+				20D3D4392F197A00004CE6E3 /* POSRoute.swift */,
 			);
 			path = Routes;
 			sourceTree = "<group>";
@@ -10479,6 +10580,8 @@
 		BAF1B3B32736595A00BA11DC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				644EA1532F20CC4F00511C2A /* DebugPanelView.swift */,
+				643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */,
 				027D4A8B2526FD1700108626 /* SettingsViewController.swift */,
 				BAE4F8422734325C00871344 /* SettingsViewModel.swift */,
 				027D4A8C2526FD1700108626 /* SettingsViewController.xib */,
@@ -11433,6 +11536,7 @@
 				DE74A4502BCF86F60009C415 /* TopPerformers */,
 				DEA6BCAD2BC6A9A50017D671 /* StoreStats */,
 				DEC75CC02BC4E4E600763801 /* DashboardCustomization */,
+				6460A3692F279B1A005D3A3E /* WPComPushNotificationsBenefits */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -11888,6 +11992,7 @@
 				02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */,
 				953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */,
 				02B8E4182DFBC218001D01FD /* MainTabBarController+TabsTests.swift */,
+				20D3D44A2F197B00004CE6E3 /* POS */,
 			);
 			path = ViewRelated;
 			sourceTree = "<group>";
@@ -12556,6 +12661,7 @@
 		DED1E3162E8556270089909C /* Bookings */ = {
 			isa = PBXGroup;
 			children = (
+				6497CCA52EF19EBB00DA63F1 /* BookingListContainerViewModelTests.swift */,
 				2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */,
 				DE8C39FF2EB3527300C69F35 /* SyncableListSelectorViewModelTests.swift */,
 				DE49CD212E966814006DCB07 /* BookingSearchViewModelTests.swift */,
@@ -14242,6 +14348,7 @@
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
 				6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */,
+				644EA9382F20DF7900511C2A /* WPComPushNotificationsBenefitsView.swift in Sources */,
 				26838354296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift in Sources */,
 				DED91DFA2AD78A3A00CDCC53 /* BlazeCampaignItemView.swift in Sources */,
 				31FC8CE727B47591004B9456 /* CardReaderSettingsDataSource.swift in Sources */,
@@ -14469,6 +14576,7 @@
 				20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */,
+				6460A3672F279B03005D3A3E /* WPComPushNotificationsBenefitsViewModel.swift in Sources */,
 				68D1BEDD2900E4180074A29E /* CustomerSearchUICommand.swift in Sources */,
 				316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */,
 				FE28F6F4268477C1004465C7 /* RoleEligibilityUseCase.swift in Sources */,
@@ -14644,6 +14752,7 @@
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
 				4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */,
 				DE4B3B5626A68DD000EEF2D8 /* View+InsetPaddings.swift in Sources */,
+				20D8E3622F1FF8E500AE0FCF /* ClientSideBannerProvider.swift in Sources */,
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
 				01929C342CEF6354006C79ED /* CardPresentModalErrorWithoutEmail.swift in Sources */,
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
@@ -14653,6 +14762,7 @@
 				45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
+				6460A36B2F27A132005D3A3E /* ConnectWPComCard.swift in Sources */,
 				AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */,
 				DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */,
 				CE4FE7DA2B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift in Sources */,
@@ -14836,6 +14946,7 @@
 				DEB06E1F2E94A5D1007A2FB1 /* OfflineBannerViewRepresentable.swift in Sources */,
 				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
 				86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */,
+				643492C42F1A45B30080AEC1 /* OverrideFeatureFlagsView.swift in Sources */,
 				EE19058C2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift in Sources */,
 				68D23B5B2E14FD1C00316BA6 /* SummaryTableViewCellViewModel.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
@@ -14986,6 +15097,12 @@
 				0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */,
 				029F29FA24D93E9E004751CA /* EditableProductModel.swift in Sources */,
 				20D3D4332C65E59B004CE6E3 /* OrdersRoute.swift in Sources */,
+				20D3D4382F197A00004CE6E3 /* POSRoute.swift in Sources */,
+				20D3D43A2F197A00004CE6E3 /* POSPromotionDestination.swift in Sources */,
+				20D3D43E2F197B00004CE6E3 /* POSPromotionView.swift in Sources */,
+				20D3D4402F197B00004CE6E3 /* POSPromotionViewModel.swift in Sources */,
+				20D3D4422F197B00004CE6E3 /* POSPromotionStepsFactory.swift in Sources */,
+				20D3D4442F197B00004CE6E3 /* PageIndicatorView.swift in Sources */,
 				2DCB54FA2E6AE8E100621F90 /* CIABEligibilityChecker.swift in Sources */,
 				31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				022266BC2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift in Sources */,
@@ -15292,6 +15409,7 @@
 				DEA90D352C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift in Sources */,
 				DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */,
 				02038C582AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift in Sources */,
+				6497C0D42EF14F1F00DA63F1 /* BookingDetailsViewModel+Analytics.swift in Sources */,
 				02B1AA6729A4709400D54FCB /* FilterTabBar.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				DE58D0062D8A9F45005914DF /* SiteNotificationSettingsView.swift in Sources */,
@@ -15311,7 +15429,6 @@
 				B6C78B90293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift in Sources */,
 				314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
-				68B3BA262D9147480000B2F2 /* AISettingsView.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
 				45CE2D852625D7ED00E3CA00 /* SelectableItemRow.swift in Sources */,
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
@@ -15334,6 +15451,7 @@
 				2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */,
 				B6C838DE28793B3A003AB786 /* CustomFieldViewModel.swift in Sources */,
 				95B6C60E2D9DA99200E1A661 /* WPComMagicLinkRequestViewModel.swift in Sources */,
+				2062D1162F20F7C800D05E28 /* POSPromoOnPhonesCampaign.swift in Sources */,
 				20D210BE2B14C9B90099E517 /* WooPaymentsPayoutStatusDisplayDetails.swift in Sources */,
 				E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */,
 				B998DF4A2A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift in Sources */,
@@ -15446,6 +15564,7 @@
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,
 				CE21FB262C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
+				20DA45652EF975660007FD3B /* CouponCellViewModel.swift in Sources */,
 				B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */,
 				EE8B42122BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift in Sources */,
 				AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */,
@@ -15570,6 +15689,7 @@
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */,
 				D8EE9698264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift in Sources */,
+				DE9AA88F2F27625E00125F08 /* ConnectWPComHeaderView.swift in Sources */,
 				26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
 				269098B827D68CCD001FEB07 /* FeesInputTransformer.swift in Sources */,
@@ -15647,6 +15767,7 @@
 				0250192B2BDF3757009493A5 /* PriceFieldFormatter.swift in Sources */,
 				0279F0DF252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift in Sources */,
 				2D05D1A22E82D235004111FD /* HeaderContent.swift in Sources */,
+				644EA1542F20CC5C00511C2A /* DebugPanelView.swift in Sources */,
 				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				CE6302482BAB60AE00E3325C /* CustomerDetailViewModel.swift in Sources */,
 				DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */,
@@ -15746,6 +15867,7 @@
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
 				CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */,
 				CEEF74302B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift in Sources */,
+				6497CCA62EF19EC100DA63F1 /* BookingListContainerViewModelTests.swift in Sources */,
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */,
 				CE55F2D82B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift in Sources */,
@@ -15804,6 +15926,7 @@
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
 				03B9E52D2A150D16005C77F5 /* MockTapToPayCardReaderConnectionControllerFactory.swift in Sources */,
 				3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */,
+				6489B8152EF3EB62001E0343 /* MockError.swift in Sources */,
 				DEC51B04276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift in Sources */,
 				26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */,
 				DE96844D2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift in Sources */,
@@ -15988,6 +16111,7 @@
 				EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */,
 				20134CE62D4D1BDF00076A80 /* LearnMoreViewModelTests.swift in Sources */,
 				026D684B2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift in Sources */,
+				20D8E7572F1FF96A00AE0FCF /* ClientSideBannerProviderTests.swift in Sources */,
 				02038C612AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift in Sources */,
 				CE56C01E2D2431C000EBDE24 /* WooShippingOriginAddressListViewModelTests.swift in Sources */,
 				DA3F99BA2C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift in Sources */,
@@ -16116,6 +16240,7 @@
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */,
 				DEA64C552E41A2D000791018 /* Product+Helpers.swift in Sources */,
+				20B259352F18DB7A006DF96E /* SiteConnectionTypeTests.swift in Sources */,
 				DEFE1B242DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
 				EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */,
@@ -16171,6 +16296,7 @@
 				CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */,
 				03EF250028C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift in Sources */,
 				01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */,
+				2062DCEB2F20F83600D05E28 /* POSPromoOnPhonesCampaignTests.swift in Sources */,
 				86B3E2572C6B249C0002420B /* HelpAndSupportViewModelTests.swift in Sources */,
 				DE2FE5832924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift in Sources */,
 				AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */,
@@ -16407,6 +16533,8 @@
 				6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */,
 				B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */,
 				20D3D4372C65EF72004CE6E3 /* OrdersRouteTests.swift in Sources */,
+				20D3D43C2F197A00004CE6E3 /* POSRouteTests.swift in Sources */,
+				20D3D4462F197B00004CE6E3 /* POSPromotionViewModelTests.swift in Sources */,
 				09C6A26227C01166001FAD73 /* BulkUpdateViewModelTests.swift in Sources */,
 				6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */,
 				023D69442588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift in Sources */,
@@ -16639,7 +16767,8 @@
 		1A9690342359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				APP_DISPLAY_NAME = "Woo (Pre-Alpha)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-PreAlpha";
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Alpha.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Resources/Woo-Alpha-macOS.entitlements";
 				CODE_SIGN_STYLE = Manual;
@@ -17444,7 +17573,8 @@
 		B56DB3E72049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				APP_DISPLAY_NAME = "Woo (Dev)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Default";
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Debug.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Resources/Woo-Debug-macOS.entitlements";
 				CODE_SIGN_STYLE = Manual;
@@ -17473,7 +17603,8 @@
 		B56DB3E82049BFAA00D4AA8E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				APP_DISPLAY_NAME = Woo;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Default";
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Resources/Woo-Release-macOS.entitlements";
 				CODE_SIGN_STYLE = Manual;

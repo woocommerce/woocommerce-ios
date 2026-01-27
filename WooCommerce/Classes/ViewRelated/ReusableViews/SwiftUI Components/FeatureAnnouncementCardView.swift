@@ -2,7 +2,7 @@ import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
     private let viewModel: AnnouncementCardViewModelProtocol
-    @State private var showingDismissActionSheet = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)?
@@ -39,7 +39,6 @@ struct FeatureAnnouncementCardView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(viewModel.message)
                         .bodyStyle()
-                        .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer()
                     if let buttonTitle = viewModel.buttonTitle {
@@ -47,66 +46,32 @@ struct FeatureAnnouncementCardView: View {
                             viewModel.ctaTapped()
                             callToAction?()
                         }
-                        .padding(.bottom, Layout.bottomButtonPadding)
-                        .foregroundColor(Color(uiColor: .primary))
+                        .buttonStyle(TextButtonStyle())
                     }
                 }
+                .padding(.bottom, Layout.padding)
+
                 Spacer()
-                if let imageUrl = viewModel.imageUrl {
-                    AdaptiveAsyncImage(anyAppearanceUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
-                        switch imagePhase {
-                        case .failure:
-                            Image(uiImage: viewModel.image)
-                                .accessibilityHidden(true)
-                        case .success(let image):
-                            image.resizable()
-                                .scaledToFit()
-                                .accessibilityHidden(true)
-                        case .empty:
-                            AnimatedPlaceholder()
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                } else {
-                    Image(uiImage: viewModel.image)
-                        .accessibilityHidden(true)
+
+                if !dynamicTypeSize.isAccessibilitySize {
+                    cornerImage
                 }
             }
         }
         .overlay(alignment: .topTrailing) {
             if let dismiss = dismiss {
-                Button(action: {
-                    if viewModel.showDismissConfirmation {
-                        showingDismissActionSheet = true
-                    } else {
+                Menu {
+                    Button(Localization.hideContent) {
                         viewModel.dontShowAgainTapped()
                         dismiss()
                     }
-                }) {
-                    Image(systemName: "xmark")
-                        .foregroundColor(Color(.withColorStudio(.gray)))
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(Color.secondary)
+                        .padding(.leading, Layout.padding)
+                        .padding(.vertical, Layout.hideIconVerticalPadding)
                 }
                 .padding(.trailing, Layout.padding)
-                .actionSheet(isPresented: $showingDismissActionSheet) {
-                    ActionSheet(
-                        title: Text(viewModel.dismissAlertTitle),
-                        message: Text(viewModel.dismissAlertMessage),
-                        buttons: [
-                            .default(Text(Localization.remindLaterButton),
-                                     action: {
-                                         viewModel.remindLaterTapped()
-                                         dismiss()
-                                     }),
-                            .default(Text(Localization.dontShowAgainButton),
-                                     action: {
-                                         viewModel.dontShowAgainTapped()
-                                         dismiss()
-                                     }),
-                            .cancel()
-                        ]
-                    )
-                }
             }
         }
         .padding(.top, Layout.padding)
@@ -115,28 +80,46 @@ struct FeatureAnnouncementCardView: View {
             viewModel.onAppear()
         }
     }
+
+    @ViewBuilder var cornerImage: some View {
+        if let imageUrl = viewModel.imageUrl {
+            AdaptiveAsyncImage(anyAppearanceUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
+                switch imagePhase {
+                case .failure:
+                    Image(uiImage: viewModel.image)
+                        .accessibilityHidden(true)
+                case .success(let image):
+                    image.resizable()
+                        .scaledToFit()
+                        .accessibilityHidden(true)
+                case .empty:
+                    AnimatedPlaceholder()
+                @unknown default:
+                    EmptyView()
+                }
+            }
+        } else {
+            Image(uiImage: viewModel.image)
+                .accessibilityHidden(true)
+        }
+    }
 }
 
 extension FeatureAnnouncementCardView {
     enum Layout {
         static let padding: CGFloat = 16
-        static let bottomButtonPadding: CGFloat = 23.5
-        static let bottomNoButtonPadding: CGFloat = 60
         static let smallSpacing: CGFloat = 8
         static let largeSpacing: CGFloat = 16
         static let titleTrailingNoBadgeCloseButtonPadding: CGFloat = 48
+        static let hideIconVerticalPadding: CGFloat = 8
     }
 }
 
 extension FeatureAnnouncementCardView {
     enum Localization {
-        static let remindLaterButton = NSLocalizedString(
-            "Remind me later",
-            comment: "Alert button text on a feature announcement which gives the user the chance to be reminded " +
-            "of the new feature after a short time")
-
-        static let dontShowAgainButton = NSLocalizedString(
-            "Don't show again",
-            comment: "Alert button text on a feature announcement which prevents the banner being shown again")
+        static let hideContent = NSLocalizedString(
+            "featureAnnouncementCardView.hideContent",
+            value: "Hide this content",
+            comment: "Menu item to dismiss a feature announcement card")
     }
 }

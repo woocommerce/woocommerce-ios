@@ -14,7 +14,10 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
     private var syncBlockedContinuations: [CheckedContinuation<Void, Never>] = []
 
     @discardableResult
-    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
+    func startIncrementalSync(for siteID: Int64,
+                              lastFullSyncDate: Date,
+                              lastIncrementalSyncDate: Date?,
+                              posProductsOnly: Bool) async throws -> POSCatalog {
         startIncrementalSyncCallCount += 1
         lastSyncSiteID = siteID
         self.lastFullSyncDate = lastFullSyncDate

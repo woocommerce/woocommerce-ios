@@ -136,6 +136,10 @@ extension WooConstants {
         ///
         case helpCenter = "https://woocommerce.com/document/woocommerce-ios/"
 
+        /// POS Learn More URL
+        ///
+        case posLearnMore = "https://woocommerce.com/mobile/pos/learn-more"
+
         /// Help Center for "Enter your Store Address" screen
         ///
         case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"

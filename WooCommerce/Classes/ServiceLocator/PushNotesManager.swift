@@ -33,6 +33,10 @@ protocol PushNotesManager {
     ///
     var deviceID: String? { get }
 
+    /// Site IDs registered for Woo Push Notifications.
+    ///
+    var siteIDsRegisteredForWooPNs: [Int64] { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind)

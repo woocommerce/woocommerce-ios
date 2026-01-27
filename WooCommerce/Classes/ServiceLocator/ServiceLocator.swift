@@ -25,9 +25,22 @@ final class ServiceLocator {
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
 
+    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+
+    private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
+
     /// FeatureFlagService
     ///
-    private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
+    private static var _featureFlagService: FeatureFlagService = {
+        if BuildConfiguration.current == .appStore {
+            return DefaultFeatureFlagService()
+        } else {
+            return OverridableFeatureFlagService(
+                base: DefaultFeatureFlagService(),
+                overrides: _featureFlagOverrideStore
+            )
+        }
+    }()
 
     /// ImageService
     ///
@@ -128,8 +141,14 @@ final class ServiceLocator {
         return _analytics
     }
 
+    /// Provides the access point to the store for overriding FFs.
+    /// - Returns: An implementation of the FeatureFlagOverrideStore protocol. It defaults to UserDefaultsFeatureFlagOverrideStore
+    static var featureFlagOverrideStore: FeatureFlagOverrideStore {
+        return _featureFlagOverrideStore
+    }
+
     /// Provides the access point to the feature flag service.
-    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to DefaultFeatureFlagService
+    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to OverridableFeatureFlagService
     static var featureFlagService: FeatureFlagService {
         return _featureFlagService
     }
@@ -168,6 +187,10 @@ final class ServiceLocator {
     /// - Returns: An implementation of the AuthenticationManager protocol. It defaults to DefaultAuthenticationManager
     static var authenticationManager: Authentication {
         return _authenticationManager
+    }
+
+    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
+        return _ciabEligibilityChecker
     }
 
     /// Shipping Settings

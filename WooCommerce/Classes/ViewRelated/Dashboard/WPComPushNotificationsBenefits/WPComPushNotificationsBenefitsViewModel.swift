@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 import protocol WooFoundation.Analytics
 
 final class WPComPushNotificationsBenefitsViewModel {
@@ -24,6 +23,5 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     func whatIsWPComTapped() {
         // TODO: Track link tapped event
-        UIApplication.shared.open(WooConstants.URLs.whatIsWPCom.asURL())
     }
 }

@@ -1,7 +1,9 @@
 import SwiftUI
+import WooFoundation
 
 struct WPComPushNotificationsBenefitsView: View {
     private let viewModel: WPComPushNotificationsBenefitsViewModel
+    @State private var safariURL: URL?
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel) {
         self.viewModel = viewModel
@@ -32,6 +34,12 @@ struct WPComPushNotificationsBenefitsView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .environment(\.openURL, OpenURLAction { [viewModel] url in
+            viewModel.whatIsWPComTapped()
+            safariURL = url
+            return .handled
+        })
+        .safariSheet(url: $safariURL)
     }
 
     private var stackedImages: some View {
@@ -53,11 +61,9 @@ struct WPComPushNotificationsBenefitsView: View {
                 .font(.body)
             Text(Localization.subdescription)
                 .font(.body)
-            Button(Localization.whatIsWPCom) {
-                viewModel.whatIsWPComTapped()
-            }
-            .font(.body)
-            .foregroundColor(Color(UIColor.accent))
+            Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
+                .font(.body)
+                .foregroundColor(Color(UIColor.accent))
         }
     }
 

@@ -814,4 +814,3 @@ private extension PushNotificationsManager {
         static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
     }
 }
-

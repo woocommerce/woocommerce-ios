@@ -163,10 +163,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case backgroundProductImageUpload
 
-    /// Allows merchants to use their own API keys for AI-powered features
-    ///
-    case allowMerchantAIAPIKey
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
@@ -204,10 +200,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Has same underlying logic as `ciabBookings` flag.
     ///
     case ciab
-
-    /// Enables surveys for potential and current POS merchants
-    ///
-    case pointOfSaleSurveys
 
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///

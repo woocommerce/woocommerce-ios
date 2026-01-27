@@ -109,7 +109,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         default:
             return true
         }

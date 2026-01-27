@@ -114,6 +114,8 @@ extension Cart {
             return PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
         case .variation(let variation):
             return PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+        case .searchResultVariation(let variation, _):
+            return PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
         case .variableParentProduct, .coupon:
             return nil
         }

@@ -203,7 +203,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Returns: Catalog job response with job ID.
     ///
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
+        // TODO: products/catalog is no longer the correct endpoint, but "wc/pos/v1/catalog/create"
         let path = "products/catalog"
+        // TODO: Verify all parameters we need are set
+        // POST /wp-json/wc/pos/v1/catalog/create?_product_fields=id,name,sku,price,...&_variation_fields=id,name,sku,price,...
         let parameters: [String: Any] = [
             ParameterKey.fullSyncFields: POSProduct.requestFields,
             ParameterKey.fullSyncVariationFields: POSProductVariation.requestFields,

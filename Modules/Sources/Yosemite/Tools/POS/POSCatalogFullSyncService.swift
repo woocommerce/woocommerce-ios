@@ -65,7 +65,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                              appPasswordSupportState: AnyPublisher<Bool, Never>,
                              batchSize: Int = 2,
                              grdbManager: GRDBManagerProtocol,
-                             usesCatalogAPI: Bool = false) {
+                             usesCatalogAPI: Bool) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogFullSyncService due missing credentials")
             return nil
@@ -83,7 +83,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         batchSize: Int,
         retryDelay: TimeInterval = 2.0,
         persistenceService: POSCatalogPersistenceServiceProtocol,
-        usesCatalogAPI: Bool = false
+        usesCatalogAPI: Bool
     ) {
         self.syncRemote = syncRemote
         self.persistenceService = persistenceService
@@ -104,11 +104,16 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             // Sync from network
             let catalog: POSCatalog
             if usesCatalogAPI {
+                // TODO:
+                // - Double check when/where regenerateCatalog is used, polling with this param
+                // - might request to regenerate the catalog file infinitely
                 catalog = try await loadCatalogFromCatalogAPI(for: siteID,
                                                               syncRemote: syncRemote,
                                                               regenerateCatalog: regenerateCatalog,
                                                               allowCellular: allowCellular)
             } else {
+                // TODO: To deprecate, this approach will only used for 10.3-10.5
+                // TODO: Check if we also need to clean up part of posProductsOnly once catalogAPI is enabled
                 catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular, posProductsOnly: posProductsOnly)
             }
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
@@ -236,6 +241,38 @@ private extension POSCatalogFullSyncService {
                                                                          allowCellular: allowCellular)
 
             switch response.status {
+                /* TODO: Handle expected statuses and responses
+                 - States: scheduled → in_progress → completed
+                 
+                 1. Response (job scheduled/in progress):
+                 {
+                   "scheduled_at": "2026-01-23T08:30:25",
+                   "completed_at": null,
+                   "state": "scheduled",
+                   "progress": 0,
+                   "processed": 0,
+                   "total": -1,
+                   "args": {
+                     "_product_fields": "id,name,sku,price,...",
+                     "_variation_fields": "id,name,sku,price,..."
+                   }
+                 }
+                 
+                 2. Response (job completed):
+                 {
+                   "scheduled_at": "2026-01-23T08:30:55",
+                   "completed_at": "2026-01-23T08:31:47",
+                   "state": "completed",
+                   "progress": 100,
+                   "processed": 803,
+                   "total": 803,
+                   "args": {
+                     "_product_fields": "id,name,sku,price,...",
+                     "_variation_fields": "id,name,sku,price,..."
+                   },
+                   "url": "https://example.com/wp-content/uploads/product-feeds/pos-catalog-feed-2026-01-23-d4ca092459de.json"
+                 }
+                 */
             case .complete:
                 guard let downloadURL = response.downloadURL else {
                     throw POSCatalogSyncError.invalidData
@@ -243,6 +280,7 @@ private extension POSCatalogFullSyncService {
                 return downloadURL
             case .pending, .processing:
                 // Only logs every 10th attempt to avoid flooding logs for large catalogs.
+                // TODO: Poll details TBD, for now Start: 3s, Multiplier: 1.3x , Max interval: 30s
                 if attempts % 10 == 0 {
                     DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
                 }

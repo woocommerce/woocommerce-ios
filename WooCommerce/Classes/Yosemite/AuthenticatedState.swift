@@ -173,12 +173,15 @@ class AuthenticatedState: StoresManagerState {
         self.services = services
 
         // Initialize POS catalog sync coordinator and eligibility service if feature flag is enabled
+        // TODO:
+        // This also requires a version check, if ,<10.5 we'll be passing usesCatalogAPI = false no matter the flag
+        let usesCatalogAPI = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         if isLocalCatalogFeatureFlagEnabled,
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
                                                            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                                                            grdbManager: ServiceLocator.grdbManager,
-                                                           usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)),
+                                                           usesCatalogAPI: usesCatalogAPI),
            let incrementalSyncService = POSCatalogIncrementalSyncService(
             credentials: credentials,
             selectedSite: site,

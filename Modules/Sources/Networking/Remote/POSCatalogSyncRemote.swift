@@ -287,6 +287,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                 products.append(product)
             case .variation(let variation):
                 variations.append(variation)
+            case .unsupported:
+                continue
             }
         }
 
@@ -525,6 +527,7 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
+    case unsupported
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -538,6 +541,11 @@ public enum POSCatalogItem: Decodable {
         switch type {
         case "variation":
             self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
+        case "subscription_variation":
+            // Seems to be a bug in the new endpoint, subscription_variation are coming through when they shouldn't
+            // For now handling them in the decoding, but subscriptions are not supported in POS, skipping
+            // p1769497930719139-slack-C01BPL3ALGP
+            self = .unsupported
         default:
             self = .product(try container.decode(POSProduct.self, forKey: .data))
         }

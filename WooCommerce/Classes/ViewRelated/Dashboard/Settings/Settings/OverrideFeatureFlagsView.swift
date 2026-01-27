@@ -27,7 +27,7 @@ struct OverrideFeatureFlagsView: View {
         }
         .contentMargins(20)
         .id(refreshID)
-        .searchable(text: $searchText, prompt: "Search feature flags")
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search feature flags")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {

@@ -203,14 +203,16 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Returns: Catalog job response with job ID.
     ///
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
-        let path = "products/catalog"
-        let parameters: [String: Any] = [
-            ParameterKey.fullSyncFields: POSProduct.requestFields,
-            ParameterKey.fullSyncVariationFields: POSProductVariation.requestFields,
-            ParameterKey.forceGenerate: forceGeneration
+        let path = "catalog/create"
+        var parameters: [String: Any] = [
+            ParameterKey.catalogProductFields: POSProduct.requestFields,
+            ParameterKey.catalogVariationFields: POSProductVariation.requestFields
         ]
+        if forceGeneration {
+            parameters[ParameterKey.force] = true
+        }
         let request = JetpackRequest(
-            wooApiVersion: .mark3,
+            wooApiVersion: .wcPosV1,
             method: .post,
             siteID: siteID,
             path: path,
@@ -448,9 +450,9 @@ private extension POSCatalogSyncRemote {
         static let page = "page"
         static let perPage = "per_page"
         static let fields = "_fields"
-        static let fullSyncFields = "fields"
-        static let fullSyncVariationFields = "variation_fields"
-        static let forceGenerate = "force_generate"
+        static let catalogProductFields = "_product_fields"
+        static let catalogVariationFields = "_variation_fields"
+        static let force = "force"
         static let includeStatus = "include_status"
         static let posProductsOnly = "pos_products_only"
     }

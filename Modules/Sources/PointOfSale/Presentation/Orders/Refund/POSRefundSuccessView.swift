@@ -108,7 +108,7 @@ private extension POSRefundSuccessView {
         static let messageFormat = NSLocalizedString(
             "pos.refundSuccessView.messageFormat",
             value: "You refunded %1$@ %2$@.",
-            comment: "Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description (e.g., 'via payment card ••••1456')."
+            comment: "Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description."
         )
 
         static let closeButtonAccessibilityLabel = NSLocalizedString(

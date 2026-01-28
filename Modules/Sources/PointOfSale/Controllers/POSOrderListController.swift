@@ -426,7 +426,7 @@ enum RefundActionAvailability {
         )
 
         clearRefundSelection()
-        await refreshOrders()
+        try? await updateOrder(orderID: order.id)
     }
 }
 

@@ -1,1 +1,3 @@
-This update brings clearer feedback during checkout, more reliable syncing, and safer payment behavior. Troubleshooting is now more powerful with better diagnostics, plugin updates work more smoothly, and we fixed crashes, editing issues, and localization bugs to make everyday store management more stable and predictable.
+- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16485]
+- [internal] Track WPCom connection type [https://github.com/woocommerce/woocommerce-ios/pull/16509]
+- [*] Add POS learn more modal flow [https://github.com/woocommerce/woocommerce-ios/pull/16528]

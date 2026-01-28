@@ -11,15 +11,4 @@ struct MockCardReader {
                    readerType: .chipper,
                    locationId: "st_simulated")
     }
-
-    static func verifoneP400() -> CardReader {
-        CardReader(serial: "P400-SIMULATOR-1",
-                   vendorIdentifier: "SIMULATOR",
-                   name: "Simulated Verifone P400",
-                   status: .init(connected: false, remembered: false),
-                   softwareVersion: "3.0.1.17",
-                   batteryLevel: 1.0,
-                   readerType: .other,
-                   locationId: "st_simulated")
-    }
 }

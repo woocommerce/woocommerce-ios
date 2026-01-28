@@ -598,7 +598,10 @@ private extension POSOrderDetailsView {
                     refundModalState = nil
                 },
                 onEmailReceipt: {
-                    // TODO: Implement email receipt for refund
+                    refundModalState = nil
+                    Task { @MainActor in
+                        isShowingEmailReceiptView = true
+                    }
                 },
                 onClose: {
                     refundModalState = nil

@@ -68,13 +68,16 @@ private extension POSPromotionView {
     @ViewBuilder var descriptionPages: some View {
         TabView(selection: $viewModel.selectedStep) {
             ForEach(0..<viewModel.totalSteps, id: \.self) { index in
-                ScrollView {
-                    Text(viewModel.stepDescriptions[index])
-                        .font(.body)
-                        .foregroundStyle(Color(.label))
-                        .multilineTextAlignment(.center)
+                GeometryReader { geometry in
+                    ScrollView {
+                        Text(viewModel.stepDescriptions[index])
+                            .font(.body)
+                            .foregroundStyle(Color(.label))
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
                 }
-                .scrollBounceBehavior(.basedOnSize)
                 .tag(index)
             }
         }

@@ -502,12 +502,14 @@ enum RefundModalState: Identifiable, Equatable {
     case itemSelection
     case review(POSRefundReviewData)
     case reasonInput(POSRefundReviewData)
+    case confirmation(POSRefundReviewData)
 
     var id: String {
         switch self {
         case .itemSelection: return "itemSelection"
         case .review: return "review"
         case .reasonInput: return "reasonInput"
+        case .confirmation: return "confirmation"
         }
     }
 }
@@ -536,8 +538,7 @@ private extension POSOrderDetailsView {
                     refundModalState = .reasonInput(reviewData)
                 },
                 onContinue: {
-                    // TODO: Process refund
-                    refundModalState = nil
+                    refundModalState = .confirmation(reviewData)
                 },
                 onEditRefund: {
                     refundModalState = .itemSelection
@@ -556,6 +557,21 @@ private extension POSOrderDetailsView {
                 },
                 onClose: {
                     refundModalState = nil
+                }
+            )
+        case .confirmation(let reviewData):
+            POSRefundConfirmationView(
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                onClose: {
+                    refundModalState = nil
+                },
+                onConfirm: {
+                    // TODO: Process refund
+                    refundModalState = nil
+                },
+                onBack: {
+                    refundModalState = .review(reviewData)
                 }
             )
         }

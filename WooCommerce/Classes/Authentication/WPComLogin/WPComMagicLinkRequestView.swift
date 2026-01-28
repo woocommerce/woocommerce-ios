@@ -8,8 +8,10 @@ final class WPComMagicLinkRequestHostingController: UIHostingController<WPComMag
     }
 
     init(title: String,
+         flow: WPComLoginFlow,
          viewModel: WPComMagicLinkRequestViewModel) {
         let view = WPComMagicLinkRequestView(title: title,
+                                             flow: flow,
                                              viewModel: viewModel)
         super.init(rootView: view)
     }
@@ -22,24 +24,35 @@ final class WPComMagicLinkRequestHostingController: UIHostingController<WPComMag
 
 struct WPComMagicLinkRequestView: View {
     @StateObject private var viewModel: WPComMagicLinkRequestViewModel
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// Title to display at the top of the view.
     private let title: String
 
+    let flow: WPComLoginFlow
+
     init(title: String,
+         flow: WPComLoginFlow,
          viewModel: WPComMagicLinkRequestViewModel) {
         self.title = title
+        self.flow = flow
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                JetpackInstallHeaderView()
+                switch flow {
+                case .jetpackSetup:
+                    JetpackInstallHeaderView()
+                case .notificationSetup:
+                    ConnectWPComHeaderView()
+                }
 
                 // Title
                 Text(title)
                     .largeTitleStyle()
+                    .bold()
 
                 // Avatar and email
                 WPComLoginGravatarView(email: viewModel.email, gravatarURL: viewModel.avatarURL)
@@ -48,24 +61,33 @@ struct WPComMagicLinkRequestView: View {
                     .bodyStyle()
 
                 Spacer()
+
+                if dynamicTypeSize.isAccessibilitySize {
+                    footer
+                }
             }
             .padding(Constants.contentPadding)
         }.safeAreaInset(edge: .bottom) {
-            VStack {
-                Button(Localization.sendLinkButton) {
-                    Task {
-                        await viewModel.sendMagicLink()
-                    }
-                }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+            footer
+                .padding(Constants.contentPadding)
+                .background(Color(uiColor: .systemBackground))
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+        }
+    }
 
-                Button(Localization.fallbackButton) {
-                    viewModel.useUsernamePassword()
+    private var footer: some View {
+        VStack {
+            Button(Localization.sendLinkButton) {
+                Task {
+                    await viewModel.sendMagicLink()
                 }
-                .buttonStyle(SecondaryButtonStyle())
             }
-            .padding(Constants.contentPadding)
-            .background(Color(uiColor: .systemBackground))
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+
+            Button(Localization.fallbackButton) {
+                viewModel.useUsernamePassword()
+            }
+            .buttonStyle(SecondaryButtonStyle())
         }
     }
 }
@@ -100,7 +122,8 @@ private extension WPComMagicLinkRequestView {
 
 
 #Preview {
-    WPComMagicLinkRequestView(title: "Connect Jetpack",
+    WPComMagicLinkRequestView(title: "Connect to WordPress.com",
+                              flow: .notificationSetup,
                               viewModel: WPComMagicLinkRequestViewModel(email: "test@example.com",
                                                                         onMagicLinkSent: { _ in },
                                                                         onUseUsernamePassword: {},

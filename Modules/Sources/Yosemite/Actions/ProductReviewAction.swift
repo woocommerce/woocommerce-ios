@@ -20,6 +20,12 @@ public enum ProductReviewAction: Action {
 
     /// Retrieves the `Note`, `ProductReview`, and `Product` in sequence.
     ///
+    case retrieveProductReviewAndProduct(siteID: Int64,
+                                         reviewID: Int64,
+                                         onCompletion: (Result<ProductReviewFromNoteParcel, Error>) -> Void)
+
+    /// Retrieves the `Note`, `ProductReview`, and `Product` in sequence.
+    ///
     /// Only the `ProductReview` is stored in the database. Please see
     /// `RetrieveProductReviewFromNoteUseCase` for the reason why.
     ///

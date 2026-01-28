@@ -2,7 +2,7 @@ import XCTest
 import enum Networking.DotcomError
 import enum Networking.SiteCreationError
 import enum Networking.WordPressApiError
-import struct Networking.Site
+import struct NetworkingCore.Site
 @testable import class Networking.MockNetwork
 @testable import Yosemite
 @testable import Storage
@@ -349,7 +349,6 @@ final class SiteStoreTests: XCTestCase {
 
    func test_syncSiteByDomain_returns_error_on_failure() throws {
        // Given
-       let siteID: Int64 = 123
        let domain = "example.com"
        remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
@@ -370,7 +369,7 @@ final class SiteStoreTests: XCTestCase {
 
 private extension SiteStoreTests {
     @discardableResult
-    func storeSite(_ site: Networking.Site) -> Storage.Site {
+    func storeSite(_ site: NetworkingCore.Site) -> Storage.Site {
         let storedSite = storage.insertNewObject(ofType: StorageSite.self)
         storedSite.update(with: site)
         return storedSite

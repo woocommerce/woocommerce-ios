@@ -28,14 +28,16 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     private lazy var site = Site.fake().copy(
-        siteID: sampleSiteID
+        siteID: sampleSiteID,
+        isJetpackThePluginInstalled: true,
+        isJetpackConnected: true
     )
 
     override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
         storageManager = MockStorageManager()
 
         stores.updateDefaultStore(storeID: sampleSiteID)
@@ -910,9 +912,9 @@ final class DashboardViewModelTests: XCTestCase {
 
     // MARK: Self-driven push registration
     @MainActor
-    func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_is_nil() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_not_registered_with_Woo_PN() async {
         // Given
-        userDefaults.set(Int64?.none, forKey: .wooPushnotificationToken)
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
@@ -929,9 +931,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_updateSelfDrivenPushRegistrationStatus_sets_true_when_token_id_exists_and_not_wpcom_login() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_true_when_site_is_registered_and_not_wpcom_login() async {
         // Given
-        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -949,9 +951,9 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_updateSelfDrivenPushRegistrationStatus_sets_false_when_token_id_exists_and_wpcom_login() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_registered_and_wpcom_login() async {
         // Given
-        userDefaults.set(Int64(123), forKey: .wooPushnotificationToken)
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
 
@@ -967,6 +969,117 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_disabled() async {
+        // Given
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_enabled() async {
+        // Given
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_registered_with_Woo_PN_and_not_wpcom_login() async {
+        // Given
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_wpcom_login() async {
+        // Given
+        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_hideWPComConnectionSuggestion_updates_relevant_properties() async {
+        // Given
+        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        viewModel.hideWPComConnectionSuggestion()
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+        XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
 }
 

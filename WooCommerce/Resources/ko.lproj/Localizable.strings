@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-12-10 17:22:49+0000 */
+/* Translation-Revision-Date: 2026-01-13 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1495,9 +1495,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "워드프레스닷컴에 접속 중입니다";
 
-/* Title for the WPCom servers connectivity tool card */
-"Connecting to WordPress.com Servers" = "워드프레스닷컴 서버에 연결하기";
-
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "워드프레스닷컴 사이트에 연결하기";
 
@@ -1506,9 +1503,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "계정에 연결 중";
-
-/* Title for the Your Site connectivity tool card */
-"Connecting to your site" = "사이트에 연결하기";
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "스토어 연결 중";
@@ -2540,9 +2534,6 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "변형을 가져오는 중…";
 
-/* Title for the Your Site Orders connectivity tool card */
-"Fetching your site orders" = "사이트 주문 가져오기";
-
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
 "File Name" = "파일 이름";
@@ -2918,9 +2909,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text to contact support in the application password tutorial screen */
 "If you run into any issues, please contact our support team." = "문제가 발생하면 지원팀에 문의해 주세요.";
 
-/* Info message when there are no connection issues in the connectivity tool screen */
-"If your data still isn’t loading, contact our support team for assistance." = "데이터가 여전히 로드되고 있으면 지원팀에 도움을 문의하세요.";
-
 /* Accessibility label for image thumbnails in the media collection view. The parameter is the creation date of the image. */
 "Image, %@" = "이미지, %@";
 
@@ -3029,9 +3017,6 @@ which should be translated separately and considered part of this sentence. */
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "보험(최대 %1$@)";
 
-/* Title for the internet connection connectivity tool card */
-"Internet Connection" = "인터넷 연결";
-
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "유효하지 않은 이메일 주소";
 
@@ -3113,9 +3098,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "분석을 비활성화하신 것 같습니다.";
-
-/* Message when there is no internet connection in the recovery tool */
-"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "인터넷에 연결되지 않은 것 같습니다.\n\n와이파이가 켜졌는지 확인하세요. 모바일 데이터를 사용 중이시라면 기기 설정에서 활성화되었는지 확인하세요.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "젯팩 설치가 허용되는 사용자 역할이 아닌 것 같습니다.\n도움말은 관리자에게 문의하세요.";
@@ -3701,9 +3683,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "연결 없음";
-
-/* Title for when there are no connection issues in the connectivity tool screen */
-"No connection issues" = "연결 문제 없음";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "쿠폰을 찾을 수 없음";
@@ -4733,9 +4712,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
 
-/* Action button title for a generic error on the connectivity tool */
-"Read more" = "더 보기";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "문제 해결 팁 읽기";
 
@@ -4969,9 +4945,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "연결 재시도";
-
-/* Retry connection button in the connectivity tool screen */
-"Retry connection" = "연결 재시도";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
@@ -6063,12 +6036,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "스토어의 젯팩 연결에서 문제가 발생했습니다. 젯팩을 다시 연결해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
-/* Message when we there is a jetpack error in the recovery tool */
-"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "젯팩 연결에서 문제가 발생했습니다.\n\n이 문제에 대해 자세히 알아보세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
-
-/* Message when we there is a generic error in the recovery tool */
-"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "사이트와 통신하는 중 문제가 발생했습니다.";
 
@@ -6889,14 +6856,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "기기에서 제품 애드온을 더 쉽게 보실 수 있도록 하려고 작업하는 중입니다. 지금 당장은 주문에 대한 애드온을 보실 수 있습니다. 웹 대시보드에서 이러한 애드온을 생성하고 편집하실 수 있습니다.";
 
-/* Message when we there is a decoding error in the recovery tool */
-"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "사이트의 응답을 제대로 처리할 수 없습니다.\n\n이 문제에 대해 자세히 알아보세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
-
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "지금은 스토어를 로드할 수 없습니다.";
-
-/* Message when we can't reach WPCom in the recovery tool */
-"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "지금은 워드프레스닷컴에 연결할 수 없습니다.\n\n몇 분 후에 다시 시도하세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "We couldn't connect to your store" = "스토어에 연결할 수 없음";
@@ -7280,9 +7241,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "사이트가 응답하는 데 오랜 시간이 걸립니다.";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "사이트의 응답이 너무 오래 걸립니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "스토어가 실행되고 있습니다.";
@@ -8803,6 +8761,54 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "연결 문제 해결";
 
+/* Action button title for an error on the connectivity tool */
+"connectivityToolViewModel.action.readMore" = "더 보기";
+
+/* Retry test button in the connectivity tool screen */
+"connectivityToolViewModel.action.retry" = "테스트 다시 시도";
+
+/* Button to view technical error details in the connectivity tool */
+"connectivityToolViewModel.action.viewTechnicalDetails" = "기술 상세 정보 보기";
+
+/* Title for the internet connection connectivity tool card */
+"connectivityToolViewModel.connectivityTest.internetConnection" = "인터넷 연결";
+
+/* Title for the test to load products in connectivity tool */
+"connectivityToolViewModel.connectivityTest.loadingProducts" = "스토어에서 상품 가져오는 중";
+
+/* Title for the Your Site connectivity tool card */
+"connectivityToolViewModel.connectivityTest.site" = "사이트에 연결하기";
+
+/* Title for the Your Site Orders connectivity tool card */
+"connectivityToolViewModel.connectivityTest.siteOrders" = "사이트 주문 가져오기";
+
+/* Title for the WPCom servers connectivity tool card */
+"connectivityToolViewModel.connectivityTest.wpComServers" = "워드프레스닷컴 서버에 연결하기";
+
+/* Message when we there is a decoding error in the recovery tool */
+"connectivityToolViewModel.errorMessage.decodingError" = "사이트의 응답을 제대로 처리할 수 없습니다.\n\n아래에서 기술 상세 정보를 보거나 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
+
+/* Message when we there is a generic error in the recovery tool */
+"connectivityToolViewModel.errorMessage.default" = "사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"connectivityToolViewModel.errorMessage.jetpackNotConnected" = "젯팩 연결에서 문제가 발생했습니다.\n\n이 문제에 대해 자세히 알아보세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
+
+/* Message when there is no internet connection in the recovery tool */
+"connectivityToolViewModel.errorMessage.noInternet" = "인터넷에 연결되지 않은 것 같습니다.\n\n와이파이가 켜졌는지 확인하세요. 모바일 데이터를 사용 중이라면 기기 설정에서 활성화되었는지 확인하세요.";
+
+/* Message when we there is a timeout error in the recovery tool */
+"connectivityToolViewModel.errorMessage.timeout" = "사이트의 응답이 너무 오래 걸립니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"connectivityToolViewModel.errorMessage.wpcomConnection" = "지금은 워드프레스닷컴에 연결할 수 없습니다.\n\n몇 분 후에 다시 시도하세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
+
+/* Title for when there are no connection issues in the connectivity tool screen */
+"connectivityToolViewModel.message.noIssues" = "연결 문제 없음";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"connectivityToolViewModel.message.noIssuesMessage" = "데이터가 여전히 로드되지 않으면 지원팀에 도움을 문의하세요.";
+
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "%@에 만료됨";
 
@@ -9286,6 +9292,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell title on the beta features screen to enable the application passwords feature */
 "experimentalFeatures.applicationPasswords.title" = "애플리케이션 비밀번호";
+
+/* Cell description on the beta features screen to enable the POS local catalog feature */
+"experimentalFeatures.posLocalCatalog.description" = "판매 지점에서 더 빠른 액세스를 위해 제품 카탈로그를 로컬에 저장";
+
+/* Cell title on the beta features screen to enable the POS local catalog feature */
+"experimentalFeatures.posLocalCatalog.title" = "POS 로컬 카탈로그";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "확인";
@@ -10177,6 +10189,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "편집";
+
+/* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
+"pluginDetailsViewModel.updatePluginTitle" = "%1$@ 업데이트";
 
 /* Title for the Close button within the Plugin List view. */
 "pluginListView.button.close" = "닫기";
@@ -11162,6 +11177,15 @@ which should be translated separately and considered part of this sentence. */
 /* Email portion of order header accessibility label. %1$@ is customer email address. */
 "pos.orderDetailsView.headerBottomContent.accessibilityLabel.email" = "고객 이메일: %1$@";
 
+/* Accessibility hint for issue refund button */
+"pos.orderDetailsView.issueRefundAction.accessibilityHint" = "이 주문에 대한 환불 흐름 시작";
+
+/* Primary action button to start issuing a refund on the order details view */
+"pos.orderDetailsView.issueRefundAction.title" = "환불 발행";
+
+/* Accessibility label for the overflow actions menu button (three dots) */
+"pos.orderDetailsView.moreActions.label" = "추가 작업";
+
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.orderDetailsView.netPayment.accessibilityLabel" = "순 결제: %1$@";
 
@@ -11879,6 +11903,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "테마";
 
+/* Title of the web view to update WooCommerce plugin */
+"settingsViewController.title.updateWooCommerce" = "우커머스 업데이트";
+
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "상세 정보 공유";
@@ -12260,6 +12287,21 @@ which should be translated separately and considered part of this sentence. */
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "Tap to Pay on iPhone을 통한 결제 수락에 대해 %1$@";
+
+/* Button to close technical details screen */
+"technicalDetailsView.close" = "닫기";
+
+/* Alert message shown when technical details are copied */
+"technicalDetailsView.copiedAlert.message" = "기술 상세 정보가 클립보드에 복사되었습니다.";
+
+/* Button to copy technical details to clipboard */
+"technicalDetailsView.copy" = "복사";
+
+/* OK button for copied confirmation alert */
+"technicalDetailsView.ok" = "확인";
+
+/* Title of technical details screen */
+"technicalDetailsView.title" = "기술 상세 정보";
 
 /* Button to dismiss the theme settings screen */
 "themeSettingView.cancelButton" = "취소";

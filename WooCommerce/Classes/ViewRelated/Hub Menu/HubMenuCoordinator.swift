@@ -81,42 +81,54 @@ final class HubMenuCoordinator {
             return
         }
 
-        let action = ProductReviewAction.retrieveProductReviewFromNote(noteID: Int64(notification.noteID)) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+        guard let noteID = notification.noteID else {
+            return attemptRetrieveProductReviewWithoutNoteID(notification: notification)
+        }
+        let action = ProductReviewAction.retrieveProductReviewFromNote(noteID: Int64(noteID)) { [weak self] result in
+            self?.handleProductReviewResult(result)
+        }
+        storesManager.dispatch(action)
+    }
 
-            switch result {
-            case .failure:
-                self.noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveReviewNotificationDetails))
-            case .success(let parcel):
-                guard let siteID = parcel.note.meta.identifier(forKey: .site) else {
-                    self.noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveReviewNotificationDetails))
+    private func attemptRetrieveProductReviewWithoutNoteID(notification: PushNotification) {
+        guard let reviewID = notification.meta?.identifier(forKey: .comment) else {
+            return
+        }
+        let action = ProductReviewAction.retrieveProductReviewAndProduct(
+            siteID: notification.siteID,
+            reviewID: Int64(reviewID),
+            onCompletion: { [weak self] result in
+                self?.handleProductReviewResult(result)
+            })
+        storesManager.dispatch(action)
+    }
+
+    private func handleProductReviewResult(_ result: Result<ProductReviewFromNoteParcel, Error>) {
+        switch result {
+        case .failure:
+            noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveReviewNotificationDetails))
+        case .success(let parcel):
+            let siteID = parcel.review.siteID
+
+            // Switch to the correct store first if needed
+            self.switchStoreUseCase.switchStore(with: siteID) { [weak self] siteChanged in
+                guard let self else {
                     return
                 }
 
-                // Switch to the correct store first if needed
-                self.switchStoreUseCase.switchStore(with: Int64(siteID)) { [weak self] siteChanged in
-                    guard let self = self else {
-                        return
-                    }
+                Task { @MainActor in
+                    ServiceLocator.analytics.track(.reviewOpen)
+                    await self.willPresentReviewDetailsFromPushNotification()
+                    self.pushReviewDetailsViewController(using: parcel)
 
-                    Task { @MainActor in
-                        ServiceLocator.analytics.track(.reviewOpen)
-                        await self.willPresentReviewDetailsFromPushNotification()
-                        self.pushReviewDetailsViewController(using: parcel)
-
-                        if siteChanged {
-                            let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
-                                                                       noticePresenter: self.noticePresenter)
-                            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
-                        }
+                    if siteChanged {
+                        let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
+                                                                   noticePresenter: self.noticePresenter)
+                        presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
                     }
                 }
             }
         }
-
-        storesManager.dispatch(action)
     }
 
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {

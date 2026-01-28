@@ -14,6 +14,7 @@ struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric private var scale = 1
 
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
@@ -77,6 +78,8 @@ struct DashboardView: View {
             viewModel.isSiteEligibleToInstallJetpack &&
             viewModel.jetpackBannerVisibleFromAppSettings &&
             !viewModel.isSelfDrivenPushNotificationRegistered &&
+            !viewModel.shouldSuggestWPComConnection &&
+            !viewModel.dismissedWPComConnectionSuggestion &&
             dismissedJetpackBenefitBanner == false
     }
 
@@ -276,6 +279,8 @@ private extension DashboardView {
                         newCardsNoticeCard
                     case .shareStore:
                         shareStoreCard
+                    case .connectWPCom:
+                        connectWPComCard
                     }
                 }
             }
@@ -318,6 +323,14 @@ private extension DashboardView {
                 .stroke(Color(.border), lineWidth: 1)
         )
         .padding(.horizontal, Layout.padding)
+    }
+
+    var connectWPComCard: some View {
+        ConnectWPComCard(
+            hideAction: {
+                viewModel.hideWPComConnectionSuggestion()
+            }
+        )
     }
 
     var newCardsNoticeCard: some View {
@@ -390,6 +403,12 @@ private extension DashboardView {
            let announcementViewModel = viewModel.announcementViewModel {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
+            }, callToAction: {
+                // For client-side banners, use the universal link router to handle the URL
+                // (tries deep links first, falls back to web view)
+                if announcementViewModel is FeatureAnnouncementCardViewModel {
+                    viewModel.handleClientSideBannerCTATapped()
+                }
             })
             .background(Color(.listForeground(modal: false)))
             .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
@@ -411,7 +430,6 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
-
     }
     enum Localization {
         static let title = NSLocalizedString(
@@ -474,6 +492,7 @@ private extension DashboardView {
                 comment: "Label of the button to add sections"
             )
         }
+
     }
 }
 

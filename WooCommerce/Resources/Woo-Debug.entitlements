@@ -52,5 +52,7 @@
 	</array>
 	<key>com.apple.developer.proximity-reader.payment.acceptance</key>
 	<true/>
+	<key>com.apple.developer.declared-age-range</key>
+	<true/>
 </dict>
 </plist>

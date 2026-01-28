@@ -35,6 +35,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
         case inAppFeedback
         case newCardsNotice
         case shareStore
+        case connectWPCom
     }
 
     /// Card's availability state that determines whether it can be displayed and used.
@@ -51,4 +52,5 @@ public extension DashboardCard {
     static var inAppFeedBackCard = DashboardCard(type: .inAppFeedback, availability: .dashboardOnly, enabled: true)
     static var newCardsNoticeCard = DashboardCard(type: .newCardsNotice, availability: .dashboardOnly, enabled: true)
     static var shareStoreCard = DashboardCard(type: .shareStore, availability: .dashboardOnly, enabled: true)
+    static let connectWPCom = DashboardCard(type: .connectWPCom, availability: .dashboardOnly, enabled: true)
 }

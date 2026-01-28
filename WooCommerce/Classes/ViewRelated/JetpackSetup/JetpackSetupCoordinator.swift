@@ -14,6 +14,9 @@ final class JetpackSetupCoordinator {
     private let site: Site
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private var requiresConnectionOnly: Bool
+    private var loginFlow: WPComLoginFlow {
+        .jetpackSetup(requiresConnectionOnly: requiresConnectionOnly)
+    }
     private var jetpackConnectedEmail: String?
     private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
@@ -25,7 +28,7 @@ final class JetpackSetupCoordinator {
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
-              requiresConnectionOnly: requiresConnectionOnly,
+              flow: loginFlow,
               allowAccountCreation: true,
               accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),
@@ -369,6 +372,7 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkRequestUI(email: String) {
         let magicLinkRequestController = WPComMagicLinkRequestHostingController(title: loginViewTitle,
+                                                                                flow: loginFlow,
                                                                                 viewModel: .init(email: email,
                                                                                                  onMagicLinkSent: { [weak self] email in
             self?.showMagicLinkSentUI(email: email, isSignup: false)
@@ -384,7 +388,7 @@ private extension JetpackSetupCoordinator {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
-                                                             isJetpackSetup: true,
+                                                             flow: loginFlow,
                                                              isSignup: isSignup)
         pushOrInitLoginViewController(viewController)
     }
@@ -413,7 +417,7 @@ private extension JetpackSetupCoordinator {
             })
         let viewController = WPComPasswordLoginHostingController(
             title: loginViewTitle,
-            isJetpackSetup: true,
+            flow: loginFlow,
             viewModel: viewModel)
 
         pushOrInitLoginViewController(viewController)
@@ -440,7 +444,7 @@ private extension JetpackSetupCoordinator {
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
-                                                            isJetpackSetup: true,
+                                                            flow: loginFlow,
                                                             viewModel: viewModel)
         loginNavigationController.pushViewController(viewController, animated: true)
     }

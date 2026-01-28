@@ -48,6 +48,65 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(note.meta.identifier(forKey: .order), 306)
     }
 
+    func test_pushNotification_without_noteID() throws {
+        // Create note_full_data with meta but missing required fields for Note decoding
+        let noteData: [String: Any] = [
+            "notes": [
+                [
+                    "meta": [
+                        "ids": [
+                            "order": 306
+                        ]
+                    ]
+                    // Missing required fields like "id", "type", "title", etc. for Note decoding
+                ]
+            ]
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: noteData)
+        let compressedData = try (jsonData as NSData).compressed(using: .zlib)
+        // Add the zlib header bytes that will be removed during decompression
+        var dataWithHeader = Data([0x78, 0x9C])
+        dataWithHeader.append(compressedData as Data)
+        let base64Encoded = dataWithHeader.base64EncodedString()
+
+        let userInfoWithoutNoteID: [AnyHashable: Any] = [
+            "blog": "205617935",
+            "note_full_data": base64Encoded,
+            "aps": [
+                "category": "store_order",
+                "badge": 1,
+                "sound": "o.caf",
+                "content-available": 1,
+                "mutable-content": 1,
+                "thread-id": "205617935 - store_order",
+                "alert": [
+                    "body": "New order for $2.00 on the store",
+                    "title": "You have a new order! 🎉"
+                ]
+            ],
+            "type": "store_order",
+            "blog_id": "205617935",
+            "user": "212589093",
+            "title": "You have a new order! 🎉",
+            "content-available": 1,
+            "mutable-content": 1
+        ]
+
+        guard let notification = PushNotification.from(userInfo: userInfoWithoutNoteID) else {
+            XCTFail("Created notification should not be nil")
+            return
+        }
+
+        XCTAssertNil(notification.noteID, "noteID should be nil when not present in userInfo")
+        XCTAssertEqual(notification.siteID, Int64(205617935))
+        XCTAssertEqual(notification.title, "You have a new order! 🎉")
+        XCTAssertEqual(notification.kind, Note.Kind.storeOrder)
+        XCTAssertNil(notification.note, "note should be nil when note data is missing required fields")
+        XCTAssertNotNil(notification.meta, "meta should be successfully extracted even when note decoding fails")
+        XCTAssertEqual(notification.meta?.identifier(forKey: .order), 306)
+    }
+
     // MARK: Blaze
     //
     func test_blaze_rejected_note_user_info_is_parsed_correctly() throws {

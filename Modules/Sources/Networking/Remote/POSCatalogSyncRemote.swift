@@ -205,8 +205,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
         let path = "catalog/create"
         var parameters: [String: Any] = [
-            ParameterKey.catalogProductFields: POSProduct.requestFields,
-            ParameterKey.catalogVariationFields: POSProductVariation.requestFields
+            ParameterKey.catalogProductFields: POSProduct.requestFields.joined(separator: ","),
+            ParameterKey.catalogVariationFields: POSProductVariation.requestFields.joined(separator: ",")
         ]
         if forceGeneration {
             parameters[ParameterKey.force] = true
@@ -473,16 +473,16 @@ public struct POSCatalogRequestResponse: Decodable {
     public let downloadURL: String?
 
     private enum CodingKeys: String, CodingKey {
-        case status
-        case downloadURL = "download_url"
+        case status = "state"
+        case downloadURL = "url"
     }
 }
 
 /// Catalog generation status.
 public enum POSCatalogStatus: String, Decodable {
-    case pending
+    case scheduled
     case processing
-    case complete
+    case completed
     case failed
 }
 

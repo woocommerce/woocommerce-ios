@@ -1153,16 +1153,18 @@ platform :ios do
     original_screenshot_directory = File.join(Dir.pwd, 'screenshots')
     output_directory = File.join(Dir.pwd, 'promo_screenshots')
 
-    # The promo_screenshots action computes the languages to process based on the given orig_folder and metadata_folder.
+    # WORKAROUND: The `promo_screenshots` action from `release-toolkit` computes
+    # which languages to process by intersecting folders in `orig_folder` and `metadata_folder`.
+    # It does NOT support Fastlane's `default/` fallback mechanism for missing locale files.
     #
-    # This creates a problem for the en-US language with our Fastlane setup.
-    # That's because we use the fastlane/metadata/default folder as the source of truth for en-US.
-    # We only add files to fastlane/metadata/en-US if the copy should differ from the baseline for localizations.
+    # Our setup uses `fastlane/metadata/default/` as the source of truth for en-US content,
+    # only adding files to `fastlane/metadata/en-US/` when translations should differ.
     #
-    # However, promo_screenshots cannot read from default and instead expects values in en-US.
+    # To work around this, we temporarily copy any `app_store_screenshot_*.txt` files from
+    # `default/` to `en-US/` before running the action, then clean up afterward.
     #
-    # To work around this, we copy any app_store_screenshot_*.txt file that is in default but not in en-US.
-    # Once the promo screenshots have been composed, we clean up.
+    # See: https://github.com/wordpress-mobile/release-toolkit/blob/3bdede7f0f55539dced3d3e95e18de63fb32852c/lib/fastlane/plugin/wpmreleasetoolkit/actions/common/promo_screenshots_action.rb#L10
+    # Related: paaHJt-31O-p2
     default_path = File.join(FASTLANE_METADATA_FOLDER, 'default')
     en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
 

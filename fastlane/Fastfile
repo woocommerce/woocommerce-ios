@@ -1160,8 +1160,9 @@ platform :ios do
     # Our setup uses `fastlane/metadata/default/` as the source of truth for en-US content,
     # only adding files to `fastlane/metadata/en-US/` when translations should differ.
     #
-    # To work around this, we temporarily copy any `app_store_screenshot_*.txt` files from
-    # `default/` to `en-US/` before running the action, then clean up afterward.
+    # To work around this, we temporarily copy any `app_store_screenshot_*.txt` file that is
+    # in `default/` but not in `en-US/` (meaning it has no specific `en-US` override) to `en-US/`
+    # before running the action, then clean up afterward.
     #
     # See: https://github.com/wordpress-mobile/release-toolkit/blob/3bdede7f0f55539dced3d3e95e18de63fb32852c/lib/fastlane/plugin/wpmreleasetoolkit/actions/common/promo_screenshots_action.rb#L10
     # Related: paaHJt-31O-p2

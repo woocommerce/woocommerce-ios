@@ -23,7 +23,7 @@ jobs:
 
     - name: Install App Dependencies
       run: bundle exec rake dependencies
-    
+
     - name: Compile the App
       run: bundle exec fastlane build_screenshots
 
@@ -52,7 +52,7 @@ jobs:
 
     - name: Install Fastlane Dependencies
       run: bundle exec fastlane run configure_apply
-    
+
     - name: Download Build Products
       uses: actions/download-artifact@v4
       with:
@@ -111,7 +111,7 @@ jobs:
       - name: Generate Screenshot Summary
         run: |
           bundle exec fastlane create_screenshot_summary
-      
+
       - name: Upload Screenshot Summary
         uses: actions/upload-artifact@v4
         with:

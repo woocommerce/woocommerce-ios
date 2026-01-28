@@ -432,10 +432,13 @@ private extension SettingsViewController {
 
     func enablePushNotificationsWasPressed() {
         DDLogInfo("🔔 Settings: Enable Push Notifications tapped")
-        let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: { [weak self] in
-            self?.dismiss(animated: true)
-        })
-        let controller = UIHostingController(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
+        let viewModel = WPComPushNotificationsBenefitsViewModel()
+        let controller = WPComPushNotificationsBenefitsHostingController(
+            viewModel: viewModel,
+            onDismiss: { [weak self] in
+                self?.dismiss(animated: true)
+            }
+        )
         present(controller, animated: true)
     }
 

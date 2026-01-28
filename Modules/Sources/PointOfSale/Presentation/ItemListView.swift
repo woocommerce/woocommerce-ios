@@ -188,6 +188,9 @@ struct ItemListView: View {
                     group.addTask {
                         await posModel.popularPurchasableItemsController.refreshItems(base: .root)
                     }
+                    group.addTask {
+                        await posModel.triggerIncrementalSync()
+                    }
                 }
             }
         }

@@ -479,6 +479,11 @@ extension PointOfSaleAggregateModel {
         await collectCardPayment()
     }
 
+    func triggerIncrementalSync() async {
+        guard let catalogSyncCoordinator else { return }
+        try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+    }
+
     @Sendable private func setupReaderReconnectionObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }

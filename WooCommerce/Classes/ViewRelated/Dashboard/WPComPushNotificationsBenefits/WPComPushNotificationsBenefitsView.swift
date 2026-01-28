@@ -1,8 +1,26 @@
 import SwiftUI
 import WooFoundation
 
+/// Hosting controller wrapper for `WPComPushNotificationsBenefitsView`
+///
+final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
+    init(viewModel: WPComPushNotificationsBenefitsViewModel,
+         onContinue: @escaping () -> Void) {
+        super.init(rootView: WPComPushNotificationsBenefitsView(
+            viewModel: viewModel))
+        rootView.onContinue = {
+            // TODO: wire up coordinator
+        }
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 struct WPComPushNotificationsBenefitsView: View {
     private let viewModel: WPComPushNotificationsBenefitsViewModel
+    var onContinue: () -> Void = {} // to be set through hosting controller
     @State private var safariURL: URL?
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel) {
@@ -71,6 +89,7 @@ struct WPComPushNotificationsBenefitsView: View {
         VStack {
             Button(Localization.continueButton) {
                 viewModel.continueTapped()
+                onContinue()
             }
             .buttonStyle(PrimaryButtonStyle())
 

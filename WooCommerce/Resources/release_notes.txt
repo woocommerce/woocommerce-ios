@@ -1,3 +1,1 @@
-- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16485]
-- [internal] Track WPCom connection type [https://github.com/woocommerce/woocommerce-ios/pull/16509]
-- [*] Add POS learn more modal flow [https://github.com/woocommerce/woocommerce-ios/pull/16528]
+This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.

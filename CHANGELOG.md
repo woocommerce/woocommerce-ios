@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.0
+This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
+
 ## 23.9
 This update brings clearer feedback during checkout, more reliable syncing, and safer payment behavior. Troubleshooting is now more powerful with better diagnostics, plugin updates work more smoothly, and we fixed crashes, editing issues, and localization bugs to make everyday store management more stable and predictable.
 

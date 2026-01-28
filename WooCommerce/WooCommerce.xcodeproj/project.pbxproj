@@ -3204,7 +3204,7 @@
 		026CAF7F2AC2B7FF002D23BB /* ConfigurableBundleProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleProductView.swift; sourceTree = "<group>"; };
 		026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewController.swift; sourceTree = "<group>"; };
 		026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVariationsViewController.xib; sourceTree = "<group>"; };
-		026D09D92E131EC3003BF161 /* Woo-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Woo-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
+		026D09D92E131EC3003BF161 /* Woo-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Woo-Watch-App-Info.plist"; path = "Woo Watch App/Woo-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		026D4651295D763B0037F59A /* CountryCode+FlagEmoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CountryCode+FlagEmoji.swift"; sourceTree = "<group>"; };
 		026D4653295D79230037F59A /* CountryCode+FlagEmojiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CountryCode+FlagEmojiTests.swift"; sourceTree = "<group>"; };
 		026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentUseCaseTests.swift; sourceTree = "<group>"; };
@@ -16821,7 +16821,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Woo-Watch-App-Info.plist";
+				INFOPLIST_FILE = "Woo Watch App/Woo-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Woo;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.automattic.woocommerce;
@@ -16863,7 +16863,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Woo-Watch-App-Info.plist";
+				INFOPLIST_FILE = "Woo Watch App/Woo-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Woo;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.automattic.woocommerce;
@@ -16903,7 +16903,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Woo-Watch-App-Info.plist";
+				INFOPLIST_FILE = "Woo Watch App/Woo-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Woo;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.automattic.alpha.woocommerce;

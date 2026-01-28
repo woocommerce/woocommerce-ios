@@ -1104,14 +1104,13 @@ platform :ios do
     files_to_commit = [File.join(FASTLANE_METADATA_FOLDER, '**', '*.txt')]
 
     # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
+    source_of_truth_subfolder = 'default'
+    source_of_truth_path = File.join(FASTLANE_METADATA_FOLDER, source_of_truth_subfolder)
     unless ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE
       target_files.values.map { |h| h[:desc] }.each do |file|
         en_file_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US', file)
 
         next unless File.exist?(en_file_path)
-
-        source_of_truth_subfolder = 'default'
-        source_of_truth_path = File.join(FASTLANE_METADATA_FOLDER, source_of_truth_subfolder)
 
         UI.user_error!(<<~MSG)
           File `#{en_file_path}` would override the same one in `#{source_of_truth_path}`, but `#{source_of_truth_subfolder}/` is the source of truth. \

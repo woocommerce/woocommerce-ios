@@ -1068,7 +1068,10 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.spyCreateRefundItems?.count == 2) // 1 from itemID 1, 1 from itemID 2
+        let items = try #require(refundsService.spyCreateRefundItems)
+        #expect(items.count == 2)
+        #expect(items.contains(where: { $0.itemID == 1 }))
+        #expect(items.contains(where: { $0.itemID == 2 }))
     }
 
     @Test func processRefund_then_calls_service_with_reason() async throws {

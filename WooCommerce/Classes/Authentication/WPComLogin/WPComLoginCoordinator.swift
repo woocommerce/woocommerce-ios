@@ -18,7 +18,7 @@ final class WPComLoginCoordinator {
     private let navigationController: UINavigationController
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
-    private let completionHandler: () -> Void
+    private let completionHandler: (Credentials) -> Void
 
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
@@ -38,7 +38,7 @@ final class WPComLoginCoordinator {
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
-         completionHandler: @escaping () -> Void) {
+         completionHandler: @escaping (Credentials) -> Void) {
         self.title = title
         self.flow = flow
         self.navigationController = navigationController
@@ -100,7 +100,7 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                await self?.authenticateUserAndComplete(username: email, authToken: authToken)
+                self?.completeLogin(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             title: title,
@@ -122,8 +122,7 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: error.errorMessage)
             },
             onLoginSuccess: { [weak self] authToken in
-                await self?.authenticateUserAndComplete(username: loginFields.username,
-                                                        authToken: authToken)
+                self?.completeLogin(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: title,
                                                             flow: flow,
@@ -174,17 +173,9 @@ private extension WPComLoginCoordinator {
         }
     }
 
-    @MainActor
-    func authenticateUserAndComplete(username: String, authToken: String) async {
-        await withCheckedContinuation { continuation in
-            let credentials = Credentials(username: username, authToken: authToken)
-            stores.authenticate(credentials: credentials)
-                .synchronizeEntities(onCompletion: { [weak self] in
-                    guard let self else { return }
-                    self.completionHandler()
-                    continuation.resume()
-                })
-        }
+    func completeLogin(username: String, authToken: String) {
+        let credentials = Credentials(username: username, authToken: authToken)
+        completionHandler(credentials)
     }
 }
 

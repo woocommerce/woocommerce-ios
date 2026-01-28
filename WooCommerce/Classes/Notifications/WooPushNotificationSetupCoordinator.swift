@@ -18,8 +18,8 @@ final class WooPushNotificationSetupCoordinator: Coordinator {
                 title: Localization.flowTitle,
                 flow: .notificationSetup,
                 navigationController: navigationController,
-                completionHandler: {
-                DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
+                completionHandler: { credentials in
+                    DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
             })
         }()
     }

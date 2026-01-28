@@ -65,7 +65,8 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 switch result {
                 case .success(let gateways):
                     continuation.resume(returning: gateways)
-                case .failure:
+                case .failure(let error):
+                    DDLogError("⛔️ Failed to load payment gateways: \(error)")
                     continuation.resume(returning: [])
                 }
             }

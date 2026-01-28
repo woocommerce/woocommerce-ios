@@ -652,8 +652,8 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["_product_fields"] as? [String] == POSProduct.requestFields)
-        #expect(queryParametersDictionary["_variation_fields"] as? [String] == POSProductVariation.requestFields)
+        #expect(queryParametersDictionary["_product_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
+        #expect(queryParametersDictionary["_variation_fields"] as? String == POSProductVariation.requestFields.joined(separator: ","))
         #expect(queryParametersDictionary["force"] == nil)
     }
 
@@ -666,7 +666,7 @@ struct POSCatalogSyncRemoteTests {
         let response = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
 
         // Then
-        #expect(response.status == .complete)
+        #expect(response.status == .completed)
         #expect(response.downloadURL == "https://example.com/wp-content/uploads/catalog.json")
     }
 

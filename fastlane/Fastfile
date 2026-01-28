@@ -1114,7 +1114,7 @@ platform :ios do
 
         UI.user_error!(<<~MSG)
           File `#{en_file_path}` would override the same one in `#{source_of_truth_path}`, but `#{source_of_truth_subfolder}/` is the source of truth. \
-          Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.
+          Delete the `#{en_file_path}` file, ensure the `#{source_of_truth_subfolder}/` one has the expected original copy, and try again.
         MSG
       end
     end

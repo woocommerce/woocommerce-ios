@@ -800,6 +800,15 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > App (Application) settings section title */
 "App Settings" = "App Settings";
 
+/* Alert confirmation button displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Got it";
+
+/* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
+"appCoordinator.ineligibleAgeRangeAlert.message" = "Your Apple account age is below the minimum required for this app (%1d+).";
+
+/* Alert title displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.title" = "Access Restricted";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Cancel";
 
@@ -2360,7 +2369,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
    Text for the cancel button in the Select Products screen
-   The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
@@ -3199,9 +3207,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Coupons";
 
-/* The title for a button that causes the app to deliberately crash for debugging purposes */
-"Crash Immediately" = "Crash Immediately";
-
 /* Action for creating a Coupon remotely
    Button to create an order on the Order screen
    Title of the button to create a new campaign on the Blaze campaign list view */
@@ -3662,6 +3667,15 @@ which should be translated separately and considered part of this sentence. */
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Unavailable";
 
+/* Button to hide the Connect WPCom card from the My Store screen */
+"dashboardView.connectWPComCard.hideButton" = "Hide this content";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"dashboardView.connectWPComCard.subtitle" = "Connect your store to a WordPress.com account to get alerts for new orders and reviews.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"dashboardView.connectWPComCard.title" = "Never miss a new order";
+
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "Edit";
 
@@ -3900,8 +3914,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again
-   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
+/* Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Don't show again";
 
 /* Action title to select products to add to a grouped product from search results
@@ -4227,9 +4240,6 @@ which should be translated separately and considered part of this sentence. */
    Placeholder of the row that holds the provided email when creating a simple payment */
 "Enter Email" = "Enter Email";
 
-/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
-"Enter email or username" = "Enter email or username";
-
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Enter file URL";
 
@@ -4250,8 +4260,7 @@ which should be translated separately and considered part of this sentence. */
 "Enter number (Optional)" = "Enter number (Optional)";
 
 /* Enter password placeholder in Product Visibility
-   Placeholder for the password field on the site credential login screen
-   Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
+   Placeholder for the password field on the site credential login screen */
 "Enter password" = "Enter password";
 
 /* Text for the input textfield placeholder when no value has been added yet */
@@ -4324,9 +4333,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for the text field on the store name screen */
 "Enter your store name" = "Enter your store name";
-
-/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
-"Enter your WordPress.com password" = "Enter your WordPress.com password";
 
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelope";
@@ -4562,6 +4568,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Favorite Products";
+
+/* Menu item to dismiss a feature announcement card */
+"featureAnnouncementCardView.hideContent" = "Hide this content";
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Featured Product";
@@ -5024,12 +5033,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Reviews";
-
-/* Title of the hub menu AI settings button */
-"hubMenuViewModel.aiSettings" = "AI Settings";
-
-/* Description of the hub menu AI settings button */
-"hubMenuViewModel.aiSettingsDescription" = "Manage your store's AI-powered features";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
@@ -6021,8 +6024,7 @@ which should be translated separately and considered part of this sentence. */
 /* Option to remove selections on multi selection list view */
 "multiSelectListView.any" = "Any";
 
-/* Placeholder store name on a notification
-   Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "My Store";
 
@@ -6447,9 +6449,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text for other forms of two-factor auth methods. */
 "Or choose another form of authentication." = "Or choose another form of authentication.";
-
-/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
-"Or Continue using Magic Link" = "Or Continue using Magic Link";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
@@ -8105,6 +8104,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title appearing in a modal when there's an error refreshing the catalog. */
 "pos.catalog.refreshFailedTitle" = "Unable to refresh catalog";
 
+/* Accessibility label for a selected checkbox */
+"pos.checkbox.selected.accessibilityLabel" = "Selected";
+
+/* Accessibility label for an unselected checkbox */
+"pos.checkbox.unselected.accessibilityLabel" = "Not selected";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "No internet connection";
 
@@ -8342,6 +8347,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Unable to load orders";
 
+/* Description for refund via a specific payment method. %@ is the payment method name */
+"pos.orderListController.refund.viaPaymentMethodFormat" = "Via %@";
+
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "Learn more";
 
@@ -8429,6 +8437,112 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
 
+/* Button to go back to the previous screen */
+"pos.refundConfirmationView.backButton" = "Back";
+
+/* Accessibility label for close button on refund confirmation modal */
+"pos.refundConfirmationView.closeButton.accessibilityLabel" = "Close";
+
+/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationMessageFormat" = "Are you sure you wish to process to refund %1$@ %2$@? This action cannot be undone.";
+
+/* Button to confirm and process the refund */
+"pos.refundConfirmationView.confirmButton" = "Yes, proceed";
+
+/* Title for the refund confirmation modal. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.titleFormat" = "Refund %@";
+
+/* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
+"pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
+
+/* Accessibility label format for refund item with attributes.
+%1$@ is the product name.
+%2$@ is the attributes list.
+%3$@ is the price.
+%4$@ is the selection state. */
+"pos.refundItemRow.accessibilityLabelWithAttributesFormat" = "%1$@, %2$@, %3$@, %4$@";
+
+/* Format for a single attribute in accessibility label. %1$@ is the attribute name, %2$@ is the attribute value. Example: 'Size: Medium' */
+"pos.refundItemRow.attributeFormat" = "%1$@: %2$@";
+
+/* Accessibility state when item is selected for refund */
+"pos.refundItemRow.selectedState" = "Selected for refund";
+
+/* Accessibility state when item is not selected for refund */
+"pos.refundItemRow.unselectedState" = "Not selected for refund";
+
+/* Accessibility label for close button on refund items selection modal */
+"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "Close";
+
+/* Button to continue with selected items for refund */
+"pos.refundItemsSelectionView.continueButton" = "Continue";
+
+/* Header label for items in the refund items selection modal */
+"pos.refundItemsSelectionView.itemsHeaderTitle" = "Select all items";
+
+/* Label showing number of selected items in the refund items selection modal */
+"pos.refundItemsSelectionView.itemsSelectedCountFormat" = "(%d selected)";
+
+/* Accessibility label for the select-all checkbox in the refund items selection modal */
+"pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "Select or deselect all items";
+
+/* Title for the refund items selection modal */
+"pos.refundItemsSelectionView.title" = "Select items to refund";
+
+/* Button to add the refund reason */
+"pos.refundReasonView.addButton" = "Add";
+
+/* Accessibility label for back button on refund reason screen */
+"pos.refundReasonView.backButton.accessibilityLabel" = "Back";
+
+/* Accessibility label for close button on refund reason screen */
+"pos.refundReasonView.closeButton.accessibilityLabel" = "Close";
+
+/* Placeholder text for the refund reason text field */
+"pos.refundReasonView.placeholder" = "Reason for refunding order";
+
+/* Title for the refund reason input screen */
+"pos.refundReasonView.title" = "Refund reason";
+
+/* Accessibility label for add reason button in refund review */
+"pos.refundReviewView.addReason.accessibilityLabel" = "Add refund reason";
+
+/* Button to add a reason for the refund */
+"pos.refundReviewView.addReasonButton" = "Add reason";
+
+/* Accessibility label for close button on refund review modal */
+"pos.refundReviewView.closeButton.accessibilityLabel" = "Close";
+
+/* Button to continue with the refund */
+"pos.refundReviewView.continueButton" = "Continue";
+
+/* Accessibility label for edit reason button in refund review */
+"pos.refundReviewView.editReason.accessibilityLabel" = "Edit refund reason";
+
+/* Button to edit an existing refund reason */
+"pos.refundReviewView.editReasonButton" = "Edit reason";
+
+/* Button to go back and edit the refund items */
+"pos.refundReviewView.editRefundButton" = "Edit refund";
+
+/* Label for items subtotal row in refund review. %d is the number of items. */
+"pos.refundReviewView.itemsSubtotalFormat" = "Items subtotal (%d items)";
+
+/* Placeholder text when no refund reason has been added */
+"pos.refundReviewView.reasonPlaceholder" = "Reason for refunding order";
+
+/* Label for refund reason section in refund review */
+"pos.refundReviewView.refundReasonLabel" = "Refund reason";
+
+/* Label for refund total row in refund review */
+"pos.refundReviewView.refundTotalLabel" = "Refund total";
+
+/* Label for tax row in refund review */
+"pos.refundReviewView.taxLabel" = "Tax";
+
+/* Title for the refund review modal */
+"pos.refundReviewView.title" = "Review refund";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Clear Search";
 
@@ -8482,6 +8596,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Point of Sale is not supported in this screen width.";
+
+/* Button title for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.buttonTitle" = "Learn more";
+
+/* Message for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.message" = "Take in‑person payments with WooCommerce POS. Set up on a tablet and start selling today.";
+
+/* Title for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.title" = "Run WooCommerce POS on your tablet";
+
+/* Button to open the POS learn more page in Safari (final step of POS promotion modal) */
+"posPromotion.button.explorePOS" = "Explore WooCommerce POS";
+
+/* Button to go to the next step in the POS promotion modal */
+"posPromotion.button.next" = "Next";
+
+/* Description for the first step of the POS promotion modal */
+"posPromotion.step1.description" = "Take payments in person and connect everything back to your store — all through the WooCommerce mobile app.";
+
+/* Description for the second step of the POS promotion modal */
+"posPromotion.step2.description" = "Real-time syncing for inventory, customer, and order data between your online store and POS.";
+
+/* Description for the third step of the POS promotion modal */
+"posPromotion.step3.description" = "Quick and simple to learn.";
+
+/* Description for the fourth step of the POS promotion modal */
+"posPromotion.step4.description" = "Built right into the WooCommerce mobile app — no third-party integration required.";
+
+/* Description for the fifth step of the POS promotion modal */
+"posPromotion.step5.description" = "Use with WooPayments or Stripe payment gateways.";
+
+/* Title for the POS promotion modal (shown on all steps) */
+"posPromotion.title" = "Point of Sale from WooCommerce";
 
 /* Label for allow sync on cellular data toggle in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Allow sync using cellular data";
@@ -9349,8 +9496,7 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regular price: %@";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
-   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
+/* Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Remind me later";
 
 /* Add asset to media picker list
@@ -9431,9 +9577,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Activity Log";
-
-/* The title for a menu to reset the privacy choice banner presentation */
-"Reset Privacy Choice Banner State" = "Reset Privacy Choice Banner State";
 
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
@@ -9829,6 +9972,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu settings button */
 "Settings" = "Settings";
 
+/* Settings > Store Settings row that starts the flow to enable push notifications. */
+"settings.enablePushNotifications" = "Enable Push Notifications";
+
 /* Navigates to connectivity test screen. */
 "settingsViewController.connectivity" = "Troubleshoot Connection";
 
@@ -10091,6 +10237,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Site plan expired";
+
+/* Error message explaining login failure due to an unexpected authentication challenge. */
+"siteCredentialLoginError.failedAuthenticationChallenge.message" = "Unable to log in due to an unexpected security measure on your store. Please contact support for troubleshooting.";
+
+/* Error message explaining login failure due to unexpected response. */
+"siteCredentialLoginError.invalidLoginResponse.message" = "Unable to login due to an unexpected response from your site.";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "Cancel";
@@ -11561,9 +11713,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message explaining login failure due to blocked wp-login.php */
 "Unable to login because we cannot identify your store's login URL." = "Unable to login because we cannot identify your store's login URL.";
-
-/* Error message explaining login failure due to unexpected response. */
-"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "Unable to login due to an unexpected response from your site. We are working on fixing this issue.";
 
 /* Error message explaining login failure due to unacceptable status code. */
 "Unable to login with response status code %1$d." = "Unable to login with response status code %1$d.";
@@ -13231,6 +13380,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
 "Would you like to try a payment" = "Would you like to try a payment";
 
+/* Text to suggest another form of 2FA authentication */
+"wpCom2FALoginView.anotherFormText" = "Or choose another form of authentication.";
+
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Use a security key";
 
@@ -13258,11 +13410,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "If you don't have an account, we'll use this email to create one.";
 
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.enterEmail" = "Enter email address or username";
+
 /* Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow. */
 "wpComEmailLoginView.enterUsername" = "Enter username";
 
 /* Label for the username field on the WPCom email login screen of the Jetpack setup flow. */
 "wpComEmailLoginView.usernameLabel" = "Username";
+
+/* Button to submit a WPCom email on the login screen for push notification setup */
+"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "Continue";
+
+/* Subtitle for the WPCom email login screen for push notification setup */
+"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "Log in with your WordPress.com account to connect your store.";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.";
+
+/* Title for the WPCom email login screen for push notification setup */
+"wpcomEmailLoginViewModel.connectWPCom.title" = "Connect to WordPress.com";
 
 /* Error message when the username is not found */
 "wpComEmailLoginViewModel.unknownUsername" = "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.";
@@ -13284,6 +13451,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Ensure your email is correct and double check your spam folder.";
+
+/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.password" = "Password";
+
+/* Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.passwordPlaceholder" = "Enter the password for your account";
+
+/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.secondaryAction" = "or continue using a magic link";
+
+/* Cancel button title in the WordPress.com Push Notifications Benefits View toolbar */
+"wpcomPushNotificationsBenefitsView.cancelButton" = "Cancel";
+
+/* Continue button title in the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.continueButton" = "Continue";
+
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.description" = "Connect your store to a WordPress.com account to get access to push notifications for new orders, reviews and more.";
+
+/* Not now button title in the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.notNowButton" = "Not now";
+
+/* Secondary description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.subdescription" = "It only takes a minute.";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.title" = "Unlock push notifications with WordPress.com";
+
+/* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.whatIsWPCom" = "What is WordPress.com?";
 
 /* Title in the product description AI generator view. */
 "Write a description" = "Write a description";

@@ -80,13 +80,13 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
     }
 
-    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, automaticRefund: Bool) async throws {
+    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {
         let request = refundCalculator.buildRefundRequest(
             orderID: orderID,
             selectedItems: items,
             reason: reason
         )
-        let refund = buildRefund(from: request, createAutomated: automaticRefund)
+        let refund = buildRefund(from: request, createAutomated: isAutomaticRefund)
         _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
     }
 

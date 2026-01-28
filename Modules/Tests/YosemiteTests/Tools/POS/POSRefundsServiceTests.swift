@@ -182,7 +182,7 @@ struct POSRefundsServiceTests {
         let reason = "Customer request"
 
         // When
-        try await sut.createRefund(orderID: orderID, items: items, reason: reason, automaticRefund: true)
+        try await sut.createRefund(orderID: orderID, items: items, reason: reason, isAutomaticRefund: true)
 
         // Then
         #expect(calculator.spyOrderID == orderID)
@@ -201,7 +201,7 @@ struct POSRefundsServiceTests {
         let items = [POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
 
         // When
-        try await sut.createRefund(orderID: orderID, items: items, reason: nil, automaticRefund: true)
+        try await sut.createRefund(orderID: orderID, items: items, reason: nil, isAutomaticRefund: true)
 
         // Then
         #expect(remote.spyCreateRefundSiteID == siteID)
@@ -221,7 +221,7 @@ struct POSRefundsServiceTests {
         let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(), refundCalculator: calculator)
 
         // When
-        try await sut.createRefund(orderID: 456, items: [], reason: "Test reason", automaticRefund: true)
+        try await sut.createRefund(orderID: 456, items: [], reason: "Test reason", isAutomaticRefund: true)
 
         // Then
         #expect(remote.spyCreateRefund?.amount == "132.60")
@@ -234,7 +234,7 @@ struct POSRefundsServiceTests {
         let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: MockPOSPaymentGatewayRemote())
 
         // When
-        try await sut.createRefund(orderID: 456, items: [], reason: nil, automaticRefund: true)
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
 
         // Then
         #expect(remote.spyCreateRefund?.createAutomated == true)
@@ -246,7 +246,7 @@ struct POSRefundsServiceTests {
         let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: MockPOSPaymentGatewayRemote())
 
         // When
-        try await sut.createRefund(orderID: 456, items: [], reason: nil, automaticRefund: false)
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: false)
 
         // Then
         #expect(remote.spyCreateRefund?.createAutomated == false)
@@ -261,7 +261,7 @@ struct POSRefundsServiceTests {
 
         // Then
         do {
-            try await sut.createRefund(orderID: 456, items: [], reason: nil, automaticRefund: true)
+            try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
             Issue.record("Expected error to be thrown")
         } catch {
             #expect(error is TestError)

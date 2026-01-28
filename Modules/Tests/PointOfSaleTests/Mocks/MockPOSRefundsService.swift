@@ -45,12 +45,12 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
     var spyCreateRefundAutomaticRefund: Bool?
     var createRefundErrorToThrow: Error?
 
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, automaticRefund: Bool) async throws {
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {
         createRefundCalled = true
         spyCreateRefundOrderID = orderID
         spyCreateRefundItems = items
         spyCreateRefundReason = reason
-        spyCreateRefundAutomaticRefund = automaticRefund
+        spyCreateRefundAutomaticRefund = isAutomaticRefund
 
         if let error = createRefundErrorToThrow {
             throw error

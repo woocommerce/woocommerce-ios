@@ -422,7 +422,7 @@ enum RefundActionAvailability {
             orderID: order.id,
             items: refundableItems,
             reason: reason,
-            automaticRefund: refundsResult.supportsAutomaticRefund
+            isAutomaticRefund: refundsResult.supportsAutomaticRefund
         )
 
         clearRefundSelection()

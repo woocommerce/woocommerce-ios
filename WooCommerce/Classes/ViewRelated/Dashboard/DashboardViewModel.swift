@@ -97,6 +97,7 @@ final class DashboardViewModel: ObservableObject {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let userDefaults: UserDefaults
+    private let pushNotesManager: PushNotesManager
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
@@ -149,6 +150,7 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
@@ -163,6 +165,7 @@ final class DashboardViewModel: ObservableObject {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
+        self.pushNotesManager = pushNotesManager
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
@@ -657,7 +660,7 @@ private extension DashboardViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        userDefaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
+        pushNotesManager.siteIDsRegisteredForWooPNsPublisher
             .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard))
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _, _ in
@@ -928,11 +931,11 @@ private extension DashboardViewModel {
     }
 
     func updateSelfDrivenPushRegistrationStatus() {
-        let registeredSiteIDs = userDefaults.siteIDsRegisteredForWooPushNotifications
-        isSelfDrivenPushNotificationRegistered = registeredSiteIDs?.contains(siteID) == true && stores.isAuthenticatedWithoutWPCom
+        let registeredSiteIDs = pushNotesManager.siteIDsRegisteredForWooPNs
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
-        shouldSuggestWPComConnection = registeredSiteIDs != nil &&
-            registeredSiteIDs?.contains(siteID) == false &&
+        shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
+            registeredSiteIDs.contains(siteID) == false &&
             stores.isAuthenticatedWithoutWPCom &&
             !dismissedWPComConnectionSuggestion &&
             featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)

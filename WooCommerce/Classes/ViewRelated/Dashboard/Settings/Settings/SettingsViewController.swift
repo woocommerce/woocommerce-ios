@@ -439,7 +439,7 @@ private extension SettingsViewController {
                 self?.dismiss(animated: true)
             }
         )
-        present(controller, animated: true)
+        present(UINavigationController(rootViewController: controller), animated: true)
     }
 
     func showThemeSettings() {

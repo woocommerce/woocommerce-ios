@@ -1014,9 +1014,9 @@
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D200F072ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */; };
+		2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */; };
 		2D5389242F278E17006A6618 /* PushNotificationRegistrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */; };
 		2D5389262F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */; };
-		2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
@@ -2490,6 +2490,7 @@
 		DE7E5E932B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */; };
 		DE7FF07C2EE809CD00B31E35 /* TechnicalDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7FF07B2EE809CD00B31E35 /* TechnicalDetailsView.swift */; };
 		DE8311C02C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */; };
+		DE83FCDA2F29B6F30038C589 /* WooPushNotificationSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE83FCD92F29B6D00038C589 /* WooPushNotificationSetupCoordinator.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -3933,9 +3934,9 @@
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDateTimeFilterViewTests.swift; sourceTree = "<group>"; };
+		2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinator.swift; sourceTree = "<group>"; };
 		2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationRegistrationState.swift; sourceTree = "<group>"; };
 		2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationRegistrationStateTests.swift; sourceTree = "<group>"; };
-		2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinator.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
@@ -5452,6 +5453,7 @@
 		DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetTopicPickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE7FF07B2EE809CD00B31E35 /* TechnicalDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TechnicalDetailsView.swift; sourceTree = "<group>"; };
 		DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListItemCustomizationsTests.swift; sourceTree = "<group>"; };
+		DE83FCD92F29B6D00038C589 /* WooPushNotificationSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPushNotificationSetupCoordinator.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AIFeedback.swift"; sourceTree = "<group>"; };
@@ -10137,6 +10139,7 @@
 		B5BBD6DC21B1701F00E3207E /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				DE83FCD92F29B6D00038C589 /* WooPushNotificationSetupCoordinator.swift */,
 				2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */,
 				01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */,
 				B555530E21B57DE700449E71 /* ApplicationAdapter.swift */,
@@ -15565,6 +15568,7 @@
 				02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */,
 				02DFD5062B2048C50048CD70 /* ProductStepperViewModel.swift in Sources */,
 				02B334A12BEB712600A46774 /* CollapsibleCustomerCardAddressViewModel.swift in Sources */,
+				DE83FCDA2F29B6F30038C589 /* WooPushNotificationSetupCoordinator.swift in Sources */,
 				26C98F9B29C18ACE00F96503 /* StorePlanBanner.swift in Sources */,
 				E10BD16D27CF890800CE6449 /* InPersonPaymentsCountryNotSupportedStripe.swift in Sources */,
 				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,

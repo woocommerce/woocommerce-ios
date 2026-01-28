@@ -19,7 +19,7 @@ final class WooPushNotificationSetupCoordinator: Coordinator {
                 flow: .notificationSetup,
                 navigationController: navigationController,
                 completionHandler: {
-                // TODO
+                DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
             })
         }()
     }

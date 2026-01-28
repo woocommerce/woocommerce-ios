@@ -23,7 +23,10 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
     }
 
     private func startPushNotificationSetup() {
-        guard let navigationController else { return }
+        guard let navigationController else {
+            DDLogWarn("⚠️ WooPushNotificationSetupCoordinator cannot start due to an issue with navigation")
+            return
+        }
         let coordinator = WooPushNotificationSetupCoordinator(
             navigationController: navigationController
         )

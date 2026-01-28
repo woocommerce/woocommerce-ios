@@ -1,54 +1,72 @@
 import SwiftUI
+import UIKit
 import WooFoundation
 
 /// Hosting controller wrapper for `WPComPushNotificationsBenefitsView`
 ///
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
+    private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
+
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         onContinue: @escaping () -> Void) {
+         onDismiss: @escaping () -> Void) {
         super.init(rootView: WPComPushNotificationsBenefitsView(
-            viewModel: viewModel))
-        rootView.onContinue = {
-            // TODO: wire up coordinator
+            viewModel: viewModel,
+            onDismiss: onDismiss
+        ))
+        rootView.onSetup = { [weak self] in
+            self?.startPushNotificationSetup()
         }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    private func startPushNotificationSetup() {
+        guard let navigationController else { return }
+        let coordinator = WooPushNotificationSetupCoordinator(
+            navigationController: navigationController
+        )
+        pushNotificationSetupCoordinator = coordinator
+        coordinator.start()
+    }
 }
 
 struct WPComPushNotificationsBenefitsView: View {
+    var onSetup: () -> Void = {} // to be set through hosting controller
+
     private let viewModel: WPComPushNotificationsBenefitsViewModel
-    var onContinue: () -> Void = {} // to be set through hosting controller
+    private let onDismiss: () -> Void
+
     @State private var safariURL: URL?
 
-    init(viewModel: WPComPushNotificationsBenefitsViewModel) {
+    init(viewModel: WPComPushNotificationsBenefitsViewModel,
+         onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+            Spacer()
             VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                Spacer()
-                VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                    stackedImages
-                    title
-                    detail
-                }
-                Spacer()
-                footer
+                stackedImages
+                title
+                detail
             }
-            .padding([.leading, .bottom, .trailing], Layout.contentPadding)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancelButton) {
-                        viewModel.notNowTapped()
-                    }
-                }
-            }
-            .toolbarBackground(.hidden, for: .navigationBar)
+            Spacer()
+            footer
         }
+        .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelButton) {
+                    viewModel.notNowTapped()
+                    onDismiss()
+                }
+            }
+        }
+        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear {
             viewModel.onAppear()
         }
@@ -89,12 +107,13 @@ struct WPComPushNotificationsBenefitsView: View {
         VStack {
             Button(Localization.continueButton) {
                 viewModel.continueTapped()
-                onContinue()
+                onSetup()
             }
             .buttonStyle(PrimaryButtonStyle())
 
             Button(Localization.notNowButton) {
                 viewModel.notNowTapped()
+                onDismiss()
             }
             .buttonStyle(SecondaryButtonStyle())
         }
@@ -153,8 +172,7 @@ fileprivate extension WPComPushNotificationsBenefitsView {
 
 #Preview {
     WPComPushNotificationsBenefitsView(
-        viewModel: WPComPushNotificationsBenefitsViewModel(
-            onDismiss: {}
-        )
+        viewModel: WPComPushNotificationsBenefitsViewModel(),
+        onDismiss: {}
     )
 }

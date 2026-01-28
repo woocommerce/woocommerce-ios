@@ -19,11 +19,6 @@ struct DebugPanelView: View {
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
             }
-
-            DebugSheetPresenter("Force show \"Unlock push notifications WP.com modal\"") { dismiss in
-                let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: dismiss)
-                WPComPushNotificationsBenefitsView(viewModel: viewModel)
-            }
         }
         .contentMargins(20)
         .navigationTitle("Debug Panel")

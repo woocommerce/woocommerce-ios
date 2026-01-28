@@ -4,14 +4,14 @@ import Yosemite
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
 final class WooPushNotificationSetupCoordinator: Coordinator {
     let navigationController: UINavigationController
-    var loginCoordinator: WPComLoginCoordinator?
+
+    private var loginCoordinator: WPComLoginCoordinator?
 
     init(navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores) {
         self.navigationController = navigationController
         self.loginCoordinator = {
-            if let site = stores.sessionManager.defaultSite,
-               site.isJetpackConnected {
+            if stores.sessionManager.defaultSite?.isJetpackConnected == true {
                 return nil // no need to connect WPCom
             }
             return WPComLoginCoordinator(
@@ -25,9 +25,12 @@ final class WooPushNotificationSetupCoordinator: Coordinator {
     }
 
     func start() {
-        if let loginCoordinator {
-            loginCoordinator.startWithoutEmail()
+        guard let loginCoordinator else {
+            // TODO: start plugin check
+            DDLogDebug("📱 Site is connected to Jetpack, now checking plugin version...")
+            return
         }
+        loginCoordinator.startWithoutEmail()
     }
 }
 

@@ -1,11 +1,12 @@
 import Foundation
 import protocol WooFoundation.Analytics
 
-final class WPComPushNotificationsBenefitsViewModel {
-    private let onDismiss: () -> Void
+final class WPComPushNotificationsBenefitsViewModel: ObservableObject {
 
-    init(onDismiss: @escaping () -> Void) {
-        self.onDismiss = onDismiss
+    private let analytics: Analytics
+
+    init(analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
     }
 
     func onAppear() {
@@ -18,7 +19,6 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     func notNowTapped() {
         // TODO: Track not now tapped event
-        onDismiss()
     }
 
     func whatIsWPComTapped() {

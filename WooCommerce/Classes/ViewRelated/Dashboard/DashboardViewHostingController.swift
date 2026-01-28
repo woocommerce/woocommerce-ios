@@ -13,7 +13,6 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
     private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
-    private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
     private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
     private var isAppActive = true
 
@@ -372,9 +371,14 @@ private extension DashboardViewHostingController {
     func configureConnectWPComCard() {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self, let navigationController else { return }
-            let coordinator = WooPushNotificationSetupCoordinator(navigationController: navigationController)
-            pushNotificationSetupCoordinator = coordinator
-            coordinator.start()
+            let viewModel = WPComPushNotificationsBenefitsViewModel()
+            let hostingController = WPComPushNotificationsBenefitsHostingController(viewModel: viewModel, onDismiss: {
+                navigationController.dismiss(animated: true)
+            })
+            navigationController.present(
+                UINavigationController(rootViewController: hostingController),
+                animated: true
+            )
         }
     }
 }

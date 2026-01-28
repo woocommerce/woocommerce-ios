@@ -22,7 +22,9 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         super.viewDidLoad()
         configureTransparentNavigationBar()
         navigationController?.presentationController?.delegate = self
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+        if navigationController?.viewControllers.first == self {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+        }
     }
 
     @objc

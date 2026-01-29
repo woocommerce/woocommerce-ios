@@ -26,6 +26,7 @@ protocol POSOrderListControllerProtocol {
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
     func startRefundFlow()
+    func retryLoadingRefundData()
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
@@ -49,6 +50,7 @@ enum RefundActionAvailability {
     case unknown
     case available
     case unavailable
+    case failedToLoad
 }
 
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
@@ -97,12 +99,14 @@ enum RefundActionAvailability {
         }
 
         switch selectedOrderRefundsState {
-        case .idle, .failed:
+        case .idle:
             return .unavailable
         case .loading:
             return .unknown
         case .loaded(let result):
             return result.isFullyRefunded ? .unavailable : .available
+        case .failed:
+            return .failedToLoad
         }
     }
 
@@ -307,6 +311,11 @@ enum RefundActionAvailability {
                 POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
+    }
+
+    @MainActor
+    func retryLoadingRefundData() {
+        fetchRefundsOfSelectedOrder()
     }
 
     @MainActor

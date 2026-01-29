@@ -420,8 +420,12 @@ private extension POSOrderDetailsView {
             }
         case .issueRefund:
             return {
-                orderListModel.ordersController.startRefundFlow()
-                refundModalState = .itemSelection
+                if orderListModel.ordersController.refundActionAvailability == .failedToLoad {
+                    refundModalState = .error(.loading)
+                } else {
+                    orderListModel.ordersController.startRefundFlow()
+                    refundModalState = .itemSelection
+                }
             }
         }
     }
@@ -443,7 +447,7 @@ private extension POSOrderDetailsView {
         }
 
         switch orderListModel.ordersController.refundActionAvailability {
-        case .available:
+        case .available, .failedToLoad:
             return .init(primary: .issueRefund, secondary: [email])
 
         case .unavailable:
@@ -642,7 +646,8 @@ private extension POSOrderDetailsView {
     func handleErrorRetry(errorType: POSRefundErrorType) {
         switch errorType {
         case .loading:
-            refundModalState = .itemSelection
+            orderListModel.ordersController.retryLoadingRefundData()
+            refundModalState = nil
         case .refundCreation(let reviewData):
             refundModalState = .confirmation(reviewData)
         }

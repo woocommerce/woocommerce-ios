@@ -40,6 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
+    /// Coordinates the setup flow for self-driven push notification system
+    private var wooPushNotificationCoordinator: WooPushNotificationSetupCoordinator?
+
     private(set) lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
     /// Handles events to background refresh the app.
@@ -458,9 +461,9 @@ extension AppDelegate {
     }
 
     func handleAuthenticationUrlForNotificationSetup(_ url: URL, rootViewController: UIViewController) -> Bool {
-        // TODO: Handle magic link for notification setup
-        DDLogDebug("📱 Handling magic link for notification setup")
-        return false
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
+        wooPushNotificationCoordinator = coordinator
+        return coordinator.handleAuthenticationUrl(url)
     }
 
     func handleAuthenticationUrlForJetpackSetup(_ url: URL, rootViewController: UIViewController) -> Bool {

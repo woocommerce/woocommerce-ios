@@ -20,7 +20,7 @@ final class WooPushNotificationSetupCoordinator {
                 flow: .notificationSetup,
                 navigationController: UINavigationController(),
                 completionHandler: { credentials in
-                    // TODO: use credentials for Jetpack setup flow.
+                    // TODO: use credentials for Jetpack connection flow.
                     // Consider reusing JetpackSetupViewModel
                     // Also check JetpackSetupHostingController for more details on what the credentials are for.
                     DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
@@ -57,6 +57,7 @@ final class WooPushNotificationSetupCoordinator {
         }
 
         // TODO: start Jetpack connection flow with the retrieved authToken.
+        DDLogDebug("📱 Magic link success, now proceed with Jetpack connection")
         return true
     }
 }

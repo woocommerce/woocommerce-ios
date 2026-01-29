@@ -10,12 +10,23 @@ env:
 jobs:
   build:
     name: Build Application
-    if: contains(github.event.pull_request.labels.*.name, 'generate screenshots')
+    # Only run for PRs from the same repo (not forks) with the 'generate screenshots' label
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'generate screenshots')
     runs-on: macos-latest
+    # Grant write permissions to push commits back to the PR branch.
+    # This is safe because this job only runs when someone from the team
+    # manually adds the 'generate screenshots' label.
+    permissions:
+      contents: write
 
     steps:
     - name: "Check out Project"
       uses: actions/checkout@v4
+      with:
+        # Check out the PR branch directly (not the merge commit) so we can push back to it
+        ref: ${{ github.head_ref }}
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
@@ -23,6 +34,11 @@ jobs:
 
     - name: Install App Dependencies
       run: bundle exec rake dependencies
+
+    - name: Configure Git for committing
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Test we can push
       run: |
@@ -86,12 +102,20 @@ jobs:
     name: "Process Screenshots"
     needs: capture
     runs-on: macos-latest
+    # Grant write permissions to push screenshot commits back to the PR branch.
+    permissions:
+      contents: write
 
     env:
       BUNDLE_WITH: screenshots
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Check out the PR branch directly (not the merge commit) so we can push back to it
+          ref: ${{ github.head_ref }}
+          # Fetch LFS files for promo screenshot generation
+          lfs: true
 
       - name: Install Native Dependencies
         run: |
@@ -130,14 +154,10 @@ jobs:
           name: raw-screenshots
           path: fastlane/screenshots
 
-      - name: Setup Git LFS
+      - name: Configure Git for committing
         run: |
-          # Install Git LFS if not available
-          if ! command -v git-lfs &> /dev/null; then
-            echo "Installing Git LFS..."
-            brew install git-lfs
-          fi
-          git lfs install && git lfs fetch && git lfs pull
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Generate Promo Screenshots
         run: |

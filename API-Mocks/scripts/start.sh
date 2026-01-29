@@ -3,7 +3,7 @@
 set -eu
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-VENDOR_DIR="$(pwd)/WooCommerce/WooCommerceUITests/Mocks/vendor/wiremock"
+VENDOR_DIR="$SCRIPT_DIR/../vendor/wiremock"
 BUILD_ARTIFACTS_DIR="$(pwd)/build/logs"
 
 WIREMOCK_VERSION="2.35.2"

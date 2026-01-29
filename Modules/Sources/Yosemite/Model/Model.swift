@@ -226,6 +226,7 @@ public typealias CardReaderDiscoveryMethod = Hardware.CardReaderDiscoveryMethod
 public typealias CardReaderEvent = Hardware.CardReaderEvent
 public typealias CardReaderInput = Hardware.CardReaderInput
 public typealias CardReaderSoftwareUpdateState = Hardware.CardReaderSoftwareUpdateState
+public typealias CardReaderReconnectionState = Hardware.CardReaderReconnectionState
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias CardReaderServiceUnderlyingError = Hardware.UnderlyingError

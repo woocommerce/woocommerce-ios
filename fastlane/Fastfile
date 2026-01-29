@@ -944,7 +944,7 @@ platform :ios do
 
     UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
 
-    puts "Creating screenshots for #{languages} on #{devices}"
+    UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
     rebuild_screenshot_devices

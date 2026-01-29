@@ -57,6 +57,27 @@ struct CardReaderConnectionStatusView: View {
                     .padding(Constants.disconnectedBorderInset)
                 }
                 .accessibilityIdentifier("pos-connect-reader-button")
+            case .reconnecting:
+                Menu {
+                    Button {
+                        posModel.cancelReconnection()
+                    } label: {
+                        Text(Localization.cancelReconnection)
+                    }
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        ProgressView()
+                            .progressViewStyle(POSProgressViewStyle(
+                                size: Constants.progressIndicatorDimension * scale,
+                                lineWidth: Constants.progressIndicatorLineWidth * scale
+                            ))
+                        Text(Localization.readerReconnecting)
+                            .foregroundColor(connectedFontColor)
+                    }
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .frame(maxHeight: .infinity)
+                }
+                .accessibilityIdentifier("pos-reader-reconnecting")
             }
         }
         .font(Constants.font)
@@ -148,8 +169,8 @@ private extension CardReaderConnectionStatusView {
         )
 
         static let disconnectCardReader = NSLocalizedString(
-            "pointOfSale.floatingButtons.disconnectCardReader.button.title",
-            value: "Disconnect Reader",
+            "pointOfSale.floatingButtons.disconnectCardReader.button.title.2",
+            value: "Disconnect reader",
             comment: "The title of the menu button to disconnect a connected card reader, as confirmation."
         )
 
@@ -158,6 +179,18 @@ private extension CardReaderConnectionStatusView {
             value: "Please wait",
             comment: "The title of the floating button to indicate that the reader is not ready for another " +
             "connection, usually because a connection has just been cancelled"
+        )
+
+        static let readerReconnecting = NSLocalizedString(
+            "pointOfSale.floatingButtons.readerReconnecting.title",
+            value: "Reconnecting…",
+            comment: "The title of the floating button to indicate that the reader is attempting to reconnect."
+        )
+
+        static let cancelReconnection = NSLocalizedString(
+            "pointOfSale.floatingButtons.cancelReconnection.button.title",
+            value: "Cancel reconnection",
+            comment: "The title of the menu button to cancel an ongoing card reader reconnection attempt."
         )
     }
 }

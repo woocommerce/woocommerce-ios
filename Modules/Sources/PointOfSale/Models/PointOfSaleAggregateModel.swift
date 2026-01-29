@@ -381,6 +381,12 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    func cancelReconnection() {
+        Task { @MainActor [weak self] in
+            await self?.cardPresentPaymentService.cancelReconnection()
+        }
+    }
+
     func updateCardReaderSoftware() {
         //TODO: analytics.track(.cardReaderUpdateTapped)
         Task { @MainActor [weak self] in
@@ -399,7 +405,7 @@ extension PointOfSaleAggregateModel {
                     switch status {
                     case .connected:
                         return true
-                    case .disconnected, .disconnecting, .cancellingConnection:
+                    case .disconnected, .disconnecting, .cancellingConnection, .reconnecting:
                         return false
                     }
                 }

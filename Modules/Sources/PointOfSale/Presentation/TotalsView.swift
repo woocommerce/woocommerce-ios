@@ -154,7 +154,7 @@ private extension TotalsView {
         }
 
         switch posModel.cardReaderConnectionStatus {
-        case .connected, .disconnecting, .cancellingConnection:
+        case .connected, .disconnecting, .cancellingConnection, .reconnecting:
             // Show card payment UI if there's a message, or cash payment UI when not idle
             switch posModel.paymentState.activePaymentMethod {
             case .cash:

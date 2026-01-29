@@ -920,6 +920,27 @@ struct PointOfSaleAggregateModelTests {
             #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
         }
 
+        @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: analytics)
+
+            // When
+            await withCheckedContinuation { continuation in
+                cardPresentPaymentService.onCancelReconnectionCalled = {
+                    continuation.resume()
+                }
+                sut.cancelReconnection()
+            }
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == true)
+        }
+
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
             // Given
             let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()

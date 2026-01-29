@@ -822,4 +822,107 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         XCTAssertNotNil(mockCardReaderService.spyCheckSupportMinimumOperatingSystemVersionOverride)
     }
+
+    // MARK: - CardPresentPaymentAction.observeCardReaderReconnectionState
+
+    func test_observeCardReaderReconnectionState_returns_publisher() {
+        let expectation = self.expectation(description: "Reconnection state publisher received")
+
+        let action = CardPresentPaymentAction.observeCardReaderReconnectionState { publisher in
+            XCTAssertNotNil(publisher)
+            expectation.fulfill()
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_observeCardReaderReconnectionState_emits_reconnecting_state() {
+        let expectation = self.expectation(description: "Reconnecting state received")
+
+        let reader = MockCardReader.bbposChipper2XBT()
+
+        let action = CardPresentPaymentAction.observeCardReaderReconnectionState { [weak self] publisher in
+            let cancellable = publisher
+                .dropFirst() // Skip initial .idle
+                .sink { state in
+                    if case .reconnecting(let reconnectingReader) = state {
+                        XCTAssertEqual(reconnectingReader.serial, reader.serial)
+                        expectation.fulfill()
+                    }
+                }
+            // Simulate reconnection started
+            self?.mockCardReaderService.simulateReconnectionStarted(reader: reader)
+            _ = cancellable
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_observeCardReaderReconnectionState_emits_succeeded_state() {
+        let expectation = self.expectation(description: "Reconnection succeeded state received")
+
+        let reader = MockCardReader.bbposChipper2XBT()
+
+        let action = CardPresentPaymentAction.observeCardReaderReconnectionState { [weak self] publisher in
+            let cancellable = publisher
+                .dropFirst() // Skip initial .idle
+                .sink { state in
+                    if case .succeeded(let reconnectedReader) = state {
+                        XCTAssertEqual(reconnectedReader.serial, reader.serial)
+                        expectation.fulfill()
+                    }
+                }
+            // Simulate reconnection succeeded
+            self?.mockCardReaderService.simulateReconnectionSucceeded(reader: reader)
+            _ = cancellable
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_observeCardReaderReconnectionState_emits_failed_state() {
+        let expectation = self.expectation(description: "Reconnection failed state received")
+
+        let reader = MockCardReader.bbposChipper2XBT()
+
+        let action = CardPresentPaymentAction.observeCardReaderReconnectionState { [weak self] publisher in
+            let cancellable = publisher
+                .dropFirst() // Skip initial .idle
+                .sink { state in
+                    if case .failed(let failedReader) = state {
+                        XCTAssertEqual(failedReader.serial, reader.serial)
+                        expectation.fulfill()
+                    }
+                }
+            // Simulate reconnection failed
+            self?.mockCardReaderService.simulateReconnectionFailed(reader: reader)
+            _ = cancellable
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - CardPresentPaymentAction.cancelReconnection
+
+    func test_cancelReconnection_action_hits_cancelReconnection_in_service() {
+        let expectation = self.expectation(description: "Cancel reconnection completed")
+
+        let action = CardPresentPaymentAction.cancelReconnection { result in
+            XCTAssertTrue(result.isSuccess)
+            expectation.fulfill()
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertTrue(mockCardReaderService.didHitCancelReconnection)
+    }
 }

@@ -65,4 +65,11 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     func updateCardReaderSoftware() async throws {
         // no-op
     }
+
+    var cancelReconnectionCalled = false
+    var onCancelReconnectionCalled: (() async -> Void)?
+    func cancelReconnection() async {
+        cancelReconnectionCalled = true
+        await onCancelReconnectionCalled?()
+    }
 }

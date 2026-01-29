@@ -10,6 +10,7 @@ public final class StripeCardReaderService: NSObject {
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
     private var refundCancellable: StripeTerminal.Cancelable?
+    private var reconnectionCancelable: StripeTerminal.Cancelable?
     private var cancellables = Set<AnyCancellable>()
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
@@ -18,6 +19,7 @@ public final class StripeCardReaderService: NSObject {
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
     private let tapToPayCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
+    private let reconnectionStateSubject = CurrentValueSubject<CardReaderReconnectionState, Never>(.idle)
 
     private var connectionAttemptInvalidated: Bool = false
 
@@ -67,6 +69,10 @@ extension StripeCardReaderService: CardReaderService {
 
     public var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
         tapToPayCardReaderAcceptToSSubject.eraseToAnyPublisher()
+    }
+
+    public var reconnectionEvents: AnyPublisher<CardReaderReconnectionState, Never> {
+        reconnectionStateSubject.eraseToAnyPublisher()
     }
 
     // MARK: - CardReaderService conformance. Commands
@@ -628,6 +634,30 @@ extension StripeCardReaderService: CardReaderService {
     public func installUpdate() -> Void {
         Terminal.shared.installAvailableUpdate()
     }
+
+    public func cancelReconnection() -> Future<Void, Error> {
+        Future { [weak self] promise in
+            guard let self = self,
+                  let reconnectionCancelable = self.reconnectionCancelable,
+                  !reconnectionCancelable.completed else {
+                self?.reconnectionStateSubject.send(.idle)
+                return promise(.success(()))
+            }
+
+            reconnectionCancelable.cancel { [weak self] error in
+                self?.reconnectionCancelable = nil
+                self?.connectedReadersSubject.send([])
+                self?.reconnectionStateSubject.send(.idle)
+
+                if let error = error {
+                    let underlyingError = Self.logAndDecodeError(error)
+                    promise(.failure(CardReaderServiceError.reconnectionCancellation(underlyingError: underlyingError)))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+    }
 }
 
 struct CardReaderMetadata {
@@ -991,6 +1021,33 @@ extension StripeCardReaderService: MobileReaderDelegate {
 
     public func reader(_ reader: Reader, didDisconnect reason: DisconnectReason) {
         connectedReadersSubject.send([])
+    }
+
+    // MARK: - Reconnection delegate methods
+
+    public func reader(_ reader: Reader, didStartReconnect cancelable: StripeTerminal.Cancelable) {
+        DDLogInfo("💳 Reader started auto-reconnection")
+        reconnectionCancelable = cancelable
+        let cardReader = CardReader(reader: reader)
+        reconnectionStateSubject.send(.reconnecting(reader: cardReader))
+    }
+
+    public func readerDidSucceedReconnect(_ reader: Reader) {
+        DDLogInfo("💳 Reader auto-reconnection succeeded")
+        reconnectionCancelable = nil
+        let cardReader = CardReader(reader: reader)
+        reconnectionStateSubject.send(.succeeded(reader: cardReader))
+        connectedReadersSubject.send([cardReader])
+        reconnectionStateSubject.send(.idle)
+    }
+
+    public func readerDidFailReconnect(_ reader: Reader) {
+        DDLogError("💳 Reader auto-reconnection failed")
+        reconnectionCancelable = nil
+        let cardReader = CardReader(reader: reader)
+        reconnectionStateSubject.send(.failed(reader: cardReader))
+        connectedReadersSubject.send([])
+        reconnectionStateSubject.send(.idle)
     }
 }
 

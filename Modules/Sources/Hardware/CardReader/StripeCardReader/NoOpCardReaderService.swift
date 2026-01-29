@@ -21,6 +21,10 @@ public struct NoOpCardReaderService: CardReaderService {
     public var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never>
     = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
 
+    /// The Publisher that emits reconnection state changes for Bluetooth readers
+    public var reconnectionEvents: AnyPublisher<CardReaderReconnectionState, Never>
+    = CurrentValueSubject<CardReaderReconnectionState, Never>(.idle).eraseToAnyPublisher()
+
     public init() {}
     // MARK: - Commands
 
@@ -109,5 +113,12 @@ public struct NoOpCardReaderService: CardReaderService {
     /// To check the progress of the update, observe the softwareUpdateEvents publisher.
     public func installUpdate() -> Void {
         // no-op
+    }
+
+    /// Cancels an in-progress auto-reconnection attempt.
+    public func cancelReconnection() -> Future<Void, Error> {
+        return Future() { promise in
+            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+        }
     }
 }

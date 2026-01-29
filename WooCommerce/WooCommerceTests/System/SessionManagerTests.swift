@@ -465,6 +465,25 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.hideWPComConnectionOnDashboard])
     }
 
+    func test_pendingMagicLinkFlow_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.pendingMagicLinkFlow] = ["jetpackSetup": Date()]
+
+        // Then
+        XCTAssertNotNil(defaults[.pendingMagicLinkFlow])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.pendingMagicLinkFlow])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

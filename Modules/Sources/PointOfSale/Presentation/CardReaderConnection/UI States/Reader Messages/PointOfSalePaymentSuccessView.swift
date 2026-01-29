@@ -45,7 +45,7 @@ struct PointOfSalePaymentSuccessView: View {
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 Spacer()
 
-                successIcon
+                POSSuccessIcon()
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                     .scaleEffect(isViewLoaded ? 1 : 0)
                     .opacity(isViewLoaded ? 1 : 0)
@@ -84,28 +84,10 @@ struct PointOfSalePaymentSuccessView: View {
         }
     }
 
-    private var successIcon: some View {
-        ZStack {
-            Circle()
-                .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
-                .foregroundColor(.posSuccess)
-            PointOfSaleAssets.successCheck.image
-                .renderingMode(.template)
-                .foregroundColor(checkmarkColor)
-                .frame(width: Constants.checkmarkSize)
-                .accessibilityHidden(true)
-        }
-    }
-
-    private var checkmarkColor: Color {
-        .posOnSuccess
-    }
 }
 
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
-        static let imageSize: CGSize = .init(width: 165, height: 165)
-        static let checkmarkSize: CGFloat = 52
         static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }

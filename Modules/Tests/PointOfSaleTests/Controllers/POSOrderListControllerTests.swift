@@ -1287,6 +1287,40 @@ final class POSOrderListControllerTests {
         // Then
         #expect(refundsService.spyCreateRefundAutomaticRefund == false)
     }
+
+    @MainActor
+    @Test func processRefund_when_successful_then_updates_order() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+        orderListService.orderPages = [[order]]
+        orderListService.loadOrderResult = order
+
+        await sut.loadOrders()
+
+        sut.selectOrder(order)
+        _ = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
+        }
+        sut.startRefundFlow()
+
+        // When
+        try await sut.processRefund(reason: .none)
+
+        // Then
+        #expect(orderListService.loadOrderWasCalled == true)
+        #expect(orderListService.lastLoadOrderID == order.id)
+    }
 }
 
 private extension POSOrderListControllerTests {

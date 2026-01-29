@@ -504,6 +504,7 @@ enum RefundModalState: Identifiable, Equatable {
     case reasonInput(POSRefundReviewData)
     case confirmation(POSRefundReviewData)
     case processing(POSRefundReviewData)
+    case success(POSRefundReviewData)
 
     var id: String {
         switch self {
@@ -512,6 +513,7 @@ enum RefundModalState: Identifiable, Equatable {
         case .reasonInput: return "reasonInput"
         case .confirmation: return "confirmation"
         case .processing: return "processing"
+        case .success: return "success"
         }
     }
 }
@@ -588,6 +590,23 @@ private extension POSOrderDetailsView {
                 onConfirm: {},
                 onBack: {}
             )
+        case .success(let reviewData):
+            POSRefundSuccessView(
+                formattedRefundTotal: reviewData.formattedRefundTotal,
+                paymentMethodDescription: reviewData.paymentMethodDescription,
+                onDone: {
+                    refundModalState = nil
+                },
+                onEmailReceipt: {
+                    refundModalState = nil
+                    Task { @MainActor in
+                        isShowingEmailReceiptView = true
+                    }
+                },
+                onClose: {
+                    refundModalState = nil
+                }
+            )
         }
     }
 
@@ -600,7 +619,7 @@ private extension POSOrderDetailsView {
     func processRefund(reviewData: POSRefundReviewData) async {
         do {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
-            refundModalState = nil
+            refundModalState = .success(reviewData)
         } catch {
             // TODO: Handle error - show error state
             refundModalState = .confirmation(reviewData)

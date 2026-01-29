@@ -989,20 +989,6 @@ platform :ios do
       # Make the status bar pretty
       override_status_bar: true
     )
-
-    next unless options[:commit] || options[:push]
-
-    git_add(
-      path: SCREENSHOTS_DIR,
-      shell_escape: false
-    )
-    git_commit(
-      path: SCREENSHOTS_DIR,
-      message: 'Track new screenshots',
-      allow_nothing_to_commit: true
-    )
-
-    push_to_git_remote(tags: false) if options[:push]
   end
 
   desc 'Create Screenshots Locally'

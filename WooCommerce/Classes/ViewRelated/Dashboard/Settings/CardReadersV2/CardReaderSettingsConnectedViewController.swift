@@ -201,9 +201,11 @@ private extension CardReaderSettingsConnectedViewController {
 
         let readerDisconnectInProgress = viewModel.readerDisconnectInProgress
         let readerUpdateInProgress = viewModel.readerUpdateInProgress
+        let readerReconnectionInProgress = viewModel.readerReconnectionInProgress
         cell.enableButton(viewModel.optionalReaderUpdateAvailable &&
                           !readerDisconnectInProgress &&
-                          !readerUpdateInProgress)
+                          !readerUpdateInProgress &&
+                          !readerReconnectionInProgress)
         cell.showActivityIndicator(readerUpdateInProgress)
 
         cell.selectionStyle = .none
@@ -218,8 +220,9 @@ private extension CardReaderSettingsConnectedViewController {
 
         let readerDisconnectInProgress = viewModel.readerDisconnectInProgress
         let readerUpdateInProgress = viewModel.readerUpdateInProgress
-        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
-        cell.showActivityIndicator(readerDisconnectInProgress)
+        let readerReconnectionInProgress = viewModel.readerReconnectionInProgress
+        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress && !readerReconnectionInProgress)
+        cell.showActivityIndicator(readerDisconnectInProgress || readerReconnectionInProgress)
 
         cell.selectionStyle = .none
         cell.backgroundColor = .clear

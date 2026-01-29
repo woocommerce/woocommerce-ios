@@ -27,6 +27,8 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
     private(set) var readerDisconnectInProgress: Bool = false
 
+    private(set) var readerReconnectionInProgress: Bool = false
+
     private var subscriptions = Set<AnyCancellable>()
 
     var connectedReaderID: String?
@@ -145,6 +147,24 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
                 .store(in: &self.subscriptions)
         }
         ServiceLocator.stores.dispatch(softwareUpdateAction)
+
+        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionEvents in
+            reconnectionEvents
+                .sink { [weak self] state in
+                    guard let self = self else { return }
+
+                    switch state {
+                    case .reconnecting:
+                        self.readerReconnectionInProgress = true
+                    case .succeeded, .failed, .idle:
+                        self.readerReconnectionInProgress = false
+                    }
+                    self.reevaluateShouldShow()
+                    self.didUpdate?()
+                }
+                .store(in: &self.subscriptions)
+        }
+        ServiceLocator.stores.dispatch(reconnectionAction)
     }
 
     /// This screen is only used for managing Bluetooth card readers.
@@ -264,11 +284,9 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
         if !didGetConnectedReaders {
             newShouldShow = .isUnknown
-        } else if connectedReaders.isEmpty {
+        } else if connectedReaders.isEmpty && !readerReconnectionInProgress {
             newShouldShow = .isFalse
         } else if connectedReaders.includesTapToPayReader() {
-            /// This screen only supports management of Bluetooth readers, and will have started disconnection
-            /// from Tap to Pay on iPhone in this instance.
             newShouldShow = .isFalse
         } else {
             newShouldShow = .isTrue

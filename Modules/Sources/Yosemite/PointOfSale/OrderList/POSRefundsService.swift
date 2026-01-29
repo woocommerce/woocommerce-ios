@@ -87,6 +87,11 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
     }
 
+    public func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts {
+        let numberOfDecimals = currencySettings.fractionDigits
+        return refundCalculator.calculateRefundAmounts(for: items, numberOfDecimals: numberOfDecimals)
+    }
+
     public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {
         let numberOfDecimals = currencySettings.fractionDigits
         let request = refundCalculator.buildRefundRequest(

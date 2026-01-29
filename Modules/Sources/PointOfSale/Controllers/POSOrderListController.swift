@@ -9,6 +9,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
 import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
+import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSOrderItem
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
@@ -338,15 +339,20 @@ enum RefundActionAvailability {
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else { return nil }
 
-        let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                price: item.price,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity
+            )
+        }
 
-        let itemsTax = calculateRefundTax(for: selectedItems)
+        let amounts = refundsService.calculateRefundAmounts(for: refundableItems)
 
-        let refundTotal = itemsSubtotal + itemsTax
-
-        guard let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal),
-              let formattedTax = currencyFormatter.formatAmount(itemsTax),
-              let formattedTotal = currencyFormatter.formatAmount(refundTotal) else {
+        guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
+              let formattedTax = currencyFormatter.formatAmount(amounts.tax),
+              let formattedTotal = currencyFormatter.formatAmount(amounts.total) else {
             return nil
         }
 
@@ -360,29 +366,6 @@ enum RefundActionAvailability {
             paymentMethodDescription: paymentMethodDescription,
             refundReason: nil
         )
-    }
-
-    /// Calculates refund tax by grouping items by itemID.
-    /// For full refunds (all units selected), uses the original totalTax directly to avoid rounding errors.
-    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) x totalTax
-    private func calculateRefundTax(for selectedItems: [POSRefundSelectableItem]) -> Decimal {
-        let groupedByItemID = Dictionary(grouping: selectedItems, by: { $0.itemID })
-
-        return groupedByItemID.reduce(Decimal.zero) { total, group in
-            let (_, items) = group
-            guard let firstItem = items.first else { return total }
-
-            let selectedCount = Decimal(items.count)
-            let originalQuantity = firstItem.originalQuantity
-            let totalTax = firstItem.totalTax
-
-            if selectedCount == originalQuantity {
-                return total + totalTax
-            } else {
-                let proportionalTax = (totalTax / originalQuantity) * selectedCount
-                return total + proportionalTax
-            }
-        }
     }
 
     private func createPaymentMethodDescription(for order: POSOrder) -> String {

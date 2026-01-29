@@ -1,5 +1,19 @@
 import Foundation
 
+public struct POSRefundAmounts {
+    public let subtotal: Decimal
+    public let tax: Decimal
+
+    public var total: Decimal {
+        subtotal + tax
+    }
+
+    public init(subtotal: Decimal, tax: Decimal) {
+        self.subtotal = subtotal
+        self.tax = tax
+    }
+}
+
 public protocol POSRefundCalculating {
     func buildRefundRequest(
         orderID: Int64,
@@ -7,6 +21,11 @@ public protocol POSRefundCalculating {
         reason: String?,
         numberOfDecimals: Int
     ) -> POSRefundRequest
+
+    func calculateRefundAmounts(
+        for items: [POSRefundableItem],
+        numberOfDecimals: Int
+    ) -> POSRefundAmounts
 }
 
 public struct POSRefundableItem {
@@ -43,6 +62,12 @@ public final class POSRefundCalculator: POSRefundCalculating {
             reason: reason,
             items: refundItems
         )
+    }
+
+    public func calculateRefundAmounts(for items: [POSRefundableItem], numberOfDecimals: Int) -> POSRefundAmounts {
+        let subtotal = calculateSubtotal(for: items, numberOfDecimals: numberOfDecimals)
+        let tax = calculateTotalTax(for: items, numberOfDecimals: numberOfDecimals)
+        return POSRefundAmounts(subtotal: subtotal, tax: tax)
     }
 }
 

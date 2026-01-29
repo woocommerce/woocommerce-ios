@@ -36,6 +36,18 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         return providePointOfSaleRefundsResultToReturn
     }
 
+    // MARK: - calculateRefundAmounts
+
+    var calculateRefundAmountsStub: POSRefundAmounts?
+    private let calculator = POSRefundCalculator()
+
+    func calculateRefundAmounts(for items: [Yosemite.POSRefundableItem]) -> POSRefundAmounts {
+        if let stub = calculateRefundAmountsStub {
+            return stub
+        }
+        return calculator.calculateRefundAmounts(for: items, numberOfDecimals: 2)
+    }
+
     // MARK: - createRefund
 
     var createRefundCalled = false

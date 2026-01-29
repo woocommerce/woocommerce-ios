@@ -8,6 +8,7 @@ final class MockPOSRefundCalculator: POSRefundCalculating {
     private(set) var spyNumberOfDecimals: Int?
 
     var stubRefundRequest: POSRefundRequest?
+    var stubRefundAmounts: POSRefundAmounts?
 
     func buildRefundRequest(
         orderID: Int64,
@@ -30,5 +31,18 @@ final class MockPOSRefundCalculator: POSRefundCalculating {
             reason: reason,
             items: []
         )
+    }
+
+    func calculateRefundAmounts(for items: [POSRefundableItem], numberOfDecimals: Int) -> POSRefundAmounts {
+        spySelectedItems = items
+        spyNumberOfDecimals = numberOfDecimals
+
+        if let stub = stubRefundAmounts {
+            return stub
+        }
+
+        let subtotal = items.reduce(Decimal.zero) { $0 + $1.price }
+        let tax = items.reduce(Decimal.zero) { $0 + $1.totalTax }
+        return POSRefundAmounts(subtotal: subtotal, tax: tax)
     }
 }

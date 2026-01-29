@@ -171,8 +171,20 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         Task { @MainActor [weak self] in
-            self?.onCompletion = onCompletion
-            self?.state = .initializing
+            guard let self = self else { return }
+            await self.cancelReconnection()
+            self.onCompletion = onCompletion
+            self.state = .initializing
+        }
+    }
+
+    @MainActor
+    private func cancelReconnection() async {
+        await withCheckedContinuation { continuation in
+            let action = CardPresentPaymentAction.cancelReconnection { _ in
+                continuation.resume()
+            }
+            stores.dispatch(action)
         }
     }
 }

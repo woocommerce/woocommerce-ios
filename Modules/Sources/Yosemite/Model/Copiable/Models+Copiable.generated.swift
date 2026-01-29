@@ -88,7 +88,8 @@ extension Yosemite.POSOrder {
         formattedDiscountTotal: NullableCopiableProp<String> = .copy,
         formattedTotalTax: CopiableProp<String> = .copy,
         formattedPaymentTotal: CopiableProp<String> = .copy,
-        formattedNetAmount: NullableCopiableProp<String> = .copy
+        formattedNetAmount: NullableCopiableProp<String> = .copy,
+        lineItemQuantitiesByProductOrVariationID: CopiableProp<[Int64: Decimal]> = .copy
     ) -> Yosemite.POSOrder {
         let id = id ?? self.id
         let number = number ?? self.number
@@ -104,6 +105,7 @@ extension Yosemite.POSOrder {
         let formattedTotalTax = formattedTotalTax ?? self.formattedTotalTax
         let formattedPaymentTotal = formattedPaymentTotal ?? self.formattedPaymentTotal
         let formattedNetAmount = formattedNetAmount ?? self.formattedNetAmount
+        let lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID ?? self.lineItemQuantitiesByProductOrVariationID
 
         return Yosemite.POSOrder(
             id: id,
@@ -119,7 +121,8 @@ extension Yosemite.POSOrder {
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: formattedTotalTax,
             formattedPaymentTotal: formattedPaymentTotal,
-            formattedNetAmount: formattedNetAmount
+            formattedNetAmount: formattedNetAmount,
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 }
@@ -186,7 +189,7 @@ extension Yosemite.POSSite {
 
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
-        note: CopiableProp<Note> = .copy,
+        note: NullableCopiableProp<Note> = .copy,
         review: CopiableProp<ProductReview> = .copy,
         product: CopiableProp<Networking.Product> = .copy
     ) -> Yosemite.ProductReviewFromNoteParcel {

@@ -505,6 +505,7 @@ enum RefundModalState: Identifiable, Equatable {
     case confirmation(POSRefundReviewData)
     case processing(POSRefundReviewData)
     case success(POSRefundReviewData)
+    case error(POSRefundErrorType)
 
     var id: String {
         switch self {
@@ -514,6 +515,20 @@ enum RefundModalState: Identifiable, Equatable {
         case .confirmation: return "confirmation"
         case .processing: return "processing"
         case .success: return "success"
+        case .error: return "error"
+        }
+    }
+}
+
+extension POSRefundErrorType: Equatable {
+    static func == (lhs: POSRefundErrorType, rhs: POSRefundErrorType) -> Bool {
+        switch (lhs, rhs) {
+        case (.loading, .loading):
+            return true
+        case (.refundCreation(let lhsData), .refundCreation(let rhsData)):
+            return lhsData == rhsData
+        default:
+            return false
         }
     }
 }
@@ -607,6 +622,29 @@ private extension POSOrderDetailsView {
                     refundModalState = nil
                 }
             )
+        case .error(let errorType):
+            POSRefundErrorView(
+                title: errorType.title,
+                subtitle: errorType.subtitle,
+                onRetry: {
+                    handleErrorRetry(errorType: errorType)
+                },
+                onCancel: {
+                    refundModalState = nil
+                },
+                onClose: {
+                    refundModalState = nil
+                }
+            )
+        }
+    }
+
+    func handleErrorRetry(errorType: POSRefundErrorType) {
+        switch errorType {
+        case .loading:
+            refundModalState = .itemSelection
+        case .refundCreation(let reviewData):
+            refundModalState = .confirmation(reviewData)
         }
     }
 
@@ -621,8 +659,7 @@ private extension POSOrderDetailsView {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             refundModalState = .success(reviewData)
         } catch {
-            // TODO: Handle error - show error state
-            refundModalState = .confirmation(reviewData)
+            refundModalState = .error(.refundCreation(reviewData))
         }
     }
 }

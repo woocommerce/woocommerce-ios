@@ -990,6 +990,18 @@ platform :ios do
       # Make the status bar pretty
       override_status_bar: true
     )
+
+    next unless options[:commit]
+
+    git_add(
+      path: SCREENSHOTS_DIR,
+      shell_escape: false
+    )
+    git_commit(
+      path: SCREENSHOTS_DIR,
+      message: 'Track new screenshots',
+      allow_nothing_to_commit: true
+    )
   end
 
   desc 'Create Screenshots Locally'
@@ -1143,7 +1155,7 @@ platform :ios do
   end
 
   desc 'Create Promo Screenshots'
-  lane :create_promo_screenshots do |force: false|
+  lane :create_promo_screenshots do |force: false, commit: false|
     unless Fastlane::Helper::GitHelper.has_git_lfs?
       UI.user_error!('LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.')
     end
@@ -1202,6 +1214,18 @@ platform :ios do
       files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
       UI.message('Done')
     end
+
+    next unless commit
+
+    git_add(
+      path: output_directory,
+      shell_escape: false
+    )
+    git_commit(
+      path: output_directory,
+      message: 'Track new promo screenshots',
+      allow_nothing_to_commit: true
+    )
   end
 
   ########################################################################

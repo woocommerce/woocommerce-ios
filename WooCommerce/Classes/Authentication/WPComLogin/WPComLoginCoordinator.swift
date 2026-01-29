@@ -11,11 +11,12 @@ enum WPComLoginFlow {
 
 /// Coordinates navigation for the login flow with WPCom accounts.
 final class WPComLoginCoordinator {
+    let navigationController: UINavigationController
+
     /// Title to display on top of the login views
     private let title: String
 
     private let flow: WPComLoginFlow
-    private let navigationController: UINavigationController
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
     private let completionHandler: (Credentials) -> Void

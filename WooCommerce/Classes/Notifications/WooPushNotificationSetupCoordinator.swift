@@ -2,15 +2,15 @@ import UIKit
 import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
-final class WooPushNotificationSetupCoordinator: Coordinator {
+final class WooPushNotificationSetupCoordinator {
     // Controller to handle navigation between the auth flow and setup steps.
-    let navigationController: UINavigationController
+    let rootViewController: UIViewController
 
     private var loginCoordinator: WPComLoginCoordinator?
 
-    init(navigationController: UINavigationController,
+    init(rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores) {
-        self.navigationController = navigationController
+        self.rootViewController = rootViewController
         self.loginCoordinator = {
             if stores.sessionManager.defaultSite?.isJetpackConnected == true {
                 return nil // no need to connect WPCom
@@ -18,7 +18,7 @@ final class WooPushNotificationSetupCoordinator: Coordinator {
             return WPComLoginCoordinator(
                 title: Localization.flowTitle,
                 flow: .notificationSetup,
-                navigationController: navigationController,
+                navigationController: UINavigationController(),
                 completionHandler: { credentials in
                     // TODO: use credentials for Jetpack setup flow.
                     // Consider reusing JetpackSetupViewModel
@@ -34,7 +34,10 @@ final class WooPushNotificationSetupCoordinator: Coordinator {
             DDLogDebug("📱 Site is connected to Jetpack, now checking plugin version...")
             return
         }
-        loginCoordinator.startWithoutEmail()
+        rootViewController.dismiss(animated: true) {
+            self.rootViewController.present(loginCoordinator.navigationController, animated: true)
+            loginCoordinator.startWithoutEmail()
+        }
     }
 }
 

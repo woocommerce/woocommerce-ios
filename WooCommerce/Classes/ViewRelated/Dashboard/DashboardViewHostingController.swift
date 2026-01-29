@@ -370,18 +370,15 @@ private extension DashboardViewHostingController {
 private extension DashboardViewHostingController {
     func configureConnectWPComCard() {
         rootView.onConnectWPComSetup = { [weak self] in
-            guard let self, let navigationController else { return }
-            let viewModel = WPComPushNotificationsBenefitsViewModel()
-            let rootController = UINavigationController()
+            guard let self else { return }
+            let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: {
+                self.dismiss(animated: true)
+            })
             let hostingController = WPComPushNotificationsBenefitsHostingController(
                 viewModel: viewModel,
-                rootController: rootController,
-                onDismiss: {
-                    navigationController.dismiss(animated: true)
-                }
+                rootViewController: self,
             )
-            rootController.setViewControllers([hostingController], animated: false)
-            navigationController.present(rootController, animated: true)
+            present(hostingController, animated: true)
         }
     }
 }

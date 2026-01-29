@@ -5,21 +5,12 @@ import WooFoundation
 /// Hosting controller wrapper for `WPComPushNotificationsBenefitsView`
 ///
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
-    private let pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         rootController: UINavigationController,
-         onDismiss: @escaping () -> Void) {
-        self.pushNotificationSetupCoordinator = WooPushNotificationSetupCoordinator(
-            navigationController: rootController
-        )
-        super.init(rootView: WPComPushNotificationsBenefitsView(
-            viewModel: viewModel,
-            onDismiss: onDismiss
-        ))
-        rootView.onSetup = { [weak self] in
-            self?.pushNotificationSetupCoordinator.start()
-        }
+         rootViewController: UIViewController) {
+        super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
+        viewModel.updateCoordinator(coordinator)
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -28,40 +19,36 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
 }
 
 struct WPComPushNotificationsBenefitsView: View {
-    var onSetup: () -> Void = {} // to be set through hosting controller
-
     private let viewModel: WPComPushNotificationsBenefitsViewModel
-    private let onDismiss: () -> Void
 
     @State private var safariURL: URL?
 
-    init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         onDismiss: @escaping () -> Void) {
+    init(viewModel: WPComPushNotificationsBenefitsViewModel) {
         self.viewModel = viewModel
-        self.onDismiss = onDismiss
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            Spacer()
+        NavigationStack {
             VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                stackedImages
-                title
-                detail
+                Spacer()
+                VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                    stackedImages
+                    title
+                    detail
+                }
+                Spacer()
+                footer
             }
-            Spacer()
-            footer
-        }
-        .padding([.leading, .bottom, .trailing], Layout.contentPadding)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(Localization.cancelButton) {
-                    viewModel.notNowTapped()
-                    onDismiss()
+            .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        viewModel.notNowTapped()
+                    }
                 }
             }
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
-        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear {
             viewModel.onAppear()
         }
@@ -102,13 +89,11 @@ struct WPComPushNotificationsBenefitsView: View {
         VStack {
             Button(Localization.continueButton) {
                 viewModel.continueTapped()
-                onSetup()
             }
             .buttonStyle(PrimaryButtonStyle())
 
             Button(Localization.notNowButton) {
                 viewModel.notNowTapped()
-                onDismiss()
             }
             .buttonStyle(SecondaryButtonStyle())
         }
@@ -167,7 +152,6 @@ fileprivate extension WPComPushNotificationsBenefitsView {
 
 #Preview {
     WPComPushNotificationsBenefitsView(
-        viewModel: WPComPushNotificationsBenefitsViewModel(),
-        onDismiss: {}
+        viewModel: WPComPushNotificationsBenefitsViewModel(onDismiss: {})
     )
 }

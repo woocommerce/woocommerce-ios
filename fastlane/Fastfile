@@ -1188,7 +1188,7 @@ platform :ios do
   end
 
   desc 'Create Promo Screenshots'
-  lane :create_promo_screenshots do |options|
+  lane :create_promo_screenshots do |force: false|
     unless Fastlane::Helper::GitHelper.has_git_lfs?
       UI.user_error!('LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.')
     end
@@ -1204,7 +1204,7 @@ platform :ios do
       orig_folder: original_screenshot_directory,
       metadata_folder: metadata_directory,
       output_folder: output_directory,
-      force: options[:force]
+      force: force
     )
   end
 

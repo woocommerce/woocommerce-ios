@@ -3,6 +3,7 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 fastlane_require 'git'
+fastlane_require 'txcontext'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -313,6 +314,8 @@ platform :ios do
     UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     update_app_store_strings
+
+    add_translation_context
 
     generate_strings_file_for_glotpress
 
@@ -1266,6 +1269,56 @@ platform :ios do
     configure_validate
   end
 
+  # Adds AI-generated translation context to new/changed strings.
+  #
+  # Uses the txcontext gem to analyze source code usage and generate helpful descriptions
+  # for translators. Context is written back to the Localizable.strings file as comments.
+  #
+  # @param [String] diff_base (default: auto-detected previous release tag) Git ref to compare against for finding changed strings
+  # @param [Boolean] skip_commit (default: false) If true, does not commit the changes made to the `.strings` file
+  #
+  # @example Running the lane
+  #          bundle exec fastlane add_translation_context
+  #          bundle exec fastlane add_translation_context diff_base:9.5
+  #
+  lane :add_translation_context do |diff_base: previous_release_tag, skip_commit: false|
+    UI.user_error!('Could not determine previous release tag. Please specify diff_base parameter.') if diff_base.nil?
+    UI.user_error!('ANTHROPIC_API_KEY environment variable is required.') if ENV['ANTHROPIC_API_KEY'].nil?
+
+    strings_file = File.join(RESOURCES_FOLDER, 'en.lproj', 'Localizable.strings')
+    source_paths = %w[
+      WooCommerce/
+      Modules/Sources/
+    ].map { |p| File.join(PROJECT_ROOT_FOLDER, p) }
+
+    UI.message("Adding translation context for strings changed since #{diff_base}...")
+
+    # Use txcontext Ruby API directly
+    config = Txcontext::Config.new(
+      translations: [strings_file],
+      source_paths: source_paths,
+      diff_base: diff_base,
+      write_back_to_code: true,
+      context_prefix: '',
+      context_mode: 'replace'
+    )
+
+    extractor = Txcontext::ContextExtractor.new(config)
+    extractor.run
+
+    unless skip_commit
+      # Stage source paths modified by write_back_to_code
+      source_paths.each { |path| Actions.sh('git', 'add', path) }
+      git_commit(
+        path: source_paths,
+        message: 'Add AI-generated translation context for new strings',
+        allow_nothing_to_commit: true
+      )
+    end
+
+    UI.success('Translation context added successfully!')
+  end
+
   # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
   #
   #
@@ -1282,9 +1335,9 @@ platform :ios do
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',
-        'Storage/Storage/',
-        'Networking/Networking/',
-        'Hardware/Hardware/'
+        'Modules/Sources/Storage/',
+        'Modules/Sources/Networking/',
+        'Modules/Sources/Hardware/'
       ],
       exclude: [
         '*Vendor*',
@@ -1474,6 +1527,35 @@ def release_version_next
   next_calculated_release_version = VERSION_CALCULATOR.next_release_version(version: current_version)
   # Return the formatted release version
   VERSION_FORMATTER.release_version(next_calculated_release_version)
+end
+
+# Returns the most recent release tag before the current version.
+# Used for comparing changes between releases (e.g., for translation context).
+#
+# Looks for tags matching the release version pattern (X.Y or X.Y.Z) and returns
+# the most recent one that is numerically less than the current release version.
+#
+def previous_release_tag
+  current_version = release_version_current
+  current_parts = current_version.split('.').map(&:to_i)
+
+  # Fetch tags from remote to ensure we have the latest
+  Actions.sh('git', 'fetch', '--tags', '--force')
+
+  # Get all tags sorted by version (descending), filtering for release-like tags
+  # Release tags are in format X.Y or X.Y.Z (no -rc suffix, no build codes like X.Y.Z.N)
+  tags = Actions.sh('git', 'tag', '--list', '--sort=-v:refname').split("\n")
+
+  # Filter for release tags (X.Y or X.Y.Z format, excluding build codes and RCs)
+  release_tags = tags.select do |tag|
+    tag.match?(/^\d+\.\d+(\.\d+)?$/) && !tag.include?('-')
+  end
+
+  # Find the first tag that's numerically less than the current version
+  release_tags.find do |tag|
+    tag_parts = tag.split('.').map(&:to_i)
+    (tag_parts <=> current_parts) < 0
+  end
 end
 
 # Returns the current build code of the app

@@ -3,6 +3,7 @@ import Foundation
 @testable import Yosemite
 import Networking
 @testable import NetworkingCore
+import class WooFoundation.CurrencySettings
 
 struct POSRefundsServiceTests {
     // MARK: - Mock PaymentGatewayRemote
@@ -188,6 +189,64 @@ struct POSRefundsServiceTests {
         #expect(calculator.spyOrderID == orderID)
         #expect(calculator.spySelectedItems?.count == 2)
         #expect(calculator.spyReason == reason)
+    }
+
+    @Test func createRefund_then_passes_fraction_digits_from_currency_settings_to_calculator() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        let currencySettings = CurrencySettings(
+            currencyCode: .JPY,
+            currencyPosition: .left,
+            thousandSeparator: ",",
+            decimalSeparator: ".",
+            numberOfDecimals: 0
+        )
+        let sut = POSRefundsService(
+            siteID: 123,
+            refundsRemote: remote,
+            paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(),
+            currencySettings: currencySettings,
+            refundCalculator: calculator
+        )
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
+
+        // Then
+        #expect(calculator.spyNumberOfDecimals == 0)
+    }
+
+    @Test func createRefund_when_three_decimal_currency_then_formats_amount_with_three_decimals() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        calculator.stubRefundRequest = POSRefundRequest(
+            orderID: 456,
+            amount: Decimal(string: "100.123")!,
+            reason: nil,
+            items: []
+        )
+        let currencySettings = CurrencySettings(
+            currencyCode: .KWD,
+            currencyPosition: .left,
+            thousandSeparator: ",",
+            decimalSeparator: ".",
+            numberOfDecimals: 3
+        )
+        let sut = POSRefundsService(
+            siteID: 123,
+            refundsRemote: remote,
+            paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(),
+            currencySettings: currencySettings,
+            refundCalculator: calculator
+        )
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
+
+        // Then
+        #expect(remote.spyCreateRefund?.amount == "100.123")
     }
 
     @Test func createRefund_then_calls_remote_with_correct_site_id_and_order_id() async throws {

@@ -5,17 +5,20 @@ final class MockPOSRefundCalculator: POSRefundCalculating {
     private(set) var spyOrderID: Int64?
     private(set) var spySelectedItems: [POSRefundableItem]?
     private(set) var spyReason: String?
+    private(set) var spyNumberOfDecimals: Int?
 
     var stubRefundRequest: POSRefundRequest?
 
     func buildRefundRequest(
         orderID: Int64,
         selectedItems: [POSRefundableItem],
-        reason: String?
+        reason: String?,
+        numberOfDecimals: Int
     ) -> POSRefundRequest {
         spyOrderID = orderID
         spySelectedItems = selectedItems
         spyReason = reason
+        spyNumberOfDecimals = numberOfDecimals
 
         if let stub = stubRefundRequest {
             return stub

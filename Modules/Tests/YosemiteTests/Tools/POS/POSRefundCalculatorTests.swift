@@ -4,6 +4,7 @@ import Foundation
 
 struct POSRefundCalculatorTests {
     private let sut = POSRefundCalculator()
+    private let defaultDecimals = 2
 
     // MARK: - Amount Calculation
 
@@ -15,7 +16,7 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.amount == Decimal(33))
@@ -28,7 +29,7 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.amount == Decimal(110))
@@ -36,7 +37,7 @@ struct POSRefundCalculatorTests {
 
     @Test func buildRefundRequest_when_empty_items_then_returns_zero_amount() {
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.amount == Decimal.zero)
@@ -49,7 +50,7 @@ struct POSRefundCalculatorTests {
         let orderID: Int64 = 456
 
         // When
-        let request = sut.buildRefundRequest(orderID: orderID, selectedItems: [], reason: nil)
+        let request = sut.buildRefundRequest(orderID: orderID, selectedItems: [], reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.orderID == orderID)
@@ -60,7 +61,7 @@ struct POSRefundCalculatorTests {
         let reason = "Customer changed their mind"
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: reason)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: reason, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.reason == reason)
@@ -68,7 +69,7 @@ struct POSRefundCalculatorTests {
 
     @Test func buildRefundRequest_when_reason_is_nil_then_returns_nil_reason() {
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: [], reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.reason == nil)
@@ -84,7 +85,7 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.items.count == 1)
@@ -100,7 +101,7 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.items.count == 2)
@@ -115,7 +116,7 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.items[0].refundTotal == Decimal(30))
@@ -131,7 +132,7 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.items[0].refundTax == Decimal(2))
@@ -145,9 +146,50 @@ struct POSRefundCalculatorTests {
         ]
 
         // When
-        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil)
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
 
         // Then
         #expect(request.items[0].refundTax == Decimal(5))
+    }
+
+    // MARK: - Rounding
+
+    @Test func buildRefundRequest_when_tax_requires_rounding_then_rounds_to_specified_decimals() {
+        // Given: 3 units with total tax of 10, selecting 1 unit = 10/3 = 3.333...
+        let items = [
+            POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(10), originalQuantity: 3)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: 2)
+
+        // Then: Should round 3.333... to 3.33 (banker's rounding)
+        #expect(request.items[0].refundTax == Decimal(string: "3.33"))
+    }
+
+    @Test func buildRefundRequest_when_zero_original_quantity_then_returns_zero_tax() {
+        // Given
+        let items = [
+            POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(5), originalQuantity: 0)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: defaultDecimals)
+
+        // Then
+        #expect(request.items[0].refundTax == Decimal.zero)
+    }
+
+    @Test func buildRefundRequest_when_three_decimals_configured_then_formats_to_three_decimals() {
+        // Given: Price that requires 3 decimal precision
+        let items = [
+            POSRefundableItem(itemID: 1, price: Decimal(string: "10.555")!, totalTax: Decimal(string: "1.111")!, originalQuantity: 1)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: 3)
+
+        // Then
+        #expect(request.amount == Decimal(string: "11.666"))
     }
 }

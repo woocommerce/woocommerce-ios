@@ -12,7 +12,7 @@ jobs:
     name: Build Application
     # Only run for PRs from the same repo (not forks) with the 'generate screenshots' label
     if: |
-      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.repo.fork != true &&
       contains(github.event.pull_request.labels.*.name, 'generate screenshots')
     runs-on: macos-latest
     # Grant write permissions to push commits back to the PR branch.

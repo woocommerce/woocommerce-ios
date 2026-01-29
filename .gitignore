@@ -68,6 +68,9 @@ fastlane/metadata/review_information
 fastlane/**/test_output
 fastlane/README.md
 fastlane/logs
+# Notice that we ignore the raw screenshots but track (with Git LFS, see .gitattributes)
+# the annotated ones (promo_screenshots)
+fastlane/screenshots
 
 Preview.html
 default.profraw

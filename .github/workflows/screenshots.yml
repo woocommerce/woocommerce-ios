@@ -61,7 +61,7 @@ jobs:
 
     - name: Generate Screenshots
       run: |
-        bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }} push:true
+        bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }}
 
     - name: Store Logs
       if: always()

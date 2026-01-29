@@ -2,5 +2,5 @@ RELEASE-NOTES.txt merge=union
 
 .configure-files/*.enc binary
 
-# Track PNGs in screenshots and promo_screenshots via Git LFS
-fastlane/*screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text
+# Track PNGs in promo_screenshots via Git LFS
+fastlane/promo_screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text

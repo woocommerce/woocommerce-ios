@@ -187,6 +187,21 @@ platform :ios do
   Dotenv.load(USER_ENV_FILE_PATH)
   Dotenv.load(PROJECT_ENV_FILE_PATH)
 
+  lane :test_push_from_gha do |branch_name:|
+    git_add(
+      path: 'README.md',
+      shell_escape: false
+    )
+    git_commit(
+      path: 'README.md',
+      message: 'test',
+      allow_nothing_to_commit: true
+    )
+    push_to_git_remote(
+      remote_branch: branch_name
+    )
+  end
+
   ########################################################################
   # Release Lanes
   ########################################################################

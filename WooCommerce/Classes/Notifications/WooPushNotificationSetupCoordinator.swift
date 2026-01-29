@@ -3,6 +3,7 @@ import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
 final class WooPushNotificationSetupCoordinator: Coordinator {
+    // Controller to handle navigation between the auth flow and setup steps.
     let navigationController: UINavigationController
 
     private var loginCoordinator: WPComLoginCoordinator?
@@ -19,6 +20,9 @@ final class WooPushNotificationSetupCoordinator: Coordinator {
                 flow: .notificationSetup,
                 navigationController: navigationController,
                 completionHandler: { credentials in
+                    // TODO: use credentials for Jetpack setup flow.
+                    // Consider reusing JetpackSetupViewModel
+                    // Also check JetpackSetupHostingController for more details on what the credentials are for.
                     DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
             })
         }()

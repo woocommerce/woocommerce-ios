@@ -22,6 +22,10 @@ struct POSSettingsLocalCatalogDetailView: View {
                             managingDataUsage
                         }
                         manualCatalogUpdate
+                        #if DEBUG
+                        // TODO: Clean up WOOMOB-2052
+                        debugClearCatalog
+                        #endif
                     }
                     .padding(.horizontal, POSPadding.medium)
                 }
@@ -97,6 +101,34 @@ private extension POSSettingsLocalCatalogDetailView {
             }
         }
     }
+
+    #if DEBUG
+    @ViewBuilder
+    var debugClearCatalog: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSInformationCard {
+                POSInformationCardFieldRow(
+                    label: "[DEBUG] Clear catalog",
+                    value: "Delete all cached products and sync data",
+                    showSeparator: false,
+                    labelStyle: .bold,
+                    buttonTitle: "Clear",
+                    buttonAction: {
+                        Task {
+                            await viewModel.clearCatalog()
+                        }
+                    },
+                    buttonStyle: .default,
+                    isLoading: viewModel.isClearingCatalog
+                )
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
+                    .stroke(Color.red.opacity(0.5), lineWidth: 2)
+            )
+        }
+    }
+    #endif
 
     @ViewBuilder
     func errorView(errorState: PointOfSaleErrorState) -> some View {

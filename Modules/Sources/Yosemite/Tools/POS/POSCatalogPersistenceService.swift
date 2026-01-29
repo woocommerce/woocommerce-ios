@@ -22,6 +22,9 @@ protocol POSCatalogPersistenceServiceProtocol {
     ///   - variationIDs: Variation IDs to delete
     ///   - siteID: The site ID
     func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
+
+    /// Clears all catalog data for a site (products, variations, site record).
+    func clearAllCatalogData(siteID: Int64) async throws
 }
 
 final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
@@ -199,6 +202,26 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         }
 
         DDLogInfo("✅ Catalog deletion complete")
+    }
+
+    func clearAllCatalogData(siteID: Int64) async throws {
+        DDLogInfo("🗑️ Clearing all POS catalog data for site \(siteID)")
+
+        try await grdbManager.databaseConnection.write { db in
+            try PersistedSite.deleteOne(db, key: siteID)
+
+            let deletedProducts = try PersistedProduct
+                .filter(PersistedProduct.Columns.siteID == siteID)
+                .deleteAll(db)
+
+            let deletedVariations = try PersistedProductVariation
+                .filter(PersistedProductVariation.Columns.siteID == siteID)
+                .deleteAll(db)
+
+            DDLogInfo("🗑️ Cleared \(deletedProducts) products and \(deletedVariations) variations for site \(siteID)")
+        }
+
+        DDLogInfo("✅ All POS catalog data cleared for site \(siteID)")
     }
 }
 

@@ -70,6 +70,9 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - variationIDs: Variation IDs to delete
     ///   - siteID: The site ID
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
+
+    /// Clears all catalog data for a site.
+    func clearAllCatalogData(for siteID: Int64) async throws
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -666,6 +669,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
         try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
+    }
+
+    public func clearAllCatalogData(for siteID: Int64) async throws {
+        DDLogInfo("🗑️ Clearing all POS catalog data for site \(siteID)")
+        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        try await persistenceService.clearAllCatalogData(siteID: siteID)
+        emitSyncState(.syncNeverDone(siteID: siteID))
     }
 }
 

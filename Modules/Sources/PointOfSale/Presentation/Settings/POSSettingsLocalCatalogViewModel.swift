@@ -12,6 +12,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     private(set) var isLoading: Bool = false
     private(set) var isRefreshingCatalog: Bool = false
+    private(set) var isClearingCatalog: Bool = false
     let deviceHasCellularCapability: Bool = CellularCapabilityChecker.deviceHasCellularCapability()
 
     var catalogRefreshError: POSIdentifiableErrorState? = nil
@@ -91,6 +92,20 @@ final class POSSettingsLocalCatalogViewModel {
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
             isRefreshingCatalog = false
+            catalogRefreshError = POSIdentifiableErrorState(errorState: .errorOnRefreshingCatalog(error: error))
+        }
+    }
+
+    @MainActor
+    func clearCatalog() async {
+        isClearingCatalog = true
+        do {
+            try await catalogSyncCoordinator.clearAllCatalogData(for: siteID)
+            isClearingCatalog = false
+            await loadCatalogData()
+        } catch {
+            DDLogError("⛔️ POSSettingsLocalCatalog: Failed to clear catalog: \(error)")
+            isClearingCatalog = false
             catalogRefreshError = POSIdentifiableErrorState(errorState: .errorOnRefreshingCatalog(error: error))
         }
     }

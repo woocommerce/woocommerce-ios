@@ -10,7 +10,7 @@ enum PendingAuthFlow: String {
 
 struct PendingAuthFlowStorage {
     private let userDefaults: UserDefaults
-    private let storageKey = "pendingAuthFlow"
+    private let storageKey = UserDefaults.Key.pendingMagicLinkFlow.rawValue
 
     /// Magic links typically expire in ~10-15 minutes
     private let expirationInterval: TimeInterval = 15 * 60

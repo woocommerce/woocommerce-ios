@@ -250,6 +250,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.ciabBookingsTabAvailable] = nil
         defaults[.siteIDsRegisteredForWooPushNotifications] = nil
         defaults[.hideWPComConnectionOnDashboard] = nil
+        defaults[.pendingMagicLinkFlow] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }

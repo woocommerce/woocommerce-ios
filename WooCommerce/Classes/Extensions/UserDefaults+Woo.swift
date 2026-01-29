@@ -81,8 +81,11 @@ extension UserDefaults {
         /// Registered site IDs separated by commas
         case siteIDsRegisteredForWooPushNotifications
 
-        // Whether WPCom connection suggestion for Woo-driven push notifications is hidden
+        /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
         case hideWPComConnectionOnDashboard
+
+        /// Pending flow for magic link: notification setup or Jetpack setup
+        case pendingMagicLinkFlow
     }
 }
 

@@ -45,12 +45,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         }
     }
 
-    var retryLoadingRefundDataCalled = false
-
-    func retryLoadingRefundData() {
-        retryLoadingRefundDataCalled = true
-    }
-
     func toggleRefundItemSelection(at index: Int) {
         guard refundSelectableItems.indices.contains(index) else { return }
         refundSelectableItems[index].isSelected.toggle()

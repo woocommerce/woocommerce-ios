@@ -517,7 +517,7 @@ final class POSOrderListControllerTests {
         refundsService.resumeProvidePointOfSaleRefunds()
     }
 
-    @Test func refundActionAvailability_when_refunds_failed_then_failedToLoad() async throws {
+    @Test func refundActionAvailability_when_refunds_failed_then_unavailable() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = MockPOSOrderListService.makeInitialOrders()[0]
@@ -537,7 +537,7 @@ final class POSOrderListControllerTests {
         #expect(didFail)
 
         let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .failedToLoad)
+        #expect(availability == .unavailable)
     }
 
     @Test func refundActionAvailability_when_refunds_loaded_and_not_fully_refunded_then_available() async throws {

@@ -98,17 +98,10 @@ private extension POSRefundErrorView {
 // MARK: - Error Types
 
 enum POSRefundErrorType {
-    case loading
     case refundCreation(POSRefundReviewData)
 
     var title: String {
         switch self {
-        case .loading:
-            return NSLocalizedString(
-                "pos.refundErrorView.loading.title",
-                value: "Something went wrong",
-                comment: "Title shown when there's an error loading refund data"
-            )
         case .refundCreation:
             return NSLocalizedString(
                 "pos.refundErrorView.refundCreation.title",
@@ -128,18 +121,7 @@ enum POSRefundErrorType {
 }
 
 #if DEBUG
-#Preview("POSRefundErrorView - Loading Error") {
-    POSRefundErrorView(
-        title: "Something went wrong",
-        subtitle: "Please try again.",
-        onRetry: {},
-        onCancel: {},
-        onClose: {}
-    )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
-}
-
-#Preview("POSRefundErrorView - Refund Creation Error") {
+#Preview("POSRefundErrorView") {
     POSRefundErrorView(
         title: "Failed to create refund",
         subtitle: "Please try again.",

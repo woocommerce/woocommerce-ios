@@ -545,6 +545,7 @@ private extension WooShippingServiceViewModelTests {
     func sampleDestinationAddress() -> WooShippingAddress {
         WooShippingAddress(company: "HEADQUARTERS",
                            name: "JANE DOE",
+                           email: nil,
                            phone: "1-234-456-7890",
                            country: "US",
                            state: "NY",

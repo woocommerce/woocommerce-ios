@@ -1302,6 +1302,9 @@
 		57CFCD2A2488496F003F51EC /* PrimarySectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57CFCD292488496F003F51EC /* PrimarySectionHeaderView.xib */; };
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
+		640D42342F2B840A00300B0D /* WPComConnectionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640D42332F2B840400300B0D /* WPComConnectionSetupView.swift */; };
+		640D42372F2B863400300B0D /* WPComConnectionSetupStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640D42362F2B862C00300B0D /* WPComConnectionSetupStepView.swift */; };
+		640D42392F2B949500300B0D /* StatusIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640D42382F2B949500300B0D /* StatusIcon.swift */; };
 		640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */; };
 		643492C42F1A45B30080AEC1 /* OverrideFeatureFlagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */; };
 		644EA1542F20CC5C00511C2A /* DebugPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644EA1532F20CC4F00511C2A /* DebugPanelView.swift */; };
@@ -4091,6 +4094,9 @@
 		57CFCD292488496F003F51EC /* PrimarySectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PrimarySectionHeaderView.xib; sourceTree = "<group>"; };
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
+		640D42332F2B840400300B0D /* WPComConnectionSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupView.swift; sourceTree = "<group>"; };
+		640D42362F2B862C00300B0D /* WPComConnectionSetupStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupStepView.swift; sourceTree = "<group>"; };
+		640D42382F2B949500300B0D /* StatusIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusIcon.swift; sourceTree = "<group>"; };
 		640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		643492C32F1A45A80080AEC1 /* OverrideFeatureFlagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideFeatureFlagsView.swift; sourceTree = "<group>"; };
 		644EA1532F20CC4F00511C2A /* DebugPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugPanelView.swift; sourceTree = "<group>"; };
@@ -8630,6 +8636,16 @@
 			path = TitleAndEditableValueTableViewCell;
 			sourceTree = "<group>";
 		};
+		640D42352F2B85C800300B0D /* WPComConnectionSetup */ = {
+			isa = PBXGroup;
+			children = (
+				640D42382F2B949500300B0D /* StatusIcon.swift */,
+				640D42362F2B862C00300B0D /* WPComConnectionSetupStepView.swift */,
+				640D42332F2B840400300B0D /* WPComConnectionSetupView.swift */,
+			);
+			path = WPComConnectionSetup;
+			sourceTree = "<group>";
+		};
 		6460A3692F279B1A005D3A3E /* WPComPushNotificationsBenefits */ = {
 			isa = PBXGroup;
 			children = (
@@ -11789,6 +11805,7 @@
 		DE63115D2AF1E16500587641 /* WPComLogin */ = {
 			isa = PBXGroup;
 			children = (
+				640D42352F2B85C800300B0D /* WPComConnectionSetup */,
 				95B6C60F2D9DAD9600E1A661 /* WPComLoginGravatarView.swift */,
 				DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */,
 				DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */,
@@ -13965,6 +13982,7 @@
 				B90C65CD29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift in Sources */,
 				028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */,
 				026CAF802AC2B7FF002D23BB /* ConfigurableBundleProductView.swift in Sources */,
+				640D42342F2B840A00300B0D /* WPComConnectionSetupView.swift in Sources */,
 				DE8C22732EB0AE8500C69F35 /* MultiSelectListView.swift in Sources */,
 				45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */,
 				D8652E582630BFF500350F37 /* OrderDetailsPaymentAlerts.swift in Sources */,
@@ -14491,6 +14509,7 @@
 				DE74F2A527E41D740002FE59 /* EnableAnalyticsView.swift in Sources */,
 				B90DACC02A30AEF000365897 /* BarcodeScannerItemFinder.swift in Sources */,
 				D85A3C5626C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */,
+				640D42372F2B863400300B0D /* WPComConnectionSetupStepView.swift in Sources */,
 				EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */,
 				26B233D12A14208800926EAD /* PrivacyBannerPresenter.swift in Sources */,
 				CE55F2D62B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift in Sources */,
@@ -14517,6 +14536,7 @@
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
 				DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */,
 				016582ED2E7897B3001DBB6F /* String+Helpers.swift in Sources */,
+				640D42392F2B949500300B0D /* StatusIcon.swift in Sources */,
 				0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */,
 				646FEDB82EE827DF00352BFF /* ApplicationLogProvider.swift in Sources */,
 				B958A7D628B5310100823EEF /* URLOpener.swift in Sources */,

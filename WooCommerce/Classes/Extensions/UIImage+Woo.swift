@@ -179,6 +179,10 @@ extension UIImage {
         return UIImage(named: "check-success")!
     }
 
+    static var circlePartialSuccessImage: UIImage {
+        return UIImage(named: "circle-partial-success")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {

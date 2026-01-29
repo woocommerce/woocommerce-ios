@@ -2489,6 +2489,7 @@
 		DE7E5E912B4FD8F0002E28D2 /* BlazeTargetTopicPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E902B4FD8F0002E28D2 /* BlazeTargetTopicPickerViewModel.swift */; };
 		DE7E5E932B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */; };
 		DE7FF07C2EE809CD00B31E35 /* TechnicalDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7FF07B2EE809CD00B31E35 /* TechnicalDetailsView.swift */; };
+		DE8308B12F2A2B650038C589 /* PendingAuthFlowStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8308B02F2A2B650038C589 /* PendingAuthFlowStorage.swift */; };
 		DE8311C02C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */; };
 		DE83FCDA2F29B6F30038C589 /* WooPushNotificationSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE83FCD92F29B6D00038C589 /* WooPushNotificationSetupCoordinator.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
@@ -5452,6 +5453,7 @@
 		DE7E5E902B4FD8F0002E28D2 /* BlazeTargetTopicPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetTopicPickerViewModel.swift; sourceTree = "<group>"; };
 		DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetTopicPickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE7FF07B2EE809CD00B31E35 /* TechnicalDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TechnicalDetailsView.swift; sourceTree = "<group>"; };
+		DE8308B02F2A2B650038C589 /* PendingAuthFlowStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAuthFlowStorage.swift; sourceTree = "<group>"; };
 		DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListItemCustomizationsTests.swift; sourceTree = "<group>"; };
 		DE83FCD92F29B6D00038C589 /* WooPushNotificationSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPushNotificationSetupCoordinator.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
@@ -9709,6 +9711,7 @@
 				B5A8F8AB20B88D8400D211DE /* Prologue */,
 				B5D1AFC420BC7B3000DB0E8C /* Epilogue */,
 				B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */,
+				DE8308B02F2A2B650038C589 /* PendingAuthFlowStorage.swift */,
 				DEF13C512963D0B20024A02B /* PostSiteCredentialLoginChecker.swift */,
 				DEEDA238298A11FB0088256B /* SiteCredentialLoginUseCase.swift */,
 				CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */,
@@ -15773,6 +15776,7 @@
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
 				CE29FEF42C009D7C007679C2 /* ShippingLineRowViewModel.swift in Sources */,
+				DE8308B12F2A2B650038C589 /* PendingAuthFlowStorage.swift in Sources */,
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				0250192B2BDF3757009493A5 /* PriceFieldFormatter.swift in Sources */,

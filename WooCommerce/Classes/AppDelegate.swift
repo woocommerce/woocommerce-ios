@@ -439,11 +439,28 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Magic link
 extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        return if ServiceLocator.stores.isAuthenticated {
-            handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+        if ServiceLocator.stores.isAuthenticated {
+            let pendingAuthFlowStorage = PendingAuthFlowStorage()
+            let flow = pendingAuthFlowStorage.current
+            pendingAuthFlowStorage.clear()
+
+            switch flow {
+            case .notificationSetup:
+                return handleAuthenticationUrlForNotificationSetup(url, rootViewController: rootViewController)
+            case .jetpackSetup:
+                return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+            case .none:
+                return false
+            }
         } else {
-            ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+            return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
+    }
+
+    func handleAuthenticationUrlForNotificationSetup(_ url: URL, rootViewController: UIViewController) -> Bool {
+        // TODO: Handle magic link for notification setup
+        DDLogDebug("📱 Handling magic link for notification setup")
+        return false
     }
 
     func handleAuthenticationUrlForJetpackSetup(_ url: URL, rootViewController: UIViewController) -> Bool {

@@ -372,13 +372,16 @@ private extension DashboardViewHostingController {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self, let navigationController else { return }
             let viewModel = WPComPushNotificationsBenefitsViewModel()
-            let hostingController = WPComPushNotificationsBenefitsHostingController(viewModel: viewModel, onDismiss: {
-                navigationController.dismiss(animated: true)
-            })
-            navigationController.present(
-                UINavigationController(rootViewController: hostingController),
-                animated: true
+            let rootController = UINavigationController()
+            let hostingController = WPComPushNotificationsBenefitsHostingController(
+                viewModel: viewModel,
+                rootController: rootController,
+                onDismiss: {
+                    navigationController.dismiss(animated: true)
+                }
             )
+            rootController.setViewControllers([hostingController], animated: false)
+            navigationController.present(rootController, animated: true)
         }
     }
 }

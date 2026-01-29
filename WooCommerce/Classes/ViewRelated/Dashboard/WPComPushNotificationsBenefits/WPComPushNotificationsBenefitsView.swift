@@ -5,33 +5,25 @@ import WooFoundation
 /// Hosting controller wrapper for `WPComPushNotificationsBenefitsView`
 ///
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
-    private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
+    private let pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
+         rootController: UINavigationController,
          onDismiss: @escaping () -> Void) {
+        self.pushNotificationSetupCoordinator = WooPushNotificationSetupCoordinator(
+            navigationController: rootController
+        )
         super.init(rootView: WPComPushNotificationsBenefitsView(
             viewModel: viewModel,
             onDismiss: onDismiss
         ))
         rootView.onSetup = { [weak self] in
-            self?.startPushNotificationSetup()
+            self?.pushNotificationSetupCoordinator.start()
         }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    private func startPushNotificationSetup() {
-        guard let navigationController else {
-            DDLogWarn("⚠️ WooPushNotificationSetupCoordinator cannot start due to an issue with navigation")
-            return
-        }
-        let coordinator = WooPushNotificationSetupCoordinator(
-            navigationController: navigationController
-        )
-        pushNotificationSetupCoordinator = coordinator
-        coordinator.start()
     }
 }
 

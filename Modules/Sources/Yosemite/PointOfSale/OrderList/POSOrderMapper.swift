@@ -76,11 +76,14 @@ struct POSOrderMapper {
             throw POSOrderItemMappingError.totalFormattingFailed(itemID: orderItem.itemID, total: orderItem.total, currency: currency)
         }
 
+        let total = Decimal(string: orderItem.total) ?? (orderItem.price as Decimal) * orderItem.quantity
+
         return POSOrderItem(
             itemID: orderItem.itemID,
             name: orderItem.name,
             quantity: orderItem.quantity,
             price: orderItem.price as Decimal,
+            total: total,
             totalTax: totalTax,
             formattedPrice: formattedPrice,
             formattedTotal: formattedTotal,

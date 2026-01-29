@@ -6,7 +6,7 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
     let itemID: Int64
     let name: String
     let imageSrc: String?
-    let price: Decimal
+    let lineItemTotal: Decimal
     let totalTax: Decimal
     let originalQuantity: Decimal
     let formattedPrice: String
@@ -19,7 +19,7 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
     init(itemID: Int64,
          name: String,
          imageSrc: String?,
-         price: Decimal,
+         lineItemTotal: Decimal,
          totalTax: Decimal,
          originalQuantity: Decimal,
          formattedPrice: String,
@@ -29,7 +29,7 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
         self.itemID = itemID
         self.name = name
         self.imageSrc = imageSrc
-        self.price = price
+        self.lineItemTotal = lineItemTotal
         self.totalTax = totalTax
         self.originalQuantity = originalQuantity
         self.formattedPrice = formattedPrice
@@ -39,12 +39,12 @@ struct POSRefundSelectableItem: Identifiable, Equatable {
     }
 
     /// Creates a selectable item from a POSOrderItem.
-    /// Stores the original totalTax and quantity for accurate refund calculations.
+    /// Stores the original total, totalTax and quantity for accurate refund calculations.
     init(from orderItem: POSOrderItem, isSelected: Bool, index: Int) {
         self.itemID = orderItem.itemID
         self.name = orderItem.name
         self.imageSrc = orderItem.imageSrc
-        self.price = orderItem.price
+        self.lineItemTotal = orderItem.total
         self.totalTax = orderItem.totalTax
         self.originalQuantity = orderItem.quantity
         self.formattedPrice = orderItem.formattedPrice

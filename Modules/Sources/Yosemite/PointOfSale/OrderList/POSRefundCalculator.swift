@@ -30,13 +30,13 @@ public protocol POSRefundCalculating {
 
 public struct POSRefundableItem {
     public let itemID: Int64
-    public let price: Decimal
+    public let lineItemTotal: Decimal
     public let totalTax: Decimal
     public let originalQuantity: Decimal
 
-    public init(itemID: Int64, price: Decimal, totalTax: Decimal, originalQuantity: Decimal) {
+    public init(itemID: Int64, lineItemTotal: Decimal, totalTax: Decimal, originalQuantity: Decimal) {
         self.itemID = itemID
-        self.price = price
+        self.lineItemTotal = lineItemTotal
         self.totalTax = totalTax
         self.originalQuantity = originalQuantity
     }
@@ -108,11 +108,30 @@ private extension POSRefundCalculator {
         }
     }
 
+    /// Calculates refund subtotal for a specific item group.
+    ///
+    /// For full refunds (all units of an item selected), uses the original lineItemTotal
+    /// directly to match the order total exactly.
+    ///
+    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) × lineItemTotal
     func calculateRefundTotal(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
         guard let firstItem = items.first else { return Decimal.zero }
-        let quantity = Decimal(items.count)
-        let total = firstItem.price * quantity
-        return roundDecimal(total, scale: numberOfDecimals)
+
+        let selectedCount = Decimal(items.count)
+        let originalQuantity = firstItem.originalQuantity
+        let lineItemTotal = firstItem.lineItemTotal
+
+        // Guard against division by zero
+        guard originalQuantity > 0 else { return Decimal.zero }
+
+        // Full refund: use original lineItemTotal to match order exactly
+        if selectedCount == originalQuantity {
+            return lineItemTotal
+        }
+
+        // Partial refund: calculate proportionally
+        let proportionalTotal = (lineItemTotal / originalQuantity) * selectedCount
+        return roundDecimal(proportionalTotal, scale: numberOfDecimals)
     }
 
     /// Calculates refund tax for a specific item group.

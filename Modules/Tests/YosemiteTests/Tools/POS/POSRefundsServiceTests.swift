@@ -177,8 +177,8 @@ struct POSRefundsServiceTests {
 
         let orderID: Int64 = 456
         let items = [
-            POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 2),
-            POSRefundableItem(itemID: 2, price: Decimal(20), totalTax: Decimal(2), originalQuantity: 1)
+            POSRefundableItem(itemID: 1, lineItemTotal: Decimal(20), totalTax: Decimal(2), originalQuantity: 2),
+            POSRefundableItem(itemID: 2, lineItemTotal: Decimal(20), totalTax: Decimal(2), originalQuantity: 1)
         ]
         let reason = "Customer request"
 
@@ -257,7 +257,7 @@ struct POSRefundsServiceTests {
         let sut = POSRefundsService(siteID: siteID, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(), refundCalculator: calculator)
 
         let orderID: Int64 = 456
-        let items = [POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
+        let items = [POSRefundableItem(itemID: 1, lineItemTotal: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
 
         // When
         try await sut.createRefund(orderID: orderID, items: items, reason: nil, isAutomaticRefund: true)

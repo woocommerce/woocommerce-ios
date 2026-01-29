@@ -342,7 +342,7 @@ enum RefundActionAvailability {
         let refundableItems = selectedItems.map { item in
             POSRefundableItem(
                 itemID: item.itemID,
-                price: item.price,
+                lineItemTotal: item.lineItemTotal,
                 totalTax: item.totalTax,
                 originalQuantity: item.originalQuantity
             )
@@ -395,7 +395,7 @@ enum RefundActionAvailability {
         let refundableItems = selectedItems.map { item in
             POSRefundableItem(
                 itemID: item.itemID,
-                price: item.price,
+                lineItemTotal: item.lineItemTotal,
                 totalTax: item.totalTax,
                 originalQuantity: item.originalQuantity
             )

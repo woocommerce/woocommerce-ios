@@ -27,7 +27,7 @@ final class MockPOSRefundCalculator: POSRefundCalculating {
 
         return POSRefundRequest(
             orderID: orderID,
-            amount: selectedItems.reduce(Decimal.zero) { $0 + $1.price },
+            amount: selectedItems.reduce(Decimal.zero) { $0 + $1.lineItemTotal },
             reason: reason,
             items: []
         )
@@ -41,7 +41,7 @@ final class MockPOSRefundCalculator: POSRefundCalculating {
             return stub
         }
 
-        let subtotal = items.reduce(Decimal.zero) { $0 + $1.price }
+        let subtotal = items.reduce(Decimal.zero) { $0 + $1.lineItemTotal }
         let tax = items.reduce(Decimal.zero) { $0 + $1.totalTax }
         return POSRefundAmounts(subtotal: subtotal, tax: tax)
     }

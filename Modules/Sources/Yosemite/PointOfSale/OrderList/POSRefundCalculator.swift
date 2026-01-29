@@ -4,7 +4,8 @@ public protocol POSRefundCalculating {
     func buildRefundRequest(
         orderID: Int64,
         selectedItems: [POSRefundableItem],
-        reason: String?
+        reason: String?,
+        numberOfDecimals: Int
     ) -> POSRefundRequest
 }
 
@@ -29,11 +30,12 @@ public final class POSRefundCalculator: POSRefundCalculating {
     public func buildRefundRequest(
         orderID: Int64,
         selectedItems: [POSRefundableItem],
-        reason: String?
+        reason: String?,
+        numberOfDecimals: Int
     ) -> POSRefundRequest {
         let groupedItems = groupItemsByID(selectedItems)
-        let refundItems = buildRefundRequestItems(from: groupedItems)
-        let totalAmount = calculateTotalAmount(from: selectedItems)
+        let refundItems = buildRefundRequestItems(from: groupedItems, numberOfDecimals: numberOfDecimals)
+        let totalAmount = calculateTotalAmount(from: selectedItems, numberOfDecimals: numberOfDecimals)
 
         return POSRefundRequest(
             orderID: orderID,
@@ -51,13 +53,13 @@ private extension POSRefundCalculator {
         Dictionary(grouping: items, by: { $0.itemID })
     }
 
-    func buildRefundRequestItems(from groupedItems: [Int64: [POSRefundableItem]]) -> [POSRefundRequestItem] {
+    func buildRefundRequestItems(from groupedItems: [Int64: [POSRefundableItem]], numberOfDecimals: Int) -> [POSRefundRequestItem] {
         groupedItems.compactMap { itemID, items -> POSRefundRequestItem? in
-            guard let firstItem = items.first else { return nil }
+            guard items.first != nil else { return nil }
 
             let quantity = items.count
-            let refundTotal = calculateRefundTotal(for: items)
-            let refundTax = calculateRefundTax(for: items)
+            let refundTotal = calculateRefundTotal(for: items, numberOfDecimals: numberOfDecimals)
+            let refundTax = calculateRefundTax(for: items, numberOfDecimals: numberOfDecimals)
 
             return POSRefundRequestItem(
                 itemID: itemID,
@@ -68,14 +70,24 @@ private extension POSRefundCalculator {
         }
     }
 
-    func calculateTotalAmount(from items: [POSRefundableItem]) -> Decimal {
-        let subtotal = items.reduce(Decimal.zero) { $0 + $1.price }
-        let tax = calculateTotalTax(for: items)
-        return subtotal + tax
+    func calculateTotalAmount(from items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
+        let subtotal = calculateSubtotal(for: items, numberOfDecimals: numberOfDecimals)
+        let tax = calculateTotalTax(for: items, numberOfDecimals: numberOfDecimals)
+        return roundDecimal(subtotal + tax, scale: numberOfDecimals)
     }
 
-    func calculateRefundTotal(for items: [POSRefundableItem]) -> Decimal {
-        items.reduce(Decimal.zero) { $0 + $1.price }
+    func calculateSubtotal(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
+        let groupedItems = groupItemsByID(items)
+        return groupedItems.reduce(Decimal.zero) { total, group in
+            total + calculateRefundTotal(for: group.value, numberOfDecimals: numberOfDecimals)
+        }
+    }
+
+    func calculateRefundTotal(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
+        guard let firstItem = items.first else { return Decimal.zero }
+        let quantity = Decimal(items.count)
+        let total = firstItem.price * quantity
+        return roundDecimal(total, scale: numberOfDecimals)
     }
 
     /// Calculates refund tax for a specific item group.
@@ -83,28 +95,41 @@ private extension POSRefundCalculator {
     /// For full refunds (all units of an item selected), uses the original totalTax
     /// directly to avoid rounding errors.
     ///
-    /// For partial refunds, calculates proportionally:
-    /// `(selectedCount / originalQuantity) × totalTax`
-    func calculateRefundTax(for items: [POSRefundableItem]) -> Decimal {
+    /// For partial refunds, calculates per-unit tax with high precision,
+    /// then multiplies by quantity and rounds to the specified decimals.
+    func calculateRefundTax(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
         guard let firstItem = items.first else { return Decimal.zero }
 
         let selectedCount = Decimal(items.count)
         let originalQuantity = firstItem.originalQuantity
         let totalTax = firstItem.totalTax
 
+        // Guard against division by zero
+        guard originalQuantity > 0 else { return Decimal.zero }
+
         // Full refund: use original tax to avoid rounding errors
         if selectedCount == originalQuantity {
             return totalTax
         }
 
-        // Partial refund: calculate proportionally
-        return (totalTax / originalQuantity) * selectedCount
+        // Partial refund: calculate per-unit tax with high precision, then multiply
+        let perUnitTax = totalTax / originalQuantity
+        let refundTax = perUnitTax * selectedCount
+        return roundDecimal(refundTax, scale: numberOfDecimals)
     }
 
-    func calculateTotalTax(for items: [POSRefundableItem]) -> Decimal {
+    func calculateTotalTax(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
         let groupedItems = groupItemsByID(items)
         return groupedItems.reduce(Decimal.zero) { total, group in
-            total + calculateRefundTax(for: group.value)
+            total + calculateRefundTax(for: group.value, numberOfDecimals: numberOfDecimals)
         }
+    }
+
+    /// Rounds a Decimal value to the specified number of decimal places using banker's rounding (half even).
+    func roundDecimal(_ value: Decimal, scale: Int) -> Decimal {
+        var result = Decimal()
+        var mutableValue = value
+        NSDecimalRound(&result, &mutableValue, scale, .bankers)
+        return result
     }
 }

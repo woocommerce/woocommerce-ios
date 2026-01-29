@@ -21,6 +21,11 @@ jobs:
       with:
         bundler-cache: true
 
+    - name: Test we can push
+      run: |
+        echo 'test' >> README.md
+        bundle exec fastlane test_push_from_gha branch_name:{{ github.head_ref }}
+
     - name: Install App Dependencies
       run: bundle exec rake dependencies
 

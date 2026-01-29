@@ -7,6 +7,7 @@
 24.1
 -----
 - [Internal]: Update Stripe SDK to 5.1.1 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
+- [*] Fix product type filters issue when adding a product to order [https://github.com/woocommerce/woocommerce-ios/pull/16580]
 
 24.0
 -----

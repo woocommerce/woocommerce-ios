@@ -15,18 +15,10 @@ jobs:
       github.event.pull_request.head.repo.fork != true &&
       contains(github.event.pull_request.labels.*.name, 'generate screenshots')
     runs-on: macos-latest
-    # Grant write permissions to push commits back to the PR branch.
-    # This is safe because this job only runs when someone from the team
-    # manually adds the 'generate screenshots' label.
-    permissions:
-      contents: write
 
     steps:
     - name: "Check out Project"
       uses: actions/checkout@v4
-      with:
-        # Check out the PR branch directly (not the merge commit) so we can push back to it
-        ref: ${{ github.head_ref }}
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
@@ -34,17 +26,6 @@ jobs:
 
     - name: Install App Dependencies
       run: bundle exec rake dependencies
-
-    - name: Configure Git for committing
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-
-    - name: Test we can push
-      run: |
-        echo 'test' >> README.md
-        echo "::notice::Current branch is ${{ github.head_ref }}"
-        bundle exec fastlane test_push_from_gha branch_name:${{ github.head_ref }}
 
     - name: Compile the App
       run: bundle exec fastlane build_screenshots

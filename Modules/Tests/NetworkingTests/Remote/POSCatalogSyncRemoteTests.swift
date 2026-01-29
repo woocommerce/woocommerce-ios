@@ -748,6 +748,26 @@ struct POSCatalogSyncRemoteTests {
         ])
     }
 
+    @Test func downloadCatalog_filters_unsupported_product_types() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        let mockContent = loadMockData(filename: "pos-catalog-download-mixed")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: mockContent)
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+
+        // When
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+
+        // Then: only simple, variable products and variations are included
+        // subscription_variation (id: 99) should be filtered out
+        #expect(catalog.products.count == 2)
+        #expect(catalog.variations.count == 2)
+        #expect(catalog.products.contains { $0.productID == 99 } == false)
+        #expect(catalog.variations.contains { $0.productVariationID == 99 } == false)
+    }
+
     @Test func downloadCatalog_handles_empty_catalog() async throws {
         // Given
         let remote = createRemote()

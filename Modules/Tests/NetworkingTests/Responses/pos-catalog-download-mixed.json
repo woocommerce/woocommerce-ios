@@ -199,5 +199,24 @@
       ],
       "downloadable": false
     }
+  },
+  {
+    "type": "subscription_variation",
+    "data": {
+      "id": 99,
+      "sku": "subscription-variation-test",
+      "global_unique_id": "",
+      "name": "Subscription Variation (unsupported)",
+      "short_description": "",
+      "description": "",
+      "stock_status": "instock",
+      "manage_stock": false,
+      "stock_quantity": null,
+      "price": 10.00,
+      "image": null,
+      "parent_id": 50,
+      "attributes": [],
+      "downloadable": false
+    }
   }
 ]

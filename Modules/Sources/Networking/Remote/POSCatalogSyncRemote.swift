@@ -286,6 +286,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                 products.append(product)
             case .variation(let variation):
                 variations.append(variation)
+            case .unsupported:
+                continue
             }
         }
 
@@ -491,6 +493,8 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
+    /// Items with unsupported types (e.g., `subscription_variation`) are skipped during parsing
+    case unsupported
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -502,10 +506,12 @@ public enum POSCatalogItem: Decodable {
         let type = try container.decode(String.self, forKey: .type)
 
         switch type {
+        case "simple", "variable":
+            self = .product(try container.decode(POSProduct.self, forKey: .data))
         case "variation":
             self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
         default:
-            self = .product(try container.decode(POSProduct.self, forKey: .data))
+            self = .unsupported
         }
     }
 }

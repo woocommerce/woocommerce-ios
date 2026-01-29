@@ -88,32 +88,31 @@ private extension POSRefundItemRow {
         static let selectedState = NSLocalizedString(
             "pos.refundItemRow.selectedState",
             value: "Selected for refund",
-            comment: "Accessibility state when item is selected for refund"
+            comment: "This text serves as an accessibility label that screen readers announce when an item is selected for refund in the Point of Sale refund interface. It's part of the accessibility description that helps visually impaired users understand the selection state of refund items."
         )
 
         static let unselectedState = NSLocalizedString(
             "pos.refundItemRow.unselectedState",
             value: "Not selected for refund",
-            comment: "Accessibility state when item is not selected for refund"
+            comment: "This is an accessibility label used by screen readers in the Point of Sale refund flow to indicate when an item is not selected for refund. It appears as part of the accessibility description for refund item rows to help visually impaired users understand the selection state of each item."
         )
 
         static let attributeFormat = NSLocalizedString(
             "pos.refundItemRow.attributeFormat",
             value: "%1$@: %2$@",
-            comment: "Format for a single attribute in accessibility label. %1$@ is the attribute name, %2$@ is the attribute value. Example: 'Size: Medium'"
+            comment: "Format string used to display product attributes in accessibility labels for refund items in Point of Sale, combining an attribute name and value (e.g., 'Size: Medium'). This formatted text is read by screen readers as part of the complete item description when users navigate refund options."
         )
 
         static let accessibilityLabelFormat = NSLocalizedString(
             "pos.refundItemRow.accessibilityLabelFormat",
             value: "%1$@, %2$@, %3$@",
-            comment: "Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state"
+            comment: "This is an accessibility label format string used to provide screen reader users with information about items in the refund selection screen. It combines three pieces of information (product name, price, and selection state) separated by commas to create a comprehensive audio description for visually impaired users."
         )
 
         static let accessibilityLabelWithAttributesFormat = NSLocalizedString(
             "pos.refundItemRow.accessibilityLabelWithAttributesFormat",
             value: "%1$@, %2$@, %3$@, %4$@",
-            comment:
-                """
+            comment: "This is an accessibility label format string used by screen readers to describe refund items that have product attributes (like size, color) in the Point of Sale refund interface. It combines four pieces of information in order: product name, attribute details, price, and selection status to create a complete audio description for visually impaired users.""
                 Accessibility label format for refund item with attributes.
                 %1$@ is the product name.
                 %2$@ is the attributes list.

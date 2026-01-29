@@ -160,7 +160,7 @@ private extension WPCom2FALoginView {
         static let anotherFormText = NSLocalizedString(
             "wpCom2FALoginView.anotherFormText",
             value: "Or choose another form of authentication.",
-            comment: "Text to suggest another form of 2FA authentication"
+            comment: "This text appears on the WordPress.com two-factor authentication login screen as explanatory text that introduces alternative authentication options like SMS codes or security keys to users."
         )
     }
 }

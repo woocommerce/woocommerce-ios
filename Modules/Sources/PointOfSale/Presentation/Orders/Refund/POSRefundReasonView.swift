@@ -125,31 +125,31 @@ private extension POSRefundReasonView {
         static let title = NSLocalizedString(
             "pos.refundReasonView.title",
             value: "Refund reason",
-            comment: "Title for the refund reason input screen"
+            comment: "This is the screen title displayed at the top of the refund reason input screen in the Point of Sale app, where merchants enter a reason for refunding a customer's order."
         )
 
         static let backButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundReasonView.backButton.accessibilityLabel",
             value: "Back",
-            comment: "Accessibility label for back button on refund reason screen"
+            comment: "This is an accessibility label for the back button on the refund reason input screen in the Point of Sale module. It helps screen readers and assistive technologies identify the navigation button that allows users to return to the previous screen when entering a refund reason."
         )
 
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundReasonView.closeButton.accessibilityLabel",
             value: "Close",
-            comment: "Accessibility label for close button on refund reason screen"
+            comment: "This is the accessibility label for a close button on the refund reason input screen in a point-of-sale system. The button allows users to close/dismiss the refund reason view without completing the refund process."
         )
 
         static let placeholder = NSLocalizedString(
             "pos.refundReasonView.placeholder",
             value: "Reason for refunding order",
-            comment: "Placeholder text for the refund reason text field"
+            comment: "This text appears as placeholder text in a text input field on the refund reason screen in a point-of-sale app, prompting users to enter why they are refunding an order."
         )
 
         static let addButton = NSLocalizedString(
             "pos.refundReasonView.addButton",
             value: "Add",
-            comment: "Button to add the refund reason"
+            comment: "Button label that appears on the Point of Sale refund reason screen, allowing users to add or save the refund reason they've entered in a text field."
         )
     }
 }

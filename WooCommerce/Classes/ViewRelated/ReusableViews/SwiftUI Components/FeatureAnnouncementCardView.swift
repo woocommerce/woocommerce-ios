@@ -120,6 +120,6 @@ extension FeatureAnnouncementCardView {
         static let hideContent = NSLocalizedString(
             "featureAnnouncementCardView.hideContent",
             value: "Hide this content",
-            comment: "Menu item to dismiss a feature announcement card")
+            comment: "This text appears as a menu item in a feature announcement card that allows users to dismiss or hide the entire announcement card from view. It's likely displayed in a context menu or as part of a dismissal action for promotional content or new feature notifications.")
     }
 }

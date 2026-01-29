@@ -232,22 +232,22 @@ extension WPComEmailLoginViewModel {
             static let title = NSLocalizedString(
                 "wpcomEmailLoginViewModel.connectWPCom.title",
                 value: "Connect to WordPress.com",
-                comment: "Title for the WPCom email login screen for push notification setup"
+                comment: "Title displayed at the top of the WordPress.com email login screen that appears during push notification setup, prompting users to connect their store to WordPress.com."
             )
             static let subtitle = NSLocalizedString(
                 "wpcomEmailLoginViewModel.connectWPCom.subtitle",
                 value: "Log in with your WordPress.com account to connect your store.",
-                comment: "Subtitle for the WPCom email login screen for push notification setup"
+                comment: "This text appears as a subtitle on the WordPress.com email login screen, explaining to users why they need to log in with their WordPress.com account when setting up push notifications for their WooCommerce store."
             )
             static let primaryButtonTitle = NSLocalizedString(
                 "wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle",
                 value: "Continue",
-                comment: "Button to submit a WPCom email on the login screen for push notification setup"
+                comment: "Primary button text on the WordPress.com email login screen that allows users to proceed with connecting their WooCommerce store to WordPress.com for push notification setup. This button submits the email address entered by the user to continue the authentication process."
             )
             static let termsContent = NSLocalizedString(
                 "wpcomEmailLoginViewModel.connectWPCom.termsContent",
                 value: "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.",
-                comment: "Content of the label at the end of the Wrong Account screen. " +
+                comment: "This text appears as a terms and conditions disclaimer on the WordPress.com login screen during push notification setup, informing users that by continuing they agree to terms of service and data sharing with WordPress.com. The text contains two placeholder variables (%1$@ and %2$@) that will be replaced with clickable links to the actual terms and privacy policy." +
                 "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
         }
     }

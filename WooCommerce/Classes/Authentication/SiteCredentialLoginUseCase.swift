@@ -91,7 +91,7 @@ enum SiteCredentialLoginError: LocalizedError {
         static let invalidLoginResponse = NSLocalizedString(
             "siteCredentialLoginError.invalidLoginResponse.message",
             value: "Unable to login due to an unexpected response from your site.",
-            comment: "Error message explaining login failure due to unexpected response."
+            comment: "This error message appears when the app receives an unexpected response while attempting to log into a WooCommerce store using site credentials. It's displayed as an error notification to inform users that the login failed due to an unusual server response."
         )
         static let unacceptableStatusCode = NSLocalizedString(
             "Unable to login with response status code %1$d.",
@@ -104,7 +104,7 @@ enum SiteCredentialLoginError: LocalizedError {
         static let failedAuthenticationChallenge = NSLocalizedString(
             "siteCredentialLoginError.failedAuthenticationChallenge.message",
             value: "Unable to log in due to an unexpected security measure on your store. Please contact support for troubleshooting.",
-            comment: "Error message explaining login failure due to an unexpected authentication challenge."
+            comment: "Error message displayed to users when login fails due to an unexpected authentication challenge or security measure on their WooCommerce store, directing them to contact support for help."
         )
     }
 }

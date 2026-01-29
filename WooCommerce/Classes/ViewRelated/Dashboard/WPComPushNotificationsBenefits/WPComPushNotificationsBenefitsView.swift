@@ -110,42 +110,42 @@ fileprivate extension WPComPushNotificationsBenefitsView {
     enum Localization {
         static let title = NSLocalizedString("wpcomPushNotificationsBenefitsView.title",
                                              value: "Unlock push notifications with WordPress.com",
-                                             comment: "Title of the WordPress.com Push Notifications Benefits View")
+                                             comment: "This is the main title displayed on a promotional screen that encourages users to connect their WooCommerce store to a WordPress.com account to enable push notifications. It appears as a headline on the WordPress.com Push Notifications Benefits view that explains the advantages of linking accounts.")
 
         static let description = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.description",
             value: "Connect your store to a WordPress.com account to get access to push notifications for new orders, reviews and more.",
-            comment: "Main description text of the WordPress.com Push Notifications Benefits View"
+            comment: "This text appears as the main description in a benefits view that explains the advantages of connecting a WooCommerce store to a WordPress.com account. It is displayed as body text on a promotional screen encouraging users to enable push notifications for store activities."
         )
 
         static let subdescription = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.subdescription",
             value: "It only takes a minute.",
-            comment: "Secondary description text of the WordPress.com Push Notifications Benefits View"
+            comment: "This text appears as a secondary description below the main explanation in a benefits screen that encourages users to connect their WooCommerce store to WordPress.com for push notifications. It reassures users that the connection process is quick and easy."
         )
 
         static let whatIsWPCom = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.whatIsWPCom",
             value: "What is WordPress.com?",
-            comment: "Link text explaining what WordPress.com is in the Push Notifications Benefits View"
+            comment: "Link text that appears on the WordPress.com Push Notifications Benefits screen, allowing users to tap and learn more about what WordPress.com is. This is displayed as a clickable link below the main description explaining the benefits of connecting to WordPress.com for push notifications."
         )
 
         static let continueButton = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.continueButton",
             value: "Continue",
-            comment: "Continue button title in the WordPress.com Push Notifications Benefits View"
+            comment: "This is the label for a primary action button in the WordPress.com Push Notifications Benefits screen that allows users to proceed with connecting their WooCommerce store to WordPress.com to enable push notifications."
         )
 
         static let notNowButton = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.notNowButton",
             value: "Not now",
-            comment: "Not now button title in the WordPress.com Push Notifications Benefits View"
+            comment: "This text appears on a button in the WordPress.com Push Notifications Benefits view that allows users to decline or postpone setting up push notifications without completely canceling the process."
         )
 
         static let cancelButton = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.cancelButton",
             value: "Cancel",
-            comment: "Cancel button title in the WordPress.com Push Notifications Benefits View toolbar"
+            comment: "This is a cancel button displayed in the toolbar of the WordPress.com Push Notifications Benefits View, which appears when users are being introduced to push notification features. The button allows users to dismiss or exit this benefits explanation screen."
         )
     }
 }

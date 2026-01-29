@@ -133,18 +133,18 @@ private enum Localization {
     static let title = NSLocalizedString(
         "posPromotion.title",
         value: "Point of Sale from WooCommerce",
-        comment: "Title for the POS promotion modal (shown on all steps)"
+        comment: "This text appears as the title at the top of a promotional modal that introduces users to WooCommerce's Point of Sale feature. The title is displayed across all steps of the promotion flow and helps users understand what product is being promoted."
     )
 
     static let next = NSLocalizedString(
         "posPromotion.button.next",
         value: "Next",
-        comment: "Button to go to the next step in the POS promotion modal"
+        comment: "Button label that advances users to the next step in a multi-step Point of Sale (POS) promotion modal that introduces the WooCommerce POS feature."
     )
 
     static let explorePOS = NSLocalizedString(
         "posPromotion.button.explorePOS",
         value: "Explore WooCommerce POS",
-        comment: "Button to open the POS learn more page in Safari (final step of POS promotion modal)"
+        comment: "This text appears as a button label in the final step of a Point of Sale (POS) promotion modal, which when tapped opens a Safari web page with more information about WooCommerce POS features."
     )
 }

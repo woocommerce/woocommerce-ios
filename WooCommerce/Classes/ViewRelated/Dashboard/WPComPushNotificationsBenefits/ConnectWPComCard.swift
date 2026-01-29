@@ -59,17 +59,17 @@ private extension ConnectWPComCard {
         static let title = NSLocalizedString(
             "dashboardView.connectWPComCard.title",
             value: "Never miss a new order",
-            comment: "Title of the Connect WPCom card on My Store screen"
+            comment: "This is the title text displayed on a promotional card in the My Store dashboard screen that encourages users to connect their WooCommerce store to a WordPress.com account for push notifications about new orders."
         )
         static let subtitle = NSLocalizedString(
             "dashboardView.connectWPComCard.subtitle",
             value: "Connect your store to a WordPress.com account to get alerts for new orders and reviews.",
-            comment: "Subtitle of the Connect WPCom card on My Store screen"
+            comment: "This subtitle text appears on a promotional card in the My Store dashboard screen that encourages users to connect their WooCommerce store to a WordPress.com account for push notifications."
         )
         static let hideButton = NSLocalizedString(
             "dashboardView.connectWPComCard.hideButton",
             value: "Hide this content",
-            comment: "Button to hide the Connect WPCom card from the My Store screen"
+            comment: "This text appears as a button label on a promotional card in the My Store dashboard screen that encourages users to connect their store to WordPress.com for push notifications. When tapped, the button allows users to permanently dismiss this promotional content from their dashboard."
         )
     }
 }

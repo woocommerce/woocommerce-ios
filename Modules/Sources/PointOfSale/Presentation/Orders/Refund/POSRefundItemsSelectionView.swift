@@ -131,25 +131,25 @@ private extension POSRefundItemsSelectionView {
         static let title = NSLocalizedString(
             "pos.refundItemsSelectionView.title",
             value: "Select items to refund",
-            comment: "Title for the refund items selection modal"
+            comment: "This text appears as the title of a modal screen in the Point of Sale module where users can select specific items from an order to process a refund."
         )
 
         static let continueButton = NSLocalizedString(
             "pos.refundItemsSelectionView.continueButton",
             value: "Continue",
-            comment: "Button to continue with selected items for refund"
+            comment: "Button label in the Point of Sale refund items selection modal that allows users to proceed to the next step after selecting which items they want to refund from an order."
         )
 
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundItemsSelectionView.closeButton.accessibilityLabel",
             value: "Close",
-            comment: "Accessibility label for close button on refund items selection modal"
+            comment: "Accessibility label for the close button in the refund items selection modal screen within the Point of Sale system. This text is read by screen readers to help visually impaired users understand that the button will close the modal without processing any refunds."
         )
 
         static let itemsHeaderTitle = NSLocalizedString(
             "pos.refundItemsSelectionView.itemsHeaderTitle",
             value: "Select all items",
-            comment: "Header label for items in the refund items selection modal"
+            comment: "A header label that appears at the top of the items list in a Point of Sale refund selection modal, where users can choose which items to refund from an order."
         )
 
         static let itemsSelectedCountFormat = NSLocalizedString(
@@ -161,7 +161,7 @@ private extension POSRefundItemsSelectionView {
         static let selectAllAccessibilityLabel = NSLocalizedString(
             "pos.refundItemsSelectionView.selectAll.accessibilityLabel",
             value: "Select or deselect all items",
-            comment: "Accessibility label for the select-all checkbox in the refund items selection modal"
+            comment: "This is an accessibility label for a checkbox that allows users to select or deselect all items at once in the refund items selection screen of a point-of-sale system. The text is read by screen readers to help visually impaired users understand the purpose of the select-all toggle control."
         )
     }
 }

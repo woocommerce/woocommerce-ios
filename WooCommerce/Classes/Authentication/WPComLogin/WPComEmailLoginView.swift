@@ -155,7 +155,7 @@ private extension WPComEmailLoginView {
         static let enterEmail = NSLocalizedString(
             "wpComEmailLoginView.enterEmail",
             value: "Enter email address or username",
-            comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
+            comment: "This text appears as placeholder text in an email/username input field on the WordPress.com login screen during the Jetpack setup flow. It guides users on what type of credentials they can enter to authenticate their account."
         )
         static let enterUsername = NSLocalizedString(
             "wpComEmailLoginView.enterUsername",

@@ -420,7 +420,7 @@ private extension POSOrderListController {
         static let viaPaymentMethodFormat = NSLocalizedString(
             "pos.orderListController.refund.viaPaymentMethodFormat",
             value: "Via %@",
-            comment: "Description for refund via a specific payment method. %@ is the payment method name"
+            comment: "This text appears as a descriptive label in the Point of Sale order list showing how a refund was processed, where %@ is replaced with the specific payment method name (e.g., 'Via Credit Card', 'Via PayPal')."
         )
     }
 }

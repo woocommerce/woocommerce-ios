@@ -29,19 +29,19 @@ extension POSPromoOnPhonesCampaign {
         static let cardTitle = NSLocalizedString(
             "posPromoOnPhonesCampaign.title",
             value: "Run WooCommerce POS on your tablet",
-            comment: "Title for the POS promotional banner on the dashboard"
+            comment: "This text appears as the title of a promotional banner card displayed on the dashboard/My Store screen, promoting the WooCommerce Point of Sale (POS) feature to encourage users to set it up on their tablet device."
         )
 
         static let cardMessage = NSLocalizedString(
             "posPromoOnPhonesCampaign.message",
             value: "Take in‑person payments with WooCommerce POS. Set up on a tablet and start selling today.",
-            comment: "Message for the POS promotional banner on the dashboard"
+            comment: "This text appears as the body message in a promotional banner on the dashboard that advertises WooCommerce POS functionality to encourage users to set up point-of-sale on tablets for in-person payments."
         )
 
         static let cardButtonTitle = NSLocalizedString(
             "posPromoOnPhonesCampaign.buttonTitle",
             value: "Learn more",
-            comment: "Button title for the POS promotional banner on the dashboard"
+            comment: "This is the button text for a promotional banner on the app's dashboard that advertises WooCommerce POS for tablet usage. When tapped, the button leads users to more detailed information about setting up and using WooCommerce POS for in-person payments."
         )
     }
 }

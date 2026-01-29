@@ -39,13 +39,13 @@ private extension POSCheckbox {
         static let selectedLabel = NSLocalizedString(
             "pos.checkbox.selected.accessibilityLabel",
             value: "Selected",
-            comment: "Accessibility label for a selected checkbox"
+            comment: "This text serves as an accessibility label for checkboxes in the Point of Sale interface when they are in a selected state, helping screen readers announce the checkbox status to visually impaired users."
         )
 
         static let unselectedLabel = NSLocalizedString(
             "pos.checkbox.unselected.accessibilityLabel",
             value: "Not selected",
-            comment: "Accessibility label for an unselected checkbox"
+            comment: "This is an accessibility label for unselected checkbox controls in the Point of Sale interface, used by screen readers to announce the state of checkboxes that are not currently selected."
         )
     }
 }

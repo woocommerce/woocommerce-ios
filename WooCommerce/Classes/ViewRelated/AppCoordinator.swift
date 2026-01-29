@@ -496,7 +496,7 @@ private extension AppCoordinator {
             static let title = NSLocalizedString(
                 "appCoordinator.ineligibleAgeRangeAlert.title",
                 value: "Access Restricted",
-                comment: "Alert title displayed when user identified as underage and taken to force logout."
+                comment: "This is the title of an alert dialog that appears when the app detects that the user's Apple account age is below the minimum required age for using the WooCommerce app. The alert appears before forcing the underage user to log out of the application."
             )
 
             static let message = NSLocalizedString(
@@ -509,7 +509,7 @@ private extension AppCoordinator {
             static let confirmationButton = NSLocalizedString(
                 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton",
                 value: "Got it",
-                comment: "Alert confirmation button displayed when user identified as underage and taken to force logout."
+                comment: "This text appears on a confirmation button in an age verification alert that is displayed when the user's Apple account age is below the minimum required for the WooCommerce app. The button acknowledges the restriction message and proceeds with the forced logout process."
             )
         }
 

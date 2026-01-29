@@ -146,13 +146,13 @@ private extension POSRefundReviewView {
         static let title = NSLocalizedString(
             "pos.refundReviewView.title",
             value: "Review refund",
-            comment: "Title for the refund review modal"
+            comment: "This text appears as the title of a modal screen in the Point of Sale app where merchants review details of a refund before processing it. It's displayed as a header at the top of the refund review interface."
         )
 
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundReviewView.closeButton.accessibilityLabel",
             value: "Close",
-            comment: "Accessibility label for close button on refund review modal"
+            comment: "This is the accessibility label for a close button on the refund review modal in the point-of-sale system. Screen readers will announce this text when users focus on the button that dismisses the refund review screen."
         )
 
         static let itemsSubtotalFormat = NSLocalizedString(
@@ -164,61 +164,61 @@ private extension POSRefundReviewView {
         static let taxLabel = NSLocalizedString(
             "pos.refundReviewView.taxLabel",
             value: "Tax",
-            comment: "Label for tax row in refund review"
+            comment: "A label displayed in the refund review screen of the Point of Sale module, identifying the tax amount line item in the refund breakdown summary."
         )
 
         static let refundTotalLabel = NSLocalizedString(
             "pos.refundReviewView.refundTotalLabel",
             value: "Refund total",
-            comment: "Label for refund total row in refund review"
+            comment: "A label that displays the total amount to be refunded to the customer on the refund review screen in a point-of-sale app. This appears as a row label in a summary breakdown showing the final refund amount before processing the transaction."
         )
 
         static let refundReasonLabel = NSLocalizedString(
             "pos.refundReviewView.refundReasonLabel",
             value: "Refund reason",
-            comment: "Label for refund reason section in refund review"
+            comment: "This is a section label that appears in the refund review screen of a point-of-sale app, identifying the area where users can view or add the reason for processing a refund."
         )
 
         static let addReasonButton = NSLocalizedString(
             "pos.refundReviewView.addReasonButton",
             value: "Add reason",
-            comment: "Button to add a reason for the refund"
+            comment: "Button label that appears in the refund review screen of a point-of-sale app, allowing users to add an optional reason/explanation for why they are processing a refund."
         )
 
         static let editReasonButton = NSLocalizedString(
             "pos.refundReviewView.editReasonButton",
             value: "Edit reason",
-            comment: "Button to edit an existing refund reason"
+            comment: "Button text that appears in the refund review screen of the Point of Sale app, allowing users to modify a refund reason that has already been entered. This button is displayed when a refund reason already exists and needs to be changed."
         )
 
         static let addReasonAccessibilityLabel = NSLocalizedString(
             "pos.refundReviewView.addReason.accessibilityLabel",
             value: "Add refund reason",
-            comment: "Accessibility label for add reason button in refund review"
+            comment: "Accessibility label for a button that allows users to add a reason when processing refunds in the Point of Sale interface. This text is read by screen readers when users with accessibility needs interact with the add reason button during the refund review process."
         )
 
         static let editReasonAccessibilityLabel = NSLocalizedString(
             "pos.refundReviewView.editReason.accessibilityLabel",
             value: "Edit refund reason",
-            comment: "Accessibility label for edit reason button in refund review"
+            comment: "This is an accessibility label for a button in the refund review screen that allows users to edit an existing refund reason. The label is read by screen readers to help visually impaired users understand the purpose of the edit button."
         )
 
         static let reasonPlaceholder = NSLocalizedString(
             "pos.refundReviewView.reasonPlaceholder",
             value: "Reason for refunding order",
-            comment: "Placeholder text when no refund reason has been added"
+            comment: "This text appears as placeholder text in a text input field on the refund review screen, prompting users to enter a reason for refunding an order. It displays when no refund reason has been entered yet and guides users on what information to provide."
         )
 
         static let continueButton = NSLocalizedString(
             "pos.refundReviewView.continueButton",
             value: "Continue",
-            comment: "Button to continue with the refund"
+            comment: "Button label in the Point of Sale refund review screen that allows users to proceed with processing the refund after reviewing the refund details, items, and total amount."
         )
 
         static let editRefundButton = NSLocalizedString(
             "pos.refundReviewView.editRefundButton",
             value: "Edit refund",
-            comment: "Button to go back and edit the refund items"
+            comment: "This text appears as a button label on the refund review screen in a point-of-sale app, allowing users to go back and modify the items selected for refund before finalizing the transaction."
         )
     }
 }

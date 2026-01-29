@@ -136,12 +136,12 @@ private extension WPComPasswordLoginView {
         static let passwordLabel = NSLocalizedString(
             "wpcomPasswordLoginView.password",
             value: "Password",
-            comment: "Label for the password field on the WPCom password login screen of the Jetpack setup flow."
+            comment: "Label text for the password input field on the WordPress.com login screen during the Jetpack setup flow in the WooCommerce app."
         )
         static let passwordPlaceholder = NSLocalizedString(
             "wpcomPasswordLoginView.passwordPlaceholder",
             value: "Enter the password for your account",
-            comment: "Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow."
+            comment: "This text appears as placeholder text inside the password input field on the WordPress.com login screen during the Jetpack setup flow. It provides guidance to users about what to enter in the password field before they start typing."
         )
         static let resetPassword = NSLocalizedString(
             "Reset your password",
@@ -154,7 +154,7 @@ private extension WPComPasswordLoginView {
         static let secondaryAction = NSLocalizedString(
             "wpcomPasswordLoginView.secondaryAction",
             value: "or continue using a magic link",
-            comment: "Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow."
+            comment: "This text appears as a secondary action button on the WordPress.com password login screen during Jetpack setup, allowing users to switch from password authentication to magic link authentication instead."
         )
     }
 }

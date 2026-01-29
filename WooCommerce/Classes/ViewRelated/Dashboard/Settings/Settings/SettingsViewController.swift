@@ -867,7 +867,7 @@ private extension SettingsViewController {
         static let enablePushNotifications = NSLocalizedString(
             "settings.enablePushNotifications",
             value: "Enable Push Notifications",
-            comment: "Settings > Store Settings row that starts the flow to enable push notifications."
+            comment: "This text appears as a row label in the Settings screen that allows users to navigate to a flow for enabling push notifications for their WooCommerce store."
         )
 
         static let privacySettings = NSLocalizedString(

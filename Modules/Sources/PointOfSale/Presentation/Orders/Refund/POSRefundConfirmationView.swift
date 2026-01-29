@@ -90,7 +90,7 @@ private extension POSRefundConfirmationView {
         static let titleFormat = NSLocalizedString(
             "pos.refundConfirmationView.titleFormat",
             value: "Refund %@",
-            comment: "Title for the refund confirmation modal. %@ is the formatted refund amount."
+            comment: "This text appears as the title of a refund confirmation modal dialog in a point-of-sale app, where %@ is replaced with the formatted refund amount (e.g., 'Refund $25.99'). It serves as the header text that users see when confirming a refund transaction."
         )
 
         static let processingTitleFormat = NSLocalizedString(
@@ -102,13 +102,13 @@ private extension POSRefundConfirmationView {
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundConfirmationView.closeButton.accessibilityLabel",
             value: "Close",
-            comment: "Accessibility label for close button on refund confirmation modal"
+            comment: "This is the accessibility label for a close button on the refund confirmation modal in the point-of-sale system. The label helps screen readers and other assistive technologies identify the button's purpose for users with disabilities."
         )
 
         static let confirmationMessageFormat = NSLocalizedString(
             "pos.refundConfirmationView.confirmationMessageFormat",
             value: "Are you sure you wish to process to refund %1$@ %2$@? This action cannot be undone.",
-            comment: "Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description."
+            comment: "Confirmation message displayed in a modal dialog when a user attempts to process a refund in the point-of-sale system. The message warns that the refund action is irreversible and includes placeholders for the refund amount (%1$@) and payment method (%2$@)."
         )
 
         static let processingMessage = NSLocalizedString(
@@ -120,13 +120,13 @@ private extension POSRefundConfirmationView {
         static let confirmButton = NSLocalizedString(
             "pos.refundConfirmationView.confirmButton",
             value: "Yes, proceed",
-            comment: "Button to confirm and process the refund"
+            comment: "This is the label for a confirmation button in the Point of Sale refund confirmation modal that appears when a user wants to process a refund. When tapped, it confirms and processes the refund transaction which cannot be undone."
         )
 
         static let backButton = NSLocalizedString(
             "pos.refundConfirmationView.backButton",
             value: "Back",
-            comment: "Button to go back to the previous screen"
+            comment: "Button label that appears on the refund confirmation modal in the Point of Sale system, allowing users to navigate back to the previous screen without proceeding with the refund action."
         )
     }
 }

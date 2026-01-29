@@ -4,6 +4,7 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
     var spyProvidePointOfSaleRefundsOrder: Yosemite.POSOrder?
     var providePointOfSaleRefundsResultToReturn: Yosemite.POSRefundsResult = POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     var errorToThrow: Error?
+    private(set) var providePointOfSaleRefundsCallCount = 0
 
     private var continuation: CheckedContinuation<Yosemite.POSOrder, Never>?
 
@@ -22,6 +23,7 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
     }
 
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
+        providePointOfSaleRefundsCallCount += 1
         spyProvidePointOfSaleRefundsOrder = order
         continuation?.resume(returning: order)
         continuation = nil

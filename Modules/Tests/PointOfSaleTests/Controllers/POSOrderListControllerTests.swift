@@ -517,7 +517,7 @@ final class POSOrderListControllerTests {
         refundsService.resumeProvidePointOfSaleRefunds()
     }
 
-    @Test func refundActionAvailability_when_refunds_failed_then_unavailable() async throws {
+    @Test func refundActionAvailability_when_refunds_failed_then_failedToLoad() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = MockPOSOrderListService.makeInitialOrders()[0]
@@ -537,7 +537,7 @@ final class POSOrderListControllerTests {
         #expect(didFail)
 
         let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .unavailable)
+        #expect(availability == .failedToLoad)
     }
 
     @Test func refundActionAvailability_when_refunds_loaded_and_not_fully_refunded_then_available() async throws {
@@ -594,6 +594,42 @@ final class POSOrderListControllerTests {
 
         let availability = await MainActor.run { sut.refundActionAvailability }
         #expect(availability == .unavailable)
+    }
+
+    @Test func retryLoadingRefundData_then_refetches_refunds_for_selected_order() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = MockPOSOrderListService.makeInitialOrders()[0]
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+
+        await sut.selectOrder(order)
+
+        // Wait for initial load to complete
+        let didLoad = await waitForCondition { [weak self] in
+            guard let sut = self?.sut else { return false }
+            if case .loaded = sut.selectedOrderRefundsState { return true }
+            return false
+        }
+        #expect(didLoad)
+
+        // Clear the call count to verify retry triggers a new fetch
+        let initialCallCount = refundsService.providePointOfSaleRefundsCallCount
+
+        // When
+        await MainActor.run { sut.retryLoadingRefundData() }
+
+        // Wait for reload to complete
+        let didReload = await waitForCondition { [weak self] in
+            guard let self else { return false }
+            return refundsService.providePointOfSaleRefundsCallCount > initialCallCount
+        }
+
+        // Then
+        #expect(didReload)
     }
 
     // MARK: - Refund Item Selection Tests

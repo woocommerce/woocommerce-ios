@@ -353,6 +353,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     func proceedWithInputAddress() {
         let address = WooShippingAddress(company: company.value,
                                          name: name.value,
+                                         email: email.value,
                                          phone: phone.value,
                                          country: country.value,
                                          state: state.value,
@@ -368,6 +369,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     func remotelyValidateAddress() async {
         let addressToValidate = WooShippingAddress(company: company.value,
                                                    name: name.value,
+                                                   email: email.value,
                                                    phone: phone.value,
                                                    country: country.value,
                                                    state: state.value,

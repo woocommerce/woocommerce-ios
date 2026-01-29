@@ -57,15 +57,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         userNotificationCenter = MockUserNotificationsCenterAdapter()
         backgroundSynchronizerFactory = MockPushNotificationBackgroundSynchronizerFactory()
 
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: self.storesManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
-
-            return PushNotificationsManager(configuration: configuration,
-                                            backgroundSynchronizerFactory: backgroundSynchronizerFactory)
-        }()
+        manager = makeManager()
     }
 
     @MainActor
@@ -144,6 +136,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testUnregisterForRemoteNotificationsEffectivelyDispatchesUnregisterDeviceAction() {
         defaults.set(Sample.deviceID, forKey: .deviceID)
+        manager = makeManager()
         manager.unregisterForRemoteNotifications {}
 
         guard case let .unregisterDevice(deviceID, _) = storesManager.receivedActions.first as! NotificationAction else {
@@ -161,6 +154,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     func testUnregisterForRemoteNotificationsEffectivelyNukesDeviceIdentifierAndTokenOnSuccess() {
         defaults.set(Sample.deviceID, forKey: .deviceID)
         defaults.set(Sample.deviceToken, forKey: .deviceToken)
+        manager = makeManager()
 
         manager.unregisterForRemoteNotifications {}
 
@@ -193,6 +187,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testRegistrationDidFailDispatchesUnregisterDeviceAction() {
         defaults.set(Sample.deviceID, forKey: .deviceID)
+        manager = makeManager()
 
         manager.registrationDidFail(with: SampleError.first)
 
@@ -767,6 +762,17 @@ final class PushNotificationsManagerTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension PushNotificationsManagerTests {
+    func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> PushNotificationsManager {
+        let configuration = PushNotificationsConfiguration(application: self.application,
+                                                           defaults: self.defaults,
+                                                           storesManager: self.storesManager,
+                                                           userNotificationsCenter: self.userNotificationCenter)
+
+        return PushNotificationsManager(configuration: configuration,
+                                        backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                        featureFlagService: featureFlagService)
+    }
+
 
     /// Returns a Sample Notification Payload
     ///

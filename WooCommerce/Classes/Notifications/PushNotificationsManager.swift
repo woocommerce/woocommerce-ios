@@ -94,6 +94,14 @@ final class PushNotificationsManager: PushNotesManager {
         registrationState.siteIDsRegisteredForWooPNs
     }
 
+    var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> {
+        registrationState.siteIDsRegisteredForWooPNsPublisher
+    }
+
+    var hasStoredSiteIDsRegisteredForWooPNs: Bool {
+        registrationState.hasStoredSiteIDsRegisteredForWooPNs
+    }
+
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }

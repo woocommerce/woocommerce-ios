@@ -1,10 +1,22 @@
+import Combine
 import Foundation
 
 final class PushNotificationRegistrationState {
     private let defaults: UserDefaults
+    private let siteIDsRegisteredForWooPNsSubject: CurrentValueSubject<[Int64]?, Never>
 
     init(defaults: UserDefaults) {
         self.defaults = defaults
+
+        let storedSiteIDsString: String? = defaults.object(
+            forKey: .siteIDsRegisteredForWooPushNotifications
+        )
+
+        let storedSiteIDs = storedSiteIDsString?
+            .components(separatedBy: ",")
+            .compactMap { Int64($0) }
+
+        siteIDsRegisteredForWooPNsSubject = CurrentValueSubject(storedSiteIDs)
     }
 
     /// Apple's Push Notifications DeviceToken
@@ -40,16 +52,21 @@ final class PushNotificationRegistrationState {
     /// Site IDs registered to Woo PN system, separated by commas
     private(set) var siteIDsRegisteredForWooPNs: [Int64] {
         get {
-            let ids: String? = defaults.object(forKey: .siteIDsRegisteredForWooPushNotifications)
-            return ids?.components(separatedBy: ",")
-                .compactMap { Int64($0) } ?? []
+            siteIDsRegisteredForWooPNsSubject.value ?? []
         }
         set {
-            defaults.set(
-                newValue.map { "\($0)" }.joined(separator: ","),
-                forKey: .siteIDsRegisteredForWooPushNotifications
-            )
+            updateSiteIDsRegisteredForWooPNs(newValue)
         }
+    }
+
+    var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> {
+        siteIDsRegisteredForWooPNsSubject
+            .map { $0 ?? [] }
+            .eraseToAnyPublisher()
+    }
+
+    var hasStoredSiteIDsRegisteredForWooPNs: Bool {
+        siteIDsRegisteredForWooPNsSubject.value != nil
     }
 
     func isSiteRegisteredForWooPNs(_ siteID: Int64) -> Bool {
@@ -104,25 +121,23 @@ extension PushNotificationRegistrationState {
 
 private extension PushNotificationRegistrationState {
     func instantiateRegisteredSiteIDsCollectionIfAbsent() {
-        guard defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications) == false else {
+        if siteIDsRegisteredForWooPNsSubject.value != nil {
             return
         }
+
         siteIDsRegisteredForWooPNs = []
     }
-}
 
-extension UserDefaults {
-    @objc dynamic var wooPushNotificationToken: String? {
-        string(forKey: Key.wooPushNotificationToken.rawValue)
-    }
+    func updateSiteIDsRegisteredForWooPNs(_ newValue: [Int64]) {
+        if siteIDsRegisteredForWooPNsSubject.value == newValue {
+            return
+        }
 
-    @objc dynamic var deviceToken: String? {
-        string(forKey: Key.deviceToken.rawValue)
-    }
+        defaults.set(
+            newValue.map { "\($0)" }.joined(separator: ","),
+            forKey: .siteIDsRegisteredForWooPushNotifications
+        )
 
-    @objc dynamic var siteIDsRegisteredForWooPushNotifications: [Int64]? {
-        string(forKey: Key.siteIDsRegisteredForWooPushNotifications.rawValue)?
-            .components(separatedBy: ",")
-            .compactMap { Int64($0) }
+        siteIDsRegisteredForWooPNsSubject.send(newValue)
     }
 }

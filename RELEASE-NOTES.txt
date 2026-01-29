@@ -2,10 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.1
 -----
-
-
-24.1
------
+- [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]
 - [Internal]: Update Stripe SDK to 5.1.1 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
 
 24.0

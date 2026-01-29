@@ -1225,7 +1225,7 @@ final class POSOrderListControllerTests {
 
         let firstItem = items[0]
         #expect(firstItem.itemID == 42)
-        #expect(firstItem.price == 15.50)
+        #expect(firstItem.lineItemTotal == 46.50)
         #expect(firstItem.totalTax == 1.55)
         #expect(firstItem.originalQuantity == 3)
     }

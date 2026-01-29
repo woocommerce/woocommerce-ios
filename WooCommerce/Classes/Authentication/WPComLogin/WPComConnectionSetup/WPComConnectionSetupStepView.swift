@@ -46,7 +46,7 @@ struct WPComConnectionSetupStepView: View {
                 .foregroundStyle(Color.secondary)
         case .success:
             Text(Localization.complete)
-                .foregroundColor(.green)
+                .foregroundColor(Color(uiColor: .success))
         case .failure(reason: let reason):
             Text(reason)
                 .foregroundColor(Color(uiColor: .error))

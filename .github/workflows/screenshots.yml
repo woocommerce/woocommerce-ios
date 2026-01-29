@@ -61,7 +61,7 @@ jobs:
 
     - name: Generate Screenshots
       run: |
-        bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }}
+        bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }} commit:true
 
     - name: Store Logs
       if: always()
@@ -135,7 +135,7 @@ jobs:
 
       - name: Generate Promo Screenshots
         run: |
-          bundle exec fastlane create_promo_screenshots force:true
+          bundle exec fastlane create_promo_screenshots force:true commit:true
 
       - name: Archive Promo Screenshots
         uses: actions/upload-artifact@v4

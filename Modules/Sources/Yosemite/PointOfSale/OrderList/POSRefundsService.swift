@@ -101,20 +101,27 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
 
     private func buildRefund(from request: POSRefundRequest, createAutomated: Bool, numberOfDecimals: Int) -> Refund {
         let items = request.items.map { item in
-            OrderItemRefund(
+            let refundQuantity = Decimal(-item.quantity)
+            let refundTotal = formatDecimalForAPI(-item.refundTotal, numberOfDecimals: numberOfDecimals)
+            let refundTaxes: [OrderItemTaxRefund] = item.refundTax > 0 ?
+            [OrderItemTaxRefund(taxID: 0,
+                                subtotal: "",
+                                total: formatDecimalForAPI(item.refundTax, numberOfDecimals: numberOfDecimals))] : []
+
+            return OrderItemRefund(
                 itemID: item.itemID,
                 name: "",
                 productID: 0,
                 variationID: 0,
                 refundedItemID: nil,
-                quantity: Decimal(-item.quantity),
+                quantity: refundQuantity,
                 price: NSDecimalNumber.zero,
                 sku: nil,
                 subtotal: "",
                 subtotalTax: "",
                 taxClass: "",
-                taxes: item.refundTax > 0 ? [OrderItemTaxRefund(taxID: 0, subtotal: "", total: formatDecimalForAPI(item.refundTax, numberOfDecimals: numberOfDecimals))] : [],
-                total: formatDecimalForAPI(-item.refundTotal, numberOfDecimals: numberOfDecimals),
+                taxes: refundTaxes,
+                total: refundTotal,
                 totalTax: ""
             )
         }

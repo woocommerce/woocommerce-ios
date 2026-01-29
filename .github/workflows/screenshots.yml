@@ -11,7 +11,7 @@ jobs:
   build:
     name: Build Application
     if: contains(github.event.pull_request.labels.*.name, 'generate screenshots')
-    runs-on: macos-15
+    runs-on: macos-latest
 
     steps:
     - name: "Check out Project"
@@ -43,7 +43,7 @@ jobs:
   capture:
     name: Capture
     needs: build
-    runs-on: macos-15
+    runs-on: macos-latest
 
     strategy:
       matrix:
@@ -85,7 +85,7 @@ jobs:
   process:
     name: "Process Screenshots"
     needs: capture
-    runs-on: macos-15
+    runs-on: macos-latest
 
     env:
       BUNDLE_WITH: screenshots

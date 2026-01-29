@@ -7,6 +7,13 @@ import WooFoundation
 enum WPComLoginFlow {
     case notificationSetup
     case jetpackSetup(requiresConnectionOnly: Bool)
+
+    var pendingAuthFlow: PendingAuthFlow {
+        switch self {
+        case .notificationSetup: .notificationSetup
+        case .jetpackSetup: .jetpackSetup
+        }
+    }
 }
 
 /// Coordinates navigation for the login flow with WPCom accounts.
@@ -153,6 +160,8 @@ private extension WPComLoginCoordinator {
     /// We're letting WPAuthenticator handle the deeplink for now.
     ///
     func showMagicLinkSentUI(email: String) {
+        let storage = PendingAuthFlowStorage()
+        storage.updateCurrentFlow(flow.pendingAuthFlow)
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,
                                                              flow: flow,

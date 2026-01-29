@@ -39,9 +39,33 @@ final class WooPushNotificationSetupCoordinator {
             loginCoordinator.startWithoutEmail()
         }
     }
+
+    func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
+        let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
+        guard url.absoluteString.hasPrefix(expectedPrefix) else {
+            return false
+        }
+
+        guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
+            DDLogError("⛔️ Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+            return false
+        }
+
+        guard let authToken = queryDictionary.string(forKey: "token") else {
+            DDLogError("⛔️ Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
+            return false
+        }
+
+        // TODO: start Jetpack connection flow with the retrieved authToken.
+        return true
+    }
 }
 
 private extension WooPushNotificationSetupCoordinator {
+    enum Constants {
+        static let magicLinkUrlHostname = "magic-login"
+    }
+
     enum Localization {
         static let flowTitle = NSLocalizedString(
             "wooPushNotificationSetupCoordinator.flowTitle",

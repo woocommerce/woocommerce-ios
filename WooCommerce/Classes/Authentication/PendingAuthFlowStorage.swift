@@ -20,23 +20,18 @@ struct PendingAuthFlowStorage {
     }
 
     var current: PendingAuthFlow? {
-        get {
-            guard let dict = userDefaults.dictionary(forKey: storageKey),
-                  let flowName = dict.keys.first,
-                  let timestamp = dict[flowName] as? Date,
-                  Date().timeIntervalSince(timestamp) < expirationInterval else {
-                clear() // Auto-clear if expired or missing data
-                return nil
-            }
-            return PendingAuthFlow(rawValue: flowName)
+        guard let dict = userDefaults.dictionary(forKey: storageKey),
+              let flowName = dict.keys.first,
+              let timestamp = dict[flowName] as? Date,
+              Date().timeIntervalSince(timestamp) < expirationInterval else {
+            clear() // Auto-clear if expired or missing data
+            return nil
         }
-        set {
-            if let value = newValue {
-                userDefaults.set([value.rawValue: Date()], forKey: storageKey)
-            } else {
-                clear()
-            }
-        }
+        return PendingAuthFlow(rawValue: flowName)
+    }
+
+    func updateCurrentFlow(_ flow: PendingAuthFlow) {
+        userDefaults.set([flow.rawValue: Date()], forKey: storageKey)
     }
 
     func clear() {

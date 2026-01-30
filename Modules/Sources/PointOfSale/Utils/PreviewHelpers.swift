@@ -51,6 +51,7 @@ import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
+import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSItemIdentifier
 
 // MARK: - PreviewProvider helpers
@@ -551,6 +552,8 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
         POSRefundsResult(refunds: [], isFullyRefunded: false)
     }
+
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?) async throws {}
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

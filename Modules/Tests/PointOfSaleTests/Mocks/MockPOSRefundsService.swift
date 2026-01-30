@@ -35,4 +35,6 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         if let error = errorToThrow { throw error }
         return providePointOfSaleRefundsResultToReturn
     }
+
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?) async throws {}
 }

@@ -87,6 +87,97 @@ struct POSRefundsServiceTests {
         #expect(mappedItems[1].quantity == item2.quantity)
     }
 
+    // MARK: - createRefund Tests
+
+    @Test func createRefund_then_calls_calculator_with_correct_parameters() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        let siteID: Int64 = 123
+        let sut = POSRefundsService(siteID: siteID, refundsRemote: remote, refundCalculator: calculator)
+
+        let orderID: Int64 = 456
+        let items = [
+            POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 2),
+            POSRefundableItem(itemID: 2, price: Decimal(20), totalTax: Decimal(2), originalQuantity: 1)
+        ]
+        let reason = "Customer request"
+
+        // When
+        try await sut.createRefund(orderID: orderID, items: items, reason: reason)
+
+        // Then
+        #expect(calculator.spyOrderID == orderID)
+        #expect(calculator.spySelectedItems?.count == 2)
+        #expect(calculator.spyReason == reason)
+    }
+
+    @Test func createRefund_then_calls_remote_with_correct_site_id_and_order_id() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        let siteID: Int64 = 123
+        let sut = POSRefundsService(siteID: siteID, refundsRemote: remote, refundCalculator: calculator)
+
+        let orderID: Int64 = 456
+        let items = [POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
+
+        // When
+        try await sut.createRefund(orderID: orderID, items: items, reason: nil)
+
+        // Then
+        #expect(remote.spyCreateRefundSiteID == siteID)
+        #expect(remote.spyCreateRefundOrderID == orderID)
+    }
+
+    @Test func createRefund_then_builds_refund_with_correct_amount_from_calculator() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        calculator.stubRefundRequest = POSRefundRequest(
+            orderID: 456,
+            amount: Decimal(string: "132.60")!,
+            reason: "Test reason",
+            items: []
+        )
+        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, refundCalculator: calculator)
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: "Test reason")
+
+        // Then
+        #expect(remote.spyCreateRefund?.amount == "132.60")
+        #expect(remote.spyCreateRefund?.reason == "Test reason")
+    }
+
+    @Test func createRefund_then_sets_create_automated_to_true() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = POSRefundsService(siteID: 123, refundsRemote: remote)
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil)
+
+        // Then
+        #expect(remote.spyCreateRefund?.createAutomated == true)
+    }
+
+    @Test func createRefund_when_remote_fails_then_propagates_error() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        struct TestError: Error {}
+        remote.createRefundResult = .failure(TestError())
+        let sut = POSRefundsService(siteID: 123, refundsRemote: remote)
+
+        // Then
+        do {
+            try await sut.createRefund(orderID: 456, items: [], reason: nil)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            #expect(error is TestError)
+        }
+    }
+
     private func makeOrder(id: Int64 = 1, refunds: [POSOrderRefund] = []) -> POSOrder {
         POSOrder(
             id: id,

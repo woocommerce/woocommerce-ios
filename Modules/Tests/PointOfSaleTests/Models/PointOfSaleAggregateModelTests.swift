@@ -10,7 +10,6 @@ import struct Yosemite.POSItemIdentifier
 import struct Yosemite.Order
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
-import enum Yosemite.POSCatalogSyncError
 import enum Yosemite.POSItemType
 import Combine
 
@@ -994,7 +993,6 @@ struct PointOfSaleAggregateModelTests {
             }
         }
     }
-
 }
 
 private func makePurchasableItem(name: String = "") -> POSItem {

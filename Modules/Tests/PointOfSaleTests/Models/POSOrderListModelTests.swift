@@ -74,6 +74,7 @@ final class POSOrderListModelTests {
             formattedTotal: "$10.00",
             formattedSubtotal: "$10.00",
             customerEmail: email,
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Test Payment",
             lineItems: [],
             refunds: [],

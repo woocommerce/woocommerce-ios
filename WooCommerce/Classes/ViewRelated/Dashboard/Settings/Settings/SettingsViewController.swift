@@ -435,7 +435,10 @@ private extension SettingsViewController {
         let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: { [weak self] in
             self?.dismiss(animated: true)
         })
-        let controller = UIHostingController(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
+        let controller = WPComPushNotificationsBenefitsHostingController(
+            viewModel: viewModel,
+            rootViewController: self,
+        )
         present(controller, animated: true)
     }
 

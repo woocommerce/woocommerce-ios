@@ -68,6 +68,9 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onShowAllGoogleAdsCampaigns: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onConnectWPComSetup: (() -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -327,6 +330,9 @@ private extension DashboardView {
 
     var connectWPComCard: some View {
         ConnectWPComCard(
+            setupAction: {
+                onConnectWPComSetup?()
+            },
             hideAction: {
                 viewModel.hideWPComConnectionSuggestion()
             }

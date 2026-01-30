@@ -93,8 +93,7 @@ default.profraw
 *.bak
 
 # WireMock (UI Tests)
-WooCommerce/WooCommerceScreenshots/Mocks/vendor/
-WooCommerce/WooCommerceUITests/Mocks/vendor/
+API-Mocks/vendor/
 
 # AppCode
 .idea

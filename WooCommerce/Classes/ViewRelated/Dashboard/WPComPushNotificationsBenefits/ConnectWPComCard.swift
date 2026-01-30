@@ -3,11 +3,13 @@ import SwiftUI
 /// A card prompting users to connect their store to WordPress.com for push notifications.
 struct ConnectWPComCard: View {
 
+    /// Closure invoked when the card is tapped
+    var setupAction: () -> Void
+
     /// Closure invoked when the hide button is tapped
     var hideAction: () -> Void
 
     @ScaledMetric private var scale: CGFloat = 1.0
-    @State private var showingWPComPushNotificationsBenefits = false
 
     var body: some View {
         HStack {
@@ -41,14 +43,7 @@ struct ConnectWPComCard: View {
         .padding(.horizontal, Layout.padding)
         .contentShape(Rectangle())
         .onTapGesture {
-            showingWPComPushNotificationsBenefits = true
-        }
-        .sheet(isPresented: $showingWPComPushNotificationsBenefits) {
-            WPComPushNotificationsBenefitsView(
-                viewModel: WPComPushNotificationsBenefitsViewModel(
-                    onDismiss: { showingWPComPushNotificationsBenefits = false }
-                )
-            )
+            setupAction()
         }
     }
 }
@@ -80,5 +75,5 @@ private extension ConnectWPComCard {
 }
 
 #Preview {
-    ConnectWPComCard(hideAction: {})
+    ConnectWPComCard(setupAction: {}, hideAction: {})
 }

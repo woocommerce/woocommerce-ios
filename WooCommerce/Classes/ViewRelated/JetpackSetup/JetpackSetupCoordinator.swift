@@ -386,6 +386,8 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkSentUI(email: String, isSignup: Bool) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
+        let storage = PendingAuthFlowStorage()
+        storage.updateCurrentFlow(.jetpackSetup)
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
                                                              flow: loginFlow,

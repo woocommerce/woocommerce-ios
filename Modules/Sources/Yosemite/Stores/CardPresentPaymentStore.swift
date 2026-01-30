@@ -437,7 +437,7 @@ private extension CardPresentPaymentStore {
 
     func cancelReconnection(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         cardReaderService.cancelReconnection()
-            .subscribe(Subscribers.Sink(
+            .sink(
                 receiveCompletion: { result in
                     switch result {
                     case .failure(let error):
@@ -449,7 +449,8 @@ private extension CardPresentPaymentStore {
                 receiveValue: {
                     onCompletion(.success(()))
                 }
-            ))
+            )
+            .store(in: &cancellables)
     }
 }
 

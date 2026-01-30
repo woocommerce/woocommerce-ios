@@ -96,9 +96,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
-        // Cancel any ongoing auto-reconnection attempt before starting a manual connection
-        await cancelReconnection()
-
         // What happens if this gets called while there's another connection ongoing?
         let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: createPreflightController())
 

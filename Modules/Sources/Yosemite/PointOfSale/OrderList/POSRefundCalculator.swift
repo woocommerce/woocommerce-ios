@@ -169,11 +169,10 @@ private extension POSRefundCalculator {
         }
     }
 
-    /// Rounds a Decimal value to the specified number of decimal places using banker's rounding (half even).
     func roundDecimal(_ value: Decimal, scale: Int) -> Decimal {
         var result = Decimal()
         var mutableValue = value
-        NSDecimalRound(&result, &mutableValue, scale, .bankers)
+        NSDecimalRound(&result, &mutableValue, scale, .plain)
         return result
     }
 }

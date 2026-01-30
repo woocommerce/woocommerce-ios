@@ -163,8 +163,22 @@ struct POSRefundCalculatorTests {
         // When
         let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: 2)
 
-        // Then: Should round 3.333... to 3.33 (banker's rounding)
+        // Then: Should round 3.333... to 3.33
         #expect(request.items[0].refundTax == Decimal(string: "3.33"))
+    }
+
+    @Test func buildRefundRequest_when_tax_ends_in_half_cent_then_rounds_up() {
+        // Given: 2 units with total tax of 1.05, selecting 1 unit = 1.05/2 = 0.525
+        // Half-up rounding should round 0.525 to 0.53 (not 0.52 as banker's would)
+        let items = [
+            POSRefundableItem(itemID: 1, lineItemTotal: Decimal(10), totalTax: Decimal(string: "1.05")!, originalQuantity: 2)
+        ]
+
+        // When
+        let request = sut.buildRefundRequest(orderID: 123, selectedItems: items, reason: nil, numberOfDecimals: 2)
+
+        // Then: Should round 0.525 up to 0.53 (half-up rounding)
+        #expect(request.items[0].refundTax == Decimal(string: "0.53"))
     }
 
     @Test func buildRefundRequest_when_zero_original_quantity_then_returns_zero_tax() {

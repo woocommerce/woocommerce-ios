@@ -650,7 +650,12 @@ extension StripeCardReaderService: CardReaderService {
                 self?.connectedReadersSubject.send([])
                 self?.reconnectionStateSubject.send(.idle)
 
-                if let error = error {
+                // Treat cancelFailedAlreadyCompleted as success - reconnection already completed,
+                // so the user's intent to stop reconnection was effectively achieved.
+                if let error = error as? ErrorCode,
+                   error.code == .cancelFailedAlreadyCompleted {
+                    promise(.success(()))
+                } else if let error = error {
                     let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.reconnectionCancellation(underlyingError: underlyingError)))
                 } else {

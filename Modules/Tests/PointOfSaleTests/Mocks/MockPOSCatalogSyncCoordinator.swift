@@ -104,4 +104,8 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
         // no-op
     }
+
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
+        // no-op
+    }
 }

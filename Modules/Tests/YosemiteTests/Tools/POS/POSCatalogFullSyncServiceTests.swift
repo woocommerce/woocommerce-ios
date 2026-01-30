@@ -312,4 +312,84 @@ struct POSCatalogFullSyncServiceTests {
         // Then
         #expect(mockSyncRemote.lastCatalogDownloadAllowCellular == allowCellular)
     }
+
+    // MARK: - Exponential Backoff Polling Tests
+
+    @Test func startFullSync_polls_with_exponential_backoff_until_completed() async throws {
+        // Given - First request returns scheduled (no URL), then after polling returns completed with URL
+        mockSyncRemote.catalogRequestSequence = [
+            .success(.init(status: .scheduled, downloadURL: nil)),  // Initial request
+            .success(.init(status: .processing, downloadURL: nil)), // Poll 1
+            .success(.init(status: .processing, downloadURL: nil)), // Poll 2
+            .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json")) // Poll 3 - success
+        ]
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+
+        // Then - Should have made 4 catalog request calls (1 initial + 3 polls)
+        #expect(mockSyncRemote.catalogRequestCallCount == 4)
+        #expect(result.products.isEmpty)
+        #expect(result.variations.isEmpty)
+    }
+
+    @Test func startFullSync_throws_generationFailed_when_catalog_fails() async throws {
+        // Given - Returns failed status
+        mockSyncRemote.catalogRequestSequence = [
+            .success(.init(status: .scheduled, downloadURL: nil)),  // Initial request
+            .success(.init(status: .processing, downloadURL: nil)), // Poll 1
+            .success(.init(status: .failed, downloadURL: nil))      // Poll 2 - failed
+        ]
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When/Then - Should throw generationFailed
+        await #expect(throws: POSCatalogSyncError.generationFailed) {
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        }
+
+        // Verify it stopped after receiving failed status
+        #expect(mockSyncRemote.catalogRequestCallCount == 3)
+    }
+
+    @Test func startFullSync_skips_polling_when_initial_request_has_download_url() async throws {
+        // Given - First request already has download URL (catalog already generated)
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+
+        // Then - Should only make 1 catalog request call (no polling needed)
+        #expect(mockSyncRemote.catalogRequestCallCount == 1)
+    }
+
+    @Test func pollingConfig_has_correct_values() {
+        // Verify the polling configuration constants match the PRD requirements
+        #expect(POSCatalogFullSyncService.PollingConfig.initialDelay == 3.0)
+        #expect(POSCatalogFullSyncService.PollingConfig.multiplier == 1.3)
+        #expect(POSCatalogFullSyncService.PollingConfig.maxInterval == 20.0)
+        #expect(POSCatalogFullSyncService.PollingConfig.foregroundMaxAttempts == 20)
+        #expect(POSCatalogFullSyncService.PollingConfig.backgroundMaxAttempts == 4)
+    }
 }

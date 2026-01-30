@@ -11,6 +11,22 @@ struct PendingAuthFlowStorageTests {
         return UserDefaults(suiteName: suiteName)!
     }
 
+    /// Helper to store a flow with a specific timestamp directly in UserDefaults
+    /// This mirrors the internal StoredFlow structure used by PendingAuthFlowStorage
+    private func storeFlow(_ flow: PendingAuthFlow, timestamp: Date, in userDefaults: UserDefaults) {
+        let stored = PendingAuthFlowStorage.StoredFlow(flow: flow, timestamp: timestamp)
+        userDefaults.set(try? JSONEncoder().encode(stored), forKey: storageKey)
+    }
+
+    /// Helper to read the stored flow data from UserDefaults
+    private func readStoredFlow(from userDefaults: UserDefaults) -> (flow: PendingAuthFlow, timestamp: Date)? {
+        guard let data = userDefaults.data(forKey: storageKey),
+              let stored = try? JSONDecoder().decode(PendingAuthFlowStorage.StoredFlow.self, from: data) else {
+            return nil
+        }
+        return (stored.flow, stored.timestamp)
+    }
+
     // MARK: - current
 
     @Test func current_returns_nil_when_nothing_is_stored() {
@@ -58,7 +74,7 @@ struct PendingAuthFlowStorageTests {
 
         // Store an expired flow (16 minutes ago, expiration is 15 minutes)
         let expiredDate = Date().addingTimeInterval(-16 * 60)
-        userDefaults.set([PendingAuthFlow.jetpackSetup.rawValue: expiredDate], forKey: storageKey)
+        storeFlow(.jetpackSetup, timestamp: expiredDate, in: userDefaults)
 
         // When
         let result = storage.current
@@ -74,7 +90,7 @@ struct PendingAuthFlowStorageTests {
 
         // Store a flow that is not expired (5 minutes ago)
         let recentDate = Date().addingTimeInterval(-5 * 60)
-        userDefaults.set([PendingAuthFlow.notificationSetup.rawValue: recentDate], forKey: storageKey)
+        storeFlow(.notificationSetup, timestamp: recentDate, in: userDefaults)
 
         // When
         let result = storage.current
@@ -90,13 +106,13 @@ struct PendingAuthFlowStorageTests {
 
         // Store an expired flow
         let expiredDate = Date().addingTimeInterval(-16 * 60)
-        userDefaults.set([PendingAuthFlow.jetpackSetup.rawValue: expiredDate], forKey: storageKey)
+        storeFlow(.jetpackSetup, timestamp: expiredDate, in: userDefaults)
 
         // When
         _ = storage.current
 
         // Then
-        #expect(userDefaults.dictionary(forKey: storageKey) == nil)
+        #expect(userDefaults.data(forKey: storageKey) == nil)
     }
 
     // MARK: - updateCurrentFlow
@@ -112,14 +128,11 @@ struct PendingAuthFlowStorageTests {
 
         // Then
         let afterUpdate = Date()
-        let storedDict = userDefaults.dictionary(forKey: storageKey)
-        #expect(storedDict != nil)
-        #expect(storedDict?.keys.first == PendingAuthFlow.jetpackSetup.rawValue)
-
-        let storedDate = storedDict?[PendingAuthFlow.jetpackSetup.rawValue] as? Date
-        #expect(storedDate != nil)
-        #expect(storedDate! >= beforeUpdate)
-        #expect(storedDate! <= afterUpdate)
+        let storedFlow = readStoredFlow(from: userDefaults)
+        #expect(storedFlow != nil)
+        #expect(storedFlow?.flow == .jetpackSetup)
+        #expect(storedFlow!.timestamp >= beforeUpdate)
+        #expect(storedFlow!.timestamp <= afterUpdate)
     }
 
     @Test func updateCurrentFlow_overwrites_previous_flow() {
@@ -149,7 +162,7 @@ struct PendingAuthFlowStorageTests {
 
         // Then
         #expect(storage.current == nil)
-        #expect(userDefaults.dictionary(forKey: storageKey) == nil)
+        #expect(userDefaults.data(forKey: storageKey) == nil)
     }
 
     @Test func clear_succeeds_when_nothing_is_stored() {

@@ -3,7 +3,7 @@ import Foundation
 /// Tracks which authentication flow is pending when a magic link is sent.
 /// This is used to route the magic link callback to the correct handler when the app
 /// is launched from a cold start via the magic link.
-enum PendingAuthFlow: String {
+enum PendingAuthFlow: String, Codable {
     case jetpackSetup
     case notificationSetup
 }
@@ -20,21 +20,28 @@ struct PendingAuthFlowStorage {
     }
 
     var current: PendingAuthFlow? {
-        guard let dict = userDefaults.dictionary(forKey: storageKey),
-              let flowName = dict.keys.first,
-              let timestamp = dict[flowName] as? Date,
-              Date().timeIntervalSince(timestamp) < expirationInterval else {
+        guard let object = userDefaults.data(forKey: storageKey),
+              let storedFlow = try? JSONDecoder().decode(StoredFlow.self, from: object),
+              Date().timeIntervalSince(storedFlow.timestamp) < expirationInterval else {
             clear() // Auto-clear if expired or missing data
             return nil
         }
-        return PendingAuthFlow(rawValue: flowName)
+        return storedFlow.flow
     }
 
     func updateCurrentFlow(_ flow: PendingAuthFlow) {
-        userDefaults.set([flow.rawValue: Date()], forKey: storageKey)
+        let stored = StoredFlow(flow: flow, timestamp: Date())
+        userDefaults.set(try? JSONEncoder().encode(stored), forKey: storageKey)
     }
 
     func clear() {
         userDefaults.removeObject(forKey: storageKey)
+    }
+}
+
+extension PendingAuthFlowStorage {
+    struct StoredFlow: Codable {
+        let flow: PendingAuthFlow
+        let timestamp: Date
     }
 }

@@ -169,15 +169,10 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureUpdatePrompt(cell: LeftImageTableViewCell) {
-        if viewModel.optionalReaderUpdateAvailable {
-            cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
-            cell.backgroundColor = .warningBackground
-            cell.imageView?.tintColor = .warning
-        } else {
-            cell.configure(image: .infoOutlineImage, text: Localization.updateNotNeeded)
-            cell.backgroundColor = .none
-            cell.imageView?.tintColor = .info
-        }
+        let state = UpdatePromptState(viewModel: viewModel)
+        cell.configure(image: .infoOutlineImage, text: state.text)
+        cell.backgroundColor = state.backgroundColor
+        cell.imageView?.tintColor = state.tintColor
         cell.selectionStyle = .none
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.textColor = .text
@@ -213,17 +208,12 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureDisconnectButton(cell: ButtonTableViewCell) {
-        let style: ButtonTableViewCell.Style = viewModel.optionalReaderUpdateAvailable ? .secondary : .primary
-        cell.configure(style: style, title: Localization.disconnectButtonTitle) { [weak self] in
-            self?.viewModel.disconnectReader()
+        let state = DisconnectButtonState(viewModel: viewModel)
+        cell.configure(style: state.style, title: state.title) { [weak self, state] in
+            state.action(self?.viewModel)
         }
-
-        let readerDisconnectInProgress = viewModel.readerDisconnectInProgress
-        let readerUpdateInProgress = viewModel.readerUpdateInProgress
-        let readerReconnectionInProgress = viewModel.readerReconnectionInProgress
-        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress && !readerReconnectionInProgress)
-        cell.showActivityIndicator(readerDisconnectInProgress || readerReconnectionInProgress)
-
+        cell.enableButton(state.isEnabled)
+        cell.showActivityIndicator(state.showActivityIndicator)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
     }
@@ -312,6 +302,119 @@ private enum Row: CaseIterable {
     }
 }
 
+private enum UpdatePromptState {
+    case reconnecting
+    case updateAvailable
+    case upToDate
+
+    init(viewModel: BluetoothCardReaderSettingsConnectedViewModel) {
+        switch (viewModel.readerReconnectionInProgress, viewModel.optionalReaderUpdateAvailable) {
+        case (true, _):
+            self = .reconnecting
+        case (false, true):
+            self = .updateAvailable
+        case (false, false):
+            self = .upToDate
+        }
+    }
+
+    var text: String {
+        switch self {
+        case .reconnecting:
+            return Localization.reconnectingText
+        case .updateAvailable:
+            return Localization.updatePromptText
+        case .upToDate:
+            return Localization.updateNotNeeded
+        }
+    }
+
+    var backgroundColor: UIColor? {
+        switch self {
+        case .reconnecting, .updateAvailable:
+            return .warningBackground
+        case .upToDate:
+            return .none
+        }
+    }
+
+    var tintColor: UIColor {
+        switch self {
+        case .reconnecting, .updateAvailable:
+            return .warning
+        case .upToDate:
+            return .info
+        }
+    }
+}
+
+private enum DisconnectButtonState {
+    case reconnecting
+    case disconnecting
+    case updating
+    case idle(updateAvailable: Bool)
+
+    init(viewModel: BluetoothCardReaderSettingsConnectedViewModel) {
+        switch (viewModel.readerReconnectionInProgress, viewModel.readerDisconnectInProgress, viewModel.readerUpdateInProgress) {
+        case (true, _, _):
+            self = .reconnecting
+        case (false, true, _):
+            self = .disconnecting
+        case (false, false, true):
+            self = .updating
+        case (false, false, false):
+            self = .idle(updateAvailable: viewModel.optionalReaderUpdateAvailable)
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .reconnecting:
+            return Localization.cancelReconnectionButtonTitle
+        case .disconnecting, .updating, .idle:
+            return Localization.disconnectButtonTitle
+        }
+    }
+
+    var style: ButtonTableViewCell.Style {
+        switch self {
+        case .reconnecting, .disconnecting, .updating:
+            return .primary
+        case .idle(let updateAvailable):
+            return updateAvailable ? .secondary : .primary
+        }
+    }
+
+    var isEnabled: Bool {
+        switch self {
+        case .reconnecting, .idle:
+            return true
+        case .disconnecting, .updating:
+            return false
+        }
+    }
+
+    var showActivityIndicator: Bool {
+        switch self {
+        case .disconnecting:
+            return true
+        case .reconnecting, .updating, .idle:
+            return false
+        }
+    }
+
+    func action(_ viewModel: BluetoothCardReaderSettingsConnectedViewModel?) {
+        switch self {
+        case .reconnecting:
+            viewModel?.cancelReconnection()
+        case .disconnecting, .updating, .idle:
+            viewModel?.disconnectReader()
+        }
+    }
+}
+
+private typealias Localization = CardReaderSettingsConnectedViewController.Localization
+
 // MARK: - Localization
 //
 private extension CardReaderSettingsConnectedViewController {
@@ -344,6 +447,18 @@ private extension CardReaderSettingsConnectedViewController {
         static let disconnectButtonTitle = NSLocalizedString(
             "Disconnect Reader",
             comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
+        )
+
+        static let reconnectingText = NSLocalizedString(
+            "cardReaderSettingsConnectedViewController.reconnectingText",
+            value: "Reconnecting to card reader...",
+            comment: "Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting"
+        )
+
+        static let cancelReconnectionButtonTitle = NSLocalizedString(
+            "cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle",
+            value: "Cancel Reconnection",
+            comment: "Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt"
         )
 
     }

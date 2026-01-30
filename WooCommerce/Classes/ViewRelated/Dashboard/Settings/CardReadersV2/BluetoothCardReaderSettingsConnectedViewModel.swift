@@ -28,6 +28,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     private(set) var readerDisconnectInProgress: Bool = false
 
     private(set) var readerReconnectionInProgress: Bool = false
+    private var reconnectingReader: CardReader?
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -35,7 +36,11 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
     var connectedReaderModel: String? {
-        connectedReaders.first?.readerType.model
+        currentReader?.readerType.model
+    }
+
+    private var currentReader: CardReader? {
+        connectedReaders.first ?? reconnectingReader
     }
 
     /// The connected gateway ID (plugin slug) - useful for the view controller's tracks events
@@ -154,13 +159,15 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
                     guard let self = self else { return }
 
                     switch state {
-                    case .reconnecting:
+                    case .reconnecting(let reader):
                         self.readerReconnectionInProgress = true
+                        self.reconnectingReader = reader
                     case .succeeded, .failed, .idle:
                         self.readerReconnectionInProgress = false
+                        self.reconnectingReader = nil
                     }
+                    self.updateProperties()
                     self.reevaluateShouldShow()
-                    self.didUpdate?()
                 }
                 .store(in: &self.subscriptions)
         }
@@ -190,11 +197,11 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     }
 
     private func updateReaderID() {
-        connectedReaderID = connectedReaders.first?.id
+        connectedReaderID = currentReader?.id
     }
 
     private func updateBatteryLevel() {
-        guard let batteryLevel = connectedReaders.first?.batteryLevel else {
+        guard let batteryLevel = currentReader?.batteryLevel else {
             connectedReaderBatteryLevel = Localization.unknownBatteryStatus
             return
         }
@@ -205,7 +212,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     }
 
     private func updateSoftwareVersion() {
-        guard let softwareVersion = connectedReaders.first?.softwareVersion else {
+        guard let softwareVersion = currentReader?.softwareVersion else {
             connectedReaderSoftwareVersion = Localization.unknownSoftwareVersion
             return
         }
@@ -252,6 +259,13 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         optionalReaderUpdateAvailable = optionalReaderUpdateAvailable && !success
         readerUpdateProgress = nil
         didUpdate?()
+    }
+
+    /// Dispatch a request to cancel an in-progress reconnection attempt
+    ///
+    func cancelReconnection() {
+        let action = CardPresentPaymentAction.cancelReconnection { _ in }
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Dispatch a request to disconnect from a reader

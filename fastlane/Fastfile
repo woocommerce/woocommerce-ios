@@ -1536,26 +1536,26 @@ end
 # the most recent one that is numerically less than the current release version.
 #
 def previous_release_tag
-  current_version = release_version_current
-  current_parts = current_version.split('.').map(&:to_i)
+  current_parts = release_version_current.split('.').map(&:to_i)
+  release_tags = fetch_release_tags
 
-  # Fetch tags from remote to ensure we have the latest
+  release_tags.find { |tag| version_less_than?(tag, current_parts) }
+end
+
+# Fetches all release tags from the remote, sorted by version descending.
+# Release tags are in format X.Y or X.Y.Z (no -rc suffix, no build codes).
+#
+def fetch_release_tags
   Actions.sh('git', 'fetch', '--tags', '--force')
-
-  # Get all tags sorted by version (descending), filtering for release-like tags
-  # Release tags are in format X.Y or X.Y.Z (no -rc suffix, no build codes like X.Y.Z.N)
   tags = Actions.sh('git', 'tag', '--list', '--sort=-v:refname').split("\n")
+  tags.grep(/^\d+\.\d+(\.\d+)?$/)
+end
 
-  # Filter for release tags (X.Y or X.Y.Z format, excluding build codes and RCs)
-  release_tags = tags.select do |tag|
-    tag.match?(/^\d+\.\d+(\.\d+)?$/) && !tag.include?('-')
-  end
-
-  # Find the first tag that's numerically less than the current version
-  release_tags.find do |tag|
-    tag_parts = tag.split('.').map(&:to_i)
-    (tag_parts <=> current_parts) < 0
-  end
+# Returns true if the tag version is numerically less than the comparison parts.
+#
+def version_less_than?(tag, comparison_parts)
+  tag_parts = tag.split('.').map(&:to_i)
+  (tag_parts <=> comparison_parts).negative?
 end
 
 # Returns the current build code of the app

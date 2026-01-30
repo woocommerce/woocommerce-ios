@@ -5,6 +5,7 @@ import class Networking.AlamofireNetwork
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import protocol Storage.GRDBManagerProtocol
+import class WooFoundation.CurrencySettings
 
 public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
     func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
@@ -18,7 +19,9 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     private let productsRemote: ProductsRemote
     private let variationsRemote: ProductVariationsRemote
     private let grdbManager: GRDBManagerProtocol?
+    private let itemMapper: PointOfSaleItemMapperProtocol?
     private let isLocalCatalogEnabled: Bool
+    private let isFTSSearchEnabled: Bool
     private let posProductsOnlyEnabled: Bool
 
     public init(siteID: Int64,
@@ -26,7 +29,10 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                 selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
                 appPasswordSupportState: AnyPublisher<Bool, Never>? = nil,
                 grdbManager: GRDBManagerProtocol? = nil,
+                currencySettings: CurrencySettings,
+                itemMapper: PointOfSaleItemMapperProtocol? = nil,
                 isLocalCatalogEnabled: Bool = false,
+                isFTSSearchEnabled: Bool = false,
                 posProductsOnlyEnabled: Bool = false) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
@@ -35,7 +41,9 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
         self.productsRemote = ProductsRemote(network: network)
         self.variationsRemote = ProductVariationsRemote(network: network)
         self.grdbManager = grdbManager
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
         self.isLocalCatalogEnabled = isLocalCatalogEnabled
+        self.isFTSSearchEnabled = isFTSSearchEnabled
         self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
@@ -48,15 +56,17 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     }
     public func searchStrategy(searchTerm: String,
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
-        // Use local search if explicitly enabled and GRDB manager is available
-        if isLocalCatalogEnabled, let grdbManager = grdbManager {
+        // Use local FTS search if both local catalog and FTS search are enabled, and dependencies are available
+        if isLocalCatalogEnabled, isFTSSearchEnabled, let grdbManager = grdbManager, let itemMapper = itemMapper {
             return PointOfSaleLocalSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                                       searchTerm: searchTerm,
                                                                       grdbManager: grdbManager,
                                                                       variationsRemote: variationsRemote,
+                                                                      itemMapper: itemMapper,
                                                                       analytics: analytics,
                                                                       posProductsOnly: posProductsOnlyEnabled)
         }
+        // Fall back to remote API search
         return PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                             searchTerm: searchTerm,
                                                             productsRemote: productsRemote,

@@ -280,6 +280,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$45.75",
             formattedSubtotal: "$41.99",
             customerEmail: "customer@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash on Delivery",
             lineItems: [
                 POSOrderItem(itemID: 1,
@@ -323,6 +324,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$89.50",
             formattedSubtotal: "$89.96",
             customerEmail: "very.long.customer.email@withverylongdomainname.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "WooCommerce In-Person Payments",
             lineItems: [
                 POSOrderItem(
@@ -374,6 +376,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$129.99",
             formattedSubtotal: "$120.00",
             customerEmail: nil,
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "WooCommerce In-Person Payments",
             lineItems: [
                 POSOrderItem(
@@ -407,6 +410,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$24.99",
             formattedSubtotal: "$22.99",
             customerEmail: nil,
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash on Delivery",
             lineItems: [
                 POSOrderItem(
@@ -438,6 +442,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$156.47",
             formattedSubtotal: "$145.00",
             customerEmail: "john.doe@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "WooCommerce In-Person Payments",
             lineItems: [
                 POSOrderItem(
@@ -506,6 +511,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    func processRefund(reason: String?) async throws {}
 }
 
 // MARK: - Barcode Scan Service
@@ -550,10 +556,10 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
-        POSRefundsResult(refunds: [], isFullyRefunded: false)
+        POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     }
 
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?) async throws {}
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

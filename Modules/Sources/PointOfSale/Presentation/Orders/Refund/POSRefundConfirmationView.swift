@@ -3,6 +3,7 @@ import SwiftUI
 struct POSRefundConfirmationView: View {
     let formattedRefundTotal: String
     let paymentMethodDescription: String
+    let isProcessing: Bool
     let onClose: () -> Void
     let onConfirm: () -> Void
     let onBack: () -> Void
@@ -13,7 +14,11 @@ struct POSRefundConfirmationView: View {
         VStack(spacing: POSSpacing.none) {
             headerView
             messageView
-            buttonsSection
+            if isProcessing {
+                loadingSection
+            } else {
+                buttonsSection
+            }
         }
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
@@ -26,7 +31,7 @@ struct POSRefundConfirmationView: View {
 private extension POSRefundConfirmationView {
     var headerView: some View {
         HStack {
-            Text(String(format: Localization.titleFormat, formattedRefundTotal))
+            Text(String(format: isProcessing ? Localization.processingTitleFormat : Localization.titleFormat, formattedRefundTotal))
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
@@ -38,19 +43,32 @@ private extension POSRefundConfirmationView {
                     .font(.posButtonSymbolLarge)
             }
             .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
+            .disabled(isProcessing)
+            .opacity(isProcessing ? 0.5 : 1.0)
         }
         .foregroundColor(Color.posOnSurface)
         .padding(POSPadding.xLarge)
     }
 
     var messageView: some View {
-        Text(String(format: Localization.confirmationMessageFormat,
-                    formattedRefundTotal,
-                    paymentMethodDescription))
+        Text(isProcessing
+             ? Localization.processingMessage
+             : String(format: Localization.confirmationMessageFormat,
+                      formattedRefundTotal,
+                      paymentMethodDescription))
             .font(.posBodyLargeRegular())
             .foregroundColor(Color.posOnSurface)
             .multilineTextAlignment(.leading)
             .padding(.horizontal, POSPadding.xLarge)
+    }
+
+    var loadingSection: some View {
+        VStack {
+            ProgressView()
+                .progressViewStyle(POSProgressViewStyle(size: 64, lineWidth: 20))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(POSPadding.xLarge)
     }
 
     var buttonsSection: some View {
@@ -75,6 +93,12 @@ private extension POSRefundConfirmationView {
             comment: "Title for the refund confirmation modal. %@ is the formatted refund amount."
         )
 
+        static let processingTitleFormat = NSLocalizedString(
+            "pos.refundConfirmationView.processingTitleFormat",
+            value: "Refunding %@",
+            comment: "Title for the refund confirmation modal while processing. %@ is the formatted refund amount."
+        )
+
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundConfirmationView.closeButton.accessibilityLabel",
             value: "Close",
@@ -85,6 +109,12 @@ private extension POSRefundConfirmationView {
             "pos.refundConfirmationView.confirmationMessageFormat",
             value: "Are you sure you wish to process to refund %1$@ %2$@? This action cannot be undone.",
             comment: "Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description."
+        )
+
+        static let processingMessage = NSLocalizedString(
+            "pos.refundConfirmationView.processingMessage",
+            value: "Please wait while we process the refund.",
+            comment: "Message shown while the refund is being processed."
         )
 
         static let confirmButton = NSLocalizedString(
@@ -106,6 +136,19 @@ private extension POSRefundConfirmationView {
     POSRefundConfirmationView(
         formattedRefundTotal: "$132.60",
         paymentMethodDescription: "via payment card ••••1456",
+        isProcessing: false,
+        onClose: {},
+        onConfirm: {},
+        onBack: {}
+    )
+    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+}
+
+#Preview("POSRefundConfirmationView - Processing") {
+    POSRefundConfirmationView(
+        formattedRefundTotal: "$132.60",
+        paymentMethodDescription: "via payment card ••••1456",
+        isProcessing: true,
         onClose: {},
         onConfirm: {},
         onBack: {}

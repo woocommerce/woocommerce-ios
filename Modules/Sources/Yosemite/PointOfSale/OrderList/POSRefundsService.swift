@@ -8,6 +8,7 @@ import struct NetworkingCore.OrderItemTaxRefund
 
 public final class POSRefundsService: POSRefundsServiceProtocol {
     private let refundsRemote: POSRefundsRemoteProtocol
+    private let paymentGatewayRemote: POSPaymentGatewayRemoteProtocol
     private let refundCalculator: POSRefundCalculating
     private let siteID: Int64
     private let mapper: POSRefundMapper
@@ -22,42 +23,75 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.refundsRemote = RefundsRemote(network: network)
+        self.paymentGatewayRemote = PaymentGatewayRemote(network: network)
         self.refundCalculator = POSRefundCalculator()
         self.mapper = POSRefundMapper()
     }
 
     init(siteID: Int64,
          refundsRemote: POSRefundsRemoteProtocol,
+         paymentGatewayRemote: POSPaymentGatewayRemoteProtocol,
          refundCalculator: POSRefundCalculating = POSRefundCalculator()) {
         self.siteID = siteID
         self.refundsRemote = refundsRemote
+        self.paymentGatewayRemote = paymentGatewayRemote
         self.refundCalculator = refundCalculator
         self.mapper = POSRefundMapper()
     }
 
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult {
-        let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
+        async let refundsTask = refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
+        async let gatewaysTask = fetchPaymentGateways()
+
+        let refunds = try await refundsTask
+        let gateways = await gatewaysTask
 
         let mappedRefunds = refunds.map { mapper.map(refund: $0) }
         let isFullyRefunded = areAllProductsFullyRefunded(
             orderedQuantities: order.lineItemQuantitiesByProductOrVariationID,
             refunds: refunds
         )
+        let supportsAutomaticRefund = determineAutomaticRefundSupport(
+            paymentMethodID: order.paymentMethodID,
+            gateways: gateways
+        )
 
-        return POSRefundsResult(refunds: mappedRefunds, isFullyRefunded: isFullyRefunded)
+        return POSRefundsResult(refunds: mappedRefunds, isFullyRefunded: isFullyRefunded, supportsAutomaticRefund: supportsAutomaticRefund)
     }
 
-    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?) async throws {
+    private func fetchPaymentGateways() async -> [PaymentGateway] {
+        await withCheckedContinuation { continuation in
+            paymentGatewayRemote.loadAllPaymentGateways(siteID: siteID) { result in
+                switch result {
+                case .success(let gateways):
+                    continuation.resume(returning: gateways)
+                case .failure(let error):
+                    DDLogError("⛔️ Failed to load payment gateways: \(error)")
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+    }
+
+    private func determineAutomaticRefundSupport(paymentMethodID: String, gateways: [PaymentGateway]) -> Bool {
+        if let gateway = gateways.first(where: { $0.gatewayID == paymentMethodID }) {
+            return gateway.features.contains(.refunds)
+        }
+        // Fallback: if gateway not found, use simple check
+        return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+    }
+
+    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {
         let request = refundCalculator.buildRefundRequest(
             orderID: orderID,
             selectedItems: items,
             reason: reason
         )
-        let refund = buildRefund(from: request)
+        let refund = buildRefund(from: request, createAutomated: isAutomaticRefund)
         _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
     }
 
-    private func buildRefund(from request: POSRefundRequest) -> Refund {
+    private func buildRefund(from request: POSRefundRequest, createAutomated: Bool) -> Refund {
         let items = request.items.map { item in
             let refundQuantity = Decimal(-item.quantity)
             let refundTotal = formatDecimalForAPI(-item.refundTotal)
@@ -92,7 +126,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             reason: request.reason ?? "",
             refundedByUserID: 0,
             isAutomated: nil,
-            createAutomated: true,
+            createAutomated: createAutomated,
             items: items,
             shippingLines: nil
         )

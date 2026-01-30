@@ -12,10 +12,6 @@ struct POSOrderListEmptyViewModel: POSListEmptyViewModelProtocol {
         isSearching ? Localization.emptyOrdersSearchSubtitle : Localization.emptyOrdersSubtitle
     }
 
-    var hint: String? {
-        nil
-    }
-
     var buttonTitle: String? {
         isSearching ? nil : Localization.emptyOrdersButtonTitle
     }

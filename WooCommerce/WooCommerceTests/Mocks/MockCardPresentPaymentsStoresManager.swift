@@ -93,6 +93,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onCompletion(paymentExtension)
         case .disconnect(let onCompletion):
             onCompletion(Result.success(()))
+        case .cancelReconnection(let onCompletion):
+            onCompletion(Result.success(()))
         default:
             break
         }

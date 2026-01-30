@@ -442,6 +442,8 @@ private extension RefundSubmissionUseCaseTests {
                 completion?(cancelRefundResult)
             } else if case let .cancelCardReaderDiscovery(completion) = action {
                 completion(cancelCardReaderDiscoveryResult)
+            } else if case let .cancelReconnection(completion) = action {
+                completion(.success(()))
             }
         }
     }

@@ -52,6 +52,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSRefundableItem
+import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSItemIdentifier
 
 // MARK: - PreviewProvider helpers
@@ -287,6 +288,7 @@ struct POSPreviewHelpers {
                              name: "Premium Coffee Beans",
                              quantity: 2.0,
                              price: 12.50,
+                             total: 25.00,
                              totalTax: 2.50,
                              formattedPrice: "$12.50",
                              formattedTotal: "$25.00",
@@ -297,6 +299,7 @@ struct POSPreviewHelpers {
                     name: "Organic Tea - Earl Grey",
                     quantity: 1.0,
                     price: 15.99,
+                    total: 15.99,
                     totalTax: 1.26,
                     formattedPrice: "$15.99",
                     formattedTotal: "$15.99",
@@ -332,6 +335,7 @@ struct POSPreviewHelpers {
                     name: "Artisan Chocolate Box",
                     quantity: 3.0,
                     price: 19.99,
+                    total: 59.97,
                     totalTax: 5.99,
                     formattedPrice: "$19.99",
                     formattedTotal: "$59.97",
@@ -343,6 +347,7 @@ struct POSPreviewHelpers {
                     name: "Gourmet Cookie Set - Mixed",
                     quantity: 1.0,
                     price: 29.99,
+                    total: 29.99,
                     totalTax: 2.96,
                     formattedPrice: "$29.99",
                     formattedTotal: "$29.99",
@@ -384,6 +389,7 @@ struct POSPreviewHelpers {
                     name: "Wireless Headphones",
                     quantity: 1.0,
                     price: 120.00,
+                    total: 120.00,
                     totalTax: 9.99,
                     formattedPrice: "$120.00",
                     formattedTotal: "$120.00",
@@ -418,6 +424,7 @@ struct POSPreviewHelpers {
                     name: "Coffee Mug",
                     quantity: 1.0,
                     price: 22.99,
+                    total: 22.99,
                     totalTax: 2.00,
                     formattedPrice: "$22.99",
                     formattedTotal: "$22.99",
@@ -450,6 +457,7 @@ struct POSPreviewHelpers {
                     name: "Leather Wallet",
                     quantity: 2.0,
                     price: 45.00,
+                    total: 90.00,
                     totalTax: 7.20,
                     formattedPrice: "$45.00",
                     formattedTotal: "$90.00",
@@ -463,6 +471,7 @@ struct POSPreviewHelpers {
                     name: "Sunglasses",
                     quantity: 1.0,
                     price: 55.00,
+                    total: 55.00,
                     totalTax: 4.27,
                     formattedPrice: "$55.00",
                     formattedTotal: "$55.00",
@@ -557,6 +566,12 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
         POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
+    }
+
+    func calculateRefundAmounts(for items: [Yosemite.POSRefundableItem]) -> Yosemite.POSRefundAmounts {
+        let subtotal = items.reduce(Decimal.zero) { $0 + $1.lineItemTotal }
+        let tax = items.reduce(Decimal.zero) { $0 + $1.totalTax }
+        return POSRefundAmounts(subtotal: subtotal, tax: tax)
     }
 
     func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}

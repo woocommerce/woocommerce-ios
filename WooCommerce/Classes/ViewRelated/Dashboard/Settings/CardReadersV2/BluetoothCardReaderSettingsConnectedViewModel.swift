@@ -287,6 +287,8 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         } else if connectedReaders.isEmpty && !readerReconnectionInProgress {
             newShouldShow = .isFalse
         } else if connectedReaders.includesTapToPayReader() {
+            /// This screen only supports management of Bluetooth readers, and will have started disconnection
+            /// from Tap to Pay on iPhone in this instance.
             newShouldShow = .isFalse
         } else {
             newShouldShow = .isTrue

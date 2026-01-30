@@ -499,6 +499,7 @@ extension StripeCardReaderService: CardReaderService {
                 switch result {
                 case .success(let locationId):
                     let buildConfig = BluetoothConnectionConfigurationBuilder(delegate: self, locationId: locationId)
+                        .setAutoReconnectOnUnexpectedDisconnect(true)
                     do {
                         let config = try buildConfig.build()
                         return promise(.success(config))

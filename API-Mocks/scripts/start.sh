@@ -3,7 +3,7 @@
 set -eu
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-VENDOR_DIR="$(pwd)/WooCommerce/WooCommerceUITests/Mocks/vendor/wiremock"
+VENDOR_DIR="$SCRIPT_DIR/../vendor/wiremock"
 BUILD_ARTIFACTS_DIR="$(pwd)/build/logs"
 
 WIREMOCK_VERSION="2.35.2"
@@ -25,6 +25,8 @@ if [ -n "${CI:-}" ]; then
     OUTPUT_REDIRECT="${BUILD_ARTIFACTS_DIR}/wiremock.txt"
     mkdir -p "$BUILD_ARTIFACTS_DIR"
 fi
-java -jar "${WIREMOCK_JAR}" --root-dir "${SCRIPT_DIR}/.." \
-                            --port "$PORT" \
-                            --global-response-templating > "$OUTPUT_REDIRECT" 2>&1
+
+java -jar "${WIREMOCK_JAR}" \
+  --root-dir "${SCRIPT_DIR}/../../Modules/Sources/APIMocks/Resources" \
+  --port "$PORT" \
+  --global-response-templating > "$OUTPUT_REDIRECT" 2>&1

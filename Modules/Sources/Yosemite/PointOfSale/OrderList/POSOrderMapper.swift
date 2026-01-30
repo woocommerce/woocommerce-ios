@@ -53,6 +53,7 @@ struct POSOrderMapper {
             formattedTotal: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
             customerEmail: customerEmail,
+            paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
             refunds: posRefunds,

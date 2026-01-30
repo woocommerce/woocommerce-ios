@@ -55,6 +55,9 @@ struct IconListItem: View {
     let title: String
     let subtitle: String
     let icon: Icon?
+    let learnMoreURL: URL?
+    let showLearnMoreInline: Bool
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack(alignment: .top, spacing: Layout.contentSpacing) {
@@ -66,10 +69,29 @@ struct IconListItem: View {
                     .headlineStyle()
                 Text(subtitle)
                     .secondaryBodyStyle()
+                if showLearnMoreInline, let learnMoreURL {
+                    Button(Localization.learnMore) {
+                        openURL(learnMoreURL)
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
             Spacer()
         }
         .padding(.horizontal, Layout.horizontalPadding)
+    }
+
+    init(title: String,
+         subtitle: String,
+         icon: Icon?,
+         learnMoreURL: URL?,
+         showLearnMoreInline: Bool = true) {
+        self.title = title
+        self.subtitle = subtitle
+        self.icon = icon
+        self.learnMoreURL = learnMoreURL
+        self.showLearnMoreInline = showLearnMoreInline
     }
 }
 
@@ -85,6 +107,14 @@ private extension IconListItem {
     enum Constants {
         static let placeholderImageName: String = "list.bullet.circle.fill"
     }
+
+    enum Localization {
+        static let learnMore = NSLocalizedString(
+            "learnMore.link",
+            value: "Learn more",
+            comment: "Learn more button label in the What's New list"
+        )
+    }
 }
 
 // MARK: - Preview
@@ -92,7 +122,8 @@ struct IconListItem_Previews: PreviewProvider {
     static var previews: some View {
         IconListItem(title: "Title",
                      subtitle: "Subtitle",
-                     icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
+                     icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                     learnMoreURL: nil)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Regular Icon List Item")
             .environment(\.layoutDirection, .leftToRight)

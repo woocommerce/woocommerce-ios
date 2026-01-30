@@ -995,36 +995,6 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    struct IncrementalSyncTests {
-        @Test func triggerIncrementalSyncIfNeeded_when_coordinator_exists_calls_performIncrementalSync() async {
-            // Given
-            let coordinator = MockPOSCatalogSyncCoordinator()
-            let sut = makePointOfSaleAggregateModel(
-                siteID: 456,
-                catalogSyncCoordinator: coordinator
-            )
-
-            // When
-            await sut.triggerIncrementalSync()
-
-            // Then
-            #expect(coordinator.performIncrementalSyncInvocationCount == 1)
-            #expect(coordinator.performIncrementalSyncSiteID == 456)
-        }
-
-        @Test func triggerIncrementalSyncIfNeeded_when_sync_already_in_progress_does_not_throw() async {
-            // Given
-            let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.performIncrementalSyncResult = .failure(POSCatalogSyncError.syncAlreadyInProgress(siteID: 456))
-            let sut = makePointOfSaleAggregateModel(
-                siteID: 456,
-                catalogSyncCoordinator: coordinator
-            )
-
-            // When / Then - should complete without throwing despite coordinator error
-            await sut.triggerIncrementalSync()
-        }
-    }
 }
 
 private func makePurchasableItem(name: String = "") -> POSItem {

@@ -472,7 +472,8 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[.pendingMagicLinkFlow] = ["jetpackSetup": Date()]
+        let flow = PendingAuthFlowStorage.StoredFlow(flow: .jetpackSetup, timestamp: Date())
+        defaults[.pendingMagicLinkFlow] = try? JSONEncoder().encode(flow)
 
         // Then
         XCTAssertNotNil(defaults[.pendingMagicLinkFlow])

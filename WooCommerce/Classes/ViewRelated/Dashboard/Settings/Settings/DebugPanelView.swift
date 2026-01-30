@@ -20,8 +20,8 @@ struct DebugPanelView: View {
                 Text("Override Feature Flags")
             }
 
-            DebugSheetPresenter("Present WPComConnectionSetupView") { _ in
-                let viewModel = WPComConnectionSetupViewModel(storeName: "nicestore.com")
+            DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
+                let viewModel = WPComConnectionSetupViewModel(storeName: "nicestore.com", onDismiss: dismiss)
                 WPComConnectionSetupView(viewModel: viewModel)
             }
         }

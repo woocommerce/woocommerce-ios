@@ -10,5 +10,5 @@ struct WPComConnectionSetupStep: Identifiable {
 
     let title: String
     let status: Status
-    let id: String = UUID().uuidString
+    let id = UUID()
 }

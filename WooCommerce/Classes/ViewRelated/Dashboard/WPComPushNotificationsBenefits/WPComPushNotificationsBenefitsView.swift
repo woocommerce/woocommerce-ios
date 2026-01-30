@@ -7,14 +7,20 @@ import WooFoundation
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         rootViewController: UIViewController) {
+         navigationController: UINavigationController) {
         super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
-        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: navigationController)
         viewModel.updateCoordinator(coordinator)
     }
 
+    @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 }
 

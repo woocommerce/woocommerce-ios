@@ -19,7 +19,7 @@ struct WPComConnectionSetupStepView: View {
     }
 
     @ViewBuilder
-    fileprivate var detail: some View {
+    private var detail: some View {
         switch step.status {
         case .notStarted:
             Text(Localization.notStarted)
@@ -80,6 +80,7 @@ private extension WPComConnectionSetupStepView {
         WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .notStarted))
         WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .running))
         WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .success))
-        WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .failure(reason: "Your current WooCommerce plugin version 10.3.4 needs updating")))
+        WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title,
+                                                                          status: .failure(reason: "Plugin version 10.3.4 needs updating")))
     }
 }

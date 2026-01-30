@@ -374,11 +374,14 @@ private extension DashboardViewHostingController {
             let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: {
                 self.dismiss(animated: true)
             })
+            let navigationController = WooNavigationController()
             let hostingController = WPComPushNotificationsBenefitsHostingController(
                 viewModel: viewModel,
-                rootViewController: self,
+                navigationController: navigationController
             )
-            present(hostingController, animated: true)
+            navigationController.viewControllers = [hostingController]
+            navigationController.modalPresentationStyle = .formSheet
+            present(navigationController, animated: true)
         }
     }
 }

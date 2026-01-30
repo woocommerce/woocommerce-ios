@@ -1,36 +1,69 @@
 import SwiftUI
+import UIKit
+
+/// Hosting controller for `WPComConnectionSetupView`
+final class WPComConnectionSetupHostingController: UIHostingController<WPComConnectionSetupView> {
+
+    init(viewModel: WPComConnectionSetupViewModel) {
+        super.init(rootView: WPComConnectionSetupView(viewModel: viewModel))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+}
 
 struct WPComConnectionSetupView: View {
     @ObservedObject var viewModel: WPComConnectionSetupViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-            ConnectWPComHeaderView()
-            VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
-                Text(Localization.title)
-                    .largeTitleStyle()
-                    .bold()
-                Text(viewModel.subtitleAttributedString)
-            }
+        NavigationStack {
+            VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                ConnectWPComHeaderView()
+                VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
+                    Text(Localization.title)
+                        .largeTitleStyle()
+                        .bold()
+                    Text(viewModel.subtitleAttributedString)
+                }
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: Constants.stepsVerticalSpacing) {
-                    ForEach(viewModel.steps) { step in
-                        WPComConnectionSetupStepView(step: step)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: Constants.stepsVerticalSpacing) {
+                        ForEach(viewModel.steps) { step in
+                            WPComConnectionSetupStepView(step: step)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                footer
+            }
+            .padding(Constants.contentPadding)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        viewModel.cancelTapped()
                     }
                 }
             }
-
-            Spacer()
-
-            footer
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
-        .padding(Constants.contentPadding)
-        .onAppear() {
+        .onAppear {
             viewModel.onAppear()
         }
     }
-
 
     @ViewBuilder var footer: some View {
         VStack {
@@ -60,11 +93,20 @@ private extension WPComConnectionSetupView {
     }
 
     enum Localization {
-        static let title: String = "Connect to WordPress.com"
+        static let title = NSLocalizedString(
+            "wpComConnectionSetupView.title",
+            value: "Connect to WordPress.com",
+            comment: "Title for the WPCom connection setup screen."
+        )
+        static let cancelButton = NSLocalizedString(
+            "wpComConnectionSetupView.cancelButton",
+            value: "Cancel",
+            comment: "Cancel button title in the WPCom connection setup screen toolbar."
+        )
     }
 }
 
 #Preview {
-    let viewModel = WPComConnectionSetupViewModel(storeName: "coffeebeans.com")
+    let viewModel = WPComConnectionSetupViewModel(storeName: "coffeebeans.com", onDismiss: {})
     WPComConnectionSetupView(viewModel: viewModel)
 }

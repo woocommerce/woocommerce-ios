@@ -435,11 +435,14 @@ private extension SettingsViewController {
         let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: { [weak self] in
             self?.dismiss(animated: true)
         })
+        let navigationController = WooNavigationController()
         let controller = WPComPushNotificationsBenefitsHostingController(
             viewModel: viewModel,
-            rootViewController: self,
+            navigationController: navigationController
         )
-        present(controller, animated: true)
+        navigationController.viewControllers = [controller]
+        navigationController.modalPresentationStyle = .formSheet
+        present(navigationController, animated: true)
     }
 
     func showThemeSettings() {

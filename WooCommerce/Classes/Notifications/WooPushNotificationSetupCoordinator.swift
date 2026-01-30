@@ -6,11 +6,13 @@ final class WooPushNotificationSetupCoordinator {
     // Controller to handle navigation between the auth flow and setup steps.
     let rootViewController: UIViewController
 
+    private let stores: StoresManager
     private var loginCoordinator: WPComLoginCoordinator?
 
     init(rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores) {
         self.rootViewController = rootViewController
+        self.stores = stores
         self.loginCoordinator = {
             if stores.sessionManager.defaultSite?.isJetpackConnected == true {
                 return nil // no need to connect WPCom
@@ -19,23 +21,30 @@ final class WooPushNotificationSetupCoordinator {
                 title: Localization.flowTitle,
                 flow: .notificationSetup,
                 navigationController: UINavigationController(),
-                completionHandler: { credentials in
+                completionHandler: { [weak self] credentials in
                     // TODO: use credentials for Jetpack connection flow.
                     // Consider reusing JetpackSetupViewModel
                     // Also check JetpackSetupHostingController for more details on what the credentials are for.
+
                     DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
+                    DispatchQueue.main.async {
+                        self?.showConnectionSetup()
+                    }
             })
         }()
     }
 
     func start() {
         guard let loginCoordinator else {
-            // TODO: start plugin check
             DDLogDebug("📱 Site is connected to Jetpack, now checking plugin version...")
+            showConnectionSetup()
             return
         }
+
+        // Capture the presenting view controller before dismissing
+        let presentingVC = rootViewController.presentingViewController
         rootViewController.dismiss(animated: true) {
-            self.rootViewController.present(loginCoordinator.navigationController, animated: true)
+            presentingVC?.present(loginCoordinator.navigationController, animated: true)
             loginCoordinator.startWithoutEmail()
         }
     }
@@ -67,6 +76,26 @@ private extension WooPushNotificationSetupCoordinator {
         static let magicLinkUrlHostname = "magic-login"
     }
 
+    /// Returns the navigation controller to use for presenting the connection setup view.
+    var currentNavigationController: UINavigationController? {
+        loginCoordinator?.navigationController ?? (rootViewController as? UINavigationController)
+    }
+
+    func showConnectionSetup() {
+        let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
+        let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak self] in
+            self?.dismissFlow()
+        })
+        let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
+        currentNavigationController?.pushViewController(connectionSetupController, animated: true)
+    }
+
+    func dismissFlow() {
+        currentNavigationController?.dismiss(animated: true)
+    }
+}
+
+private extension WooPushNotificationSetupCoordinator {
     enum Localization {
         static let flowTitle = NSLocalizedString(
             "wooPushNotificationSetupCoordinator.flowTitle",

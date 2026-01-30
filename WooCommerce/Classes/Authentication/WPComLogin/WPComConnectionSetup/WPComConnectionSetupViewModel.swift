@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-class WPComConnectionSetupViewModel: ObservableObject {
+final class WPComConnectionSetupViewModel: ObservableObject {
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
 
@@ -15,9 +15,11 @@ class WPComConnectionSetupViewModel: ObservableObject {
     let subtitleAttributedString: AttributedString
 
     private let storeName: String
+    private let onDismiss: () -> Void
 
-    init(storeName: String) {
+    init(storeName: String, onDismiss: @escaping () -> Void = {}) {
         self.storeName = storeName
+        self.onDismiss = onDismiss
         self.subtitleAttributedString = {
             let content = String.localizedStringWithFormat(Localization.subtitle, storeName)
             var attributedText = AttributedString(content)
@@ -43,6 +45,10 @@ class WPComConnectionSetupViewModel: ObservableObject {
 
     }
 
+    func cancelTapped() {
+        onDismiss()
+    }
+
     private func setInitialState() {
         steps = [
             WPComConnectionSetupStep(title: Localization.connectStoreStep, status: .running),
@@ -56,7 +62,7 @@ class WPComConnectionSetupViewModel: ObservableObject {
     }
 }
 
-extension WPComConnectionSetupViewModel {
+private extension WPComConnectionSetupViewModel {
     enum Localization {
         static let subtitle = NSLocalizedString(
             "wpComConnectionSetupViewModel.subtitle",

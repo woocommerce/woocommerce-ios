@@ -894,6 +894,41 @@ struct POSCatalogPersistenceServiceTests {
             #expect(products.first?.id == 100)
         }
     }
+
+    // MARK: - FTS Index Rebuild Tests
+
+    @Test func replaceAllCatalogData_rebuilds_fts_index() async throws {
+        // Given - product with valid productTypeKey and statusKey for FTS indexing
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Coffee Beans", productTypeKey: "simple", statusKey: "publish")
+        let catalog = POSCatalog(products: [product], variations: [], syncDate: .now)
+
+        // When
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        let indexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(indexCount == 1)
+    }
+
+    @Test func persistIncrementalCatalogData_rebuilds_fts_index() async throws {
+        // Given - products with valid productTypeKey and statusKey for FTS indexing
+        let product1 = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Coffee", productTypeKey: "simple", statusKey: "publish")
+        let initialCatalog = POSCatalog(products: [product1], variations: [], syncDate: .now)
+        try await sut.replaceAllCatalogData(initialCatalog, siteID: sampleSiteID)
+
+        // When
+        let product2 = POSProduct.fake().copy(siteID: sampleSiteID, productID: 2, name: "Tea", productTypeKey: "simple", statusKey: "publish")
+        let incrementalCatalog = POSCatalog(products: [product2], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(incrementalCatalog, siteID: sampleSiteID)
+
+        // Then
+        let indexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(indexCount == 2)
+    }
 }
 
 private extension POSCatalogPersistenceServiceTests {

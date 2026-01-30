@@ -505,4 +505,33 @@ struct POSSearchIndexBuilderTests {
         #expect(needsRebuild == false)
     }
 
+    // MARK: - removeFromIndex Tests
+
+    @Test("removeFromIndex removes specific item from FTS index")
+    func test_removeFromIndex_removes_specific_item() async throws {
+        // Given: Two products in the FTS index
+        try await grdbManager.databaseConnection.write { db in
+            try insertProduct(id: 2000, name: "Product One", productTypeKey: "simple", in: db)
+            try insertProduct(id: 2001, name: "Product Two", productTypeKey: "simple", in: db)
+        }
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+
+        // Verify both are searchable
+        let beforeResults = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "Product", in: db)
+        }
+        #expect(beforeResults.count == 2)
+
+        // When: Remove one product from index
+        try await grdbManager.databaseConnection.write { db in
+            try POSSearchIndexBuilder.removeFromIndex(itemID: 2000, itemType: .product, siteID: siteID, in: db)
+        }
+
+        // Then: Only the other product is searchable
+        let afterResults = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "Product", in: db)
+        }
+        #expect(afterResults.count == 1)
+        #expect(afterResults.first?.itemID == 2001)
+    }
 }

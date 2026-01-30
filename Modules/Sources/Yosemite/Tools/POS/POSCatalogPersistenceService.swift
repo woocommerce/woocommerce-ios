@@ -3,7 +3,7 @@ import Foundation
 import Storage
 import GRDB
 
-protocol POSCatalogPersistenceServiceProtocol {
+public protocol POSCatalogPersistenceServiceProtocol {
     /// Clears existing data and persists new catalog data
     /// - Parameters:
     ///   - catalog: The catalog to persist
@@ -24,39 +24,53 @@ protocol POSCatalogPersistenceServiceProtocol {
     func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
 }
 
-final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
+public final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     private let grdbManager: GRDBManagerProtocol
 
-    init(grdbManager: GRDBManagerProtocol) {
+    public init(grdbManager: GRDBManagerProtocol) {
         self.grdbManager = grdbManager
     }
 
-    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+    public func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
         let catalog = filterOrphanedVariations(from: catalog)
 
         try await grdbManager.databaseConnection.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
+
+            try POSSearchIndexBuilder.clearIndex(for: siteID, in: db)
+
             try PersistedSite.deleteOne(db, key: siteID)
 
             let site = PersistedSite(id: siteID, lastCatalogFullSyncDate: catalog.syncDate)
             try site.insert(db)
 
+            let productNameLookup = Dictionary(uniqueKeysWithValues: catalog.products.map { ($0.productID, $0.name) })
+            let variationAttributesLookup = Dictionary(grouping: catalog.variationAttributesToPersist) { $0.productVariationID }
+
             for product in catalog.productsToPersist {
                 try product.insert(db, onConflict: .replace)
+                // Filters by eligibility internally
+                try POSSearchIndexBuilder.indexProduct(product, siteID: siteID, in: db)
             }
 
             for variation in catalog.variationsToPersist {
                 try variation.insert(db, onConflict: .replace)
+                let parentName = productNameLookup[variation.productID]
+                let attributes = variationAttributesLookup[variation.id]?.map { $0.option } ?? []
+                try POSSearchIndexBuilder.indexVariation(variation,
+                                                         parentProductName: parentName,
+                                                         attributes: attributes,
+                                                         siteID: siteID,
+                                                         in: db)
             }
 
-            // Insert actual image data first (shared by products and variations)
+            // Insert images
             for image in catalog.imagesToPersist {
                 try image.insert(db, onConflict: .replace)
             }
 
-            // Then insert join table entries
             for productImage in catalog.productImagesToPersist {
                 try productImage.insert(db, onConflict: .replace)
             }
@@ -65,6 +79,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                 try variationImage.insert(db, onConflict: .replace)
             }
 
+            // Insert attributes
             for var attribute in catalog.productAttributesToPersist {
                 try attribute.insert(db)
             }
@@ -74,35 +89,41 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             }
         }
 
-        DDLogInfo("✅ Catalog persistence complete")
+        DDLogInfo("✅ Catalog persistence complete with inline FTS indexing")
 
         try await grdbManager.databaseConnection.read { db in
             let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
-            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
-            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
             let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
-            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
-            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
-
-            DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
-                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
-                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
+            let indexCount = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [siteID]) ?? 0
+            DDLogInfo("Persisted \(productCount) products, \(variationCount) variations, \(indexCount) FTS entries")
         }
     }
 
-    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+    public func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) updated products, " +
                   "\(catalog.variations.count) updated variations, " +
                   "\(catalog.productsToRemove.count) products to remove")
 
+        let productNameLookup = Dictionary(uniqueKeysWithValues: catalog.products.map { ($0.productID, $0.name) })
+        let variationAttributesLookup = Dictionary(grouping: catalog.variationAttributesToPersist) { $0.productVariationID }
+
         try await grdbManager.databaseConnection.write { db in
             for product in catalog.products {
-                // Delete attributes for updated products, the remaining set will be recreated later in the save
+                // Remove old FTS entry before updating
+                try POSSearchIndexBuilder.removeFromIndex(itemID: product.productID,
+                                                          itemType: .product,
+                                                          siteID: siteID,
+                                                          in: db)
+
+                // Delete attributes for updated products
                 try PersistedProductAttribute
                     .filter(PersistedProductAttribute.Columns.productID == product.productID)
                     .deleteAll(db)
 
-                try PersistedProduct(from: product).save(db)
+                let persistedProduct = PersistedProduct(from: product)
+                try persistedProduct.save(db)
+
+                try POSSearchIndexBuilder.indexProduct(persistedProduct, siteID: siteID, in: db)
 
                 // Delete variations that are no longer associated with this product
                 let existingVariations = try PersistedProductVariation
@@ -112,26 +133,43 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
 
                 for variation in existingVariations {
                     if !product.variationIDs.contains(variation.id) {
+                        try POSSearchIndexBuilder.removeFromIndex(itemID: variation.id,
+                                                                  itemType: .variation,
+                                                                  siteID: siteID,
+                                                                  in: db)
                         try variation.delete(db)
                     }
                 }
             }
 
             for variation in catalog.variationsToPersist {
-                // Delete attributes for updated variations, the remaining set will be recreated later in the save
+                // Remove old FTS entry before updating
+                try POSSearchIndexBuilder.removeFromIndex(itemID: variation.id,
+                                                          itemType: .variation,
+                                                          siteID: siteID,
+                                                          in: db)
+
+                // Delete attributes for updated variations
                 try PersistedProductVariationAttribute
                     .filter(PersistedProductVariationAttribute.Columns.productVariationID == variation.id)
                     .deleteAll(db)
 
                 try variation.save(db)
+
+                let parentName = productNameLookup[variation.productID]
+                let attributes = variationAttributesLookup[variation.id]?.map { $0.option } ?? []
+                try POSSearchIndexBuilder.indexVariation(variation,
+                                                         parentProductName: parentName,
+                                                         attributes: attributes,
+                                                         siteID: siteID,
+                                                         in: db)
             }
 
-            // Upsert actual image data (shared by products and variations)
+            // Upsert images
             for image in catalog.imagesToPersist {
                 try image.save(db)
             }
 
-            // Upsert new join table entries
             for image in catalog.productImagesToPersist {
                 try image.save(db)
             }
@@ -140,6 +178,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                 try image.save(db)
             }
 
+            // Insert attributes
             for var attribute in catalog.productAttributesToPersist {
                 try attribute.insert(db)
             }
@@ -152,34 +191,32 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             try site?.updateChanges(db) { $0.lastCatalogIncrementalSyncDate = catalog.syncDate }
         }
 
-        // Delete products hidden from POS when detected during incremental sync
-        // Variations are not tracked separately, they cascade delete in GRDB when their parent product is removed,
-        // so there is no need to pass their IDs here.
+        // Delete products hidden from POS (FTS entries removed inline via deleteProducts)
         if !catalog.productsToRemove.isEmpty {
             try await deleteProducts(catalog.productsToRemove, variationIDs: [], siteID: siteID)
         }
 
-        DDLogInfo("✅ Incremental catalog persistence complete")
-
-        try await grdbManager.databaseConnection.read { db in
-            let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
-            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
-            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
-            let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
-            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
-            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
-
-            DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
-                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
-                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
-        }
+        DDLogInfo("✅ Incremental catalog persistence complete with inline FTS updates")
     }
 
-    func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+    public func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
         DDLogInfo("🗑️ Deleting \(productIDs.count) products and \(variationIDs.count) variations from catalog")
 
         try await grdbManager.databaseConnection.write { db in
-            // Batch delete products using filter
+            for productID in productIDs {
+                try POSSearchIndexBuilder.removeFromIndex(itemID: productID,
+                                                          itemType: .product,
+                                                          siteID: siteID,
+                                                          in: db)
+            }
+
+            for variationID in variationIDs {
+                try POSSearchIndexBuilder.removeFromIndex(itemID: variationID,
+                                                          itemType: .variation,
+                                                          siteID: siteID,
+                                                          in: db)
+            }
+
             if !productIDs.isEmpty {
                 let deletedProductsCount = try PersistedProduct
                     .filter(PersistedProduct.Columns.siteID == siteID)
@@ -188,7 +225,6 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                 DDLogInfo("Deleted \(deletedProductsCount) products from catalog")
             }
 
-            // Batch delete variations using filter
             if !variationIDs.isEmpty {
                 let deletedVariationsCount = try PersistedProductVariation
                     .filter(PersistedProductVariation.Columns.siteID == siteID)

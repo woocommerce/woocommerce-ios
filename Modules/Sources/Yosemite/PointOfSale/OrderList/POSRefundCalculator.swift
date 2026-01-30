@@ -82,13 +82,13 @@ private extension POSRefundCalculator {
         groupedItems.compactMap { itemID, items -> POSRefundRequestItem? in
             guard items.first != nil else { return nil }
 
-            let quantity = items.count
+            let quantityToRefund = items.count
             let refundTotal = calculateRefundTotal(for: items, numberOfDecimals: numberOfDecimals)
             let refundTax = calculateRefundTax(for: items, numberOfDecimals: numberOfDecimals)
 
             return POSRefundRequestItem(
                 itemID: itemID,
-                quantity: quantity,
+                quantity: quantityToRefund,
                 refundTotal: refundTotal,
                 refundTax: refundTax
             )

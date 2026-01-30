@@ -103,10 +103,30 @@ private extension ReportList {
 struct ReportList_Previews: PreviewProvider {
     static var previews: some View {
         ReportList(viewModel: WhatsNewViewModel(items: [
-            ReportItem(title: "feature 1", subtitle: "subtitle 1", icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!), learnMoreURL: nil),
-            ReportItem(title: "feature 2", subtitle: "subtitle 2", icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!), learnMoreURL: nil),
-            ReportItem(title: "feature 3", subtitle: "subtitle 3", icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!), learnMoreURL: nil),
-            ReportItem(title: "feature 4", subtitle: "subtitle 4", icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!), learnMoreURL: nil)
+            ReportItem(
+                title: "feature 1",
+                subtitle: "subtitle 1",
+                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                learnMoreURL: nil
+            ),
+            ReportItem(
+                title: "feature 2",
+                subtitle: "subtitle 2",
+                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                learnMoreURL: nil
+            ),
+            ReportItem(
+                title: "feature 3",
+                subtitle: "subtitle 3",
+                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                learnMoreURL: nil
+            ),
+            ReportItem(
+                title: "feature 4",
+                subtitle: "subtitle 4",
+                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                learnMoreURL: nil
+            )
         ], onDismiss: {}))
     }
 }

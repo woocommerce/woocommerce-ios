@@ -1,37 +1,70 @@
 import SwiftUI
 
 struct WPComConnectionSetupView: View {
+    @ObservedObject var viewModel: WPComConnectionSetupViewModel
+
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-            ConnectWPComHeaderView()                // title and description
-            VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+        VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+            ConnectWPComHeaderView()
+            VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
                 Text(Localization.title)
                     .largeTitleStyle()
                     .bold()
-                Text(Localization.subtitle)
-                    .bodyStyle()
+                Text(viewModel.subtitleAttributedString)
             }
 
             ScrollView {
-
+                VStack(alignment: .leading, spacing: Constants.stepsVerticalSpacing) {
+                    ForEach(viewModel.steps) { step in
+                        WPComConnectionSetupStepView(step: step)
+                    }
+                }
             }
+
+            Spacer()
+
+            footer
+        }
+        .padding(Constants.contentPadding)
+        .onAppear() {
+            viewModel.onAppear()
+        }
+    }
+
+
+    @ViewBuilder var footer: some View {
+        VStack {
+            Button(viewModel.primaryButtonTitle) {
+                viewModel.primaryButtonTapped()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
+            .disabled(!viewModel.isPrimaryButtonEnabled)
+
+            Button(viewModel.secondaryButtonTitle) {
+                viewModel.secondaryButtonTapped()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
+            .renderedIf(viewModel.isShowingSecondaryButton)
         }
     }
 }
 
 private extension WPComConnectionSetupView {
     enum Constants {
-        static let blockVerticalPadding: CGFloat = 32
-        static let contentVerticalSpacing: CGFloat = 8
+        static let contentVerticalSpacing: CGFloat = 32
+        static let stepsVerticalSpacing: CGFloat = 32
+        static let headerVerticalSpacing: CGFloat = 24
         static let contentPadding: CGFloat = 16
     }
 
     enum Localization {
         static let title: String = "Connect to WordPress.com"
-        static let subtitle: String = "Please wait while we finalize connecting your store coffeebeans.com to your WordPress.com account."
     }
 }
 
 #Preview {
-    WPComConnectionSetupView()
+    let viewModel = WPComConnectionSetupViewModel(storeName: "coffeebeans.com")
+    WPComConnectionSetupView(viewModel: viewModel)
 }

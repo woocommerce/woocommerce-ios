@@ -1,31 +1,14 @@
 import SwiftUI
 
 struct WPComConnectionSetupStepView: View {
-    enum Status {
-        case notStarted
-        case running
-        case success
-        case failure(reason: String)
-
-        var iconStatus: StatusIcon.Status {
-            switch self {
-            case .notStarted: return .notStarted
-            case .running: return .running
-            case .success: return .success
-            case .failure: return .failure
-            }
-        }
-    }
-
-    let title: String
-    let status: Status
+    let step: WPComConnectionSetupStep
 
     var body: some View {
         HStack(alignment: .center, spacing: Constants.horizontalSpacing) {
-            StatusIcon(status: status.iconStatus)
+            StatusIcon(status: step.status.iconStatus)
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
             VStack(alignment: .leading, spacing: Constants.detailVerticalSpacing) {
-                Text(title)
+                Text(step.title)
                     .font(.body)
                     .bold()
 
@@ -37,7 +20,7 @@ struct WPComConnectionSetupStepView: View {
 
     @ViewBuilder
     fileprivate var detail: some View {
-        switch status {
+        switch step.status {
         case .notStarted:
             Text(Localization.notStarted)
                 .foregroundStyle(Color.secondary)
@@ -50,6 +33,17 @@ struct WPComConnectionSetupStepView: View {
         case .failure(reason: let reason):
             Text(reason)
                 .foregroundColor(Color(uiColor: .error))
+        }
+    }
+}
+
+private extension WPComConnectionSetupStep.Status {
+    var iconStatus: StatusIcon.Status {
+        switch self {
+        case .notStarted: return .notStarted
+        case .running: return .running
+        case .success: return .success
+        case .failure: return .failure
         }
     }
 }
@@ -83,9 +77,9 @@ private extension WPComConnectionSetupStepView {
 #Preview {
     let title = "Connect store to WordPress.com"
     VStack(alignment: .leading, spacing: 16) {
-        WPComConnectionSetupStepView(title: title, status: .notStarted)
-        WPComConnectionSetupStepView(title: title, status: .running)
-        WPComConnectionSetupStepView(title: title, status: .success)
-        WPComConnectionSetupStepView(title: title, status: .failure(reason: "Your current WooCommerce plugin version 10.3.4 needs updating"))
+        WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .notStarted))
+        WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .running))
+        WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .success))
+        WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .failure(reason: "Your current WooCommerce plugin version 10.3.4 needs updating")))
     }
 }

@@ -432,25 +432,28 @@ private extension POSOrderDetailsView {
     }
 
     var availableActionsSetup: OrderDetailsActionsSetup {
-        guard order.status == .completed else {
-            return .init(primary: nil, secondary: [])
-        }
-
         let email: OrderDetailsAction = .emailReceipt
 
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
+        switch order.status {
+        case .refunded:
             return .init(primary: email, secondary: [])
-        }
+        case .completed:
+            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
+                return .init(primary: email, secondary: [])
+            }
 
-        switch orderListModel.ordersController.refundActionAvailability {
-        case .available:
-            return .init(primary: .issueRefund, secondary: [email])
+            switch orderListModel.ordersController.refundActionAvailability {
+            case .available:
+                return .init(primary: .issueRefund, secondary: [email])
 
-        case .unavailable:
-            return .init(primary: email, secondary: [])
+            case .unavailable:
+                return .init(primary: email, secondary: [])
 
-        case .unknown:
-            return .init(primary: nil, secondary: [email])
+            case .unknown:
+                return .init(primary: nil, secondary: [email])
+            }
+        default:
+            return .init(primary: nil, secondary: [])
         }
     }
 

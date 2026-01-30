@@ -105,6 +105,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let defaults: UserDefaults
+    private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -117,11 +118,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
+        self.pushNotesManager = pushNotesManager
         self.analytics = analytics
 
         /// Initialize Sites Results Controller
@@ -210,7 +213,7 @@ private extension SettingsViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        defaults.publisher(for: \.siteIDsRegisteredForWooPushNotifications)
+        pushNotesManager.siteIDsRegisteredForWooPNsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.reloadSettings()
@@ -310,7 +313,7 @@ private extension SettingsViewModel {
                     return false
                 }
                 return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
-                defaults.siteIDsRegisteredForWooPushNotifications?.contains(siteID) == true
+                pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
@@ -389,7 +392,7 @@ private extension SettingsViewModel {
             return false
         }
 
-        return defaults.siteIDsRegisteredForWooPushNotifications?.contains(siteID) != true
+        return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false
     }
 
     /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage

@@ -241,7 +241,7 @@ private extension POSCatalogFullSyncService {
                     throw POSCatalogSyncError.invalidData
                 }
                 return downloadURL
-            case .scheduled, .processing:
+            case .scheduled, .inProgress:
                 // Only logs every 10th attempt to avoid flooding logs for large catalogs.
                 if attempts % 10 == 0 {
                     DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")

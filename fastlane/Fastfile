@@ -329,7 +329,7 @@ platform :ios do
   #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_app_store_strings do |options|
-    source_metadata_folder = File.join(FASTLANE_DIR, 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(FASTLANE_METADATA_FOLDER, 'default')
 
     # Translator comments for App Store metadata
     screenshot_comment = <<~COMMENT.chomp
@@ -356,7 +356,7 @@ platform :ios do
         COMMENT
       },
       'app_store_promo_text' => {
-        path: File.join(source_metadata_folder, 'app_store_promo_text.txt'),
+        path: File.join(source_metadata_folder, 'promotional_text.txt'),
         comment: <<~COMMENT.chomp
           translators: Multi-paragraph text used to display in the Apple App Store.
           Limit to 170 characters including spaces and commas.
@@ -366,7 +366,7 @@ platform :ios do
         [
           "app_store_screenshot-#{i}",
           {
-            path: File.join(source_metadata_folder, "promo_screenshot_#{i}.txt"),
+            path: File.join(source_metadata_folder, "app_store_screenshot_#{i}.txt"),
             comment: screenshot_comment
           }
         ]
@@ -1071,13 +1071,11 @@ platform :ios do
 
   desc 'Downloads localized metadata for App Store Connect from GlotPress'
   lane :download_localized_metadata_from_glotpress do
-    metadata_directory = FASTLANE_METADATA_FOLDER
-
     # FIXME: We should make the `fastlane/metadata/default/release_notes.txt` path be the source of truth for the original copies in the future.
     # (will require changes in the `update_app_store_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
     #
     # In the meantime, just copy the file to the right place for `deliver` to find, i.e. to the `default` pseudo-locale which is used as fallback
-    FileUtils.cp(RELEASE_NOTES_PATH, File.join(metadata_directory, 'default', 'release_notes.txt'))
+    FileUtils.cp(RELEASE_NOTES_PATH, File.join(FASTLANE_METADATA_FOLDER, 'default', 'release_notes.txt'))
 
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
@@ -1086,31 +1084,44 @@ platform :ios do
       app_store_name: { desc: 'name.txt', max_size: 30 },
       app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
       app_store_desc: { desc: 'description.txt', max_size: 4000 },
-      app_store_keywords: { desc: 'keywords.txt', max_size: 100 }
+      app_store_keywords: { desc: 'keywords.txt', max_size: 100 },
+      app_store_promo_text: { desc: 'promotional_text.txt', max_size: 170 },
+      **(1..8).to_h do |i|
+        [
+          # Notice the GlotPress key finishes with -#{i} while the file here with _#{i}
+          :"app_store_screenshot-#{i}",
+          { desc: "app_store_screenshot_#{i}.txt" }
+        ]
+      end
     }
 
     gp_downloadmetadata(
       project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
       target_files: target_files,
       locales: locales_map,
-      download_path: metadata_directory
+      download_path: FASTLANE_METADATA_FOLDER
     )
-    files_to_commit = [File.join(metadata_directory, '**', '*.txt')]
+    files_to_commit = [File.join(FASTLANE_METADATA_FOLDER, '**', '*.txt')]
 
     # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
+    source_of_truth_subfolder = 'default'
+    source_of_truth_path = File.join(FASTLANE_METADATA_FOLDER, source_of_truth_subfolder)
     unless ALLOW_EN_US_METADATA_TO_DIFFER_FROM_DEFAULT_LOCALE
       target_files.values.map { |h| h[:desc] }.each do |file|
-        en_file_path = File.join(metadata_directory, 'en-US', file)
-        if File.exist?(en_file_path)
-          UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
-                         + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.")
-        end
+        en_file_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US', file)
+
+        next unless File.exist?(en_file_path)
+
+        UI.user_error!(<<~MSG)
+          File `#{en_file_path}` would override the same one in `#{source_of_truth_path}`, but `#{source_of_truth_subfolder}/` is the source of truth. \
+          Delete the `#{en_file_path}` file, ensure the `#{source_of_truth_subfolder}/` one has the expected original copy, and try again.
+        MSG
       end
     end
 
     # Ensure even empty locale folders have an empty `.gitkeep` file (in case we don't have any translation at all ready for some locales)
     locales_map.each_value do |locale|
-      gitkeep = File.join(metadata_directory, locale, '.gitkeep')
+      gitkeep = File.join(FASTLANE_METADATA_FOLDER, locale, '.gitkeep')
       next if File.exist?(gitkeep)
 
       FileUtils.mkdir_p(File.dirname(gitkeep))
@@ -1130,63 +1141,6 @@ platform :ios do
     )
   end
 
-  desc 'Download App Store Translations'
-  lane :download_app_store_translations do
-    # FIXME: `download_localized_metadata_from_glotpress` makes this lane almost redundant,
-    # but we need to carefully adjust the screenshots metadata locations to complete the process.
-    # See https://github.com/woocommerce/woocommerce-ios/issues/6987
-    files = {
-
-      # Metadata fields
-      'app_store_name' => { desc: 'name.txt' },
-      'app_store_desc' => { desc: 'description.txt' },
-      'app_store_keywords' => { desc: 'keywords.txt' },
-      'app_store_subtitle' => { desc: 'subtitle.txt' },
-      'app_store_promo_text' => { desc: 'promotional_text.txt' },
-      "v#{release_version_current}-whats-new" => { desc: 'whats_new.txt' },
-
-      # Screenshots
-      'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
-      'app_store_screenshot-2' => { desc: 'app_store_screenshot_2.txt' },
-      'app_store_screenshot-3' => { desc: 'app_store_screenshot_3.txt' },
-      'app_store_screenshot-4' => { desc: 'app_store_screenshot_4.txt' },
-      'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' },
-      'app_store_screenshot-6' => { desc: 'app_store_screenshot_6.txt' },
-      'app_store_screenshot-7' => { desc: 'app_store_screenshot_7.txt' },
-      'app_store_screenshot-8' => { desc: 'app_store_screenshot_8.txt' }
-    }
-
-    metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
-
-    gp_downloadmetadata(
-      project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      target_files: files,
-      locales: metadata_locales,
-      source_locale: 'en-US',
-      download_path: FASTLANE_METADATA_FOLDER
-    )
-
-    # Copy appstoreres (screenshot-related) txt files into `en-US`
-    en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
-    FileUtils.mkdir_p(en_us_path)
-
-    [
-      'promo_screenshot_1.txt',
-      'promo_screenshot_2.txt',
-      'promo_screenshot_3.txt',
-      'promo_screenshot_4.txt',
-      'promo_screenshot_5.txt'
-    ].each do |filename|
-      source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-      destination = File.join(en_us_path, filename.gsub('promo_', 'app_store_'))
-      FileUtils.cp(source, destination)
-    end
-
-    # Never store review information (it contains passwords and PII)
-    review_info_path = File.join(Dir.pwd, 'metadata', 'review_information')
-    FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
-  end
-
   desc 'Create Promo Screenshots'
   lane :create_promo_screenshots do |options|
     unless Fastlane::Helper::GitHelper.has_git_lfs?
@@ -1196,16 +1150,57 @@ platform :ios do
     # Create a copy of the files to work with – this ensures that if we're doing multiple
     # screenshot generation tasks close together, we can keep reusing the same source files
     original_screenshot_directory = File.join(Dir.pwd, 'screenshots')
-    metadata_directory = File.join(Dir.pwd, 'metadata')
-    output_directory = File.join(Dir.pwd, '/promo_screenshots')
+    output_directory = File.join(Dir.pwd, 'promo_screenshots')
 
-    # Run screenshots generator tool
-    promo_screenshots(
-      orig_folder: original_screenshot_directory,
-      metadata_folder: metadata_directory,
-      output_folder: output_directory,
-      force: options[:force]
-    )
+    # WORKAROUND: The `promo_screenshots` action from `release-toolkit` computes
+    # which languages to process by intersecting folders in `orig_folder` and `metadata_folder`.
+    # It does NOT support Fastlane's `default/` fallback mechanism for missing locale files.
+    #
+    # Our setup uses `fastlane/metadata/default/` as the source of truth for en-US content,
+    # only adding files to `fastlane/metadata/en-US/` when translations should differ.
+    #
+    # To work around this, we temporarily copy any `app_store_screenshot_*.txt` file that is
+    # in `default/` but not in `en-US/` (meaning it has no specific `en-US` override) to `en-US/`
+    # before running the action, then clean up afterward.
+    #
+    # See: https://github.com/wordpress-mobile/release-toolkit/blob/3bdede7f0f55539dced3d3e95e18de63fb32852c/lib/fastlane/plugin/wpmreleasetoolkit/actions/common/promo_screenshots_action.rb#L10
+    # Related: paaHJt-31O-p2
+    default_path = File.join(FASTLANE_METADATA_FOLDER, 'default')
+    en_us_path = File.join(FASTLANE_METADATA_FOLDER, 'en-US')
+
+    files_to_copy = Dir.glob(File.join(default_path, 'app_store_screenshot_*.txt')).filter_map do |default_file|
+      en_us_file = File.join(en_us_path, File.basename(default_file))
+      { source: default_file, destination: en_us_file } unless File.exist?(en_us_file)
+    end
+
+    unless files_to_copy.empty?
+      UI.message(<<~MSG)
+        Ensuring en-US sources are available because promo_screenshots does not fallback to default.
+        These should be automatically delete after completion to avoid repo noise...
+      MSG
+
+      files_to_copy.each do |f|
+        UI.message("Copying #{f[:source]} to #{f[:destination]}...")
+        FileUtils.cp(f[:source], f[:destination])
+      end
+
+      UI.message('Done')
+    end
+
+    begin
+      promo_screenshots(
+        orig_folder: original_screenshot_directory,
+        metadata_folder: FASTLANE_METADATA_FOLDER,
+        output_folder: output_directory,
+        force: options[:force]
+      )
+    ensure
+      next if files_to_copy.empty?
+
+      UI.message('Deleting any en-US screenshot title previously copied from default folder...')
+      files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
+      UI.message('Done')
+    end
   end
 
   ########################################################################

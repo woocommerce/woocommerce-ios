@@ -473,17 +473,48 @@ public struct POSCatalogRequestResponse: Decodable {
     public let status: POSCatalogStatus
     /// Download URL when it is already available.
     public let downloadURL: String?
+    /// Timestamp when the job was scheduled.
+    public let scheduledAt: String?
+    /// Timestamp when the job completed.
+    public let completedAt: String?
+    /// Progress percentage (0-100)
+    public let progress: Int?
+    /// Number of items processed so far
+    public let processed: Int?
+    /// Total number of items to process
+    public let total: Int?
 
     private enum CodingKeys: String, CodingKey {
         case status = "state"
         case downloadURL = "url"
+        case scheduledAt = "scheduled_at"
+        case completedAt = "completed_at"
+        case progress
+        case processed
+        case total
+    }
+
+    public init(status: POSCatalogStatus,
+                downloadURL: String? = nil,
+                scheduledAt: String? = nil,
+                completedAt: String? = nil,
+                progress: Int? = nil,
+                processed: Int? = nil,
+                total: Int? = nil) {
+        self.status = status
+        self.downloadURL = downloadURL
+        self.scheduledAt = scheduledAt
+        self.completedAt = completedAt
+        self.progress = progress
+        self.processed = processed
+        self.total = total
     }
 }
 
 /// Catalog generation status.
 public enum POSCatalogStatus: String, Decodable {
     case scheduled
-    case processing
+    case inProgress = "in_progress"
     case completed
     case failed
 }

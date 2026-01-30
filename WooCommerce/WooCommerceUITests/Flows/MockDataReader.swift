@@ -26,14 +26,15 @@ class GetMocks {
         "external": "products_add_new_external_2132"
     ]
 
-    static func getMockData(filename: String) -> Data {
-        try! APIMocks.loadMockData(filename: filename)
+    static func decode<T: Decodable>(_ type: T.Type, from filename: String) throws -> T {
+        let data = try APIMocks.loadMockData(filename: filename)
+        return try JSONDecoder().decode(type, from: data)
     }
 
     // All "readScreenData()" methods are intentionally separated. Not a common method because it could end up being one with a long list of
     // parameters (almost every line is a different value) with different return types.
     static func readProductsData() throws -> [ProductData] {
-        let originalData = try JSONDecoder().decode(ProductMock.self, from: getMockData(filename: "products"))
+        let originalData = try decode(ProductMock.self, from: "products")
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
@@ -46,13 +47,13 @@ class GetMocks {
     }
 
     static func readNewProductData(productType: String) throws -> ProductData {
-        let originalData = try JSONDecoder().decode(NewProductMock.self, from: getMockData(filename: file[productType]!))
+        let originalData = try decode(NewProductMock.self, from: file[productType]!)
 
         return try XCTUnwrap(originalData.response.jsonBody.data)
     }
 
     static func readReviewsData() throws -> [ReviewData] {
-        let originalData = try JSONDecoder().decode(ReviewMock.self, from: getMockData(filename: "products_reviews_all"))
+        let originalData = try decode(ReviewMock.self, from: "products_reviews_all")
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
@@ -65,7 +66,7 @@ class GetMocks {
     }
 
     static func readOrdersData() throws -> [OrderData] {
-        let originalData = try JSONDecoder().decode(OrdersMock.self, from: getMockData(filename: "orders_any"))
+        let originalData = try decode(OrdersMock.self, from: "orders_any")
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
@@ -82,7 +83,7 @@ class GetMocks {
     }
 
     static func readSingleOrderData() throws -> OrderData {
-        let originalData = try JSONDecoder().decode(OrderMock.self, from: getMockData(filename: "orders_3337"))
+        let originalData = try decode(OrderMock.self, from: "orders_3337")
         return try XCTUnwrap(originalData.response.jsonBody.data)
     }
 }

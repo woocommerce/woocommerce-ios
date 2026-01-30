@@ -108,10 +108,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         let items = request.items.map { item in
             let refundQuantity = Decimal(-item.quantity)
             let refundTotal = formatDecimalForAPI(-item.refundTotal, numberOfDecimals: numberOfDecimals)
-            let refundTaxes: [OrderItemTaxRefund] = item.refundTax > 0 ?
-            [OrderItemTaxRefund(taxID: 0,
-                                subtotal: "",
-                                total: formatDecimalForAPI(item.refundTax, numberOfDecimals: numberOfDecimals))] : []
+            let refundTaxes = buildRefundTaxes(for: item.refundTax, numberOfDecimals: numberOfDecimals)
 
             return OrderItemRefund(
                 itemID: item.itemID,
@@ -154,6 +151,13 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         formatter.groupingSeparator = ""
         formatter.decimalSeparator = "."
         return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
+    }
+
+    private func buildRefundTaxes(for refundTax: Decimal, numberOfDecimals: Int) -> [OrderItemTaxRefund] {
+        guard refundTax > 0 else { return [] }
+        return [OrderItemTaxRefund(taxID: 0,
+                                   subtotal: "",
+                                   total: formatDecimalForAPI(refundTax, numberOfDecimals: numberOfDecimals))]
     }
 
     /// Checks if all ordered products have been fully refunded.

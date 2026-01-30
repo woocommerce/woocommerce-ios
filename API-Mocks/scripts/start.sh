@@ -25,6 +25,8 @@ if [ -n "${CI:-}" ]; then
     OUTPUT_REDIRECT="${BUILD_ARTIFACTS_DIR}/wiremock.txt"
     mkdir -p "$BUILD_ARTIFACTS_DIR"
 fi
-java -jar "${WIREMOCK_JAR}" --root-dir "${SCRIPT_DIR}/.." \
-                            --port "$PORT" \
-                            --global-response-templating > "$OUTPUT_REDIRECT" 2>&1
+
+java -jar "${WIREMOCK_JAR}" \
+  --root-dir "${SCRIPT_DIR}/../../Modules/Sources/APIMocks" \
+  --port "$PORT" \
+  --global-response-templating > "$OUTPUT_REDIRECT" 2>&1

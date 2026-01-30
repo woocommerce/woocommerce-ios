@@ -27,6 +27,6 @@ if [ -n "${CI:-}" ]; then
 fi
 
 java -jar "${WIREMOCK_JAR}" \
-  --root-dir "${SCRIPT_DIR}/../../Modules/Sources/APIMocks" \
+  --root-dir "${SCRIPT_DIR}/../../Modules/Sources/APIMocks/Resources" \
   --port "$PORT" \
   --global-response-templating > "$OUTPUT_REDIRECT" 2>&1

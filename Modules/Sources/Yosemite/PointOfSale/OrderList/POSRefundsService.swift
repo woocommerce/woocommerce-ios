@@ -35,7 +35,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
     init(siteID: Int64,
          refundsRemote: POSRefundsRemoteProtocol,
          paymentGatewayRemote: POSPaymentGatewayRemoteProtocol,
-         currencySettings: CurrencySettings = CurrencySettings(),
+         currencySettings: CurrencySettings,
          refundCalculator: POSRefundCalculating = POSRefundCalculator()) {
         self.siteID = siteID
         self.currencySettings = currencySettings

@@ -96,6 +96,13 @@ public extension PersistedProductVariation {
             .order(Columns.id)
     }
 
+    /// Returns a request for all non-downloadable variations for a site
+    static func posAllVariationsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return PersistedProductVariation
+            .filter(Columns.siteID == siteID)
+            .filter(Columns.downloadable == false)
+    }
+
     /// Searches for a POS-supported variation by global unique ID
     /// - Parameters:
     ///   - siteID: The site ID

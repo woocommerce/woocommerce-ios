@@ -84,9 +84,11 @@ final class FilterProductListViewModel: FilterListViewModel {
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     ///   - siteID: Current selected store's ID
+    ///   - site: Current selected store's Site instance, if available
     ///   - featureFlagService: Feature flag service
     init(filters: Filters,
          siteID: Int64,
+         site: Site? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -94,7 +96,13 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
-        self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters, storageManager: storageManager)
+        self.productTypeFilterViewModel = ProductListFilter
+            .productType(siteID: siteID)
+            .createViewModel(
+                filters: filters,
+                storageManager: storageManager,
+                site: site ?? stores.sessionManager.defaultSite
+            )
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
         self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
@@ -260,6 +268,7 @@ extension FilterProductListViewModel.ProductListFilter {
 extension FilterProductListViewModel.ProductListFilter {
     func createViewModel(filters: FilterProductListViewModel.Filters,
                          storageManager: StorageManagerType = ServiceLocator.storageManager,
+                         site: Site? = nil,
                          siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) -> FilterTypeViewModel {
         switch self {
         case .stockStatus:
@@ -275,6 +284,7 @@ extension FilterProductListViewModel.ProductListFilter {
         case let .productType(siteID):
             let options = buildPromotableTypes(
                 siteID: siteID,
+                site: site,
                 storageManager: storageManager,
                 siteCIABEligibilityChecker: siteCIABEligibilityChecker
             )
@@ -296,43 +306,58 @@ extension FilterProductListViewModel.ProductListFilter {
     ///
     private func buildPromotableTypes(
         siteID: Int64,
+        site: Site?,
         storageManager: StorageManagerType,
         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol,
     ) -> [PromotableProductType?] {
-        guard let site = fetchStorageSite(
-            siteID: siteID,
-            storageManager: storageManager
-        ) else {
-            assertionFailure("Failed to obtain current Site from local storage.")
-            return []
-        }
-
         let activePlugins = fetchActivePlugins(siteID: siteID, storageManager: storageManager)
         let isSubscriptionsAvailable = activePlugins.contains(.wooSubscriptions)
         let isCompositeProductsAvailable = activePlugins.contains(.wooCompositeProducts)
         let isProductBundlesAvailable = activePlugins.contains(.wooProductBundles)
 
-        let isVariableProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-            .variableProducts,
-            for: site
+        let isVariableProductVisible: Bool
+        let isGroupedProductVisible: Bool
+        let isBookableProductVisible: Bool
+        let isSubscriptionProductVisible: Bool
+        let isBundleProductVisible: Bool
+        let isCompositeProductVisible: Bool
+
+        let resolvedSite = site ?? fetchStorageSite(
+            siteID: siteID,
+            storageManager: storageManager
         )
-        let isGroupedProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-            .groupedProducts,
-            for: site
-        )
-        let isBookableProductVisible = siteCIABEligibilityChecker.isSiteCIAB(site)
-        let isSubscriptionProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-            .subscriptionProducts,
-            for: site
-        )
-        let isBundleProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-            .bundleProducts,
-            for: site
-        )
-        let isCompositeProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-            .compositeProducts,
-            for: site
-        )
+
+        if let site = resolvedSite {
+            isVariableProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
+                .variableProducts,
+                for: site
+            )
+            isGroupedProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
+                .groupedProducts,
+                for: site
+            )
+            isBookableProductVisible = siteCIABEligibilityChecker.isSiteCIAB(site)
+            isSubscriptionProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
+                .subscriptionProducts,
+                for: site
+            )
+            isBundleProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
+                .bundleProducts,
+                for: site
+            )
+            isCompositeProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
+                .compositeProducts,
+                for: site
+            )
+        } else {
+            /// Fallback positively if site is absent and there is no way to check CIAB eligibility
+            isVariableProductVisible = true
+            isGroupedProductVisible = true
+            isBookableProductVisible = true
+            isSubscriptionProductVisible = true
+            isBundleProductVisible = true
+            isCompositeProductVisible = true
+        }
 
         let productTypes: [PromotableProductType] = [
             .init(productType: .simple, isAvailable: true, promoteUrl: nil),

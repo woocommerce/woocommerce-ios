@@ -4,30 +4,61 @@ import protocol Yosemite.StoresManager
 import WordPressAuthenticator
 import WooFoundation
 
+enum WPComLoginFlow {
+    case notificationSetup
+    case jetpackSetup(requiresConnectionOnly: Bool)
+
+    var pendingAuthFlow: PendingAuthFlow {
+        switch self {
+        case .notificationSetup: .notificationSetup
+        case .jetpackSetup: .jetpackSetup
+        }
+    }
+}
+
 /// Coordinates navigation for the login flow with WPCom accounts.
 final class WPComLoginCoordinator {
+    let navigationController: UINavigationController
+
     /// Title to display on top of the login views
     private let title: String
 
-    /// Whether the view is part of the login step of the Jetpack setup flow.
-    private let isJetpackSetup: Bool
-    private let navigationController: UINavigationController
+    private let flow: WPComLoginFlow
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
-    private let completionHandler: () -> Void
+    private let completionHandler: (Credentials) -> Void
+
+    private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
+        .init(siteURL: stores.sessionManager.defaultSite?.url ?? "",
+              flow: flow,
+              allowAccountCreation: true,
+              accountService: accountService,
+              onPasswordUIRequest: showPasswordUIForLogin(email:),
+              onMagicLinkRequest: showMagicLinkRequestUI,
+              onMagicLinkSent: { [weak self] email, _ in self?.showMagicLinkSentUI(email: email) },
+              onError: { [weak self] message in
+            self?.showAlert(message: message)
+        })
+    }()
 
     init(title: String = Localization.login,
-         isJetpackSetup: Bool = false,
+         flow: WPComLoginFlow,
          navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
-         completionHandler: @escaping () -> Void) {
+         completionHandler: @escaping (Credentials) -> Void) {
         self.title = title
-        self.isJetpackSetup = isJetpackSetup
+        self.flow = flow
         self.navigationController = navigationController
         self.stores = stores
         self.accountService = accountService
         self.completionHandler = completionHandler
+    }
+
+    func startWithoutEmail() {
+        emailLoginViewModel.usernameOnly = false
+        let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
+        navigationController.show(emailLoginController, sender: self)
     }
 
     @MainActor
@@ -56,7 +87,7 @@ private extension WPComLoginCoordinator {
     func handleMagicLink(email: String) async {
         do {
             try await requestAuthenticationLink(email: email)
-            showMagicLinkForLogin(email: email)
+            showMagicLinkSentUI(email: email)
         } catch {
             showAlert(message: error.localizedDescription)
         }
@@ -77,11 +108,11 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                await self?.authenticateUserAndComplete(username: email, authToken: authToken)
+                self?.completeLogin(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             title: title,
-            isJetpackSetup: isJetpackSetup,
+            flow: flow,
             viewModel: viewModel)
         navigationController.show(viewController, sender: self)
     }
@@ -99,13 +130,28 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: error.errorMessage)
             },
             onLoginSuccess: { [weak self] authToken in
-                await self?.authenticateUserAndComplete(username: loginFields.username,
-                                                        authToken: authToken)
+                self?.completeLogin(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: title,
-                                                            isJetpackSetup: isJetpackSetup,
+                                                            flow: flow,
                                                             viewModel: viewModel)
         navigationController.show(viewController, sender: self)
+    }
+
+    func showMagicLinkRequestUI(email: String) {
+        let magicLinkRequestController = WPComMagicLinkRequestHostingController(
+            title: title,
+            flow: flow,
+            viewModel: .init(email: email,
+                             onMagicLinkSent: { [weak self] email in
+                                 self?.showMagicLinkSentUI(email: email)
+                             },
+                             onUseUsernamePassword: showWPComUsernameLogin,
+                             onError: { [weak self] message in
+                                 self?.showAlert(message: message)
+                             })
+        )
+        navigationController.show(magicLinkRequestController, sender: self)
     }
 
     /// Shows the UI saying magic link has been sent to the email address,
@@ -113,25 +159,33 @@ private extension WPComLoginCoordinator {
     /// We will be waiting for authentication request from the magic link in `AppDelegate` method for opening URL for deeplink.
     /// We're letting WPAuthenticator handle the deeplink for now.
     ///
-    func showMagicLinkForLogin(email: String) {
+    func showMagicLinkSentUI(email: String) {
+        let storage = PendingAuthFlowStorage()
+        storage.updateCurrentFlow(flow.pendingAuthFlow)
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,
-                                                             isJetpackSetup: isJetpackSetup,
+                                                             flow: flow,
                                                              isSignup: false)
         navigationController.show(viewController, sender: self)
     }
 
-    @MainActor
-    func authenticateUserAndComplete(username: String, authToken: String) async {
-        await withCheckedContinuation { continuation in
-            let credentials = Credentials(username: username, authToken: authToken)
-            stores.authenticate(credentials: credentials)
-                .synchronizeEntities(onCompletion: { [weak self] in
-                    guard let self else { return }
-                    self.completionHandler()
-                    continuation.resume()
-                })
+    func showWPComUsernameLogin() {
+        emailLoginViewModel.usernameOnly = true
+        emailLoginViewModel.emailOrUsername = ""
+
+        let emailViewController = navigationController.viewControllers.first(where: { $0 is WPComEmailLoginHostingController })
+        if let emailViewController {
+            navigationController.popToViewController(emailViewController, animated: true)
+        } else {
+            navigationController.dismiss(animated: true) {
+                self.navigationController.show(WPComEmailLoginHostingController(viewModel: self.emailLoginViewModel), sender: nil)
+            }
         }
+    }
+
+    func completeLogin(username: String, authToken: String) {
+        let credentials = Credentials(username: username, authToken: authToken)
+        completionHandler(credentials)
     }
 }
 

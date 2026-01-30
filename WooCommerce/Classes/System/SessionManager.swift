@@ -248,6 +248,8 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.applicationPasswordUnsupportedList] = nil
         defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
         defaults[.ciabBookingsTabAvailable] = nil
+        defaults[.hideWPComConnectionOnDashboard] = nil
+        PendingAuthFlowStorage(userDefaults: defaults).clear()
         resetTimestampsValues()
         imageCache.clearCache()
     }

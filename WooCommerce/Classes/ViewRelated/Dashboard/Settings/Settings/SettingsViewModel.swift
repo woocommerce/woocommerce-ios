@@ -105,6 +105,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let defaults: UserDefaults
+    private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -117,11 +118,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
+        self.pushNotesManager = pushNotesManager
         self.analytics = analytics
 
         /// Initialize Sites Results Controller
@@ -210,15 +213,7 @@ private extension SettingsViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        let wooTokenChanges = defaults
-            .publisher(for: \.wooPushnotificationToken)
-            .map { _ in () }
-
-        let wpComDeviceTokenChanges = defaults
-            .publisher(for: \.deviceToken)
-            .map { _ in () }
-
-        Publishers.Merge(wooTokenChanges, wpComDeviceTokenChanges)
+        pushNotesManager.siteIDsRegisteredForWooPNsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.reloadSettings()
@@ -262,6 +257,10 @@ private extension SettingsViewModel {
                 return nil
             }
             var rows: [Row] = [.storeName]
+
+            if shouldShowEnablePushNotificationsRow(siteID: site.siteID) {
+                rows.append(.enablePushNotifications)
+            }
 
             if defaults.wpcomSiteSuspended == false,
                site.isJetpackCPConnected == true ||
@@ -310,9 +309,11 @@ private extension SettingsViewModel {
                 return site.isJetpackCPConnected == false
             }()
             let isSelfDrivenPushNotificationsRegistered: Bool = {
-                let isWooTokenExists = defaults.wooPushnotificationToken != nil
-                let WPComTokenExists = defaults.deviceToken != nil
-                return (isWooTokenExists && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) && !WPComTokenExists
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
@@ -380,6 +381,18 @@ private extension SettingsViewModel {
             logoutSection
         ]
         .compactMap { $0 }
+    }
+
+    func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom else {
+            return false
+        }
+
+        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
+            return false
+        }
+
+        return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false
     }
 
     /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage

@@ -188,6 +188,13 @@ struct ItemListView: View {
                     group.addTask {
                         await posModel.popularPurchasableItemsController.refreshItems(base: .root)
                     }
+                    // Trigger incremental sync on pull to refresh when the items controller uses local catalog
+                    // The additional itemListType check avoids duplicated sync on products list (non-search)
+                    if itemListType == .products(search: true) && posModel.isLocalCatalogEligible {
+                        group.addTask {
+                            await posModel.purchasableItemsController.refreshItems(base: .root)
+                        }
+                    }
                 }
             }
         }

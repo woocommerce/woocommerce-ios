@@ -203,14 +203,16 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Returns: Catalog job response with job ID.
     ///
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
-        let path = "products/catalog"
-        let parameters: [String: Any] = [
-            ParameterKey.fullSyncFields: POSProduct.requestFields,
-            ParameterKey.fullSyncVariationFields: POSProductVariation.requestFields,
-            ParameterKey.forceGenerate: forceGeneration
+        let path = "catalog/create"
+        var parameters: [String: Any] = [
+            ParameterKey.catalogProductFields: POSProduct.requestFields.joined(separator: ","),
+            ParameterKey.catalogVariationFields: POSProductVariation.requestFields.joined(separator: ",")
         ]
+        if forceGeneration {
+            parameters[ParameterKey.force] = true
+        }
         let request = JetpackRequest(
-            wooApiVersion: .mark3,
+            wooApiVersion: .wcPosV1,
             method: .post,
             siteID: siteID,
             path: path,
@@ -448,9 +450,9 @@ private extension POSCatalogSyncRemote {
         static let page = "page"
         static let perPage = "per_page"
         static let fields = "_fields"
-        static let fullSyncFields = "fields"
-        static let fullSyncVariationFields = "variation_fields"
-        static let forceGenerate = "force_generate"
+        static let catalogProductFields = "_product_fields"
+        static let catalogVariationFields = "_variation_fields"
+        static let force = "force"
         static let includeStatus = "include_status"
         static let posProductsOnly = "pos_products_only"
     }
@@ -469,18 +471,49 @@ public struct POSCatalogRequestResponse: Decodable {
     public let status: POSCatalogStatus
     /// Download URL when it is already available.
     public let downloadURL: String?
+    /// Timestamp when the job was scheduled.
+    public let scheduledAt: String?
+    /// Timestamp when the job completed.
+    public let completedAt: String?
+    /// Progress percentage (0-100)
+    public let progress: Int?
+    /// Number of items processed so far
+    public let processed: Int?
+    /// Total number of items to process
+    public let total: Int?
 
     private enum CodingKeys: String, CodingKey {
-        case status
-        case downloadURL = "download_url"
+        case status = "state"
+        case downloadURL = "url"
+        case scheduledAt = "scheduled_at"
+        case completedAt = "completed_at"
+        case progress
+        case processed
+        case total
+    }
+
+    public init(status: POSCatalogStatus,
+                downloadURL: String? = nil,
+                scheduledAt: String? = nil,
+                completedAt: String? = nil,
+                progress: Int? = nil,
+                processed: Int? = nil,
+                total: Int? = nil) {
+        self.status = status
+        self.downloadURL = downloadURL
+        self.scheduledAt = scheduledAt
+        self.completedAt = completedAt
+        self.progress = progress
+        self.processed = processed
+        self.total = total
     }
 }
 
 /// Catalog generation status.
 public enum POSCatalogStatus: String, Decodable {
-    case pending
-    case processing
-    case complete
+    case scheduled
+    case inProgress = "in_progress"
+    case completed
     case failed
 }
 

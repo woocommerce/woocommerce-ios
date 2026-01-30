@@ -12,6 +12,10 @@ let package = Package(
     ],
     products: XcodeSupport.products + [
         .library(
+            name: "APIMocks",
+            targets: ["APIMocks"]
+        ),
+        .library(
             name: "Codegen",
             targets: ["Codegen"]
         ),
@@ -100,7 +104,7 @@ let package = Package(
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
         .package(url: "https://github.com/squarefrog/UIDeviceIdentifier", from: "2.3.0"),
-        .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "4.2.0"),
+        .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "5.1.1"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
         .package(url: "https://github.com/wordpress-mobile/AztecEditor-iOS", revision: "d741e3cfaa74c99ef092e5fddb87d4314b63e3ed"),
         .package(url: "https://github.com/wordpress-mobile/NSObject-SafeExpectations", from: "0.0.6"),
@@ -108,6 +112,10 @@ let package = Package(
         .package(url: "https://github.com/zendesk/support_sdk_ios", from: "9.0.0"),
     ],
     targets: XcodeSupport.targets + [
+        .target(
+            name: "APIMocks",
+            resources: [.process("Resources")]
+        ),
         .target(
             name: "Codegen",
             exclude: ["README.md", "Sourcery"] // Relative to sources path
@@ -451,6 +459,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceUITests,
                 dependencies: [
+                    "APIMocks",
                     "UITestsFoundation",
                     .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency

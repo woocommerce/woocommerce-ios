@@ -65,7 +65,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                              appPasswordSupportState: AnyPublisher<Bool, Never>,
                              batchSize: Int = 2,
                              grdbManager: GRDBManagerProtocol,
-                             usesCatalogAPI: Bool = false) {
+                             usesCatalogAPI: Bool) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogFullSyncService due missing credentials")
             return nil
@@ -83,7 +83,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         batchSize: Int,
         retryDelay: TimeInterval = 2.0,
         persistenceService: POSCatalogPersistenceServiceProtocol,
-        usesCatalogAPI: Bool = false
+        usesCatalogAPI: Bool
     ) {
         self.syncRemote = syncRemote
         self.persistenceService = persistenceService
@@ -236,12 +236,12 @@ private extension POSCatalogFullSyncService {
                                                                          allowCellular: allowCellular)
 
             switch response.status {
-            case .complete:
+            case .completed:
                 guard let downloadURL = response.downloadURL else {
                     throw POSCatalogSyncError.invalidData
                 }
                 return downloadURL
-            case .pending, .processing:
+            case .scheduled, .inProgress:
                 // Only logs every 10th attempt to avoid flooding logs for large catalogs.
                 if attempts % 10 == 0 {
                     DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")

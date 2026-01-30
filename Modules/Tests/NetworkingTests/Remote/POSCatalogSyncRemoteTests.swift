@@ -652,8 +652,9 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["fields"] as? [String] == POSProduct.requestFields)
-        #expect(queryParametersDictionary["force_generate"] as? Bool == false)
+        #expect(queryParametersDictionary["_product_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
+        #expect(queryParametersDictionary["_variation_fields"] as? String == POSProductVariation.requestFields.joined(separator: ","))
+        #expect(queryParametersDictionary["force"] == nil)
     }
 
     @Test func generateCatalog_returns_parsed_response() async throws {
@@ -661,11 +662,11 @@ struct POSCatalogSyncRemoteTests {
         let remote = POSCatalogSyncRemote(network: network)
 
         // When
-        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-generation")
+        network.simulateResponse(requestUrlSuffix: "create", filename: "pos-catalog-generation")
         let response = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
 
         // Then
-        #expect(response.status == .complete)
+        #expect(response.status == .completed)
         #expect(response.downloadURL == "https://example.com/wp-content/uploads/catalog.json")
     }
 
@@ -944,7 +945,7 @@ struct POSCatalogSyncRemoteTests {
     func requestCatalogGeneration_sets_allowsCellularAccess_on_request(allowCellular: Bool) async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-generation")
+        network.simulateResponse(requestUrlSuffix: "create", filename: "pos-catalog-generation")
 
         // When
         _ = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: allowCellular)

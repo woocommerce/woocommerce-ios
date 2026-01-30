@@ -54,6 +54,10 @@ public enum WooAPIVersion: String {
     ///
     case wcBookings = "wc-bookings/v2"
 
+    /// WooCommerce POS V1.
+    ///
+    case wcPosV1 = "wc/pos/v1"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

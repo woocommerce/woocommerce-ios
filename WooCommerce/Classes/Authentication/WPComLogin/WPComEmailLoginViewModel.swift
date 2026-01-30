@@ -1,5 +1,5 @@
 import Combine
-import UIKit
+import SwiftUI
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
 
@@ -18,13 +18,39 @@ extension WordPressComAccountService: WordPressComAccountServiceProtocol {}
 
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
-    let titleString: String
-    let subtitleString: String
+    var titleString: String {
+        switch flow {
+        case .notificationSetup:
+            Localization.ConnectWPCom.title
+        case .jetpackSetup(let requiresConnectionOnly):
+            requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        }
+    }
+
+    var subtitleString: String {
+        switch flow {
+        case .notificationSetup:
+            Localization.ConnectWPCom.subtitle
+        case .jetpackSetup(let requiresConnectionOnly):
+            requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        }
+    }
+
+    var primaryButtonTitle: String {
+        switch flow {
+        case .notificationSetup:
+            Localization.ConnectWPCom.primaryButtonTitle
+        case .jetpackSetup:
+            titleString
+        }
+    }
+
+    let flow: WPComLoginFlow
 
     @Published var emailOrUsername: String = ""
     @Published var usernameOnly: Bool = false
 
-    let termsAttributedString: NSAttributedString
+    let termsAttributedString: AttributedString
 
     let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
@@ -37,7 +63,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     private var emailFieldSubscription: AnyCancellable?
 
     init(siteURL: String,
-         requiresConnectionOnly: Bool,
+         flow: WPComLoginFlow,
          allowAccountCreation: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
@@ -53,26 +79,27 @@ final class WPComEmailLoginViewModel: ObservableObject {
         self.onMagicLinkRequest = onMagicLinkRequest
         self.onMagicLinkSent = onMagicLinkSent
         self.onError = onError
-
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
-        self.subtitleString = requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        self.flow = flow
         self.termsAttributedString = {
-            let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.alignment = .center
+            let content: String = {
+                switch flow {
+                case .notificationSetup:
+                    String.localizedStringWithFormat(Localization.ConnectWPCom.termsContent, Localization.termsOfService, Localization.shareDetails)
+                case .jetpackSetup:
+                    String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                }
+            }()
 
-            let mutableAttributedText = NSMutableAttributedString(
-                string: content,
-                attributes: [.font: UIFont.footnote,
-                             .foregroundColor: UIColor.secondaryLabel,
-                             .paragraphStyle: paragraph]
+            let attributedText = AttributedString.withEmbeddedLinks(
+                content: content,
+                links: [
+                    Localization.termsOfService: Constants.jetpackTermsURL + siteURL,
+                    Localization.shareDetails: Constants.jetpackShareDetailsURL + siteURL
+                ],
+                font: .footnote,
+                foregroundColor: .secondary
             )
-
-            mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
-                                            linkURL: Constants.jetpackTermsURL + siteURL)
-            mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
-                                            linkURL: Constants.jetpackShareDetailsURL + siteURL)
-            return mutableAttributedText
+            return attributedText
         }()
     }
 
@@ -200,5 +227,28 @@ extension WPComEmailLoginViewModel {
             value: "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
             comment: "Error message when the username is not found"
         )
+
+        enum ConnectWPCom {
+            static let title = NSLocalizedString(
+                "wpcomEmailLoginViewModel.connectWPCom.title",
+                value: "Connect to WordPress.com",
+                comment: "Title for the WPCom email login screen for push notification setup"
+            )
+            static let subtitle = NSLocalizedString(
+                "wpcomEmailLoginViewModel.connectWPCom.subtitle",
+                value: "Log in with your WordPress.com account to connect your store.",
+                comment: "Subtitle for the WPCom email login screen for push notification setup"
+            )
+            static let primaryButtonTitle = NSLocalizedString(
+                "wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle",
+                value: "Continue",
+                comment: "Button to submit a WPCom email on the login screen for push notification setup"
+            )
+            static let termsContent = NSLocalizedString(
+                "wpcomEmailLoginViewModel.connectWPCom.termsContent",
+                value: "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.",
+                comment: "Content of the label at the end of the Wrong Account screen. " +
+                "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
+        }
     }
 }

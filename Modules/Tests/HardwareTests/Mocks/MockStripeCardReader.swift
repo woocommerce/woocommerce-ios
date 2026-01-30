@@ -18,7 +18,7 @@ extension MockStripeCardReader: StripeCardReader {}
 
 extension MockStripeCardReader {
     static func stripeSDKTestReaders() -> [Self] {
-        [bbposChipper2XBT(), verifoneP400()]
+        [bbposChipper2XBT(), stripeM2()]
     }
 
     static func bbposChipper2XBT() -> Self {
@@ -28,17 +28,6 @@ extension MockStripeCardReader {
                              status: .online,
                              deviceSoftwareVersion: "0.0.0.1",
                              deviceType: .chipper2X,
-                             batteryLevel: NSNumber(floatLiteral: 0.5),
-                             locationId: "st_simulated")
-    }
-
-    static func verifoneP400() -> Self {
-        MockStripeCardReader(serialNumber: "P400-SIMULATOR-1",
-                             stripeId: "SIMULATOR",
-                             label: "Simulated Verifone P400",
-                             status: .online,
-                             deviceSoftwareVersion: "3.0.1.17",
-                             deviceType: .verifoneP400,
                              batteryLevel: NSNumber(floatLiteral: 0.5),
                              locationId: "st_simulated")
     }

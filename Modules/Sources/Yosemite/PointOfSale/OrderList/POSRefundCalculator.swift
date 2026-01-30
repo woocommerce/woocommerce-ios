@@ -1,5 +1,19 @@
 import Foundation
 
+public struct POSRefundAmounts {
+    public let subtotal: Decimal
+    public let tax: Decimal
+
+    public var total: Decimal {
+        subtotal + tax
+    }
+
+    public init(subtotal: Decimal, tax: Decimal) {
+        self.subtotal = subtotal
+        self.tax = tax
+    }
+}
+
 public protocol POSRefundCalculating {
     func buildRefundRequest(
         orderID: Int64,
@@ -7,17 +21,22 @@ public protocol POSRefundCalculating {
         reason: String?,
         numberOfDecimals: Int
     ) -> POSRefundRequest
+
+    func calculateRefundAmounts(
+        for items: [POSRefundableItem],
+        numberOfDecimals: Int
+    ) -> POSRefundAmounts
 }
 
 public struct POSRefundableItem {
     public let itemID: Int64
-    public let price: Decimal
+    public let lineItemTotal: Decimal
     public let totalTax: Decimal
     public let originalQuantity: Decimal
 
-    public init(itemID: Int64, price: Decimal, totalTax: Decimal, originalQuantity: Decimal) {
+    public init(itemID: Int64, lineItemTotal: Decimal, totalTax: Decimal, originalQuantity: Decimal) {
         self.itemID = itemID
-        self.price = price
+        self.lineItemTotal = lineItemTotal
         self.totalTax = totalTax
         self.originalQuantity = originalQuantity
     }
@@ -44,6 +63,12 @@ public final class POSRefundCalculator: POSRefundCalculating {
             items: refundItems
         )
     }
+
+    public func calculateRefundAmounts(for items: [POSRefundableItem], numberOfDecimals: Int) -> POSRefundAmounts {
+        let subtotal = calculateSubtotal(for: items, numberOfDecimals: numberOfDecimals)
+        let tax = calculateTotalTax(for: items, numberOfDecimals: numberOfDecimals)
+        return POSRefundAmounts(subtotal: subtotal, tax: tax)
+    }
 }
 
 // MARK: - Private Helpers
@@ -57,13 +82,13 @@ private extension POSRefundCalculator {
         groupedItems.compactMap { itemID, items -> POSRefundRequestItem? in
             guard items.first != nil else { return nil }
 
-            let quantity = items.count
+            let quantityToRefund = items.count
             let refundTotal = calculateRefundTotal(for: items, numberOfDecimals: numberOfDecimals)
             let refundTax = calculateRefundTax(for: items, numberOfDecimals: numberOfDecimals)
 
             return POSRefundRequestItem(
                 itemID: itemID,
-                quantity: quantity,
+                quantity: quantityToRefund,
                 refundTotal: refundTotal,
                 refundTax: refundTax
             )
@@ -83,11 +108,30 @@ private extension POSRefundCalculator {
         }
     }
 
+    /// Calculates refund subtotal for a specific item group.
+    ///
+    /// For full refunds (all units of an item selected), uses the original lineItemTotal
+    /// directly to match the order total exactly.
+    ///
+    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) × lineItemTotal
     func calculateRefundTotal(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
         guard let firstItem = items.first else { return Decimal.zero }
-        let quantity = Decimal(items.count)
-        let total = firstItem.price * quantity
-        return roundDecimal(total, scale: numberOfDecimals)
+
+        let selectedCount = Decimal(items.count)
+        let originalQuantity = firstItem.originalQuantity
+        let lineItemTotal = firstItem.lineItemTotal
+
+        // Guard against division by zero
+        guard originalQuantity > 0 else { return Decimal.zero }
+
+        // Full refund: use original lineItemTotal to match order exactly
+        if selectedCount == originalQuantity {
+            return lineItemTotal
+        }
+
+        // Partial refund: calculate proportionally
+        let proportionalTotal = (lineItemTotal / originalQuantity) * selectedCount
+        return roundDecimal(proportionalTotal, scale: numberOfDecimals)
     }
 
     /// Calculates refund tax for a specific item group.
@@ -125,11 +169,10 @@ private extension POSRefundCalculator {
         }
     }
 
-    /// Rounds a Decimal value to the specified number of decimal places using banker's rounding (half even).
     func roundDecimal(_ value: Decimal, scale: Int) -> Decimal {
         var result = Decimal()
         var mutableValue = value
-        NSDecimalRound(&result, &mutableValue, scale, .bankers)
+        NSDecimalRound(&result, &mutableValue, scale, .plain)
         return result
     }
 }

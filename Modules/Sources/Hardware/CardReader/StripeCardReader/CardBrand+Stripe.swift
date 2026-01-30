@@ -25,6 +25,10 @@ extension CardBrand {
             self = .unionPay
         case .eftposAu:
             self = .eftposAu
+        case .cartesBancaires:
+            self = .cartesBancaires
+        case .girocard:
+            self = .girocard
         case .unknown:
             self = .unknown
         @unknown default:

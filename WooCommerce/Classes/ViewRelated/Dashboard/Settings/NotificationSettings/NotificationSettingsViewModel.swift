@@ -33,6 +33,7 @@ final class NotificationSettingsViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let siteIDsRegisteredForWooPNs: Set<Int64>
 
     let currentDeviceID: String?
 
@@ -58,6 +59,7 @@ final class NotificationSettingsViewModel: ObservableObject {
         self.notificationCenter = notificationCenter
         self.stores = stores
         self.storageManager = storageManager
+        self.siteIDsRegisteredForWooPNs = Set(pushNotificationManager.siteIDsRegisteredForWooPNs)
         self.currentDeviceID = pushNotificationManager.deviceID
         self.analytics = analytics
 
@@ -210,7 +212,9 @@ private extension NotificationSettingsViewModel {
     }
 
     func updateSiteList() {
-        sites = siteResultsController.fetchedObjects
+        sites = siteResultsController.fetchedObjects.filter { site in
+            siteIDsRegisteredForWooPNs.contains(site.siteID) == false
+        }
     }
 }
 

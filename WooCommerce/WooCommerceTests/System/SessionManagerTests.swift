@@ -422,6 +422,47 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.ciabBookingsTabAvailable])
     }
 
+    /// Verifies that flag to hide WPCom connection suggestion is cleared upon reset
+    ///
+    func test_hideWPComConnectionOnDashboard_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.hideWPComConnectionOnDashboard] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[.hideWPComConnectionOnDashboard] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.hideWPComConnectionOnDashboard])
+    }
+
+    func test_pendingMagicLinkFlow_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        let flow = PendingAuthFlowStorage.StoredFlow(flow: .jetpackSetup, timestamp: Date())
+        defaults[.pendingMagicLinkFlow] = try? JSONEncoder().encode(flow)
+
+        // Then
+        XCTAssertNotNil(defaults[.pendingMagicLinkFlow])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.pendingMagicLinkFlow])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

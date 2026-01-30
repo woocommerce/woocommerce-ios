@@ -626,6 +626,11 @@ public enum WooAnalyticsStat: String {
     case pushNotificationOSAlertShown = "push_notification_os_alert_shown"
     case viewInAppPushNotificationPressed = "view_in_app_push_notification_pressed"
 
+    case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
+    case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
+    case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+
     // MARK: Notification View Events
     //
     case notificationOpened = "notification_open"
@@ -916,6 +921,11 @@ public enum WooAnalyticsStat: String {
     case posPromoModalSlideViewed = "pos_promo_modal_slide_viewed"
     case posPromoModalDismissed = "pos_promo_modal_dismissed"
     case posPromoModalExploreClicked = "pos_promo_modal_explore_clicked"
+
+    // MARK: POS Promotion Banner
+    case posPromotionBannerDisplayed = "pos_promotion_banner_displayed"
+    case posPromotionBannerCtaTapped = "pos_promotion_banner_cta_tapped"
+    case posPromotionBannerDismissed = "pos_promotion_banner_dismissed"
 
     // MARK: Product sharing AI
     //

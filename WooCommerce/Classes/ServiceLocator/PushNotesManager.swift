@@ -33,6 +33,18 @@ protocol PushNotesManager {
     ///
     var deviceID: String? { get }
 
+    /// Site IDs registered for Woo Push Notifications.
+    ///
+    var siteIDsRegisteredForWooPNs: [Int64] { get }
+
+    /// Publisher for site IDs registered for Woo Push Notifications.
+    ///
+    var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> { get }
+
+    /// Indicates whether the registered site IDs value exists in storage.
+    ///
+    var hasStoredSiteIDsRegisteredForWooPNs: Bool { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind)

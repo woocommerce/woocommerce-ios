@@ -9,7 +9,23 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     // MARK: - Variables for emitting events in unit tests
 
     @Published var paymentEvent: CardPresentPaymentEvent = .idle
-    @Published var connectedReader: CardPresentPaymentCardReader?
+    @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
+
+    var connectedReader: CardPresentPaymentCardReader? {
+        get {
+            if case .connected(let reader) = connectionStatus {
+                return reader
+            }
+            return nil
+        }
+        set {
+            if let reader = newValue {
+                connectionStatus = .connected(reader)
+            } else {
+                connectionStatus = .disconnected
+            }
+        }
+    }
 
     var cancelPaymentCalled = false
 
@@ -20,13 +36,7 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
-        $connectedReader.map { reader -> CardPresentPaymentReaderConnectionStatus in
-            guard let reader else {
-                return .disconnected
-            }
-            return .connected(reader)
-        }
-        .eraseToAnyPublisher()
+        $connectionStatus.eraseToAnyPublisher()
     }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {

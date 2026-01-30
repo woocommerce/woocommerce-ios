@@ -3858,6 +3858,8 @@
 		3F587037281B9C50004F7556 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F587038281B9C52004F7556 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3FA6FD552F2C93C100F48C4E /* AppStoreStrings.pot */ = {isa = PBXFileReference; lastKnownFileType = text; path = AppStoreStrings.pot; sourceTree = "<group>"; };
+		3FA6FD562F2C93EC00F48C4E /* release_notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = release_notes.txt; sourceTree = "<group>"; };
 		3FF314EF26FC784A0012E68E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
@@ -9724,6 +9726,8 @@
 		B56DB3F22049C0C000D4AA8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3FA6FD562F2C93EC00F48C4E /* release_notes.txt */,
+				3FA6FD552F2C93C100F48C4E /* AppStoreStrings.pot */,
 				3FA6FD4A2F2C92DB00F48C4E /* Fonts */,
 				3FA6FD4E2F2C92DE00F48C4E /* HTML */,
 				3FA6FD522F2C92E200F48C4E /* Sounds */,

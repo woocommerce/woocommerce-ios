@@ -191,7 +191,8 @@ struct TotalsViewHelperTests {
     @Test(arguments: [
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.idle),
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.acceptingCard),
-        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.preparingReader)
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.preparingReader),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.paymentError)
     ])
     func test_shouldShowReconnectingMessage_returns_true_when_reconnecting_and_no_card_payment_ongoing(
         readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
@@ -202,7 +203,6 @@ struct TotalsViewHelperTests {
 
     @Test(arguments: [
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.cardPaymentSuccessful),
-        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.paymentError),
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.processingPayment),
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrder),
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrderError)

@@ -64,6 +64,7 @@ struct TotalsViewHelper {
             switch paymentState.card {
             case .idle,
                     .acceptingCard,
+                    .paymentError,
                     .preparingReader:
                 return true
             case .validatingOrder,
@@ -71,7 +72,6 @@ struct TotalsViewHelper {
                     .paymentIntentCreationError,
                     .processingPayment,
                     .cardInserted,
-                    .paymentError,
                     .cardPaymentSuccessful:
                 return false
             }

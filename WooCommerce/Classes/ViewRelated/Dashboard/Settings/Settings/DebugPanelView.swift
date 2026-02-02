@@ -21,7 +21,14 @@ struct DebugPanelView: View {
             }
 
             DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
-                let viewModel = WPComConnectionSetupViewModel(storeName: "nicestore.com", onDismiss: dismiss)
+                let handler = PreviewConnectionSetupHandler()
+                let viewModel = WPComConnectionSetupViewModel(
+                    storeName: "nicestore.com",
+                    handler: handler,
+                    onDismiss: dismiss,
+                    onGoToStore: dismiss,
+                    onUpdatePlugin: {}
+                )
                 WPComConnectionSetupView(viewModel: viewModel)
             }
         }
@@ -52,4 +59,30 @@ fileprivate struct DebugSheetPresenter<Content: View>: View {
             content { isPresented = false }
         }
     }
+}
+
+/// A preview handler that simulates the connection setup flow
+private final class PreviewConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
+    weak var delegate: WPComConnectionSetupHandlerDelegate?
+
+    func start() {
+        // Simulate a successful flow with delays
+        Task { @MainActor in
+            delegate?.stepDidUpdate(.connect, status: .running)
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            delegate?.stepDidUpdate(.connect, status: .success)
+
+            delegate?.stepDidUpdate(.checkPlugin, status: .running)
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            delegate?.stepDidUpdate(.checkPlugin, status: .success)
+
+            delegate?.setupDidComplete()
+        }
+    }
+
+    func retry() {
+        start()
+    }
+
+    func cancel() {}
 }

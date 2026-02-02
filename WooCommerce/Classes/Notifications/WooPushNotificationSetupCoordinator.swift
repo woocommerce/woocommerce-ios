@@ -2,12 +2,14 @@ import UIKit
 import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
+@MainActor
 final class WooPushNotificationSetupCoordinator {
     // Controller to handle navigation between the auth flow and setup steps.
     let rootViewController: UIViewController
 
     private let stores: StoresManager
     private var loginCoordinator: WPComLoginCoordinator?
+    private var wpcomCredentials: Credentials?
 
     init(rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores) {
@@ -22,11 +24,8 @@ final class WooPushNotificationSetupCoordinator {
                 flow: .notificationSetup,
                 navigationController: UINavigationController(),
                 completionHandler: { [weak self] credentials in
-                    // TODO: use credentials for Jetpack connection flow.
-                    // Consider reusing JetpackSetupViewModel
-                    // Also check JetpackSetupHostingController for more details on what the credentials are for.
-
                     DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
+                    self?.wpcomCredentials = credentials
                     DispatchQueue.main.async {
                         self?.showConnectionSetup()
                     }
@@ -65,8 +64,8 @@ final class WooPushNotificationSetupCoordinator {
             return false
         }
 
-        // TODO: start Jetpack connection flow with the retrieved authToken.
         DDLogDebug("📱 Magic link success, now proceed with Jetpack connection")
+        wpcomCredentials = Credentials(authToken: authToken)
         showConnectionSetup()
         return true
     }
@@ -83,6 +82,47 @@ private extension WooPushNotificationSetupCoordinator {
         let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak navigationController] in
             navigationController?.dismiss(animated: true)
         })
+        guard let site = stores.sessionManager.defaultSite else {
+            DDLogError("⛔️ WPCom connection setup: No default site available")
+            return
+        }
+
+        let storeName = site.name ?? site.url
+        let siteURL = site.url
+
+        // Create services
+        let connectionService: WPComConnectionServiceProtocol
+        if let credentials = wpcomCredentials {
+            connectionService = WPComConnectionService(siteURL: siteURL, wpcomCredentials: credentials, stores: stores)
+        } else {
+            // Site is already Jetpack-connected, use a no-op connection service
+            connectionService = AlreadyConnectedService()
+        }
+
+        let pluginChecker = PluginCompatibilityChecker(siteID: site.siteID, stores: stores)
+
+        // Create handler
+        let handler = WPComConnectionSetupHandler(
+            connectionService: connectionService,
+            pluginChecker: pluginChecker
+        )
+
+        let navigationController = WooNavigationController()
+
+        let viewModel = WPComConnectionSetupViewModel(
+            storeName: storeName,
+            handler: handler,
+            onDismiss: { [weak self] in
+                navigationController?.dismiss(animated: true)
+            },
+            onGoToStore: { [weak self] in
+                self?.goToStore()
+            },
+            onUpdatePlugin: { [weak self] in
+                self?.openPluginUpdateURL()
+            }
+        )
+
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
         navigationController.viewControllers = [connectionSetupController]
 
@@ -103,6 +143,38 @@ private extension WooPushNotificationSetupCoordinator {
         }
     }
 
+    func goToStore() {
+        // Dismiss connection setup modal and navigate to store
+        rootViewController.dismiss(animated: true) { [weak self] in
+            // Navigate to the store dashboard using notification
+            MainTabBarController.switchToMyStoreTab()
+            self?.cleanUp()
+        }
+    }
+
+    func openPluginUpdateURL() {
+        guard let site = stores.sessionManager.defaultSite else { return }
+
+        // Construct the plugin update URL for the WooCommerce plugin
+        let pluginUpdateURL = site.url + "/wp-admin/plugins.php?s=woocommerce&plugin_status=upgrade"
+        guard let url = URL(string: pluginUpdateURL) else { return }
+
+        UIApplication.shared.open(url)
+    }
+
+    func cleanUp() {
+        wpcomCredentials = nil
+        loginCoordinator = nil
+    }
+}
+
+/// A no-op connection service for sites that are already Jetpack-connected.
+/// Used when the site doesn't need WPCom connection but we still need to check plugin compatibility.
+private struct AlreadyConnectedService: WPComConnectionServiceProtocol {
+    func connect() async throws {
+        // No-op: Site is already connected
+        DDLogDebug("📱 WPCom connection: Site already Jetpack-connected, skipping connection step")
+    }
 }
 
 private extension WooPushNotificationSetupCoordinator {

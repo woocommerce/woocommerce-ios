@@ -113,6 +113,33 @@ private extension WPComConnectionSetupView {
 }
 
 #Preview {
-    let viewModel = WPComConnectionSetupViewModel(storeName: "coffeebeans.com", onDismiss: {})
+    let viewModel = WPComConnectionSetupViewModel(
+        storeName: "coffeebeans.com",
+        handler: PreviewSetupHandler(),
+        onDismiss: {},
+        onGoToStore: {},
+        onUpdatePlugin: {}
+    )
     WPComConnectionSetupView(viewModel: viewModel)
+}
+
+private final class PreviewSetupHandler: WPComConnectionSetupHandlerProtocol {
+    weak var delegate: WPComConnectionSetupHandlerDelegate?
+
+    func start() {
+        Task { @MainActor in
+            delegate?.stepDidUpdate(.connect, status: .running)
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            delegate?.stepDidUpdate(.connect, status: .success)
+
+            delegate?.stepDidUpdate(.checkPlugin, status: .running)
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            delegate?.stepDidUpdate(.checkPlugin, status: .success)
+
+            delegate?.setupDidComplete()
+        }
+    }
+
+    func retry() { start() }
+    func cancel() {}
 }

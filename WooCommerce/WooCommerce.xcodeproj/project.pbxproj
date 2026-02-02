@@ -1321,6 +1321,9 @@
 		6497C0D42EF14F1F00DA63F1 /* BookingDetailsViewModel+Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6497C0D32EF14F1300DA63F1 /* BookingDetailsViewModel+Analytics.swift */; };
 		6497CCA62EF19EC100DA63F1 /* BookingListContainerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6497CCA52EF19EBB00DA63F1 /* BookingListContainerViewModelTests.swift */; };
 		64B1EEDD2F2CA0EC00A73166 /* WPComConnectionSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64B1EEDC2F2CA0E600A73166 /* WPComConnectionSetupViewModel.swift */; };
+		B2EC7F407BF8D64D62B43F89 /* PluginCompatibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2544B57CACA034459E760D0 /* PluginCompatibilityChecker.swift */; };
+		763AE6C369C9F4C08A193DC6 /* WPComConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7844B8A4810C4358682E6317 /* WPComConnectionService.swift */; };
+		2131B23AE932C0DA8DC4380F /* WPComConnectionSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC58CE2C9A4121946A784EC0 /* WPComConnectionSetupHandler.swift */; };
 		64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */; };
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
@@ -4115,6 +4118,9 @@
 		6497C0D32EF14F1300DA63F1 /* BookingDetailsViewModel+Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Analytics.swift"; sourceTree = "<group>"; };
 		6497CCA52EF19EBB00DA63F1 /* BookingListContainerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingListContainerViewModelTests.swift; sourceTree = "<group>"; };
 		64B1EEDC2F2CA0E600A73166 /* WPComConnectionSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupViewModel.swift; sourceTree = "<group>"; };
+		E2544B57CACA034459E760D0 /* PluginCompatibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginCompatibilityChecker.swift; sourceTree = "<group>"; };
+		7844B8A4810C4358682E6317 /* WPComConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionService.swift; sourceTree = "<group>"; };
+		EC58CE2C9A4121946A784EC0 /* WPComConnectionSetupHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupHandler.swift; sourceTree = "<group>"; };
 		64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingSceneDelegate.swift; sourceTree = "<group>"; };
 		68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSNotificationSchedulerTests.swift; sourceTree = "<group>"; };
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
@@ -8644,6 +8650,9 @@
 			isa = PBXGroup;
 			children = (
 				64B1EEDC2F2CA0E600A73166 /* WPComConnectionSetupViewModel.swift */,
+				E2544B57CACA034459E760D0 /* PluginCompatibilityChecker.swift */,
+				7844B8A4810C4358682E6317 /* WPComConnectionService.swift */,
+				EC58CE2C9A4121946A784EC0 /* WPComConnectionSetupHandler.swift */,
 				640D423A2F2BA52400300B0D /* WPComConnectionSetupStep.swift */,
 				640D42382F2B949500300B0D /* StatusIcon.swift */,
 				640D42362F2B862C00300B0D /* WPComConnectionSetupStepView.swift */,
@@ -13611,6 +13620,9 @@
 				CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */,
 				DEE215302D113F89004A11F3 /* EditStoreListViewModel.swift in Sources */,
 				64B1EEDD2F2CA0EC00A73166 /* WPComConnectionSetupViewModel.swift in Sources */,
+				B2EC7F407BF8D64D62B43F89 /* PluginCompatibilityChecker.swift in Sources */,
+				763AE6C369C9F4C08A193DC6 /* WPComConnectionService.swift in Sources */,
+				2131B23AE932C0DA8DC4380F /* WPComConnectionSetupHandler.swift in Sources */,
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */,

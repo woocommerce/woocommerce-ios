@@ -1282,9 +1282,12 @@ platform :ios do
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',
-        'Storage/Storage/',
-        'Networking/Networking/',
-        'Hardware/Hardware/'
+        'Modules/Sources/Storage/',
+        'Modules/Sources/Networking/',
+        'Modules/Sources/NetworkingCore/',
+        'Modules/Sources/Yosemite/',
+        'Modules/Sources/WooFoundation/',
+        'Modules/Sources/Hardware/'
       ],
       exclude: [
         '*Vendor*',

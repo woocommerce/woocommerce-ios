@@ -7,13 +7,12 @@ import WooFoundation
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         navigationController: UINavigationController) {
+         rootViewController: UIViewController) {
         super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
-        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: navigationController)
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
         viewModel.updateCoordinator(coordinator)
     }
 
-    @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

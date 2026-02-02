@@ -76,22 +76,32 @@ private extension WooPushNotificationSetupCoordinator {
         static let magicLinkUrlHostname = "magic-login"
     }
 
-    /// Returns the navigation controller to use for presenting the connection setup view.
-    var currentNavigationController: UINavigationController? {
-        loginCoordinator?.navigationController ?? (rootViewController as? UINavigationController)
-    }
-
     func showConnectionSetup() {
         let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
         let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak self] in
             self?.dismissFlow()
         })
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
-        currentNavigationController?.pushViewController(connectionSetupController, animated: true)
+        let navigationController = WooNavigationController(rootViewController: connectionSetupController)
+
+        // Dismiss current modal (login or benefits) and present connection setup
+        if let loginNav = loginCoordinator?.navigationController,
+           let presenter = loginNav.presentingViewController {
+            // Login flow: dismiss login modal, then present
+            loginNav.dismiss(animated: true) {
+                presenter.present(navigationController, animated: true)
+            }
+        } else if let presenter = rootViewController.presentingViewController {
+            // No login flow: dismiss benefits modal, then present
+            rootViewController.dismiss(animated: true) {
+                presenter.present(navigationController, animated: true)
+            }
+        }
     }
 
     func dismissFlow() {
-        currentNavigationController?.dismiss(animated: true)
+        // The connection setup modal is presented, just dismiss it
+        rootViewController.dismiss(animated: true)
     }
 }
 

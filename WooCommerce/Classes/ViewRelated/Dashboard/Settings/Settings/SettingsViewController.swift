@@ -438,7 +438,7 @@ private extension SettingsViewController {
         let navigationController = WooNavigationController()
         let controller = WPComPushNotificationsBenefitsHostingController(
             viewModel: viewModel,
-            navigationController: navigationController
+            rootViewController: navigationController
         )
         navigationController.viewControllers = [controller]
         navigationController.modalPresentationStyle = .formSheet

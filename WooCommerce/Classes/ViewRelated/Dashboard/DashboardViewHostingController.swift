@@ -377,7 +377,7 @@ private extension DashboardViewHostingController {
             let navigationController = WooNavigationController()
             let hostingController = WPComPushNotificationsBenefitsHostingController(
                 viewModel: viewModel,
-                navigationController: navigationController
+                rootViewController: navigationController
             )
             navigationController.viewControllers = [hostingController]
             navigationController.modalPresentationStyle = .formSheet

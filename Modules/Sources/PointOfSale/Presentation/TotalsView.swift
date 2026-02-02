@@ -37,7 +37,8 @@ struct TotalsView: View {
                                 orderState: posModel.orderState,
                                 cardReaderConnectionStatus: posModel.cardReaderConnectionStatus,
                                 cardPresentPaymentInlineMessage: posModel.cardPresentPaymentInlineMessage,
-                                connectCardReaderAction: posModel.connectCardReader
+                                connectCardReaderAction: posModel.connectCardReader,
+                                cancelReconnectionAction: posModel.cancelReconnection
                             )
                         }
 
@@ -148,19 +149,29 @@ private extension TotalsView {
     private var isShowingPaymentView: Bool {
         guard posModel.orderState.isLoaded else {
             // When the order's being created or synced, we only show the shimmering totals.
-            // Before the order exists, we don’t want to show the card payment status, as it will
+            // Before the order exists, we don't want to show the card payment status, as it will
             // show for a second initially, then disappear the moment we start syncing the order.
             return false
         }
 
         switch posModel.cardReaderConnectionStatus {
-        case .connected, .disconnecting, .cancellingConnection, .reconnecting:
+        case .connected, .disconnecting, .cancellingConnection:
             // Show card payment UI if there's a message, or cash payment UI when not idle
             switch posModel.paymentState.activePaymentMethod {
             case .cash:
                 return true
             case .card:
                 return posModel.cardPresentPaymentInlineMessage != nil
+            }
+        case .reconnecting:
+            switch posModel.paymentState.activePaymentMethod {
+            case .cash:
+                return true
+            case .card:
+                let viewHelper = TotalsViewHelper()
+                return posModel.cardPresentPaymentInlineMessage != nil ||
+                       viewHelper.shouldShowReconnectingMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                                paymentState: posModel.paymentState)
             }
         case .disconnected:
             // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
@@ -197,8 +208,13 @@ private extension TotalsView {
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:
-                if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
-                                                                    paymentState: posModel.paymentState) {
+                let viewHelper = TotalsViewHelper()
+                if viewHelper.shouldShowReconnectingMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                            paymentState: posModel.paymentState) {
+                    return .primary
+                }
+                if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                            paymentState: posModel.paymentState) {
                     return .outlined
                 }
             }
@@ -440,6 +456,7 @@ private struct PaymentViewContent: View {
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
+    let cancelReconnectionAction: () -> Void
 
     private let viewHelper = TotalsViewHelper()
 
@@ -469,7 +486,8 @@ private struct PaymentViewContent: View {
                 cardReaderConnectionStatus: cardReaderConnectionStatus,
                 paymentState: paymentState,
                 cardPresentPaymentInlineMessage: cardPresentPaymentInlineMessage,
-                connectCardReaderAction: connectCardReaderAction
+                connectCardReaderAction: connectCardReaderAction,
+                cancelReconnectionAction: cancelReconnectionAction
             )
         }
     }
@@ -505,12 +523,18 @@ private struct CardPaymentView: View {
     let paymentState: PointOfSalePaymentState
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
+    let cancelReconnectionAction: () -> Void
 
     private let viewHelper = TotalsViewHelper()
 
     var body: some View {
-        if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
+        if viewHelper.shouldShowReconnectingMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {
+            PointOfSaleCardPresentPaymentReconnectingMessageView {
+                cancelReconnectionAction()
+            }
+        } else if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
+                                                           paymentState: paymentState) {
             PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                 connectCardReaderAction()
             }

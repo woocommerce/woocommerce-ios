@@ -51,10 +51,41 @@ struct TotalsViewHelper {
         }
     }
 
+    func shouldShowReconnectingMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                       paymentState: PointOfSalePaymentState) -> Bool {
+        guard case .reconnecting = readerConnectionStatus else {
+            return false
+        }
+
+        switch paymentState.activePaymentMethod {
+        case .cash:
+            return false
+        case .card:
+            switch paymentState.card {
+            case .idle,
+                    .acceptingCard,
+                    .preparingReader:
+                return true
+            case .validatingOrder,
+                    .validatingOrderError,
+                    .paymentIntentCreationError,
+                    .processingPayment,
+                    .cardInserted,
+                    .paymentError,
+                    .cardPaymentSuccessful:
+                return false
+            }
+        }
+    }
+
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,
                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
         guard orderState != .syncing else {
+            return false
+        }
+
+        if case .reconnecting = cardReaderConnectionStatus {
             return false
         }
 

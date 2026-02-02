@@ -185,4 +185,74 @@ struct TotalsViewHelperTests {
 
         #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) == false)
     }
+
+    // MARK: - shouldShowReconnectingMessage tests
+
+    @Test(arguments: [
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.idle),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.acceptingCard),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.preparingReader)
+    ])
+    func test_shouldShowReconnectingMessage_returns_true_when_reconnecting_and_no_card_payment_ongoing(
+        readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+        paymentState: PointOfSaleCardPaymentState) {
+            #expect(TotalsViewHelper().shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus,
+                                                                     paymentState: PointOfSalePaymentState(card: paymentState, cash: .idle)))
+    }
+
+    @Test(arguments: [
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.cardPaymentSuccessful),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.paymentError),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.processingPayment),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrder),
+        (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrderError)
+    ])
+    func test_shouldShowReconnectingMessage_returns_false_when_card_payment_ongoing(
+        readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+        paymentState: PointOfSaleCardPaymentState) {
+            #expect(TotalsViewHelper().shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus,
+                                                                     paymentState: PointOfSalePaymentState(card: paymentState, cash: .idle)) == false)
+    }
+
+    @Test(arguments: [
+        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.idle),
+        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.acceptingCard),
+        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.preparingReader)
+    ])
+    func test_shouldShowReconnectingMessage_returns_false_when_reader_connected(
+        readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+        paymentState: PointOfSaleCardPaymentState) {
+            #expect(TotalsViewHelper().shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus,
+                                                                     paymentState: PointOfSalePaymentState(card: paymentState, cash: .idle)) == false)
+    }
+
+    @Test(arguments: [
+        (CardPresentPaymentReaderConnectionStatus.disconnected, PointOfSaleCardPaymentState.idle),
+        (CardPresentPaymentReaderConnectionStatus.disconnected, PointOfSaleCardPaymentState.acceptingCard),
+        (CardPresentPaymentReaderConnectionStatus.disconnected, PointOfSaleCardPaymentState.preparingReader)
+    ])
+    func test_shouldShowReconnectingMessage_returns_false_when_reader_disconnected(
+        readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+        paymentState: PointOfSaleCardPaymentState) {
+            #expect(TotalsViewHelper().shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus,
+                                                                     paymentState: PointOfSalePaymentState(card: paymentState, cash: .idle)) == false)
+    }
+
+    // MARK: - shouldShowCollectCashPaymentButton reconnecting tests
+
+    @Test(arguments: [
+        PointOfSaleCardPaymentState.idle,
+        PointOfSaleCardPaymentState.acceptingCard,
+        PointOfSaleCardPaymentState.validatingOrderError,
+        PointOfSaleCardPaymentState.paymentIntentCreationError
+    ])
+    func test_shouldShowCollectCashPaymentButton_returns_false_when_reconnecting(
+        cardPaymentState: PointOfSaleCardPaymentState) {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "10",
+                                                                                                    orderTotal: "10",
+                                                                                                    taxTotal: "10",
+                                                                                                    orderTotalDecimal: 10)),
+                                                                          paymentState: PointOfSalePaymentState(card: cardPaymentState, cash: .idle),
+                                                                          cardReaderConnectionStatus: .reconnecting(.init(name: "", batteryLevel: nil))) == false)
+    }
 }

@@ -16,20 +16,27 @@ struct StatusIcon: View {
         switch status {
         case .notStarted:
             Image(uiImage: UIImage.checkEmptyCircleImage)
+                .resizable()
+                .scaledToFit()
                 .foregroundStyle(Color(uiColor: UIColor.opaqueSeparator))
         case .running:
             Image(uiImage: .circlePartialSuccessImage)
-                .environment(\.colorScheme, .light)
+                .resizable()
+                .scaledToFit()
                 .rotationEffect(.degrees(isRotating ? 360 : 0))
-                .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: isRotating)
                 .onAppear {
-                    isRotating = true
+                    withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+                        isRotating = true
+                    }
                 }
         case .success:
             Image(uiImage: .checkCircleImage)
-                .environment(\.colorScheme, .light)
+                .resizable()
+                .scaledToFit()
         case .failure:
             Image(uiImage: .exclamationFilledImage)
+                .resizable()
+                .scaledToFit()
                 .foregroundColor(Color(uiColor: .error))
         }
     }

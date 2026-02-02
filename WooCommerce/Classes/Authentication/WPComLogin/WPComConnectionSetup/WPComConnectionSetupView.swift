@@ -29,16 +29,15 @@ struct WPComConnectionSetupView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                ConnectWPComHeaderView()
-                VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
-                    Text(Localization.title)
-                        .largeTitleStyle()
-                        .bold()
-                    Text(viewModel.subtitleAttributedString)
-                }
-
-                ScrollView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                    ConnectWPComHeaderView()
+                    VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
+                        Text(Localization.title)
+                            .largeTitleStyle()
+                            .bold()
+                        Text(viewModel.subtitleAttributedString)
+                    }
                     VStack(alignment: .leading, spacing: Constants.stepsVerticalSpacing) {
                         ForEach(viewModel.steps) { step in
                             WPComConnectionSetupStepView(step: step)

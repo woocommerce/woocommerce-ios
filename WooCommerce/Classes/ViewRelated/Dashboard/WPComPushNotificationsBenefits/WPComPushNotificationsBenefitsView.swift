@@ -35,25 +35,27 @@ struct WPComPushNotificationsBenefitsView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                Spacer()
+            ScrollView {
                 VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                    stackedImages
-                    title
-                    detail
+                    Spacer()
+                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                        stackedImages
+                        title
+                        detail
+                    }
+                    Spacer()
+                    footer
                 }
-                Spacer()
-                footer
-            }
-            .padding([.leading, .bottom, .trailing], Layout.contentPadding)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancelButton) {
-                        viewModel.notNowTapped()
+                .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.cancelButton) {
+                            viewModel.notNowTapped()
+                        }
                     }
                 }
+                .toolbarBackground(.hidden, for: .navigationBar)
             }
-            .toolbarBackground(.hidden, for: .navigationBar)
         }
         .onAppear {
             viewModel.onAppear()

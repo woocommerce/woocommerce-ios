@@ -67,6 +67,7 @@ final class WooPushNotificationSetupCoordinator {
 
         // TODO: start Jetpack connection flow with the retrieved authToken.
         DDLogDebug("📱 Magic link success, now proceed with Jetpack connection")
+        showConnectionSetup()
         return true
     }
 }
@@ -97,6 +98,8 @@ private extension WooPushNotificationSetupCoordinator {
             rootViewController.dismiss(animated: true) {
                 presenter.present(navigationController, animated: true)
             }
+        } else {
+            rootViewController.present(navigationController, animated: true)
         }
     }
 

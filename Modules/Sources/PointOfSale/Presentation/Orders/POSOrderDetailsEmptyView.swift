@@ -11,9 +11,17 @@ struct POSOrderDetailsEmptyView: View {
             VStack {
                 Spacer()
 
-                Text(Localization.noOrderToDisplay)
+                PointOfSaleAssets.noOrders.decorativeImage
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+                    .foregroundColor(.posOnSurface)
+
+                Spacer().frame(height: POSSpacing.medium)
+
+                Text(Localization.noOrderSelected)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .foregroundStyle(Color.posOnSurface)
                     .multilineTextAlignment(.center)
 
                 Spacer()
@@ -24,6 +32,10 @@ struct POSOrderDetailsEmptyView: View {
     }
 }
 
+private enum Constants {
+    static let iconSize: CGFloat = 88
+}
+
 private enum Localization {
     static let title = NSLocalizedString(
         "pos.orderDetailsEmptyView.ordersTitle",
@@ -31,10 +43,10 @@ private enum Localization {
         comment: "Title at the header for the Order Details empty view."
     )
 
-    static let noOrderToDisplay = NSLocalizedString(
-        "pos.orderDetailsEmptyView.noOrderToDisplay",
-        value: "No order to display",
-        comment: "Text appearing in the order details pane when there are no orders available."
+    static let noOrderSelected = NSLocalizedString(
+        "pos.orderDetailsEmptyView.noOrderSelected",
+        value: "No order selected.",
+        comment: "Text appearing in the order details pane when no order is selected."
     )
 }
 

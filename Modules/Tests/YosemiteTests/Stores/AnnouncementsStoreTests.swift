@@ -168,6 +168,76 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertNotNil(announcement)
         XCTAssertTrue(isDisplayed)
     }
+
+    func test_synchronize_announcements_for_debug_fetches_with_custom_app_version() {
+        // Arrange
+        let customVersion = "999.0"
+        let announcement = makeAnnouncement()
+        remote.whenLoadingAnnouncements(for: customVersion, thenReturn: .success([announcement]))
+
+        // Act
+        let fetchedAnnouncement: Yosemite.Announcement? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncementsForDebug(appVersion: customVersion) { result in
+                promise(try? result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(fetchedAnnouncement?.appVersionName, "1")
+    }
+
+    func test_synchronize_announcements_for_debug_always_overwrites_existing_announcement() throws {
+        // Arrange
+        let customVersion = "999.0"
+        let announcement = makeAnnouncement()
+        remote.whenLoadingAnnouncements(for: customVersion, thenReturn: .success([announcement]))
+        try fileStorage?.write(makeStorageAnnouncement(displayed: true), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
+
+        // Act - fetch twice to ensure it overwrites without error
+        let firstResult: Yosemite.Announcement? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncementsForDebug(appVersion: customVersion) { result in
+                promise(try? result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        let secondResult: Yosemite.Announcement? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncementsForDebug(appVersion: customVersion) { result in
+                promise(try? result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert - both should succeed
+        XCTAssertNotNil(firstResult)
+        XCTAssertNotNil(secondResult)
+    }
+
+    func test_delete_saved_announcement_removes_file() throws {
+        // Arrange
+        try fileStorage?.write(makeStorageAnnouncement(), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
+
+        // Act
+        let deleteResult: Result<Void, Error> = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.deleteSavedAnnouncement { result in
+                promise(result)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNoThrow(try deleteResult.get())
+
+        // Verify file is deleted by trying to load
+        let loadError: AnnouncementsStorageError? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(result.failure as? AnnouncementsStorageError)
+            }
+            self?.subject?.onAction(action)
+        }
+        XCTAssertEqual(loadError, .invalidAnnouncement)
+    }
 }
 
 // MARK: - Utils

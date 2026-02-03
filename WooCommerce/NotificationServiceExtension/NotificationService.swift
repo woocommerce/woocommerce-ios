@@ -4,21 +4,20 @@ import UserNotifications
 final class NotificationService: UNNotificationServiceExtension {
 
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
-        let content = request.content
-        if shouldBlockNotifications(with: content) {
+        if shouldSuppressNotifications(with: request.content.userInfo) {
+            let silentContent = UNMutableNotificationContent()
+            contentHandler(silentContent)
+            UNUserNotificationCenter.current().removeDeliveredNotifications(
+                withIdentifiers: [request.identifier]
+            )
             return
         }
-        contentHandler(content)
-    }
-    
-    override func serviceExtensionTimeWillExpire() {
-        // No-op
+        contentHandler(request.content)
     }
 }
 
 private extension NotificationService {
-    func shouldBlockNotifications(with content: UNNotificationContent) -> Bool {
-        let userInfo = content.userInfo
+    func shouldSuppressNotifications(with userInfo: [AnyHashable: Any]) -> Bool {
         let registeredSites = UserDefaults.standard.string(forKey: Constants.registeredIDsKey)?
             .components(separatedBy: ",")
             .compactMap { Int64($0) }

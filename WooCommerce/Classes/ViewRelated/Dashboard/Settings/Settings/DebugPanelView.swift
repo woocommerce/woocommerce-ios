@@ -1,6 +1,9 @@
 import SwiftUI
+import Yosemite
 
 struct DebugPanelView: View {
+    @State private var announcementToPresent: Announcement?
+    @State private var announcementError: String?
 
     var body: some View {
         List {
@@ -19,9 +22,58 @@ struct DebugPanelView: View {
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
             }
+
+            Section("Announcements") {
+                Button("Fetch Test Announcement (v999.0)") {
+                    fetchTestAnnouncement()
+                }
+
+                Button("Reset Announcement State") {
+                    resetAnnouncementState()
+                }
+            }
+
+            if let error = announcementError {
+                Section {
+                    Text(error)
+                        .foregroundStyle(.red)
+                }
+            }
         }
         .contentMargins(20)
         .navigationTitle("Debug Panel")
+        .sheet(item: $announcementToPresent) { announcement in
+            ViewControllerContainer(WhatsNewFactory.whatsNew(announcement) {
+                announcementToPresent = nil
+            })
+            .ignoresSafeArea()
+        }
+    }
+
+    private func fetchTestAnnouncement() {
+        announcementError = nil
+        let action = AnnouncementsAction.synchronizeAnnouncementsForDebug(appVersion: "999.0") { result in
+            switch result {
+            case .success(let announcement):
+                announcementToPresent = announcement
+            case .failure(let error):
+                announcementError = "Failed to fetch announcement: \(error.localizedDescription)"
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    private func resetAnnouncementState() {
+        announcementError = nil
+        let action = AnnouncementsAction.deleteSavedAnnouncement { result in
+            switch result {
+            case .success:
+                announcementError = nil
+            case .failure(let error):
+                announcementError = "Failed to reset: \(error.localizedDescription)"
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

@@ -13,4 +13,14 @@ public enum AnnouncementsAction: Action {
     /// Marks the saved announcement as displayed
     ///
     case markSavedAnnouncementAsDisplayed(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Synchronizes announcements for debugging purposes, using a custom app version.
+    /// This allows fetching test announcements targeting a specific version (e.g., "999.0")
+    /// without affecting production users.
+    ///
+    case synchronizeAnnouncementsForDebug(appVersion: String, onCompletion: (Result<Announcement, Error>) -> Void)
+
+    /// Deletes the saved announcement from disk.
+    ///
+    case deleteSavedAnnouncement(onCompletion: (Result<Void, Error>) -> Void)
 }

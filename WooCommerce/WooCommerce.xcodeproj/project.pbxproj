@@ -1039,6 +1039,7 @@
 		31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FC8CE827B476BA004B9456 /* CardReaderSettingsResultsControllers.swift */; };
 		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
 		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
+		3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */; };
 		3F0904092D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1306,6 +1307,7 @@
 		57CFCD2A2488496F003F51EC /* PrimarySectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57CFCD292488496F003F51EC /* PrimarySectionHeaderView.xib */; };
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
+		60F065B6277C041548D2FDB0 /* WPComConnectionSetupHandlerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA1E86ADF5748A12DEA7246 /* WPComConnectionSetupHandlerProtocol.swift */; };
 		640D42342F2B840A00300B0D /* WPComConnectionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640D42332F2B840400300B0D /* WPComConnectionSetupView.swift */; };
 		640D42372F2B863400300B0D /* WPComConnectionSetupStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640D42362F2B862C00300B0D /* WPComConnectionSetupStepView.swift */; };
 		640D42392F2B949500300B0D /* StatusIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640D42382F2B949500300B0D /* StatusIcon.swift */; };
@@ -1326,6 +1328,7 @@
 		6497CCA62EF19EC100DA63F1 /* BookingListContainerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6497CCA52EF19EBB00DA63F1 /* BookingListContainerViewModelTests.swift */; };
 		64B1EEDD2F2CA0EC00A73166 /* WPComConnectionSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64B1EEDC2F2CA0E600A73166 /* WPComConnectionSetupViewModel.swift */; };
 		64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */; };
+		65C3DAD76E10B1E054AA3265 /* WPComConnectionSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84220C711EB50D753B01037 /* WPComConnectionSetupViewModelTests.swift */; };
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
 		680E36B72BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */; };
@@ -4277,6 +4280,7 @@
 		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Modules/Tests/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
 		A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCellViewModel.swift; sourceTree = "<group>"; };
 		A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCellViewModelTests.swift; sourceTree = "<group>"; };
+		A84220C711EB50D753B01037 /* WPComConnectionSetupViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupViewModelTests.swift; sourceTree = "<group>"; };
 		ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsUnavailableView.swift; sourceTree = "<group>"; };
 		ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewController.swift; sourceTree = "<group>"; };
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
@@ -5493,7 +5497,9 @@
 		EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
 		EEEDA915290A799E004B001D /* WordPressAuthenticator+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressAuthenticator+Internal.swift"; sourceTree = "<group>"; };
 		EEF5C14F2BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModelTests.swift; sourceTree = "<group>"; };
+		F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MockWPComConnectionSetupHandler.swift; sourceTree = "<group>"; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAA1E86ADF5748A12DEA7246 /* WPComConnectionSetupHandlerProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupHandlerProtocol.swift; sourceTree = "<group>"; };
 		FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCase.swift; sourceTree = "<group>"; };
 		FE28F7102684CA29004465C7 /* RoleErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewController.swift; sourceTree = "<group>"; };
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
@@ -5506,14 +5512,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F065E742F29B41D00881B6E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F065E742F29B41D00881B6E /* Exceptions for "Woo Watch App" folder in "Woo Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Woo-Watch-App-Info.plist",
 			);
 			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
 		};
-		3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -5552,14 +5558,14 @@
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
-		3F985FB12F29AFD400924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FB12F29AFD400924231 /* Exceptions for "WatchWidgetsExtension" folder in "WatchWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtension */;
 		};
-		3F985FC72F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FC72F29B00D00924231 /* Exceptions for "NotificationExtension" folder in "WooCommerceTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				OrderNotificationDataService.swift,
@@ -5568,21 +5574,21 @@
 			);
 			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
 		};
-		3F985FC82F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FC82F29B00D00924231 /* Exceptions for "NotificationExtension" folder in "NotificationExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 260837062AA66E4A0004A12B /* NotificationExtension */;
 		};
-		3F985FC92F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FC92F29B00D00924231 /* Exceptions for "NotificationExtension" folder in "Woo Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				OrderNotificationDataService.swift,
 			);
 			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
 		};
-		3F985FFC2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FFC2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "WooCommerce" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Entitlements,
@@ -5590,7 +5596,7 @@
 			);
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 		};
-		3F985FFD2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FFD2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "StoreWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Entitlements,
@@ -5598,7 +5604,7 @@
 			);
 			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
 		};
-		3F985FFE2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FFE2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "Woo Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				StoreInfoDataService.swift,
@@ -5606,7 +5612,7 @@
 			);
 			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
 		};
-		3F985FFF2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F985FFF2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "WatchWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Homescreen/View+ContainerBackground.swift",
@@ -5625,7 +5631,7 @@
 			);
 			target = CCDC49C923FFFFF4003166BA /* WooCommerceUITests */;
 		};
-		3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.swiftlint.yml,
@@ -5636,7 +5642,7 @@
 			);
 			target = 3F0904072D26A40800D8ACCE /* WordPressAuthenticatorTests */;
 		};
-		3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3FD9BFC42E0A2534004A8DC8 /* Exceptions for "WooCommerceScreenshots" folder in "WooCommerceScreenshots" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -5655,7 +5661,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
 		3F065E5C2F29B41D00881B6E /* Woo Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F065E742F29B41D00881B6E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Woo Watch App"; sourceTree = "<group>"; };
-		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
 		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
 		3F985FAD2F29AFD400924231 /* WatchWidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FB12F29AFD400924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgetsExtension; sourceTree = "<group>"; };
 		3F985FBB2F29B00D00924231 /* NotificationExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FC72F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC82F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC92F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationExtension; sourceTree = "<group>"; };
@@ -5668,9 +5673,162 @@
 		684A7F442ECEFDC8003E2A1C /* Mocks */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Mocks; sourceTree = "<group>"; };
 		DE158D1F2F31BC8200161712 /* NotificationServiceExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DE158D2A2F31BC8200161712 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationServiceExtension; sourceTree = "<group>"; };
 		DEDB5D342E7A68950022E5A1 /* Bookings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Bookings; sourceTree = "<group>"; };
+		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WooShippingPaymentMethod;
+			sourceTree = "<group>";
+		};
+		3F065E5C2F29B41D00881B6E /* Woo Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F065E742F29B41D00881B6E /* Exceptions for "Woo Watch App" folder in "Woo Watch App" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Woo Watch App";
+			sourceTree = "<group>";
+		};
+		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WordPressAuthenticator;
+			sourceTree = "<group>";
+		};
+		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WordPressAuthenticatorTests;
+			sourceTree = "<group>";
+		};
+		3F985FAD2F29AFD400924231 /* WatchWidgetsExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F985FB12F29AFD400924231 /* Exceptions for "WatchWidgetsExtension" folder in "WatchWidgetsExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WatchWidgetsExtension;
+			sourceTree = "<group>";
+		};
+		3F985FBB2F29B00D00924231 /* NotificationExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F985FC72F29B00D00924231 /* Exceptions for "NotificationExtension" folder in "WooCommerceTests" target */,
+				3F985FC82F29B00D00924231 /* Exceptions for "NotificationExtension" folder in "NotificationExtension" target */,
+				3F985FC92F29B00D00924231 /* Exceptions for "NotificationExtension" folder in "Woo Watch App" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = NotificationExtension;
+			sourceTree = "<group>";
+		};
+		3F985FE02F29B06300924231 /* StoreWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F985FFC2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "WooCommerce" target */,
+				3F985FFD2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "StoreWidgetsExtension" target */,
+				3F985FFE2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "Woo Watch App" target */,
+				3F985FFF2F29B06300924231 /* Exceptions for "StoreWidgets" folder in "WatchWidgetsExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+				Entitlements,
+			);
+			path = StoreWidgets;
+			sourceTree = "<group>";
+		};
+		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3FD9BFC42E0A2534004A8DC8 /* Exceptions for "WooCommerceScreenshots" folder in "WooCommerceScreenshots" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WooCommerceScreenshots;
+			sourceTree = "<group>";
+		};
+		646A2C682E9FCD7E003A32A1 /* Routing */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Routing;
+			sourceTree = "<group>";
+		};
+		6489D8522EA667AC00D96802 /* Routing */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Routing;
+			sourceTree = "<group>";
+		};
+		64EA08E42EC214FA00050202 /* MultilineEditableTextRow */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = MultilineEditableTextRow;
+			sourceTree = "<group>";
+		};
+		684A7F442ECEFDC8003E2A1C /* Mocks */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		DEDB5D342E7A68950022E5A1 /* Bookings */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Bookings;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
-/* Begin PBXFrameworksBuildPhase section */
 		260837042AA66E4A0004A12B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8670,6 +8828,7 @@
 				640D42382F2B949500300B0D /* StatusIcon.swift */,
 				640D42362F2B862C00300B0D /* WPComConnectionSetupStepView.swift */,
 				640D42332F2B840400300B0D /* WPComConnectionSetupView.swift */,
+				FAA1E86ADF5748A12DEA7246 /* WPComConnectionSetupHandlerProtocol.swift */,
 			);
 			path = WPComConnectionSetup;
 			sourceTree = "<group>";
@@ -8881,6 +9040,7 @@
 				DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */,
 				EE4C75DE2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift */,
 				CEC3CC792C93537B00B93FBE /* MockShippingSettingsService.swift */,
+				F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -9017,6 +9177,15 @@
 				4596853D2540667700D17B90 /* BottomSheetListSelector */,
 			);
 			path = "File List";
+			sourceTree = "<group>";
+		};
+		7A8FF12CE6CBEC6A815C9349 /* WPComConnectionSetup */ = {
+			isa = PBXGroup;
+			children = (
+				A84220C711EB50D753B01037 /* WPComConnectionSetupViewModelTests.swift */,
+			);
+			name = WPComConnectionSetup;
+			path = WPComConnectionSetup;
 			sourceTree = "<group>";
 		};
 		7E7C5F7B2719A91600315B61 /* Categories */ = {
@@ -12205,6 +12374,7 @@
 				DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */,
 				DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */,
 				95B6C6132DA18E3A00E1A661 /* WPComMagicLinkRequestViewModelTests.swift */,
+				7A8FF12CE6CBEC6A815C9349 /* WPComConnectionSetup */,
 			);
 			path = WPComLogin;
 			sourceTree = "<group>";
@@ -13035,8 +13205,6 @@
 				nl,
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
-			packageReferences = (
-			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -15163,6 +15331,7 @@
 				01929C362CEF6D6E006C79ED /* CardPresentModalNonRetryableErrorWithoutEmail.swift in Sources */,
 				532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */,
 				53284E9AB1C65FD79E803694 /* EUShippingNoticeTopBannerFactory.swift in Sources */,
+				60F065B6277C041548D2FDB0 /* WPComConnectionSetupHandlerProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15877,6 +16046,8 @@
 				B9C4AB2B28003481007008B8 /* MockPaymentsPluginsDataProvider.swift in Sources */,
 				57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */,
 				DE0BE0C12F333BC0009CE891 /* NotificationServiceSuppressionTests.swift in Sources */,
+				3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */,
+				65C3DAD76E10B1E054AA3265 /* WPComConnectionSetupViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

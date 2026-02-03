@@ -21,7 +21,13 @@ struct DebugPanelView: View {
             }
 
             DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
-                let viewModel = WPComConnectionSetupViewModel(storeName: "nicestore.com", onDismiss: dismiss)
+                let viewModel = WPComConnectionSetupViewModel(
+                    storeName: "nicestore.com",
+                    handler: WPComConnectionSetupHandler(),
+                    onDismiss: dismiss,
+                    onGoToStore: dismiss,
+                    onUpdatePlugin: {}
+                )
                 WPComConnectionSetupView(viewModel: viewModel)
             }
         }

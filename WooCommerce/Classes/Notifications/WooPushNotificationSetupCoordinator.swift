@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
+@MainActor
 final class WooPushNotificationSetupCoordinator {
     // Controller to handle navigation between the auth flow and setup steps.
     let rootViewController: UIViewController
@@ -80,9 +81,20 @@ private extension WooPushNotificationSetupCoordinator {
     func showConnectionSetup() {
         let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
         let navigationController = WooNavigationController()
-        let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak navigationController] in
-            navigationController?.dismiss(animated: true)
-        })
+        let handler = WPComConnectionSetupHandler()
+        let viewModel = WPComConnectionSetupViewModel(
+            storeName: storeName,
+            handler: handler,
+            onDismiss: { [weak navigationController] in
+                navigationController?.dismiss(animated: true)
+            },
+            onGoToStore: { [weak navigationController] in
+                navigationController?.dismiss(animated: true)
+            },
+            onUpdatePlugin: {
+                // TODO: Implement plugin update flow in follow-up PR
+            }
+        )
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
         navigationController.viewControllers = [connectionSetupController]
 

@@ -113,6 +113,12 @@ private extension WPComConnectionSetupView {
 }
 
 #Preview {
-    let viewModel = WPComConnectionSetupViewModel(storeName: "coffeebeans.com", onDismiss: {})
+    let viewModel = WPComConnectionSetupViewModel(
+        storeName: "coffeebeans.com",
+        handler: WPComConnectionSetupHandler(),
+        onDismiss: {},
+        onGoToStore: {},
+        onUpdatePlugin: {}
+    )
     WPComConnectionSetupView(viewModel: viewModel)
 }

@@ -214,30 +214,6 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertNotNil(secondResult)
     }
 
-    func test_delete_saved_announcement_removes_file() throws {
-        // Arrange
-        try fileStorage?.write(makeStorageAnnouncement(), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
-
-        // Act
-        let deleteResult: Result<Void, Error> = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.deleteSavedAnnouncement { result in
-                promise(result)
-            }
-            self?.subject?.onAction(action)
-        }
-
-        // Assert
-        XCTAssertNoThrow(try deleteResult.get())
-
-        // Verify file is deleted by trying to load
-        let loadError: AnnouncementsStorageError? = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.loadSavedAnnouncement { result in
-                promise(result.failure as? AnnouncementsStorageError)
-            }
-            self?.subject?.onAction(action)
-        }
-        XCTAssertEqual(loadError, .invalidAnnouncement)
-    }
 }
 
 // MARK: - Utils

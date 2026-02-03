@@ -65,7 +65,7 @@ private extension POSRefundConfirmationView {
     var loadingSection: some View {
         VStack {
             ProgressView()
-                .progressViewStyle(POSProgressViewStyle(size: 64, lineWidth: 20))
+                .progressViewStyle(POSRefundModalLayout.progressViewStyle)
         }
         .frame(maxWidth: .infinity)
         .padding(POSPadding.xLarge)

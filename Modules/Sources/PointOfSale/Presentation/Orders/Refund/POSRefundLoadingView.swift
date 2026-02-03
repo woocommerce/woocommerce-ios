@@ -6,7 +6,7 @@ struct POSRefundLoadingView: View {
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
             ProgressView()
-                .progressViewStyle(POSProgressViewStyle(size: 64, lineWidth: 20))
+                .progressViewStyle(POSRefundModalLayout.progressViewStyle)
 
             Text(Localization.loadingMessage)
                 .font(.posBodyLargeRegular())

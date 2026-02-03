@@ -88,10 +88,8 @@ struct DestructiveButtonStyle: ButtonStyle {
 }
 
 struct LinkButtonStyle: ButtonStyle {
-    var padding: EdgeInsets = Style.defaultEdgeInsets
-
     func makeBody(configuration: Configuration) -> some View {
-        LinkButton(configuration: configuration, padding: padding)
+        LinkButton(configuration: configuration)
     }
 }
 
@@ -99,13 +97,12 @@ struct LinkButtonStyle: ButtonStyle {
 ///
 struct LinkLoadingButtonStyle: ButtonStyle {
     let isLoading: Bool
-    var padding: EdgeInsets = Style.defaultEdgeInsets
 
     func makeBody(configuration: Configuration) -> some View {
         if isLoading {
             ProgressView()
         } else {
-            LinkButton(configuration: configuration, padding: padding)
+            LinkButton(configuration: configuration)
         }
 
     }
@@ -487,11 +484,9 @@ private struct LinkButton: View {
     @Environment(\.isEnabled) var isEnabled
 
     let configuration: ButtonStyleConfiguration
-    var padding: EdgeInsets = Style.defaultEdgeInsets
 
     var body: some View {
-        configuration.label
-            .padding(padding)
+        BaseButton(configuration: configuration)
             .foregroundColor(Color(foregroundColor))
             .background(Color(.clear))
     }

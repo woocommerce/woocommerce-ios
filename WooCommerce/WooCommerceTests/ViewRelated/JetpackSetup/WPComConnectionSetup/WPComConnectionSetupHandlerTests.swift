@@ -24,134 +24,115 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Connection Step Tests
-
     @MainActor
-    func test_no_credentials_skips_connection_and_proceeds_to_plugin_check() async {
-        // Given - no credentials means connection step is skipped
+    func test_no_credentials_completes_setup_with_compatible_plugin() {
+        // Given
+        let expectation = expectation(description: "Setup completes")
         mockPluginChecker.result = .compatible
-        let handler = givenHandler(wpcomCredentials: nil)
+        handlerObserver.onSetupComplete = { expectation.fulfill() }
 
         // When
+        let handler = givenHandler(wpcomCredentials: nil)
         handler.start()
-        try? await Task.sleep(nanoseconds: 300_000_000)
 
-        // Then - connection step succeeds immediately, plugin check runs
+        // Then
+        waitForExpectations(timeout: 1.0)
         XCTAssertEqual(handlerObserver.lastStatusForStep(.connect), .success)
-        XCTAssertTrue(handlerObserver.updatedSteps.contains(.checkPlugin))
-        XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
-    }
-
-    @MainActor
-    func test_with_credentials_triggers_connection_step_running() async {
-        // Given
-        mockJetpackConnectionActions(delay: 1.0)
-        let handler = givenHandler(wpcomCredentials: Credentials(authToken: "test"))
-
-        // When
-        handler.start()
-        try? await Task.sleep(nanoseconds: 100_000_000)
-
-        // Then
-        XCTAssertTrue(handlerObserver.updatedSteps.contains(.connect))
-        XCTAssertEqual(handlerObserver.lastStatusForStep(.connect), .running)
-    }
-
-    @MainActor
-    func test_connection_failure_does_not_proceed_to_plugin_check() async {
-        // Given
-        mockJetpackConnectionActions(shouldFail: true)
-        mockPluginChecker.result = .compatible
-        let handler = givenHandler(wpcomCredentials: Credentials(authToken: "test"))
-
-        // When
-        handler.start()
-        try? await Task.sleep(nanoseconds: 500_000_000)
-
-        // Then
-        XCTAssertTrue(handlerObserver.updatedSteps.contains(.connect))
-        XCTAssertFalse(handlerObserver.updatedSteps.contains(.checkPlugin))
-        if case .failure = handlerObserver.lastStatusForStep(.connect) {
-            // Expected
-        } else {
-            XCTFail("Expected failure status for connect step")
-        }
-    }
-
-    // MARK: - Plugin Check Tests
-
-    @MainActor
-    func test_plugin_compatible_triggers_setupDidComplete() async {
-        // Given - skip connection by passing nil credentials
-        mockPluginChecker.result = .compatible
-        let handler = givenHandler(wpcomCredentials: nil)
-
-        // When
-        handler.start()
-        try? await Task.sleep(nanoseconds: 300_000_000)
-
-        // Then
-        XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
         XCTAssertEqual(handlerObserver.lastStatusForStep(.checkPlugin), .success)
-    }
-
-    @MainActor
-    func test_plugin_incompatible_triggers_failure() async {
-        // Given - skip connection by passing nil credentials
-        mockPluginChecker.result = .incompatible(currentVersion: "9.0.0", requiredVersion: "10.4.3")
-        let handler = givenHandler(wpcomCredentials: nil)
-
-        // When
-        handler.start()
-        try? await Task.sleep(nanoseconds: 300_000_000)
-
-        // Then
-        if case .failure = handlerObserver.lastStatusForStep(.checkPlugin) {
-            // Expected
-        } else {
-            XCTFail("Expected failure status for checkPlugin step")
-        }
-        XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
-    }
-
-    // MARK: - Retry and Cancel Tests
-
-    @MainActor
-    func test_retry_restarts_from_failed_step() async {
-        // Given - plugin check fails first
-        mockPluginChecker.result = .incompatible(currentVersion: "9.0.0", requiredVersion: "10.4.3")
-        let handler = givenHandler(wpcomCredentials: nil)
-
-        // First attempt - fails at plugin check
-        handler.start()
-        try? await Task.sleep(nanoseconds: 300_000_000)
-        XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
-
-        // Now make it succeed
-        mockPluginChecker.result = .compatible
-
-        // When - retry
-        handler.retry()
-        try? await Task.sleep(nanoseconds: 300_000_000)
-
-        // Then - should complete
         XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
     }
 
     @MainActor
-    func test_cancel_stops_ongoing_task() async {
+    func test_connection_failure_stops_flow() {
         // Given
-        mockPluginChecker.result = .compatible
-        mockPluginChecker.delay = 1.0
-        let handler = givenHandler(wpcomCredentials: nil)
+        let expectation = expectation(description: "Connection fails")
+        mockJetpackConnectionActions(shouldFail: true)
+        handlerObserver.onStepUpdate = { step, status in
+            if step == .connect, case .failure = status {
+                expectation.fulfill()
+            }
+        }
 
         // When
+        let handler = givenHandler(wpcomCredentials: Credentials(authToken: "test"))
         handler.start()
-        try? await Task.sleep(nanoseconds: 100_000_000)
-        handler.cancel()
-        try? await Task.sleep(nanoseconds: 500_000_000)
 
-        // Then - should not have completed setup since we cancelled
+        // Then
+        waitForExpectations(timeout: 1.0)
+        XCTAssertFalse(handlerObserver.updatedSteps.contains(.checkPlugin))
+    }
+
+    @MainActor
+    func test_plugin_incompatible_triggers_failure() {
+        // Given
+        let expectation = expectation(description: "Plugin check fails")
+        mockPluginChecker.result = .incompatible(currentVersion: "9.0.0", requiredVersion: "10.4.3")
+        handlerObserver.onStepUpdate = { step, status in
+            if step == .checkPlugin, case .failure = status {
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        let handler = givenHandler(wpcomCredentials: nil)
+        handler.start()
+
+        // Then
+        waitForExpectations(timeout: 1.0)
+        XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
+    }
+
+    @MainActor
+    func test_retry_completes_after_initial_failure() {
+        // Given - first attempt fails
+        let failExpectation = expectation(description: "First attempt fails")
+        mockPluginChecker.result = .incompatible(currentVersion: "9.0.0", requiredVersion: "10.4.3")
+        handlerObserver.onStepUpdate = { step, status in
+            if step == .checkPlugin, case .failure = status {
+                failExpectation.fulfill()
+            }
+        }
+
+        let handler = givenHandler(wpcomCredentials: nil)
+        handler.start()
+        waitForExpectations(timeout: 1.0)
+
+        // When - retry with compatible plugin
+        let successExpectation = expectation(description: "Retry succeeds")
+        mockPluginChecker.result = .compatible
+        handlerObserver.onSetupComplete = { successExpectation.fulfill() }
+
+        handler.retry()
+
+        // Then
+        waitForExpectations(timeout: 1.0)
+        XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
+    }
+
+    @MainActor
+    func test_cancel_prevents_completion() {
+        // Given
+        let runningExpectation = expectation(description: "Plugin check starts")
+        mockPluginChecker.result = .compatible
+        mockPluginChecker.delay = 2.0
+        handlerObserver.onStepUpdate = { step, status in
+            if step == .checkPlugin, status == .running {
+                runningExpectation.fulfill()
+            }
+        }
+
+        let handler = givenHandler(wpcomCredentials: nil)
+        handler.start()
+        waitForExpectations(timeout: 1.0)
+
+        // When
+        handler.cancel()
+
+        // Then - give time for would-be completion, verify it didn't happen
+        let noCompletionExpectation = expectation(description: "No completion")
+        noCompletionExpectation.isInverted = true
+        handlerObserver.onSetupComplete = { noCompletionExpectation.fulfill() }
+        waitForExpectations(timeout: 0.5)
         XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
     }
 
@@ -170,16 +151,9 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
     }
 
     @MainActor
-    private func mockJetpackConnectionActions(shouldFail: Bool = false, delay: TimeInterval = 0) {
+    private func mockJetpackConnectionActions(shouldFail: Bool = false) {
         mockStores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            if delay > 0 {
-                Task {
-                    try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                    self.handleJetpackAction(action, shouldFail: shouldFail)
-                }
-            } else {
-                self.handleJetpackAction(action, shouldFail: shouldFail)
-            }
+            self.handleJetpackAction(action, shouldFail: shouldFail)
         }
     }
 

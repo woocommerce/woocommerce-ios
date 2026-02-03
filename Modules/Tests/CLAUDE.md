@@ -2,7 +2,7 @@
 
 ## Framework
 - **Prefer SwiftTesting over XCTest** for new tests, use `@Test` attribute and `#expect()` assertions
-- Match the existing style when adding tests to an existing test class
+- When adding tests to an existing test class, follow that class's framework, naming, and testing approach
 
 ## Naming Conventions
 Follow [naming-conventions.md](../../docs/naming-conventions.md#test-methods). Example:

@@ -10,21 +10,20 @@ struct WhatsNewFactory {
     static func whatsNew(_ announcement: Announcement,
                          onDismiss: @escaping () -> Void) -> UIViewController {
 
-        let items = mapFeaturesToItems(announcement.features, detailsUrl: announcement.detailsUrl)
-        let viewModel = WhatsNewViewModel(items: items, onDismiss: onDismiss)
+        let items = mapFeaturesToItems(announcement.features)
+        let learnMoreURL = URL(string: announcement.detailsUrl)
+        let viewModel = WhatsNewViewModel(items: items, learnMoreURL: learnMoreURL, onDismiss: onDismiss)
         let rootView = ReportList(viewModel: viewModel)
         let hostingViewController = WhatsNewHostingController(rootView: rootView)
         return hostingViewController
     }
 
     /// Transform Features into ReportItem models
-    private static func mapFeaturesToItems(_ features: [Feature], detailsUrl: String) -> [ReportItem] {
-        let learnMoreURL = URL(string: detailsUrl)
+    private static func mapFeaturesToItems(_ features: [Feature]) -> [ReportItem] {
         return features.map {
             ReportItem(title: $0.title,
                        subtitle: $0.subtitle,
-                       icon: icon(for: $0),
-                       learnMoreURL: learnMoreURL)
+                       icon: icon(for: $0))
         }
     }
 

@@ -5,6 +5,7 @@ protocol ReportListPresentable {
     var items: [ReportItem] { get }
     var title: String { get }
     var ctaTitle: String { get }
+    var learnMoreURL: URL? { get }
     var onDismiss: () -> Void { get }
     func onAppear()
 }
@@ -14,7 +15,6 @@ struct ReportItem: Identifiable {
     let title: String
     let subtitle: String
     let icon: IconListItem.Icon?
-    let learnMoreURL: URL?
 }
 
 /// Represent a screen with a list of IconListItems. Mainly used to present reports such as What's New in WooCommerce.
@@ -23,15 +23,6 @@ struct ReportList: View {
     let viewModel: ReportListPresentable
     @Environment(\.horizontalSizeClass) var sizeClass: UserInterfaceSizeClass?
     @Environment(\.openURL) private var openURL
-
-    private var singleItemLearnMoreURL: URL? {
-        guard viewModel.items.count == 1 else { return nil }
-        return viewModel.items.first?.learnMoreURL
-    }
-
-    private var shouldShowBottomLearnMore: Bool {
-        singleItemLearnMoreURL != nil
-    }
 
     var body: some View {
         ScrollView {
@@ -42,15 +33,14 @@ struct ReportList: View {
                 ForEach(viewModel.items, id: \.id) { item in
                     IconListItem(title: item.title,
                                  subtitle: item.subtitle,
-                                 icon: item.icon,
-                                 learnMoreURL: shouldShowBottomLearnMore ? nil : item.learnMoreURL)
+                                 icon: item.icon)
                 }
             }
         }
         .onAppear(perform: viewModel.onAppear)
         .safeAreaInset(edge: .bottom) {
             VStack {
-                if let learnMoreURL = singleItemLearnMoreURL {
+                if let learnMoreURL = viewModel.learnMoreURL {
                     Button(Localization.learnMore) {
                         openURL(learnMoreURL)
                     }
@@ -108,60 +98,33 @@ struct ReportList_Previews: PreviewProvider {
             ReportItem(
                 title: "feature 1",
                 subtitle: "subtitle 1",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: nil
+                icon: .remote(sampleIconURL)
             ),
             ReportItem(
                 title: "feature 2",
                 subtitle: "subtitle 2",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: nil
+                icon: .remote(sampleIconURL)
             ),
             ReportItem(
                 title: "feature 3",
                 subtitle: "subtitle 3",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: nil
-            ),
-            ReportItem(
-                title: "feature 4",
-                subtitle: "subtitle 4",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: nil
+                icon: .remote(sampleIconURL)
             )
         ], onDismiss: {}))
-        .previewDisplayName("Multiple features - no links")
-
-        ReportList(viewModel: WhatsNewViewModel(items: [
-            ReportItem(
-                title: "Point of Sale",
-                subtitle: "Sell in person with the new Point of Sale feature. Accept payments, manage inventory, and more.",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: sampleLearnMoreURL
-            )
-        ], onDismiss: {}))
-        .previewDisplayName("Single feature with link")
+        .previewDisplayName("Without Learn More URL")
 
         ReportList(viewModel: WhatsNewViewModel(items: [
             ReportItem(
                 title: "Point of Sale",
                 subtitle: "Sell in person with the new Point of Sale feature.",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: sampleLearnMoreURL
+                icon: .remote(sampleIconURL)
             ),
             ReportItem(
                 title: "Improved Analytics",
                 subtitle: "Track your store performance with enhanced analytics.",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: sampleLearnMoreURL
-            ),
-            ReportItem(
-                title: "New Payment Options",
-                subtitle: "Accept more payment methods from your customers.",
-                icon: .remote(sampleIconURL),
-                learnMoreURL: sampleLearnMoreURL
+                icon: .remote(sampleIconURL)
             )
-        ], onDismiss: {}))
-        .previewDisplayName("Multiple features with links")
+        ], learnMoreURL: sampleLearnMoreURL, onDismiss: {}))
+        .previewDisplayName("With Learn More URL")
     }
 }

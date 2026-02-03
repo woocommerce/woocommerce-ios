@@ -55,8 +55,6 @@ struct IconListItem: View {
     let title: String
     let subtitle: String
     let icon: Icon?
-    let learnMoreURL: URL?
-    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack(alignment: .top, spacing: Layout.contentSpacing) {
@@ -68,12 +66,6 @@ struct IconListItem: View {
                     .headlineStyle()
                 Text(subtitle)
                     .secondaryBodyStyle()
-                if let learnMoreURL {
-                    Button(Localization.learnMore) {
-                        openURL(learnMoreURL)
-                    }
-                    .buttonStyle(LinkButtonStyle(padding: .zero))
-                }
             }
             Spacer()
         }
@@ -93,14 +85,6 @@ private extension IconListItem {
     enum Constants {
         static let placeholderImageName: String = "list.bullet.circle.fill"
     }
-
-    enum Localization {
-        static let learnMore = NSLocalizedString(
-            "learnMore.link",
-            value: "Learn more",
-            comment: "Learn more button label in the What's New list"
-        )
-    }
 }
 
 // MARK: - Preview
@@ -110,16 +94,13 @@ struct IconListItem_Previews: PreviewProvider {
     static var previews: some View {
         IconListItem(title: "Title",
                      subtitle: "Subtitle",
-                     icon: .remote(sampleIconURL),
-                     learnMoreURL: nil)
+                     icon: .remote(sampleIconURL))
             .previewLayout(.fixed(width: 375, height: 100))
-            .previewDisplayName("Without learn more")
 
         IconListItem(title: "Point of Sale",
-                     subtitle: "Sell in person with the new Point of Sale feature.",
-                     icon: .remote(sampleIconURL),
-                     learnMoreURL: URL(string: "https://woocommerce.com/learn-more"))
+                     subtitle: "Sell in person with the new Point of Sale feature. Accept payments, manage inventory, and more.",
+                     icon: .remote(sampleIconURL))
             .previewLayout(.fixed(width: 375, height: 120))
-            .previewDisplayName("With learn more")
+            .previewDisplayName("Longer subtitle")
     }
 }

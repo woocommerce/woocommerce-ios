@@ -59,7 +59,6 @@ private extension WhatsNewViewModelTests {
     func makeItem() throws -> ReportItem {
         ReportItem(title: "foo",
                    subtitle: "bar",
-                   icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
-                   learnMoreURL: nil)
+                   icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
     }
 }

@@ -71,6 +71,8 @@ final class WooPushNotificationSetupCoordinator {
 private extension WooPushNotificationSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let wooCommercePluginPath = "woocommerce/woocommerce.php"
+        static let minimumWooCommerceVersion = "10.4.3"
     }
 
     func showConnectionSetup() {
@@ -83,7 +85,12 @@ private extension WooPushNotificationSetupCoordinator {
             WPComConnectionService(siteURL: site.url, wpcomCredentials: $0, stores: stores)
         }
 
-        let pluginChecker = PluginCompatibilityChecker(siteID: site.siteID, stores: stores)
+        let pluginChecker = SitePluginVersionChecker(
+            siteID: site.siteID,
+            pluginPath: Constants.wooCommercePluginPath,
+            minimumVersion: Constants.minimumWooCommerceVersion,
+            stores: stores
+        )
 
         let handler = WPComConnectionSetupHandler(
             connectionService: connectionService,

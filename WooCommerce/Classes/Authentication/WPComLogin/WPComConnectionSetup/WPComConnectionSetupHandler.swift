@@ -25,13 +25,13 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     weak var delegate: WPComConnectionSetupHandlerDelegate?
 
     private let connectionService: WPComConnectionServiceProtocol?
-    private let pluginChecker: PluginCompatibilityCheckerProtocol
+    private let pluginChecker: PluginVersionCheckerProtocol
 
     private var currentTask: Task<Void, Never>?
     private var lastFailedStep: SetupStep?
 
     init(connectionService: WPComConnectionServiceProtocol?,
-         pluginChecker: PluginCompatibilityCheckerProtocol) {
+         pluginChecker: PluginVersionCheckerProtocol) {
         self.connectionService = connectionService
         self.pluginChecker = pluginChecker
     }

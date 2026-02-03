@@ -8,13 +8,7 @@ protocol WPComConnectionServiceProtocol {
 
 /**
  Handles the WordPress.com connection flow using JetpackConnectionAction.
-
- The connection process:
- 1. Check if already connected (early exit if wpcomUser exists)
- 2. Register site if not registered
- 3. Provision connection
- 4. Finalize connection with WPCom credentials
- 5. Verify connection succeeded
+ Steps: check connection → register site → provision → finalize → verify.
  */
 final class WPComConnectionService: WPComConnectionServiceProtocol {
     private let siteURL: String
@@ -28,80 +22,50 @@ final class WPComConnectionService: WPComConnectionServiceProtocol {
     }
 
     func connect() async throws {
-        let connectionData = try await fetchConnectionData()
-
+        // 1. Check if already connected
+        let connectionData = try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
         if connectionData.currentUser.wpcomUser != nil {
             DDLogDebug("📱 WPCom connection: Site already connected")
             return
         }
 
+        // 2. Register site if needed
         let blogID: Int64
         if let existingBlogID = connectionData.blogID, connectionData.isRegistered == true {
             blogID = existingBlogID
         } else {
-            blogID = try await registerSite()
+            blogID = try await dispatch(JetpackConnectionAction.registerSite)
         }
 
-        let provisionResponse = try await provisionConnection()
-        try await finalizeConnection(blogID: blogID, provisionResponse: provisionResponse)
+        // 3. Provision connection
+        let provisionResponse = try await dispatch(JetpackConnectionAction.provisionConnection)
 
-        let verificationData = try await fetchConnectionData()
+        // 4. Finalize connection with WPCom credentials
+        let network = AlamofireNetwork(credentials: wpcomCredentials, selectedSite: nil, appPasswordSupportState: nil)
+        let siteURL = self.siteURL
+        try await dispatch { completion in
+            JetpackConnectionAction.finalizeConnection(
+                siteID: blogID,
+                siteURL: siteURL,
+                provisionResponse: provisionResponse,
+                network: network,
+                completion: completion
+            )
+        }
+
+        // 5. Verify connection succeeded
+        let verificationData = try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
         guard verificationData.currentUser.wpcomUser != nil else {
             throw WPComConnectionError.verificationFailed
         }
 
         DDLogDebug("📱 WPCom connection: Successfully connected")
     }
-}
 
-private extension WPComConnectionService {
-    func fetchConnectionData() async throws -> JetpackConnectionData {
+    private func dispatch<T>(_ actionBuilder: @escaping (@escaping (Result<T, Error>) -> Void) -> Action) async throws -> T {
         let stores = self.stores
         return try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
-                continuation.resume(with: result)
-            }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
-        }
-    }
-
-    func registerSite() async throws -> Int64 {
-        let stores = self.stores
-        return try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.registerSite { result in
-                continuation.resume(with: result)
-            }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
-        }
-    }
-
-    func provisionConnection() async throws -> JetpackConnectionProvisionResponse {
-        let stores = self.stores
-        return try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.provisionConnection { result in
-                continuation.resume(with: result)
-            }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
-        }
-    }
-
-    func finalizeConnection(blogID: Int64, provisionResponse: JetpackConnectionProvisionResponse) async throws {
-        let stores = self.stores
-        let network = AlamofireNetwork(credentials: wpcomCredentials, selectedSite: nil, appPasswordSupportState: nil)
-
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            let action = JetpackConnectionAction.finalizeConnection(
-                siteID: blogID,
-                siteURL: siteURL,
-                provisionResponse: provisionResponse,
-                network: network
-            ) { result in
+            let action = actionBuilder { result in
                 continuation.resume(with: result)
             }
             Task { @MainActor in

@@ -23,6 +23,7 @@ extension WooShippingNormalizedAddress {
     func toWooShippingAddress() -> WooShippingAddress {
         WooShippingAddress(company: company,
                            name: fullName,
+                           email: email,
                            phone: phone,
                            country: country,
                            state: state,

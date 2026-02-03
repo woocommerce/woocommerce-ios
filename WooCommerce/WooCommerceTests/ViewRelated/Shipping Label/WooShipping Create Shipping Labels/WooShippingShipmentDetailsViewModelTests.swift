@@ -991,6 +991,7 @@ private extension WooShippingShipmentDetailsViewModelTests {
     func sampleOriginAddress(country: String, state: String) -> WooShippingAddress {
         WooShippingAddress(company: "HEADQUARTERS",
                            name: "John Doe",
+                           email: nil,
                            phone: "",
                            country: country,
                            state: state,
@@ -1004,6 +1005,7 @@ private extension WooShippingShipmentDetailsViewModelTests {
     func sampleDestinationAddress(country: String, state: String) -> WooShippingAddress {
         WooShippingAddress(company: "",
                            name: "",
+                           email: nil,
                            phone: "",
                            country: country,
                            state: state,

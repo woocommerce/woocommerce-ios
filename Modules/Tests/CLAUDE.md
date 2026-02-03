@@ -1,8 +1,7 @@
 # Testing Guidelines
 
 ## Framework
-- **Prefer SwiftTesting over XCTest** for new tests
-- Use `@Test` attribute and `#expect()` assertions
+- **Prefer SwiftTesting over XCTest** for new tests, use `@Test` attribute and `#expect()` assertions
 - Match the existing style when adding tests to an existing test class
 
 ## Naming Conventions

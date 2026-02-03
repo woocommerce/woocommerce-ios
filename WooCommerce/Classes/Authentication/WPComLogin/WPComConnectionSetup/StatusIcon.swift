@@ -20,9 +20,10 @@ struct StatusIcon: View {
                 .scaledToFit()
                 .foregroundStyle(Color(uiColor: UIColor.opaqueSeparator))
         case .running:
-            Image(uiImage: .circlePartialSuccessImage)
+            Image(uiImage: .circlePartialSuccessImage.withRenderingMode(.alwaysTemplate))
                 .resizable()
                 .scaledToFit()
+                .foregroundStyle(Color(uiColor: .success))
                 .rotationEffect(.degrees(isRotating ? 360 : 0))
                 .onAppear {
                     withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
@@ -30,9 +31,9 @@ struct StatusIcon: View {
                     }
                 }
         case .success:
-            Image(uiImage: .checkCircleImage)
-                .resizable()
+            Image(uiImage: .checkCircleImage.withRenderingMode(.alwaysTemplate)).resizable()
                 .scaledToFit()
+                .foregroundStyle(Color(uiColor: .success))
         case .failure:
             Image(uiImage: .exclamationFilledImage)
                 .resizable()

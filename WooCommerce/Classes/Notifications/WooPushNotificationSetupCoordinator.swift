@@ -1,14 +1,13 @@
 import UIKit
 import Yosemite
 
-/// Coordinator for the setup of self-driven push notifications for ineligible sites
 @MainActor
 final class WooPushNotificationSetupCoordinator {
-    // Controller to handle navigation between the auth flow and setup steps.
     let rootViewController: UIViewController
 
     private let stores: StoresManager
     private var loginCoordinator: WPComLoginCoordinator?
+    private var wpcomCredentials: Credentials?
 
     init(rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores) {
@@ -16,18 +15,15 @@ final class WooPushNotificationSetupCoordinator {
         self.stores = stores
         self.loginCoordinator = {
             if stores.sessionManager.defaultSite?.isJetpackConnected == true {
-                return nil // no need to connect WPCom
+                return nil
             }
             return WPComLoginCoordinator(
                 title: Localization.flowTitle,
                 flow: .notificationSetup,
                 navigationController: UINavigationController(),
                 completionHandler: { [weak self] credentials in
-                    // TODO: use credentials for Jetpack connection flow.
-                    // Consider reusing JetpackSetupViewModel
-                    // Also check JetpackSetupHostingController for more details on what the credentials are for.
-
                     DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
+                    self?.wpcomCredentials = credentials
                     DispatchQueue.main.async {
                         self?.showConnectionSetup()
                     }
@@ -42,7 +38,6 @@ final class WooPushNotificationSetupCoordinator {
             return
         }
 
-        // Capture the presenting view controller before dismissing
         let presentingVC = rootViewController.presentingViewController
         rootViewController.dismiss(animated: true) {
             presentingVC?.present(loginCoordinator.navigationController, animated: true)
@@ -66,8 +61,8 @@ final class WooPushNotificationSetupCoordinator {
             return false
         }
 
-        // TODO: start Jetpack connection flow with the retrieved authToken.
         DDLogDebug("📱 Magic link success, now proceed with Jetpack connection")
+        wpcomCredentials = Credentials(authToken: authToken)
         showConnectionSetup()
         return true
     }
@@ -76,45 +71,86 @@ final class WooPushNotificationSetupCoordinator {
 private extension WooPushNotificationSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let wooCommercePluginPath = "woocommerce/woocommerce.php"
+        static let minimumWooCommerceVersion = "10.4.3"
     }
 
     func showConnectionSetup() {
-        let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
+        guard let site = stores.sessionManager.defaultSite else {
+            DDLogError("⛔️ WPCom connection setup: No default site available")
+            return
+        }
+
         let navigationController = WooNavigationController()
-        let handler = WPComConnectionSetupHandler()
-        let viewModel = WPComConnectionSetupViewModel(
-            storeName: storeName,
-            handler: handler,
-            onDismiss: { [weak navigationController] in
-                navigationController?.dismiss(animated: true)
-            },
-            onGoToStore: { [weak navigationController] in
-                navigationController?.dismiss(animated: true)
-            },
-            onUpdatePlugin: {
-                // TODO: Implement plugin update flow in follow-up PR
-            }
-        )
+        let viewModel = makeConnectionSetupViewModel(site: site, navigationController: navigationController)
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
         navigationController.viewControllers = [connectionSetupController]
 
-        // Dismiss current modal (login or benefits) and present connection setup
         if let loginNav = loginCoordinator?.navigationController,
            let presenter = loginNav.presentingViewController {
-            // Login flow: dismiss login modal, then present
             loginNav.dismiss(animated: true) {
                 presenter.present(navigationController, animated: true)
             }
         } else if let presenter = rootViewController.presentingViewController {
-            // No login flow: dismiss benefits modal, then present
             rootViewController.dismiss(animated: true) {
                 presenter.present(navigationController, animated: true)
             }
-        } else {
-            rootViewController.present(navigationController, animated: true)
         }
     }
 
+    func makeConnectionSetupViewModel(
+        site: Site,
+        navigationController: UINavigationController
+    ) -> WPComConnectionSetupViewModel {
+        let pluginChecker = PluginVersionChecker(
+            siteID: site.siteID,
+            pluginPath: Constants.wooCommercePluginPath,
+            minimumVersion: Constants.minimumWooCommerceVersion,
+            stores: stores
+        )
+
+        let handler = WPComConnectionSetupHandler(
+            siteURL: site.url,
+            wpcomCredentials: wpcomCredentials,
+            pluginChecker: pluginChecker,
+            stores: stores
+        )
+
+        return WPComConnectionSetupViewModel(
+            storeName: site.name,
+            handler: handler,
+            onDismiss: { [navigationController] in
+                navigationController.dismiss(animated: true)
+            },
+            onGoToStore: { [weak self] in
+                self?.goToStore()
+            },
+            onUpdatePlugin: { [weak self] in
+                self?.openPluginUpdateURL()
+            }
+        )
+    }
+
+    func goToStore() {
+        rootViewController.dismiss(animated: true) { [weak self] in
+            MainTabBarController.switchToMyStoreTab()
+            self?.cleanUp()
+        }
+    }
+
+    func openPluginUpdateURL() {
+        guard let site = stores.sessionManager.defaultSite else { return }
+
+        let pluginUpdateURL = site.url + "/wp-admin/plugins.php?s=woocommerce&plugin_status=upgrade"
+        guard let url = URL(string: pluginUpdateURL) else { return }
+
+        UIApplication.shared.open(url)
+    }
+
+    func cleanUp() {
+        wpcomCredentials = nil
+        loginCoordinator = nil
+    }
 }
 
 private extension WooPushNotificationSetupCoordinator {

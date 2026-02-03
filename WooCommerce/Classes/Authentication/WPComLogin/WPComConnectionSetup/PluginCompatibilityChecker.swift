@@ -11,7 +11,7 @@ protocol PluginVersionCheckerProtocol {
     func checkCompatibility() async throws -> PluginVersionResult
 }
 
-final class SitePluginVersionChecker: PluginVersionCheckerProtocol {
+final class PluginVersionChecker: PluginVersionCheckerProtocol {
     private let siteID: Int64
     private let pluginPath: String
     private let minimumVersion: String
@@ -48,12 +48,12 @@ final class SitePluginVersionChecker: PluginVersionCheckerProtocol {
     }
 }
 
-private extension SitePluginVersionChecker {
+private extension PluginVersionChecker {
     func fetchPlugin() async throws -> SystemPlugin {
         let systemInfo = try await syncSystemInformation()
 
         guard let plugin = systemInfo.systemPlugins.first(where: { $0.plugin == pluginPath }) else {
-            throw SitePluginVersionError.pluginNotFound
+            throw PluginVersionError.pluginNotFound
         }
 
         return plugin
@@ -73,6 +73,6 @@ private extension SitePluginVersionChecker {
     }
 }
 
-enum SitePluginVersionError: Error {
+enum PluginVersionError: Error {
     case pluginNotFound
 }

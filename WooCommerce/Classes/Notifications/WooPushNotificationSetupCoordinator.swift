@@ -81,7 +81,7 @@ private extension WooPushNotificationSetupCoordinator {
             return
         }
 
-        let pluginChecker = SitePluginVersionChecker(
+        let pluginChecker = PluginVersionChecker(
             siteID: site.siteID,
             pluginPath: Constants.wooCommercePluginPath,
             minimumVersion: Constants.minimumWooCommerceVersion,

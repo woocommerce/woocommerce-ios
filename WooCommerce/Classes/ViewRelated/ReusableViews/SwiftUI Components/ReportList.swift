@@ -76,12 +76,12 @@ private extension ReportList {
 
     enum Localization {
         static let learnMore = NSLocalizedString(
-            "learnMore.link",
+            "reportList.learnMore.link",
             value: "Learn more",
             comment: "Primary learn more button in the What's New screen"
         )
         static let dismiss = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsView.notNowButton",
+            "reportList.notNow.button",
             value: "Not now",
             comment: "Secondary not now button in the What's New screen"
         )

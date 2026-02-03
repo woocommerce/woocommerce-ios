@@ -6,12 +6,13 @@
 - Match the existing style when adding tests to an existing test class
 
 ## Naming Conventions
-Follow [naming-conventions.md](../../docs/naming-conventions.md#test-methods):
+Follow [naming-conventions.md](../../docs/naming-conventions.md#test-methods). Example:
 - Use **snake_case** for test method names
-- Pattern: `test_<operation>_<condition>_<expected_result>`
+- Pattern: `test_<operation>_when_<condition>_then_<expected_result>`
 
 ```swift
 func test_loadOrders_when_error_occurs_then_shows_error_state()
+func test_evolvePokemon_when_passed_a_Pikachu_then_it_returns_Raichu()
 ```
 
 ## Test Structure

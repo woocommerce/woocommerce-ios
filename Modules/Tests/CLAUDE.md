@@ -32,6 +32,7 @@ Organize tests into three logical blocks with comments:
 ```
 
 ## Async Testing Patterns
+These patterns target modern Swift concurrency when using the Swift Testing framework.
 
 ### 1. Continuations for Mock Callbacks
 Use `withCheckedContinuation` to wait for mock method invocations:

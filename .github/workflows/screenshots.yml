@@ -177,6 +177,7 @@ jobs:
           gh pr create \
             --base "${{ github.head_ref }}" \
             --head "${SCREENSHOTS_BRANCH}" \
+            --label "category: screenshots" \
             --title "Add generated screenshots" \
             --body "This PR adds the screenshots generated from #${{ github.event.pull_request.number }}.
 

@@ -1326,7 +1326,6 @@
 		64DCE6332F3233A2005B846F /* WPComConnectionSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6322F3233A2005B846F /* WPComConnectionSetupViewModelTests.swift */; };
 		64DCE6342F3233A2005B846F /* WPComConnectionSetupHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6312F3233A2005B846F /* WPComConnectionSetupHandlerTests.swift */; };
 		64DCE6362F32349A005B846F /* MockHandlerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6352F32349A005B846F /* MockHandlerDelegate.swift */; };
-		64DCE6382F3234B3005B846F /* MockConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6372F3234B3005B846F /* MockConnectionService.swift */; };
 		64DCE63A2F3234B9005B846F /* MockPluginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6392F3234B9005B846F /* MockPluginChecker.swift */; };
 		64DCE63C2F3234D9005B846F /* MockSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE63B2F3234D9005B846F /* MockSetupHandler.swift */; };
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
@@ -1395,7 +1394,6 @@
 		74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B5713521CD7604008F9B8E /* SharingHelper.swift */; };
 		74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EC34A4225FE21F004BBC2E /* ProductLoaderViewController.swift */; };
 		74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */; };
-		763AE6C369C9F4C08A193DC6 /* WPComConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7844B8A4810C4358682E6317 /* WPComConnectionService.swift */; };
 		773077EC251E943700178696 /* ProductDownloadFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */; };
 		773077ED251E943700178696 /* Product+DownloadFileViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077E9251E943600178696 /* Product+DownloadFileViewModels.swift */; };
 		773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077EA251E943600178696 /* ProductDownloadFileViewController.swift */; };
@@ -4128,7 +4126,6 @@
 		64DCE6312F3233A2005B846F /* WPComConnectionSetupHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupHandlerTests.swift; sourceTree = "<group>"; };
 		64DCE6322F3233A2005B846F /* WPComConnectionSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupViewModelTests.swift; sourceTree = "<group>"; };
 		64DCE6352F32349A005B846F /* MockHandlerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHandlerDelegate.swift; sourceTree = "<group>"; };
-		64DCE6372F3234B3005B846F /* MockConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConnectionService.swift; sourceTree = "<group>"; };
 		64DCE6392F3234B9005B846F /* MockPluginChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPluginChecker.swift; sourceTree = "<group>"; };
 		64DCE63B2F3234D9005B846F /* MockSetupHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSetupHandler.swift; sourceTree = "<group>"; };
 		68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSNotificationSchedulerTests.swift; sourceTree = "<group>"; };
@@ -4214,7 +4211,6 @@
 		77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModel.swift; sourceTree = "<group>"; };
 		77E53EC42510C193003D385F /* ProductDownloadListViewController+Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownloadListViewController+Droppable.swift"; sourceTree = "<group>"; };
 		77E53EC72510FE07003D385F /* ProductDownloadsEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadsEditableData.swift; sourceTree = "<group>"; };
-		7844B8A4810C4358682E6317 /* WPComConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionService.swift; sourceTree = "<group>"; };
 		7E6A01962725B811001668D5 /* FilterProductCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		7E6A019E2725CD76001668D5 /* FilterProductCategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModel.swift; sourceTree = "<group>"; };
 		7E6A01A02725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
@@ -8663,7 +8659,6 @@
 			children = (
 				64B1EEDC2F2CA0E600A73166 /* WPComConnectionSetupViewModel.swift */,
 				E2544B57CACA034459E760D0 /* PluginCompatibilityChecker.swift */,
-				7844B8A4810C4358682E6317 /* WPComConnectionService.swift */,
 				EC58CE2C9A4121946A784EC0 /* WPComConnectionSetupHandler.swift */,
 				640D423A2F2BA52400300B0D /* WPComConnectionSetupStep.swift */,
 				640D42382F2B949500300B0D /* StatusIcon.swift */,
@@ -8699,7 +8694,6 @@
 			children = (
 				64DCE63B2F3234D9005B846F /* MockSetupHandler.swift */,
 				64DCE6392F3234B9005B846F /* MockPluginChecker.swift */,
-				64DCE6372F3234B3005B846F /* MockConnectionService.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -13655,7 +13649,6 @@
 				DEE215302D113F89004A11F3 /* EditStoreListViewModel.swift in Sources */,
 				64B1EEDD2F2CA0EC00A73166 /* WPComConnectionSetupViewModel.swift in Sources */,
 				B2EC7F407BF8D64D62B43F89 /* PluginCompatibilityChecker.swift in Sources */,
-				763AE6C369C9F4C08A193DC6 /* WPComConnectionService.swift in Sources */,
 				2131B23AE932C0DA8DC4380F /* WPComConnectionSetupHandler.swift in Sources */,
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
@@ -15231,7 +15224,6 @@
 				D449C52C26E02F2F00D75B02 /* WhatsNewFactoryTests.swift in Sources */,
 				687C006F2D6346E300F832FC /* POSCollectOrderPaymentAnalyticsTests.swift in Sources */,
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,
-				64DCE6382F3234B3005B846F /* MockConnectionService.swift in Sources */,
 				EE19058A2B590FF800617C53 /* BlazePaymentMethodsViewModelTests.swift in Sources */,
 				2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,

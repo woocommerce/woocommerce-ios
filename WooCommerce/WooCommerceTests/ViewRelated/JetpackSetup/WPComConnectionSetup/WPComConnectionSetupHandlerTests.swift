@@ -1,31 +1,52 @@
 import XCTest
+import Yosemite
+import Networking
+import NetworkingCore
 @testable import WooCommerce
 
 final class WPComConnectionSetupHandlerTests: XCTestCase {
     private var handlerObserver: MockHandlerDelegate!
-    private var mockConnectionService: MockConnectionService!
     private var mockPluginChecker: MockPluginChecker!
+    private var mockStores: MockStoresManager!
 
     @MainActor
     override func setUp() {
         super.setUp()
         handlerObserver = MockHandlerDelegate()
-        mockConnectionService = MockConnectionService()
         mockPluginChecker = MockPluginChecker()
+        mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
     }
 
     override func tearDown() {
         handlerObserver = nil
-        mockConnectionService = nil
         mockPluginChecker = nil
+        mockStores = nil
         super.tearDown()
     }
 
+    // MARK: - Connection Step Tests
+
     @MainActor
-    func test_start_triggers_connection_step_running() async {
+    func test_no_credentials_skips_connection_and_proceeds_to_plugin_check() async {
+        // Given - no credentials means connection step is skipped
+        mockPluginChecker.result = .compatible
+        let handler = givenHandler(wpcomCredentials: nil)
+
+        // When
+        handler.start()
+        try? await Task.sleep(nanoseconds: 300_000_000)
+
+        // Then - connection step succeeds immediately, plugin check runs
+        XCTAssertEqual(handlerObserver.lastStatusForStep(.connect), .success)
+        XCTAssertTrue(handlerObserver.updatedSteps.contains(.checkPlugin))
+        XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
+    }
+
+    @MainActor
+    func test_with_credentials_triggers_connection_step_running() async {
         // Given
-        mockConnectionService.delay = 1.0  // Slow down so we can observe the running state
-        let handler = givenHandler()
+        mockJetpackConnectionActions(delay: 1.0)
+        let handler = givenHandler(wpcomCredentials: Credentials(authToken: "test"))
 
         // When
         handler.start()
@@ -37,27 +58,11 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
     }
 
     @MainActor
-    func test_successful_connection_triggers_plugin_check() async {
-        // Given
-        mockConnectionService.shouldSucceed = true
-        mockPluginChecker.result = .compatible
-        let handler = givenHandler()
-
-        // When
-        handler.start()
-        try? await Task.sleep(nanoseconds: 500_000_000)
-
-        // Then
-        XCTAssertTrue(handlerObserver.updatedSteps.contains(.connect))
-        XCTAssertTrue(handlerObserver.updatedSteps.contains(.checkPlugin))
-    }
-
-    @MainActor
     func test_connection_failure_does_not_proceed_to_plugin_check() async {
         // Given
-        mockConnectionService.shouldSucceed = false
+        mockJetpackConnectionActions(shouldFail: true)
         mockPluginChecker.result = .compatible
-        let handler = givenHandler()
+        let handler = givenHandler(wpcomCredentials: Credentials(authToken: "test"))
 
         // When
         handler.start()
@@ -73,31 +78,32 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         }
     }
 
+    // MARK: - Plugin Check Tests
+
     @MainActor
     func test_plugin_compatible_triggers_setupDidComplete() async {
-        // Given
-        mockConnectionService.shouldSucceed = true
+        // Given - skip connection by passing nil credentials
         mockPluginChecker.result = .compatible
-        let handler = givenHandler()
+        let handler = givenHandler(wpcomCredentials: nil)
 
         // When
         handler.start()
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        try? await Task.sleep(nanoseconds: 300_000_000)
 
         // Then
         XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
+        XCTAssertEqual(handlerObserver.lastStatusForStep(.checkPlugin), .success)
     }
 
     @MainActor
     func test_plugin_incompatible_triggers_failure() async {
-        // Given
-        mockConnectionService.shouldSucceed = true
+        // Given - skip connection by passing nil credentials
         mockPluginChecker.result = .incompatible(currentVersion: "9.0.0", requiredVersion: "10.4.3")
-        let handler = givenHandler()
+        let handler = givenHandler(wpcomCredentials: nil)
 
         // When
         handler.start()
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        try? await Task.sleep(nanoseconds: 300_000_000)
 
         // Then
         if case .failure = handlerObserver.lastStatusForStep(.checkPlugin) {
@@ -108,35 +114,36 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
     }
 
+    // MARK: - Retry and Cancel Tests
+
     @MainActor
     func test_retry_restarts_from_failed_step() async {
-        // Given
-        mockConnectionService.shouldSucceed = false
-        mockPluginChecker.result = .compatible
-        let handler = givenHandler()
+        // Given - plugin check fails first
+        mockPluginChecker.result = .incompatible(currentVersion: "9.0.0", requiredVersion: "10.4.3")
+        let handler = givenHandler(wpcomCredentials: nil)
 
-        // First attempt - fails
+        // First attempt - fails at plugin check
         handler.start()
         try? await Task.sleep(nanoseconds: 300_000_000)
+        XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
 
         // Now make it succeed
-        mockConnectionService.shouldSucceed = true
+        mockPluginChecker.result = .compatible
 
         // When - retry
         handler.retry()
         try? await Task.sleep(nanoseconds: 300_000_000)
 
-        // Then - should have reached plugin check
-        XCTAssertTrue(handlerObserver.updatedSteps.contains(.checkPlugin))
+        // Then - should complete
+        XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
     }
 
     @MainActor
     func test_cancel_stops_ongoing_task() async {
         // Given
-        mockConnectionService.shouldSucceed = true
-        mockConnectionService.delay = 1.0
         mockPluginChecker.result = .compatible
-        let handler = givenHandler()
+        mockPluginChecker.delay = 1.0
+        let handler = givenHandler(wpcomCredentials: nil)
 
         // When
         handler.start()
@@ -144,17 +151,56 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         handler.cancel()
         try? await Task.sleep(nanoseconds: 500_000_000)
 
-        // Then - should not have completed setup since we cancelled during connection
+        // Then - should not have completed setup since we cancelled
         XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
     }
 
+    // MARK: - Helpers
+
     @MainActor
-    private func givenHandler() -> WPComConnectionSetupHandler {
+    private func givenHandler(wpcomCredentials: Credentials?) -> WPComConnectionSetupHandler {
         let handler = WPComConnectionSetupHandler(
-            connectionService: mockConnectionService,
-            pluginChecker: mockPluginChecker
+            siteURL: "https://test.com",
+            wpcomCredentials: wpcomCredentials,
+            pluginChecker: mockPluginChecker,
+            stores: mockStores
         )
         handler.delegate = handlerObserver
         return handler
+    }
+
+    @MainActor
+    private func mockJetpackConnectionActions(shouldFail: Bool = false, delay: TimeInterval = 0) {
+        mockStores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            if delay > 0 {
+                Task {
+                    try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    self.handleJetpackAction(action, shouldFail: shouldFail)
+                }
+            } else {
+                self.handleJetpackAction(action, shouldFail: shouldFail)
+            }
+        }
+    }
+
+    private func handleJetpackAction(_ action: JetpackConnectionAction, shouldFail: Bool) {
+        switch action {
+        case .fetchJetpackConnectionData(let completion):
+            if shouldFail {
+                completion(.failure(MockError.anyError))
+            } else {
+                let connectedUser = JetpackUser.fake().copy(isConnected: true, wpcomUser: .fake())
+                let connectionData = JetpackConnectionData.fake().copy(currentUser: connectedUser)
+                completion(.success(connectionData))
+            }
+        case .registerSite(let completion):
+            completion(.success(12345))
+        case .provisionConnection(let completion):
+            completion(.success(JetpackConnectionProvisionResponse(userId: 1, scope: "test", secret: "test")))
+        case .finalizeConnection(_, _, _, _, let completion):
+            completion(.success(()))
+        default:
+            break
+        }
     }
 }

@@ -1,4 +1,6 @@
 import Foundation
+import Yosemite
+import class Networking.AlamofireNetwork
 
 enum SetupStep: Int, CaseIterable {
     case connect = 0
@@ -24,16 +26,22 @@ protocol WPComConnectionSetupHandlerProtocol: AnyObject {
 final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     weak var delegate: WPComConnectionSetupHandlerDelegate?
 
-    private let connectionService: WPComConnectionServiceProtocol?
+    private let siteURL: String
+    private let wpcomCredentials: Credentials?
     private let pluginChecker: PluginVersionCheckerProtocol
+    private let stores: StoresManager
 
     private var currentTask: Task<Void, Never>?
     private var lastFailedStep: SetupStep?
 
-    init(connectionService: WPComConnectionServiceProtocol?,
-         pluginChecker: PluginVersionCheckerProtocol) {
-        self.connectionService = connectionService
+    init(siteURL: String,
+         wpcomCredentials: Credentials?,
+         pluginChecker: PluginVersionCheckerProtocol,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.siteURL = siteURL
+        self.wpcomCredentials = wpcomCredentials
         self.pluginChecker = pluginChecker
+        self.stores = stores
     }
 
     func start() {
@@ -71,7 +79,7 @@ private extension WPComConnectionSetupHandler {
     }
 
     func executeConnectStep() async -> Bool {
-        guard let connectionService else {
+        guard let wpcomCredentials else {
             delegate?.stepDidUpdate(.connect, status: .success)
             return true
         }
@@ -79,7 +87,7 @@ private extension WPComConnectionSetupHandler {
         delegate?.stepDidUpdate(.connect, status: .running)
 
         do {
-            try await connectionService.connect()
+            try await performConnection(with: wpcomCredentials)
 
             if Task.isCancelled { return false }
 
@@ -93,6 +101,42 @@ private extension WPComConnectionSetupHandler {
             delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.connectionError))
             return false
         }
+    }
+
+    func performConnection(with credentials: Credentials) async throws {
+        let connectionData = try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
+        if connectionData.currentUser.wpcomUser != nil {
+            DDLogDebug("📱 WPCom connection: Site already connected")
+            return
+        }
+
+        let blogID: Int64
+        if let existingBlogID = connectionData.blogID, connectionData.isRegistered == true {
+            blogID = existingBlogID
+        } else {
+            blogID = try await dispatch(JetpackConnectionAction.registerSite)
+        }
+
+        let provisionResponse = try await dispatch(JetpackConnectionAction.provisionConnection)
+
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+        let siteURL = self.siteURL
+        try await dispatch { completion in
+            JetpackConnectionAction.finalizeConnection(
+                siteID: blogID,
+                siteURL: siteURL,
+                provisionResponse: provisionResponse,
+                network: network,
+                completion: completion
+            )
+        }
+
+        let verificationData = try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
+        guard verificationData.currentUser.wpcomUser != nil else {
+            throw WPComConnectionError.verificationFailed
+        }
+
+        DDLogDebug("📱 WPCom connection: Successfully connected")
     }
 
     func executePluginCheckStep() async {
@@ -121,6 +165,18 @@ private extension WPComConnectionSetupHandler {
             delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: Localization.connectionError))
         }
     }
+
+    func dispatch<T>(_ actionBuilder: @escaping (@escaping (Result<T, Error>) -> Void) -> Action) async throws -> T {
+        let stores = self.stores
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = actionBuilder { result in
+                continuation.resume(with: result)
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
 }
 
 private extension WPComConnectionSetupHandler {
@@ -137,4 +193,8 @@ private extension WPComConnectionSetupHandler {
             comment: "Error message when WooCommerce plugin is outdated. %@ is the current version."
         )
     }
+}
+
+enum WPComConnectionError: Error {
+    case verificationFailed
 }

@@ -81,10 +81,6 @@ private extension WooPushNotificationSetupCoordinator {
             return
         }
 
-        let connectionService: WPComConnectionServiceProtocol? = wpcomCredentials.map {
-            WPComConnectionService(siteURL: site.url, wpcomCredentials: $0, stores: stores)
-        }
-
         let pluginChecker = SitePluginVersionChecker(
             siteID: site.siteID,
             pluginPath: Constants.wooCommercePluginPath,
@@ -93,8 +89,10 @@ private extension WooPushNotificationSetupCoordinator {
         )
 
         let handler = WPComConnectionSetupHandler(
-            connectionService: connectionService,
-            pluginChecker: pluginChecker
+            siteURL: site.url,
+            wpcomCredentials: wpcomCredentials,
+            pluginChecker: pluginChecker,
+            stores: stores
         )
 
         let navigationController = WooNavigationController()

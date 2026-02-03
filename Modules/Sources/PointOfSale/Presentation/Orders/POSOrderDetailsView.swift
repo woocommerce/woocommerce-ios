@@ -420,8 +420,18 @@ private extension POSOrderDetailsView {
             }
         case .issueRefund:
             return {
-                orderListModel.ordersController.startRefundFlow()
-                refundModalState = .itemSelection
+                refundModalState = .loading
+                Task { @MainActor in
+                    let result = await orderListModel.ordersController.startRefundFlow()
+                    switch result {
+                    case .hasItemsToRefund:
+                        refundModalState = .itemSelection
+                    case .nothingToRefund:
+                        refundModalState = .nothingToRefund
+                    case .failed:
+                        refundModalState = nil
+                    }
+                }
             }
         }
     }
@@ -502,6 +512,8 @@ private extension POSOrderDetailsView {
 // MARK: - Refund Modal State
 
 enum RefundModalState: Identifiable, Equatable {
+    case loading
+    case nothingToRefund
     case itemSelection
     case review(POSRefundReviewData)
     case reasonInput(POSRefundReviewData)
@@ -511,6 +523,8 @@ enum RefundModalState: Identifiable, Equatable {
 
     var id: String {
         switch self {
+        case .loading: return "loading"
+        case .nothingToRefund: return "nothingToRefund"
         case .itemSelection: return "itemSelection"
         case .review: return "review"
         case .reasonInput: return "reasonInput"
@@ -527,6 +541,12 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundModalContent(for state: RefundModalState) -> some View {
         switch state {
+        case .loading:
+            POSRefundLoadingView()
+        case .nothingToRefund:
+            POSRefundNothingToRefundView(
+                onClose: { refundModalState = nil }
+            )
         case .itemSelection:
             POSRefundItemsSelectionView(
                 onClose: { refundModalState = nil },

@@ -26,6 +26,7 @@ final class WPComConnectionSetupHostingController: UIHostingController<WPComConn
 
 struct WPComConnectionSetupView: View {
     @ObservedObject var viewModel: WPComConnectionSetupViewModel
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         NavigationStack {
@@ -47,7 +48,9 @@ struct WPComConnectionSetupView: View {
 
                 Spacer()
 
-                footer
+                if dynamicTypeSize.isAccessibilitySize {
+                    footer
+                }
             }
             .padding(Constants.contentPadding)
             .toolbar {
@@ -58,6 +61,12 @@ struct WPComConnectionSetupView: View {
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .bottom) {
+                footer
+                    .padding(Constants.contentPadding)
+                    .background(Color(uiColor: .systemBackground))
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+            }
         }
         .onAppear {
             viewModel.onAppear()
@@ -70,14 +79,12 @@ struct WPComConnectionSetupView: View {
                 viewModel.primaryButtonTapped()
             }
             .buttonStyle(PrimaryButtonStyle())
-            .fixedSize(horizontal: false, vertical: true)
             .disabled(!viewModel.isPrimaryButtonEnabled)
 
             Button(viewModel.secondaryButtonTitle) {
                 viewModel.secondaryButtonTapped()
             }
             .buttonStyle(SecondaryButtonStyle())
-            .fixedSize(horizontal: false, vertical: true)
             .renderedIf(viewModel.isShowingSecondaryButton)
         }
     }

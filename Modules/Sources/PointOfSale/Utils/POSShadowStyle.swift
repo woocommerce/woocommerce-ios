@@ -5,6 +5,7 @@ import UIKit
 /// Defines shadow styles used across POS UI components.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-22_7198
 enum POSShadowStyle {
+    case none
     case medium
     case large
 }
@@ -40,6 +41,8 @@ struct POSShadowStyleModifier: ViewModifier {
 
     private func shadowLayers(for style: POSShadowStyle) -> [POSShadowLayer] {
         switch style {
+        case .none:
+            return []
         case .medium:
             return [
                 POSShadowLayer(color: UIColor(Color.posShadow), opacity: 0.02, radius: 16, offset: CGSize(width: 0, height: 16)),

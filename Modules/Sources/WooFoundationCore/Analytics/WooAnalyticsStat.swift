@@ -121,6 +121,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Dashboard View Events
     //
     case dashboardLoaded = "dashboard_loaded"
+    case siteConnectionTypeIdentified = "site_connection_type_identified"
     case dashboardSelected = "main_tab_dashboard_selected"
     case dashboardReselected = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh = "dashboard_pulled_to_refresh"
@@ -625,6 +626,11 @@ public enum WooAnalyticsStat: String {
     case pushNotificationOSAlertShown = "push_notification_os_alert_shown"
     case viewInAppPushNotificationPressed = "view_in_app_push_notification_pressed"
 
+    case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
+    case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
+    case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+
     // MARK: Notification View Events
     //
     case notificationOpened = "notification_open"
@@ -910,6 +916,17 @@ public enum WooAnalyticsStat: String {
     case firstCreatedProductShown = "first_created_product_shown"
     case firstCreatedProductShareTapped = "first_created_product_share_tapped"
 
+    // MARK: POS Promotion Modal
+    case posPromoModalViewed = "pos_promo_modal_viewed"
+    case posPromoModalSlideViewed = "pos_promo_modal_slide_viewed"
+    case posPromoModalDismissed = "pos_promo_modal_dismissed"
+    case posPromoModalExploreClicked = "pos_promo_modal_explore_clicked"
+
+    // MARK: POS Promotion Banner
+    case posPromotionBannerDisplayed = "pos_promotion_banner_displayed"
+    case posPromotionBannerCtaTapped = "pos_promotion_banner_cta_tapped"
+    case posPromotionBannerDismissed = "pos_promotion_banner_dismissed"
+
     // MARK: Product sharing AI
     //
     case productSharingAIDisplayed = "product_sharing_ai_displayed"
@@ -1060,6 +1077,21 @@ public enum WooAnalyticsStat: String {
     // MARK: - Bookings
     case bookingsSelected = "main_tab_bookings_selected"
     case bookingsReselected = "main_tab_bookings_reselected"
+    case bookingCancelled = "booking_detail_cancel_booking"
+    case bookingAttenceStatusUpdated = "booking_detail_attendance_status_updated"
+    case bookingAddNoteTapped = "booking_detail_add_note_tapped"
+    case bookingMarkAsPaidTapped = "booking_detail_mark_as_paid_tapped"
+    case bookingViewLinkedOrderTapped = "booking_detail_view_linked_order_tapped"
+    case bookingListTabSelected = "booking_list_tab_selected"
+    case bookingListDisplayed = "booking_list_displayed"
+    case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
+    case bookingListFailedToUpdateBookingDetails = "booking_list_failed_to_update_booking_details"
+    case bookingListBookingTapped = "booking_list_booking_tapped"
+    case bookingListFiltersTapped = "booking_list_filters_tapped"
+    case bookingListApplyFilters = "booking_list_apply_filters"
+    case bookingListSearchTapped = "booking_list_search_tapped"
+    case bookingListSortByTapped = "booking_list_sort_by_tapped"
+    case bookingListSortByOptionTapped = "booking_list_sort_by_option_tapped"
 
     // MARK: Hub Menu
     //

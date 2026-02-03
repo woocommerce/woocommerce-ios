@@ -40,6 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
+    /// Coordinates the setup flow for self-driven push notification system
+    private var wooPushNotificationCoordinator: WooPushNotificationSetupCoordinator?
+
     private(set) lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
     /// Handles events to background refresh the app.
@@ -439,11 +442,28 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Magic link
 extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        return if ServiceLocator.stores.isAuthenticated {
-            handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+        if ServiceLocator.stores.isAuthenticated {
+            let pendingAuthFlowStorage = PendingAuthFlowStorage()
+            let flow = pendingAuthFlowStorage.current
+            pendingAuthFlowStorage.clear()
+
+            switch flow {
+            case .notificationSetup:
+                return handleAuthenticationUrlForNotificationSetup(url, rootViewController: rootViewController)
+            case .jetpackSetup:
+                return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+            case .none:
+                return false
+            }
         } else {
-            ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+            return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
+    }
+
+    func handleAuthenticationUrlForNotificationSetup(_ url: URL, rootViewController: UIViewController) -> Bool {
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
+        wooPushNotificationCoordinator = coordinator
+        return coordinator.handleAuthenticationUrl(url)
     }
 
     func handleAuthenticationUrlForJetpackSetup(_ url: URL, rootViewController: UIViewController) -> Bool {

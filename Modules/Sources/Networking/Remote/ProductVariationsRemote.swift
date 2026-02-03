@@ -14,7 +14,8 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+                                      pageNumber: Int,
+                                      posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -36,6 +37,7 @@ public protocol ProductVariationsRemoteProtocol {
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
+
 
 /// ProductVariation: Remote Endpoints
 ///
@@ -78,7 +80,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<POSProductVariation> {
+                                             pageNumber: Int = Default.pageNumber,
+                                             posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
@@ -89,7 +92,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                fields: POSProductVariation.requestFields,
                                                context: nil,
                                                pageNumber: pageNumber,
-                                               pageSize: POSConstants.variationsPerPage)
+                                               pageSize: POSConstants.variationsPerPage,
+                                               posProductsOnly: posProductsOnly)
         // N.B. POS is only available for WC 9.6 and later.
         // `parent_id` was added in WC 8.3, so we don't need to pass the parent product ID to the decoder.
         // https://github.com/woocommerce/woocommerce/pull/40606
@@ -110,11 +114,12 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                           fields: [String] = [],
                                           context: String?,
                                           pageNumber: Int,
-                                          pageSize: Int) -> JetpackRequest {
+                                          pageSize: Int,
+                                          posProductsOnly: Bool = false) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let stringOfRequiredFields = fields.joined(separator: ",")
-        let parameters = [
+        var parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.downloadable: downloadable.map { String($0) },
@@ -123,7 +128,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs,
             ParameterKey.status: status?.rawValue,
             ParameterKey.orderBy: orderBy?.rawValue,
-            ParameterKey.order: order?.rawValue
+            ParameterKey.order: order?.rawValue,
+            ParameterKey.posProductsOnly: String(posProductsOnly)
         ]
             .compactMapValues { $0 }
 
@@ -350,6 +356,7 @@ public extension ProductVariationsRemote {
         static let status: String = "status"
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
+        static let posProductsOnly: String = "pos_products_only"
     }
 
     enum OrderByField: String {

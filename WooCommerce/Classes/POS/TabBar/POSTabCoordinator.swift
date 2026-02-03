@@ -50,12 +50,14 @@ final class POSTabCoordinator {
 
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
-        PointOfSaleItemFetchStrategyFactory(siteID: siteID,
-                                            credentials: credentials,
-                                            selectedSite: defaultSitePublisher,
-                                            appPasswordSupportState: isAppPasswordSupported,
-                                            grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
-                                            isLocalCatalogEnabled: isLocalCatalogEnabled)
+        let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
+        return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
+                                                   credentials: credentials,
+                                                   selectedSite: defaultSitePublisher,
+                                                   appPasswordSupportState: isAppPasswordSupported,
+                                                   grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
+                                                   isLocalCatalogEnabled: isLocalCatalogEnabled,
+                                                   posProductsOnlyEnabled: posProductsOnlyEnabled)
     }
 
     /// Creates popular item fetch strategy factory with current local catalog eligibility
@@ -92,11 +94,13 @@ final class POSTabCoordinator {
                                                      currencySettings: currencySettings)
         } else {
             // Fall back to remote barcode scanning
+            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
             return PointOfSaleBarcodeScanService(siteID: siteID,
                                                 credentials: credentials,
                                                 selectedSite: defaultSitePublisher,
                                                 appPasswordSupportState: isAppPasswordSupported,
-                                                currencySettings: currencySettings)
+                                                currencySettings: currencySettings,
+                                                posProductsOnly: posProductsOnlyEnabled)
         }
     }
 
@@ -230,6 +234,11 @@ private extension POSTabCoordinator {
             // otherwise falls back to remote API-based scanning
             let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
                                                               grdbManager: grdbManager)
+            let refundsService = POSRefundsService(siteID: siteID,
+                                                   credentials: credentials,
+                                                   selectedSite: defaultSitePublisher,
+                                                   appPasswordSupportState: isAppPasswordSupported,
+                                                   currencySettings: currencySettings)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -269,6 +278,7 @@ private extension POSTabCoordinator {
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
                     orderService: orderService,
+                    refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },

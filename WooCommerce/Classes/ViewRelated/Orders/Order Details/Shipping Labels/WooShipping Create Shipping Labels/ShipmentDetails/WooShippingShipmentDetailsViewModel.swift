@@ -232,11 +232,16 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                          package: package,
                                                          selectedRate: selectedRate,
                                                          productIDs: shipment.items.map(\.productOrVariationID))
+
+        // Avoid sending email for destination address as that crashes the purchase API at the moment.
+        // TODO: remove this workaround when backend fixes this and adoption rate is high enough.
+        let destinationAddressWithoutEmail = destinationAddress.copy(email: nil)
+
         let purchasedLabel = try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
                                                                  orderID: order.orderID,
                                                                  originAddress: originAddress,
-                                                                 destinationAddress: destinationAddress,
+                                                                 destinationAddress: destinationAddressWithoutEmail,
                                                                  package: packagePurchase,
                                                                  markOrderComplete: markOrderComplete) { [weak self] result in
                 switch result {

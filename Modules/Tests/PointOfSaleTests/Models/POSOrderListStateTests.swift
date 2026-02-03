@@ -124,12 +124,12 @@ private extension POSOrderListStateTests {
         [
             POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
                      formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
-                     paymentMethodTitle: "Credit Card", lineItems: [],
+                     paymentMethodID: "woocommerce_payments", paymentMethodTitle: "Credit Card", lineItems: [],
                      refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
                      formattedPaymentTotal: "$10.00", formattedNetAmount: nil),
             POSOrder(id: 2, number: "1002", dateCreated: Date(), status: .completed,
                      formattedTotal: "$20.00", formattedSubtotal: "$20.00", customerEmail: "test2@example.com",
-                     paymentMethodTitle: "Cash", lineItems: [],
+                     paymentMethodID: "cod", paymentMethodTitle: "Cash", lineItems: [],
                      refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
                      formattedPaymentTotal: "$20.00", formattedNetAmount: nil)
         ]

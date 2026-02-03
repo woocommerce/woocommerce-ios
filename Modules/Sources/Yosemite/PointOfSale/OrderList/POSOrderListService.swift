@@ -33,7 +33,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
             }
 
             // Convert Order objects to POSOrder objects
-            let posOrders = pagedOrders.items.map { mapper.map(order: $0) }
+            let posOrders = try pagedOrders.items.map { try mapper.map(order: $0) }
 
             return .init(items: posOrders,
                         hasMorePages: pagedOrders.hasMorePages,
@@ -59,7 +59,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
             }
 
             // Convert Order objects to POSOrder objects
-            let posOrders = pagedOrders.items.map { mapper.map(order: $0) }
+            let posOrders = try pagedOrders.items.map { try mapper.map(order: $0) }
 
             return .init(items: posOrders,
                         hasMorePages: pagedOrders.hasMorePages,
@@ -74,7 +74,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
     public func loadOrder(orderID: Int64) async throws -> POSOrder {
         do {
             let order = try await ordersRemote.loadPOSOrder(siteID: siteID, orderID: orderID)
-            return mapper.map(order: order)
+            return try mapper.map(order: order)
         } catch AFError.explicitlyCancelled {
             throw POSOrderListServiceError.requestCancelled
         } catch {

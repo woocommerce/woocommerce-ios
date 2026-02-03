@@ -95,6 +95,22 @@ struct TotalsViewHelperTests {
                                                                           cardReaderConnectionStatus: .connected(.init(name: "", batteryLevel: nil))) == false)
     }
 
+    @Test(arguments: [PointOfSaleCardPaymentState.cardInserted,
+         PointOfSaleCardPaymentState.validatingOrder,
+         PointOfSaleCardPaymentState.preparingReader,
+         PointOfSaleCardPaymentState.processingPayment,
+         PointOfSaleCardPaymentState.paymentError,
+         PointOfSaleCardPaymentState.cardPaymentSuccessful])
+    func test_shouldShowCollectCashPaymentButton_returns_false_when_reader_disconnected_for_unsupported_states(
+        cardPaymentState: PointOfSaleCardPaymentState) {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "10",
+                                                                                                    orderTotal: "10",
+                                                                                                    taxTotal: "10",
+                                                                                                    orderTotalDecimal: 10)),
+                                                                          paymentState: PointOfSalePaymentState(card: cardPaymentState, cash: .idle),
+                                                                          cardReaderConnectionStatus: .disconnected) == false)
+    }
+
     @Test(arguments: [
         (PointOfSaleCardPaymentState.validatingOrderError),
         (PointOfSaleCardPaymentState.acceptingCard),

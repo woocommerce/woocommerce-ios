@@ -54,6 +54,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureLastOrdersView()
         configureReviewsCard()
         configureGoogleAdsCard()
+        configureConnectWPComCard()
     }
 
     @available(*, unavailable)
@@ -362,6 +363,26 @@ private extension DashboardViewHostingController {
             type: forCampaignCreation ? .campaignCreation : .dashboard,
             hasCampaigns: hasCampaigns
         ))
+    }
+}
+
+// MARK: Connect WPCom card
+private extension DashboardViewHostingController {
+    func configureConnectWPComCard() {
+        rootView.onConnectWPComSetup = { [weak self] in
+            guard let self else { return }
+            let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: {
+                self.dismiss(animated: true)
+            })
+            let navigationController = WooNavigationController()
+            let hostingController = WPComPushNotificationsBenefitsHostingController(
+                viewModel: viewModel,
+                rootViewController: navigationController
+            )
+            navigationController.viewControllers = [hostingController]
+            navigationController.modalPresentationStyle = .formSheet
+            present(navigationController, animated: true)
+        }
     }
 }
 

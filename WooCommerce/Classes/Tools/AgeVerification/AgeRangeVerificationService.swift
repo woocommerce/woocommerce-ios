@@ -33,7 +33,6 @@ protocol AgeRangeVerificationServiceProtocol {
     /// - Parameters:
     ///   - viewController: Anchor for the system sheet/prompt.
     ///   - minimumAge: Primary age gate (required).
-    ///   - additionalThresholds: Optional additional gates (up to two values).
     ///   - completion: Called with the interpreted outcome.
     func verifyAgeRange(
         in viewController: UIViewController,

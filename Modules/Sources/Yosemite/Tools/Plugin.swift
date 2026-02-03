@@ -37,7 +37,7 @@ public enum Plugin: Equatable, CaseIterable {
 
     /// File name without extension in the plugin path.
     /// Full plugin path is like `woocommerce/woocommerce.php`.
-    var fileNameWithoutExtension: String {
+    public var fileNameWithoutExtension: String {
         switch self {
         case .blaze:
             return "blaze-ads"

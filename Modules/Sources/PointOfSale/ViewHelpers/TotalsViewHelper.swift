@@ -62,7 +62,8 @@ struct TotalsViewHelper {
         case .cash:
             return false
         case .card:
-            if cardReaderConnectionStatus == .disconnected {
+            if case .disconnected = cardReaderConnectionStatus,
+                case .idle = paymentState.card {
                 return true
             }
 

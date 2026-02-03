@@ -15,8 +15,9 @@ public protocol POSCatalogFullSyncServiceProtocol {
     ///   - siteID: The site ID to sync catalog for
     ///   - regenerateCatalog: Whether to force the catalog generation
     ///   - allowCellular: Should cellular data be used if required.
+    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     /// - Returns: The synced catalog containing products and variations
-    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool) async throws -> POSCatalog
+    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, posProductsOnly: Bool) async throws -> POSCatalog
 
     /// Parses and persists a downloaded catalog file from a background download.
     /// - Parameters:
@@ -33,6 +34,22 @@ public struct POSCatalog {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]
     public let syncDate: Date
+
+    /// Product IDs to remove from local catalog when these should be hidden when performing an incremental sync.
+    /// This covers the case where products are marked as not available for POS by the merchant in wp-admin,
+    /// and the request passes `posProductsOnly=true`. In which case these would be simply omitted.
+    /// Variations are not tracked separately, they cascade delete in GRDB when their parent product is removed.
+    public let productsToRemove: [Int64]
+
+    public init(products: [POSProduct],
+                variations: [POSProductVariation],
+                syncDate: Date,
+                productsToRemove: [Int64] = []) {
+        self.products = products
+        self.variations = variations
+        self.syncDate = syncDate
+        self.productsToRemove = productsToRemove
+    }
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
@@ -48,7 +65,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                              appPasswordSupportState: AnyPublisher<Bool, Never>,
                              batchSize: Int = 2,
                              grdbManager: GRDBManagerProtocol,
-                             usesCatalogAPI: Bool = false) {
+                             usesCatalogAPI: Bool) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogFullSyncService due missing credentials")
             return nil
@@ -66,7 +83,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         batchSize: Int,
         retryDelay: TimeInterval = 2.0,
         persistenceService: POSCatalogPersistenceServiceProtocol,
-        usesCatalogAPI: Bool = false
+        usesCatalogAPI: Bool
     ) {
         self.syncRemote = syncRemote
         self.persistenceService = persistenceService
@@ -78,9 +95,10 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 
     public func startFullSync(for siteID: Int64,
                               regenerateCatalog: Bool = false,
-                              allowCellular: Bool) async throws -> POSCatalog {
-        DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog) " +
-                  "and allowCellular: \(allowCellular)")
+                              allowCellular: Bool,
+                              posProductsOnly: Bool = false) async throws -> POSCatalog {
+        DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog), " +
+                  "allowCellular: \(allowCellular), posProductsOnly: \(posProductsOnly)")
 
         do {
             // Sync from network
@@ -91,7 +109,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                                                               regenerateCatalog: regenerateCatalog,
                                                               allowCellular: allowCellular)
             } else {
-                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
+                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular, posProductsOnly: posProductsOnly)
             }
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
@@ -131,17 +149,26 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 // MARK: - Remote Loading
 
 private extension POSCatalogFullSyncService {
-    func loadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol, allowCellular: Bool) async throws -> POSCatalog {
+    func loadCatalog(for siteID: Int64,
+                     syncRemote: POSCatalogSyncRemoteProtocol,
+                     allowCellular: Bool,
+                     posProductsOnly: Bool) async throws -> POSCatalog {
         let syncStartDate = Date.now
         // Loads products and variations in batches in parallel.
         async let productsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProducts(siteID: siteID, pageNumber: pageNumber, allowCellular: allowCellular)
+                try await syncRemote.loadProducts(siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  allowCellular: allowCellular,
+                                                  posProductsOnly: posProductsOnly)
             }
         )
         async let variationsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
-                try await syncRemote.loadProductVariations(siteID: siteID, pageNumber: pageNumber, allowCellular: allowCellular)
+                try await syncRemote.loadProductVariations(siteID: siteID,
+                                                           pageNumber: pageNumber,
+                                                           allowCellular: allowCellular,
+                                                           posProductsOnly: posProductsOnly)
             }
         )
 
@@ -209,12 +236,12 @@ private extension POSCatalogFullSyncService {
                                                                          allowCellular: allowCellular)
 
             switch response.status {
-            case .complete:
+            case .completed:
                 guard let downloadURL = response.downloadURL else {
                     throw POSCatalogSyncError.invalidData
                 }
                 return downloadURL
-            case .pending, .processing:
+            case .scheduled, .inProgress:
                 // Only logs every 10th attempt to avoid flooding logs for large catalogs.
                 if attempts % 10 == 0 {
                     DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")

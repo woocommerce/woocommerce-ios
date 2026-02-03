@@ -360,6 +360,7 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
+        sessionManager.cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.usedProductDescriptionAI] = nil
@@ -505,6 +506,12 @@ private extension DefaultStoresManager {
                 onCompletion(result.map { _ in () })
             }
         dispatch(action)
+    }
+
+    /// Tracks the site connection type for the default site.
+    private func trackSiteConnectionType() {
+        let siteConnectionType = SiteConnectionType(site: sessionManager.defaultSite)
+        ServiceLocator.analytics.track(event: .Dashboard.siteConnectionTypeIdentified(siteConnectionType: siteConnectionType))
     }
 
     /// Synchronizes the settings for the specified site, if possible.
@@ -661,6 +668,7 @@ private extension DefaultStoresManager {
                 case let .success(systemInformation):
                     DDLogInfo("🟢 Successfully synced system information")
                     self?.loadStoreUUID(siteID: siteID)
+                    self?.loadCachedWooCommerceVersion(siteID: siteID)
                     continuation.resume(returning: systemInformation)
                 case let .failure(error):
                     DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
@@ -694,6 +702,18 @@ private extension DefaultStoresManager {
             DDLogInfo("🟢 Loaded Store UUID: " + (String(describing: storeUUID)))
         }
         dispatch(action)
+    }
+
+    /// Loads the WooCommerce plugin version from storage and caches it in memory for the session only
+    ///
+    func loadCachedWooCommerceVersion(siteID: Int64) {
+        let version = ServiceLocator.storageManager.viewStorage.loadSystemPlugin(
+            siteID: siteID,
+            fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
+            active: nil
+        )?.toReadOnly().version
+
+        sessionManager.cachedWooCommerceVersion = version
     }
 
     /// Sends telemetry data after availability check
@@ -786,6 +806,7 @@ private extension DefaultStoresManager {
                                                     isJetpackConnected: info.isJetpackConnected,
                                                     isWordPressComStore: info.isWPCom)
                         self.sessionManager.defaultSite = updatedSite
+                        trackSiteConnectionType()
                         self.updateAndReloadWidgetInformation(with: site.siteID)
                     case .failure(let error):
                         DDLogError("⛔️ Cannot fetch generic site info: \(error)")
@@ -818,6 +839,7 @@ private extension DefaultStoresManager {
                 case .success(let siteAPI):
                     let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                     sessionManager.defaultSite = updatedSite
+                    trackSiteConnectionType()
                     updateAndReloadWidgetInformation(with: siteID)
                 case .failure(let error):
                     DDLogError("⛔️ Cannot trigger root endpoint: \(error)")

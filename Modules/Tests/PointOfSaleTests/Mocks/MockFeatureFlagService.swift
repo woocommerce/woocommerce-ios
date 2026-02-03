@@ -20,11 +20,10 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var revampedShippingLabelCreation: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
-    var notificationSettings: Bool
-    var allowMerchantAIAPIKey: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
+    var isPointOfSaleRefundsi1Enabled: Bool
     var isCIABEnabled: Bool
 
     init(isInboxOn: Bool = false,
@@ -45,10 +44,9 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
-         notificationSettings: Bool = false,
-         allowMerchantAIAPIKey: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
          isCIABBookingsEnabled: Bool = false,
+         isPointOfSaleRefundsi1Enabled: Bool = false,
          isCIABEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
@@ -68,10 +66,9 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
-        self.notificationSettings = notificationSettings
-        self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
+        self.isPointOfSaleRefundsi1Enabled = isPointOfSaleRefundsi1Enabled
         self.isCIABEnabled = isCIABEnabled
     }
 
@@ -119,14 +116,12 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:
             return backgroundProductImageUpload
-        case .notificationSettings:
-            return notificationSettings
-        case .allowMerchantAIAPIKey:
-            return allowMerchantAIAPIKey
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return isCIABBookingsEnabled
+        case .pointOfSaleRefundsi1:
+            return isPointOfSaleRefundsi1Enabled
         case .ciab:
             return isCIABEnabled
         default:

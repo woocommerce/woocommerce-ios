@@ -24,7 +24,7 @@ extension PaymentMethod {
                 return
             }
             self = .interacPresent(details: CardPresentTransactionDetails(details: details))
-        case .affirm, .wechatPay, .unknown:
+        case .affirm, .wechatPay, .paynow, .paypay, .unknown:
             self = .unknown
         @unknown default:
             self = .unknown

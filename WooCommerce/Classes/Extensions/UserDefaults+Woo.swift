@@ -18,6 +18,7 @@ extension UserDefaults {
         case defaultRoles
         case deviceID
         case deviceToken
+        case wooPushNotificationToken
         case errorLoginSiteAddress
         case hasFinishedOnboarding
         case installationDate
@@ -76,6 +77,15 @@ extension UserDefaults {
 
         // CIAB Bookings tab availability
         case ciabBookingsTabAvailable
+
+        /// Registered site IDs separated by commas
+        case siteIDsRegisteredForWooPushNotifications
+
+        /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
+        case hideWPComConnectionOnDashboard
+
+        /// Pending flow for magic link: notification setup or Jetpack setup
+        case pendingMagicLinkFlow
     }
 }
 

@@ -846,6 +846,7 @@ extension WooShippingOriginAddress {
     func toWooShippingAddress() -> WooShippingAddress {
         WooShippingAddress(company: company,
                            name: fullName,
+                           email: email,
                            phone: phone,
                            country: country,
                            state: state,
@@ -864,6 +865,7 @@ private extension ShippingLabelAddress {
     func toWooShippingAddress() -> WooShippingAddress {
         WooShippingAddress(company: company,
                            name: name,
+                           email: nil, // ignoring as we don't display email on UI for purchased labels
                            phone: phone,
                            country: country,
                            state: state,
@@ -882,6 +884,7 @@ private extension Address {
     func toWooShippingAddress() -> WooShippingAddress {
         return WooShippingAddress(company: company ?? "",
                                   name: fullName,
+                                  email: email,
                                   phone: phone ?? "",
                                   country: country,
                                   state: state,

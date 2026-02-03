@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.0
+This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
+
+## 23.9
+This update brings clearer feedback during checkout, more reliable syncing, and safer payment behavior. Troubleshooting is now more powerful with better diagnostics, plugin updates work more smoothly, and we fixed crashes, editing issues, and localization bugs to make everyday store management more stable and predictable.
+
 ## 23.8
 This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.
 

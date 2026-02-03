@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 import Yosemite
 import Storage
 import class Networking.UserAgent
@@ -104,7 +105,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let defaults: UserDefaults
+    private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     /// Reference to the Zendesk shared instance
     ///
@@ -114,11 +118,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
+        self.pushNotesManager = pushNotesManager
         self.analytics = analytics
 
         /// Initialize Sites Results Controller
@@ -158,6 +164,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadWhatsNewOnWooCommerce()
         loadSites()
         reloadSettings()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -205,6 +212,15 @@ private extension SettingsViewModel {
         sites = sitesResultsController.fetchedObjects
     }
 
+    func observeSelfDrivenPushTokenPersistence() {
+        pushNotesManager.siteIDsRegisteredForWooPNsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.reloadSettings()
+            }
+            .store(in: &subscriptions)
+    }
+
     func configureSections() {
         let configureSection: Section? = {
             var rows: [Row] = []
@@ -241,6 +257,10 @@ private extension SettingsViewModel {
                 return nil
             }
             var rows: [Row] = [.storeName]
+
+            if shouldShowEnablePushNotificationsRow(siteID: site.siteID) {
+                rows.append(.enablePushNotifications)
+            }
 
             if defaults.wpcomSiteSuspended == false,
                site.isJetpackCPConnected == true ||
@@ -288,7 +308,14 @@ private extension SettingsViewModel {
                 }
                 return site.isJetpackCPConnected == false
             }()
-            if notificationAvailable, featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
+            let isSelfDrivenPushNotificationsRegistered: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+            }()
+            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]
@@ -354,6 +381,18 @@ private extension SettingsViewModel {
             logoutSection
         ]
         .compactMap { $0 }
+    }
+
+    func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom else {
+            return false
+        }
+
+        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
+            return false
+        }
+
+        return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false
     }
 
     /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage

@@ -11,19 +11,22 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
+    private let posProductsOnly: Bool
 
     init(siteID: Int64,
          searchTerm: String,
          grdbManager: GRDBManagerProtocol,
          variationsRemote: ProductVariationsRemoteProtocol,
          analytics: POSItemFetchAnalyticsTracking,
-         pageSize: Int = 25) {
+         pageSize: Int = 25,
+         posProductsOnly: Bool = false) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.grdbManager = grdbManager
         self.variationsRemote = variationsRemote
         self.analytics = analytics
         self.pageSize = pageSize
+        self.posProductsOnly = posProductsOnly
     }
 
     var debounceStrategy: SearchDebounceStrategy {

@@ -284,7 +284,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
         )
 
         // When
@@ -305,7 +306,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
         )
 
         // When
@@ -340,7 +342,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
         )
 
         // When
@@ -589,7 +592,10 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     private(set) var lastSyncSiteID: Int64?
     private(set) var lastAllowCellular: Bool?
 
-    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool) async throws -> POSCatalog {
+    func startFullSync(for siteID: Int64,
+                        regenerateCatalog: Bool,
+                        allowCellular: Bool,
+                        posProductsOnly: Bool) async throws -> POSCatalog {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular

@@ -9,17 +9,23 @@ import Fakes
 final class BookingDetailsViewModelTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var storageManager: MockStorageManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: .makeForTesting())
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         super.tearDown()
         storesManager = nil
         storageManager = nil
+        analytics = nil
+        analyticsProvider = nil
     }
 
     func test_setupSections_populates_all_sections_with_complete_booking() {
@@ -57,7 +63,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         XCTAssertEqual(viewModel.sections.count, 6)
@@ -111,7 +117,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         XCTAssertEqual(viewModel.sections.count, 5)
@@ -143,7 +149,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let headerSection = viewModel.sections.first { section in
@@ -187,7 +193,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let customerSection = viewModel.sections.first { section in
@@ -233,7 +239,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(orderInfo: orderInfo)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let customerSection = viewModel.sections.first { section in
@@ -257,16 +263,16 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let booking = Booking.fake().copy(bookingID: 12345)
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         XCTAssertTrue(viewModel.navigationTitle.contains("12345"))
     }
 
-    func test_updateAttendanceStatus_whenNewStatusIsProvided_dispatchesUpdateBookingAttendanceStatusAction() {
+    func test_updateAttendanceStatus_whenNewStatusIsProvided_dispatchesUpdateBookingAttendanceStatusAction() throws {
         // Given
         let booking = Booking.fake()
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
         let newStatus = BookingAttendanceStatus.checkedIn
 
         // When
@@ -287,12 +293,15 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(siteID, booking.siteID)
         XCTAssertEqual(bookingID, booking.bookingID)
         XCTAssertEqual(status, newStatus)
+
+        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_updated",
+                                         with: ["booking_status": "checked-in"])
     }
 
     func test_error_notice_displayed_when_attendance_staus_update_fails() {
         // Given
         let booking = Booking.fake()
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
         let newStatus = BookingAttendanceStatus.checkedIn
         enum TestError: Error { case generic }
 
@@ -333,7 +342,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let headerSection = viewModel.sections.first { section in
@@ -358,7 +367,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let attendanceSection = viewModel.sections.first { section in
@@ -385,7 +394,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let containsAttendanceSection = viewModel.sections.contains { section in
@@ -405,7 +414,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
 
         // When
-        let viewModel = BookingDetailsViewModel(booking: booking, stores: storesManager)
+        let viewModel = givenViewModel(booking: booking)
 
         // Then
         let paymentSection = viewModel.sections.first { section in
@@ -423,5 +432,76 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
         XCTAssertFalse(viewModel.isViewOrderAvailable)
         XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
+    }
+
+    func test_event_fired_when_booking_marked_as_paid() async throws {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        let task = Task { try await viewModel.markBookingAsPaid() }
+        let action = try await waitForFirstBookingAction()
+        guard case let .markBookingAsPaid(_, _, onCompletion) = action else {
+            return XCTFail("Expected markBookingAsPaid action")
+        }
+        onCompletion(nil)
+        try await task.value
+
+        // Then
+        analyticsProvider.assertReceived(event: "booking_detail_mark_as_paid_tapped")
+    }
+
+    func test_event_fired_when_booking_cancelled() async throws {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        let task = Task { try await viewModel.cancelBooking() }
+        let action = try await waitForFirstBookingAction()
+        guard case let .cancelBooking(_, _, onCompletion) = action else {
+            return XCTFail("Expected cancelBooking action")
+        }
+        onCompletion(nil)
+        try await task.value
+
+        // Then
+        analyticsProvider.assertReceived(event: "booking_detail_cancel_booking")
+    }
+
+    func test_event_fired_when_notes_tapped() {
+        // Given
+        let viewModel = givenViewModel()
+
+        // When
+        viewModel.notesTapped()
+
+        // Then
+        analyticsProvider.assertReceived(event: "booking_detail_add_note_tapped")
+    }
+
+
+}
+
+private extension BookingDetailsViewModelTests {
+    func givenViewModel(booking: Booking = Booking.fake()) -> BookingDetailsViewModel {
+        return BookingDetailsViewModel(booking: booking, stores: storesManager, analytics: analytics)
+    }
+
+    func waitForFirstBookingAction(
+        timeout: TimeInterval = 1,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws -> BookingAction {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if let action = storesManager.receivedActions.first as? BookingAction {
+                return action
+            }
+            await Task.yield()
+        }
+
+        XCTFail("Timed out waiting for BookingAction to be dispatched", file: file, line: line)
+        throw XCTSkip("No BookingAction dispatched")
     }
 }

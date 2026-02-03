@@ -86,6 +86,7 @@ public class DevicesRemote: Remote {
                                      method: .post,
                                      siteID: siteID,
                                      path: Paths.selfDrivenPN,
+                                     parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = TokenIDMapper()
         return try await enqueue(request, mapper: mapper)

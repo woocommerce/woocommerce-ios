@@ -167,8 +167,11 @@ class WooAnalyticsTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
-                                                                    url: sampleSiteURL),
-                                                                   defaultStoreUUID: "sample_store_uuid"))
+                                                                    url: sampleSiteURL,
+                                                                    isJetpackThePluginInstalled: true,
+                                                                    isJetpackConnected: true),
+                                                                   defaultStoreUUID: "sample_store_uuid",
+                                                                   cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
         analytics = WooAnalytics(analyticsProvider: testingProvider)
 
@@ -183,11 +186,13 @@ class WooAnalyticsTests: XCTestCase {
         let expectedProperties: [String: AnyHashable] = [
             "blog_id": sampleSiteID,
             "is_wpcom_store": false,
-            "was_ecommerce_trial": false,
-            "plan": "",
+            "is_jetpack_installed": true,
+            "is_jetpack_connected": true,
+            "is_jetpack_cp_connected": false,
             "site_url": sampleSiteURL,
             "prop-key1": "prop-value1",
-            "store_id": "sample_store_uuid"
+            "store_id": "sample_store_uuid",
+            "cached_woo_core_version": "10.0"
         ]
 
         for property in expectedProperties {
@@ -219,10 +224,12 @@ class WooAnalyticsTests: XCTestCase {
         let expectedToBeAbsentProperties = [
             "blog_id",
             "is_wpcom_store",
-            "was_ecommerce_trial",
-            "plan",
+            "is_jetpack_installed",
+            "is_jetpack_connected",
+            "is_jetpack_cp_connected",
             "site_url",
-            "store_id"
+            "store_id",
+            "cached_woo_core_version"
         ]
 
         for property in expectedToBeAbsentProperties {

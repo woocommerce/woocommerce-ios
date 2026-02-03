@@ -1,44 +1,53 @@
-# Translation of Release Notes & Apple Store Description in English (US)
-# This file is distributed under the same license as the Release Notes & Apple Store Description package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-01-03 17:30-0000\n"
+"PO-Revision-Date: 2026-01-28 19:59+1100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.0.1\n"
-"Project-Id-Version: Release Notes & Apple Store Description\n"
-"POT-Creation-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-
-#. translators: Subtitle to be displayed below the application name in the Apple App Store. Limit to 30 characters including spaces and commas!
-msgctxt "app_store_subtitle"
-msgid "Your store in your pocket"
-msgstr ""
+"X-Generator: fastlane-plugin-wpmreleasetoolkit 14.0.0\n"
 
 #. translators: Multi-paragraph text used to display in the Apple App Store.
 msgctxt "app_store_desc"
 msgid ""
-"Manage your business on the go with the WooCommerce Mobile App. Add products, create orders, take quick payments, and keep an eye on new sales and key stats in real time.\n"
+"Manage your business on the go with the WooCommerce Mobile App. Add products, "
+"create orders, take quick payments, and keep an eye on new sales and key stats"
+" in real time.\n"
 "\n"
 "Add and edit products with a touch\n"
-"Get started in seconds! Create, group, and publish products directly from your iPhone or iPad. Capture your creativity the moment it strikes – turn your ideas into products immediately, or save them as drafts for later.\n"
+"Get started in seconds! Create, group, and publish products directly from your"
+" iPhone or iPad. Capture your creativity the moment it strikes – turn your ide"
+"as into products immediately, or save them as drafts for later.\n"
 "\n"
 "Create orders on the fly\n"
-"Once you have some products created, it’s simple. Choose items from your catalog, add shipping, and then fill in customer details to quickly create an order that syncs with your inventory.\n"
+"Once you have some products created, it’s simple. Choose items from your catal"
+"og, add shipping, and then fill in customer details to quickly create an order"
+" that syncs with your inventory.\n"
 "\n"
 "Take payments in person\n"
-"Collect physical payments using WooCommerce In-Person Payments and a card reader (available in the US and Canada). Start a new order – or find an existing one that’s pending payment – and collect payment using the card reader or a digital wallet, such as Apple Pay.\n"
+"Collect physical payments using WooCommerce In-Person Payments and a card read"
+"er (available in the US, UK, and Canada), Tap to Pay on iPhone, or a digital w"
+"allet, such as Apple Pay. Start a new order — or find an existing one that’s p"
+"ending payment – then seamlessly accept payment.\n"
+"\n"
+"Go from clicks to bricks\n"
+"Turn any tablet into a powerful point of sale with WooCommerce POS. Search pro"
+"ducts, scan barcodes, apply coupons, and send email receipts, with all of your"
+" online and physical sales synced in real time. Available in the US and UK.\n"
 "\n"
 "Get notified of every sale\n"
-"Now that you’re actively selling, never miss an order or a review. Keep yourself in the loop by enabling real-time alerts – and listen for that addictive “cha-ching” sound that comes with each new sale!\n"
+"Now that you’re actively selling, never miss an order or a review. Keep yourse"
+"lf in the loop by enabling real-time alerts – and listen for that addictive “c"
+"ha-ching” sound that comes with each new sale!\n"
 "\n"
 "Track sales and bestselling products\n"
-"See which products are winning at a glance. Keep tabs on your overall revenue, order count, and visitor data by week, month, and year. Knowledge = power.\n"
+"See which products are winning at a glance. Keep tabs on your overall revenue,"
+" order count, and visitor data by week, month, and year. Knowledge = power.\n"
 "\n"
-"WooCommerce is the world’s most customizable open-source eCommerce platform. Whether you’re launching a business, taking brick-and-mortar retail online, or developing sites for clients, use WooCommerce for a store that powerfully blends content and commerce.\n"
+"WooCommerce is the world’s most customizable open-source eCommerce platform. W"
+"hether you’re launching a business, taking brick-and-mortar retail online, or "
+"developing sites for clients, use WooCommerce for a store that powerfully blen"
+"ds content and commerce.\n"
 "\n"
 "Requirements: WooCommerce v3.5+.\n"
 "\n"
@@ -46,13 +55,20 @@ msgid ""
 "\n"
 "View the Privacy Policy at https://automattic.com/privacy/\n"
 "\n"
-"View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.\n"
+"View the Privacy Notice for California users at https://automattic.com/privacy"
+"/#california-consumer-privacy-act-ccpa."
 msgstr ""
 
 #. translators: Keywords used in the App Store search engine to find the app.
 #. Delimit with an English comma between each keyword. Limit to 100 characters including spaces and commas.
 msgctxt "app_store_keywords"
-msgid "Woocommerce, woocommerce app, woocommerce mobile, woo app, woocommerce order alert, wordpress, eComm"
+msgid ""
+"woo,order,ecommerce,pos,point of sale,wordpress,store,payments,credit,card,shi"
+"pping,stock,inventory"
+msgstr ""
+
+msgctxt "app_store_name"
+msgid "WooCommerce: Store & POS"
 msgstr ""
 
 #. translators: Multi-paragraph text used to display in the Apple App Store.
@@ -61,25 +77,12 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v23.8-whats-new"
-msgid ""
-"This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.\n"
-msgstr ""
-
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-1"
 msgid ""
 "Track sales and\n"
-"bestselling products\n"
-msgstr ""
-
-#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
-#. No specified characters limit here, but try to keep as short as the source one.
-msgctxt "app_store_screenshot-1_b"
-msgid ""
-"Made with 💜\n"
-"at Automattic\n"
+"bestselling products"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -87,7 +90,7 @@ msgstr ""
 msgctxt "app_store_screenshot-2"
 msgid ""
 "Create orders\n"
-"on the fly\n"
+"on the fly"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -95,36 +98,53 @@ msgstr ""
 msgctxt "app_store_screenshot-3"
 msgid ""
 "Take payments\n"
-"in person\n"
+"in person"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-4"
-msgid ""
-"Add and edit products\n"
-"with a touch\n"
+msgid "Sell online and in person"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-5"
-msgid ""
-"Get notified of\n"
-"every sale\n"
+msgid "Track orders and view totals in real time"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-6"
-msgid ""
-"Get notified about new\n"
-"customer reviews\n"
+msgid "Complete payments quickly and efficiently"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one.
 msgctxt "app_store_screenshot-7"
-msgid "Create and manage products"
+msgid ""
+"Add and edit products \n"
+"with a touch"
+msgstr ""
+
+#. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
+#. No specified characters limit here, but try to keep as short as the source one.
+msgctxt "app_store_screenshot-8"
+msgid ""
+"Get notified of \n"
+"every sale"
+msgstr ""
+
+#. translators: Subtitle to be displayed below the application name in the Apple App Store. Limit to 30 characters including spaces and commas!
+msgctxt "app_store_subtitle"
+msgid "All-in-one mobile ecommerce"
+msgstr ""
+
+msgctxt "v24.0-whats-new"
+msgid ""
+"This update improves sign-in clarity by showing a clear error when site login "
+"fails due to authentication issues, adds a helpful “Learn more” flow to better"
+" explain POS features, and includes behind-the-scenes connection tracking to h"
+"elp us improve reliability and performance.\n"
 msgstr ""
 

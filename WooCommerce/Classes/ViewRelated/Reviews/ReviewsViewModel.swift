@@ -215,7 +215,7 @@ private extension ReviewsViewModel {
     /// Marks the specified collection of Notifications as Read.
     ///
     func markAsRead(notes: [Note], onCompletion: @escaping (Error?) -> Void) {
-        let identifiers = notes.map { $0.noteID }
+        let identifiers = notes.compactMap { $0.noteID }
         let action = NotificationAction.updateMultipleReadStatus(noteIDs: identifiers, read: true, onCompletion: onCompletion)
 
         stores.dispatch(action)

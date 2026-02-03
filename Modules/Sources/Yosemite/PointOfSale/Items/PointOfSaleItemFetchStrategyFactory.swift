@@ -19,13 +19,15 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     private let variationsRemote: ProductVariationsRemote
     private let grdbManager: GRDBManagerProtocol?
     private let isLocalCatalogEnabled: Bool
+    private let posProductsOnlyEnabled: Bool
 
     public init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
                 appPasswordSupportState: AnyPublisher<Bool, Never>? = nil,
                 grdbManager: GRDBManagerProtocol? = nil,
-                isLocalCatalogEnabled: Bool = false) {
+                isLocalCatalogEnabled: Bool = false,
+                posProductsOnlyEnabled: Bool = false) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
@@ -34,13 +36,15 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
         self.variationsRemote = ProductVariationsRemote(network: network)
         self.grdbManager = grdbManager
         self.isLocalCatalogEnabled = isLocalCatalogEnabled
+        self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
     public func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSaleDefaultPurchasableItemFetchStrategy(siteID: siteID,
                                                        productsRemote: productsRemote,
                                                        variationsRemote: variationsRemote,
-                                                       analytics: analytics)
+                                                       analytics: analytics,
+                                                       posProductsOnly: posProductsOnlyEnabled)
     }
     public func searchStrategy(searchTerm: String,
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
@@ -50,20 +54,23 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                                                                       searchTerm: searchTerm,
                                                                       grdbManager: grdbManager,
                                                                       variationsRemote: variationsRemote,
-                                                                      analytics: analytics)
+                                                                      analytics: analytics,
+                                                                      posProductsOnly: posProductsOnlyEnabled)
         }
         return PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                             searchTerm: searchTerm,
                                                             productsRemote: productsRemote,
                                                             variationsRemote: variationsRemote,
-                                                            analytics: analytics)
+                                                            analytics: analytics,
+                                                            posProductsOnly: posProductsOnlyEnabled)
     }
 
     public func popularStrategy(pageSize: Int = 10) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSalePopularPurchasableItemFetchStrategy(siteID: siteID,
                                                        pageSize: pageSize,
                                                        productsRemote: productsRemote,
-                                                       variationsRemote: variationsRemote)
+                                                       variationsRemote: variationsRemote,
+                                                       posProductsOnly: posProductsOnlyEnabled)
     }
 }
 

@@ -191,6 +191,10 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Cached WooCommerce version for the default store.
+    ///
+    var cachedWooCommerceVersion: String?
+
     /// Keeps strong reference of the use case to keep the password deletion request alive
     /// periphery: ignore
     var applicationPasswordUseCase: ApplicationPasswordUseCase?
@@ -225,6 +229,7 @@ final class SessionManager: SessionManagerProtocol {
         defaultStoreID = nil
         defaultStoreUUID = nil
         defaultSite = nil
+        cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.hasSavedPrivacyBannerSettings] = nil
@@ -243,6 +248,8 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.applicationPasswordUnsupportedList] = nil
         defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
         defaults[.ciabBookingsTabAvailable] = nil
+        defaults[.hideWPComConnectionOnDashboard] = nil
+        PendingAuthFlowStorage(userDefaults: defaults).clear()
         resetTimestampsValues()
         imageCache.clearCache()
     }

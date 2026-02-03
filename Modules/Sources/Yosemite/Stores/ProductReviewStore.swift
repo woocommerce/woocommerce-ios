@@ -42,6 +42,8 @@ public final class ProductReviewStore: Store {
                                       onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
+        case let .retrieveProductReviewAndProduct(siteID, reviewID, onCompletion):
+            retrieveProductReviewAndProduct(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
         case .retrieveProductReviewFromNote(let noteID, let onCompletion):
             retrieveProductReviewFromNote(noteID: noteID, onCompletion: onCompletion)
         case .updateApprovalStatus(let siteID, let reviewID, let isApproved, let onCompletion):
@@ -116,6 +118,13 @@ private extension ProductReviewStore {
                 }
             }
         }
+    }
+
+    /// Retrieves the `Note`, `ProductReview`, and `Product` in sequence.
+    func retrieveProductReviewAndProduct(siteID: Int64,
+                                         reviewID: Int64,
+                                         onCompletion: @escaping (Result<ProductReviewFromNoteParcel, Error>) -> Void) {
+        productReviewFromNoteUseCase.retrieve(reviewID: reviewID, siteID: siteID, completion: onCompletion)
     }
 
     /// Retrieves the `Note`, `ProductReview`, and `Product` in sequence.

@@ -18,7 +18,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_age_is_ineligible_then_blocks() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -28,8 +27,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertFalse(allowed)
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .denyAndLogout)
             switch result {
             case .ineligible:
                 break
@@ -45,7 +44,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_age_is_declinedSharing_then_allows() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -55,8 +53,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertTrue(allowed) // per current logic: declined → allow
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .allow) // per current logic: declined → allow
             switch result {
             case .declinedSharing:
                 break
@@ -71,7 +69,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
 
     func test_triggerAgeVerificationIfNeeded_when_anchor_missing_then_allows() {
         let window = UIWindow() // no rootViewController
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -81,8 +78,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertTrue(allowed) // we allow when no presenter is available
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .allow) // we allow when no presenter is available
             switch result {
             case .invalidUIState:
                 break
@@ -98,7 +95,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_featureUnavailable_then_allows() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -108,8 +104,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertTrue(allowed) // per current logic: featureUnavailable → allow
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .allow) // per current logic: featureUnavailable → allow
             switch result {
             case .featureUnavailable:
                 break
@@ -125,7 +121,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_sdkError_then_allows() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -140,8 +135,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertTrue(allowed) // per current logic: sdkError → allow
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .allow) // per current logic: sdkError → allow
             switch result {
             case .sdkError:
                 break
@@ -157,7 +152,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_unknown_then_allows() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -167,8 +161,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertTrue(allowed) // per current logic: unknown → allow
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .allow) // per current logic: unknown → allow
             switch result {
             case .unknown:
                 break
@@ -184,7 +178,6 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     func test_triggerAgeVerificationIfNeeded_when_age_is_eligible_then_allows() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
-        featureFlagService = AlwaysOnFeatureFlagService()
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
             ageRangeVerificationService: FakeAgeRangeService(
@@ -197,8 +190,8 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { allowed, result in
-            XCTAssertTrue(allowed)
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDescision, result in
+            XCTAssertEqual(appAccessDescision, .allow)
             switch result {
             case .eligible:
                 break

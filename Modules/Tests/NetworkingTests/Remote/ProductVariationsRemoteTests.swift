@@ -603,6 +603,36 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(queryParametersDictionary["page"] as? String, "1")
         XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
     }
+
+    func test_loadVariationsForPointOfSale_includes_posProductsOnly_false_when_default() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                           parentProductID: sampleProductID,
+                                                           pageNumber: 1,
+                                                           posProductsOnly: false)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["pos_products_only"] as? String, "false")
+    }
+
+    func test_loadVariationsForPointOfSale_includes_posProductsOnly_when_true() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                           parentProductID: sampleProductID,
+                                                           pageNumber: 1,
+                                                           posProductsOnly: true)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["pos_products_only"] as? String, "true")
+    }
 }
 
 private extension ProductVariationsRemoteTests {

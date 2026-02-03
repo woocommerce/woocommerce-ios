@@ -30,9 +30,11 @@ struct POSRootModalViewModifier: ViewModifier {
                         modalManager.getContent()
                             .environment(\.posModalParentSize, modalParentSize)
                             .background(Color.posSurfaceBright)
-                            .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
-                            .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
-                            .padding()
+                            .cornerRadius(modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                            .posShadow(modalManager.isFullScreen ? .none : .large,
+                                       cornerRadius: modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                            .padding(modalManager.isFullScreen ? POSPadding.none : POSPadding.medium)
+                            .ignoresSafeArea(.container, edges: modalManager.isFullScreen ? .all : [])
                     }
                     .zIndex(1)
                     // Scale the modal container in and out, fading appropriately.
@@ -194,6 +196,31 @@ extension View {
     /// Prevents a POS Modal from being dismissed by tapping on the background.
     func posInteractiveDismissDisabled(_ disabled: Bool = true) -> some View {
         self.modifier(POSInteractiveDismissModifier(disabled: disabled))
+    }
+}
+
+struct POSModalFullScreenModifier: ViewModifier {
+    @EnvironmentObject var modalManager: POSModalManager
+
+    let enabled: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: enabled) { _, newValue in
+                modalManager.setFullScreen(newValue)
+            }
+            .onAppear {
+                modalManager.setFullScreen(enabled)
+            }
+            .onDisappear {
+                modalManager.setFullScreen(false)
+            }
+    }
+}
+
+extension View {
+    func posModalFullScreen(_ enabled: Bool = true) -> some View {
+        self.modifier(POSModalFullScreenModifier(enabled: enabled))
     }
 }
 

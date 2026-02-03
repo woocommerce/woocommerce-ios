@@ -80,13 +80,24 @@ final class RetrieveProductReviewFromNoteUseCase {
         // Do not use `weak self` because we want to retain this class
         // until all the callbacks are finished.
         fetchNote(noteID: noteID, abort: abort) { note in
-            self.fetchProductReview(from: note, abort: abort) { review in
-                self.saveProductReview(review, abort: abort) {
-                    self.fetchProduct(siteID: review.siteID, productID: review.productID, abort: abort, next: { product in
-                        let parcel = ProductReviewFromNoteParcel(note: note, review: review, product: product)
-                        completion(.success(parcel))
-                    })
-                }
+            guard let siteID = note.meta.identifier(forKey: .site),
+                let reviewID = note.meta.identifier(forKey: .comment) else {
+                    return abort(ProductReviewFromNoteRetrieveError.reviewNotFound)
+            }
+            self.retrieve(reviewID: Int64(reviewID), siteID: Int64(siteID), note: note, completion: completion)
+        }
+    }
+
+    func retrieve(reviewID: Int64, siteID: Int64, note: Note? = nil, completion: @escaping CompletionBlock) {
+        let abort: (Error) -> () = {
+            completion(.failure($0))
+        }
+        fetchProductReview(reviewID: reviewID, siteID: siteID, abort: abort) { review in
+            self.saveProductReview(review, abort: abort) {
+                self.fetchProduct(siteID: review.siteID, productID: review.productID, abort: abort, next: { product in
+                    let parcel = ProductReviewFromNoteParcel(note: note, review: review, product: product)
+                    completion(.success(parcel))
+                })
             }
         }
     }
@@ -116,15 +127,12 @@ final class RetrieveProductReviewFromNoteUseCase {
 
     /// Fetch the `ProductReview` from storage, or from the API if it is not available in storage.
     ///
-    private func fetchProductReview(from note: Note,
+    private func fetchProductReview(reviewID: Int64,
+                                    siteID: Int64,
                                     abort: @escaping AbortBlock,
                                     next: @escaping (ProductReview) -> Void) {
-        guard let siteID = note.meta.identifier(forKey: .site),
-            let reviewID = note.meta.identifier(forKey: .comment) else {
-                return abort(ProductReviewFromNoteRetrieveError.reviewNotFound)
-        }
 
-        if let productReviewInStorage = storageManager?.viewStorage.loadProductReview(siteID: Int64(siteID), reviewID: Int64(reviewID)) {
+        if let productReviewInStorage = storageManager?.viewStorage.loadProductReview(siteID: siteID, reviewID: reviewID) {
             return next(productReviewInStorage.toReadOnly())
         }
 

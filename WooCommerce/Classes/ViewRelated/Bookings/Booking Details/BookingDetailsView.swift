@@ -160,9 +160,12 @@ private extension BookingDetailsView {
         case .payment(let content):
             paymentDetailsView(with: content)
         case .bookingNotes(let content):
-            BookingNotesRowView(content: content) { newNote in
+            BookingNotesRowView(content: content) {
+                viewModel.notesTapped()
+            } onCommit: { newNote in
                 await viewModel.updateNote(to: newNote)
             }
+
         }
     }
 

@@ -5,6 +5,8 @@ import struct Yosemite.POSOrder
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
+    var refundActionAvailability: RefundActionAvailability = .available
+    var refundSelectableItems: [POSRefundSelectableItem] = []
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
@@ -35,4 +37,59 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     func searchOrders(searchTerm: String) async {}
 
     func clearSearchOrders() {}
+
+    func startRefundFlow() {
+        guard let order = selectedOrder else { return }
+        refundSelectableItems = order.lineItems.map {
+            POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
+        }
+    }
+
+    func toggleRefundItemSelection(at index: Int) {
+        guard refundSelectableItems.indices.contains(index) else { return }
+        refundSelectableItems[index].isSelected.toggle()
+    }
+
+    func clearRefundSelection() {
+        refundSelectableItems = []
+    }
+
+    func toggleAllRefundItemsSelection() {}
+
+    // MARK: - Refund Review Data
+
+    var stubPOSRefundReviewData: POSRefundReviewData?
+
+    func preparePOSRefundReviewData() -> POSRefundReviewData? {
+        if let stubData = stubPOSRefundReviewData {
+            return stubData
+        }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else { return nil }
+
+        return POSRefundReviewData(
+            itemsCount: selectedItems.count,
+            formattedItemsSubtotal: "$0.00",
+            formattedTax: "$0.00",
+            formattedRefundTotal: "$0.00",
+            paymentMethodDescription: "Via payment card",
+            refundReason: nil
+        )
+    }
+
+    // MARK: - Refund Processing
+
+    var processRefundCalled = false
+    var spyProcessRefundReason: String?
+    var shouldThrowProcessRefundError = false
+
+    func processRefund(reason: String?) async throws {
+        processRefundCalled = true
+        spyProcessRefundReason = reason
+
+        if shouldThrowProcessRefundError {
+            throw TestError.updateOrderFailed
+        }
+    }
 }

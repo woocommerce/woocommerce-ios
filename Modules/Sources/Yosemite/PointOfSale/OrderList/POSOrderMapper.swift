@@ -5,6 +5,12 @@ import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderItemAttribute
 import struct NetworkingCore.OrderRefundCondensed
 
+enum POSOrderItemMappingError: Error {
+    case invalidTaxValue(itemID: Int64, value: String)
+    case priceFormattingFailed(itemID: Int64, price: NSDecimalNumber, currency: String)
+    case totalFormattingFailed(itemID: Int64, total: String, currency: String)
+}
+
 struct POSOrderMapper {
     private let currencyFormatter: CurrencyFormatter
 
@@ -12,10 +18,10 @@ struct POSOrderMapper {
         self.currencyFormatter = currencyFormatter
     }
 
-    func map(order: NetworkingCore.Order) -> POSOrder {
+    func map(order: NetworkingCore.Order) throws -> POSOrder {
         let customerEmail = order.billingAddress?.email
 
-        let posLineItems = order.items.map { map(orderItem: $0, currency: order.currency) }
+        let posLineItems = try order.items.map { try map(orderItem: $0, currency: order.currency) }
 
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
 
@@ -33,6 +39,12 @@ struct POSOrderMapper {
             return order.netAmount(currencyFormatter: currencyFormatter)
         }()
 
+        // Aggregate quantities by product/variation ID for refund comparison
+        let lineItemQuantitiesByProductOrVariationID = order.items.reduce(into: [Int64: Decimal]()) { acc, item in
+            let id = item.variationID != 0 ? item.variationID : item.productID
+            acc[id, default: 0] += item.quantity
+        }
+
         return POSOrder(
             id: order.orderID,
             number: order.number,
@@ -41,23 +53,40 @@ struct POSOrderMapper {
             formattedTotal: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
             customerEmail: customerEmail,
+            paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
             refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
-            formattedNetAmount: formattedNetAmount
+            formattedNetAmount: formattedNetAmount,
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 
-    private func map(orderItem: NetworkingCore.OrderItem, currency: String) -> POSOrderItem {
+    private func map(orderItem: NetworkingCore.OrderItem, currency: String) throws -> POSOrderItem {
+        guard let totalTax = Decimal(string: orderItem.totalTax) else {
+            throw POSOrderItemMappingError.invalidTaxValue(itemID: orderItem.itemID, value: orderItem.totalTax)
+        }
+        guard let formattedPrice = currencyFormatter.formatAmount(orderItem.price, with: currency) else {
+            throw POSOrderItemMappingError.priceFormattingFailed(itemID: orderItem.itemID, price: orderItem.price, currency: currency)
+        }
+        guard let formattedTotal = currencyFormatter.formatAmount(orderItem.total, with: currency) else {
+            throw POSOrderItemMappingError.totalFormattingFailed(itemID: orderItem.itemID, total: orderItem.total, currency: currency)
+        }
+
+        let total = Decimal(string: orderItem.total) ?? (orderItem.price as Decimal) * orderItem.quantity
+
         return POSOrderItem(
             itemID: orderItem.itemID,
             name: orderItem.name,
             quantity: orderItem.quantity,
-            formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",
-            formattedTotal: currencyFormatter.formatAmount(orderItem.total, with: currency) ?? "",
+            price: orderItem.price as Decimal,
+            total: total,
+            totalTax: totalTax,
+            formattedPrice: formattedPrice,
+            formattedTotal: formattedTotal,
             imageSrc: orderItem.image?.src,
             attributes: orderItem.attributes
         )

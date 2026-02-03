@@ -78,10 +78,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .notificationSettings:
-            return true
-        case .allowMerchantAIAPIKey:
-            return false
         case .inventoryProductLabelsInPOS:
             return false
         case .productImageOptimizedHandling:
@@ -100,14 +96,20 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ciab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .pointOfSaleSurveys:
-            return true
         case .pointOfSaleCatalogAPI:
             return false
         case .pointOfSaleRefundsi1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .ageRangeRequirementsCompliance:
+        case .selfDrivenPushTokenWPCom:
+            return false
+        case .selfDrivenPushTokenAppPasswords:
+            return false
+        case .pointOfSaleOnlyProducts:
+            return true
+        case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .ageRangeRequirementsCompliance:
+            return false
         default:
             return true
         }

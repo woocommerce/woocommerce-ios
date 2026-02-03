@@ -4,25 +4,52 @@ import enum Yosemite.POSOrderListServiceError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
+import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
+import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundsResult
+import struct Yosemite.POSRefundableItem
+import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
+import protocol Experiments.FeatureFlagService
+import class WooFoundation.CurrencyFormatter
 
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
+    var refundActionAvailability: RefundActionAvailability { get }
+    var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
+    func startRefundFlow()
+    func toggleRefundItemSelection(at index: Int)
+    func clearRefundSelection()
+    func toggleAllRefundItemsSelection()
+    func preparePOSRefundReviewData() -> POSRefundReviewData?
+    func processRefund(reason: String?) async throws
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
     func clearSearchOrders()
+}
+
+enum POSOrderListSelectedOrderRefundsState {
+    case idle
+    case loading
+    case loaded(POSRefundsResult)
+    case failed(Error)
+}
+
+enum RefundActionAvailability {
+    case unknown
+    case available
+    case unavailable
 }
 
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
@@ -31,7 +58,14 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
+    private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
+    private var refundsTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
+    private let refundsService: POSRefundsServiceProtocol
+    private let featureFlags: POSFeatureFlagProviding
+    private let currencySettingsProvider: POSCurrencySettingsProviding
+    private let currencyFormatter: CurrencyFormatter
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -42,10 +76,35 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     }
 
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
+         refundsService: POSRefundsServiceProtocol,
+         featureFlags: POSFeatureFlagProviding,
+         currencySettingsProvider: POSCurrencySettingsProviding,
+         currencyFormatter: CurrencyFormatter,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
+        self.refundsService = refundsService
+        self.featureFlags = featureFlags
+        self.currencySettingsProvider = currencySettingsProvider
+        self.currencyFormatter = currencyFormatter
+    }
+
+    @MainActor
+    var refundActionAvailability: RefundActionAvailability {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
+              selectedOrder != nil else {
+            return .unavailable
+        }
+
+        switch selectedOrderRefundsState {
+        case .idle, .failed:
+            return .unavailable
+        case .loading:
+            return .unknown
+        case .loaded(let result):
+            return result.isFullyRefunded ? .unavailable : .available
+        }
     }
 
     @MainActor
@@ -164,6 +223,11 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+        selectedOrderRefundsState = .idle
+
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) {
+            fetchRefundsOfSelectedOrder()
+        }
     }
 
     @MainActor
@@ -201,5 +265,162 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
         if selectedOrder?.id == orderID {
             selectedOrder = updatedOrder
         }
+    }
+
+    @MainActor
+    private func fetchRefundsOfSelectedOrder() {
+        refundsTask?.cancel()
+        guard let order = selectedOrder else { return }
+
+        selectedOrderRefundsState = .loading
+        let orderID = order.id
+
+        refundsTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let result = try await self.refundsService.providePointOfSaleRefunds(for: order)
+                await MainActor.run {
+                    guard self.selectedOrder?.id == orderID else { return }
+                    self.selectedOrderRefundsState = .loaded(result)
+                }
+            }
+            catch is CancellationError {}
+            catch {
+                await MainActor.run {
+                    guard self.selectedOrder?.id == orderID else { return }
+                    self.selectedOrderRefundsState = .failed(error)
+                }
+            }
+        }
+    }
+
+    // MARK: - Refund Item Selection
+
+    @MainActor
+    func startRefundFlow() {
+        guard let order = selectedOrder else { return }
+
+        refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
+            let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
+            guard intQuantity > 0 else { return [] }
+
+            return (0..<intQuantity).map { index in
+                POSRefundSelectableItem(from: item, isSelected: true, index: index)
+            }
+        }
+    }
+
+    @MainActor
+    func toggleRefundItemSelection(at index: Int) {
+        guard refundSelectableItems.indices.contains(index) else { return }
+        refundSelectableItems[index].isSelected.toggle()
+    }
+
+    @MainActor
+    func clearRefundSelection() {
+        refundSelectableItems = []
+    }
+
+    @MainActor
+    func toggleAllRefundItemsSelection() {
+        let allSelected = !refundSelectableItems.isEmpty && refundSelectableItems.allSatisfy { $0.isSelected }
+        let newSelectionState = !allSelected
+        for index in refundSelectableItems.indices {
+            refundSelectableItems[index].isSelected = newSelectionState
+        }
+    }
+
+    // MARK: - Refund Review Data Preparation
+
+    @MainActor
+    func preparePOSRefundReviewData() -> POSRefundReviewData? {
+        guard let order = selectedOrder else { return nil }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else { return nil }
+
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                lineItemTotal: item.lineItemTotal,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity
+            )
+        }
+
+        let amounts = refundsService.calculateRefundAmounts(for: refundableItems)
+
+        guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
+              let formattedTax = currencyFormatter.formatAmount(amounts.tax),
+              let formattedTotal = currencyFormatter.formatAmount(amounts.total) else {
+            return nil
+        }
+
+        let paymentMethodDescription = createPaymentMethodDescription(for: order)
+
+        return POSRefundReviewData(
+            itemsCount: selectedItems.count,
+            formattedItemsSubtotal: formattedSubtotal,
+            formattedTax: formattedTax,
+            formattedRefundTotal: formattedTotal,
+            paymentMethodDescription: paymentMethodDescription,
+            refundReason: nil
+        )
+    }
+
+    private func createPaymentMethodDescription(for order: POSOrder) -> String {
+        String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle)
+    }
+
+    // MARK: - Refund Processing
+
+    @MainActor
+    func processRefund(reason: String?) async throws {
+        guard let order = selectedOrder else {
+            assertionFailure("processRefund called without selected order")
+            return
+        }
+
+        guard case .loaded(let refundsResult) = selectedOrderRefundsState else {
+            assertionFailure("processRefund called without loaded refunds state")
+            return
+        }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else {
+            assertionFailure("processRefund called without selected items")
+            return
+        }
+
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                lineItemTotal: item.lineItemTotal,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity
+            )
+        }
+
+        try await refundsService.createRefund(
+            orderID: order.id,
+            items: refundableItems,
+            reason: reason,
+            isAutomaticRefund: refundsResult.supportsAutomaticRefund
+        )
+
+        clearRefundSelection()
+        try? await updateOrder(orderID: order.id)
+    }
+}
+
+// MARK: - Localization
+
+private extension POSOrderListController {
+    enum Localization {
+        static let viaPaymentMethodFormat = NSLocalizedString(
+            "pos.orderListController.refund.viaPaymentMethodFormat",
+            value: "Via %@",
+            comment: "Description for refund via a specific payment method. %@ is the payment method name"
+        )
     }
 }

@@ -198,7 +198,8 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
          let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
                                                                        onboardingUseCase: mockOnboardingUseCase,
                                                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                       wooPaymentsPayoutService: mockPayoutService)
+                                                                       wooPaymentsPayoutService: mockPayoutService,
+                                                                       systemStatusService: systemStatusService)
          sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                              dependencies: dependencies)
 
@@ -226,7 +227,8 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
+                                                                      wooPaymentsPayoutService: mockPayoutService,
+                                                                      systemStatusService: systemStatusService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies)
 

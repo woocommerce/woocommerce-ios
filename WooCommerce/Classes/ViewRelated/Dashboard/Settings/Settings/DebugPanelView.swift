@@ -56,8 +56,8 @@ struct DebugPanelView: View {
             switch result {
             case .success(let announcement):
                 announcementToPresent = announcement
-            case .failure(let error):
-                announcementError = "Failed to fetch announcement: \(error.localizedDescription)"
+            case .failure:
+                announcementError = "Failed to fetch announcement"
             }
         }
         ServiceLocator.stores.dispatch(action)
@@ -65,14 +65,7 @@ struct DebugPanelView: View {
 
     private func resetAnnouncementState() {
         announcementError = nil
-        let action = AnnouncementsAction.deleteSavedAnnouncement { result in
-            switch result {
-            case .success:
-                announcementError = nil
-            case .failure(let error):
-                announcementError = "Failed to reset: \(error.localizedDescription)"
-            }
-        }
+        let action = AnnouncementsAction.deleteSavedAnnouncement { _ in }
         ServiceLocator.stores.dispatch(action)
     }
 }

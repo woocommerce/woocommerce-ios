@@ -1,7 +1,7 @@
 import Foundation
 @testable import WooCommerce
 
-final class MockPluginChecker: PluginVersionCheckerProtocol {
+final class MockPluginVersionChecker: PluginVersionCheckerProtocol {
     var result: PluginVersionResult
     var shouldThrow = false
     var delay: TimeInterval = 0

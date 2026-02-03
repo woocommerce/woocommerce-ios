@@ -1,6 +1,6 @@
 @testable import WooCommerce
 
-final class MockSetupHandler: WPComConnectionSetupHandlerProtocol {
+final class MockWPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     weak var delegate: WPComConnectionSetupHandlerDelegate?
 
     private(set) var startCalled = false

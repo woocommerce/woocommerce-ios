@@ -3,14 +3,14 @@ import XCTest
 
 @MainActor
 final class WPComConnectionSetupViewModelTests: XCTestCase {
-    private var mockHandler: MockSetupHandler!
+    private var mockHandler: MockWPComConnectionSetupHandler!
     private var dismissCalled = false
     private var goToStoreCalled = false
     private var updatePluginCalled = false
 
     override func setUp() {
         super.setUp()
-        mockHandler = MockSetupHandler()
+        mockHandler = MockWPComConnectionSetupHandler()
     }
 
     override func tearDown() {
@@ -88,14 +88,14 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
         // When connection failed - retries
         goToStoreCalled = false
-        mockHandler = MockSetupHandler()
+        mockHandler = MockWPComConnectionSetupHandler()
         viewModel = givenViewModel()
         viewModel.stepDidUpdate(.connect, status: .failure(reason: "Error"))
         viewModel.primaryButtonTapped()
         XCTAssertTrue(mockHandler.retryCalled)
 
         // When plugin failed - updates plugin
-        mockHandler = MockSetupHandler()
+        mockHandler = MockWPComConnectionSetupHandler()
         viewModel = givenViewModel()
         viewModel.stepDidUpdate(.checkPlugin, status: .failure(reason: "Plugin outdated"))
         viewModel.primaryButtonTapped()

@@ -1325,9 +1325,9 @@
 		64D355A52E99048E005F53F7 /* TestingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */; };
 		64DCE6332F3233A2005B846F /* WPComConnectionSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6322F3233A2005B846F /* WPComConnectionSetupViewModelTests.swift */; };
 		64DCE6342F3233A2005B846F /* WPComConnectionSetupHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6312F3233A2005B846F /* WPComConnectionSetupHandlerTests.swift */; };
-		64DCE63A2F3234B9005B846F /* MockPluginChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6392F3234B9005B846F /* MockPluginChecker.swift */; };
-		64DCE63E2F32A000005B846F /* MockHandlerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE63F2F32A000005B846F /* MockHandlerDelegate.swift */; };
-		64DCE63C2F3234D9005B846F /* MockSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE63B2F3234D9005B846F /* MockSetupHandler.swift */; };
+		64DCE63A2F3234B9005B846F /* MockPluginVersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE6392F3234B9005B846F /* MockPluginVersionChecker.swift */; };
+		64DCE63E2F32A000005B846F /* MockWPComConnectionSetupHandlerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE63F2F32A000005B846F /* MockWPComConnectionSetupHandlerDelegate.swift */; };
+		64DCE63C2F3234D9005B846F /* MockWPComConnectionSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64DCE63B2F3234D9005B846F /* MockWPComConnectionSetupHandler.swift */; };
 		68051E1E2E9DFE5500228196 /* POSNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
 		680E36B72BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */; };
@@ -4125,9 +4125,9 @@
 		64D355A42E99048E005F53F7 /* TestingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingSceneDelegate.swift; sourceTree = "<group>"; };
 		64DCE6312F3233A2005B846F /* WPComConnectionSetupHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupHandlerTests.swift; sourceTree = "<group>"; };
 		64DCE6322F3233A2005B846F /* WPComConnectionSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComConnectionSetupViewModelTests.swift; sourceTree = "<group>"; };
-		64DCE6392F3234B9005B846F /* MockPluginChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPluginChecker.swift; sourceTree = "<group>"; };
-		64DCE63F2F32A000005B846F /* MockHandlerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHandlerDelegate.swift; sourceTree = "<group>"; };
-		64DCE63B2F3234D9005B846F /* MockSetupHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSetupHandler.swift; sourceTree = "<group>"; };
+		64DCE6392F3234B9005B846F /* MockPluginVersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPluginVersionChecker.swift; sourceTree = "<group>"; };
+		64DCE63F2F32A000005B846F /* MockWPComConnectionSetupHandlerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWPComConnectionSetupHandlerDelegate.swift; sourceTree = "<group>"; };
+		64DCE63B2F3234D9005B846F /* MockWPComConnectionSetupHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWPComConnectionSetupHandler.swift; sourceTree = "<group>"; };
 		68051E1D2E9DFE5100228196 /* POSNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSNotificationSchedulerTests.swift; sourceTree = "<group>"; };
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
 		680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
@@ -8691,9 +8691,9 @@
 		64DCE63D2F32351C005B846F /* Mock */ = {
 			isa = PBXGroup;
 			children = (
-				64DCE63F2F32A000005B846F /* MockHandlerDelegate.swift */,
-				64DCE63B2F3234D9005B846F /* MockSetupHandler.swift */,
-				64DCE6392F3234B9005B846F /* MockPluginChecker.swift */,
+				64DCE63F2F32A000005B846F /* MockWPComConnectionSetupHandlerDelegate.swift */,
+				64DCE63B2F3234D9005B846F /* MockWPComConnectionSetupHandler.swift */,
+				64DCE6392F3234B9005B846F /* MockPluginVersionChecker.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -15655,7 +15655,7 @@
 				31AD0B1326E95998000B6391 /* CardPresentModalConnectingFailedTests.swift in Sources */,
 				02F5DE632E852CD5002DEE24 /* POSTabVisibilityCheckerTests.swift in Sources */,
 				E16715CD2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift in Sources */,
-				64DCE63C2F3234D9005B846F /* MockSetupHandler.swift in Sources */,
+				64DCE63C2F3234D9005B846F /* MockWPComConnectionSetupHandler.swift in Sources */,
 				02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */,
 				DE69C54F27BCB4B7000BB888 /* CouponRestrictionsViewModelTests.swift in Sources */,
 				024F1452250B65A40003030A /* AddProductCoordinatorTests.swift in Sources */,
@@ -15791,8 +15791,8 @@
 				02077F72253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
 				027111422913B9FC00F5269A /* AccountCreationFormViewModelTests.swift in Sources */,
-				64DCE63A2F3234B9005B846F /* MockPluginChecker.swift in Sources */,
-				64DCE63E2F32A000005B846F /* MockHandlerDelegate.swift in Sources */,
+				64DCE63A2F3234B9005B846F /* MockPluginVersionChecker.swift in Sources */,
+				64DCE63E2F32A000005B846F /* MockWPComConnectionSetupHandlerDelegate.swift in Sources */,
 				02B8E41B2DFBC33D001D01FD /* MockPOSEligibilityChecker.swift in Sources */,
 				DE50295328BF4A8A00551736 /* JetpackConnectionWebViewModelTests.swift in Sources */,
 				D802549126552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift in Sources */,

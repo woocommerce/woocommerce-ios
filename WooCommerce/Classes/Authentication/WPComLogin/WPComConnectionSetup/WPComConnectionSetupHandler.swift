@@ -88,14 +88,9 @@ private extension WPComConnectionSetupHandler {
 
         do {
             try await performConnection(with: wpcomCredentials)
-
-            if Task.isCancelled { return false }
-
             delegate?.stepDidUpdate(.connect, status: .success)
             return true
         } catch {
-            if Task.isCancelled { return false }
-
             DDLogError("⛔️ WPCom connection failed: \(error)")
             lastFailedStep = .connect
             delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.connectionError))
@@ -145,8 +140,6 @@ private extension WPComConnectionSetupHandler {
         do {
             let result = try await pluginChecker.checkCompatibility()
 
-            if Task.isCancelled { return }
-
             switch result {
             case .compatible:
                 delegate?.stepDidUpdate(.checkPlugin, status: .success)
@@ -158,8 +151,6 @@ private extension WPComConnectionSetupHandler {
                 delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: message))
             }
         } catch {
-            if Task.isCancelled { return }
-
             DDLogError("⛔️ Plugin compatibility check failed: \(error)")
             lastFailedStep = .checkPlugin
             delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: Localization.connectionError))

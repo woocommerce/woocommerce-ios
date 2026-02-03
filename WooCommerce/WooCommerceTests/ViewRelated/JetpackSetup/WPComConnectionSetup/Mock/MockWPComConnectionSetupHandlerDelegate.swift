@@ -1,7 +1,7 @@
 @testable import WooCommerce
 
 @MainActor
-final class MockHandlerDelegate: WPComConnectionSetupHandlerDelegate {
+final class MockWPComConnectionSetupHandlerDelegate: WPComConnectionSetupHandlerDelegate {
     private(set) var updatedSteps: Set<SetupStep> = []
     private(set) var stepStatuses: [SetupStep: WPComConnectionSetupStep.Status] = [:]
     private(set) var setupDidCompleteCalled = false

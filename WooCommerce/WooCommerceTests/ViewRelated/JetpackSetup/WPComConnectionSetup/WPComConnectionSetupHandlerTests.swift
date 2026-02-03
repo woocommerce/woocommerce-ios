@@ -5,15 +5,15 @@ import NetworkingCore
 @testable import WooCommerce
 
 final class WPComConnectionSetupHandlerTests: XCTestCase {
-    private var handlerObserver: MockHandlerDelegate!
-    private var mockPluginChecker: MockPluginChecker!
+    private var handlerObserver: MockWPComConnectionSetupHandlerDelegate!
+    private var mockPluginChecker: MockPluginVersionChecker!
     private var mockStores: MockStoresManager!
 
     @MainActor
     override func setUp() {
         super.setUp()
-        handlerObserver = MockHandlerDelegate()
-        mockPluginChecker = MockPluginChecker()
+        handlerObserver = MockWPComConnectionSetupHandlerDelegate()
+        mockPluginChecker = MockPluginVersionChecker()
         mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
     }
 
@@ -107,33 +107,6 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         // Then
         waitForExpectations(timeout: 1.0)
         XCTAssertTrue(handlerObserver.setupDidCompleteCalled)
-    }
-
-    @MainActor
-    func test_cancel_prevents_completion() {
-        // Given
-        let runningExpectation = expectation(description: "Plugin check starts")
-        mockPluginChecker.result = .compatible
-        mockPluginChecker.delay = 2.0
-        handlerObserver.onStepUpdate = { step, status in
-            if step == .checkPlugin, status == .running {
-                runningExpectation.fulfill()
-            }
-        }
-
-        let handler = givenHandler(wpcomCredentials: nil)
-        handler.start()
-        waitForExpectations(timeout: 1.0)
-
-        // When
-        handler.cancel()
-
-        // Then - give time for would-be completion, verify it didn't happen
-        let noCompletionExpectation = expectation(description: "No completion")
-        noCompletionExpectation.isInverted = true
-        handlerObserver.onSetupComplete = { noCompletionExpectation.fulfill() }
-        waitForExpectations(timeout: 0.5)
-        XCTAssertFalse(handlerObserver.setupDidCompleteCalled)
     }
 
     // MARK: - Helpers

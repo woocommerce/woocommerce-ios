@@ -81,28 +81,8 @@ private extension WooPushNotificationSetupCoordinator {
             return
         }
 
-        let pluginChecker = PluginVersionChecker(
-            siteID: site.siteID,
-            pluginPath: Constants.wooCommercePluginPath,
-            minimumVersion: Constants.minimumWooCommerceVersion,
-            stores: stores
-        )
-
-        let handler = WPComConnectionSetupHandler(
-            siteURL: site.url,
-            wpcomCredentials: wpcomCredentials,
-            pluginChecker: pluginChecker,
-            stores: stores
-        )
-
         let navigationController = WooNavigationController()
-
-        let viewModel = makeConnectionSetupViewModel(
-            site: site,
-            handler: handler,
-            navigationController: navigationController
-        )
-
+        let viewModel = makeConnectionSetupViewModel(site: site, navigationController: navigationController)
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
         navigationController.viewControllers = [connectionSetupController]
 
@@ -120,10 +100,23 @@ private extension WooPushNotificationSetupCoordinator {
 
     func makeConnectionSetupViewModel(
         site: Site,
-        handler: WPComConnectionSetupHandlerProtocol,
         navigationController: UINavigationController
     ) -> WPComConnectionSetupViewModel {
-        WPComConnectionSetupViewModel(
+        let pluginChecker = PluginVersionChecker(
+            siteID: site.siteID,
+            pluginPath: Constants.wooCommercePluginPath,
+            minimumVersion: Constants.minimumWooCommerceVersion,
+            stores: stores
+        )
+
+        let handler = WPComConnectionSetupHandler(
+            siteURL: site.url,
+            wpcomCredentials: wpcomCredentials,
+            pluginChecker: pluginChecker,
+            stores: stores
+        )
+
+        return WPComConnectionSetupViewModel(
             storeName: site.name,
             handler: handler,
             onDismiss: { [navigationController] in

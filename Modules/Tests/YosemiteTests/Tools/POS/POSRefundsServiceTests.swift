@@ -3,18 +3,33 @@ import Foundation
 @testable import Yosemite
 import Networking
 @testable import NetworkingCore
+import class WooFoundation.CurrencySettings
 
 struct POSRefundsServiceTests {
-    // MARK: - Mock PaymentGatewayRemote
+    private let currencySettings = CurrencySettings()
 
-    private func makeMockPOSPaymentGatewayRemote(gateways: [PaymentGateway] = []) -> MockPOSPaymentGatewayRemote {
-        MockPOSPaymentGatewayRemote(gatewaysToReturn: gateways)
+    // MARK: - Helpers
+
+    private func makeSUT(
+        siteID: Int64 = 123,
+        remote: MockPOSRefundsRemote = MockPOSRefundsRemote(),
+        gateways: [PaymentGateway] = [],
+        calculator: POSRefundCalculating? = nil
+    ) -> POSRefundsService {
+        POSRefundsService(
+            siteID: siteID,
+            refundsRemote: remote,
+            paymentGatewayRemote: MockPOSPaymentGatewayRemote(gatewaysToReturn: gateways),
+            currencySettings: currencySettings,
+            refundCalculator: calculator ?? POSRefundCalculator()
+        )
     }
+
     @Test func providePointOfSaleRefunds_then_calls_remote_with_expected_params() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let siteID: Int64 = 123
-        let sut = POSRefundsService(siteID: siteID, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote())
+        let sut = makeSUT(siteID: siteID, remote: remote)
         let orderRefunds = [POSOrderRefund(refundID: 10, formattedTotal: "$22"), POSOrderRefund(refundID: 20, formattedTotal: "$22")]
 
         let order = makeOrder(id: 1, refunds: orderRefunds)
@@ -31,7 +46,7 @@ struct POSRefundsServiceTests {
     @Test func providePointOfSaleRefunds_when_remote_fails_then_propagates_remote_error() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote())
+        let sut = makeSUT(remote: remote)
 
         struct TestError: Error {}
         remote.result = .failure(TestError())
@@ -51,7 +66,7 @@ struct POSRefundsServiceTests {
     @Test func providePointOfSaleRefunds_when_remote_succeeds_then_returns_same_count_as_remote() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote())
+        let sut = makeSUT(remote: remote)
 
         let r1 = MockRefunds.sampleRefund()
         let r2 = MockRefunds.sampleRefund()
@@ -70,7 +85,7 @@ struct POSRefundsServiceTests {
     @Test func providePointOfSaleRefunds_when_remote_succeeds_then_maps_refund_items_correctly() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote())
+        let sut = makeSUT(remote: remote)
 
         let item1 = MockRefunds.sampleRefundItem(productID: 111, variationID: 222, quantity: 2)
         let item2 = MockRefunds.sampleRefundItem(productID: 333, variationID: 444, quantity: 5)
@@ -105,7 +120,7 @@ struct POSRefundsServiceTests {
                                      enabled: true,
                                      features: [.refunds],
                                      instructions: nil)
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(gateways: [gateway]))
+        let sut = makeSUT(remote: remote, gateways: [gateway])
 
         let order = makeOrder(paymentMethodID: "woocommerce_payments")
 
@@ -126,7 +141,7 @@ struct POSRefundsServiceTests {
                                      enabled: true,
                                      features: [],
                                      instructions: nil)
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(gateways: [gateway]))
+        let sut = makeSUT(remote: remote, gateways: [gateway])
 
         let order = makeOrder(paymentMethodID: "cod")
 
@@ -140,7 +155,7 @@ struct POSRefundsServiceTests {
     @Test func providePointOfSaleRefunds_when_gateway_not_found_and_payment_method_is_cod_then_supportsAutomaticRefund_is_false() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(gateways: []))
+        let sut = makeSUT(remote: remote)
 
         let order = makeOrder(paymentMethodID: "cod")
 
@@ -154,7 +169,7 @@ struct POSRefundsServiceTests {
     @Test func providePointOfSaleRefunds_when_gateway_not_found_and_payment_method_is_not_cod_then_supportsAutomaticRefund_is_true() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(gateways: []))
+        let sut = makeSUT(remote: remote)
 
         let order = makeOrder(paymentMethodID: "woocommerce_payments")
 
@@ -172,12 +187,12 @@ struct POSRefundsServiceTests {
         let remote = MockPOSRefundsRemote()
         let calculator = MockPOSRefundCalculator()
         let siteID: Int64 = 123
-        let sut = POSRefundsService(siteID: siteID, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(), refundCalculator: calculator)
+        let sut = makeSUT(siteID: siteID, remote: remote, calculator: calculator)
 
         let orderID: Int64 = 456
         let items = [
-            POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 2),
-            POSRefundableItem(itemID: 2, price: Decimal(20), totalTax: Decimal(2), originalQuantity: 1)
+            POSRefundableItem(itemID: 1, lineItemTotal: Decimal(20), totalTax: Decimal(2), originalQuantity: 2),
+            POSRefundableItem(itemID: 2, lineItemTotal: Decimal(20), totalTax: Decimal(2), originalQuantity: 1)
         ]
         let reason = "Customer request"
 
@@ -190,15 +205,73 @@ struct POSRefundsServiceTests {
         #expect(calculator.spyReason == reason)
     }
 
+    @Test func createRefund_then_passes_fraction_digits_from_currency_settings_to_calculator() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        let currencySettings = CurrencySettings(
+            currencyCode: .JPY,
+            currencyPosition: .left,
+            thousandSeparator: ",",
+            decimalSeparator: ".",
+            numberOfDecimals: 0
+        )
+        let sut = POSRefundsService(
+            siteID: 123,
+            refundsRemote: remote,
+            paymentGatewayRemote: MockPOSPaymentGatewayRemote(),
+            currencySettings: currencySettings,
+            refundCalculator: calculator
+        )
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
+
+        // Then
+        #expect(calculator.spyNumberOfDecimals == 0)
+    }
+
+    @Test func createRefund_when_three_decimal_currency_then_formats_amount_with_three_decimals() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        calculator.stubRefundRequest = POSRefundRequest(
+            orderID: 456,
+            amount: Decimal(string: "100.123")!,
+            reason: nil,
+            items: []
+        )
+        let currencySettings = CurrencySettings(
+            currencyCode: .KWD,
+            currencyPosition: .left,
+            thousandSeparator: ",",
+            decimalSeparator: ".",
+            numberOfDecimals: 3
+        )
+        let sut = POSRefundsService(
+            siteID: 123,
+            refundsRemote: remote,
+            paymentGatewayRemote: MockPOSPaymentGatewayRemote(),
+            currencySettings: currencySettings,
+            refundCalculator: calculator
+        )
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
+
+        // Then
+        #expect(remote.spyCreateRefund?.amount == "100.123")
+    }
+
     @Test func createRefund_then_calls_remote_with_correct_site_id_and_order_id() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let calculator = MockPOSRefundCalculator()
         let siteID: Int64 = 123
-        let sut = POSRefundsService(siteID: siteID, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(), refundCalculator: calculator)
+        let sut = makeSUT(siteID: siteID, remote: remote, calculator: calculator)
 
         let orderID: Int64 = 456
-        let items = [POSRefundableItem(itemID: 1, price: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
+        let items = [POSRefundableItem(itemID: 1, lineItemTotal: Decimal(10), totalTax: Decimal(1), originalQuantity: 1)]
 
         // When
         try await sut.createRefund(orderID: orderID, items: items, reason: nil, isAutomaticRefund: true)
@@ -218,7 +291,7 @@ struct POSRefundsServiceTests {
             reason: "Test reason",
             items: []
         )
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote(), refundCalculator: calculator)
+        let sut = makeSUT(remote: remote, calculator: calculator)
 
         // When
         try await sut.createRefund(orderID: 456, items: [], reason: "Test reason", isAutomaticRefund: true)
@@ -231,7 +304,7 @@ struct POSRefundsServiceTests {
     @Test func createRefund_when_automatic_refund_enabled_then_sets_create_automated_to_true() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: MockPOSPaymentGatewayRemote())
+        let sut = makeSUT(remote: remote)
 
         // When
         try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
@@ -243,7 +316,7 @@ struct POSRefundsServiceTests {
     @Test func createRefund_when_automatic_refund_disabled_then_sets_create_automated_to_false() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: MockPOSPaymentGatewayRemote())
+        let sut = makeSUT(remote: remote)
 
         // When
         try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: false)
@@ -257,7 +330,7 @@ struct POSRefundsServiceTests {
         let remote = MockPOSRefundsRemote()
         struct TestError: Error {}
         remote.createRefundResult = .failure(TestError())
-        let sut = POSRefundsService(siteID: 123, refundsRemote: remote, paymentGatewayRemote: makeMockPOSPaymentGatewayRemote())
+        let sut = makeSUT(remote: remote)
 
         // Then
         do {

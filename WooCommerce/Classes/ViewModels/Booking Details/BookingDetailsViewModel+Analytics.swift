@@ -5,6 +5,13 @@ extension WooAnalyticsEvent {
     enum BookingsDetail {
         private enum Properties {
             static let bookingStatus = "booking_status"
+            static let action = "action"
+        }
+
+        enum Action: String {
+            case cancelBooking = "cancel_booking"
+            case updateAttendance = "update_attendance"
+            case markAsPaid = "mark_as_paid"
         }
 
         static func bookingCancelled() -> WooAnalyticsEvent {
@@ -32,26 +39,11 @@ extension WooAnalyticsEvent {
 
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
-                BookingProperties.action: action.rawValue
+                Properties.action: action.rawValue
             ]
             return  WooAnalyticsEvent(statName: .bookingListFailedToUpdateBookingDetails,
                                       properties: properties,
                                       error: error)
         }
-    }
-}
-
-fileprivate extension WooAnalyticsEvent.BookingsDetail {
-    enum BookingProperties {
-        static let bookingStatus = "booking_status"
-        static let action = "action"
-    }
-}
-
-extension WooAnalyticsEvent.BookingsDetail {
-    enum Action: String {
-        case cancelBooking = "cancel_booking"
-        case updateAttendance = "update_attendance"
-        case markAsPaid = "mark_as_paid"
     }
 }

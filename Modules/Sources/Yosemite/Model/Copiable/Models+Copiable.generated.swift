@@ -192,7 +192,7 @@ extension Yosemite.POSSite {
 
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
-        note: CopiableProp<Note> = .copy,
+        note: NullableCopiableProp<Note> = .copy,
         review: CopiableProp<ProductReview> = .copy,
         product: CopiableProp<Networking.Product> = .copy
     ) -> Yosemite.ProductReviewFromNoteParcel {

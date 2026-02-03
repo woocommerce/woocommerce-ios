@@ -1225,7 +1225,7 @@ final class POSOrderListControllerTests {
 
         let firstItem = items[0]
         #expect(firstItem.itemID == 42)
-        #expect(firstItem.price == 15.50)
+        #expect(firstItem.lineItemTotal == 46.50)
         #expect(firstItem.totalTax == 1.55)
         #expect(firstItem.originalQuantity == 3)
     }
@@ -1364,6 +1364,7 @@ private extension POSOrderListControllerTests {
         name: String = "Test Item",
         quantity: Decimal = 1,
         price: Decimal = 10.00,
+        total: Decimal? = nil,
         totalTax: Decimal = 0,
         formattedPrice: String = "$10.00",
         formattedTotal: String? = nil,
@@ -1375,6 +1376,7 @@ private extension POSOrderListControllerTests {
             name: name,
             quantity: quantity,
             price: price,
+            total: total ?? (price * quantity),
             totalTax: totalTax,
             formattedPrice: formattedPrice,
             formattedTotal: formattedTotal ?? formattedPrice,

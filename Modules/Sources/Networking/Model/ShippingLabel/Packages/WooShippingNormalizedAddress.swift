@@ -13,6 +13,9 @@ public struct WooShippingNormalizedAddress: Equatable, GeneratedFakeable, Genera
     /// The last name of the sender/receiver at the address.
     public let lastName: String
 
+    /// Email of the sender/receiver
+    public let email: String?
+
     /// The contact phone number at the address.
     public let phone: String
 
@@ -37,6 +40,7 @@ public struct WooShippingNormalizedAddress: Equatable, GeneratedFakeable, Genera
     public init(company: String,
                 firstName: String,
                 lastName: String,
+                email: String?,
                 phone: String,
                 country: String,
                 state: String,
@@ -47,6 +51,7 @@ public struct WooShippingNormalizedAddress: Equatable, GeneratedFakeable, Genera
         self.company = company
         self.firstName = firstName
         self.lastName = lastName
+        self.email = email
         self.phone = phone
         self.country = country
         self.state = state
@@ -64,6 +69,7 @@ extension WooShippingNormalizedAddress: Decodable {
         let firstName = try container.decodeIfPresent(String.self, forKey: .firstName) ?? ""
         let lastName = try container.decodeIfPresent(String.self, forKey: .lastName) ?? ""
         let company = try container.decode(String.self, forKey: .company)
+        let email = try container.decodeIfPresent(String.self, forKey: .email)
         let phone = try container.decode(String.self, forKey: .phone)
         let country = try container.decode(String.self, forKey: .country)
         let state = try container.decode(String.self, forKey: .state)
@@ -75,6 +81,7 @@ extension WooShippingNormalizedAddress: Decodable {
         self.init(company: company,
                   firstName: firstName,
                   lastName: lastName,
+                  email: email,
                   phone: phone,
                   country: country,
                   state: state,
@@ -88,6 +95,7 @@ extension WooShippingNormalizedAddress: Decodable {
         case company
         case firstName = "first_name"
         case lastName = "last_name"
+        case email
         case phone
         case country
         case state

@@ -284,7 +284,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
         )
 
         // When
@@ -305,7 +306,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
         )
 
         // When
@@ -340,7 +342,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService()
+            catalogEligibilityChecker: MockPOSLocalCatalogEligibilityService(),
+            siteSettings: mockSiteSettings
         )
 
         // When

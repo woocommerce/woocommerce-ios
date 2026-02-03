@@ -77,17 +77,11 @@ private extension WooPushNotificationSetupCoordinator {
     }
 
     func showConnectionSetup() {
-        let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
-        let navigationController = WooNavigationController()
-        let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak navigationController] in
-            navigationController?.dismiss(animated: true)
-        })
         guard let site = stores.sessionManager.defaultSite else {
             DDLogError("⛔️ WPCom connection setup: No default site available")
             return
         }
 
-        let storeName = site.name ?? site.url
         let siteURL = site.url
 
         // Create services
@@ -110,10 +104,10 @@ private extension WooPushNotificationSetupCoordinator {
         let navigationController = WooNavigationController()
 
         let viewModel = WPComConnectionSetupViewModel(
-            storeName: storeName,
+            storeName: site.name,
             handler: handler,
-            onDismiss: { [weak self] in
-                navigationController?.dismiss(animated: true)
+            onDismiss: { [navigationController] in
+                navigationController.dismiss(animated: true)
             },
             onGoToStore: { [weak self] in
                 self?.goToStore()

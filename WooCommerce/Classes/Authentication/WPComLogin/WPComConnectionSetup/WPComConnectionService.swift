@@ -66,33 +66,43 @@ final class WPComConnectionService: WPComConnectionServiceProtocol {
 private extension WPComConnectionService {
 
     func fetchConnectionData() async throws -> JetpackConnectionData {
-        try await withCheckedThrowingContinuation { continuation in
+        let stores = self.stores
+        return try await withCheckedThrowingContinuation { continuation in
             let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
                 continuation.resume(with: result)
             }
-            stores.dispatch(action)
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 
     func registerSite() async throws -> Int64 {
-        try await withCheckedThrowingContinuation { continuation in
+        let stores = self.stores
+        return try await withCheckedThrowingContinuation { continuation in
             let action = JetpackConnectionAction.registerSite { result in
                 continuation.resume(with: result)
             }
-            stores.dispatch(action)
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 
     func provisionConnection() async throws -> JetpackConnectionProvisionResponse {
-        try await withCheckedThrowingContinuation { continuation in
+        let stores = self.stores
+        return try await withCheckedThrowingContinuation { continuation in
             let action = JetpackConnectionAction.provisionConnection { result in
                 continuation.resume(with: result)
             }
-            stores.dispatch(action)
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 
     func finalizeConnection(blogID: Int64, provisionResponse: JetpackConnectionProvisionResponse) async throws {
+        let stores = self.stores
         let network = AlamofireNetwork(credentials: wpcomCredentials, selectedSite: nil, appPasswordSupportState: nil)
 
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
@@ -104,7 +114,9 @@ private extension WPComConnectionService {
             ) { result in
                 continuation.resume(with: result)
             }
-            stores.dispatch(action)
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 }

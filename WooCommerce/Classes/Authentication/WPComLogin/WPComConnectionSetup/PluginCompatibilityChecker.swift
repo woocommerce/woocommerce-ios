@@ -66,11 +66,15 @@ private extension PluginCompatibilityChecker {
     }
 
     func syncSystemInformation() async throws -> SystemInformation {
-        try await withCheckedThrowingContinuation { continuation in
+        let stores = self.stores
+        let siteID = self.siteID
+        return try await withCheckedThrowingContinuation { continuation in
             let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 continuation.resume(with: result)
             }
-            stores.dispatch(action)
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 }

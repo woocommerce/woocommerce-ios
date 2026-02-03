@@ -44,8 +44,10 @@ jobs:
 
     strategy:
       matrix:
-        language: [ar-SA, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
-        mode: [dark, light]
+        # TODO: Restore full list after testing:
+        # language: [ar-SA, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
+        language: [en-US]
+        mode: [light]
     steps:
     - uses: actions/checkout@v4
     - name: "Set up Ruby"

@@ -39,12 +39,11 @@ struct ReportList: View {
                 .padding(.bottom, Layout.titleBottomPadding(sizeClass))
                 .padding(.top, Layout.topPadding(sizeClass))
             VStack(spacing: Layout.listSpacing(sizeClass)) {
-                ForEach(viewModel.items, id: \.id) {
-                    IconListItem(title: $0.title,
-                                 subtitle: $0.subtitle,
-                                 icon: $0.icon,
-                                 learnMoreURL: $0.learnMoreURL,
-                                 showLearnMoreInline: !shouldShowBottomLearnMore)
+                ForEach(viewModel.items, id: \.id) { item in
+                    IconListItem(title: item.title,
+                                 subtitle: item.subtitle,
+                                 icon: item.icon,
+                                 learnMoreURL: shouldShowBottomLearnMore ? nil : item.learnMoreURL)
                 }
             }
         }
@@ -101,32 +100,68 @@ private extension ReportList {
 
 // MARK: - Preview
 struct ReportList_Previews: PreviewProvider {
+    static let sampleIconURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!
+    static let sampleLearnMoreURL = URL(string: "https://woocommerce.com/learn-more")!
+
     static var previews: some View {
         ReportList(viewModel: WhatsNewViewModel(items: [
             ReportItem(
                 title: "feature 1",
                 subtitle: "subtitle 1",
-                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                icon: .remote(sampleIconURL),
                 learnMoreURL: nil
             ),
             ReportItem(
                 title: "feature 2",
                 subtitle: "subtitle 2",
-                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                icon: .remote(sampleIconURL),
                 learnMoreURL: nil
             ),
             ReportItem(
                 title: "feature 3",
                 subtitle: "subtitle 3",
-                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                icon: .remote(sampleIconURL),
                 learnMoreURL: nil
             ),
             ReportItem(
                 title: "feature 4",
                 subtitle: "subtitle 4",
-                icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                icon: .remote(sampleIconURL),
                 learnMoreURL: nil
             )
         ], onDismiss: {}))
+        .previewDisplayName("Multiple features - no links")
+
+        ReportList(viewModel: WhatsNewViewModel(items: [
+            ReportItem(
+                title: "Point of Sale",
+                subtitle: "Sell in person with the new Point of Sale feature. Accept payments, manage inventory, and more.",
+                icon: .remote(sampleIconURL),
+                learnMoreURL: sampleLearnMoreURL
+            )
+        ], onDismiss: {}))
+        .previewDisplayName("Single feature with link")
+
+        ReportList(viewModel: WhatsNewViewModel(items: [
+            ReportItem(
+                title: "Point of Sale",
+                subtitle: "Sell in person with the new Point of Sale feature.",
+                icon: .remote(sampleIconURL),
+                learnMoreURL: sampleLearnMoreURL
+            ),
+            ReportItem(
+                title: "Improved Analytics",
+                subtitle: "Track your store performance with enhanced analytics.",
+                icon: .remote(sampleIconURL),
+                learnMoreURL: sampleLearnMoreURL
+            ),
+            ReportItem(
+                title: "New Payment Options",
+                subtitle: "Accept more payment methods from your customers.",
+                icon: .remote(sampleIconURL),
+                learnMoreURL: sampleLearnMoreURL
+            )
+        ], onDismiss: {}))
+        .previewDisplayName("Multiple features with links")
     }
 }

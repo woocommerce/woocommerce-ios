@@ -1,24 +1,18 @@
 import Foundation
 
-/// Type-safe step identifiers for the WPCom connection setup flow
 enum SetupStep: Int, CaseIterable {
     case connect = 0
     case checkPlugin = 1
     case enablePush = 2
 }
 
-/// Delegate for receiving setup progress updates.
-/// Marked @MainActor to ensure all callbacks are on main thread.
 @MainActor
 protocol WPComConnectionSetupHandlerDelegate: AnyObject {
-    /// Called when a step's status changes (notStarted → running → success/failure)
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status)
-
-    /// Called when the entire setup process completes successfully
     func setupDidComplete()
 }
 
-/// Protocol for the connection setup handler
+@MainActor
 protocol WPComConnectionSetupHandlerProtocol: AnyObject {
     var delegate: WPComConnectionSetupHandlerDelegate? { get set }
     func start()
@@ -26,18 +20,17 @@ protocol WPComConnectionSetupHandlerProtocol: AnyObject {
     func cancel()
 }
 
-/// Handles the WPCom connection setup flow.
-/// Orchestrates the connection and plugin compatibility check steps.
+@MainActor
 final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     weak var delegate: WPComConnectionSetupHandlerDelegate?
 
-    private let connectionService: WPComConnectionServiceProtocol
+    private let connectionService: WPComConnectionServiceProtocol?
     private let pluginChecker: PluginCompatibilityCheckerProtocol
 
     private var currentTask: Task<Void, Never>?
     private var lastFailedStep: SetupStep?
 
-    init(connectionService: WPComConnectionServiceProtocol,
+    init(connectionService: WPComConnectionServiceProtocol?,
          pluginChecker: PluginCompatibilityCheckerProtocol) {
         self.connectionService = connectionService
         self.pluginChecker = pluginChecker
@@ -48,7 +41,6 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     }
 
     func retry() {
-        // Retry from the failed step, or from beginning if none failed
         let startStep = lastFailedStep ?? .connect
         lastFailedStep = nil
         startFromStep(startStep)
@@ -58,84 +50,91 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
         currentTask?.cancel()
         currentTask = nil
     }
+}
 
-    private func startFromStep(_ step: SetupStep) {
-        // Guard against double-start
+private extension WPComConnectionSetupHandler {
+    func startFromStep(_ step: SetupStep) {
         guard currentTask == nil else { return }
 
-        currentTask = Task { @MainActor [weak self] in
+        currentTask = Task { [weak self] in
             guard let self else { return }
             defer { self.currentTask = nil }
 
-            // Step 1: Connect to WordPress.com (skip if retrying from later step)
             if step.rawValue <= SetupStep.connect.rawValue {
-                self.delegate?.stepDidUpdate(.connect, status: .running)
-
-                do {
-                    try await self.connectionService.connect()
-
-                    // Check for cancellation
-                    if Task.isCancelled { return }
-
-                    self.delegate?.stepDidUpdate(.connect, status: .success)
-                } catch {
-                    if Task.isCancelled { return }
-
-                    DDLogError("⛔️ WPCom connection failed: \(error)")
-                    self.lastFailedStep = .connect
-                    self.delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.connectionError))
-                    return
-                }
+                guard await executeConnectStep() else { return }
             }
 
-            // Step 2: Check plugin compatibility
             if step.rawValue <= SetupStep.checkPlugin.rawValue {
-                self.delegate?.stepDidUpdate(.checkPlugin, status: .running)
-
-                do {
-                    let result = try await self.pluginChecker.checkCompatibility()
-
-                    // Check for cancellation
-                    if Task.isCancelled { return }
-
-                    switch result {
-                    case .compatible:
-                        self.delegate?.stepDidUpdate(.checkPlugin, status: .success)
-                        self.delegate?.setupDidComplete()
-
-                    case .incompatible(let currentVersion, _):
-                        self.lastFailedStep = .checkPlugin
-                        let message = String(format: Localization.pluginOutdatedFormat, currentVersion)
-                        self.delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: message))
-                    }
-                } catch {
-                    if Task.isCancelled { return }
-
-                    DDLogError("⛔️ Plugin compatibility check failed: \(error)")
-                    self.lastFailedStep = .checkPlugin
-                    self.delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: Localization.connectionError))
-                }
+                await executePluginCheckStep()
             }
+        }
+    }
 
-            // Step 3: Enable push notifications (WOOMOB-1932 - future)
-            // Will be added here when implementing that ticket
+    func executeConnectStep() async -> Bool {
+        guard let connectionService else {
+            delegate?.stepDidUpdate(.connect, status: .success)
+            return true
+        }
+
+        delegate?.stepDidUpdate(.connect, status: .running)
+
+        do {
+            try await connectionService.connect()
+
+            if Task.isCancelled { return false }
+
+            delegate?.stepDidUpdate(.connect, status: .success)
+            return true
+        } catch {
+            if Task.isCancelled { return false }
+
+            DDLogError("⛔️ WPCom connection failed: \(error)")
+            lastFailedStep = .connect
+            delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.connectionError))
+            return false
+        }
+    }
+
+    func executePluginCheckStep() async {
+        delegate?.stepDidUpdate(.checkPlugin, status: .running)
+
+        do {
+            let result = try await pluginChecker.checkCompatibility()
+
+            if Task.isCancelled { return }
+
+            switch result {
+            case .compatible:
+                delegate?.stepDidUpdate(.checkPlugin, status: .success)
+                delegate?.setupDidComplete()
+
+            case .incompatible(let currentVersion, _):
+                lastFailedStep = .checkPlugin
+                let message = String(format: Localization.pluginOutdatedFormat, currentVersion)
+                delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: message))
+            }
+        } catch {
+            if Task.isCancelled { return }
+
+            DDLogError("⛔️ Plugin compatibility check failed: \(error)")
+            lastFailedStep = .checkPlugin
+            delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: Localization.connectionError))
         }
     }
 }
 
-// MARK: - Localization
 private extension WPComConnectionSetupHandler {
     enum Localization {
         static let connectionError = NSLocalizedString(
             "wpComConnectionSetupHandler.connectionError",
-            value: "There was an error completing your request. Please try again or contact support if this error continues.",
+            value: "There was an error completing your request. Please try again or contact support.",
             comment: "Generic error message for WPCom connection setup failures"
         )
 
         static let pluginOutdatedFormat = NSLocalizedString(
             "wpComConnectionSetupHandler.pluginOutdated",
-            value: "Your current WooCommerce plugin version %@ needs updating to fully connect your store to WordPress.com.",
-            comment: "Error message when WooCommerce plugin version is too old. %@ is the current version."
+            value: "Your WooCommerce plugin version %@ needs updating to connect your store.",
+            comment: "Error message when WooCommerce plugin is outdated. %@ is the current version."
         )
     }
 }

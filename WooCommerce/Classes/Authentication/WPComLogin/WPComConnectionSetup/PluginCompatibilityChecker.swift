@@ -2,30 +2,28 @@ import Foundation
 import Yosemite
 import class WooFoundation.VersionHelpers
 
-/// Result of plugin compatibility check
 enum PluginCompatibilityResult {
     case compatible
     case incompatible(currentVersion: String, requiredVersion: String)
 }
 
-/// Protocol for plugin version checking
 protocol PluginCompatibilityCheckerProtocol {
     func checkCompatibility() async throws -> PluginCompatibilityResult
 }
 
-/// Checks if the WooCommerce plugin version meets the minimum requirement for push notifications.
-/// Uses SystemStatusAction to fetch plugin information.
 final class PluginCompatibilityChecker: PluginCompatibilityCheckerProtocol {
     private let siteID: Int64
+    private let minimumWooCommerceVersion: String
     private let stores: StoresManager
 
-    /// Hardcoded minimum version requirement for push notifications.
-    /// This follows the same pattern as CardPresentPaymentsConfiguration.
-    static let minimumWooCommerceVersion = "10.4.3"
+    static let defaultMinimumWooCommerceVersion = "10.4.3"
     private static let wooCommercePluginPath = "woocommerce/woocommerce.php"
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         minimumWooCommerceVersion: String = defaultMinimumWooCommerceVersion,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
+        self.minimumWooCommerceVersion = minimumWooCommerceVersion
         self.stores = stores
     }
 
@@ -34,30 +32,26 @@ final class PluginCompatibilityChecker: PluginCompatibilityCheckerProtocol {
 
         let isSupported = VersionHelpers.isVersionSupported(
             version: plugin.version,
-            minimumRequired: Self.minimumWooCommerceVersion
+            minimumRequired: minimumWooCommerceVersion
         )
 
         if isSupported {
-            DDLogDebug("📱 Plugin compatibility: WooCommerce \(plugin.version) meets minimum \(Self.minimumWooCommerceVersion)")
+            DDLogDebug("📱 Plugin compatibility: WooCommerce \(plugin.version) meets minimum")
             return .compatible
         } else {
-            DDLogDebug("📱 Plugin compatibility: WooCommerce \(plugin.version) below minimum \(Self.minimumWooCommerceVersion)")
+            DDLogDebug("📱 Plugin compatibility: WooCommerce \(plugin.version) below minimum")
             return .incompatible(
                 currentVersion: plugin.version,
-                requiredVersion: Self.minimumWooCommerceVersion
+                requiredVersion: minimumWooCommerceVersion
             )
         }
     }
 }
 
-// MARK: - Private Helpers
 private extension PluginCompatibilityChecker {
-
     func fetchWooCommercePlugin() async throws -> SystemPlugin {
-        // First sync system information to ensure we have the latest plugin data
         let systemInfo = try await syncSystemInformation()
 
-        // Find the WooCommerce plugin
         guard let wooPlugin = systemInfo.systemPlugins.first(where: { $0.plugin == Self.wooCommercePluginPath }) else {
             throw PluginCompatibilityError.pluginNotFound
         }
@@ -79,18 +73,6 @@ private extension PluginCompatibilityChecker {
     }
 }
 
-// MARK: - Error Types
-enum PluginCompatibilityError: LocalizedError {
+enum PluginCompatibilityError: Error {
     case pluginNotFound
-
-    var errorDescription: String? {
-        switch self {
-        case .pluginNotFound:
-            return NSLocalizedString(
-                "pluginCompatibilityError.pluginNotFound",
-                value: "WooCommerce plugin not found",
-                comment: "Error message when WooCommerce plugin cannot be found on the site"
-            )
-        }
-    }
 }

@@ -3,25 +3,18 @@ import Combine
 import SwiftUI
 
 @MainActor
-final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetupHandlerDelegate {
+final class WPComConnectionSetupViewModel: ObservableObject {
 
-    // MARK: - Private Types
-
-    /// Single source of truth for UI state - button config derived from this
     private enum SetupState: Equatable {
         case inProgress
         case completed
         case failed(step: SetupStep)
     }
 
-    // MARK: - Published Properties
-
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
     @Published private var setupState: SetupState = .inProgress
 
     let subtitleAttributedString: AttributedString
-
-    // MARK: - Derived Properties (from setupState)
 
     var primaryButtonTitle: String {
         switch setupState {
@@ -42,10 +35,7 @@ final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetu
     }
 
     var isShowingSecondaryButton: Bool {
-        if case .failed(.checkPlugin) = setupState {
-            return true
-        }
-        return false
+        setupState == .failed(step: .checkPlugin)
     }
 
     var secondaryButtonTitle: String {
@@ -56,15 +46,11 @@ final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetu
         setupState == .completed
     }
 
-    // MARK: - Private
-
     private let storeName: String
     private var handler: WPComConnectionSetupHandlerProtocol
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
     private let onUpdatePlugin: () -> Void
-
-    // MARK: - Init
 
     init(storeName: String,
          handler: WPComConnectionSetupHandlerProtocol,
@@ -93,8 +79,6 @@ final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetu
         setupInitialSteps()
     }
 
-    // MARK: - Actions
-
     func onAppear() {
         handler.start()
     }
@@ -111,12 +95,11 @@ final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetu
                 onUpdatePlugin()
             }
         case .inProgress:
-            break  // Button disabled
+            break
         }
     }
 
     func secondaryButtonTapped() {
-        // Only shown for plugin check failure - "Try again"
         retrySetup()
     }
 
@@ -128,26 +111,6 @@ final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetu
     func doneTapped() {
         onDismiss()
     }
-
-    // MARK: - WPComConnectionSetupHandlerDelegate
-
-    nonisolated func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
-        Task { @MainActor in
-            updateStep(step, status: status)
-
-            if case .failure = status {
-                setupState = .failed(step: step)
-            }
-        }
-    }
-
-    nonisolated func setupDidComplete() {
-        Task { @MainActor in
-            setupState = .completed
-        }
-    }
-
-    // MARK: - Private
 
     private func retrySetup() {
         setupState = .inProgress
@@ -171,7 +134,20 @@ final class WPComConnectionSetupViewModel: ObservableObject, WPComConnectionSetu
     }
 }
 
-// MARK: - Localization
+extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
+    func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
+        updateStep(step, status: status)
+
+        if case .failure = status {
+            setupState = .failed(step: step)
+        }
+    }
+
+    func setupDidComplete() {
+        setupState = .completed
+    }
+}
+
 private extension WPComConnectionSetupViewModel {
     enum Localization {
         static let subtitle = NSLocalizedString(

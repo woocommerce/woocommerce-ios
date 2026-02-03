@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
@@ -638,6 +639,7 @@ private extension POSOrderDetailsView {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             refundModalState = .success(reviewData)
         } catch {
+            DDLogError("⛔️ Failed to process refund: \(error)")
             refundModalState = .error(reviewData)
         }
     }

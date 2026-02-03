@@ -78,11 +78,12 @@ private extension WooPushNotificationSetupCoordinator {
 
     func showConnectionSetup() {
         let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
-        let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak self] in
-            self?.dismissFlow()
+        let navigationController = WooNavigationController()
+        let viewModel = WPComConnectionSetupViewModel(storeName: storeName, onDismiss: { [weak navigationController] in
+            navigationController?.dismiss(animated: true)
         })
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
-        let navigationController = WooNavigationController(rootViewController: connectionSetupController)
+        navigationController.viewControllers = [connectionSetupController]
 
         // Dismiss current modal (login or benefits) and present connection setup
         if let loginNav = loginCoordinator?.navigationController,
@@ -99,10 +100,6 @@ private extension WooPushNotificationSetupCoordinator {
         }
     }
 
-    func dismissFlow() {
-        // The connection setup modal is presented, just dismiss it
-        rootViewController.dismiss(animated: true)
-    }
 }
 
 private extension WooPushNotificationSetupCoordinator {

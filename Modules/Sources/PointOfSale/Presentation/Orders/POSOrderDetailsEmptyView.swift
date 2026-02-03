@@ -2,11 +2,14 @@ import SwiftUI
 
 struct POSOrderDetailsEmptyView: View {
     var body: some View {
-        VStack(spacing: 0) {
-            POSPageHeaderView(
-                title: Localization.title,
-                backButtonConfiguration: nil
-            )
+        ZStack {
+            VStack {
+                POSPageHeaderView(
+                    title: Localization.title,
+                    backButtonConfiguration: nil
+                )
+                Spacer()
+            }
 
             VStack {
                 Spacer()

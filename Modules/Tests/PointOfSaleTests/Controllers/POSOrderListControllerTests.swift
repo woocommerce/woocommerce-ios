@@ -7,6 +7,7 @@ import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
@@ -382,218 +383,52 @@ final class POSOrderListControllerTests {
         #expect(sut.selectedOrder?.customerEmail == "selected-updated@example.com")
     }
 
-    @Test func selectOrder_then_calls_refunds_service_for_selected_order() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
-
-        async let calledOrder = refundsService.awaitProvidePointOfSaleRefundsCall()
-
-        // When
-        await sut.selectOrder(order)
-
-        // Then
-        #expect(await calledOrder == order)
-    }
-
-    @Test func selectOrder_then_updates_refunds_state_with_loading() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
-
-        // When
-        await sut.selectOrder(order)
-
-        // Then
-        let didBecomeLoading = await waitForCondition { [weak self] in
-            guard let sut = self?.sut else { return false }
-            if case .loading = sut.selectedOrderRefundsState { return true }
-            return false
-        }
-
-        #expect(
-            didBecomeLoading,
-            "Expected selectedOrderRefundsState to become .loading before timeout"
-        )
-    }
-
-    @Test func selectOrder_when_provides_refunds_then_updates_refunds_state_with_results() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
-
-        let expectedResult = POSRefundsResult(refunds: [POSRefund(items: [])], isFullyRefunded: false, supportsAutomaticRefund: true)
-        refundsService.providePointOfSaleRefundsResultToReturn = expectedResult
-
-        // When
-        await sut.selectOrder(order)
-
-        // Then
-        let didLoad = await waitForCondition { [weak self] in
-            guard let sut = self?.sut else { return false }
-            if case .loaded = sut.selectedOrderRefundsState { return true }
-            return false
-        }
-
-        #expect(
-            didLoad,
-            "Expected selectedOrderRefundsState to become .loaded before timeout"
-        )
-
-        guard case .loaded(let loadedResult) = sut.selectedOrderRefundsState else {
-            #expect(Bool(false), "Expected .loaded state")
-            return
-        }
-
-        #expect(loadedResult.isFullyRefunded == expectedResult.isFullyRefunded)
-    }
-
-    @Test func selectOrder_when_refunds_service_errors_then_failed_contains_same_error_type() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
-
-        struct TestError: Error {}
-        refundsService.errorToThrow = TestError()
-
-        // When
-        await sut.selectOrder(order)
-
-        // Then
-        let didFail = await waitForCondition { [weak self] in
-            guard let sut = self?.sut else { return false }
-            if case .failed = sut.selectedOrderRefundsState { return true }
-            return false
-        }
-
-        #expect(
-            didFail,
-            "Expected selectedOrderRefundsState to become .failed before timeout"
-        )
-
-        guard case .failed(let error) = sut.selectedOrderRefundsState else {
-            #expect(Bool(false), "Expected .failed state")
-            return
-        }
-
-        #expect(error is TestError)
-    }
-
+    @MainActor
     @Test func refundActionAvailability_when_feature_flag_disabled_then_unavailable() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = false
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
+        let order = makeOrder(id: 1) // completed by default
 
         // When
-        await sut.selectOrder(order)
+        sut.selectOrder(order)
 
         // Then
-        let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .unavailable)
+        #expect(sut.refundActionAvailability == .unavailable)
     }
 
+    @MainActor
     @Test func refundActionAvailability_when_no_selected_order_then_unavailable() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
 
         // When / Then
-        let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .unavailable)
+        #expect(sut.refundActionAvailability == .unavailable)
     }
 
-    @Test func refundActionAvailability_when_refunds_loading_then_unknown() async throws {
+    @MainActor
+    @Test func refundActionAvailability_when_order_completed_then_available() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
-        refundsService.shouldSuspendProvidePointOfSaleRefunds = true
+        let order = makeOrder(id: 1, status: .completed)
 
         // When
-        await MainActor.run {
-            sut.selectOrder(order)
-            #expect(sut.refundActionAvailability == .unknown)
-        }
+        sut.selectOrder(order)
 
         // Then
-        refundsService.resumeProvidePointOfSaleRefunds()
+        #expect(sut.refundActionAvailability == .available)
     }
 
-    @Test func refundActionAvailability_when_refunds_failed_then_unavailable() async throws {
+    @MainActor
+    @Test func refundActionAvailability_when_order_not_completed_then_unavailable() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = MockPOSOrderListService.makeInitialOrders()[0]
-
-        struct TestError: Error {}
-        refundsService.errorToThrow = TestError()
+        let order = makeOrder(id: 1, status: .processing)
 
         // When
-        await sut.selectOrder(order)
+        sut.selectOrder(order)
 
         // Then
-        let didFail = await waitForCondition { [weak self] in
-            guard let sut = self?.sut else { return false }
-            if case .failed = sut.selectedOrderRefundsState { return true }
-            return false
-        }
-        #expect(didFail)
-
-        let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .unavailable)
-    }
-
-    @Test func refundActionAvailability_when_refunds_loaded_and_not_fully_refunded_then_available() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-
-        let order = makeOrder(id: 1)
-
-        // Service returns isFullyRefunded = false (not fully refunded)
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        // When
-        await sut.selectOrder(order)
-
-        // Then
-        let didLoad = await waitForCondition { [weak self] in
-            guard let sut = self?.sut else { return false }
-            if case .loaded = sut.selectedOrderRefundsState { return true }
-            return false
-        }
-        #expect(didLoad)
-
-        let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .available)
-    }
-
-    @Test func refundActionAvailability_when_refunds_loaded_and_fully_refunded_then_unavailable() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-
-        let order = makeOrder(id: 1)
-
-        // Service returns isFullyRefunded = true (fully refunded)
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: true,
-            supportsAutomaticRefund: true
-        )
-
-        // When
-        await sut.selectOrder(order)
-
-        // Then
-        let didLoad = await waitForCondition { [weak self] in
-            guard let sut = self?.sut else { return false }
-            if case .loaded = sut.selectedOrderRefundsState { return true }
-            return false
-        }
-        #expect(didLoad)
-
-        let availability = await MainActor.run { sut.refundActionAvailability }
-        #expect(availability == .unavailable)
+        #expect(sut.refundActionAvailability == .unavailable)
     }
 
     // MARK: - Refund Item Selection Tests
@@ -1314,6 +1149,7 @@ private extension POSOrderListControllerTests {
     }
 
     func makeOrder(id: Int64 = 1,
+                   status: OrderStatusEnum = .completed,
                    paymentMethodID: String = "woocommerce_payments",
                    paymentMethodTitle: String = "cod",
                    lineItems: [POSOrderItem] = []) -> POSOrder {
@@ -1321,7 +1157,7 @@ private extension POSOrderListControllerTests {
             id: id,
             number: "\(id)",
             dateCreated: Date(),
-            status: .completed,
+            status: status,
             formattedTotal: "$25.99",
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",

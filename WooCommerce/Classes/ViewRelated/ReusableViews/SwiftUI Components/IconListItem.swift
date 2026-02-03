@@ -56,7 +56,6 @@ struct IconListItem: View {
     let subtitle: String
     let icon: Icon?
     let learnMoreURL: URL?
-    let showLearnMoreInline: Bool
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -69,29 +68,16 @@ struct IconListItem: View {
                     .headlineStyle()
                 Text(subtitle)
                     .secondaryBodyStyle()
-                if showLearnMoreInline, let learnMoreURL {
+                if let learnMoreURL {
                     Button(Localization.learnMore) {
                         openURL(learnMoreURL)
                     }
-                    .buttonStyle(LinkButtonStyle())
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .buttonStyle(LinkButtonStyle(padding: .zero))
                 }
             }
             Spacer()
         }
         .padding(.horizontal, Layout.horizontalPadding)
-    }
-
-    init(title: String,
-         subtitle: String,
-         icon: Icon?,
-         learnMoreURL: URL?,
-         showLearnMoreInline: Bool = true) {
-        self.title = title
-        self.subtitle = subtitle
-        self.icon = icon
-        self.learnMoreURL = learnMoreURL
-        self.showLearnMoreInline = showLearnMoreInline
     }
 }
 
@@ -119,13 +105,21 @@ private extension IconListItem {
 
 // MARK: - Preview
 struct IconListItem_Previews: PreviewProvider {
+    static let sampleIconURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!
+
     static var previews: some View {
         IconListItem(title: "Title",
                      subtitle: "Subtitle",
-                     icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!),
+                     icon: .remote(sampleIconURL),
                      learnMoreURL: nil)
             .previewLayout(.fixed(width: 375, height: 100))
-            .previewDisplayName("Regular Icon List Item")
-            .environment(\.layoutDirection, .leftToRight)
+            .previewDisplayName("Without learn more")
+
+        IconListItem(title: "Point of Sale",
+                     subtitle: "Sell in person with the new Point of Sale feature.",
+                     icon: .remote(sampleIconURL),
+                     learnMoreURL: URL(string: "https://woocommerce.com/learn-more"))
+            .previewLayout(.fixed(width: 375, height: 120))
+            .previewDisplayName("With learn more")
     }
 }

@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: Build Application
-    # Only run for PRs from the same repo (not forks) with the 'generate screenshots' label
+    # Only run for PRs from the same repo (not forks) and with the 'generate screenshots' label
     if: |
       github.event.pull_request.head.repo.fork != true &&
       contains(github.event.pull_request.labels.*.name, 'generate screenshots')
@@ -83,7 +83,7 @@ jobs:
     name: "Process Screenshots"
     needs: capture
     runs-on: macos-latest
-    # Grant write permissions to push screenshot commits back to the PR branch.
+    # Grant write permissions to push screenshot commits back to the PR branch
     permissions:
       contents: write
 
@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Check out the PR branch directly (not the merge commit) so we can push back to it
+          # Checkout the PR branch directly (not the merge commit) so we can push back to it
           ref: ${{ github.head_ref }}
           # Fetch LFS files for promo screenshot generation
           lfs: true

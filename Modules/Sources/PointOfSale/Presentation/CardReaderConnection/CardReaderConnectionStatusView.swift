@@ -5,6 +5,7 @@ struct CardReaderConnectionStatusView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.isEnabled) var isEnabled
+    @State private var isCancellingReconnection = false
 
     @ViewBuilder
     private func circleIcon(with color: Color) -> some View {
@@ -60,6 +61,7 @@ struct CardReaderConnectionStatusView: View {
             case .reconnecting:
                 Menu {
                     Button {
+                        isCancellingReconnection = true
                         posModel.cancelReconnection()
                     } label: {
                         Text(Localization.cancelReconnection)
@@ -71,12 +73,13 @@ struct CardReaderConnectionStatusView: View {
                                 size: Constants.progressIndicatorDimension * scale,
                                 lineWidth: Constants.progressIndicatorLineWidth * scale
                             ))
-                        Text(Localization.readerReconnecting)
+                        Text(isCancellingReconnection ? Localization.cancellingReconnection : Localization.readerReconnecting)
                             .foregroundColor(connectedFontColor)
                     }
                     .padding(.horizontal, Constants.horizontalPadding)
                     .frame(maxHeight: .infinity)
                 }
+                .disabled(isCancellingReconnection)
                 .accessibilityIdentifier("pos-reader-reconnecting")
             }
         }
@@ -191,6 +194,12 @@ private extension CardReaderConnectionStatusView {
             "pointOfSale.floatingButtons.cancelReconnection.button.title",
             value: "Cancel reconnection",
             comment: "The title of the menu button to cancel an ongoing card reader reconnection attempt."
+        )
+
+        static let cancellingReconnection = NSLocalizedString(
+            "pointOfSale.floatingButtons.cancellingReconnection.title",
+            value: "Cancelling…",
+            comment: "The title of the floating button to indicate that the reader reconnection is being cancelled."
         )
     }
 }

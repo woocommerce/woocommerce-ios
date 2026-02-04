@@ -154,7 +154,7 @@ extension MockCardPresentPaymentsStoresManager {
     }
 
     func simulateReconnecting(reader: CardReader) {
-        reconnectionSubject.send(.reconnecting(reader))
+        reconnectionSubject.send(.reconnecting(reader: reader))
     }
 
     func simulateReconnectionSucceeded(reader: CardReader) {

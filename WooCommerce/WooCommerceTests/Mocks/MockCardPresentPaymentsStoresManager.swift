@@ -157,12 +157,12 @@ extension MockCardPresentPaymentsStoresManager {
         reconnectionSubject.send(.reconnecting(reader))
     }
 
-    func simulateReconnectionSucceeded() {
-        reconnectionSubject.send(.succeeded)
+    func simulateReconnectionSucceeded(reader: CardReader) {
+        reconnectionSubject.send(.succeeded(reader: reader))
     }
 
-    func simulateReconnectionFailed() {
-        reconnectionSubject.send(.failed)
+    func simulateReconnectionFailed(reader: CardReader) {
+        reconnectionSubject.send(.failed(reader: reader))
     }
 
     func simulateReconnectionIdle() {

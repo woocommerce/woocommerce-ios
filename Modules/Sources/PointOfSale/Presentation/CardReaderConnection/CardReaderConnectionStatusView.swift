@@ -84,6 +84,9 @@ struct CardReaderConnectionStatusView: View {
             }
         }
         .font(Constants.font)
+        .onAppear {
+            isCancellingReconnection = false
+        }
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .opacity(isEnabled ? 1 : 0.5)
     }

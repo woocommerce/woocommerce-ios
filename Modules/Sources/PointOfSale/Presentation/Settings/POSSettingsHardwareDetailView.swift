@@ -198,6 +198,9 @@ private extension POSSettingsHardwareDetailView {
             )
         }
         .disabled(isCancellingReconnection)
+        .onAppear {
+            isCancellingReconnection = false
+        }
     }
 
     var cardReadersView: some View {

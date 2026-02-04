@@ -108,8 +108,9 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
                                                         stores: mockStoresManager))
 
         // Simulate reconnection starting then succeeding
-        mockStoresManager.simulateReconnecting(reader: MockCardReader.bbposChipper2XBT())
-        mockStoresManager.simulateReconnectionSucceeded()
+        let reader = MockCardReader.bbposChipper2XBT()
+        mockStoresManager.simulateReconnecting(reader: reader)
+        mockStoresManager.simulateReconnectionSucceeded(reader: reader)
 
         XCTAssertFalse(viewModel.shouldSkipAutoSearch())
     }

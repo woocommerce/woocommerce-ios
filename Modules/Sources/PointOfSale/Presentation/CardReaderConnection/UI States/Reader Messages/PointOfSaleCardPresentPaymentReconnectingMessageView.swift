@@ -45,6 +45,9 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
             width = containerWidth
         })
         .multilineTextAlignment(.center)
+        .onAppear {
+            isCancelling = false
+        }
     }
 
     private func dynamicSpacing(_ spacing: CGFloat) -> CGFloat {

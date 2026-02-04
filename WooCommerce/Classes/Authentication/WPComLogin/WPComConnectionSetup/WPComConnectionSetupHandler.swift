@@ -5,12 +5,21 @@ import class Networking.AlamofireNetwork
 enum SetupStep: Int, CaseIterable {
     case connect = 0
     case checkPlugin = 1
-    case enablePush = 2
+    case enablePush = 2 // TODO: Implement in follow-up PR
+}
+
+enum CheckPluginError: Error, Equatable {
+    case outdated(currentVersion: String)
+    case other
+}
+
+enum WPComConnectionError: Error {
+    case verificationFailed
 }
 
 @MainActor
 protocol WPComConnectionSetupHandlerDelegate: AnyObject {
-    func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status)
+    func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupHandler.StepStatus)
     func setupDidComplete()
 }
 
@@ -24,6 +33,23 @@ protocol WPComConnectionSetupHandlerProtocol: AnyObject {
 
 @MainActor
 final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
+    enum StepStatus: Equatable {
+        case running
+        case success
+        case failure(error: Error)
+
+        static func == (lhs: StepStatus, rhs: StepStatus) -> Bool {
+            switch (lhs, rhs) {
+            case (.running, .running),
+                 (.success, .success),
+                 (.failure, .failure):
+                return true
+            default:
+                return false
+            }
+        }
+    }
+
     weak var delegate: WPComConnectionSetupHandlerDelegate?
 
     private let siteURL: String
@@ -93,7 +119,7 @@ private extension WPComConnectionSetupHandler {
         } catch {
             DDLogError("⛔️ WPCom connection failed: \(error)")
             lastFailedStep = .connect
-            delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.connectionError))
+            delegate?.stepDidUpdate(.connect, status: .failure(error: error))
             return false
         }
     }
@@ -147,13 +173,12 @@ private extension WPComConnectionSetupHandler {
 
             case .incompatible(let currentVersion, _):
                 lastFailedStep = .checkPlugin
-                let message = String(format: Localization.pluginOutdatedFormat, currentVersion)
-                delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: message))
+                delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: CheckPluginError.outdated(currentVersion: currentVersion)))
             }
         } catch {
             DDLogError("⛔️ Plugin compatibility check failed: \(error)")
             lastFailedStep = .checkPlugin
-            delegate?.stepDidUpdate(.checkPlugin, status: .failure(reason: Localization.connectionError))
+            delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: CheckPluginError.other))
         }
     }
 
@@ -168,24 +193,4 @@ private extension WPComConnectionSetupHandler {
             }
         }
     }
-}
-
-private extension WPComConnectionSetupHandler {
-    enum Localization {
-        static let connectionError = NSLocalizedString(
-            "wpComConnectionSetupHandler.connectionError",
-            value: "There was an error completing your request. Please try again or contact support.",
-            comment: "Generic error message for WPCom connection setup failures"
-        )
-
-        static let pluginOutdatedFormat = NSLocalizedString(
-            "wpComConnectionSetupHandler.pluginOutdated",
-            value: "Your WooCommerce plugin version %@ needs updating to connect your store.",
-            comment: "Error message when WooCommerce plugin is outdated. %@ is the current version."
-        )
-    }
-}
-
-enum WPComConnectionError: Error {
-    case verificationFailed
 }

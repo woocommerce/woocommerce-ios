@@ -2,24 +2,75 @@ import Foundation
 import Combine
 import SwiftUI
 
+@MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
 
+    enum CheckPluginError: Equatable {
+        case outdated
+        case other
+    }
+
+    private enum SetupState: Equatable {
+        case inProgress
+        case completed
+        case failed(step: SetupStep, checkPluginError: CheckPluginError? = nil)
+    }
+
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
-
-    @Published private(set) var primaryButtonTitle: String = Localization.goToMyStore
-    @Published private(set) var isPrimaryButtonEnabled: Bool = false
-
-    @Published private(set) var secondaryButtonTitle: String = Localization.tryAgain
-    @Published private(set) var isShowingSecondaryButton: Bool = false
+    @Published private var setupState: SetupState = .inProgress
 
     let subtitleAttributedString: AttributedString
 
-    private let storeName: String
-    private let onDismiss: () -> Void
+    var primaryButtonTitle: String {
+        switch setupState {
+        case .inProgress, .completed:
+            return Localization.goToMyStore
+        case .failed(let step, let checkPluginError):
+            switch step {
+            case .connect, .enablePush:
+                return Localization.tryAgain
+            case .checkPlugin:
+                return checkPluginError == .outdated ? Localization.updatePlugin : Localization.tryAgain
+            }
+        }
+    }
 
-    init(storeName: String, onDismiss: @escaping () -> Void = {}) {
+    var isPrimaryButtonEnabled: Bool {
+        setupState != .inProgress
+    }
+
+    var isShowingSecondaryButton: Bool {
+        if case .failed(step: .checkPlugin, checkPluginError: .outdated) = setupState {
+            return true
+        }
+        return false
+    }
+
+    var secondaryButtonTitle: String {
+        Localization.tryAgain
+    }
+
+    var isShowingDoneButton: Bool {
+        setupState == .completed
+    }
+
+    private let storeName: String
+    private let handler: WPComConnectionSetupHandlerProtocol
+    private let onDismiss: () -> Void
+    private let onGoToStore: () -> Void
+    private let onUpdatePlugin: () -> Void
+
+    init(storeName: String,
+         handler: WPComConnectionSetupHandlerProtocol,
+         onDismiss: @escaping () -> Void,
+         onGoToStore: @escaping () -> Void,
+         onUpdatePlugin: @escaping () -> Void) {
         self.storeName = storeName
+        self.handler = handler
         self.onDismiss = onDismiss
+        self.onGoToStore = onGoToStore
+        self.onUpdatePlugin = onUpdatePlugin
+
         self.subtitleAttributedString = {
             let content = String.localizedStringWithFormat(Localization.subtitle, storeName)
             var attributedText = AttributedString(content)
@@ -31,34 +82,88 @@ final class WPComConnectionSetupViewModel: ObservableObject {
             }
             return attributedText
         }()
+
+        self.handler.delegate = self
+        setupInitialSteps()
     }
 
     func onAppear() {
-        setInitialState()
+        handler.start()
     }
 
     func primaryButtonTapped() {
-
+        switch setupState {
+        case .completed:
+            onGoToStore()
+        case .failed(let step, let checkPluginError):
+            switch step {
+            case .connect, .enablePush:
+                retrySetup()
+            case .checkPlugin:
+                if checkPluginError == .outdated {
+                    onUpdatePlugin()
+                } else {
+                    retrySetup()
+                }
+            }
+        case .inProgress:
+            break
+        }
     }
 
     func secondaryButtonTapped() {
-
+        retrySetup()
     }
 
     func cancelTapped() {
+        handler.cancel()
         onDismiss()
     }
 
-    private func setInitialState() {
+    func doneTapped() {
+        onDismiss()
+    }
+
+    private func retrySetup() {
+        setupState = .inProgress
+        handler.retry()
+    }
+
+    private func setupInitialSteps() {
         steps = [
-            WPComConnectionSetupStep(title: Localization.connectStoreStep, status: .running),
+            WPComConnectionSetupStep(title: Localization.connectStoreStep, status: .notStarted),
             WPComConnectionSetupStep(title: Localization.checkPluginStep, status: .notStarted),
             WPComConnectionSetupStep(title: Localization.enablePushNotificationsStep, status: .notStarted)
         ]
+    }
 
-        primaryButtonTitle = Localization.goToMyStore
-        isPrimaryButtonEnabled = false
-        isShowingSecondaryButton = false
+    private func updateStep(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
+        assert(step.rawValue < steps.count, "SetupStep out of sync with steps array")
+        guard step.rawValue < steps.count else { return }
+        steps[step.rawValue] = WPComConnectionSetupStep(
+            title: steps[step.rawValue].title,
+            status: status
+        )
+    }
+}
+
+extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
+    func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
+        updateStep(step, status: status)
+
+        if case .failure(let reason) = status {
+            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: reason) : nil
+            setupState = .failed(step: step, checkPluginError: checkPluginError)
+        }
+    }
+
+    private func checkPluginError(from reason: String) -> CheckPluginError {
+        // TODO: Update condition based on actual error identifier from handler
+        reason.contains("outdated") ? .outdated : .other
+    }
+
+    func setupDidComplete() {
+        setupState = .completed
     }
 }
 

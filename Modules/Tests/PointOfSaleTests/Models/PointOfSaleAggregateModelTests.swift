@@ -708,6 +708,52 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled)
         }
 
+        @Test func cancelThenCollectPayment_cancels_reconnection_first_when_reconnecting() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+
+            // Set connection status to reconnecting
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .reconnecting(reader)
+
+            // Wait for the status to propagate
+            try await Task.sleep(nanoseconds: 100_000_000)
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == true)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+        }
+
+        @Test func cancelThenCollectPayment_does_not_cancel_reconnection_when_not_reconnecting() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+
+            // Set connection status to connected (not reconnecting)
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .connected(reader)
+
+            // Wait for the status to propagate
+            try await Task.sleep(nanoseconds: 100_000_000)
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == false)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+        }
+
         // MARK: Onboarding
         @Test func cardPresentPaymentOnboardingViewContainer_is_non_nil_when_onboarding_is_required() async throws {
             // Given

@@ -481,6 +481,10 @@ extension PointOfSaleAggregateModel {
     }
 
     func cancelThenCollectPayment() async {
+        if case .reconnecting = cardReaderConnectionStatus {
+            await cardPresentPaymentService.cancelReconnection()
+        }
+
         try? await cardPresentPaymentService.cancelPayment()
 
         switch cardReaderConnectionStatus {

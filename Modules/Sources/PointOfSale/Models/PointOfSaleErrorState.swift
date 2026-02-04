@@ -15,6 +15,7 @@ struct PointOfSaleErrorState: Equatable {
         case couponsRefreshError
         case ordersLoadError
         case ordersNextPageError
+        case bookingsLoadError
     }
 
     let errorType: ErrorType
@@ -106,6 +107,14 @@ struct PointOfSaleErrorState: Equatable {
         PointOfSaleErrorState(
             errorType: .ordersNextPageError,
             title: Constants.failedToLoadOrdersNextPageTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
+    static func errorOnLoadingBookings(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .bookingsLoadError,
+            title: Constants.failedToLoadBookingsTitle,
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
@@ -228,6 +237,11 @@ struct PointOfSaleErrorState: Equatable {
             value: "Unable to load more orders",
             comment: "Text appearing on the order list screen when there's an error loading a page of orders after " +
             "the first. Shown inline with the previously loaded orders above."
+        )
+        static let failedToLoadBookingsTitle = NSLocalizedString(
+            "pos.bookingList.failedToLoadBookingsTitle",
+            value: "Unable to load bookings",
+            comment: "Text appearing on the booking list screen when there's an error loading bookings."
         )
     }
 }

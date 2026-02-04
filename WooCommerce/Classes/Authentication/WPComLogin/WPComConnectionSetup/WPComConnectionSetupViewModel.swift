@@ -126,6 +126,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     private func updateStep(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
+        assert(step.rawValue < steps.count, "SetupStep out of sync with steps array")
         guard step.rawValue < steps.count else { return }
         steps[step.rawValue] = WPComConnectionSetupStep(
             title: steps[step.rawValue].title,

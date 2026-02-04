@@ -13,6 +13,7 @@ struct POSSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
     @State private var showSupport: Bool = false
+    @State private var isCancellingReconnection: Bool = false
 
     private var cardReaderName: String {
         settingsController.connectedCardReader?.name ?? Localization.cardReaderNotConnected
@@ -176,13 +177,14 @@ private extension POSSettingsHardwareDetailView {
     var reconnectingMenuButton: some View {
         Menu {
             Button(Localization.cancelReconnectionTitle) {
+                isCancellingReconnection = true
                 posModel.cancelReconnection()
             }
         } label: {
             HStack(spacing: POSSpacing.small) {
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
-                Text(Localization.reconnectingButtonTitle)
+                Text(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
             }
             .font(.posBodySmallBold())
             .foregroundColor(.posOnSurface)
@@ -195,6 +197,7 @@ private extension POSSettingsHardwareDetailView {
                     .strokeBorder(Color.posOnSurface, lineWidth: 2)
             )
         }
+        .disabled(isCancellingReconnection)
     }
 
     var cardReadersView: some View {
@@ -530,6 +533,12 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle",
             value: "Cancel reconnection",
             comment: "Menu option to cancel card reader reconnection in POS settings."
+        )
+
+        static let cancellingReconnectionTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle",
+            value: "Cancelling…",
+            comment: "Button title shown when card reader reconnection is being cancelled in POS settings."
         )
     }
 }

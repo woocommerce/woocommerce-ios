@@ -48,25 +48,26 @@ final class MockPOSBookingService: POSBookingServiceProtocol, @unchecked Sendabl
         return Booking(
             siteID: siteID,
             bookingID: bookingID,
-            orderID: orderID,
-            orderItemID: 1,
-            productID: productID,
-            resourceID: nil,
-            parentID: nil,
-            customerID: customerID,
-            statusKey: statusKey,
-            attendanceStatusKey: "booked",
-            startDate: startDate,
-            endDate: computedEndDate,
             allDay: false,
+            cost: cost,
+            customerID: customerID,
             dateCreated: Date(),
             dateModified: Date(),
-            cost: cost,
+            endDate: computedEndDate,
             googleCalendarEventID: nil,
-            note: nil,
-            localTimezone: nil,
+            orderID: orderID,
+            orderItemID: 1,
+            parentID: 0,
+            productID: productID,
+            resourceID: 0,
+            startDate: startDate,
+            statusKey: statusKey,
+            attendanceStatusKey: "booked",
+            localTimezone: "UTC",
             currency: "USD",
             orderInfo: BookingOrderInfo(
+                statusKey: statusKey,
+                paymentInfo: nil,
                 customerInfo: BookingCustomerInfo(
                     billingAddress: Address(
                         firstName: customerFirstName,
@@ -80,16 +81,11 @@ final class MockPOSBookingService: POSBookingServiceProtocol, @unchecked Sendabl
                         country: "",
                         phone: nil,
                         email: nil
-                    ),
-                    shippingAddress: nil
+                    )
                 ),
-                paymentInfo: nil,
-                productInfo: BookingProductInfo(
-                    productID: productID,
-                    name: productName,
-                    shortDescription: nil
-                )
-            )
+                productInfo: BookingProductInfo(name: productName)
+            ),
+            note: ""
         )
     }
 }

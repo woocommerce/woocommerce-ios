@@ -65,7 +65,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isShowingSecondaryButton)
     }
 
-    func test_plugin_failure_shows_updatePlugin_and_tryAgain_buttons() {
+    func test_plugin_failure_outdated_shows_updatePlugin_and_tryAgain_buttons() {
         // Given
         let viewModel = makeViewModel()
 
@@ -77,6 +77,19 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isPrimaryButtonEnabled)
         XCTAssertTrue(viewModel.isShowingSecondaryButton)
         XCTAssertEqual(viewModel.secondaryButtonTitle, "Try again")
+    }
+
+    func test_plugin_failure_other_shows_tryAgain_button() {
+        // Given
+        let viewModel = makeViewModel()
+
+        // When
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Network error"))
+
+        // Then
+        XCTAssertEqual(viewModel.primaryButtonTitle, "Try again")
+        XCTAssertTrue(viewModel.isPrimaryButtonEnabled)
+        XCTAssertFalse(viewModel.isShowingSecondaryButton)
     }
 
     func test_setupDidComplete_enables_goToMyStore_button() {
@@ -106,7 +119,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertTrue(goToStoreCalled)
     }
 
-    func test_primaryButtonTapped_on_plugin_failure_calls_updatePlugin() {
+    func test_primaryButtonTapped_on_plugin_failure_outdated_calls_updatePlugin() {
         // Given
         let viewModel = makeViewModel()
         mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Plugin outdated"))
@@ -116,6 +129,18 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(updatePluginCalled)
+    }
+
+    func test_primaryButtonTapped_on_plugin_failure_other_retries() {
+        // Given
+        let viewModel = makeViewModel()
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Network error"))
+
+        // When
+        viewModel.primaryButtonTapped()
+
+        // Then
+        XCTAssertEqual(mockHandler.retryCallCount, 1)
     }
 
     // MARK: - Dismiss Tests

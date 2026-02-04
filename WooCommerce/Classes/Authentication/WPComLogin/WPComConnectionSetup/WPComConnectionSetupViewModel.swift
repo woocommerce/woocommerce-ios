@@ -5,10 +5,15 @@ import SwiftUI
 @MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
 
+    enum CheckPluginError: Equatable {
+        case outdated
+        case other
+    }
+
     private enum SetupState: Equatable {
         case inProgress
         case completed
-        case failed(step: SetupStep)
+        case failed(step: SetupStep, checkPluginError: CheckPluginError? = nil)
     }
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
@@ -20,12 +25,12 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         switch setupState {
         case .inProgress, .completed:
             return Localization.goToMyStore
-        case .failed(let step):
+        case .failed(let step, let checkPluginError):
             switch step {
             case .connect, .enablePush:
                 return Localization.tryAgain
             case .checkPlugin:
-                return Localization.updatePlugin
+                return checkPluginError == .outdated ? Localization.updatePlugin : Localization.tryAgain
             }
         }
     }
@@ -35,7 +40,10 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     var isShowingSecondaryButton: Bool {
-        setupState == .failed(step: .checkPlugin)
+        if case .failed(step: .checkPlugin, checkPluginError: .outdated) = setupState {
+            return true
+        }
+        return false
     }
 
     var secondaryButtonTitle: String {
@@ -87,12 +95,16 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         switch setupState {
         case .completed:
             onGoToStore()
-        case .failed(let step):
+        case .failed(let step, let checkPluginError):
             switch step {
             case .connect, .enablePush:
                 retrySetup()
             case .checkPlugin:
-                onUpdatePlugin()
+                if checkPluginError == .outdated {
+                    onUpdatePlugin()
+                } else {
+                    retrySetup()
+                }
             }
         case .inProgress:
             break
@@ -139,9 +151,15 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
         updateStep(step, status: status)
 
-        if case .failure = status {
-            setupState = .failed(step: step)
+        if case .failure(let reason) = status {
+            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: reason) : nil
+            setupState = .failed(step: step, checkPluginError: checkPluginError)
         }
+    }
+
+    private func checkPluginError(from reason: String) -> CheckPluginError {
+        // TODO: Update condition based on actual error identifier from handler
+        reason.contains("outdated") ? .outdated : .other
     }
 
     func setupDidComplete() {

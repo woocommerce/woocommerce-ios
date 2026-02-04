@@ -66,11 +66,12 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                                                          in: db)
             }
 
-            // Insert images
+            // Insert actual image data first (shared by products and variations)
             for image in catalog.imagesToPersist {
                 try image.insert(db, onConflict: .replace)
             }
 
+            // Then insert join table entries
             for productImage in catalog.productImagesToPersist {
                 try productImage.insert(db, onConflict: .replace)
             }

@@ -48,17 +48,53 @@ public final class PasswordScreen: ScreenObject {
     public func proceedWith(password: String) throws {
         passwordField.enterText(text: password)
         continueButton.tap()
+        dismissSavePasswordAlertIfPresent()
+    }
 
-        // As of Xcode 14.3, the Simulator might ask to save the password which, of course, we don't want to do.
-        if app.buttons["Save Password"].waitForExistence(timeout: 15) {
-            // There should be no need to wait for this button to exist since it's part of the same
-            // alert where "Save Password" is.
-            let dismissButton = app.buttons["Not Now"]
-            // Additionally wait for existence of the button to account for animations, even though the test runner should wait for the app
-            // to idle before moving on.
-            XCTAssertTrue(dismissButton.waitForExistence(timeout: 2))
+    private func dismissSavePasswordAlertIfPresent() {
+        // The Simulator may show a system "Save Password?" alert after submitting
+        // the password. This blocks the flow in CI, so dismiss it if it appears.
+        let dismissButtonLabel = "Not Now"
+        let alertTitles = [
+            "Save Password?",
+            "Save Password"
+        ]
+
+        if let dismissButton = findAlertButton(
+            in: app,
+            alertTitles: alertTitles,
+            buttonLabel: dismissButtonLabel,
+            timeout: 3
+        ) {
             dismissButton.tap()
+            return
         }
+    }
+
+    private func findAlertButton(
+        in app: XCUIApplication,
+        alertTitles: [String],
+        buttonLabel: String,
+        timeout: TimeInterval
+    ) -> XCUIElement? {
+        for title in alertTitles {
+            let alert = app.alerts[title]
+            if alert.waitForExistence(timeout: timeout) {
+                let button = alert.buttons[buttonLabel]
+                if button.exists {
+                    return button
+                }
+            }
+
+            let sheet = app.sheets[title]
+            if sheet.waitForExistence(timeout: timeout) {
+                let button = sheet.buttons[buttonLabel]
+                if button.exists {
+                    return button
+                }
+            }
+        }
+        return nil
     }
 
     @discardableResult

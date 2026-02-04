@@ -15,6 +15,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     }
 
     private(set) var readerReconnectionInProgress: Bool = false
+    private(set) var skipAutoSearchAfterReconnectionEnds: Bool = false
 
     private(set) var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
     private(set) var siteID: Int64
@@ -61,6 +62,14 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         knownReaderID != nil
     }
 
+    func shouldSkipAutoSearch() -> Bool {
+        skipAutoSearchAfterReconnectionEnds
+    }
+
+    func clearSkipAutoSearch() {
+        skipAutoSearchAfterReconnectionEnds = false
+    }
+
     /// Monitor for a known reader
     ///
     private func beginKnownReaderObservation() {
@@ -103,7 +112,14 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
                     switch state {
                     case .reconnecting:
                         self.readerReconnectionInProgress = true
-                    case .succeeded, .failed, .idle:
+                        self.skipAutoSearchAfterReconnectionEnds = false
+                    case .succeeded:
+                        self.readerReconnectionInProgress = false
+                        self.skipAutoSearchAfterReconnectionEnds = false
+                    case .failed, .idle:
+                        if self.readerReconnectionInProgress {
+                            self.skipAutoSearchAfterReconnectionEnds = true
+                        }
                         self.readerReconnectionInProgress = false
                     }
                     self.reevaluateShouldShow()

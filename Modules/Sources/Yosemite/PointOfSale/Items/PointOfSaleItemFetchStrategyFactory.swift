@@ -56,15 +56,17 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     }
     public func searchStrategy(searchTerm: String,
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
-        // Use local FTS search if both local catalog and FTS search are enabled, and dependencies are available
-        if isLocalCatalogEnabled, isFTSSearchEnabled, let grdbManager = grdbManager, let itemMapper = itemMapper {
+        // Use local search if local catalog is enabled and dependencies are available
+        // The strategy will use FTS when enabled, or fall back to LIKE-based queries
+        if isLocalCatalogEnabled, let grdbManager = grdbManager, let itemMapper = itemMapper {
             return PointOfSaleLocalSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                                       searchTerm: searchTerm,
                                                                       grdbManager: grdbManager,
                                                                       variationsRemote: variationsRemote,
                                                                       itemMapper: itemMapper,
                                                                       analytics: analytics,
-                                                                      posProductsOnly: posProductsOnlyEnabled)
+                                                                      posProductsOnly: posProductsOnlyEnabled,
+                                                                      isFTSSearchEnabled: isFTSSearchEnabled)
         }
         // Fall back to remote API search
         return PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,

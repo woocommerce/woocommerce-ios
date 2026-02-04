@@ -6,7 +6,8 @@ import struct Storage.PersistedProduct
 import struct Storage.PersistedProductVariation
 import protocol Networking.ProductVariationsRemoteProtocol
 
-/// Fetch strategy for searching products in the local GRDB catalog using FTS5 full-text search
+/// Fetch strategy for searching products in the local GRDB catalog.
+/// Uses FTS5 full-text search when enabled, otherwise falls back to LIKE-based queries.
 struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let searchTerm: String
@@ -17,6 +18,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
     private let posProductsOnly: Bool
+    private let isFTSSearchEnabled: Bool
 
     init(siteID: Int64,
          searchTerm: String,
@@ -25,7 +27,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
          itemMapper: PointOfSaleItemMapperProtocol,
          analytics: POSItemFetchAnalyticsTracking,
          pageSize: Int = 25,
-         posProductsOnly: Bool = false) {
+         posProductsOnly: Bool = false,
+         isFTSSearchEnabled: Bool = true) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.grdbManager = grdbManager
@@ -34,6 +37,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         self.analytics = analytics
         self.pageSize = pageSize
         self.posProductsOnly = posProductsOnly
+        self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 
     var debounceStrategy: SearchDebounceStrategy {
@@ -109,6 +113,9 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     }
 
     func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
+        // When FTS is disabled, return nil to fall back to LIKE-based fetchProducts()
+        guard isFTSSearchEnabled else { return nil }
+
         let startTime = Date()
         let offset = (pageNumber - 1) * pageSize
 

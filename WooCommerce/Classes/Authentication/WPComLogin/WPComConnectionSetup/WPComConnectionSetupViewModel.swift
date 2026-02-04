@@ -47,7 +47,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     private let storeName: String
-    private var handler: WPComConnectionSetupHandlerProtocol
+    private let handler: WPComConnectionSetupHandlerProtocol
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
     private let onUpdatePlugin: () -> Void

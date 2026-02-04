@@ -21,9 +21,14 @@ extension AgeRangeVerificationCoordinator {
 
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
     private let featureFlagService: FeatureFlagService
+    private let ageRangeVerificationService: AgeRangeVerificationServiceProtocol
 
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        ageRangeVerificationService: AgeRangeVerificationServiceProtocol = ServiceLocator.ageRangeVerificationService
+    ) {
         self.featureFlagService = featureFlagService
+        self.ageRangeVerificationService = ageRangeVerificationService
     }
 
     /// Triggers the age range verification flow.
@@ -40,6 +45,15 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
+        performAgeVerification(hostingWindow: hostingWindow, onResult: onResult)
+    }
+}
+
+private extension AgeRangeVerificationCoordinator {
+    func performAgeVerification(
+        hostingWindow: UIWindow,
+        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
+    ) {
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
             // Allow flow to continue if we can't present the dialogue.
@@ -47,18 +61,24 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
-        ServiceLocator.ageRangeVerificationService.verifyAgeRange(
+        ageRangeVerificationService.verifyAgeRange(
             in: anchor,
             minimumAge: Constants.minimumTOSRequiredAge
         ) { result in
             let decision: AppAccessDescision
             switch result {
-            case .eligible:
+            case let .eligible(significantAppChangeApprovalRequired, isMinor):
+                // TODO: if isMinor && significantAppChangeApprovalRequired, trigger app age rating change check
+                // and parental consent flow (separate coordinator) before allowing access.
+                DDLogInfo(
+                    "Age is eligible. significantAppChangeApprovalRequired: \(significantAppChangeApprovalRequired), isMinor: \(isMinor)"
+                )
                 decision = .allow
             case .ineligible:
                 decision = .denyAndLogout
             case .declinedSharing,
                  .featureUnavailable,
+                 .ineligibleForAgeFeatures,
                  .invalidUIState,
                  .sdkError,
                  .unknown:

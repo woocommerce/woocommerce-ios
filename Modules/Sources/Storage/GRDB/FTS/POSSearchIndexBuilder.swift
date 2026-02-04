@@ -40,6 +40,11 @@ public struct POSSearchIndexBuilder {
     }
 
     /// Returns the total count of results matching the search term.
+    /// - Parameters:
+    ///   - siteID: The site ID to search within
+    ///   - term: The search term
+    ///   - db: The database to search in
+    /// - Returns: Total count of matching results
     public static func searchCount(siteID: Int64, term: String, in db: Database) throws -> Int {
         let ftsQuery = buildFTSQuery(from: term)
         guard !ftsQuery.isEmpty else { return 0 }
@@ -54,6 +59,10 @@ public struct POSSearchIndexBuilder {
 
     /// Checks if the FTS index needs to be rebuilt for a site.
     /// Compares the index entry count against the total eligible products and variations.
+    /// - Parameters:
+    ///   - siteID: The site ID to check
+    ///   - db: The database to check in
+    /// - Returns: True if rebuild is needed
     public static func needsRebuild(for siteID: Int64, in db: Database) throws -> Bool {
         let productCount = try PersistedProduct
             .posEligibleProductsRequest(siteID: siteID)
@@ -73,6 +82,9 @@ public struct POSSearchIndexBuilder {
     }
 
     /// Clears the FTS index for a site.
+    /// - Parameters:
+    ///   - siteID: The site ID to clear
+    ///   - db: The database (must be called within a write transaction)
     public static func clearIndex(for siteID: Int64, in db: Database) throws {
         try db.execute(sql: "DELETE FROM pos_search_fts WHERE siteID = ?", arguments: [siteID])
     }

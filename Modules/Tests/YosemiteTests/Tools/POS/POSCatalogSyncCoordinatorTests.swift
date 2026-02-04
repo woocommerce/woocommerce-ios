@@ -1534,17 +1534,13 @@ extension POSCatalogSyncCoordinatorTests {
 
         let sut = createSyncCoordinator()
 
-        // When: Start background rebuild
+        // When: Start background rebuild and wait for completion
         await sut.startBackgroundFTSRebuildIfNeeded(for: sampleSiteID)
+        await sut.awaitBackgroundFTSRebuild(for: sampleSiteID)
 
-        // Then: FTS index is eventually populated
-        var results: [POSSearchIndex] = []
-        for _ in 0..<100 {
-            results = try await grdbManager.databaseConnection.read { db in
-                try POSSearchIndexBuilder.search(siteID: sampleSiteID, term: "Test", in: db)
-            }
-            if !results.isEmpty { break }
-            try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        // Then: FTS index is populated
+        let results = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: sampleSiteID, term: "Test", in: db)
         }
         #expect(results.count == 1)
     }

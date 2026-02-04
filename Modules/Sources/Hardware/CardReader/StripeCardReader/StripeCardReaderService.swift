@@ -641,6 +641,7 @@ extension StripeCardReaderService: CardReaderService {
             guard let self = self,
                   let reconnectionCancelable = self.reconnectionCancelable,
                   !reconnectionCancelable.completed else {
+                self?.reconnectionCancelable = nil
                 self?.reconnectionStateSubject.send(.idle)
                 return promise(.success(()))
             }

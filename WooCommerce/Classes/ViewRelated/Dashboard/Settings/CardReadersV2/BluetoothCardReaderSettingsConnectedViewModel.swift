@@ -28,6 +28,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     private(set) var readerDisconnectInProgress: Bool = false
 
     private(set) var readerReconnectionInProgress: Bool = false
+    private(set) var readerReconnectionCancellationInProgress: Bool = false
     private var reconnectingReader: CardReader?
 
     private var subscriptions = Set<AnyCancellable>()
@@ -164,6 +165,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
                         self.reconnectingReader = reader
                     case .succeeded, .failed, .idle:
                         self.readerReconnectionInProgress = false
+                        self.readerReconnectionCancellationInProgress = false
                         self.reconnectingReader = nil
                     }
                     self.updateProperties()
@@ -264,6 +266,9 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     /// Dispatch a request to cancel an in-progress reconnection attempt
     ///
     func cancelReconnection() {
+        readerReconnectionCancellationInProgress = true
+        didUpdate?()
+
         let action = CardPresentPaymentAction.cancelReconnection { _ in }
         ServiceLocator.stores.dispatch(action)
     }
@@ -298,7 +303,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
         if !didGetConnectedReaders {
             newShouldShow = .isUnknown
-        } else if connectedReaders.isEmpty && !readerReconnectionInProgress {
+        } else if connectedReaders.isEmpty && !readerReconnectionInProgress && !readerReconnectionCancellationInProgress {
             newShouldShow = .isFalse
         } else if connectedReaders.includesTapToPayReader() {
             /// This screen only supports management of Bluetooth readers, and will have started disconnection

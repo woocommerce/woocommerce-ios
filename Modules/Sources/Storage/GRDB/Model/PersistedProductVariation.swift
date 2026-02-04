@@ -89,15 +89,18 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
 public extension PersistedProductVariation {
     /// Returns a request for non-downloadable variations of a parent product, ordered by ID
     static func posVariationsRequest(siteID: Int64, parentProductID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
-        return PersistedProductVariation
-            .filter(Columns.siteID == siteID)
+        return baseQuery(siteID: siteID)
             .filter(Columns.productID == parentProductID)
-            .filter(Columns.downloadable == false)
             .order(Columns.id)
     }
 
     /// Returns a request for all non-downloadable variations for a site
     static func posAllVariationsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return baseQuery(siteID: siteID)
+    }
+
+    /// Base query for POS-supported variations (non-downloadable) for a given site
+    private static func baseQuery(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation
             .filter(Columns.siteID == siteID)
             .filter(Columns.downloadable == false)

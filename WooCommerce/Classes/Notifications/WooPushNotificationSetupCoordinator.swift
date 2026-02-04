@@ -119,8 +119,10 @@ private extension WooPushNotificationSetupCoordinator {
         return WPComConnectionSetupViewModel(
             storeName: site.name,
             handler: handler,
-            onDismiss: { [navigationController] in
-                navigationController.dismiss(animated: true)
+            onDismiss: { [weak self, navigationController] in
+                navigationController.dismiss(animated: true) {
+                    self?.cleanUp()
+                }
             },
             onGoToStore: { [weak self] in
                 self?.goToStore()
@@ -139,9 +141,12 @@ private extension WooPushNotificationSetupCoordinator {
     }
 
     func openPluginUpdateURL() {
-        guard let site = stores.sessionManager.defaultSite else { return }
+        guard let site = stores.sessionManager.defaultSite,
+              let baseURL = URL(string: site.url) else { return }
 
-        let pluginUpdateURL = site.url + "/wp-admin/plugins.php?s=woocommerce&plugin_status=upgrade"
+        let pluginUpdateURL = baseURL
+            .appendingPathComponent("wp-admin/plugins.php")
+            .absoluteString + "?s=woocommerce&plugin_status=upgrade"
         guard let url = URL(string: pluginUpdateURL) else { return }
 
         UIApplication.shared.open(url)

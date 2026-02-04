@@ -6,6 +6,7 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var width: CGFloat = 0
+    @State private var isCancelling = false
 
     init(cancelReconnection: @escaping () -> Void) {
         self.cancelReconnection = cancelReconnection
@@ -31,12 +32,13 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
                 .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing))
 
             Button {
+                isCancelling = true
                 cancelReconnection()
             } label: {
                 Text(viewModel.cancelReconnectionButtonTitle)
                     .minimumScaleFactor(1)
             }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isCancelling))
             .frame(width: width * 0.5)
             Spacer().frame(minHeight: 0)
         }

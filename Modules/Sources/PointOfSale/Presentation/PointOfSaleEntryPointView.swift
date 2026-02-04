@@ -18,6 +18,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.POSBookingServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -26,6 +27,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
+    @State private var bookingsModel: POSBookingsModel?
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -72,7 +74,8 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          services: POSDependencyProviding,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         bookingService: POSBookingServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -140,6 +143,25 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencySettingsProvider: services.currency,
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+
+        // Create bookings model if booking service is provided
+        if let bookingService {
+            let bookingListController = POSBookingListController(
+                siteID: siteID,
+                bookingService: bookingService,
+                currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings)
+            )
+            self.bookingsModel = POSBookingsModel(
+                bookingListController: bookingListController,
+                siteID: siteID,
+                bookingService: bookingService,
+                cardPaymentFacade: cardPresentPaymentService,
+                receiptSender: receiptSender
+            )
+        } else {
+            self.bookingsModel = nil
+        }
+
         self.siteTimezone = siteTimezone
         self.services = services
         self.siteID = siteID
@@ -188,6 +210,7 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
+        .optionalEnvironment(bookingsModel)
         .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .onAppear {
@@ -231,3 +254,17 @@ public struct PointOfSaleEntryPointView: View {
 }
 
 #endif
+
+// MARK: - Optional Environment
+
+private extension View {
+    /// Conditionally applies an environment value if present
+    @ViewBuilder
+    func optionalEnvironment<T: Observable & AnyObject>(_ value: T?) -> some View {
+        if let value {
+            environment(value)
+        } else {
+            self
+        }
+    }
+}

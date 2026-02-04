@@ -408,6 +408,12 @@ extension WooAnalyticsEvent {
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
+        // MARK: - Bookings Analytics Events
+
+        static func bookingsMenuItemTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsMenuItemTapped, properties: [:])
+        }
+
         // MARK: - Orders Analytics Events
 
         static func ordersMenuItemTapped() -> WooAnalyticsEvent {

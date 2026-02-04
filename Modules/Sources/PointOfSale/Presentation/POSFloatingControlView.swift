@@ -14,6 +14,7 @@ struct POSFloatingControlView: View {
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
+    @State private var showBookings: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -61,6 +62,9 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
+        .posFullScreenCover(isPresented: $showBookings) {
+            POSBookingsContainerView(isPresented: $showBookings)
+        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -98,6 +102,18 @@ private extension POSFloatingControlView {
                 Label(
                     title: { Text(Localization.orders) },
                     icon: { Image(systemName: "text.document") }
+                )
+            }
+        }
+
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) {
+            Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
+                showBookings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.bookings) },
+                    icon: { Image(systemName: "calendar") }
                 )
             }
         }
@@ -154,6 +170,12 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.settings.button.title",
             value: "Settings",
             comment: "The title of the menu button to access Point of Sale settings."
+        )
+
+        static let bookings = NSLocalizedString(
+            "pointOfSale.floatingButtons.bookings.button.title",
+            value: "Bookings",
+            comment: "The title of the menu button to access Point of Sale bookings."
         )
     }
 }

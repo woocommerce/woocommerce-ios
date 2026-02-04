@@ -1036,7 +1036,7 @@ extension StripeCardReaderService: MobileReaderDelegate {
     // MARK: - Reconnection delegate methods
 
     public func reader(_ reader: Reader, didStartReconnect cancelable: Cancelable, disconnectReason: DisconnectReason) {
-        DDLogInfo("💳 Reader started auto-reconnection, reason: \(disconnectReason)")
+        DDLogInfo("💳 Reader started auto-reconnection, reason: \(Terminal.stringFromDisconnectReason(disconnectReason))")
         reconnectionCancelable = cancelable
         // Clear connected readers so the UI shows reconnecting state instead of connected
         connectedReadersSubject.send([])

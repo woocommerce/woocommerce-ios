@@ -535,90 +535,84 @@ struct POSSearchIndexBuilderTests {
         #expect(afterResults.first?.itemID == 2001)
     }
 
-    // MARK: - tokenize Tests
+    // MARK: - Tokenization Tests
 
-    @Test("tokenize splits on whitespace")
-    func test_tokenize_splits_on_whitespace() {
-        let result = POSSearchIndexBuilder.tokenize("hello world")
-        #expect(result == ["hello", "world"])
-    }
+    @Test("search tokenization matches FTS5 unicode61 behavior")
+    func test_search_tokenization_matches_fts5_unicode61() async throws {
+        // Given: A product with complex text matching FTS5 unicode61 docs example
+        // FTS5 unicode61 tokenizes this as: v1, 2, grey, ⅲ, colour, don, t, jump, 你好世界, straße, ...
+        // Key behaviors: CJK kept together, splits on punctuation/apostrophe, case-insensitive
+        try await grdbManager.databaseConnection.write { db in
+            try insertProduct(id: 2100,
+                              name: "🤦🏼‍♂️ v1.2 Grey Ⅲ ColOUR! Don't jump - 🇫🇮你好世界 Straße",
+                              productTypeKey: "simple",
+                              in: db)
+        }
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
 
-    @Test("tokenize keeps alphanumeric sequences together")
-    func test_tokenize_keeps_alphanumerics_together() {
-        let result = POSSearchIndexBuilder.tokenize("abc123 def456")
-        #expect(result == ["abc123", "def456"])
-    }
+        // Then: Searching for individual tokens finds the product
+        // "v1" - alphanumeric sequence before decimal
+        var count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "v1", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize splits on punctuation")
-    func test_tokenize_splits_on_punctuation() {
-        let result = POSSearchIndexBuilder.tokenize("t-shirt men's wi-fi")
-        #expect(result == ["t", "shirt", "men", "s", "wi", "fi"])
-    }
+        // "2" - number after decimal (separate token)
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "2", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize splits CJK ideographs individually")
-    func test_tokenize_splits_cjk_ideographs() {
-        // Chinese characters should be split individually to match FTS5 unicode61
-        let result = POSSearchIndexBuilder.tokenize("中文测试")
-        #expect(result == ["中", "文", "测", "试"])
-    }
+        // "colour" - case insensitive
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "colour", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize handles mixed CJK and Latin")
-    func test_tokenize_handles_mixed_cjk_and_latin() {
-        let result = POSSearchIndexBuilder.tokenize("hello中文world")
-        #expect(result == ["hello", "中", "文", "world"])
-    }
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "COLOUR", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize keeps Japanese hiragana and katakana as words")
-    func test_tokenize_keeps_japanese_kana_as_words() {
-        // Hiragana and katakana are NOT ideographic, so they stay together
-        let result = POSSearchIndexBuilder.tokenize("こんにちは カタカナ")
-        #expect(result == ["こんにちは", "カタカナ"])
-    }
+        // "don" and "t" - apostrophe splits words
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "don", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize splits Japanese kanji individually")
-    func test_tokenize_splits_japanese_kanji() {
-        // Kanji ARE ideographic, so they split
-        let result = POSSearchIndexBuilder.tokenize("日本語")
-        #expect(result == ["日", "本", "語"])
-    }
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "t", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize keeps Korean hangul as words")
-    func test_tokenize_keeps_korean_hangul_as_words() {
-        // Korean hangul is NOT ideographic
-        let result = POSSearchIndexBuilder.tokenize("안녕하세요")
-        #expect(result == ["안녕하세요"])
-    }
+        // "你好世界" - CJK characters kept together as single token
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "你好世界", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize treats emoji as separators")
-    func test_tokenize_treats_emoji_as_separators() {
-        let result = POSSearchIndexBuilder.tokenize("hello😀world")
-        #expect(result == ["hello", "world"])
-    }
+        // "你好" - prefix of CJK token works
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "你好", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize handles empty string")
-    func test_tokenize_handles_empty_string() {
-        let result = POSSearchIndexBuilder.tokenize("")
-        #expect(result == [])
-    }
+        // "好世" - middle of CJK token does NOT match (not a prefix)
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "好世", in: db)
+        }
+        #expect(count == 0)
 
-    @Test("tokenize handles only separators")
-    func test_tokenize_handles_only_separators() {
-        let result = POSSearchIndexBuilder.tokenize("   ---   ")
-        #expect(result == [])
-    }
+        // "straße" - German with ß kept together
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "straße", in: db)
+        }
+        #expect(count == 1)
 
-    @Test("tokenize handles Arabic script")
-    func test_tokenize_handles_arabic() {
-        // Arabic is alphanumeric, not ideographic
-        let result = POSSearchIndexBuilder.tokenize("مرحبا")
-        #expect(result == ["مرحبا"])
-    }
-
-    @Test("tokenize handles Hebrew script")
-    func test_tokenize_handles_hebrew() {
-        // Hebrew is alphanumeric, not ideographic
-        let result = POSSearchIndexBuilder.tokenize("שלום")
-        #expect(result == ["שלום"])
+        count = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "strasse", in: db)
+        }
+        #expect(count == 0) // no ß normalization
     }
 
 }

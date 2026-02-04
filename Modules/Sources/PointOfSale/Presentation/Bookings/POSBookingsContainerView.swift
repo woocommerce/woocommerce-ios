@@ -49,6 +49,15 @@ struct POSBookingsContainerView: View {
                 .task {
                     try? await controller.collectCardPayment()
                 }
+                .posSheet(isPresented: $showingEmailReceipt) {
+                    if let booking = selectedBooking, let orderID = booking.orderID {
+                        POSSendReceiptView(
+                            isShowingSendReceiptView: $showingEmailReceipt
+                        ) { email in
+                            try await bookingsModel.sendReceipt(orderID: orderID, email: email)
+                        }
+                    }
+                }
             }
         }
         .posFullScreenCover(isPresented: $showingCashPayment) {
@@ -66,14 +75,14 @@ struct POSBookingsContainerView: View {
                         showingEmailReceipt = true
                     }
                 )
-            }
-        }
-        .posSheet(isPresented: $showingEmailReceipt) {
-            if let booking = selectedBooking, let orderID = booking.orderID {
-                POSSendReceiptView(
-                    isShowingSendReceiptView: $showingEmailReceipt
-                ) { email in
-                    try await bookingsModel.sendReceipt(orderID: orderID, email: email)
+                .posSheet(isPresented: $showingEmailReceipt) {
+                    if let orderID = booking.orderID {
+                        POSSendReceiptView(
+                            isShowingSendReceiptView: $showingEmailReceipt
+                        ) { email in
+                            try await bookingsModel.sendReceipt(orderID: orderID, email: email)
+                        }
+                    }
                 }
             }
         }

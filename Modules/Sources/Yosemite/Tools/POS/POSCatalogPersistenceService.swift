@@ -3,7 +3,7 @@ import Foundation
 import Storage
 import GRDB
 
-public protocol POSCatalogPersistenceServiceProtocol {
+protocol POSCatalogPersistenceServiceProtocol {
     /// Clears existing data and persists new catalog data
     /// - Parameters:
     ///   - catalog: The catalog to persist
@@ -24,14 +24,14 @@ public protocol POSCatalogPersistenceServiceProtocol {
     func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
 }
 
-public final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
+final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     private let grdbManager: GRDBManagerProtocol
 
-    public init(grdbManager: GRDBManagerProtocol) {
+    init(grdbManager: GRDBManagerProtocol) {
         self.grdbManager = grdbManager
     }
 
-    public func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
         let catalog = filterOrphanedVariations(from: catalog)
@@ -93,13 +93,21 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
 
         try await grdbManager.databaseConnection.read { db in
             let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
             let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
             let indexCount = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [siteID]) ?? 0
-            DDLogInfo("Persisted \(productCount) products, \(variationCount) variations, \(indexCount) FTS entries")
+
+            DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
+                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
+                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes, " +
+                      "\(indexCount) FTS entries")
         }
     }
 
-    public func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) updated products, " +
                   "\(catalog.variations.count) updated variations, " +
                   "\(catalog.productsToRemove.count) products to remove")
@@ -115,7 +123,7 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
                                                           siteID: siteID,
                                                           in: db)
 
-                // Delete attributes for updated products
+                // Delete attributes for updated products, the remaining set will be recreated later in the save
                 try PersistedProductAttribute
                     .filter(PersistedProductAttribute.Columns.productID == product.productID)
                     .deleteAll(db)
@@ -149,7 +157,7 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
                                                           siteID: siteID,
                                                           in: db)
 
-                // Delete attributes for updated variations
+                // Delete attributes for updated variations, the remaining set will be recreated later in the save
                 try PersistedProductVariationAttribute
                     .filter(PersistedProductVariationAttribute.Columns.productVariationID == variation.id)
                     .deleteAll(db)
@@ -199,7 +207,7 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
         DDLogInfo("✅ Incremental catalog persistence complete with inline FTS updates")
     }
 
-    public func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+    func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
         DDLogInfo("🗑️ Deleting \(productIDs.count) products and \(variationIDs.count) variations from catalog")
 
         try await grdbManager.databaseConnection.write { db in

@@ -220,6 +220,7 @@ private extension UPSTermsView {
     UPSTermsView(viewModel: UPSTermsViewModel(siteID: 123,
                                               originAddress: .init(company: "A8C",
                                                                    name: "John Doe",
+                                                                   email: "test@mail.com",
                                                                    phone: "09381734543",
                                                                    country: "US",
                                                                    state: "New York",

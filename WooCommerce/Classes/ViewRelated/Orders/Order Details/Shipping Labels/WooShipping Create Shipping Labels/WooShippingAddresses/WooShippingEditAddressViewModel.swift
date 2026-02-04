@@ -4,6 +4,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 import Combine
+import class WordPressShared.EmailFormatValidator
 
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
@@ -235,7 +236,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             newPostalCode.isEmpty ? Localization.Validation.postalCode : nil
         })
         self.email = WooShippingAddressField(type: .email, value: email, required: true, validate: { newEmail in
-            newEmail.isEmpty ? Localization.Validation.email : nil
+            (newEmail.isEmpty || !EmailFormatValidator.validate(string: newEmail)) ? Localization.Validation.email : nil
         })
         let phoneNumberRequired = Self.phoneNumberRequired(addressType: type,
                                                            selectedCountryCode: country,
@@ -353,6 +354,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     func proceedWithInputAddress() {
         let address = WooShippingAddress(company: company.value,
                                          name: name.value,
+                                         email: email.value,
                                          phone: phone.value,
                                          country: country.value,
                                          state: state.value,
@@ -368,6 +370,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     func remotelyValidateAddress() async {
         let addressToValidate = WooShippingAddress(company: company.value,
                                                    name: name.value,
+                                                   email: email.value,
                                                    phone: phone.value,
                                                    country: country.value,
                                                    state: state.value,

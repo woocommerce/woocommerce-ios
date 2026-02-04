@@ -353,6 +353,7 @@ let package = Package(
 enum XcodeTargetNames {
     static let fakes = "Fakes"
     static let notificationExtension = "NotificationExtension"
+    static let notificationServiceExtension = "NotificationServiceExtension"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
     static let wooCommerce = "WooCommerce"
     static let wooCommerceScreenshots = "WooCommerceScreenshots"
@@ -367,6 +368,7 @@ enum XcodeSupport {
     static var products: [Product] {
         [
             XcodeTargetNames.notificationExtension,
+            XcodeTargetNames.notificationServiceExtension,
             XcodeTargetNames.storeWidgetsExtension,
             XcodeTargetNames.wooCommerce,
             XcodeTargetNames.wooCommerceScreenshots,
@@ -387,6 +389,10 @@ enum XcodeSupport {
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
+            ),
+            .xcodeTarget(
+                XcodeTargetNames.notificationServiceExtension,
+                dependencies: []
             ),
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,

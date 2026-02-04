@@ -237,7 +237,8 @@ private extension POSTabCoordinator {
             let refundsService = POSRefundsService(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
-                                                   appPasswordSupportState: isAppPasswordSupported)
+                                                   appPasswordSupportState: isAppPasswordSupported,
+                                                   currencySettings: currencySettings)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,

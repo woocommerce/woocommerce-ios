@@ -12,10 +12,6 @@ struct POSOrderListEmptyViewModel: POSListEmptyViewModelProtocol {
         isSearching ? Localization.emptyOrdersSearchSubtitle : Localization.emptyOrdersSubtitle
     }
 
-    var hint: String? {
-        isSearching ? Localization.emptyOrdersSearchHint : nil
-    }
-
     var buttonTitle: String? {
         isSearching ? nil : Localization.emptyOrdersButtonTitle
     }
@@ -51,14 +47,8 @@ private enum Localization {
     )
 
     static let emptyOrdersSearchSubtitle = NSLocalizedString(
-        "pos.orderListView.emptyOrdersSearchSubtitle.1",
-        value: "We couldn't find any orders with that name.",
+        "pos.orderListView.emptyOrdersSearchSubtitle.2",
+        value: "We couldn't find any orders with that name. Try adjusting your search term.",
         comment: "Subtitle appearing when order search returns no results."
-    )
-
-    static let emptyOrdersSearchHint = NSLocalizedString(
-        "pos.orderListView.emptyOrdersSearchHint",
-        value: "Try adjusting your search term.",
-        comment: "Hint text suggesting to modify search terms when no orders are found."
     )
 }

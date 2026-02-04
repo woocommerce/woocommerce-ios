@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
@@ -508,6 +509,7 @@ enum RefundModalState: Identifiable, Equatable {
     case confirmation(POSRefundReviewData)
     case processing(POSRefundReviewData)
     case success(POSRefundReviewData)
+    case error(POSRefundReviewData)
 
     var id: String {
         switch self {
@@ -517,6 +519,7 @@ enum RefundModalState: Identifiable, Equatable {
         case .confirmation: return "confirmation"
         case .processing: return "processing"
         case .success: return "success"
+        case .error: return "error"
         }
     }
 }
@@ -610,6 +613,18 @@ private extension POSOrderDetailsView {
                     refundModalState = nil
                 }
             )
+        case .error(let reviewData):
+            POSRefundErrorView(
+                onRetry: {
+                    refundModalState = .confirmation(reviewData)
+                },
+                onCancel: {
+                    refundModalState = nil
+                },
+                onClose: {
+                    refundModalState = nil
+                }
+            )
         }
     }
 
@@ -624,8 +639,8 @@ private extension POSOrderDetailsView {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             refundModalState = .success(reviewData)
         } catch {
-            // TODO: Handle error - show error state
-            refundModalState = .confirmation(reviewData)
+            DDLogError("⛔️ Failed to process refund: \(error)")
+            refundModalState = .error(reviewData)
         }
     }
 }

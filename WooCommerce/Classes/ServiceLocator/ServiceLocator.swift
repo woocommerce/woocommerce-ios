@@ -133,6 +133,13 @@ final class ServiceLocator {
     ///
     private static var _ageRangeVerificationService: AgeRangeVerificationServiceProtocol = AgeRangeVerificationService()
 
+    /// Age rating change detector
+    ///
+    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+        defaults: .standard,
+        provider: StoreKitAgeRatingProvider()
+    )
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -339,6 +346,10 @@ final class ServiceLocator {
         _ageRangeVerificationService
     }
 
+    static var ageRatingChangeDetector: AgeRatingChangeDetector {
+        _ageRatingChangeDetector
+    }
+
     /// Provides access point to the `POSCatalogSyncCoordinator`.
     /// Returns nil if feature flag is disabled or user is not authenticated.
     ///
@@ -483,6 +494,14 @@ extension ServiceLocator {
         }
 
         _ageRangeVerificationService = mock
+    }
+
+    static func setAgeRatingChangeDetector(_ mock: AgeRatingChangeDetector) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _ageRatingChangeDetector = mock
     }
 
     static func setConnectivityObserver(_ mock: ConnectivityObserver) {

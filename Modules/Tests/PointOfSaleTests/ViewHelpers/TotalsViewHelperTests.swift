@@ -194,7 +194,7 @@ struct TotalsViewHelperTests {
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.preparingReader),
         (CardPresentPaymentReaderConnectionStatus.reconnecting(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.paymentError)
     ])
-    func test_shouldShowReconnectingMessage_returns_true_when_reconnecting_and_no_card_payment_ongoing(
+    func test_shouldShowReconnectingMessage_returns_true_when_reconnecting_and_payment_not_actively_processing(
         readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
         paymentState: PointOfSaleCardPaymentState) {
             #expect(TotalsViewHelper().shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus,

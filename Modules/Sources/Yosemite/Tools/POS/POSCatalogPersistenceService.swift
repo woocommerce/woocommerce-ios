@@ -205,6 +205,21 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         }
 
         DDLogInfo("✅ Incremental catalog persistence complete with inline FTS updates")
+
+        try await grdbManager.databaseConnection.read { db in
+            let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
+            let productImageCount = try PersistedProductImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.filter { $0.siteID == siteID }.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.filter { $0.siteID == siteID }.fetchCount(db)
+            let indexCount = try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [siteID]) ?? 0
+
+            DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
+                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
+                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes, " +
+                      "\(indexCount) FTS entries")
+        }
     }
 
     func deleteProducts(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {

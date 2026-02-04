@@ -14,7 +14,6 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
-            Spacer().frame(minHeight: 0)
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: Constants.spinnerDimension, height: Constants.spinnerDimension)
@@ -40,7 +39,6 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isCancelling))
             .frame(width: width * 0.5)
-            Spacer().frame(minHeight: 0)
         }
         .frame(maxWidth: .infinity)
         .measureWidth({ containerWidth in

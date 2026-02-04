@@ -3,13 +3,15 @@ import Foundation
 
 final class PushNotificationRegistrationState {
     private let defaults: UserDefaults
+    private let log: ((String) -> Void)?
     private let siteIDsRegisteredForWooPNsSubject: CurrentValueSubject<[Int64]?, Never>
 
-    init(defaults: UserDefaults) {
+    init(defaults: UserDefaults, log: ((String) -> Void)? = nil) {
         self.defaults = defaults
+        self.log = log
 
-        let storedSiteIDsString: String? = defaults.object(
-            forKey: .siteIDsRegisteredForWooPushNotifications
+        let storedSiteIDsString = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
         )
 
         let storedSiteIDs = storedSiteIDsString?
@@ -22,30 +24,30 @@ final class PushNotificationRegistrationState {
     /// Apple's Push Notifications DeviceToken
     var deviceToken: String? {
         get {
-            defaults.object(forKey: .deviceToken)
+            defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
         }
         set {
-            defaults.set(newValue, forKey: .deviceToken)
+            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
         }
     }
 
     /// WordPress.com Device Identifier
     var deviceID: String? {
         get {
-            defaults.object(forKey: .deviceID)
+            defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
         }
         set {
-            defaults.set(newValue, forKey: .deviceID)
+            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
         }
     }
 
     /// Self driven push notification token
     var wooPushNotificationToken: String? {
         get {
-            defaults.object(forKey: .wooPushNotificationToken)
+            defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
         }
         set {
-            defaults.set(newValue, forKey: .wooPushNotificationToken)
+            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
         }
     }
 
@@ -97,12 +99,28 @@ final class PushNotificationRegistrationState {
 
     func applyNewDeviceToken(_ newToken: String) {
         if let existingDeviceToken = deviceToken, existingDeviceToken != newToken {
-            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: existingDeviceToken))] NEW: [\(newToken)]")
+            log?("📱 Device Token Changed! OLD: [\(existingDeviceToken)] NEW: [\(newToken)]")
         } else {
-            DDLogInfo("📱 Device Token Received: [\(newToken)]")
+            log?("📱 Device Token Received: [\(newToken)]")
         }
 
         deviceToken = newToken
+    }
+}
+
+/// WPCom push notification suppression
+extension PushNotificationRegistrationState {
+    /// Returns `true` when the notification should be suppressed because
+    /// the site already receives Woo-driven push notifications.
+    ///
+    /// Both `blog` (site ID) and `note_id` must be present in `userInfo`
+    /// and the site must be registered for Woo push notifications.
+    func shouldSuppressWPComNotification(userInfo: [AnyHashable: Any]) -> Bool {
+        guard let siteID = userInfo["blog"] as? Int64,
+              let _ = userInfo["note_id"] as? Int64 else {
+            return false
+        }
+        return isSiteRegisteredForWooPNs(siteID)
     }
 }
 
@@ -135,7 +153,7 @@ private extension PushNotificationRegistrationState {
 
         defaults.set(
             newValue.map { "\($0)" }.joined(separator: ","),
-            forKey: .siteIDsRegisteredForWooPushNotifications
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
         )
 
         siteIDsRegisteredForWooPNsSubject.send(newValue)

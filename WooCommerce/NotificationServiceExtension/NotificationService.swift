@@ -18,24 +18,11 @@ final class NotificationService: UNNotificationServiceExtension {
 
 private extension NotificationService {
     func shouldSuppressNotifications(with userInfo: [AnyHashable: Any]) -> Bool {
-        let registeredSites = UserDefaults(suiteName: Constants.appGroupID)?.string(forKey: Constants.registeredIDsKey)?
-            .components(separatedBy: ",")
-            .compactMap { Int64($0) }
-
-        if let siteID = userInfo[Constants.APNSKey.siteID] as? Int64,
-           let _ = userInfo[Constants.APNSKey.noteID] as? Int64,
-           registeredSites?.contains(siteID) == true {
-            return true
+        guard let defaults = UserDefaults(suiteName: PushNotificationSharedConstants.appGroupID) else {
+            return false
         }
-        return false
-    }
 
-    enum Constants {
-        enum APNSKey {
-            static let siteID = "blog"
-            static let noteID = "note_id"
-        }
-        static let appGroupID = "group.com.automattic.woocommerce"
-        static let registeredIDsKey = "siteIDsRegisteredForWooPushNotifications"
+        let registrationState = PushNotificationRegistrationState(defaults: defaults)
+        return registrationState.shouldSuppressWPComNotification(userInfo: userInfo)
     }
 }

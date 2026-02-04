@@ -124,7 +124,7 @@ final class PushNotificationsManager: PushNotesManager {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
-        self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults)
+        self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults, log: { DDLogInfo($0) })
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
         self.selfDrivenPushNotificationEnabled = {

@@ -969,6 +969,7 @@
 		2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */; };
 		2D5389242F278E17006A6618 /* PushNotificationRegistrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */; };
 		2D5389262F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */; };
+		DE0BE0C12F333BC0009CE891 /* NotificationServiceSuppressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0BE0C02F333BC0009CE891 /* NotificationServiceSuppressionTests.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
@@ -2186,6 +2187,9 @@
 		DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */; };
 		DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */; };
 		DE0A2EB1281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EB0281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift */; };
+		DE0BE0BC2F333B9B009CE891 /* PushNotificationSharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */; };
+		DE0BE0BD2F333BA6009CE891 /* PushNotificationSharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */; };
+		DE0BE0BE2F333BB0009CE891 /* PushNotificationRegistrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */; };
 		DE0CDC942B1ECFF000C98800 /* LocalFileUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0CDC932B1ECFF000C98800 /* LocalFileUploader.swift */; };
 		DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */; };
 		DE126D0D26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0C26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift */; };
@@ -3761,6 +3765,7 @@
 		2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinator.swift; sourceTree = "<group>"; };
 		2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationRegistrationState.swift; sourceTree = "<group>"; };
 		2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationRegistrationStateTests.swift; sourceTree = "<group>"; };
+		DE0BE0C02F333BC0009CE891 /* NotificationServiceSuppressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceSuppressionTests.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
@@ -5018,6 +5023,7 @@
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
 		DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModel.swift; sourceTree = "<group>"; };
 		DE0A2EB0281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModelTests.swift; sourceTree = "<group>"; };
+		DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSharedConstants.swift; sourceTree = "<group>"; };
 		DE0CDC932B1ECFF000C98800 /* LocalFileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileUploader.swift; sourceTree = "<group>"; };
 		DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationErrorRow.swift; sourceTree = "<group>"; };
 		DE126D0C26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -9579,6 +9585,7 @@
 		B5718D6321B56B3F0026C9F0 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				DE0BE0C02F333BC0009CE891 /* NotificationServiceSuppressionTests.swift */,
 				2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */,
 				B5718D6421B56B3F0026C9F0 /* PushNotificationsManagerTests.swift */,
 				DA25ADDE2C87403900AE81FE /* PushNotificationTests.swift */,
@@ -9768,6 +9775,7 @@
 				2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */,
 				01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */,
 				B555530E21B57DE700449E71 /* ApplicationAdapter.swift */,
+				DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */,
 				B56C721121B5B44000E5E85B /* PushNotificationsConfiguration.swift */,
 				B5BBD6DD21B1703600E3207E /* PushNotificationsManager.swift */,
 				26132B3B2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift */,
@@ -14992,6 +15000,7 @@
 				03E471C8293A3076001A58AD /* CardPresentModalTapToPayConnectingToReader.swift in Sources */,
 				EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */,
 				EE5B5BC72AB8379C009BCBD6 /* AddProductWithAIContainerViewModel.swift in Sources */,
+				DE0BE0BC2F333B9B009CE891 /* PushNotificationSharedConstants.swift in Sources */,
 				0365986529AF942700F297D3 /* PaymentSettingsFlowHint.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
 				02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */,
@@ -15888,6 +15897,7 @@
 				DE02ABC02B57D333008E0AC4 /* BlazeConfirmPaymentViewModelTests.swift in Sources */,
 				B9C4AB2B28003481007008B8 /* MockPaymentsPluginsDataProvider.swift in Sources */,
 				57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */,
+				DE0BE0C12F333BC0009CE891 /* NotificationServiceSuppressionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15915,6 +15925,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE0BE0BD2F333BA6009CE891 /* PushNotificationSharedConstants.swift in Sources */,
+				DE0BE0BE2F333BB0009CE891 /* PushNotificationRegistrationState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

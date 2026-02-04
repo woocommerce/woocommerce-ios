@@ -240,6 +240,13 @@ private extension POSTabCoordinator {
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    currencySettings: currencySettings)
 
+            // Create booking service for POS bookings feature
+            let bookingService = POSBookingService(siteID: siteID,
+                                                   credentials: credentials,
+                                                   selectedSite: defaultSitePublisher,
+                                                   appPasswordSupportState: isAppPasswordSupported,
+                                                   stores: storesManager)
+
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
                                                       selectedSite: defaultSitePublisher,
@@ -297,7 +304,8 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor,
-                    itemProvider: itemProvider
+                    itemProvider: itemProvider,
+                    bookingService: bookingService
                 )
 
                 let hostingController = UIHostingController(rootView: posView)

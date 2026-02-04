@@ -641,7 +641,6 @@ extension StripeCardReaderService: CardReaderService {
             guard let self = self,
                   let reconnectionCancelable = self.reconnectionCancelable,
                   !reconnectionCancelable.completed else {
-                DDLogInfo("💳 Reconnection cancellation: no active reconnection in progress")
                 self?.reconnectionCancelable = nil
                 self?.reconnectionStateSubject.send(.idle)
                 return promise(.success(()))

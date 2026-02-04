@@ -192,6 +192,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
         .store(in: &cancellables)
 
+        cancelReconnectionIfNeeded()
+
         Task {
             await preflightController.start(discoveryMethod: discoveryMethod)
         }
@@ -209,6 +211,14 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
+
+    /// Cancels an automatic card reader reconnection since a new payment cannot begin while a reconnection is ongoing
+    ///
+    func cancelReconnectionIfNeeded() {
+        let action = CardPresentPaymentAction.cancelReconnection { _ in }
+        stores.dispatch(action)
+    }
+
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {

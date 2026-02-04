@@ -9,6 +9,7 @@ final class WooPushNotificationSetupCoordinator {
     private let stores: StoresManager
     private var loginCoordinator: WPComLoginCoordinator?
     private var wpcomCredentials: Credentials?
+    private weak var connectionSetupNavigationController: UINavigationController?
 
     init(rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores) {
@@ -90,6 +91,7 @@ private extension WooPushNotificationSetupCoordinator {
         }
 
         let navigationController = WooNavigationController()
+        connectionSetupNavigationController = navigationController
         let viewModel = makeConnectionSetupViewModel(site: site, navigationController: navigationController)
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
         navigationController.viewControllers = [connectionSetupController]
@@ -157,7 +159,17 @@ private extension WooPushNotificationSetupCoordinator {
             .absoluteString + "?s=woocommerce&plugin_status=upgrade"
         guard let url = URL(string: pluginUpdateURL) else { return }
 
-        UIApplication.shared.open(url)
+        let webViewModel = WPAdminWebViewModel(title: Localization.updatePlugin, initialURL: url)
+        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
+        webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done,
+                                                                   target: self,
+                                                                   action: #selector(dismissPluginUpdateWebView))
+        let modalNavigationController = WooNavigationController(rootViewController: webViewController)
+        connectionSetupNavigationController?.present(modalNavigationController, animated: true)
+    }
+
+    @objc func dismissPluginUpdateWebView() {
+        connectionSetupNavigationController?.presentedViewController?.dismiss(animated: true)
     }
 
     func cleanUp() {
@@ -172,6 +184,11 @@ private extension WooPushNotificationSetupCoordinator {
             "wooPushNotificationSetupCoordinator.flowTitle",
             value: "Connect to WordPress.com",
             comment: "Title of the self-driven push notification setup flow"
+        )
+        static let updatePlugin = NSLocalizedString(
+            "wooPushNotificationSetupCoordinator.updatePlugin",
+            value: "Update Plugin",
+            comment: "Title for the web view showing the WordPress plugins page for updating WooCommerce"
         )
     }
 }

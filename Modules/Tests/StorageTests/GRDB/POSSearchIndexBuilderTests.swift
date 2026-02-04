@@ -505,4 +505,90 @@ struct POSSearchIndexBuilderTests {
         #expect(needsRebuild == false)
     }
 
+    // MARK: - tokenize Tests
+
+    @Test("tokenize splits on whitespace")
+    func test_tokenize_splits_on_whitespace() {
+        let result = POSSearchIndexBuilder.tokenize("hello world")
+        #expect(result == ["hello", "world"])
+    }
+
+    @Test("tokenize keeps alphanumeric sequences together")
+    func test_tokenize_keeps_alphanumerics_together() {
+        let result = POSSearchIndexBuilder.tokenize("abc123 def456")
+        #expect(result == ["abc123", "def456"])
+    }
+
+    @Test("tokenize splits on punctuation")
+    func test_tokenize_splits_on_punctuation() {
+        let result = POSSearchIndexBuilder.tokenize("t-shirt men's wi-fi")
+        #expect(result == ["t", "shirt", "men", "s", "wi", "fi"])
+    }
+
+    @Test("tokenize splits CJK ideographs individually")
+    func test_tokenize_splits_cjk_ideographs() {
+        // Chinese characters should be split individually to match FTS5 unicode61
+        let result = POSSearchIndexBuilder.tokenize("中文测试")
+        #expect(result == ["中", "文", "测", "试"])
+    }
+
+    @Test("tokenize handles mixed CJK and Latin")
+    func test_tokenize_handles_mixed_cjk_and_latin() {
+        let result = POSSearchIndexBuilder.tokenize("hello中文world")
+        #expect(result == ["hello", "中", "文", "world"])
+    }
+
+    @Test("tokenize keeps Japanese hiragana and katakana as words")
+    func test_tokenize_keeps_japanese_kana_as_words() {
+        // Hiragana and katakana are NOT ideographic, so they stay together
+        let result = POSSearchIndexBuilder.tokenize("こんにちは カタカナ")
+        #expect(result == ["こんにちは", "カタカナ"])
+    }
+
+    @Test("tokenize splits Japanese kanji individually")
+    func test_tokenize_splits_japanese_kanji() {
+        // Kanji ARE ideographic, so they split
+        let result = POSSearchIndexBuilder.tokenize("日本語")
+        #expect(result == ["日", "本", "語"])
+    }
+
+    @Test("tokenize keeps Korean hangul as words")
+    func test_tokenize_keeps_korean_hangul_as_words() {
+        // Korean hangul is NOT ideographic
+        let result = POSSearchIndexBuilder.tokenize("안녕하세요")
+        #expect(result == ["안녕하세요"])
+    }
+
+    @Test("tokenize treats emoji as separators")
+    func test_tokenize_treats_emoji_as_separators() {
+        let result = POSSearchIndexBuilder.tokenize("hello😀world")
+        #expect(result == ["hello", "world"])
+    }
+
+    @Test("tokenize handles empty string")
+    func test_tokenize_handles_empty_string() {
+        let result = POSSearchIndexBuilder.tokenize("")
+        #expect(result == [])
+    }
+
+    @Test("tokenize handles only separators")
+    func test_tokenize_handles_only_separators() {
+        let result = POSSearchIndexBuilder.tokenize("   ---   ")
+        #expect(result == [])
+    }
+
+    @Test("tokenize handles Arabic script")
+    func test_tokenize_handles_arabic() {
+        // Arabic is alphanumeric, not ideographic
+        let result = POSSearchIndexBuilder.tokenize("مرحبا")
+        #expect(result == ["مرحبا"])
+    }
+
+    @Test("tokenize handles Hebrew script")
+    func test_tokenize_handles_hebrew() {
+        // Hebrew is alphanumeric, not ideographic
+        let result = POSSearchIndexBuilder.tokenize("שלום")
+        #expect(result == ["שלום"])
+    }
+
 }

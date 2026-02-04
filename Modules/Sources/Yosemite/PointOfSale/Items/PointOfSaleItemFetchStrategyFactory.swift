@@ -56,8 +56,18 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     }
     public func searchStrategy(searchTerm: String,
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
-        // Use local FTS search if both local catalog and FTS search are enabled, and dependencies are available
-        if isLocalCatalogEnabled, isFTSSearchEnabled, let grdbManager = grdbManager, let itemMapper = itemMapper {
+        guard isLocalCatalogEnabled, let grdbManager = grdbManager else {
+            // Remote API search when local catalog is not enabled
+            return PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
+                                                                searchTerm: searchTerm,
+                                                                productsRemote: productsRemote,
+                                                                variationsRemote: variationsRemote,
+                                                                analytics: analytics,
+                                                                posProductsOnly: posProductsOnlyEnabled)
+        }
+
+        if isFTSSearchEnabled, let itemMapper = itemMapper {
+            // FTS-based local search (returns mixed products and variations)
             return PointOfSaleLocalSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                                       searchTerm: searchTerm,
                                                                       grdbManager: grdbManager,
@@ -65,14 +75,15 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                                                                       itemMapper: itemMapper,
                                                                       analytics: analytics,
                                                                       posProductsOnly: posProductsOnlyEnabled)
+        } else {
+            // Legacy LIKE-based local search (products only)
+            return PointOfSaleLegacyLocalSearchPurchasableItemFetchStrategy(siteID: siteID,
+                                                                            searchTerm: searchTerm,
+                                                                            grdbManager: grdbManager,
+                                                                            variationsRemote: variationsRemote,
+                                                                            analytics: analytics,
+                                                                            posProductsOnly: posProductsOnlyEnabled)
         }
-        // Fall back to remote API search
-        return PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
-                                                            searchTerm: searchTerm,
-                                                            productsRemote: productsRemote,
-                                                            variationsRemote: variationsRemote,
-                                                            analytics: analytics,
-                                                            posProductsOnly: posProductsOnlyEnabled)
     }
 
     public func popularStrategy(pageSize: Int = 10) -> PointOfSalePurchasableItemFetchStrategy {

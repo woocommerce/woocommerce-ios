@@ -17,6 +17,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failUpdate: Bool
     private var failConnection: Bool
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
+    private var reconnectionSubject: CurrentValueSubject<CardReaderReconnectionState, Never> = .init(.idle)
     private var paymentExtension: CardPresentPaymentsPlugin
 
     var receivedActions: [CardPresentPaymentAction] = []
@@ -95,6 +96,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onCompletion(Result.success(()))
         case .cancelReconnection(let onCompletion):
             onCompletion(Result.success(()))
+        case .observeCardReaderReconnectionState(let onCompletion):
+            onCompletion(reconnectionEvents)
         default:
             break
         }
@@ -102,6 +105,10 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
 
     var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
         softwareUpdateSubject.eraseToAnyPublisher()
+    }
+
+    var reconnectionEvents: AnyPublisher<CardReaderReconnectionState, Never> {
+        reconnectionSubject.eraseToAnyPublisher()
     }
 }
 
@@ -144,6 +151,22 @@ extension MockCardPresentPaymentsStoresManager {
 
     func simulateOptionalUpdateAvailable() {
         softwareUpdateSubject.send(.available)
+    }
+
+    func simulateReconnecting(reader: CardReader) {
+        reconnectionSubject.send(.reconnecting(reader))
+    }
+
+    func simulateReconnectionSucceeded() {
+        reconnectionSubject.send(.succeeded)
+    }
+
+    func simulateReconnectionFailed() {
+        reconnectionSubject.send(.failed)
+    }
+
+    func simulateReconnectionIdle() {
+        reconnectionSubject.send(.idle)
     }
 
     func insertSamplePaymentGateway(forSiteID siteID: Int64) {

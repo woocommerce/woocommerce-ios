@@ -156,49 +156,15 @@ public struct POSSearchIndexBuilder {
         )
     }
 
-    // MARK: - Internal (for testing)
-
-    /// Tokenizes a search term to match FTS5 unicode61 tokenizer behavior.
-    /// - CJK ideographs are split into individual characters
-    /// - Alphanumeric sequences are kept as single tokens
-    /// - Everything else (punctuation, emoji, whitespace) acts as separators
-    static func tokenize(_ term: String) -> [String] {
-        var tokens: [String] = []
-        var currentWord = ""
-
-        for char in term {
-            let scalar = char.unicodeScalars.first!
-            if scalar.properties.isIdeographic {
-                // CJK ideograph - each is its own token (matches FTS5 unicode61 tokenizer)
-                if !currentWord.isEmpty {
-                    tokens.append(currentWord)
-                    currentWord = ""
-                }
-                tokens.append(String(char))
-            } else if CharacterSet.alphanumerics.contains(scalar) {
-                currentWord.append(char)
-            } else {
-                // Separator (space, punctuation, emoji)
-                if !currentWord.isEmpty {
-                    tokens.append(currentWord)
-                    currentWord = ""
-                }
-            }
-        }
-        if !currentWord.isEmpty {
-            tokens.append(currentWord)
-        }
-
-        return tokens
-    }
-
     // MARK: - Private
 
     private static func buildFTSQuery(from term: String) -> String {
-        let tokens = tokenize(term)
-        guard !tokens.isEmpty else { return "" }
+        let words = term.components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
 
-        return tokens
+        guard !words.isEmpty else { return "" }
+
+        return words
             .map { word -> String in
                 let escaped = word.replacingOccurrences(of: "\"", with: "\"\"")
                 return "\"\(escaped)\"*"

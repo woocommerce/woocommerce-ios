@@ -350,19 +350,25 @@ private enum UpdatePromptState {
 
 private enum DisconnectButtonState {
     case reconnecting
+    case cancellingReconnection
     case disconnecting
     case updating
     case idle(updateAvailable: Bool)
 
     init(viewModel: BluetoothCardReaderSettingsConnectedViewModel) {
-        switch (viewModel.readerReconnectionInProgress, viewModel.readerDisconnectInProgress, viewModel.readerUpdateInProgress) {
-        case (true, _, _):
+        switch (viewModel.readerReconnectionCancellationInProgress,
+                viewModel.readerReconnectionInProgress,
+                viewModel.readerDisconnectInProgress,
+                viewModel.readerUpdateInProgress) {
+        case (true, _, _, _):
+            self = .cancellingReconnection
+        case (false, true, _, _):
             self = .reconnecting
-        case (false, true, _):
+        case (false, false, true, _):
             self = .disconnecting
-        case (false, false, true):
+        case (false, false, false, true):
             self = .updating
-        case (false, false, false):
+        case (false, false, false, false):
             self = .idle(updateAvailable: viewModel.optionalReaderUpdateAvailable)
         }
     }
@@ -371,6 +377,8 @@ private enum DisconnectButtonState {
         switch self {
         case .reconnecting:
             return Localization.cancelReconnectionButtonTitle
+        case .cancellingReconnection:
+            return Localization.cancellingReconnectionButtonTitle
         case .disconnecting, .updating, .idle:
             return Localization.disconnectButtonTitle
         }
@@ -378,7 +386,7 @@ private enum DisconnectButtonState {
 
     var style: ButtonTableViewCell.Style {
         switch self {
-        case .reconnecting, .disconnecting, .updating:
+        case .reconnecting, .cancellingReconnection, .disconnecting, .updating:
             return .primary
         case .idle(let updateAvailable):
             return updateAvailable ? .secondary : .primary
@@ -389,14 +397,14 @@ private enum DisconnectButtonState {
         switch self {
         case .reconnecting, .idle:
             return true
-        case .disconnecting, .updating:
+        case .cancellingReconnection, .disconnecting, .updating:
             return false
         }
     }
 
     var showActivityIndicator: Bool {
         switch self {
-        case .disconnecting:
+        case .cancellingReconnection, .disconnecting:
             return true
         case .reconnecting, .updating, .idle:
             return false
@@ -407,7 +415,9 @@ private enum DisconnectButtonState {
         switch self {
         case .reconnecting:
             viewModel?.cancelReconnection()
-        case .disconnecting, .updating, .idle:
+        case .cancellingReconnection, .disconnecting, .updating:
+            break
+        case .idle:
             viewModel?.disconnectReader()
         }
     }
@@ -459,6 +469,12 @@ private extension CardReaderSettingsConnectedViewController {
             "cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle",
             value: "Cancel Reconnection",
             comment: "Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt"
+        )
+
+        static let cancellingReconnectionButtonTitle = NSLocalizedString(
+            "cardReaderSettingsConnectedViewController.cancellingReconnectionButtonTitle",
+            value: "Cancelling...",
+            comment: "Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress"
         )
 
     }

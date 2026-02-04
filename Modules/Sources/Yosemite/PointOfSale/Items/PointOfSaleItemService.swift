@@ -27,7 +27,6 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                         fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
             // Check if strategy provides mixed items (e.g., FTS search returning products and variations together)
-            // TODO: Simplify this branching once FTS search is fully rolled out and legacy strategies are removed
             if let mixedItems = try await fetchStrategy.fetchMixedItems(pageNumber: pageNumber) {
                 if pageNumber != 1 && mixedItems.items.isEmpty {
                     return .init(items: [], hasMorePages: false, totalItems: 0)

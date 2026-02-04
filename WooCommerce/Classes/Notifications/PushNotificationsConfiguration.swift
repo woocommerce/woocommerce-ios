@@ -73,7 +73,7 @@ extension PushNotificationsConfiguration {
     ///
     static var `default`: PushNotificationsConfiguration {
         return PushNotificationsConfiguration(application: UIApplication.shared,
-                                              defaults: .standard,
+                                              defaults: .group ?? .standard,
                                               storesManager: ServiceLocator.stores,
                                               userNotificationsCenter: UNUserNotificationCenter.current())
     }

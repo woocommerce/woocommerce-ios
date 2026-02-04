@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundationCore
 
 @MainActor
 final class WooPushNotificationSetupCoordinator {
@@ -75,6 +76,13 @@ private extension WooPushNotificationSetupCoordinator {
         static let minimumWooCommerceVersion = "10.4.3"
     }
 
+    var minimumWooCommerceVersion: String {
+        if !BuildConfiguration.current.isProduction, let override = DebugSettings.shared.forcedMinimumWooCommerceVersion {
+            return override
+        }
+        return Constants.minimumWooCommerceVersion
+    }
+
     func showConnectionSetup() {
         guard let site = stores.sessionManager.defaultSite else {
             DDLogError("⛔️ WPCom connection setup: No default site available")
@@ -105,7 +113,7 @@ private extension WooPushNotificationSetupCoordinator {
         let pluginChecker = PluginVersionChecker(
             siteID: site.siteID,
             pluginPath: Constants.wooCommercePluginPath,
-            minimumVersion: Constants.minimumWooCommerceVersion,
+            minimumVersion: minimumWooCommerceVersion,
             stores: stores
         )
 

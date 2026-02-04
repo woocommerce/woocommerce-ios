@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DebugPanelView: View {
+    private var debugSettings = DebugSettings.shared
 
     var body: some View {
         List {
@@ -18,6 +19,13 @@ struct DebugPanelView: View {
 
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
+            }
+
+            Section("WPCom Connection Setup") {
+                Toggle("Simulate Outdated Plugin", isOn: debugSettings.$forcedMinimumWooCommerceVersion)
+                Text("Sets minimum required version to 9999.9.9")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
         }
         .contentMargins(20)

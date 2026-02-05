@@ -52,7 +52,6 @@ extension WooAnalyticsEvent {
 
         /// Source of the event where the event is triggered
         /// Views: Product, Variation, and Coupon Lists. Cart view and Checkout error.
-        /// Also used for mixed purchasable items (products + variations) in FTS search.
         ///
         enum SourceView: String {
             case product
@@ -60,7 +59,6 @@ extension WooAnalyticsEvent {
             case coupon
             case cart
             case error
-            case purchasableItems = "purchasable_items"
 
             init(itemType: POSItemType) {
                 switch itemType {

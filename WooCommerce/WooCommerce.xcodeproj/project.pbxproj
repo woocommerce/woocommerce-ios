@@ -1623,7 +1623,6 @@
 		31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LearnMoreTableViewCell.xib; sourceTree = "<group>"; };
 		3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F0904082D26A40800D8ACCE /* WordPressAuthenticatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordPressAuthenticatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F096E462D23F50800D8ACCE /* WooCommerce.common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WooCommerce.common.xcconfig; sourceTree = "<group>"; };
 		3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StoreWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F1FA84128B60125009E246C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -1631,7 +1630,6 @@
 		3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalizedString.swift; sourceTree = "<group>"; };
 		3F58701E281B947E004F7556 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		3F587020281B9494004F7556 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		3FF314EF26FC784A0012E68E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
@@ -1837,9 +1835,6 @@
 		866A07042BFCF2CB00256D5B /* ReviewsDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		868029522C184E6C00CB64A1 /* BottomSheetProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetProductCategory.swift; sourceTree = "<group>"; };
 		86B3E2562C6B249C0002420B /* HelpAndSupportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewModelTests.swift; sourceTree = "<group>"; };
-		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
-		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
-		8CA4F6E1220B259100A47B5D /* Version.Public.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Version.Public.xcconfig; path = ../config/Version.Public.xcconfig; sourceTree = "<group>"; };
 		8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "RELEASE-NOTES.txt"; path = "../RELEASE-NOTES.txt"; sourceTree = "<group>"; };
 		9379E1A4225536AD006A6BE4 /* TestAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestAssets.xcassets; sourceTree = "<group>"; };
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
@@ -2603,6 +2598,7 @@
 		3FA611E72F306A0D00F48C4E /* WooCommerceUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA611F82F306A0D00F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceUITests; sourceTree = "<group>"; };
 		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
+		3FEC5FB12F354C9C000990D8 /* config */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = config; path = ../config; sourceTree = SOURCE_ROOT; };
 		3FECBD452F341ACA000990D8 /* AgeGate */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AgeGate; sourceTree = "<group>"; };
 		3FECBD4A2F341ACE000990D8 /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
 		3FECBD4E2F341AD9000990D8 /* GoogleAds */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GoogleAds; sourceTree = "<group>"; };
@@ -4097,19 +4093,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8CA4F6DC220B24EB00A47B5D /* config */ = {
-			isa = PBXGroup;
-			children = (
-				3F096E462D23F50800D8ACCE /* WooCommerce.common.xcconfig */,
-				8CA4F6E1220B259100A47B5D /* Version.Public.xcconfig */,
-				8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */,
-				3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */,
-				8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */,
-			);
-			name = config;
-			path = ../config;
-			sourceTree = "<group>";
-		};
 		AEDDDA0825CA9C0A0077F9B2 /* Edit Attributes */ = {
 			isa = PBXGroup;
 			children = (
@@ -4263,7 +4246,7 @@
 			children = (
 				3F3689E22DCB1B470065B48F /* Modules */,
 				D8FBFF1622D4CC2F006E3336 /* docs */,
-				8CA4F6DC220B24EB00A47B5D /* config */,
+				3FEC5FB12F354C9C000990D8 /* config */,
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
@@ -7209,7 +7192,8 @@
 /* Begin XCBuildConfiguration section */
 		1A9690332359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */;
+			baseConfigurationReferenceAnchor = 3FEC5FB12F354C9C000990D8 /* config */;
+			baseConfigurationReferenceRelativePath = "WooCommerce.release-alpha.xcconfig";
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -7953,7 +7937,8 @@
 		};
 		B56DB3E42049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */;
+			baseConfigurationReferenceAnchor = 3FEC5FB12F354C9C000990D8 /* config */;
+			baseConfigurationReferenceRelativePath = WooCommerce.debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -8020,7 +8005,8 @@
 		};
 		B56DB3E52049BFAA00D4AA8E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */;
+			baseConfigurationReferenceAnchor = 3FEC5FB12F354C9C000990D8 /* config */;
+			baseConfigurationReferenceRelativePath = WooCommerce.release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

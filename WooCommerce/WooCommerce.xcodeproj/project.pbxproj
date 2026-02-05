@@ -965,6 +965,7 @@
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D200F072ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */; };
 		2D205B882EF2B99500E1F7A2 /* AgeRangeVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */; };
+		2D49C42B2F34A80900F7445A /* WooShippingPhoneValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D49C42A2F34A80900F7445A /* WooShippingPhoneValidator.swift */; };
 		2D535DBD2F1924E8006A6618 /* AgeRangeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535DBC2F1924E8006A6618 /* AgeRangeProvider.swift */; };
 		2D535DBF2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D535DBE2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift */; };
 		2D5389242F278E17006A6618 /* PushNotificationRegistrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */; };
@@ -3747,6 +3748,7 @@
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D200F062ED7245000DD6EBF /* BookingDateTimeFilterViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDateTimeFilterViewTests.swift; sourceTree = "<group>"; };
 		2D205B872EF2B99400E1F7A2 /* AgeRangeVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationCoordinator.swift; sourceTree = "<group>"; };
+		2D49C42A2F34A80900F7445A /* WooShippingPhoneValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPhoneValidator.swift; sourceTree = "<group>"; };
 		2D535DBC2F1924E8006A6618 /* AgeRangeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeProvider.swift; sourceTree = "<group>"; };
 		2D535DBE2F1932FE006A6618 /* AgeRangeVerificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRangeVerificationServiceTests.swift; sourceTree = "<group>"; };
 		2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationRegistrationState.swift; sourceTree = "<group>"; };
@@ -10821,6 +10823,7 @@
 		CE7FE6922D13249D000F9475 /* WooShippingAddresses */ = {
 			isa = PBXGroup;
 			children = (
+				2D49C42A2F34A80900F7445A /* WooShippingPhoneValidator.swift */,
 				EE5EEDEA2D6F32F200E1EC05 /* WooShippingDestinationAddress+Woo.swift */,
 				EE5EEDE82D6F2F8300E1EC05 /* WooShippingNormalizedAddress+Woo.swift */,
 				CE755F762D4A79C2002539F6 /* WooShippingAddress+Woo.swift */,
@@ -13939,6 +13942,7 @@
 				026CAF802AC2B7FF002D23BB /* ConfigurableBundleProductView.swift in Sources */,
 				640D42342F2B840A00300B0D /* WPComConnectionSetupView.swift in Sources */,
 				DE8C22732EB0AE8500C69F35 /* MultiSelectListView.swift in Sources */,
+				2D49C42B2F34A80900F7445A /* WooShippingPhoneValidator.swift in Sources */,
 				45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */,
 				D8652E582630BFF500350F37 /* OrderDetailsPaymentAlerts.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,

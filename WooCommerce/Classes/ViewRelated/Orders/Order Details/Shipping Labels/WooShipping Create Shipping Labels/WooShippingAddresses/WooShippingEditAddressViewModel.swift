@@ -544,18 +544,12 @@ extension WooShippingEditAddressViewModel {
     /// has length 10 with additional "1" area code for US.
     ///
     private var isPhoneNumberValid: Bool {
-        guard phone.value.isNotEmpty else {
-            return !phoneNumberRequired(for: country.value, and: state.value)
-        }
-        guard isUSAddress else {
+        let isRequired = phoneNumberRequired(for: country.value, and: state.value)
+        if !isRequired {
             return true
         }
-        let phoneDigits = phone.value.components(separatedBy: .decimalDigits.inverted).joined()
-        if phoneDigits.hasPrefix("1") {
-            return phoneDigits.count == 11
-        } else {
-            return phoneDigits.count == 10
-        }
+        return WooShippingPhoneValidator.isValid(phone: phone.value,
+                                                 country: country.value)
     }
 
     /// Whether the phone number is required.

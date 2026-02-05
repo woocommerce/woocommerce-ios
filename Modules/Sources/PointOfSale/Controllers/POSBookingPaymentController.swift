@@ -11,7 +11,12 @@ public protocol POSOrderProviding {
 
 @MainActor
 @Observable
-final class POSBookingPaymentController {
+final class POSBookingPaymentController: Identifiable, Equatable {
+    nonisolated let id = UUID()
+
+    nonisolated static func == (lhs: POSBookingPaymentController, rhs: POSBookingPaymentController) -> Bool {
+        lhs.id == rhs.id
+    }
     private(set) var paymentState: POSBookingPaymentState = .ready
 
     // Must be `var` (not private(set)) to allow binding from view's posModal

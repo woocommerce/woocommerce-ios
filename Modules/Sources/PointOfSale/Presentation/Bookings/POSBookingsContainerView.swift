@@ -8,10 +8,9 @@ struct POSBookingsContainerView: View {
 
     @Binding var isPresented: Bool
     @State private var selectedBooking: POSBooking?
-    @State private var showingCardPayment: Bool = false
     @State private var showingCashPayment: Bool = false
     @State private var showingEmailReceipt: Bool = false
-    @State private var paymentController: POSBookingPaymentController?
+    @State private var cardPaymentController: POSBookingPaymentController?
 
     var body: some View {
         NavigationSplitView {
@@ -34,34 +33,28 @@ struct POSBookingsContainerView: View {
                 emptyDetailView
             }
         }
-        .posFullScreenCover(isPresented: $showingCardPayment) {
-            if let controller = paymentController {
-                POSBookingPaymentView(
-                    onDismiss: {
-                        showingCardPayment = false
-                        refreshAfterPayment()
-                    },
-                    onEmailReceipt: {
-                        showingEmailReceipt = true
-                    }
-                )
-                .environment(controller)
-                .task {
-                    try? await controller.collectCardPayment()
+        .posFullScreenCover(item: $cardPaymentController) { controller in
+            POSBookingPaymentView(
+                onDismiss: {
+                    cardPaymentController = nil
+                    refreshAfterPayment()
+                },
+                onEmailReceipt: {
+                    showingEmailReceipt = true
                 }
-                .posSheet(isPresented: $showingEmailReceipt) {
-                    if let booking = selectedBooking, let orderID = booking.orderID {
-                        POSSendReceiptView(
-                            isShowingSendReceiptView: $showingEmailReceipt
-                        ) { email in
-                            try await bookingsModel.sendReceipt(orderID: orderID, email: email)
-                        }
+            )
+            .environment(controller)
+            .task {
+                try? await controller.collectCardPayment()
+            }
+            .posSheet(isPresented: $showingEmailReceipt) {
+                if let booking = selectedBooking, let orderID = booking.orderID {
+                    POSSendReceiptView(
+                        isShowingSendReceiptView: $showingEmailReceipt
+                    ) { email in
+                        try await bookingsModel.sendReceipt(orderID: orderID, email: email)
                     }
                 }
-            } else {
-                // Brief fallback during SwiftUI state propagation - use consistent styling
-                Color.posSurface
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .posFullScreenCover(isPresented: $showingCashPayment) {
@@ -111,14 +104,14 @@ struct POSBookingsContainerView: View {
     }
 
     private func startCardPayment(for booking: POSBooking) {
-        paymentController = POSBookingPaymentController(
+        // Setting the controller triggers the full screen cover (item-based presentation)
+        cardPaymentController = POSBookingPaymentController(
             siteID: bookingsModel.siteID,
             booking: booking,
             bookingService: bookingsModel.bookingService,
             cardPaymentFacade: bookingsModel.cardPaymentFacade,
             orderProvider: bookingsModel.orderProvider
         )
-        showingCardPayment = true
     }
 
     private func startCashPayment(for booking: POSBooking) {

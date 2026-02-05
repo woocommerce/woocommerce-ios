@@ -60,6 +60,7 @@ struct POSBookingListView: View {
                         POSBookingRowView(
                             booking: booking,
                             isSelected: controller.selectedBooking?.bookingID == booking.bookingID,
+                            isRefreshing: controller.isRefreshing,
                             siteTimezone: siteTimezone
                         )
                     }

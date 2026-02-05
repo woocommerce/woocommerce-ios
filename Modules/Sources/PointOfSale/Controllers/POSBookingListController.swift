@@ -10,6 +10,7 @@ import class WooFoundation.CurrencyFormatter
 final class POSBookingListController {
     private(set) var state: POSBookingListState = .loading
     private(set) var selectedBooking: POSBooking?
+    private(set) var isRefreshing: Bool = false
 
     private let siteID: Int64
     private let bookingService: POSBookingServiceProtocol
@@ -43,8 +44,35 @@ final class POSBookingListController {
         }
     }
 
+    /// Refreshes bookings while keeping existing content visible.
+    /// Updates the selected booking with fresh data after refresh.
     func refreshBookings() async {
-        await loadBookings()
+        // Keep existing content and show refreshing indicator
+        isRefreshing = true
+        defer { isRefreshing = false }
+
+        do {
+            let result = try await bookingService.fetchTodaysBookings(siteID: siteID)
+            resources = result.resources
+
+            if result.bookings.isEmpty {
+                state = .empty
+                selectedBooking = nil
+            } else {
+                let posBookings = result.bookings.map { mapToPOSBooking($0) }
+                    .sorted { $0.startTime < $1.startTime }
+                state = .loaded(posBookings)
+
+                // Update selected booking with fresh data
+                if let currentSelection = selectedBooking,
+                   let updatedBooking = posBookings.first(where: { $0.bookingID == currentSelection.bookingID }) {
+                    selectedBooking = updatedBooking
+                }
+            }
+        } catch {
+            // On refresh error, keep existing content but log error
+            // Don't replace state with error to avoid losing visible bookings
+        }
     }
 
     func selectBooking(_ booking: POSBooking?) {

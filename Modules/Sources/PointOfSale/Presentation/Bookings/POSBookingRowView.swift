@@ -4,11 +4,13 @@ import SwiftUI
 struct POSBookingRowView: View {
     let booking: POSBooking
     let isSelected: Bool
+    let isRefreshing: Bool
     let timeFormatter: DateFormatter
 
-    init(booking: POSBooking, isSelected: Bool, siteTimezone: TimeZone = .current) {
+    init(booking: POSBooking, isSelected: Bool, isRefreshing: Bool = false, siteTimezone: TimeZone = .current) {
         self.booking = booking
         self.isSelected = isSelected
+        self.isRefreshing = isRefreshing
 
         let formatter = DateFormatter()
         formatter.dateStyle = .none
@@ -56,6 +58,13 @@ struct POSBookingRowView: View {
             RoundedRectangle(cornerRadius: POSSpacing.small)
                 .stroke(isSelected ? Color.posOnSurface : Color.clear, lineWidth: 2)
         )
+        .if(isRefreshing) { view in
+            view.overlay(
+                RoundedRectangle(cornerRadius: POSSpacing.small)
+                    .fill(Color.posSurfaceContainerLowest.opacity(0.7))
+                    .shimmering()
+            )
+        }
     }
 
     /// Service name with optional resource name (e.g., "Haircut by Laurena")

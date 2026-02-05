@@ -690,6 +690,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Starting background FTS rebuild for site \(siteID)")
 
             let task = Task {
+                defer {
+                    backgroundFTSRebuildTasks.removeValue(forKey: siteID)
+                }
                 do {
                     try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
                     DDLogInfo("✅ POSCatalogSyncCoordinator: Background FTS rebuild complete for site \(siteID)")
@@ -704,11 +707,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     /// Waits for any pending background FTS rebuild task to complete.
-    /// Primarily used for testing to avoid polling.
     public func awaitBackgroundFTSRebuild(for siteID: Int64) async {
         guard let task = backgroundFTSRebuildTasks[siteID] else { return }
         await task.value
-        backgroundFTSRebuildTasks.removeValue(forKey: siteID)
     }
 
 }

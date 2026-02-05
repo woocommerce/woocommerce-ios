@@ -26,7 +26,7 @@ struct POSItemActionHandlerFactoryTests {
         let item = makeProductItem()
 
         // When
-        handler.handleTap(item)
+        handler.handleTap(item, position: nil as Int?)
 
         // Then
         let event = try #require(mockAnalytics.events.first)
@@ -50,7 +50,7 @@ struct POSItemActionHandlerFactoryTests {
         let item = makeCouponItem()
 
         // When
-        handler.handleTap(item)
+        handler.handleTap(item, position: nil as Int?)
 
         // Then
         let event = try #require(mockAnalytics.events.first)
@@ -74,7 +74,7 @@ struct POSItemActionHandlerFactoryTests {
         let item = makeProductItem()
 
         // When
-        handler.handleTap(item)
+        handler.handleTap(item, position: nil as Int?)
 
         // Then
         let event = try #require(mockAnalytics.events.first)
@@ -98,7 +98,7 @@ struct POSItemActionHandlerFactoryTests {
         let item = makeCouponItem()
 
         // When
-        handler.handleTap(item)
+        handler.handleTap(item, position: nil as Int?)
 
         // Then
         let event = try #require(mockAnalytics.events.first)
@@ -122,7 +122,7 @@ struct POSItemActionHandlerFactoryTests {
         let item = makeVariationItem()
 
         // When
-        handler.handleTap(item)
+        handler.handleTap(item, position: nil as Int?)
 
         // Then
         let event = try #require(mockAnalytics.events.first)
@@ -146,7 +146,7 @@ struct POSItemActionHandlerFactoryTests {
         let item = makeVariationItem()
 
         // When
-        handler.handleTap(item)
+        handler.handleTap(item, position: nil as Int?)
 
         // Then
         let event = try #require(mockAnalytics.events.first)

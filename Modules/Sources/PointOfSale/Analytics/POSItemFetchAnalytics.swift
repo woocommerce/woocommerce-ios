@@ -48,12 +48,14 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
     /// - Parameters:
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
-    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
+    ///   - searchMethod: The search method used ("fts" or "like")
+    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int, searchMethod: String) {
         analytics.track(
             event: .PointOfSale.pointOfSaleSearchResultsFetched(
                 itemType: itemType,
                 resultsCount: totalItems,
-                millisecondsSinceRequestSent: millisecondsSinceRequestSent
+                millisecondsSinceRequestSent: millisecondsSinceRequestSent,
+                searchMethod: searchMethod
             )
         )
     }

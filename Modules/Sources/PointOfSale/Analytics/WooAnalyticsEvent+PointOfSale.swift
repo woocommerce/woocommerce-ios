@@ -46,6 +46,7 @@ extension WooAnalyticsEvent {
             static let pageNumber = "page_number"
             static let reason = "reason"
             static let syncStrategy = "sync_strategy"
+            static let searchMethod = "search_method"
         }
 
         /// Source of the event where the event is triggered
@@ -307,12 +308,14 @@ extension WooAnalyticsEvent {
 
         static func pointOfSaleSearchResultsFetched(itemType: POSItemType,
                                                     resultsCount: Int,
-                                                    millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+                                                    millisecondsSinceRequestSent: Int,
+                                                    searchMethod: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchResultsFetched,
                               properties: [
                                 Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.resultsCount: "\(resultsCount)",
-                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)",
+                                Key.searchMethod: searchMethod
                               ])
         }
 

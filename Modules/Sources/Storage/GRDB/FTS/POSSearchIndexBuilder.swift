@@ -156,6 +156,19 @@ public struct POSSearchIndexBuilder {
         )
     }
 
+    /// Removes all variations of a product from the FTS index.
+    /// Use this when deleting a product to ensure its cascade-deleted variations are also removed from the index.
+    /// - Parameters:
+    ///   - parentProductID: The ID of the parent product whose variations should be removed
+    ///   - siteID: The site ID
+    ///   - db: The database (must be called within a write transaction)
+    public static func removeVariationsFromIndex(parentProductID: Int64, siteID: Int64, in db: Database) throws {
+        try db.execute(
+            sql: "DELETE FROM pos_search_fts WHERE siteID = ? AND parentProductID = ?",
+            arguments: [siteID, parentProductID]
+        )
+    }
+
     // MARK: - Private
 
     private static func buildFTSQuery(from term: String) -> String {

@@ -535,6 +535,48 @@ struct POSSearchIndexBuilderTests {
         #expect(afterResults.first?.itemID == 2001)
     }
 
+    @Test("removeVariationsFromIndex removes all variations of a product")
+    func test_removeVariationsFromIndex_removes_all_variations_of_product() async throws {
+        // Given: A variable product with multiple variations in the FTS index
+        try await grdbManager.databaseConnection.write { db in
+            try insertProduct(id: 3000, name: "Variable Shirt", productTypeKey: "variable", in: db)
+            try insertVariation(id: 3001, productID: 3000, sku: "SHIRT-S", in: db)
+            try insertVariation(id: 3002, productID: 3000, sku: "SHIRT-M", in: db)
+            try insertVariation(id: 3003, productID: 3000, sku: "SHIRT-L", in: db)
+            // Also add another product's variation to ensure we only remove the right ones
+            try insertProduct(id: 3100, name: "Variable Pants", productTypeKey: "variable", in: db)
+            try insertVariation(id: 3101, productID: 3100, sku: "PANTS-S", in: db)
+        }
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+
+        // Verify all variations are indexed
+        let shirtResults = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "SHIRT", in: db)
+        }
+        #expect(shirtResults.count == 3)
+
+        let pantsResults = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "PANTS", in: db)
+        }
+        #expect(pantsResults.count == 1)
+
+        // When: Remove all variations of the shirt product
+        try await grdbManager.databaseConnection.write { db in
+            try POSSearchIndexBuilder.removeVariationsFromIndex(parentProductID: 3000, siteID: siteID, in: db)
+        }
+
+        // Then: Shirt variations are gone, pants variation remains
+        let shirtResultsAfter = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "SHIRT", in: db)
+        }
+        #expect(shirtResultsAfter.count == 0)
+
+        let pantsResultsAfter = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "PANTS", in: db)
+        }
+        #expect(pantsResultsAfter.count == 1)
+    }
+
     // MARK: - Tokenization Tests
 
     @Test("search tokenization matches FTS5 unicode61 behavior")

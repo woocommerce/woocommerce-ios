@@ -133,26 +133,25 @@ struct POSGhostBookingRowView: View {
             // Line 1: Name and amount
             HStack {
                 RoundedRectangle(cornerRadius: POSSpacing.xSmall)
-                    .fill(Color.posSurfaceContainerLow)
+                    .fill(Color.gray)
                     .frame(width: 120, height: 20)
                 Spacer()
                 RoundedRectangle(cornerRadius: POSSpacing.xSmall)
-                    .fill(Color.posSurfaceContainerLow)
+                    .fill(Color.gray)
                     .frame(width: 60, height: 20)
             }
             // Line 2: Service description and time
             RoundedRectangle(cornerRadius: POSSpacing.xSmall)
-                .fill(Color.posSurfaceContainerLow)
+                .fill(Color.gray)
                 .frame(width: 180, height: 16)
             // Line 3: Status badge
             RoundedRectangle(cornerRadius: POSSpacing.xSmall)
-                .fill(Color.posSurfaceContainerLow)
+                .fill(Color.gray)
                 .frame(width: 60, height: 24)
         }
         .padding(POSSpacing.medium)
         .frame(maxWidth: .infinity, minHeight: rowHeight, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .clipShape(RoundedRectangle(cornerRadius: POSSpacing.small))
-        .shimmering()
     }
 }

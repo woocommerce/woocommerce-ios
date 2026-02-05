@@ -8,6 +8,10 @@ struct POSBookingListView: View {
 
     let onClose: () -> Void
 
+    private var bookingsViewState: POSBookingListState {
+        controller.state
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
@@ -25,11 +29,11 @@ struct POSBookingListView: View {
 
     @ViewBuilder
     private var content: some View {
-        switch controller.state {
+        switch bookingsViewState {
         case .loading:
-            bookingsList([], isLoading: true)
+            loadingView
         case .loaded(let bookings):
-            bookingsList(bookings, isLoading: false)
+            bookingsList(bookings)
         case .empty:
             emptyView
         case .error(let errorState):
@@ -38,7 +42,19 @@ struct POSBookingListView: View {
     }
 
     @ViewBuilder
-    private func bookingsList(_ bookings: [POSBooking], isLoading: Bool) -> some View {
+    private var loadingView: some View {
+        ScrollView {
+            VStack(spacing: POSSpacing.small) {
+                ForEach(0..<3, id: \.self) { _ in
+                    POSGhostBookingRowView()
+                }
+            }
+            .padding(POSSpacing.medium)
+        }
+    }
+
+    @ViewBuilder
+    private func bookingsList(_ bookings: [POSBooking]) -> some View {
         ScrollView {
             LazyVStack(spacing: POSSpacing.small) {
                 ForEach(bookings) { booking in
@@ -53,13 +69,6 @@ struct POSBookingListView: View {
                         )
                     }
                     .buttonStyle(.plain)
-                }
-
-                // Show ghost rows when loading
-                if isLoading {
-                    ForEach(0..<3, id: \.self) { _ in
-                        POSGhostBookingRowView()
-                    }
                 }
             }
             .padding(POSSpacing.medium)

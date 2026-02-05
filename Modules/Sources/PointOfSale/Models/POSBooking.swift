@@ -8,7 +8,7 @@ public enum POSBookingStatus: Equatable, Sendable {
     case noLinkedOrder
 }
 
-public struct POSBooking: Equatable, Sendable, Identifiable {
+public struct POSBooking: Equatable, Hashable, Sendable, Identifiable {
     public let bookingID: Int64
     public let orderID: Int64?
     public let customerName: String

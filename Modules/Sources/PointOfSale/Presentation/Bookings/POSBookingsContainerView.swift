@@ -5,33 +5,81 @@ import Yosemite
 struct POSBookingsContainerView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Binding var isPresented: Bool
-    @State private var selectedBooking: POSBooking?
     @State private var showingCashPayment: Bool = false
     @State private var showingEmailReceipt: Bool = false
     @State private var cardPaymentController: POSBookingPaymentController?
 
+    private var bookingListController: POSBookingListController {
+        bookingsModel.bookingListController
+    }
+
     var body: some View {
-        NavigationSplitView {
-            POSBookingListView(
-                onClose: { isPresented = false },
-                onBookingSelected: { booking in
-                    selectedBooking = booking
-                }
-            )
-            .environment(bookingsModel.bookingListController)
-        } detail: {
-            if let booking = selectedBooking {
-                POSBookingDetailView(
-                    booking: booking,
-                    onBack: { selectedBooking = nil },
-                    onPayByCard: { startCardPayment(for: booking) },
-                    onPayByCash: { startCashPayment(for: booking) }
-                )
-            } else {
-                emptyDetailView
+        contentView
+            .task {
+                await bookingListController.loadBookings()
             }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        switch bookingListController.state {
+        case .error(let error):
+            errorView(error)
+        case .empty:
+            emptyView
+        default:
+            splitView
+        }
+    }
+
+    @ViewBuilder
+    private var splitView: some View {
+        POSCustomNavigationSplitView(
+            selection: Binding(
+                get: { bookingListController.selectedBooking },
+                set: { bookingListController.selectBooking($0) }
+            )
+        ) { _ in
+            POSBookingListView(onClose: { isPresented = false })
+                .environment(bookingListController)
+        } detail: { booking in
+            POSBookingDetailView(
+                booking: booking,
+                onBack: { bookingListController.selectBooking(nil) },
+                onPayByCard: { startCardPayment(for: booking) },
+                onPayByCash: { startCashPayment(for: booking) }
+            )
+            .id(booking.bookingID)
+        } detailPlaceholderView: {
+            if bookingListController.state.isLoading {
+                POSBookingDetailsLoadingView()
+            } else {
+                POSBookingDetailsEmptyView()
+            }
+        } setDefaultValue: {
+            if bookingListController.selectedBooking == nil,
+               let firstBooking = bookingListController.state.bookings.first {
+                bookingListController.selectBooking(firstBooking)
+            }
+        }
+        .onChange(of: bookingListController.state.bookings) { _, newBookings in
+            guard horizontalSizeClass == .regular else { return }
+
+            guard let firstBooking = newBookings.first else { return }
+
+            if let selectedBooking = bookingListController.selectedBooking,
+               newBookings.map(\.bookingID).contains(selectedBooking.bookingID) {
+                return
+            }
+
+            bookingListController.selectBooking(firstBooking)
+        }
+        .animation(.default, value: bookingListController.state.bookings.isEmpty)
+        .onDisappear {
+            bookingListController.selectBooking(nil)
         }
         .posFullScreenCover(item: $cardPaymentController) { controller in
             POSBookingPaymentView(
@@ -48,7 +96,8 @@ struct POSBookingsContainerView: View {
                 try? await controller.collectCardPayment()
             }
             .posSheet(isPresented: $showingEmailReceipt) {
-                if let booking = selectedBooking, let orderID = booking.orderID {
+                if let booking = bookingListController.selectedBooking,
+                   let orderID = booking.orderID {
                     POSSendReceiptView(
                         isShowingSendReceiptView: $showingEmailReceipt
                     ) { email in
@@ -58,7 +107,7 @@ struct POSBookingsContainerView: View {
             }
         }
         .posFullScreenCover(isPresented: $showingCashPayment) {
-            if let booking = selectedBooking {
+            if let booking = bookingListController.selectedBooking {
                 POSBookingCashPaymentView(
                     booking: booking,
                     onPaymentComplete: {
@@ -83,28 +132,37 @@ struct POSBookingsContainerView: View {
                 }
             }
         }
-        .task {
-            await bookingsModel.bookingListController.loadBookings()
-        }
     }
 
     @ViewBuilder
-    private var emptyDetailView: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Image(systemName: "calendar")
-                .font(.system(size: 48))
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-
-            Text(Localization.selectBooking)
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+    private var emptyView: some View {
+        VStack(spacing: 0) {
+            POSPageHeaderView(
+                title: Localization.title,
+                backButtonConfiguration: .init(state: .enabled, action: { isPresented = false }, buttonIcon: "xmark")
+            )
+            POSListEmptyView(viewModel: POSBookingListEmptyViewModel())
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.posSurface)
+        .background(Color.posSurfaceBright)
+    }
+
+    @ViewBuilder
+    private func errorView(_ error: PointOfSaleErrorState) -> some View {
+        VStack(spacing: 0) {
+            POSPageHeaderView(
+                title: Localization.title,
+                backButtonConfiguration: .init(state: .enabled, action: { isPresented = false }, buttonIcon: "xmark")
+            )
+            POSListErrorView(error: error) {
+                Task {
+                    await bookingListController.loadBookings()
+                }
+            }
+        }
+        .background(Color.posSurfaceBright)
     }
 
     private func startCardPayment(for booking: POSBooking) {
-        // Setting the controller triggers the full screen cover (item-based presentation)
         cardPaymentController = POSBookingPaymentController(
             siteID: bookingsModel.siteID,
             booking: booking,
@@ -120,20 +178,15 @@ struct POSBookingsContainerView: View {
 
     private func refreshAfterPayment() {
         Task {
-            await bookingsModel.bookingListController.refreshBookings()
-            // Update selected booking if it was paid
-            if let currentID = selectedBooking?.bookingID,
-               let updated = bookingsModel.bookingListController.state.bookings.first(where: { $0.bookingID == currentID }) {
-                selectedBooking = updated
-            }
+            await bookingListController.refreshBookings()
         }
     }
 
     private enum Localization {
-        static let selectBooking = NSLocalizedString(
-            "posBookingsContainer.selectBooking",
-            value: "Select a booking to view details",
-            comment: "Placeholder when no booking is selected"
+        static let title = NSLocalizedString(
+            "posBookingsContainer.title",
+            value: "Today's Bookings",
+            comment: "Title for bookings screen"
         )
     }
 }

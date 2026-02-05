@@ -7,7 +7,6 @@ struct POSBookingListView: View {
     @Environment(\.siteTimezone) private var siteTimezone
 
     let onClose: () -> Void
-    let onBookingSelected: (POSBooking) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,9 +18,6 @@ struct POSBookingListView: View {
             content
         }
         .background(Color.posSurfaceBright)
-        .task {
-            await controller.loadBookings()
-        }
         .refreshable {
             await controller.refreshBookings()
         }
@@ -60,7 +56,6 @@ struct POSBookingListView: View {
                 ForEach(bookings) { booking in
                     Button {
                         controller.selectBooking(booking)
-                        onBookingSelected(booking)
                     } label: {
                         POSBookingRowView(
                             booking: booking,

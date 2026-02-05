@@ -27,25 +27,13 @@ struct POSBookingListView: View {
     private var content: some View {
         switch controller.state {
         case .loading:
-            loadingView
+            bookingsList([])
         case .loaded(let bookings):
             bookingsList(bookings)
         case .empty:
             emptyView
         case .error(let errorState):
             errorView(errorState)
-        }
-    }
-
-    @ViewBuilder
-    private var loadingView: some View {
-        ScrollView {
-            VStack(spacing: POSSpacing.medium) {
-                ForEach(0..<3, id: \.self) { _ in
-                    POSGhostBookingRowView()
-                }
-            }
-            .padding(POSSpacing.medium)
         }
     }
 
@@ -65,6 +53,13 @@ struct POSBookingListView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                }
+
+                // Show ghost rows when loading
+                if controller.state.isLoading {
+                    ForEach(0..<3, id: \.self) { _ in
+                        POSGhostBookingRowView()
+                    }
                 }
             }
             .padding(POSSpacing.medium)

@@ -194,9 +194,9 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         resourceID: Int64,
         siteID: Int64
     ) async throws -> BookingResource? {
-        let path = "\(Path.resource)/\(resourceID)"
+        let path = "\(Path.resources)/\(resourceID)"
         let request = JetpackRequest(
-            wooApiVersion: .wcBookings,
+            wooApiVersion: .wcBookingsV2,
             method: .get,
             siteID: siteID,
             path: path,
@@ -227,7 +227,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         let path = Path.resources
         let request = JetpackRequest(
-            wooApiVersion: .wcBookings,
+            wooApiVersion: .wcBookingsV2,
             method: .get,
             siteID: siteID,
             path: path,
@@ -256,7 +256,6 @@ public extension BookingsRemote {
     private enum Path {
         static let bookings = "bookings"
         static let resources = "resources/team-members"
-        static let resource = "resources"  // v1 single resource endpoint uses /resources/{id}
     }
 
     private enum ParameterKey {

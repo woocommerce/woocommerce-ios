@@ -232,6 +232,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                                                           itemType: .product,
                                                           siteID: siteID,
                                                           in: db)
+                // Also remove any variations of this product from the index.
+                // This handles cascade-deleted variations whose IDs we don't have.
+                try POSSearchIndexBuilder.removeVariationsFromIndex(parentProductID: productID,
+                                                                    siteID: siteID,
+                                                                    in: db)
             }
 
             for variationID in variationIDs {

@@ -47,6 +47,7 @@ extension WooAnalyticsEvent {
             static let reason = "reason"
             static let syncStrategy = "sync_strategy"
             static let searchMethod = "search_method"
+            static let resultPosition = "result_position"
         }
 
         /// Source of the event where the event is triggered
@@ -156,6 +157,7 @@ extension WooAnalyticsEvent {
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
             productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
+            resultPosition: Int? = nil,
             error: Error? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
@@ -169,6 +171,10 @@ extension WooAnalyticsEvent {
 
             if let productType {
                 properties[Key.productType] = productType.rawValue
+            }
+
+            if let resultPosition {
+                properties[Key.resultPosition] = "\(resultPosition)"
             }
 
             return WooAnalyticsEvent(

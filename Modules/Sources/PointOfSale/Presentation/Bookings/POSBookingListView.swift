@@ -126,6 +126,8 @@ struct POSBookingListEmptyViewModel: POSListEmptyViewModelProtocol {
 // MARK: - Ghost Loading Row
 
 struct POSGhostBookingRowView: View {
+    private let rowHeight: CGFloat = 100
+
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             // Line 1: Name and amount
@@ -139,17 +141,16 @@ struct POSGhostBookingRowView: View {
                     .frame(width: 60, height: 20)
             }
             // Line 2: Service description and time
-            HStack {
-                RoundedRectangle(cornerRadius: POSSpacing.xSmall)
-                    .fill(Color.posSurfaceContainerLow)
-                    .frame(width: 180, height: 16)
-            }
+            RoundedRectangle(cornerRadius: POSSpacing.xSmall)
+                .fill(Color.posSurfaceContainerLow)
+                .frame(width: 180, height: 16)
             // Line 3: Status badge
             RoundedRectangle(cornerRadius: POSSpacing.xSmall)
                 .fill(Color.posSurfaceContainerLow)
                 .frame(width: 60, height: 24)
         }
         .padding(POSSpacing.medium)
+        .frame(maxWidth: .infinity, minHeight: rowHeight, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .clipShape(RoundedRectangle(cornerRadius: POSSpacing.small))
         .shimmering()

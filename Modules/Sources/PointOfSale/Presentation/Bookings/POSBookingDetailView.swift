@@ -3,9 +3,22 @@ import SwiftUI
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
+    let isRefreshing: Bool
     let onBack: () -> Void
     let onPayByCard: () -> Void
     let onPayByCash: () -> Void
+
+    init(booking: POSBooking,
+         isRefreshing: Bool = false,
+         onBack: @escaping () -> Void,
+         onPayByCard: @escaping () -> Void,
+         onPayByCash: @escaping () -> Void) {
+        self.booking = booking
+        self.isRefreshing = isRefreshing
+        self.onBack = onBack
+        self.onPayByCard = onPayByCard
+        self.onPayByCash = onPayByCash
+    }
 
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -114,9 +127,22 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var statusBadgesSection: some View {
-        HStack(spacing: POSSpacing.small) {
-            attendanceStatusBadge
-            paymentStatusBadge
+        if isRefreshing {
+            HStack(spacing: POSSpacing.small) {
+                // Placeholder badges
+                RoundedRectangle(cornerRadius: POSSpacing.xSmall)
+                    .fill(Color.posSurfaceContainerLow)
+                    .frame(width: 70, height: 28)
+                RoundedRectangle(cornerRadius: POSSpacing.xSmall)
+                    .fill(Color.posSurfaceContainerLow)
+                    .frame(width: 60, height: 28)
+            }
+            .shimmering()
+        } else {
+            HStack(spacing: POSSpacing.small) {
+                attendanceStatusBadge
+                paymentStatusBadge
+            }
         }
     }
 
@@ -232,40 +258,48 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var paymentActionsSection: some View {
-        switch booking.status {
-        case .unpaid:
-            VStack(spacing: POSSpacing.medium) {
-                Button(Localization.payByCard) {
-                    onPayByCard()
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+        if isRefreshing {
+            // Placeholder action area while refreshing
+            RoundedRectangle(cornerRadius: POSSpacing.small)
+                .fill(Color.posSurfaceContainerLow)
+                .frame(height: 52)
+                .shimmering()
+        } else {
+            switch booking.status {
+            case .unpaid:
+                VStack(spacing: POSSpacing.medium) {
+                    Button(Localization.payByCard) {
+                        onPayByCard()
+                    }
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-                Button(Localization.payByCash) {
-                    onPayByCash()
+                    Button(Localization.payByCash) {
+                        onPayByCash()
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+
+            case .paid:
+                statusMessage(
+                    icon: "checkmark.circle.fill",
+                    text: Localization.paymentComplete,
+                    color: .posSuccess
+                )
+
+            case .cancelled:
+                statusMessage(
+                    icon: "xmark.circle.fill",
+                    text: Localization.bookingCancelled,
+                    color: .posOnSurfaceVariantHighest
+                )
+
+            case .noLinkedOrder:
+                statusMessage(
+                    icon: "exclamationmark.triangle.fill",
+                    text: Localization.noLinkedOrder,
+                    color: .posError
+                )
             }
-
-        case .paid:
-            statusMessage(
-                icon: "checkmark.circle.fill",
-                text: Localization.paymentComplete,
-                color: .posSuccess
-            )
-
-        case .cancelled:
-            statusMessage(
-                icon: "xmark.circle.fill",
-                text: Localization.bookingCancelled,
-                color: .posOnSurfaceVariantHighest
-            )
-
-        case .noLinkedOrder:
-            statusMessage(
-                icon: "exclamationmark.triangle.fill",
-                text: Localization.noLinkedOrder,
-                color: .posError
-            )
         }
     }
 

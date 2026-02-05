@@ -48,6 +48,7 @@ struct POSBookingsContainerView: View {
         } detail: { booking in
             POSBookingDetailView(
                 booking: booking,
+                isRefreshing: bookingListController.isRefreshing,
                 onBack: { bookingListController.selectBooking(nil) },
                 onPayByCard: { startCardPayment(for: booking) },
                 onPayByCash: { startCashPayment(for: booking) }

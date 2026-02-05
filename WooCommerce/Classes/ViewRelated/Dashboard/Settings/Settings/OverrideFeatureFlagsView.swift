@@ -1,7 +1,8 @@
 import SwiftUI
 import Experiments
-import Networking
-import Yosemite
+import enum Networking.RemoteFeatureFlag
+import enum Yosemite.FeatureFlagAction
+import protocol Yosemite.StoresManager
 
 struct OverrideFeatureFlagsView: View {
     @State private var refreshID = UUID()

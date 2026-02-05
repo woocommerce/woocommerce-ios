@@ -27,9 +27,9 @@ struct POSBookingListView: View {
     private var content: some View {
         switch controller.state {
         case .loading:
-            bookingsList([])
+            bookingsList([], isLoading: true)
         case .loaded(let bookings):
-            bookingsList(bookings)
+            bookingsList(bookings, isLoading: false)
         case .empty:
             emptyView
         case .error(let errorState):
@@ -38,7 +38,7 @@ struct POSBookingListView: View {
     }
 
     @ViewBuilder
-    private func bookingsList(_ bookings: [POSBooking]) -> some View {
+    private func bookingsList(_ bookings: [POSBooking], isLoading: Bool) -> some View {
         ScrollView {
             LazyVStack(spacing: POSSpacing.small) {
                 ForEach(bookings) { booking in
@@ -56,7 +56,7 @@ struct POSBookingListView: View {
                 }
 
                 // Show ghost rows when loading
-                if controller.state.isLoading {
+                if isLoading {
                     ForEach(0..<3, id: \.self) { _ in
                         POSGhostBookingRowView()
                     }

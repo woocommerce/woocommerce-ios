@@ -18,5 +18,9 @@ public protocol POSItemFetchAnalyticsTracking {
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
     ///   - searchMethod: The search method used ("fts" or "like")
-    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int, searchMethod: String)
+    ///   - source: The source of the results ("product" or "purchasable_items")
+    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,
+                                              totalItems: Int,
+                                              searchMethod: String,
+                                              source: String)
 }

@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.POSItemType
 import protocol Yosemite.POSItemFetchAnalyticsTracking
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Analytics tracking for Point of Sale item fetch functionality
 struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
@@ -49,10 +50,15 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
     ///   - searchMethod: The search method used ("fts" or "like")
-    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int, searchMethod: String) {
+    ///   - source: The source of the results ("product" or "purchasable_items")
+    func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,
+                                              totalItems: Int,
+                                              searchMethod: String,
+                                              source: String) {
+        let sourceView = WooAnalyticsEvent.PointOfSale.SourceView(rawValue: source) ?? .product
         analytics.track(
             event: .PointOfSale.pointOfSaleSearchResultsFetched(
-                itemType: itemType,
+                source: sourceView,
                 resultsCount: totalItems,
                 millisecondsSinceRequestSent: millisecondsSinceRequestSent,
                 searchMethod: searchMethod

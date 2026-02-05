@@ -254,7 +254,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.phone.required)
     }
 
-    func test_phone_number_not_required_for_destination_address_when_customs_form_not_required() {
+    func test_phone_number_required_for_destination_address() {
         // Given
         let address = WooShippingAddress(company: "HEADQUARTERS",
                                          name: "JANE DOE",
@@ -276,7 +276,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         originStateCode: "CA")
 
         // Then
-        XCTAssertFalse(viewModel.phone.required)
+        XCTAssertTrue(viewModel.phone.required)
     }
 
     func test_phone_number_required_for_destination_address_when_customs_form_required() {

@@ -75,7 +75,8 @@ public struct PointOfSaleEntryPointView: View {
          isLocalCatalogEligible: Bool,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil,
-         bookingService: POSBookingServiceProtocol? = nil) {
+         bookingService: POSBookingServiceProtocol? = nil,
+         bookingOrderProvider: POSOrderProviding? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -144,8 +145,8 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
 
-        // Create bookings model if booking service is provided
-        if let bookingService {
+        // Create bookings model if booking service and order provider are provided
+        if let bookingService, let bookingOrderProvider {
             let bookingListController = POSBookingListController(
                 siteID: siteID,
                 bookingService: bookingService,
@@ -156,7 +157,8 @@ public struct PointOfSaleEntryPointView: View {
                 siteID: siteID,
                 bookingService: bookingService,
                 cardPaymentFacade: cardPresentPaymentService,
-                receiptSender: receiptSender
+                receiptSender: receiptSender,
+                orderProvider: bookingOrderProvider
             )
         } else {
             self.bookingsModel = nil

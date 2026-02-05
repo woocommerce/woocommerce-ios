@@ -14,6 +14,8 @@ public protocol POSOrderServiceProtocol {
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
+    /// Fetches a single order by ID
+    func fetchOrder(orderID: Int64) async throws -> Order
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -110,6 +112,10 @@ public final class POSOrderService: POSOrderServiceProtocol {
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
+    }
+
+    public func fetchOrder(orderID: Int64) async throws -> Order {
+        try await ordersRemote.loadPOSOrder(siteID: siteID, orderID: orderID)
     }
 }
 

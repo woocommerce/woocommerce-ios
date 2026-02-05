@@ -108,4 +108,9 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {}
+
+    func fetchOrder(orderID: Int64) async throws -> Order {
+        // Return a mock order for screenshot tests
+        try await syncOrder(cart: POSCart(items: [], coupons: []), currency: .USD)
+    }
 }

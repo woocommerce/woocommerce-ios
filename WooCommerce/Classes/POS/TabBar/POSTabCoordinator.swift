@@ -270,6 +270,9 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                // Create order provider for booking payments using the order service
+                let bookingOrderProvider = POSBookingOrderProvider(orderService: orderService)
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -305,7 +308,8 @@ private extension POSTabCoordinator {
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor,
                     itemProvider: itemProvider,
-                    bookingService: bookingService
+                    bookingService: bookingService,
+                    bookingOrderProvider: bookingOrderProvider
                 )
 
                 let hostingController = UIHostingController(rootView: posView)

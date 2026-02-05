@@ -561,6 +561,10 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+
+    func fetchOrder(orderID: Int64) async throws -> Order {
+        .empty
+    }
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {

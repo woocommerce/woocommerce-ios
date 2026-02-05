@@ -81,6 +81,16 @@ class MockPOSOrderService: POSOrderServiceProtocol {
             throw error
         }
     }
+
+    func fetchOrder(orderID: Int64) async throws -> Order {
+        if let error = errorToReturn {
+            throw error
+        }
+        guard let order = orderToReturn else {
+            throw MockPOSOrderServiceError.noOrderToReturn
+        }
+        return order
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

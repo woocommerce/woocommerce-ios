@@ -9,17 +9,20 @@ import Yosemite
     let bookingService: POSBookingServiceProtocol
     let cardPaymentFacade: CardPresentPaymentFacade
     let receiptSender: POSReceiptSending
+    let orderProvider: POSOrderProviding
 
     init(bookingListController: POSBookingListController,
          siteID: Int64,
          bookingService: POSBookingServiceProtocol,
          cardPaymentFacade: CardPresentPaymentFacade,
-         receiptSender: POSReceiptSending) {
+         receiptSender: POSReceiptSending,
+         orderProvider: POSOrderProviding) {
         self.bookingListController = bookingListController
         self.siteID = siteID
         self.bookingService = bookingService
         self.cardPaymentFacade = cardPaymentFacade
         self.receiptSender = receiptSender
+        self.orderProvider = orderProvider
     }
 
     func sendReceipt(orderID: Int64, email: String) async throws {

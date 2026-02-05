@@ -5,7 +5,7 @@ import Combine
 import Yosemite
 import Networking
 
-protocol POSOrderProviding {
+public protocol POSOrderProviding {
     func fetchOrder(siteID: Int64, orderID: Int64) async throws -> Order
 }
 

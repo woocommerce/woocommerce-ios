@@ -119,7 +119,13 @@ struct POSBookingPaymentView: View {
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
 
         case .processing:
-            EmptyView()
+            Button(Localization.cancel) {
+                Task {
+                    try? await controller.cancelPayment()
+                    onDismiss()
+                }
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
 
         case .success:
             VStack(spacing: POSSpacing.medium) {

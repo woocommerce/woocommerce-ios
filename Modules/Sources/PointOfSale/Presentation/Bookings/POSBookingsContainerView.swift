@@ -58,6 +58,18 @@ struct POSBookingsContainerView: View {
                         }
                     }
                 }
+            } else {
+                // Fallback view if controller isn't ready yet
+                VStack {
+                    ProgressView()
+                    Button(Localization.cancel) {
+                        showingCardPayment = false
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    .padding(.top, POSSpacing.large)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.posSurface)
             }
         }
         .posFullScreenCover(isPresented: $showingCashPayment) {
@@ -112,7 +124,7 @@ struct POSBookingsContainerView: View {
             booking: booking,
             bookingService: bookingsModel.bookingService,
             cardPaymentFacade: bookingsModel.cardPaymentFacade,
-            orderProvider: DefaultPOSOrderProvider()
+            orderProvider: bookingsModel.orderProvider
         )
         showingCardPayment = true
     }
@@ -138,19 +150,10 @@ struct POSBookingsContainerView: View {
             value: "Select a booking to view details",
             comment: "Placeholder when no booking is selected"
         )
-    }
-}
-
-/// Default order provider that fetches orders from the network
-private struct DefaultPOSOrderProvider: POSOrderProviding {
-    func fetchOrder(siteID: Int64, orderID: Int64) async throws -> Order {
-        // This would normally fetch from the network via stores
-        // For now, return a placeholder as booking payment uses the order ID
-        // The actual implementation would use StoresManager
-        throw POSOrderProviderError.notImplemented
-    }
-
-    enum POSOrderProviderError: Error {
-        case notImplemented
+        static let cancel = NSLocalizedString(
+            "posBookingsContainer.cancel",
+            value: "Cancel",
+            comment: "Cancel button"
+        )
     }
 }

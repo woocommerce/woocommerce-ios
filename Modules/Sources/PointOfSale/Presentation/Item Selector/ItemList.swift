@@ -58,8 +58,8 @@ struct ItemList<HeaderView: View>: View {
                         headerRows
 
                         if let state {
-                            ForEach(state.items) { item in
-                                ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
+                            ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
+                                ItemListRow(item: item, position: index, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
                             }
                         }
 
@@ -146,6 +146,7 @@ private enum Constants {
 
 struct ItemListRow: View {
     let item: POSItem
+    let position: Int
     let itemActionHandler: POSItemActionHandler
     @Binding var activeNavigationItem: POSItem?
 
@@ -153,7 +154,7 @@ struct ItemListRow: View {
         switch item {
         case let .simpleProduct(product):
             Button(action: {
-                itemActionHandler.handleTap(item)
+                itemActionHandler.handleTap(item, position: position)
             }, label: {
                 SimpleProductCardView(product: product)
             })
@@ -185,13 +186,13 @@ struct ItemListRow: View {
             }
         case let .variation(variation):
             Button(action: {
-                itemActionHandler.handleTap(item)
+                itemActionHandler.handleTap(item, position: position)
             }, label: {
                 VariationCardView(variation: variation)
             })
         case let .searchResultVariation(variation, parentProduct):
             Button(action: {
-                itemActionHandler.handleTap(item)
+                itemActionHandler.handleTap(item, position: position)
             }, label: {
                 SearchResultVariationCardView(variation: variation, parentProduct: parentProduct)
             })
@@ -199,7 +200,7 @@ struct ItemListRow: View {
         case let .coupon(coupon):
             Button(action: {
                 if !coupon.isExpired {
-                    itemActionHandler.handleTap(item)
+                    itemActionHandler.handleTap(item, position: position)
                 }
             }, label: {
                 CouponCardView(coupon: coupon)

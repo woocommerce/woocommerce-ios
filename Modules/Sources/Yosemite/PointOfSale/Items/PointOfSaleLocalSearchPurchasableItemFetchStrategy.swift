@@ -76,7 +76,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
             analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
-                                                           totalItems: totalCount)
+                                                           totalItems: totalCount,
+                                                           searchMethod: "like")
         }
 
         return PagedItems(items: products,
@@ -137,7 +138,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
             analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
-                                                           totalItems: totalCount)
+                                                           totalItems: totalCount,
+                                                           searchMethod: "fts")
         }
 
         return PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalCount)

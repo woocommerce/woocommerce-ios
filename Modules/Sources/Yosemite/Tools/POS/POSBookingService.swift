@@ -95,11 +95,17 @@ public final class POSBookingService: POSBookingServiceProtocol, @unchecked Send
 
         // Fetch resources for all bookings that have resource IDs
         let resourceIDs = Set(bookings.compactMap { $0.resourceID > 0 ? $0.resourceID : nil })
+        DDLogInfo("📚 POSBookingService: Found \(resourceIDs.count) unique resource IDs from \(bookings.count) bookings")
         var resources: [Int64: BookingResource] = [:]
 
         for resourceID in resourceIDs {
-            if let resource = try? await bookingsRemote.fetchResource(resourceID: resourceID, siteID: siteID) {
-                resources[resourceID] = resource
+            do {
+                if let resource = try await bookingsRemote.fetchResource(resourceID: resourceID, siteID: siteID) {
+                    resources[resourceID] = resource
+                    DDLogInfo("📚 POSBookingService: Fetched resource \(resourceID): \(resource.name)")
+                }
+            } catch {
+                DDLogError("⛔️ POSBookingService: Failed to fetch resource \(resourceID): \(error)")
             }
         }
 

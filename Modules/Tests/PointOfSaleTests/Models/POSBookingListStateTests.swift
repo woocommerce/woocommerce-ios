@@ -12,7 +12,7 @@ struct POSBookingListStateTests {
     }
 
     @Test func bookings_returns_array_for_loaded_state() {
-        let bookings = [POSBookingTests.makeBooking()]
+        let bookings = [POSBookingTestHelpers.makeBooking()]
         let state = POSBookingListState.loaded(bookings)
 
         #expect(state.bookings == bookings)

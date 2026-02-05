@@ -5,6 +5,7 @@ import Networking
 
 final class MockPOSBookingService: POSBookingServiceProtocol, @unchecked Sendable {
     var bookingsToReturn: [Booking] = []
+    var resourcesToReturn: [Int64: BookingResource] = [:]
     var fetchTodaysBookingsCallCount = 0
     var markBookingAsPaidCallCount = 0
     var markBookingAsPaidBookingID: Int64?
@@ -12,12 +13,12 @@ final class MockPOSBookingService: POSBookingServiceProtocol, @unchecked Sendabl
     var shouldThrowOnMarkAsPaid = false
     var errorToThrow: Error = NSError(domain: "test", code: 1)
 
-    func fetchTodaysBookings(siteID: Int64) async throws -> [Booking] {
+    func fetchTodaysBookings(siteID: Int64) async throws -> POSBookingFetchResult {
         fetchTodaysBookingsCallCount += 1
         if shouldThrowOnFetch {
             throw errorToThrow
         }
-        return bookingsToReturn
+        return POSBookingFetchResult(bookings: bookingsToReturn, resources: resourcesToReturn)
     }
 
     func markBookingAsPaid(siteID: Int64, bookingID: Int64) async throws {

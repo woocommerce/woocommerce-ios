@@ -1,13 +1,24 @@
 // POSBookingService.swift
 import Foundation
 import Networking
+import NetworkingCore
 import struct Combine.AnyPublisher
-import struct NetworkingCore.JetpackSite
+
+/// Result of fetching enriched bookings with resources
+public struct POSBookingFetchResult: Sendable {
+    public let bookings: [Booking]
+    public let resources: [Int64: BookingResource]
+
+    public init(bookings: [Booking], resources: [Int64: BookingResource]) {
+        self.bookings = bookings
+        self.resources = resources
+    }
+}
 
 /// Protocol for POS booking operations
 public protocol POSBookingServiceProtocol: Sendable {
-    /// Fetches today's bookings for the given site
-    func fetchTodaysBookings(siteID: Int64) async throws -> [Booking]
+    /// Fetches today's bookings for the given site, enriched with order info and resources
+    func fetchTodaysBookings(siteID: Int64) async throws -> POSBookingFetchResult
 
     /// Marks a booking as paid
     func markBookingAsPaid(siteID: Int64, bookingID: Int64) async throws
@@ -15,6 +26,7 @@ public protocol POSBookingServiceProtocol: Sendable {
 
 public final class POSBookingService: POSBookingServiceProtocol, @unchecked Sendable {
     private let bookingsRemote: BookingsRemoteProtocol
+    private let ordersRemote: OrdersRemoteProtocol
     private let stores: StoresManager
 
     public convenience init?(siteID: Int64,
@@ -30,18 +42,21 @@ public final class POSBookingService: POSBookingServiceProtocol, @unchecked Send
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.init(bookingsRemote: BookingsRemote(network: network),
+                  ordersRemote: OrdersRemote(network: network),
                   stores: stores)
     }
 
     public init(bookingsRemote: BookingsRemoteProtocol,
+                ordersRemote: OrdersRemoteProtocol,
                 stores: StoresManager) {
         self.bookingsRemote = bookingsRemote
+        self.ordersRemote = ordersRemote
         self.stores = stores
     }
 
     // MARK: - Protocol conformance
 
-    public func fetchTodaysBookings(siteID: Int64) async throws -> [Booking] {
+    public func fetchTodaysBookings(siteID: Int64) async throws -> POSBookingFetchResult {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
         guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
@@ -65,7 +80,30 @@ public final class POSBookingService: POSBookingServiceProtocol, @unchecked Send
             order: .ascending
         )
 
-        return bookings
+        // Fetch orders for all bookings that have order IDs
+        let orderIDs = bookings.compactMap { $0.orderID > 0 ? $0.orderID : nil }
+        let orders = try await ordersRemote.loadOrders(for: siteID, orderIDs: orderIDs)
+
+        // Enrich bookings with order info
+        let enrichedBookings = bookings.map { booking -> Booking in
+            guard let order = orders.first(where: { $0.orderID == booking.orderID }) else {
+                return booking
+            }
+            let orderInfo = BookingOrderInfo(booking: booking, order: order)
+            return booking.copy(orderInfo: orderInfo)
+        }
+
+        // Fetch resources for all bookings that have resource IDs
+        let resourceIDs = Set(bookings.compactMap { $0.resourceID > 0 ? $0.resourceID : nil })
+        var resources: [Int64: BookingResource] = [:]
+
+        for resourceID in resourceIDs {
+            if let resource = try? await bookingsRemote.fetchResource(resourceID: resourceID, siteID: siteID) {
+                resources[resourceID] = resource
+            }
+        }
+
+        return POSBookingFetchResult(bookings: enrichedBookings, resources: resources)
     }
 
     public func markBookingAsPaid(siteID: Int64, bookingID: Int64) async throws {

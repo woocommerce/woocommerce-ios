@@ -5,7 +5,6 @@ import Combine
 import Fakes
 @testable import PointOfSale
 @testable import Yosemite
-import struct Yosemite.Order
 
 @MainActor
 struct POSBookingPaymentControllerTests {
@@ -14,7 +13,7 @@ struct POSBookingPaymentControllerTests {
     private let orderProvider = MockOrderProvider()
 
     private func makeSUT(booking: POSBooking? = nil) -> POSBookingPaymentController {
-        let testBooking = booking ?? POSBookingTests.makeBooking()
+        let testBooking = booking ?? POSBookingTestHelpers.makeBooking()
         return POSBookingPaymentController(
             siteID: 123,
             booking: testBooking,
@@ -30,7 +29,7 @@ struct POSBookingPaymentControllerTests {
     }
 
     @Test func collectCardPayment_success_marks_booking_as_paid() async throws {
-        let booking = POSBookingTests.makeBooking(bookingID: 42)
+        let booking = POSBookingTestHelpers.makeBooking(bookingID: 42)
         let sut = makeSUT(booking: booking)
 
         try await sut.collectCardPayment()

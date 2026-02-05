@@ -37,7 +37,7 @@ struct POSBookingRowView: View {
                 Text("·")
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
-                Text(booking.serviceName)
+                Text(serviceDescription)
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
@@ -56,6 +56,14 @@ struct POSBookingRowView: View {
             RoundedRectangle(cornerRadius: POSSpacing.small)
                 .stroke(isSelected ? Color.posOnSurface : Color.clear, lineWidth: 2)
         )
+    }
+
+    /// Service name with optional resource name (e.g., "Haircut by Laurena")
+    private var serviceDescription: String {
+        if let resourceName = booking.resourceName {
+            return String(format: Localization.serviceByResource, booking.serviceName, resourceName)
+        }
+        return booking.serviceName
     }
 
     @ViewBuilder
@@ -88,5 +96,10 @@ struct POSBookingRowView: View {
         static let paid = NSLocalizedString("posBookingRow.paid", value: "Paid", comment: "Booking status badge")
         static let cancelled = NSLocalizedString("posBookingRow.cancelled", value: "Cancelled", comment: "Booking status badge")
         static let noOrder = NSLocalizedString("posBookingRow.noOrder", value: "No order", comment: "Booking status badge")
+        static let serviceByResource = NSLocalizedString(
+            "posBookingRow.serviceByResource",
+            value: "%@ by %@",
+            comment: "Service name with team member. First %@ is service name, second is team member name."
+        )
     }
 }

@@ -56,9 +56,9 @@ struct POSItemActionHandlerTests {
 
         let product = makeProductItem()
 
-        sut.handleTap(product, position: nil)
-        sut.handleTap(product, position: nil)
-        sut.handleTap(product, position: nil)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 0)
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }

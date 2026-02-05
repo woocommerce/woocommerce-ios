@@ -9,8 +9,8 @@ protocol POSItemActionHandler {
     /// Handles a tap on an item
     /// - Parameters:
     ///   - item: The item that was tapped
-    ///   - position: The position of the item in the list (0-based), nil for non-search contexts
-    func handleTap(_ item: POSItem, position: Int?)
+    ///   - position: The position of the item in the list (0-based)
+    func handleTap(_ item: POSItem, position: Int)
 }
 
 extension POSItemActionHandler {
@@ -19,7 +19,7 @@ extension POSItemActionHandler {
         for item: POSItem,
         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
-        resultPosition: Int?,
+        resultPosition: Int,
         using analytics: POSAnalyticsProviding
     ) {
         switch item {
@@ -85,7 +85,7 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
         self.analytics = analytics
     }
 
-    func handleTap(_ item: POSItem, position: Int?) {
+    func handleTap(_ item: POSItem, position: Int) {
         if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
@@ -95,7 +95,7 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             for: item,
             sourceView: sourceView,
             sourceViewType: sourceViewType,
-            resultPosition: nil,  // Standard handler doesn't track position
+            resultPosition: position,
             using: analytics
         )
     }
@@ -121,7 +121,7 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
         self.analytics = analytics
     }
 
-    func handleTap(_ item: POSItem, position: Int?) {
+    func handleTap(_ item: POSItem, position: Int) {
         if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
@@ -133,14 +133,12 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
         posModel.addToCart(item)
 
         let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType = searchTerm.isEmpty ? .preSearch : .search
-        // Only include position for actual search results, not pre-search
-        let resultPosition = sourceViewType == .search ? position : nil
 
         trackTapAnalytics(
             for: item,
             sourceView: sourceView,
             sourceViewType: sourceViewType,
-            resultPosition: resultPosition,
+            resultPosition: position,
             using: analytics
         )
     }

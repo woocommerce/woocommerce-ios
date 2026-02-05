@@ -22,6 +22,27 @@ extension WooShippingAddress {
     var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)?.replacingOccurrences(of: "\n", with: ", ")
     }
+
+    /// Digits-only representation of the phone number.
+    var phoneDigits: String {
+        phone.components(separatedBy: .decimalDigits.inverted).joined()
+    }
+
+    /// Whether the phone number is valid for label purchase.
+    /// For US addresses, the phone must be 10 digits (or 11 with leading "1").
+    var hasValidPhoneNumberForShipping: Bool {
+        let digits = phoneDigits
+        guard digits.isNotEmpty else {
+            return false
+        }
+        guard country == "US" else {
+            return true
+        }
+        if digits.hasPrefix("1") {
+            return digits.count == 11
+        }
+        return digits.count == 10
+    }
 }
 
 private extension WooShippingAddress {

@@ -77,11 +77,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// The origin address country code.
-    /// This is used to determine whether the phone number is required when editing a destination address.
+    /// Reserved for future validation rules.
     private let originCountryCode: String?
 
     /// The origin address state code.
-    /// This is used to determine whether the phone number is required when editing a destination address.
+    /// Reserved for future validation rules.
     private let originStateCode: String?
 
     /// Status of the address, based on local validation and remote verification.
@@ -584,10 +584,7 @@ extension WooShippingEditAddressViewModel {
         case .origin:
             return true
         case .destination:
-            return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originCountryCode,
-                                                                    originState: originStateCode,
-                                                                    destinationCountry: selectedCountryCode,
-                                                                    destinationState: selectedState)
+            return true
         }
     }
 }

@@ -104,6 +104,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         shippingLabel == nil
         // or if any required fields are missing
         && originAddress != nil && destinationAddress != nil
+        && destinationAddress?.hasValidPhoneNumberForShipping == true
         && selectedPackage != nil
         && selectedRate != nil
         && (!customsFormRequired || customsInformationIsCompleted)

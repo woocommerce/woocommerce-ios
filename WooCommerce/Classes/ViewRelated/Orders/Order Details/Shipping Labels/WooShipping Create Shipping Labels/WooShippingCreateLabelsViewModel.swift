@@ -887,6 +887,11 @@ private extension WooShippingCreateLabelsViewModel {
                 value: "Invalid phone number.",
                 comment: "Title for the notice when the label purchase fails due to an invalid destination phone number"
             )
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.message",
+                value: "Please enter a valid phone number for the destination address.",
+                comment: "Message for the notice when the label purchase fails due to an invalid destination phone number"
+            )
             static let editAddress = NSLocalizedString(
                 "wooShipping.createLabels.phoneNumberError.editAddress",
                 value: "Edit address",
@@ -910,7 +915,10 @@ private extension WooShippingCreateLabelsViewModel {
         }
         let dataMessage = data?["message"]?.value as? String
         let candidates = [message, dataMessage].compactMap { $0 }
-        return candidates.first { $0.localizedCaseInsensitiveContains("phone number") }
+        guard candidates.contains(where: { $0.range(of: "phone", options: .caseInsensitive) != nil }) else {
+            return nil
+        }
+        return Localization.PhoneNumberError.message
     }
 }
 

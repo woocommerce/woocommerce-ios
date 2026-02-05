@@ -24,12 +24,8 @@ final class POSBookingPaymentController: Identifiable, Equatable {
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
 
-    /// Whether the view should show a primary (purple) background - during processing states
+    /// Whether the view should show a primary (purple) background - only during actual payment processing
     var showsPrimaryBackground: Bool {
-        // Show purple background when in processing state (even before facade emits message)
-        if paymentState == .processing {
-            return true
-        }
         guard let message = cardPresentPaymentInlineMessage else {
             return false
         }

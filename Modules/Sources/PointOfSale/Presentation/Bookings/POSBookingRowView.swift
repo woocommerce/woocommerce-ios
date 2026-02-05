@@ -21,6 +21,7 @@ struct POSBookingRowView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            // Line 1: Customer name and amount
             HStack {
                 Text(booking.customerName)
                     .font(.posBodyLargeBold)
@@ -33,12 +34,8 @@ struct POSBookingRowView: View {
                     .foregroundStyle(Color.posOnSurface)
             }
 
-            HStack(spacing: POSSpacing.small) {
-                statusBadge
-
-                Text("·")
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-
+            // Line 2: Service description and time
+            HStack(spacing: POSSpacing.xSmall) {
                 Text(serviceDescription)
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
@@ -50,6 +47,9 @@ struct POSBookingRowView: View {
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
+
+            // Line 3: Status badge
+            statusBadge
         }
         .padding(POSSpacing.medium)
         .background(Color.posSurfaceContainerLowest)

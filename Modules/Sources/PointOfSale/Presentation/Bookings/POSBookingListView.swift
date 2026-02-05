@@ -120,6 +120,7 @@ struct POSBookingListEmptyViewModel: POSListEmptyViewModelProtocol {
 struct POSGhostBookingRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            // Line 1: Name and amount
             HStack {
                 RoundedRectangle(cornerRadius: POSSpacing.xSmall)
                     .fill(Color.posSurfaceContainerLow)
@@ -129,11 +130,16 @@ struct POSGhostBookingRowView: View {
                     .fill(Color.posSurfaceContainerLow)
                     .frame(width: 60, height: 20)
             }
+            // Line 2: Service description and time
             HStack {
                 RoundedRectangle(cornerRadius: POSSpacing.xSmall)
                     .fill(Color.posSurfaceContainerLow)
-                    .frame(width: 200, height: 16)
+                    .frame(width: 180, height: 16)
             }
+            // Line 3: Status badge
+            RoundedRectangle(cornerRadius: POSSpacing.xSmall)
+                .fill(Color.posSurfaceContainerLow)
+                .frame(width: 60, height: 24)
         }
         .padding(POSSpacing.medium)
         .background(Color.posSurfaceContainerLowest)

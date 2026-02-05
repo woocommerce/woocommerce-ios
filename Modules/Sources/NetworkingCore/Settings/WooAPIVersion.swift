@@ -52,7 +52,7 @@ public enum WooAPIVersion: String {
 
     /// WooCommerce Bookings Plugin V1.
     ///
-    case wcBookings = "wc-bookings/v2"
+    case wcBookings = "wc-bookings/v1"
 
     /// WooCommerce POS V1.
     ///

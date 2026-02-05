@@ -130,9 +130,9 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let attendanceStatusKey = container.failsafeDecodeIfPresent(String.self, forKey: .attendanceStatusKey) ?? ""
         let localTimezone = try container.decode(String.self, forKey: .localTimezone)
-        let currency = try container.decode(String.self, forKey: .currency)
+        let currency = try container.decodeIfPresent(String.self, forKey: .currency) ?? ""
         let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
-        let note = try container.decode(String.self, forKey: .note)
+        let note = try container.decodeIfPresent(String.self, forKey: .note) ?? ""
 
         self.init(siteID: siteID,
                   bookingID: bookingID,

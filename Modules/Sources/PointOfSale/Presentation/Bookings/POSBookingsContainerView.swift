@@ -59,17 +59,9 @@ struct POSBookingsContainerView: View {
                     }
                 }
             } else {
-                // Fallback view if controller isn't ready yet
-                VStack {
-                    ProgressView()
-                    Button(Localization.cancel) {
-                        showingCardPayment = false
-                    }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                    .padding(.top, POSSpacing.large)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.posSurface)
+                // Brief fallback during SwiftUI state propagation - use consistent styling
+                Color.posSurface
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .posFullScreenCover(isPresented: $showingCashPayment) {
@@ -149,11 +141,6 @@ struct POSBookingsContainerView: View {
             "posBookingsContainer.selectBooking",
             value: "Select a booking to view details",
             comment: "Placeholder when no booking is selected"
-        )
-        static let cancel = NSLocalizedString(
-            "posBookingsContainer.cancel",
-            value: "Cancel",
-            comment: "Cancel button"
         )
     }
 }

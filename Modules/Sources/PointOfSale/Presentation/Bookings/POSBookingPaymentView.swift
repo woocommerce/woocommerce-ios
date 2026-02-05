@@ -9,18 +9,36 @@ struct POSBookingPaymentView: View {
     let onEmailReceipt: () -> Void
 
     var body: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
-            Spacer()
+        @Bindable var controller = controller  // Local bindable for $ bindings
 
-            statusContent
-
-            Spacer()
-
-            actionButtons
+        ZStack {
+            // Show inline message from facade (handles its own layout)
+            if let inlineMessage = controller.cardPresentPaymentInlineMessage {
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage)
+            } else {
+                // Fall back to our status content with action buttons
+                VStack(spacing: POSSpacing.xxLarge) {
+                    Spacer()
+                    statusContent
+                    Spacer()
+                    actionButtons
+                }
+                .padding(POSSpacing.large)
+            }
         }
-        .padding(POSSpacing.large)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.posSurface)
+        .background(controller.showsPrimaryBackground ? Color.posPrimary : Color.posSurface)
+        .animation(.easeInOut, value: controller.showsPrimaryBackground)
+        .posModal(item: $controller.cardPresentPaymentAlertViewModel,
+                  onDismiss: {
+            controller.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }) { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        }
+        .onDisappear {
+            controller.cancelPendingOperations()
+        }
     }
 
     @ViewBuilder
@@ -56,19 +74,22 @@ struct POSBookingPaymentView: View {
 
     @ViewBuilder
     private var processingContent: some View {
-        VStack(spacing: POSSpacing.large) {
+        // Match the style of PointOfSaleCardPresentPaymentProcessingMessageView
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing) {
             ProgressView()
-                .progressViewStyle(POSProgressViewStyle())
-                .scaleEffect(2)
+                .progressViewStyle(CardWaveProgressViewStyle())
 
-            Text(Localization.processing)
-                .font(.posBodyXLargeBold)
-                .foregroundStyle(Color.posOnSurface)
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                Text(Localization.processing)
+                    .foregroundStyle(Color.posOnPrimaryContainer)
+                    .font(.posBodyLargeRegular())
 
-            Text(controller.booking.amount)
-                .font(.system(size: 48, weight: .bold))
-                .foregroundStyle(Color.posOnSurface)
+                Text(controller.booking.amount)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnPrimaryContainer)
+            }
         }
+        .multilineTextAlignment(.center)
     }
 
     @ViewBuilder
